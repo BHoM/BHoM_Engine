@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Dimensional;
 
 namespace BH.Engine.Analytical
 {
@@ -13,12 +14,9 @@ namespace BH.Engine.Analytical
     {
         public static Dictionary<Guid, IBHoMObject> FilterEntities(this Graph graph, Type typeFilter)
         {
-            List<IBHoMObject> entities = Base.Query.FilterByType(graph.Entities(), typeFilter).Cast<IBHoMObject>().ToList();
-
             Dictionary<Guid, IBHoMObject> entityDict = new Dictionary<Guid, IBHoMObject>();
-
-            entities.ForEach(ent => entityDict.Add(ent.BHoM_Guid, ent));
-
+            List<IBHoMObject> filtered = graph.Entities().Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList();
+            filtered.ForEach(obj => entityDict.Add(obj.BHoM_Guid, obj));
             return entityDict;
         }
     }

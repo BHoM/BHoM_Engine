@@ -111,10 +111,11 @@ namespace BH.Engine.Analytical
                 INode start = FindOrCreateINode(entitiesCloned, curve.IStartPoint(), snappingTolerance, prototypeEntity);
                 INode end = FindOrCreateINode(entitiesCloned, curve.IEndPoint(), snappingTolerance, prototypeEntity);
 
-                Relation relation = new Relation()
+                SpatialRelation relation = new SpatialRelation()
                 {
                     Source = start.BHoM_Guid,
-                    Target = end.BHoM_Guid
+                    Target = end.BHoM_Guid,
+                    Curve = curve
                 };
                 relations.AddRange(relationsToAdd(relation, relationDirection));
             }
@@ -239,13 +240,13 @@ namespace BH.Engine.Analytical
                 relations.Add(relation);
 
             if (linkDirection == RelationDirection.Backwards)
-                relations.Add(relation.Reverse());
+                relations.Add(relation.IReverse());
 
             if (linkDirection == RelationDirection.Both)
             {
                 relations.Add(relation);
                 IRelation clone = relation.DeepClone();
-                relations.Add(clone.Reverse());
+                relations.Add(clone.IReverse());
             }
             return relations;
         }

@@ -30,6 +30,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
+using BH.oM.Dimensional;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Analytical
 {
@@ -188,46 +190,47 @@ namespace BH.Engine.Analytical
         public static CompositeGeometry Geometry(this Graph graph)
         {
             List<IGeometry> geometries = new List<IGeometry>();
+            Graph spatialGraph = graph.SpatialGraph();
 
-            foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in graph.Entities)
+            if (spatialGraph.Entities.Count == 0 || spatialGraph.Relations.Count == 0)
+                return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
+
+            foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in spatialGraph.Entities)
             {
-                if (kvp.Value is INode)
+                if (kvp.Value is IElement0D)
                 {
-                    INode node = kvp.Value as INode;
-                    geometries.Add(node.Geometry());
-
-                    List<IBHoMObject> connected = graph.Destinations(kvp.Value);
-                    foreach (IBHoMObject c in connected)
-                    {
-                        if (c is INode)
-                        {
-                            INode end = c as INode;
-                            geometries.Add(BH.Engine.Geometry.Create.Line(node.Position, end.Position));
-                            geometries.Add(ArrowHead(node, end));
-                        }
-
-                    }
+                    IElement0D entity = kvp.Value as IElement0D;
+                    geometries.Add(entity.IGeometry());
                 }
 
+            }
+            foreach(SpatialRelation spatialRelation in spatialGraph.Relations)
+            {
+                foreach(ICurve sub in spatialRelation.Curve.ISubParts())
+                {
+                    geometries.Add(sub);
+                    geometries.Add(ArrowHead(sub.IPointAtLength(sub.ILength() * 0.9), sub.IEndPoint()));
+                }
             }
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static CompositeGeometry ArrowHead(INode start, INode end)
+        private static CompositeGeometry ArrowHead(Point start, Point end)
         {
-            Vector back = start.Position - end.Position;
+            Vector back = start - end;
             Vector perp = back.CrossProduct(Vector.ZAxis);
             if(perp.Length() == 0)
                 perp = back.CrossProduct(Vector.YAxis);
-            back = back * 0.1;
-            perp = perp * 0.025;
-            Point p1 = end.Position + (back + perp);
-            Point p2 = end.Position + (back - perp);
+            perp = perp.Normalise();
+            double l = perp.Length();
+            perp = perp * start.Distance(end)/2;
+            Point p1 = end + (back + perp);
+            Point p2 = end + (back - perp);
             List<IGeometry> geometries = new List<IGeometry>();
-            geometries.Add(BH.Engine.Geometry.Create.Line(end.Position, p1));
-            geometries.Add(BH.Engine.Geometry.Create.Line(end.Position, p2));
+            geometries.Add(BH.Engine.Geometry.Create.Line(end, p1));
+            geometries.Add(BH.Engine.Geometry.Create.Line(end, p2));
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
         }
     }

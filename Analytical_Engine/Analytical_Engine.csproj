@@ -94,6 +94,8 @@
     <Compile Include="Query\Graph\FilterEntities.cs" />
     <Compile Include="Query\Graph\FilterRelations.cs" />
     <Compile Include="Query\Graph\IncomingNodes.cs" />
+    <Compile Include="Query\Graph\RelationMatch.cs" />
+    <Compile Include="Query\Graph\RelationLength.cs" />
     <Compile Include="Query\Graph\NotSinks.cs" />
     <Compile Include="Query\Graph\Sinks.cs" />
     <Compile Include="Query\Graph\SpatialGraph.cs" />
@@ -126,6 +128,10 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}</Project>
+      <Name>Spatial_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,6 +2,7 @@
 using BH.oM.Analytical.Elements;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
+using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,13 +17,13 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Convert IDependencyFragment assigned to a object")]
+        [Description("Convert IDependencyFragment assigned to relations")]
         public static List<IRelation> IToRelation(this IDependencyFragment dependency, Guid owner)
         {
             return ToRelation(dependency as dynamic, owner);
         }
         /***************************************************/
-        [Description("Convert InputsFragment assigned to a object")]
+        [Description("Convert InputsFragment assigned to relations")]
         public static List<IRelation> ToRelation(this InputsFragment dependency, Guid owner)
         {
             List<IRelation> relations = new List<IRelation>();
@@ -30,7 +31,7 @@ namespace BH.Engine.Analytical
             return relations;
         }
         
-        [Description("Convert InputOutputFragment assigned to a object")]
+        [Description("Convert InputOutputFragment assigned to relations")]
         public static List<IRelation> ToRelation(this InputOutputFragment dependency, Guid owner)
         {
             List<IRelation> relations = new List<IRelation>();
@@ -39,11 +40,24 @@ namespace BH.Engine.Analytical
             return relations;
         }
         /***************************************************/
-        [Description("Convert DependencyFragment assigned to a object")]
+        [Description("Convert DependencyFragment assigned to relations")]
         public static List<IRelation> ToRelation(this DependencyFragment dependency, Guid owner)
         {
             List<IRelation> relations = new List<IRelation>();
             relations.Add(new Relation() { Source = dependency.Source, Target = dependency.Target });
+            return relations;
+        }
+        /***************************************************/
+        [Description("Convert SpatialDependencyFragment assigned to relations")]
+        public static List<IRelation> ToRelation(this SpatialDependencyFragment dependency, Guid owner)
+        {
+            List<IRelation> relations = new List<IRelation>();
+            relations.Add(new SpatialRelation() 
+            { 
+                Source = dependency.Source, 
+                Target = dependency.Target,
+                Curve = dependency.Curve
+            });
             return relations;
         }
         /***************************************************/
@@ -85,7 +99,13 @@ namespace BH.Engine.Analytical
         private static IRelation ToRelation<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
-            Relation relation = new Relation() { Source = link.StartNode.BHoM_Guid, Target = link.EndNode.BHoM_Guid };
+            SpatialRelation relation = new SpatialRelation()
+            {
+                Source = link.StartNode.BHoM_Guid,
+                Target = link.EndNode.BHoM_Guid,
+                Curve = (ICurve)link.IGeometry()
+            };
+
             Graph subgraph = new Graph();
             subgraph.Entities.Add(link.StartNode.BHoM_Guid, link.StartNode);
             subgraph.Entities.Add(link.EndNode.BHoM_Guid, link.EndNode);
@@ -93,6 +113,7 @@ namespace BH.Engine.Analytical
             subgraph.Relations.Add(new Relation() { Source = link.StartNode.BHoM_Guid, Target = link.BHoM_Guid });
             subgraph.Relations.Add(new Relation() { Source = link.BHoM_Guid, Target = link.StartNode.BHoM_Guid });
             relation.Subgraph = subgraph;
+
             return relation;
         }
         /***************************************************/

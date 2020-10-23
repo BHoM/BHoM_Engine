@@ -21,8 +21,10 @@
  */
 
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
 using BH.oM.Base;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -46,22 +48,24 @@ namespace BH.Engine.Analytical
         /***************************************************/
         public static ShortestPathResult AStarShortestPath(Graph graph, Guid start, Guid end)
         {
-            MakeNodesSpatial(graph);
-            if (m_SpatialNodes.Count!= graph.Entities.Count)
+            m_SpatialGraph = graph.SpatialGraph();
+            if (m_SpatialGraph.Entities.Count == 0 || m_SpatialGraph.Relations.Count == 0)
             {
-                Reflection.Compute.RecordWarning("One or more of the provided graph entities do not implement BH.oM.Analytical.INode.\n" +
-                    "All vertices must implement INode to provide required spatial location to use AStar shortest path.\n" +
+                Reflection.Compute.RecordWarning("The graph provided does not contain sufficient entities or relations that implement IElement0D and IElement1D.\n" +
+                    "To use AStar shortest path provide a graph where some entities and some relations implement IElement0D and IElement1D.\n" +
                     "Shortest path is computed using Dijkstra shortest path instead.");
 
                 return DijkstraShortestPath(graph, start, end);
             }
                 
             SetFragments(graph);
-            INode endNode = m_SpatialNodes[end];
-            foreach (Guid node in graph.Entities.Keys.ToList())
+
+            //calculate straight line distance from each entity to the end
+            IElement0D endEntity = m_SpatialGraph.Entities[end] as IElement0D;
+            foreach (Guid entity in graph.Entities.Keys.ToList())
             {
-                INode nodeA = m_SpatialNodes[node];
-                m_Fragments[node].StraightLineDistanceToTarget = nodeA.Position.Distance(endNode.Position);
+                IElement0D element0D = m_SpatialGraph.Entities[entity] as IElement0D;
+                m_Fragments[entity].StraightLineDistanceToTarget = element0D.IGeometry().Distance(endEntity.IGeometry());
             }
                 
             AStarSearch(graph, start, end);
@@ -71,14 +75,15 @@ namespace BH.Engine.Analytical
 
             double length = 0;
             double cost = 0;
-            AStarResult(shortestPath, end,ref length, ref cost);
+            List<ICurve> curves = new List<ICurve>();
+            AStarResult(shortestPath, end,ref length, ref cost, ref curves);
             shortestPath.Reverse();
 
             List<IBHoMObject> objPath = new List<IBHoMObject>();
             shortestPath.ForEach(g => objPath.Add(graph.Entities[g]));
 
             List<IBHoMObject> nodesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => graph.Entities[kvp.Key]).ToList();
-            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, nodesVisited);
+            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, nodesVisited, curves);
             return result;
         }
         /***************************************************/
@@ -95,16 +100,20 @@ namespace BH.Engine.Analytical
                 Guid node = prioQueue.First();
                 prioQueue.Remove(node);
                 List<IRelation> relations = graph.Relations.FindAll(link => link.Source.Equals(node));
-                
-                //use weight AND distance to define cost to end
+                IBHoMObject current = m_SpatialGraph.Entities[node];
+                //use weight AND length of the relation to define cost to end
                 foreach (IRelation r in relations)
-                    m_Fragments[r.Target].Cost = m_SpatialNodes[r.Target].Position.Distance(m_SpatialNodes[node].Position) * r.Weight;
-
+                {
+                    SpatialRelation spatialRelation = r as SpatialRelation;
+                    double length = graph.RelationLength(spatialRelation);
+                    m_Fragments[r.Target].Cost = length * r.Weight;
+                }
+                    
                 List<Guid> connections = relations.Select(link => link.Target).ToList();
 
                 foreach (Guid childNode in connections.OrderBy(x => m_Fragments[x].Cost))
                 {
-
+                    IBHoMObject currentChild = m_SpatialGraph.Entities[childNode];
                     if (m_Fragments[childNode].Visited)
                         continue;
                     //if min cost to start is null or cost of this node is less than child node cost
@@ -126,32 +135,31 @@ namespace BH.Engine.Analytical
             } while (prioQueue.Any());
         }
         /***************************************************/
-        private static void MakeNodesSpatial(Graph graph)
-        {
-            m_SpatialNodes = new Dictionary<Guid, INode>();
-            foreach (KeyValuePair<Guid, IBHoMObject> kvp in graph.Entities)
-            {
-                if (kvp.Value is INode)
-                    m_SpatialNodes.Add(kvp.Key, (INode)kvp.Value);
-            }
-        }
-        /***************************************************/
-        private static void AStarResult(List<Guid> list, Guid node, ref double length, ref double cost)
+        private static void AStarResult(List<Guid> list, Guid node, ref double length, ref double cost, ref List<ICurve> curves)
         {
             if (m_Fragments[node].NearestToSource == Guid.Empty)
                 return;
             Guid n = m_Fragments[node].NearestToSource;
             list.Add(n);
-            length += m_SpatialNodes[node].Position.Distance(m_SpatialNodes[n].Position);
+            //relations linking entities working backwards from end
+            List<SpatialRelation> relations = m_SpatialGraph.RelationMatch(n, node).Cast<SpatialRelation>().ToList();
+            //order by length
+            relations = relations.OrderBy(sr => m_SpatialGraph.RelationLength(sr)).ToList();
+
+            length += m_SpatialGraph.RelationLength(relations[0]);
+
+            curves.Add(relations[0].Curve);
 
             if (m_Fragments[n].Cost.HasValue)
                 cost += m_Fragments[n].Cost.Value;
-            AStarResult(list, n, ref length, ref cost);
+
+            AStarResult(list, n, ref length, ref cost, ref curves);
         }
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
-        private static Dictionary<Guid, INode> m_SpatialNodes = new Dictionary<Guid, INode>();
+        private static Graph m_SpatialGraph = new Graph();
+        
 
     }
 }
