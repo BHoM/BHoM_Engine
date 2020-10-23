@@ -24,6 +24,20 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Create a graph from a collection of IBHoMObjects with Dependency fragments and a diff config to determine the unique graph entities")]
+        public static Graph Graph(List<IBHoMObject> entities, DiffConfig diffConfig = null)
+        {
+            return Graph(entities, null, diffConfig);
+        }
+
+        /***************************************************/
+        [Description("Create a graph from a collection of IRelations and a diff config to determine the unique graph entities")]
+        public static Graph Graph(List<IRelation> relations, DiffConfig diffConfig = null)
+        {
+            return Graph(null, relations, diffConfig);
+        }
+
+        /***************************************************/
+        [Description("Create a graph from a collection of IBHoMObjects with Dependency fragments, a collection of IRelations and a diff config to determine the unique graph entities")]
         public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, DiffConfig diffConfig = null)
         {
             Graph graph = new Graph();
