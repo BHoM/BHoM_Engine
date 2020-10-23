@@ -72,6 +72,7 @@ namespace BH.Engine.Analytical
         }
         /***************************************************/
         [Description("Convert a collection of ILinks to a collection of Relations")]
+        //UI cannot handle the list of generic inputs yet
         public static List<IRelation> ToRelation<TNode>(this List<ILink<TNode>> links, RelationDirection linkDirection)
             where TNode : INode
         {
@@ -94,6 +95,8 @@ namespace BH.Engine.Analytical
             relation.Subgraph = subgraph;
             return relation;
         }
+        /***************************************************/
+        [Description("Extract relations from a collection of IBHoMObjects")]
         public static List<IRelation> ToRelation(this List<IBHoMObject> objs)
         {
             List<IRelation> relations = new List<IRelation>();
