@@ -13,8 +13,7 @@ namespace BH.Engine.Analytical
     {
         public static List<IRelation> FilterRelations(this Graph graph, Type typeFilter)
         {
-            return Base.Query.FilterByType(graph.Relations, typeFilter).Cast<IRelation>().ToList();
-
+            return graph.Relations.Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList(); 
         }
     }
 }
