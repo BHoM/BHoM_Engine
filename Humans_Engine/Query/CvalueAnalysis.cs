@@ -106,10 +106,10 @@ namespace BH.Engine.Humans.ViewQuality
                     focal = FindFocalPerp(spectator, playingArea);
 
                     break;
-                //case CvalueFocalMethodEnum.ActivityFocalPoint:
-                //    focal = focalPoint;
+                case CvalueFocalMethodEnum.ActivityFocalPoint:
+                    focal = focalPoint;
 
-                //    break;
+                    break;
             }
             return focal;
         }
