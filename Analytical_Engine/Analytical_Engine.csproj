@@ -92,6 +92,7 @@
     <Compile Include="Query\Graph\Entities.cs" />
     <Compile Include="Query\Graph\Entity.cs" />
     <Compile Include="Query\Graph\FilterEntities.cs" />
+    <Compile Include="Query\Graph\FilterRelations.cs" />
     <Compile Include="Query\Graph\IncomingNodes.cs" />
     <Compile Include="Query\Graph\NotSinks.cs" />
     <Compile Include="Query\Graph\Sinks.cs" />
