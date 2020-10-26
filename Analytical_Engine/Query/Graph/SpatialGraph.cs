@@ -27,8 +27,8 @@ namespace BH.Engine.Analytical
             {
                 if(spatialRelation.Curve == null)
                 {
-                    IElement0D source = m_SpatialGraph.Entities[spatialRelation.Source] as IElement0D;
-                    IElement0D target = m_SpatialGraph.Entities[spatialRelation.Target] as IElement0D;
+                    IElement0D source = graph.Entities[spatialRelation.Source] as IElement0D;
+                    IElement0D target = graph.Entities[spatialRelation.Target] as IElement0D;
                     spatialRelation.Curve = new Line() { Start = source.IGeometry(), End = target.IGeometry() };
                 }
             }
