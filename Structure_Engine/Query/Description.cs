@@ -476,6 +476,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property, based on its property values.")]
         public static string IDescription(this IProperty property)
         {
+            if (property == null)
+                return "null property";
+
             return Description(property as dynamic);
         }
 
@@ -486,6 +489,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the SectionProperty based on its dimensions, material and type.")]
         public static string IDescription(this ISectionProperty section)
         {
+            if (section == null)
+                return "null section";
+
             return Description(section as dynamic);
         }
 
@@ -496,6 +502,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the Profile based on its dimensions.")]
         public static string IDescription(this IProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return Description(profile as dynamic);
         }
 
@@ -506,6 +515,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the SurfaceProperty based on its dimensions, material and type.")]
         public static string IDescription(this ISurfaceProperty property)
         {
+            if (property == null)
+                return "null property";
+
             return Description(property as dynamic);
         }
 
