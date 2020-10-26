@@ -109,6 +109,17 @@ namespace BH.Engine.Geometry
             return 2.0 * Math.Pow(Math.PI, 2) * Math.Pow(torus.RadiusMinor, 2) * torus.RadiusMajor;
         }
 
+ 
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static double Volume(this ISolid solid)
+        {
+            Reflection.Compute.RecordError($"Volume is not implemented for ISolids of type: {solid.GetType().Name}.");
+            return double.NaN;
+        }
+
         /***************************************************/
     }
 }
