@@ -391,6 +391,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint3DOF constraint)
         {
+            if (constraint == null)
+                return "null constraint";
+
             string desc = constraint.UX.DofSign() + constraint.UY.DofSign() + constraint.Normal.DofSign();
             if (constraint.IsNumericallyDependent())
             {
@@ -406,6 +409,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint4DOF constraint)
         {
+            if (constraint == null)
+                return "null constraint";
+
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
                           constraint.RotationX.DofSign();
 
@@ -424,6 +430,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint6DOF constraint)
         {
+            if (constraint == null)
+                return "null constraint";
+
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
                           constraint.RotationX.DofSign() + constraint.RotationY.DofSign() + constraint.RotationZ.DofSign();
 
@@ -442,6 +451,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the BarRelease.")]
         public static string Description(this BarRelease release)
         {
+            if (release == null)
+                return "null release";
+
             return release.StartRelease.DescriptionOrName() + " - " + release.EndRelease.DescriptionOrName();
         }
 
@@ -452,6 +464,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the LinkConstraint.")]
         public static string Description(this LinkConstraint constraint)
         {
+            if (constraint == null)
+                return "null constraint";
+
             string desc = constraint.XtoX ? "x" : "f";
             desc += constraint.YtoY ? "x" : "f";
             desc += constraint.ZtoZ ? "x" : "f";
@@ -481,6 +496,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Offset offset)
         {
+            if (offset == null)
+                return "null offset";
+
             return $"{offset.Start.VectorComponents()} - {offset.End.VectorComponents()}";
         }
 
@@ -645,6 +663,9 @@ namespace BH.Engine.Structure
 
         private static string VectorComponents(this Vector vector)
         {
+            if (vector == null)
+                return null;
+
             return (vector != null) ? $"[{vector.X:G3}, {vector.Y:G3}, {vector.Z:G3}]" : "null";
         }
 
