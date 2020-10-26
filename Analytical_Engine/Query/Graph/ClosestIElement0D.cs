@@ -21,7 +21,9 @@
  */
 
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,13 +36,13 @@ namespace BH.Engine.GraphFlow
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static INode ClosestINode<T>(this List<T> nodes, Point point, double tolerance = 1.0)
-            where T : INode
+        public static IElement0D ClosestIElement0D<T>(this List<T> nodes, Point point, double tolerance = 1.0)
+            where T : IElement0D
         {
             if (nodes.Count == 0)
                 return null;
 
-            INode closest = nodes.Select(p => new { Node = p, Distance2 = p.Position.Distance(point) })
+            IElement0D closest = nodes.Select(p => new { Node = p, Distance2 = p.IGeometry().Distance(point) })
                             .Aggregate((p1, p2) => p1.Distance2 < p2.Distance2 ? p1 : p2)
                             .Node;
 
