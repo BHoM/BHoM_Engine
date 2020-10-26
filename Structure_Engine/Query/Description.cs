@@ -511,6 +511,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Steel material)
         {
+            if (material == null)
+                return "null material";
+
             return $"Steel {material.MaterialAnalyticalValues():G3}, fy: {material.YieldStress:G3}, fu: {material.UltimateStress:G3}";
         }
 
@@ -521,6 +524,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Concrete material)
         {
+            if (material == null)
+                return "null material";
+
             return $"Concrete {material.MaterialAnalyticalValues()}, cyl: {material.CylinderStrength:G3}, cube: {material.CubeStrength:G3}";
         }
 
@@ -531,6 +537,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Aluminium material)
         {
+            if (material == null)
+                return "null material";
+
             return "Alum " + material.MaterialAnalyticalValues();
         }
 
@@ -541,6 +550,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this GenericIsotropicMaterial material)
         {
+            if (material == null)
+                return "null material";
+
             return "Gen " + material.MaterialAnalyticalValues();
         }
 
@@ -549,6 +561,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Timber material)
         {
+            if (material == null)
+                return "null material";
+
             return "Timber " + material.MaterialAnalyticalValues();
         }
 
@@ -557,6 +572,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this GenericOrthotropicMaterial material)
         {
+            if (material == null)
+                return "null material";
+
             return "Gen " + material.MaterialAnalyticalValues();
         }
 
