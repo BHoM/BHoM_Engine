@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -36,9 +37,9 @@ namespace BH.Engine.Geometry
         public static PolyCurve SortCurves(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             if (curve.Curves.Count < 2)
-                return curve.Clone() as PolyCurve;
+                return curve.DeepClone();
 
-            List<ICurve> pending = curve.Curves.Select(x => x.IClone()).ToList();
+            List<ICurve> pending = curve.Curves.Select(x => x.DeepClone()).ToList();
             PolyCurve result = new PolyCurve { Curves = new List<ICurve> { pending[0] } };
             pending.RemoveAt(0);
 

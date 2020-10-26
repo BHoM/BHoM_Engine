@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using BH.Engine.Base;
 
 namespace BH.Engine.Geometry
 {
@@ -47,7 +48,7 @@ namespace BH.Engine.Geometry
             {
                 dir2 = (cc[i] - cc[i - 1]).Normalise();
                 double signedAngle = dir1.SignedAngle(dir2, normal);
-                dir1 = dir2.Clone();
+                dir1 = dir2.DeepClone();
 
                 if (Math.PI - Math.Abs(signedAngle) <= Tolerance.Angle)
                 {

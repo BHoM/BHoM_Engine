@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace BH.Engine.Geometry
         {
             // Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
 
-            double[,] matrix = (double[,])imatrix.Clone();
+            double[,] matrix = (double[,])imatrix.DeepClone();
             int lead = 0, rowCount = matrix.GetLength(0), columnCount = matrix.GetLength(1);
 
             for (int r = 0; r < rowCount; r++)

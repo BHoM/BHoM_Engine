@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -35,8 +36,8 @@ namespace BH.Engine.Geometry
 
         public static Mesh MergedVertices(this Mesh mesh, double tolerance = Tolerance.Distance) //TODO: use the point matrix 
         {
-            List<Face> faces = mesh.Faces.Select(x => x.Clone() as Face).ToList();
-            List<VertexIndex> vertices = mesh.Vertices.Select((x, i) => new VertexIndex(x.Clone() as Point, i)).ToList();
+            List<Face> faces = mesh.Faces.Select(x => x.DeepClone()).ToList();
+            List<VertexIndex> vertices = mesh.Vertices.Select((x, i) => new VertexIndex(x.DeepClone(), i)).ToList();
             
             foreach( Face face in faces)
             {

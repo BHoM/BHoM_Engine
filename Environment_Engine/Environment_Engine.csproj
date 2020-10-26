@@ -135,7 +135,6 @@
     <Compile Include="Modify\SplitOpeningByGeometry.cs" />
     <Compile Include="Modify\SplitPanelByGeometry.cs" />
     <Compile Include="Modify\SplitPanelsByPoints.cs" />
-    <Compile Include="Modify\UpdatePanelTypeByCustomData.cs" />
     <Compile Include="Query\Absorptance.cs" />
     <Compile Include="Query\BottomLeft.cs" />
     <Compile Include="Query\BottomRight.cs" />
@@ -148,6 +147,7 @@
     <Compile Include="Query\FloorHeights.cs" />
     <Compile Include="Query\FrameFactor.cs" />
     <Compile Include="Query\Geometry.cs" />
+    <Compile Include="Query\Group.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\IsLeft.cs" />
     <Compile Include="Query\MaterialComposition.cs" />

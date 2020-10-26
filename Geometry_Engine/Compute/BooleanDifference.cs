@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -37,7 +38,7 @@ namespace BH.Engine.Geometry
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
             if (refLine.Length() <= tolerance)
-                return new List<Line> { line.Clone() };
+                return new List<Line> { line.DeepClone() };
 
             if (line.IsCollinear(refLine, tolerance))
             {
@@ -61,14 +62,14 @@ namespace BH.Engine.Geometry
                     Point aRPt = refLine.ControlPoints().Average();
 
                     if (aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol)
-                        splitLine = new List<Line> { line.Clone() };
+                        splitLine = new List<Line> { line.DeepClone() };
                     else
                         splitLine = new List<Line>();
                 }
 
                 return splitLine;
             }
-            return new List<Line> { line.Clone() };
+            return new List<Line> { line.DeepClone() };
         }
 
         /***************************************************/
@@ -79,7 +80,7 @@ namespace BH.Engine.Geometry
 
             foreach (Line line in lines)
             {
-                List<Line> splitLine = new List<Line> { line.Clone() };
+                List<Line> splitLine = new List<Line> { line.DeepClone() };
                 int k = 0;
                 bool split = false;
                 do

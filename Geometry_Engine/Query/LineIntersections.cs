@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -38,8 +39,8 @@ namespace BH.Engine.Geometry
         {
             double sqTol = tolerance * tolerance;
 
-            Line l1 = line1.Clone();
-            Line l2 = line2.Clone();
+            Line l1 = line1.DeepClone();
+            Line l2 = line2.DeepClone();
             l1.Infinite |= useInfiniteLines;
             l2.Infinite |= useInfiniteLines;
             BH.oM.Reflection.Output<double, double> intParamsOutput = l1.SkewLineProximity(l2, angleTolerance);
@@ -142,7 +143,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> LineIntersections(this Arc arc, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
-            Line l = line.Clone();
+            Line l = line.DeepClone();
             l.Infinite = useInfiniteLine ? true : l.Infinite;
 
             List<Point> iPts = new List<Point>();
@@ -185,7 +186,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> LineIntersections(this Circle circle, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
-            Line l = line.Clone();
+            Line l = line.DeepClone();
             l.Infinite = useInfiniteLine ? true : l.Infinite;
 
             List<Point> iPts = new List<Point>();
@@ -230,7 +231,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> LineIntersections(this Polyline curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
-            Line l = line.Clone();
+            Line l = line.DeepClone();
             l.Infinite = useInfiniteLine ? true : line.Infinite;
 
             List<Point> iPts = new List<Point>();
@@ -248,7 +249,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> LineIntersections(this PolyCurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
-            Line l = line.Clone();
+            Line l = line.DeepClone();
             l.Infinite = useInfiniteLine ? true : line.Infinite;
 
             List<Point> iPts = new List<Point>();
