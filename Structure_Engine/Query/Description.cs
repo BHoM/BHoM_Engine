@@ -334,6 +334,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this ConstantThickness property)
         {
+            if (property == null)
+                return "null property";
+
             return $"THK {property.Thickness:G3} - {CheckGetMaterialName(property.Material)}";
         }
 
@@ -344,6 +347,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this Ribbed property)
         {
+            if (property == null)
+                return "null property";
+
             return $"Ribbed Depth: {property.TotalDepth:G3} Spacing: {property.Spacing:G3} sWidth: {property.StemWidth:G3}" +
                 $" - {CheckGetMaterialName(property.Material)}";
         }
@@ -355,6 +361,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this Waffle property)
         {
+            if (property == null)
+                return "null property";
+
             return $"Waffle DepthX: {property.TotalDepthX:G3} DepthY: {property.TotalDepthY:G3} " +
                 $"SpacingX: {property.SpacingX:G3} SpacingY: {property.SpacingY:G3} " +
                 $"sWidthX: {property.StemWidthX:G3} sWidthY: {property.StemWidthY:G3} - {CheckGetMaterialName(property.Material)}";
@@ -367,6 +376,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property.")]
         public static string Description(this LoadingPanelProperty property)
         {
+            if (property == null)
+                return "null property";
+
             return "LoadingPanel Application: " + property.LoadApplication + " RefEdge: " + property.ReferenceEdge;
         }
 
