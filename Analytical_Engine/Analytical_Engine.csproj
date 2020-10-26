@@ -83,7 +83,7 @@
     <Compile Include="Query\ExternalPolycurve.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\Graph\Adjacency.cs" />
-    <Compile Include="Query\Graph\AllNodesSpatial.cs" />
+    <Compile Include="Query\Graph\EntityNeighbourhood.cs" />
     <Compile Include="Query\Graph\AStarShortestPath.cs" />
     <Compile Include="Query\Graph\ClosestIElement0D.cs" />
     <Compile Include="Query\Graph\DepthDictionary.cs" />

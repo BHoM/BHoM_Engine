@@ -39,7 +39,7 @@ namespace BH.Engine.Analytical
             List<Guid> unused = new List<Guid>();
             foreach(Guid n in graph.Entities.Keys.ToList())
             {
-                if (graph.IncomingNodes(n).Count == 0 && !graph.NotSinks().Contains(n))
+                if (graph.Incoming(n).Count == 0 && !graph.NotSinks().Contains(n))
                     unused.Add(n);
             }
             return unused;
