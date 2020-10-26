@@ -77,9 +77,10 @@ namespace BH.Engine.Spatial
             List<IElement1D> elements1D = element2D.IOutlineElements1D();
 
             foreach (IElement1D e1D in elements1D)
+            {
                 if (IsOnGrid(e1D, grid, maxDistance))
                     return true;
-
+            }
             return false;
         }
 
