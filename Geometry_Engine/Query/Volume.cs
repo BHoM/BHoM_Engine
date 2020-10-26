@@ -33,20 +33,6 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-
-        [Description("Gets the enclosed volume of a solid.")]
-        [Input("solid", "The solid to query the volume from.")]
-        [Output("volume", "", typeof(Volume))]
-        public static double IVolume(this ISolid solid)
-        {
-            return Volume(solid as dynamic);
-        }
-
-
-        /***************************************************/
         /**** Public Methods - Solids                   ****/
         /***************************************************/
 
@@ -109,7 +95,20 @@ namespace BH.Engine.Geometry
             return 2.0 * Math.Pow(Math.PI, 2) * Math.Pow(torus.RadiusMinor, 2) * torus.RadiusMajor;
         }
 
- 
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        [Description("Gets the enclosed volume of a solid.")]
+        [Input("solid", "The solid to query the volume from.")]
+        [Output("volume", "", typeof(Volume))]
+        public static double IVolume(this ISolid solid)
+        {
+            return Volume(solid as dynamic);
+        }
+
+
         /***************************************************/
         /**** Private Fallback Methods                  ****/
         /***************************************************/
