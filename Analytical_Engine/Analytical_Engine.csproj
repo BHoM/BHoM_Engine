@@ -88,6 +88,7 @@
     <Compile Include="Query\Graph\ClosestIElement0D.cs" />
     <Compile Include="Query\Graph\DepthDictionary.cs" />
     <Compile Include="Query\Graph\Destinations.cs" />
+    <Compile Include="Query\Graph\DiffEntities.cs" />
     <Compile Include="Query\Graph\DijkstraShortestPath.cs" />
     <Compile Include="Query\Graph\Entities.cs" />
     <Compile Include="Query\Graph\Entity.cs" />

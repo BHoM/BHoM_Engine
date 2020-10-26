@@ -10,7 +10,7 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
-        public static Dictionary<Guid, List<Guid>> Adjacency(this Graph graph)
+        public static Dictionary<Guid, List<Guid>> Adjacency(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             //should add input to control directionality
             Dictionary<Guid, List<Guid>> adjacency = new Dictionary<Guid, List<Guid>>();

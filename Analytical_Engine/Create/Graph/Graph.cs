@@ -28,14 +28,14 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of IBHoMObjects with Dependency fragments and a diff config to determine the unique graph entities")]
         public static Graph Graph(List<IBHoMObject> entities, DiffConfig diffConfig = null)
         {
-            return Graph(entities, null, diffConfig);
+            return Graph(entities, new List<IRelation>(), diffConfig);
         }
 
         /***************************************************/
         [Description("Create a graph from a collection of IRelations and a diff config to determine the unique graph entities")]
         public static Graph Graph(List<IRelation> relations, DiffConfig diffConfig = null)
         {
-            return Graph(null, relations, diffConfig);
+            return Graph(new List<IBHoMObject>(), relations, diffConfig);
         }
 
         /***************************************************/
@@ -52,24 +52,24 @@ namespace BH.Engine.Analytical
                 Reflection.Compute.RecordWarning("No IBHoMObjects found");
                 return graph;
             }
-                
-            Diff diff = Diffing.Compute.DiffGenericObjects(entities, entities, diffConfig, false);
 
-            SetMatchedObjects(diff);
+            m_MatchedObjects = Query.DiffEntities(entities, diffConfig);
+            //Diff diff = Diffing.Compute.DiffGenericObjects(entities, entities, diffConfig, false);
+
+            //SetMatchedObjects(diff);
 
             //add all provided relations to single list
             relations.AddRange(entities.ToRelation()); 
             //add to graph
             graph.Relations.AddRange(relations);
 
-            foreach (Tuple< object,object> tuple in diff.UnchangedObjects)
+            //add unique objects
+            foreach (KeyValuePair< Guid, IBHoMObject> kvp in m_MatchedObjects)
             {
-                if(tuple.Item2 is IBHoMObject)
-                {
-                    IBHoMObject bhomObject = (IBHoMObject)tuple.Item2;
-                    if (!graph.Entities.ContainsKey(bhomObject.BHoM_Guid))
-                        graph.Entities.Add(bhomObject.BHoM_Guid, bhomObject);
-                }
+ 
+                if (!graph.Entities.ContainsKey(kvp.Value.BHoM_Guid))
+                    graph.Entities.Add(kvp.Value.BHoM_Guid, kvp.Value);
+                
             }
             graph.UniqueEntities(m_MatchedObjects);
 
