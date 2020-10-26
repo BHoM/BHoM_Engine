@@ -13,11 +13,11 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Find all subgraphs within a graph")]
-        public static List<Graph> SubGraphs(this Graph graph)
+        [Description("Find all disconnected subgraphs within a graph")]
+        public static List<Graph> SubGraphs(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             List<Graph> subGraphs = new List<Graph>();
-            m_Adjacency = graph.Adjacency();
+            m_Adjacency = graph.Adjacency(relationDirection);
             m_MarkedEntity = new Dictionary<Guid, int>();
             m_MarkedRelation = new Dictionary<Guid, int>();
             m_SubNumber = 0;
@@ -41,6 +41,7 @@ namespace BH.Engine.Analytical
 
             return subGraphs;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
