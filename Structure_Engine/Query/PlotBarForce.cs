@@ -29,9 +29,11 @@ using System.Threading.Tasks;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Results;
-using BH.oM.Structure.Loads;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
 
 using BH.Engine.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -41,15 +43,28 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> PlotBarForce(List<Bar> bars, List<BarForce> forces, string adapterId, double scaleFactor = 1.0, object loadCase = null, bool fx = true, bool fy = true, bool fz = true, bool mx = true, bool my = true, bool mz = true)
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.PlotBarForce(System.Collections.Generic.List<BH.oM.Structure.Elements.Bar>, System.Collections.Generic.List<BH.oM.Structure.Results.BarForce>, System.String, System.Double, System.Object, System.Boolean, System.Boolean, System.Boolean, System.Boolean, System.Boolean, System.Boolean)")]
+        public static List<ICurve> PlotBarForce(List<Bar> bars, List<BarForce> forces, Type adapterIdType, double scaleFactor = 1.0, object loadCase = null, bool fx = true, bool fy = true, bool fz = true, bool mx = true, bool my = true, bool mz = true)
         {
+            if (adapterIdType == null)
+            {
+                Reflection.Compute.RecordError("The provided adapter id type is null.");
+                return new List<ICurve>();
+            }
+            if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
+            {
+                Reflection.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
+                return new List<ICurve>();
+            }
+
             forces = forces.SelectCase(loadCase);
 
             List<ICurve> plots = new List<ICurve>();
 
             foreach (Bar bar in bars)
             {
-                string barId = bar.CustomData[adapterId].ToString();
+                IAdapterId id = bar.FindFragment<IAdapterId>(adapterIdType);
+                string barId = id.Id.ToString();
                 List<BarForce> elementForces = forces.Where(x => x.ObjectId.ToString() == barId).ToList();
                 elementForces.Sort();
                 plots.AddRange(PlotBarForce(bar, elementForces, scaleFactor, fx,fy,fz,mx,my,mz));
