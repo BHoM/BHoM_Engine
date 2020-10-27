@@ -16,7 +16,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Find all subgraphs around each entity at depth 1 within a graph")]
+        [Description("Find all subgraphs around all entities at maximum depth 1 within a graph")]
         public static List<Graph> EntityNeighbourhood(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             List<Graph> subGraphs = new List<Graph>();
@@ -33,13 +33,24 @@ namespace BH.Engine.Analytical
         {
             List<Graph> subGraphs = new List<Graph>();
             m_Adjacency = graph.Adjacency(relationDirection);
-            m_AccessibleEntities = new List<Guid>(); ;
+            m_AccessibleEntities = new List<Guid>();
+            m_AccessibleRelations = new List<Guid>();
 
             graph.Traverse(entity.BHoM_Guid,maxDepth,0);
 
             Graph subgraph = new Graph();
-            m_AccessibleEntities.ForEach(ent => subgraph.Entities.Add(ent, graph.Entities[ent]));
-            m_AccessiblRelation.ForEach(rel => subgraph.Relations.Add(graph.Relations.Find(r => r.BHoM_Guid.Equals(rel))));
+            foreach(Guid guid in m_AccessibleEntities)
+            {
+                if (!subgraph.Entities.ContainsKey(guid))
+                    subgraph.Entities.Add(guid, graph.Entities[guid]);
+            }
+
+            foreach (Guid guid in m_AccessibleRelations)
+            {
+                if (!subgraph.Relations.Any(r => r.BHoM_Guid.Equals(guid)))
+                    subgraph.Relations.Add(graph.Relations.Find(r => r.BHoM_Guid.Equals(guid)));
+            }
+            
             return subgraph;
         }
         /***************************************************/
@@ -47,13 +58,13 @@ namespace BH.Engine.Analytical
         /***************************************************/
         private static void Traverse(this Graph graph, Guid node, int maxDepth, int currentDepth)
         {
-            if (maxDepth >= currentDepth)
+            if (currentDepth >= maxDepth)
                 return;
             foreach (Guid c in m_Adjacency[node])
             {
                 m_AccessibleEntities.Add(c);
-                m_AccessiblRelation.Add(graph.Relations.Find(r => r.Source.Equals(node) && r.Target.Equals(c)).BHoM_Guid);
-                graph.Traverse(c,maxDepth, currentDepth++);
+                m_AccessibleRelations.Add(graph.Relations.Find(r => r.Source.Equals(node) && r.Target.Equals(c)).BHoM_Guid);
+                graph.Traverse(c,maxDepth, currentDepth + 1);
             }
         }
         /***************************************************/
@@ -73,7 +84,7 @@ namespace BH.Engine.Analytical
         /**** Private Fields                            ****/
         /***************************************************/
         private static List<Guid> m_AccessibleEntities = new List<Guid>();
-        private static List<Guid> m_AccessiblRelation = new List<Guid>();
+        private static List<Guid> m_AccessibleRelations = new List<Guid>();
 
     }
 }

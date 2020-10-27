@@ -206,11 +206,30 @@ namespace BH.Engine.Analytical
             }
             foreach(SpatialRelation spatialRelation in spatialGraph.Relations)
             {
-                foreach(ICurve sub in spatialRelation.Curve.ISubParts())
+                ICurve curve = spatialRelation.Curve;
+                if (curve is NurbsCurve)
                 {
-                    geometries.Add(sub);
-                    geometries.Add(ArrowHead(sub.IPointAtLength(sub.ILength() * 0.9), sub.IEndPoint()));
+                    NurbsCurve nurbsCurve = curve as NurbsCurve;
+                    curve = Engine.Geometry.Create.Polyline(nurbsCurve.ControlPoints);
                 }
+                List<ICurve> nonNurbs = new List<ICurve>();
+                foreach(ICurve sub in curve.ISubParts())
+                {
+                    if(sub is NurbsCurve)
+                    {
+                        NurbsCurve nurbsCurve = sub as NurbsCurve;
+                        nonNurbs.Add(Engine.Geometry.Create.Polyline(nurbsCurve.ControlPoints));
+                    }
+                    else
+                    {
+                        nonNurbs.Add(sub);
+                        
+                    }
+                    
+                }
+                foreach (ICurve c in nonNurbs)
+                    geometries.Add(ArrowHead(c.IPointAtLength(c.ILength() * 0.9), c.IEndPoint()));
+                
             }
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
         }
