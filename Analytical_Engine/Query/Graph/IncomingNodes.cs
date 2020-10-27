@@ -35,16 +35,16 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
-        public static List<Guid> Incoming(this Graph graph, Guid vertex)
+        public static List<Guid> Incoming(this Graph graph, Guid entity)
         {
             
-            return graph.Relations.Where(e => e.Target.Equals(vertex)).Select(e => e.Source).ToList();
+            return graph.Relations.Where(e => e.Target.Equals(entity)).Select(e => e.Source).ToList();
         }
 
-        public static List<IBHoMObject> Incoming(this Graph graph, IBHoMObject vertex)
+        public static List<IBHoMObject> Incoming(this Graph graph, IBHoMObject entity)
         {
             List<IBHoMObject> incoming = new List<IBHoMObject>();
-            foreach (Guid g in  graph.Incoming(vertex.BHoM_Guid))
+            foreach (Guid g in  graph.Incoming(entity.BHoM_Guid))
                 incoming.Add(graph.Entities[g]);
             return incoming;
         }
