@@ -35,7 +35,7 @@ namespace BH.Engine.Analytical
     {
         public static List<Guid> NotSinks(this Graph graph)
         {
-            //node is not a sink if it appears in other nodes incoming nodes
+            //entity is not a sink if it appears as a source in one or more relations
             List<Guid> notSinks = graph.Relations.Select(x => x.Source).Distinct().ToList();
             return notSinks;
         }

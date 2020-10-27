@@ -44,22 +44,23 @@ namespace BH.Engine.Analytical
         {
             Graph graph = new Graph();
 
+            List<IBHoMObject> clonedEntities = entities.DeepClone();
             //add objects from sub graphs if any
-            entities.AddRange(relations.SelectMany(r => r.Subgraph.Entities.Values).ToList());
+            clonedEntities.AddRange(relations.SelectMany(r => r.Subgraph.Entities.Values.DeepClone()).ToList());
 
-            if (entities.Count == 0)
+            if (clonedEntities.Count == 0)
             {
                 Reflection.Compute.RecordWarning("No IBHoMObjects found");
                 return graph;
             }
 
-            m_MatchedObjects = Query.DiffEntities(entities, diffConfig);
+            m_MatchedObjects = Query.DiffEntities(clonedEntities, diffConfig);
             //Diff diff = Diffing.Compute.DiffGenericObjects(entities, entities, diffConfig, false);
 
             //SetMatchedObjects(diff);
 
             //add all provided relations to single list
-            relations.AddRange(entities.ToRelation()); 
+            relations.AddRange(clonedEntities.ToRelation()); 
             //add to graph
             graph.Relations.AddRange(relations);
 
@@ -241,31 +242,7 @@ namespace BH.Engine.Analytical
             }
             return relations;
         }
-        //private static void AutoLayout(this Graph graph)
-        //{
-        //    Dictionary<string, int> depths = graph.DepthDictionary();
-        //    depths.Remove("root");
-        //    List<int> distinctDepths = depths.Values.Distinct().ToList();
-        //    distinctDepths.Sort();
-        //    distinctDepths.Reverse();
-        //    double x = 0;
-        //    foreach (int d in distinctDepths)
-        //    {
-        //        //all the entities at this level
-        //        IEnumerable<string> level = depths.Where(kvp => kvp.Value == d).Select(kvp => kvp.Key);
-        //        double y = 0;
-        //        foreach(string name in level)
-        //        {
-        //            INode n = graph.Entities.Find(p => p.Name == name);
-        //            if (n.Location == new oM.Geometry.Point())
-        //            {
-        //                n.Location = Geometry.Create.Point(x, y, 0);
-        //                y--;
-        //            }
-        //        }
-        //        x++;
-        //    }
-        //}
+       
         /***************************************************/
 
         private static void SetMatchedObjects(Diff diff)

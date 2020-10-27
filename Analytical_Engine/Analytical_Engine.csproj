@@ -67,9 +67,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convert\ToDataVizObjects.cs" />
+    <Compile Include="Convert\ToDotFormat.cs" />
     <Compile Include="Convert\ToRelation.cs" />
     <Compile Include="Create\Graph\Graph.cs" />
     <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
+    <Compile Include="Modify\ProcessView.cs" />
     <Compile Include="Modify\RemoveIsolatedEntities.cs" />
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
@@ -99,6 +102,7 @@
     <Compile Include="Query\Graph\RelationLength.cs" />
     <Compile Include="Query\Graph\NotSinks.cs" />
     <Compile Include="Query\Graph\Sinks.cs" />
+    <Compile Include="Query\Graph\Sources.cs" />
     <Compile Include="Query\Graph\SpatialGraph.cs" />
     <Compile Include="Query\Graph\SubGraphs.cs" />
     <Compile Include="Query\Graph\UnusedNodes.cs" />
@@ -129,6 +133,10 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Serialiser_Engine\Serialiser_Engine.csproj">
+      <Project>{b013f0da-7d21-4339-85fc-013edd518c6d}</Project>
+      <Name>Serialiser_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
       <Project>{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}</Project>

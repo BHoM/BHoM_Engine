@@ -25,6 +25,7 @@ using BH.oM.Analytical.Elements;
 using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace BH.Engine.Analytical
         public static IBHoMObject Entity(this Graph graph, string entityName)
         {
             return graph.Entities.Values.ToList().Find(x => x.Name == entityName);
+        }
+
+        public static IBHoMObject Entity(this Graph graph, Guid entityGuid)
+        {
+            return graph.Entities[entityGuid]; 
         }
     }
 }
