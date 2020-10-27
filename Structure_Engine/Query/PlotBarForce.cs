@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
                 IAdapterId id = bar.FindFragment<IAdapterId>(adapterIdType);
                 if (id == null)
                 {
-                    Engine.Reflection.Compute.RecordWarning("Could not find the adapter id for at least one bar");
+                    Engine.Reflection.Compute.RecordWarning("Could not find the adapter id for at least one Bar.");
                     continue;
                 }
 
