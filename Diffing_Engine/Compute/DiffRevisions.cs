@@ -180,15 +180,21 @@ namespace BH.Engine.Diffing
             return true;
         }
 
-        private static bool AllHavePersistentIdFragment(this IEnumerable<IBHoMObject> bHoMObjects)
+        private static List<IBHoMObject> WithNonNullPersistentAdapterId(this IEnumerable<object> objects, out List<object> reminder)
         {
-            // Check if objects have persistentId fragment, and it has not null Id.
-            if (bHoMObjects == null
-                || bHoMObjects.Count() == 0
-                || bHoMObjects.Select(o => o.FindFragment<IPersistentId>()).Where(f => f.PersistentId != null).Count() < bHoMObjects.Count())
-                return false;
+            List<IBHoMObject> output = new List<IBHoMObject>();
+            reminder = new List<object>();
 
-            return true;
+            foreach (var obj in objects)
+            {
+                IBHoMObject ibhomobject  = obj as IBHoMObject;
+                if (ibhomobject != null && ibhomobject.FindFragment<IPersistentAdapterId>().PersistentId != null)
+                    output.Add(ibhomobject);
+                else
+                    reminder.Add(obj);
+            }
+
+            return output;
         }
     }
 }
