@@ -39,7 +39,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Diffing_oM">
-      <HintPath>ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
     </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
