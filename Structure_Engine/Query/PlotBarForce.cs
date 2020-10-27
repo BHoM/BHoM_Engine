@@ -64,6 +64,12 @@ namespace BH.Engine.Structure
             foreach (Bar bar in bars)
             {
                 IAdapterId id = bar.FindFragment<IAdapterId>(adapterIdType);
+                if (id == null)
+                {
+                    Engine.Reflection.Compute.RecordWarning("Could not find the adapter id for at least one bar");
+                    continue;
+                }
+
                 string barId = id.Id.ToString();
                 List<BarForce> elementForces = forces.Where(x => x.ObjectId.ToString() == barId).ToList();
                 elementForces.Sort();
