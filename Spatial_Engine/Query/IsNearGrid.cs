@@ -38,11 +38,11 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Checks if the geometrical representation of an IElement0D, projected onto the XY Plane, is within a set distance from a grid line.")]
-        [Input("element0D", "The IElement0D that will be checked whether it is on Grid.")]
+        [Input("element0D", "The IElement0D that will be checked for proximity to the grid.")]
         [Input("grid", "The Grid to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Grid for this method to return true.", typeof(Length))]
-        [Output("isOnGrid", "A boolean which is true if the geometrical representation of the IElement0D is within a set distance from the grid line.")]
-        public static bool IsOnGrid(this IElement0D element0D, Grid grid, double maxDistance)
+        [Output("isNearGrid", "A boolean which is true if the geometrical representation of the IElement0D is within a set distance from the grid line.")]
+        public static bool IsNearGrid(this IElement0D element0D, Grid grid, double maxDistance)
         {
             Point position = element0D.IGeometry().Project(Plane.XY);
             ICurve gridCurve = grid.Curve.IProject(Plane.XY);
@@ -53,11 +53,11 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Checks if the geometrical representation of an IElement1D, projected onto the XY Plane, is within a set distance from a grid line.")]
-        [Input("element1D", "The IElement1D that will be checked whether it is on Grid.")]
+        [Input("element1D", "The IElement1D that will be checked for proximity to the grid.")]
         [Input("grid", "The Grid to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Grid for this method to return true.", typeof(Length))]
-        [Output("isOnGrid", "A boolean which is true if the geometrical representation of an IElement1D is within a set distance from the grid line.")]
-        public static bool IsOnGrid(this IElement1D element1D, Grid grid, double maxDistance)
+        [Output("isNearGrid", "A boolean which is true if the geometrical representation of an IElement1D is within a set distance from the grid line.")]
+        public static bool IsNearGrid(this IElement1D element1D, Grid grid, double maxDistance)
         {
             ICurve curve = element1D.IGeometry().IProject(Plane.XY);
             ICurve gridCurve = grid.Curve.IProject(Plane.XY);
@@ -68,17 +68,17 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Checks if the geometrical representation of an IElement2D, projected onto the XY Plane, is within a set distance from a grid line.")]
-        [Input("element2D", "The IElement2D that will be checked whether it is on Grid.")]
+        [Input("element2D", "The IElement2D that will be checked for proximity to the grid.")]
         [Input("grid", "The Grid to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Grid for this method to return true.", typeof(Length))]
-        [Output("isOnGrid", "A boolean which is true if the geometrical representation of an IElement2D is within a set distance from the grid line.")]
-        public static bool IsOnGrid(this IElement2D element2D, Grid grid, double maxDistance)
+        [Output("isNearGrid", "A boolean which is true if the geometrical representation of an IElement2D is within a set distance from the grid line.")]
+        public static bool IsNearGrid(this IElement2D element2D, Grid grid, double maxDistance)
         {
             List<IElement1D> elements1D = element2D.IOutlineElements1D();
 
             foreach (IElement1D e1D in elements1D)
             {
-                if (IsOnGrid(e1D, grid, maxDistance))
+                if (IsNearGrid(e1D, grid, maxDistance))
                     return true;
             }
             return false;
@@ -89,13 +89,13 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Checks if the geometrical representation of an IElement, projected onto the XY Plane, is within a set distance from a grid line.")]
-        [Input("element", "The IElement that will be checked whether it is on Grid.")]
+        [Input("element", "The IElement that will be checked for proximity to the grid.")]
         [Input("grid", "The Grid to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Grid for this method to return true.", typeof(Length))]
-        [Output("isOnGrid", "A boolean which is true if the geometrical representation of the IElement is within a set distance from the grid line.")]
-        public static bool IIsOnGrid(this IElement element, Grid grid, double maxDistance)
+        [Output("isNearGrid", "A boolean which is true if the geometrical representation of the IElement is within a set distance from the grid line.")]
+        public static bool IIsNearGrid(this IElement element, Grid grid, double maxDistance)
         {
-            return IsOnGrid(element as dynamic, grid, maxDistance);
+            return IsNearGrid(element as dynamic, grid, maxDistance);
         }
 
         /******************************************/
