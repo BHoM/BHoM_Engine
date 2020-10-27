@@ -50,10 +50,13 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "(Optional) Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         public static Diff DiffWithFragmentId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, Type fragmentType = null, string fragmentIdProperty = null, DiffConfig diffConfig = null)
         {
-            if (fragmentType == null)
+            if (fragmentType == null || string.IsNullOrWhiteSpace(fragmentIdProperty))
             {
-                fragmentType = typeof(IPersistentId);
-                fragmentIdProperty = nameof(IPersistentId.PersistentId);
+                fragmentType = typeof(IPersistentAdapterId);
+                fragmentIdProperty = nameof(IPersistentAdapterId.PersistentId);
+
+                BH.Engine.Reflection.Compute.RecordNote($"No `{nameof(fragmentType)}` or `{nameof(fragmentIdProperty)}` specified." +
+                    $"\nDefaulted to `{typeof(IPersistentAdapterId).FullName}.{nameof(IPersistentAdapterId.PersistentId)}`.");
             }
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.

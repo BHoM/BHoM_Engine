@@ -72,6 +72,7 @@
     <Compile Include="Compute\DiffRevisions.cs" />
     <Compile Include="Convert\TryParseObjectToGuid.cs" />
     <Compile Include="Create\StreamPointer.cs" />
+    <Compile Include="Modify\AddToDiff.cs" />
     <Compile Include="Objects\EqualityComparers\DiffingHashComparer.cs" />
     <Compile Include="Compute\DiffGenericObjects.cs" />
     <Compile Include="Compute\Hash\DiffingHash.cs" />

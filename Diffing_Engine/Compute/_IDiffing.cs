@@ -92,15 +92,7 @@ namespace BH.Engine.Diffing
                 return DiffRevisionObjects(bHoMObjects_past, bHoMObjects_following, diffConfigCopy);
             }
 
-            // Check if the BHoMObjects all have a `persistentId` assigned.
-            // If so, we may attempt the DiffWithFragmentId diffing.
-            if (bHoMObjects_past.AllHavePersistentIdFragment() && bHoMObjects_following.AllHavePersistentIdFragment())
-            {
-                BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithFragmentId)}'.");
-                return DiffWithFragmentId(bHoMObjects_past, bHoMObjects_following, typeof(IPersistentId), nameof(IPersistentId.PersistentId), diffConfigCopy);
-            }
-
-            // If the collections have the same length, and `AllowOneByOneDiffing` is enabled,
+            // If `AllowOneByOneDiffing` is enabled and the collections have the same length,
             // compare objects from the two collections one by one.
             if (diffConfigCopy.AllowOneByOneDiffing && pastObjs.Count() == followingObjs.Count())
             {
@@ -110,15 +102,33 @@ namespace BH.Engine.Diffing
                 return DiffOneByOne(pastObjs, followingObjs, diffConfigCopy);
             }
 
+            // Check if the BHoMObjects have a `persistentId` assigned.
+            // If so, we may attempt the DiffWithFragmentId diffing.
+            List<object> reminder_past, reminder_following;
+            List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithNonNullPersistentAdapterId(out reminder_past);
+            List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithNonNullPersistentAdapterId(out reminder_following);
+            Diff fragmentDiff = null;
+
+            if (bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithFragmentId)}'.");
+                fragmentDiff = DiffWithFragmentId(bHoMObjects_past_persistId, bHoMObjects_following_persistId, typeof(IPersistentAdapterId), nameof(IPersistentAdapterId.PersistentId), diffConfigCopy);
+            }
+
             // As last resort, compute the hash of each object and compare the objects with the same hash.
-            // Options on how the hash should be computed can be set in the diffconfig.
+            // Remember we can use DiffConfig.PropertiesToConsider in order to tell Diffing to tell the difference only based on certain properties.
             BH.Engine.Reflection.Compute.RecordNote($"Calling the most generic Diffing method, '{nameof(DiffGenericObjects)}'." +
-                $"\nThis will only identify new/deleted objects; it will not track which object was modified." +
                 $"\nReason: the inputs do not satisfy any of the following conditions (at least one is needed to trigger another more detailed diffing):" +
                 $"\n\t* Not all BHoMObjects have a HashFragment assigned (they didn't pass through a Revision);" +
                 $"\n\t* No {nameof(customDataIdKey)} was input." +
                 $"\n\t* The input collections have different lengths.");
-            return DiffGenericObjects(pastObjs as dynamic, followingObjs as dynamic, diffConfigCopy);
+
+            Diff diffGeneric = DiffGenericObjects(pastObjs as dynamic, followingObjs as dynamic, diffConfigCopy);
+
+            if (fragmentDiff == null)
+                return diffGeneric;
+
+            return fragmentDiff.AddToDiff(diffGeneric);
         }
     }
 }
