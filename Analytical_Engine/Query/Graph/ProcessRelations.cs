@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -43,9 +44,15 @@ namespace BH.Engine.Analytical
 
         public static List<ProcessResult> ProcessRelations(this Graph graph)
         {
-            List<ProcessRelation> relations = graph.Relations.FindAll(rel => rel is ProcessRelation).Cast<ProcessRelation>().ToList();
             List<ProcessResult> results = new List<ProcessResult>();
-            relations.ForEach(rel => results.AddRange(rel.Process(graph.Entities[rel.Source], graph.Entities[rel.Target])));
+
+            foreach(IRelation relation in graph.Relations)
+            {
+                IBHoMObject source = graph.Entities[relation.Source];
+                IBHoMObject target = graph.Entities[relation.Target];
+                relation.Processes.ForEach(p => results.Add(p.IProcess(source, target)));
+            }
+            
             return results;
         }
     }

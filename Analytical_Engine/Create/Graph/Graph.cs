@@ -78,7 +78,7 @@ namespace BH.Engine.Analytical
         [Input("entities", "Optional collection of IBHoMOBjects to use as Graph entities. Entities can include DependencyFragments to determine the Graph Relations.")]
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
         [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
-        [Input(" decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
+        [Input("decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
         public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, List<string> propertiesToConsider = null, int decimalPlaces = 12)
         {
@@ -112,7 +112,7 @@ namespace BH.Engine.Analytical
                     graph.Entities.Add(kvp.Value.BHoM_Guid, kvp.Value);
                 
             }
-            graph.UniqueEntities(m_MatchedObjects);
+            graph = graph.UniqueEntities(m_MatchedObjects);
 
             Modify.UniqueEntityNames(graph.Entities.Values.ToList());
 

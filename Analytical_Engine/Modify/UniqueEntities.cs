@@ -79,7 +79,7 @@ namespace BH.Engine.Analytical
         {
             relation.Source = replaceMap[relation.Source].BHoM_Guid;
             relation.Target = replaceMap[relation.Target].BHoM_Guid;
-            relation.Subgraph.UniqueEntities(replaceMap);
+            //relation.Subgraph.UniqueEntities(replaceMap);
             return relation;
         }
     }

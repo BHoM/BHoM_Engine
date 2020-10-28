@@ -207,6 +207,7 @@ namespace BH.Engine.Analytical
             foreach(SpatialRelation spatialRelation in spatialGraph.Relations)
             {
                 ICurve curve = spatialRelation.Curve;
+                geometries.Add(curve);
                 if (curve is NurbsCurve)
                 {
                     NurbsCurve nurbsCurve = curve as NurbsCurve;
