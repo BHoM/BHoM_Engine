@@ -39,12 +39,27 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        /***************************************************/
+
+        [Description("Returns the Dijkstra shortest path for a graph.")]   
+        [Input("graph", "The Graph to query for the shortest path.")]
+        [Input("start", "The IBHoMObject entity used for the start of the path.")]
+        [Input("end", "The IBHoMObject entity used for the end of the path.")]
+        [Output("shortest path result", "The ShortestPathResult.")]
+
         public static ShortestPathResult DijkstraShortestPath(Graph graph, IBHoMObject start, IBHoMObject end)
         {
             ShortestPathResult result = DijkstraShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
             return result;
         }
+
+        /***************************************************/
+
+        [Description("Returns the Dijkstra shortest path for a graph.")]
+        [Input("graph", "The Graph to query for the shortest path.")]
+        [Input("start", "The Guid entity used for the start of the path.")]
+        [Input("end", "The Guid entity used for the end of the path.")]
+        [Output("shortest path result", "The ShortestPathResult.")]
+
         public static ShortestPathResult DijkstraShortestPath(Graph graph, Guid start, Guid end)
         {
             SetFragments(graph);
@@ -66,6 +81,7 @@ namespace BH.Engine.Analytical
             ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "DijkstraShortestPath", -1, objPath, length, cost, nodesVisited);
             return result;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
@@ -119,6 +135,7 @@ namespace BH.Engine.Analytical
                     return;
             } while (prioQueue.Any());
         }
+
         /***************************************************/
         private static void DijkstraResult(List<Guid> list, Guid node, ref double length, ref double cost)
         {
@@ -134,6 +151,7 @@ namespace BH.Engine.Analytical
 
             DijkstraResult(list, n,ref length, ref cost);
         }
+
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/

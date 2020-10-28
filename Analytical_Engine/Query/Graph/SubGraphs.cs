@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Analytical.Elements;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,7 +36,11 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Find all disconnected subgraphs within a graph")]
+
+        [Description("Find all disconnected subgraphs within a graph.")]
+        [Input("graph", "The graph to search.")]
+        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
         public static List<Graph> SubGraphs(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             List<Graph> subGraphs = new List<Graph>();
@@ -101,9 +106,11 @@ namespace BH.Engine.Analytical
 
             return subgraph;
         }
+
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
+
         private static Dictionary<Guid, List<Guid>> m_Adjacency;
         private static Dictionary<Guid, int> m_MarkedEntity = new Dictionary<Guid, int>();
         private static Dictionary<Guid, int> m_MarkedRelation = new Dictionary<Guid, int>();

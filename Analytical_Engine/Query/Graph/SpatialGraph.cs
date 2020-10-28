@@ -24,8 +24,10 @@ using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +36,14 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query 
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns a Graph that contains only spatial entities and relations. Spatial entities are those implementing IElement0D and spatial relations are those implementing SpatialRelation.")]
+        [Input("graph", "The graph to search.")]
+        [Output("graph", "The spatial graph.")]
+
         public static Graph SpatialGraph(this Graph graph)
         {
             Graph spatialGraph = new Graph();
@@ -42,6 +52,10 @@ namespace BH.Engine.Analytical
             spatialGraph.CreateMissingCurves();
             return spatialGraph;
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
         private static void CreateMissingCurves(this Graph graph)
         {

@@ -28,11 +28,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Filter relations from a Graph.")]
+        [Input("graph", "The Graph to filter the relations from.")]
+        [Input("typeFilter", "The Type of the relation to filter.")]
+        [Output("filtered relations", "Collection of IRelations filtered from the Graph.")]
+
         public static List<IRelation> FilterRelations(this Graph graph, Type typeFilter)
         {
             return graph.Relations.Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList(); 

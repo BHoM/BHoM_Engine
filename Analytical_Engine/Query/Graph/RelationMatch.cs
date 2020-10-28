@@ -34,6 +34,16 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the collection of IRelations that have Source and Target Guids matching those provided.")]
+        [Input("graph", "The graph that owns the IRelation.")]
+        [Input("source", "The Guid of the Source to search for.")]
+        [Input("target", "The Guid of the Target to search for.")]
+        [Output("relations", "The collection of matching IRelations.")]
+
         public static List<IRelation> RelationMatch(this Graph graph, Guid source, Guid target)
         {
             return graph.Relations.FindAll(x => x.Source.Equals(source) && x.Target.Equals(target));

@@ -24,8 +24,10 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
 using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +36,15 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the length of the ICurve on SpatialRelations or distance between Source and Target entity if no ICurve has been defined.")]
+        [Input("graph", "The graph that owns the SpatialRelation.")]
+        [Input("spatialRelation", "The SpatialRelation to query.")]
+        [Output("length", "The length of the SpatialRelation.")]
+
         public static double RelationLength(this Graph graph, SpatialRelation spatialRelation)
         {
             double length = 0;

@@ -20,32 +20,51 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
+using BH.Engine.Geometry;
+using BH.oM.Analytical.Elements;
 using BH.oM.Base;
+using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Analytical
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
-        /****           Public Methods                  ****/
+        /**** Public Methods                            ****/
         /***************************************************/
-        public static void UniqueEntityNames(this List<IBHoMObject> entities)
+
+        [Description("Returns the collection of entity Guids that can access the given entity.")]
+        [Input("graph", "The graph to search.")]
+        [Input("entity", "The Guid of the entity for which the accessing entities are required.")]
+        [Output("entities", "The collection of gGuids of the accessing entities.")]
+
+        public static List<Guid> Incoming(this Graph graph, Guid entity)
         {
             
-            List<string> distinctNames = entities.Select(x => x.Name).Distinct().ToList();
-
-            foreach (string name in distinctNames)
-            {
-                List<IBHoMObject> matchnodes = entities.FindAll(x => x.Name == name);
-                if (matchnodes.Count > 1)
-                {
-                    for (int i = 0; i < matchnodes.Count; i++)
-                        matchnodes[i].Name += "_" + i;
-                }
-            }    
+            return graph.Relations.Where(e => e.Target.Equals(entity)).Select(e => e.Source).ToList();
         }
+
         /***************************************************/
+
+        [Description("Returns the collection of IBoMObject entities that can access the given entity.")]
+        [Input("graph", "The graph to search.")]
+        [Input("entity", "The IBHoMObject entity for which the accessing entities are required.")]
+        [Output("entities", "The collection of IBHoMObjects of the accessing entities.")]
+
+        public static List<IBHoMObject> Incoming(this Graph graph, IBHoMObject entity)
+        {
+            List<IBHoMObject> incoming = new List<IBHoMObject>();
+            foreach (Guid g in  graph.Incoming(entity.BHoM_Guid))
+                incoming.Add(graph.Entities[g]);
+            return incoming;
+        }
+        
     }
+
 }

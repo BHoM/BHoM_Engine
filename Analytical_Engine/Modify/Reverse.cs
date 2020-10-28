@@ -24,8 +24,10 @@ using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,16 +39,32 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Public Methods                  ****/
         /***************************************************/
+
+        [Description("Modifies an IRelation by reversing it.")]
+        [Input("relation", "The IRelation to reverse.")]
+        [Output("relation", "The reversed IRelation.")]
+
         public static IRelation IReverse(this IRelation relation)
         {
             return Reverse(relation as dynamic);
         }
+
         /***************************************************/
+
+        [Description("Modifies a Relation by reversing it.")]
+        [Input("relation", "The Relation to reverse.")]
+        [Output("relation", "The reversed Relation.")]
+
         public static IRelation Reverse(this Relation relation)
         {
             return relation.FlipSourceTarget();
         }
         /***************************************************/
+
+        [Description("Modifies a SpatialRelation by reversing it.")]
+        [Input("relation", "The SpatialRelation to reverse.")]
+        [Output("relation", "The reversed SpatialRelation.")]
+
         public static IRelation Reverse(this SpatialRelation relation)
         {
             IRelation flip = relation.FlipSourceTarget();
@@ -55,7 +73,13 @@ namespace BH.Engine.Analytical
             spatialFlip.Curve = curve.IFlip();
             return spatialFlip;
         }
+
         /***************************************************/
+
+        [Description("Modifies a Graph by reversing all Relations within it.")]
+        [Input("graph", "The Graph to reverse.")]
+        [Output("graph", "The reversed Graph.")]
+
         public static Graph Reverse(this Graph graph)
         {
             List<IRelation> reversed = new List<IRelation>();
@@ -74,6 +98,7 @@ namespace BH.Engine.Analytical
 
             return relation;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/

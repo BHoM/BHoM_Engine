@@ -20,35 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.Engine.Geometry;
-using BH.oM.Analytical.Elements;
 using BH.oM.Base;
-using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Analytical
 {
-    public static partial class Query
+    public static partial class Modify
     {
-        public static List<Guid> Incoming(this Graph graph, Guid entity)
+        /***************************************************/
+        /****           Public Methods                  ****/
+        /***************************************************/
+
+        [Description("Enforce unique entity names on a collection of entities.")]
+        [Input("entities", "A collection of IBHoMObject entities to enforce unique names.")]
+
+        public static void UniqueEntityNames(this List<IBHoMObject> entities)
         {
             
-            return graph.Relations.Where(e => e.Target.Equals(entity)).Select(e => e.Source).ToList();
-        }
+            List<string> distinctNames = entities.Select(x => x.Name).Distinct().ToList();
 
-        public static List<IBHoMObject> Incoming(this Graph graph, IBHoMObject entity)
-        {
-            List<IBHoMObject> incoming = new List<IBHoMObject>();
-            foreach (Guid g in  graph.Incoming(entity.BHoM_Guid))
-                incoming.Add(graph.Entities[g]);
-            return incoming;
+            foreach (string name in distinctNames)
+            {
+                List<IBHoMObject> matchnodes = entities.FindAll(x => x.Name == name);
+                if (matchnodes.Count > 1)
+                {
+                    for (int i = 0; i < matchnodes.Count; i++)
+                        matchnodes[i].Name += "_" + i;
+                }
+            }    
         }
-        
+        /***************************************************/
     }
-
 }

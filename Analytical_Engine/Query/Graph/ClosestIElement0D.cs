@@ -25,6 +25,7 @@ using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -36,13 +37,17 @@ namespace BH.Engine.GraphFlow
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static IElement0D ClosestIElement0D<T>(this List<T> nodes, Point point, double tolerance = 1.0)
+        [Description("Returns the entity closest to a Point from a collection of entities.")]
+        [Input("entities", "The collection of entities to search.")]
+        [Input("point", "The Point to search from.")]
+        [Output("entity", "The IElement0D closest to the Point.")]
+        public static IElement0D ClosestIElement0D<T>(this List<T> entities, Point point)
             where T : IElement0D
         {
-            if (nodes.Count == 0)
+            if (entities.Count == 0)
                 return null;
 
-            IElement0D closest = nodes.Select(p => new { Node = p, Distance2 = p.IGeometry().Distance(point) })
+            IElement0D closest = entities.Select(p => new { Node = p, Distance2 = p.IGeometry().Distance(point) })
                             .Aggregate((p1, p2) => p1.Distance2 < p2.Distance2 ? p1 : p2)
                             .Node;
 

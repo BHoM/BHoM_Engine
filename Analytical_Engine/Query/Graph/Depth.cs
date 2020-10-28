@@ -33,14 +33,23 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
-        public static Dictionary<Guid, int> DepthDictionary(Dictionary<Guid, List<Guid>> adjacency, Guid startEntity)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the Dictionary of entity depths in a graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>")]
+        [Input("adjacency", "The adjacency dictionary of the graph to extract the depth dictionary from.")]
+        [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
+        [Output("depths", "A Dictionary of the depths of the entities in the graph.")]
+
+        public static Dictionary<Guid, int> Depth(Dictionary<Guid, List<Guid>> adjacency, Guid startEntity)
         {
             //https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
             // dictionary to store level of each node  
             Dictionary<Guid, int> level = new Dictionary<Guid, int>();
             if (!adjacency.ContainsKey(startEntity))
             {
-                Reflection.Compute.RecordError("startEntity provided cannot be found in the adjacency dictionary. Ensure the node exists in the original graph");
+                Reflection.Compute.RecordError("startEntity provided cannot be found in the adjacency dictionary. Ensure the entity exists in the original graph");
                 return level;
             }
             // dictionary to store when node has been visited
@@ -76,14 +85,18 @@ namespace BH.Engine.Analytical
             }
             return level;
         }
+
         /***************************************************/
-        [Description("Gets the depth dictionary of a Graph<INode> using breadth first search, each key value pair in the resulting dictionary is in the form <Graph<INode> node, depth>")]
-        [Input("graph", "The Graph<INode> to extract the depth dictionary from")]
-        [Input("starGuid", "The Graph<INode> node from which the depth dictionary is created")]
-        public static Dictionary<Guid, int> DepthDictionary(this Graph graph, Guid startEntity)
+
+        [Description("Returns the Dictionary of entity depths in a graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>")]
+        [Input("graph", "The graph to extract the depth dictionary from.")]
+        [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
+        [Output("depths", "A Dictionary of the depths of the entities in the graph.")]
+
+        public static Dictionary<Guid, int> Depth(this Graph graph, Guid startEntity)
         {
             Dictionary<Guid, List<Guid>> adjacency = graph.Adjacency();
-            return DepthDictionary(adjacency, startEntity);
+            return Depth(adjacency, startEntity);
         }
     }
 }

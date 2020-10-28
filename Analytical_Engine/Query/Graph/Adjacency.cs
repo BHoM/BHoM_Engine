@@ -22,8 +22,10 @@
 
 using BH.Engine.Base;
 using BH.oM.Analytical.Elements;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +34,12 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+        [Description("Returns the adjacency dictionary for a graph.")]
+        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Output("adjacency", "The Dictionary where the keys are entities and the values are the collection of adjacent entities.")]
         public static Dictionary<Guid, List<Guid>> Adjacency(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             //should add input to control directionality
