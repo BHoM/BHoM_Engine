@@ -38,10 +38,10 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the collection of IRelations that have Source and Target Guids matching those provided.")]
-        [Input("graph", "The graph that owns the IRelation.")]
-        [Input("source", "The Guid of the Source to search for.")]
-        [Input("target", "The Guid of the Target to search for.")]
+        [Description("Returns the collection of IRelations that have source and target Guids matching those provided.")]
+        [Input("graph", "The Graph that owns the IRelation.")]
+        [Input("source", "The Guid of the source to search for.")]
+        [Input("target", "The Guid of the target to search for.")]
         [Output("relations", "The collection of matching IRelations.")]
 
         public static List<IRelation> RelationMatch(this Graph graph, Guid source, Guid target)

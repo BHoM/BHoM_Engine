@@ -42,7 +42,7 @@ namespace BH.Engine.Analytical
         [Description("Returns the collection of entity Guids that can access the given entity.")]
         [Input("graph", "The graph to search.")]
         [Input("entity", "The Guid of the entity for which the accessing entities are required.")]
-        [Output("entities", "The collection of gGuids of the accessing entities.")]
+        [Output("entities", "The collection of Guids of the accessing entities.")]
 
         public static List<Guid> Incoming(this Graph graph, Guid entity)
         {

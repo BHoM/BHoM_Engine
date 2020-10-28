@@ -40,8 +40,8 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the length of the ICurve on SpatialRelations or distance between Source and Target entity if no ICurve has been defined.")]
-        [Input("graph", "The graph that owns the SpatialRelation.")]
+        [Description("Returns the length of the ICurve on SpatialRelations or distance between source and target entity if no ICurve has been defined.")]
+        [Input("graph", "The Graph that owns the SpatialRelation.")]
         [Input("spatialRelation", "The SpatialRelation to query.")]
         [Output("length", "The length of the SpatialRelation.")]
 

@@ -39,7 +39,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Returns the collection of entity guids that can be accessed from a given entity.")]
-        [Input("graph", "The graph to search.")]
+        [Input("graph", "The Graph to search.")]
         [Input("entity", "The Guid of the entity for which the destinations are required.")]
         [Output("entities", "The collection of guids of the destination entities.")]
         public static List<Guid> Destinations(this Graph graph, Guid entity)
@@ -50,7 +50,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Returns the collection of IBHoMObject entities that can be accessed from a given entity.")]
-        [Input("graph", "The graph to search.")]
+        [Input("graph", "The Graph to search.")]
         [Input("entity", "The IBHoMObject entity for which the destinations are required.")]
         [Output("entities", "The collection of IBHoMObjects of the destination entities.")]
         public static List<IBHoMObject> Destinations(this Graph graph, IBHoMObject entity)

@@ -41,8 +41,8 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Returns a Graph that contains only spatial entities and relations. Spatial entities are those implementing IElement0D and spatial relations are those implementing SpatialRelation.")]
-        [Input("graph", "The graph to search.")]
-        [Output("graph", "The spatial graph.")]
+        [Input("graph", "The Graph to search.")]
+        [Output("graph", "The spatial Graph.")]
 
         public static Graph SpatialGraph(this Graph graph)
         {

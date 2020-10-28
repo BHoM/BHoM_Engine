@@ -37,9 +37,11 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Returns the adjacency dictionary for a graph.")]
-        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+
+        [Description("Returns the adjacency dictionary for a Graph.")]
+        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("adjacency", "The Dictionary where the keys are entities and the values are the collection of adjacent entities.")]
+
         public static Dictionary<Guid, List<Guid>> Adjacency(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             //should add input to control directionality

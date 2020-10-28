@@ -38,7 +38,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Returns the collection of ProcessResults from all IProcess objects on the Graph relations.")]
-        [Input("graph", "The graph to process.")]
+        [Input("graph", "The Graph to process.")]
         [Output("process results", "The collection ProcessResults.")]
 
         public static List<ProcessResult> ProcessRelations(this Graph graph)

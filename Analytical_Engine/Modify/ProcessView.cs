@@ -42,8 +42,8 @@ namespace BH.Engine.Analytical
         /****           Public Constructors             ****/
         /***************************************************/
 
-        [Description("Modifies a graph by assigning ProcessViewFragements to all entities to assit with creating diagrams of graphs.")]
-        [Input("graph", "The graph to search.")]
+        [Description("Modifies a graph by assigning ProcessViewFragements to all entities to assist with creating diagrams of Graphs.")]
+        [Input("graph", "The Graph to search.")]
         [Input("width", "Width of the diagram.")]
         [Input("height", "Height of the diagram.")]
         [Output("isolated entities", "The collection of entity Guids that are isolated.")]
