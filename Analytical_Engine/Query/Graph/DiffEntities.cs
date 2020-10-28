@@ -1,4 +1,26 @@
-﻿using BH.Engine.Base;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.Engine.Base;
 using BH.oM.Analytical.Elements;
 using BH.oM.Base;
 using BH.oM.Diffing;
@@ -13,7 +35,10 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
-        public static Dictionary<Guid, IBHoMObject> DiffEntities(List<IBHoMObject> entities, DiffConfig diffConfig)
+        /***************************************************/
+        /****           Public Methods                  ****/
+        /***************************************************/
+        public static Dictionary<Guid, IBHoMObject> DiffEntities(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 12)
         {
             
             Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
@@ -24,7 +49,7 @@ namespace BH.Engine.Analytical
                 {
                     if(entityA.GetType() == entityB.GetType())
                     {
-                        Dictionary<string, Tuple<object, object>> modifiedProps = Diffing.Query.DifferentProperties(entityA, entityB, diffConfig);
+                        Dictionary<string, Tuple<object, object>> modifiedProps = Diffing.Query.DifferentProperties(entityA, entityB);
                         if (modifiedProps == null)
                         {
                             //matched entities
@@ -37,5 +62,27 @@ namespace BH.Engine.Analytical
             }
             return replaceMap;
         }
+        /***************************************************/
+        private static bool CompareEntities(IBHoMObject entityA, IBHoMObject entityB, List<string> propertiesToConsider = null, int decimalPlaces = 12)
+        {
+            return HashEntity(entityA, propertiesToConsider , decimalPlaces) == HashEntity(entityB, propertiesToConsider, decimalPlaces);
+        }
+        /***************************************************/
+        private static string HashEntity(IBHoMObject entity, List<string> propertiesToConsider = null, int decimalPlaces = 12)
+        {
+            List<string> propertiesToIgnore = BH.Engine.Reflection.Query.PropertyNames(entity).Except(propertiesToConsider).ToList();
+
+            // The current Hash must not be considered when computing the hash. Remove HashFragment if present. 
+            IBHoMObject bhomobj = BH.Engine.Base.Query.DeepClone(entity);
+            bhomobj.Fragments.Remove(typeof(HashFragment));
+            
+            Dictionary<string, int> fractionalDigitsPerProperty = new Dictionary<string, int>();//fractionalDigitsPerProperty: fractionalDigitsPerProperty
+
+            propertiesToConsider.ForEach(p => fractionalDigitsPerProperty.Add(p, decimalPlaces));
+
+            return Base.Compute.Hash(bhomobj, propertiesToIgnore );
+        }
+        /***************************************************/
     }
+
 }
