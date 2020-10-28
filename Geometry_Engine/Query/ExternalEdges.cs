@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -43,7 +44,7 @@ namespace BH.Engine.Geometry
             if (!surface.Capped)
             {
                 edges.Add(curve);
-                ICurve other = curve.IClone();
+                ICurve other = curve.DeepClone();
                 edges.Add(other.ITranslate(direction));
             }
 

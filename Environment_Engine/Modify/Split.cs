@@ -77,7 +77,6 @@ namespace BH.Engine.Environment
 
                             Panel cpy = clone.Copy();
                             cpy.ExternalEdges = completeCrv.ToEdges();
-                            cpy.CustomData = new Dictionary<string, object>(clone.CustomData);
                             splitElements.Add(cpy);
                         }
                     }

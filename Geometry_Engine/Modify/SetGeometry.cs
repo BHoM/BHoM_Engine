@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Geometry.SettingOut;
 
@@ -33,64 +34,64 @@ namespace BH.Engine.Geometry
 
         public static Point SetGeometry(this Point point, Point newPoint)
         {
-            return newPoint.Clone();
+            return newPoint.DeepClone();
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Line curve, ICurve newCurve)
         {
-            return newCurve.IClone();
+            return newCurve.DeepClone();
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Arc curve, ICurve newCurve)
         {
-            return newCurve.IClone();
+            return newCurve.DeepClone();
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Circle curve, ICurve newCurve)
         {
-            return newCurve.IClone();
+            return newCurve.DeepClone();
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Ellipse curve, ICurve newCurve)
         {
-            return newCurve.IClone();
+            return newCurve.DeepClone();
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this NurbsCurve curve, ICurve newCurve)
         {
-            return newCurve.IClone();
+            return newCurve.DeepClone();
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Polyline curve, ICurve newCurve)
         {
-            return newCurve.IClone();
+            return newCurve.DeepClone();
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this PolyCurve curve, ICurve newCurve)
         {
-            return newCurve.IClone();
+            return newCurve.DeepClone();
         }
 
         /***************************************************/
 
         public static Grid SetGeometry(this Grid grid, ICurve curve)
         {
-            Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve.IClone();
+            Grid clone = grid.ShallowClone();
+            clone.Curve = curve.DeepClone();
             return clone;
         }
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,41 +20,21 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
 using System.Collections.Generic;
-using BH.oM.Base;
-using BH.oM.Environment.Elements;
-using BH.oM.Environment.Fragments;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
+using BH.oM.Geometry;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    //This is used to support the Split method in BH.Engine.Geometry.Compute
+    public class LineTree
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Copies a Panel into a new object")]
-        [Input("panel", "An Environment Panel to copy from")]
-        [Output("panel", "The copied Environment Panel")]
-        public static Panel Copy(this Panel panel)
-        {
-            Panel aPanel = panel.GetShallowClone(true) as Panel;
-            aPanel.ExternalEdges = new List<Edge>(panel.ExternalEdges);
-            aPanel.Openings = new List<Opening>(panel.Openings);
-            aPanel.ConnectedSpaces = new List<string>(panel.ConnectedSpaces);
-            aPanel.Construction = panel.Construction;
-            aPanel.Type = panel.Type;
-
-            if (panel.Fragments != null && panel.Fragments.Count > 0)
-                aPanel.Fragments = new FragmentSet(panel.Fragments);
-            else
-                aPanel.Fragments = new FragmentSet();
-
-            return aPanel;
-        }
+        public Line ThisLine { get; set; } = null;
+        public Line Parent { get; set; } = null;
+        public Point UnconnectedPoint { get; set; } = null;
     }
 }
-

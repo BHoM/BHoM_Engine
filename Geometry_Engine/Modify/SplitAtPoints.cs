@@ -26,6 +26,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Engine.Geometry
 {
@@ -38,7 +39,7 @@ namespace BH.Engine.Geometry
         public static List<Arc> SplitAtPoints(this Arc arc, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (!points.Any())
-                return new List<Arc> { arc.Clone() };
+                return new List<Arc> { arc.DeepClone() };
 
             List<Arc> result = new List<Arc>();
             List<Point> cPts = new List<Point>();
@@ -67,7 +68,7 @@ namespace BH.Engine.Geometry
 
                 for (int i = 1; i < cPts.Count; i++)
                 {
-                    tmpArc = arc.Clone();
+                    tmpArc = arc.DeepClone();
 
                     tmpArc.StartAngle = startAng;
                     tmpAng = (2 * Math.PI + (cPts[i - 1] - arc.Centre()).SignedAngle(cPts[i] - arc.Centre(), normal)) % (2 * Math.PI);
@@ -79,7 +80,7 @@ namespace BH.Engine.Geometry
 
             }
             else
-                result.Add(arc.Clone());
+                result.Add(arc.DeepClone());
             return result;
         }
 
@@ -131,7 +132,7 @@ namespace BH.Engine.Geometry
                 tmpArc = tmpArc.Rotate(cirCen, normal, rotAng);
                 tmpArc.StartAngle = 0;
                 tmpArc.EndAngle = enAng;
-                result.Add(tmpArc.Clone());
+                result.Add(tmpArc.DeepClone());
             }
             else
             {
@@ -146,7 +147,7 @@ namespace BH.Engine.Geometry
                     tmpArc = tmpArc.Rotate(cirCen, normal, rotAng);
                     tmpArc.StartAngle = 0;
                     tmpArc.EndAngle = enAng;
-                    result.Add(tmpArc.Clone());
+                    result.Add(tmpArc.DeepClone());
                 }
             }
             return result;
@@ -176,7 +177,7 @@ namespace BH.Engine.Geometry
                 }
             }
             else
-                result.Add(line.Clone());
+                result.Add(line.DeepClone());
 
             return result;
         }
@@ -186,7 +187,7 @@ namespace BH.Engine.Geometry
         public static List<PolyCurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (points.Count == 0)
-                return new List<PolyCurve> { curve.Clone() };
+                return new List<PolyCurve> { curve.DeepClone() };
 
             List<PolyCurve> result = new List<PolyCurve>();
             List<ICurve> tmpResult = new List<ICurve>();
@@ -202,7 +203,7 @@ namespace BH.Engine.Geometry
             onCurvePoints = onCurvePoints.CullDuplicates(tolerance);
 
             if (onCurvePoints.Count == 0)
-                return new List<PolyCurve> { curve.Clone() };
+                return new List<PolyCurve> { curve.DeepClone() };
 
             onCurvePoints = onCurvePoints.SortAlongCurve(curve);
 
@@ -301,7 +302,7 @@ namespace BH.Engine.Geometry
         public static List<Polyline> SplitAtPoints(this Polyline curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (points.Count == 0)
-                return new List<Polyline> { curve.Clone() };
+                return new List<Polyline> { curve.DeepClone() };
 
             List<Polyline> result = new List<Polyline>();
             List<Line> segments = curve.SubParts();
@@ -331,7 +332,7 @@ namespace BH.Engine.Geometry
                 if (intStart && section.ControlPoints.Count > 1)
                 {
                     result.Add(section);
-                    section = new Polyline { ControlPoints = new List<Point> { l.Start.Clone() } };
+                    section = new Polyline { ControlPoints = new List<Point> { l.Start.DeepClone() } };
                 }
 
                 if (iPts.Count > 0)

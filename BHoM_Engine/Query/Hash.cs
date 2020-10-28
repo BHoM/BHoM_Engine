@@ -37,14 +37,24 @@ using System.Data;
 
 namespace BH.Engine.Base
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
-        /***************************************************/ 
+        /***************************************************/
 
-        [Description("Computes a Hash code for the object which depends solely on its properties.")]
-        [Input("obj", "Objects the hash code should be calculated for.")]
+        [Description("Computes a Hash code for the iObject. The hash uniquely represents an object's state based on its combined properties and their values.")]
+        [Input("iObj", "iObject the hash code should be calculated for.")]
+        public static string Hash(this IObject iObj)
+        {
+            return Hash(iObj, null, null, null, null, 100);
+        }
+
+        /***************************************************/
+
+        [Description("Computes a Hash code for the iObject with exceptions and custom options.\n"
+            + "The hash uniquely represents an object's state based on the included properties and their values.")]
+        [Input("iObj", "iObject the hash code should be calculated for.")]
         [Input("propertyNameExceptions", "(Optional) e.g. `Fragments`. If you want to exclude a property that many objects have.")]
         [Input("propertyFullNameExceptions", "(Optional) e.g. `BH.oM.Structure.Elements.Bar.Fragments`. If you want to exclude a specific property of an object.")]
         [Input("namespaceExceptions", "(Optional) e.g. `BH.oM.Structure`. Any corresponding namespace is ignored.")]
@@ -58,8 +68,10 @@ namespace BH.Engine.Base
             List<Type> typeExceptions = null, //e.g. `typeof(Guid)`
             int maxNesting = 100)
         {
-            // If null, add "BHoM_Guid" to the propertyNameExceptions.
-            propertyNameExceptions = propertyNameExceptions ?? new List<string>() { nameof(BHoMObject.BHoM_Guid) };
+            // Make sure that "BHoM_Guid" is added to the propertyNameExceptions.
+            propertyNameExceptions = propertyNameExceptions ?? new List<string>();
+            if (!propertyNameExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
+                propertyNameExceptions.Add(nameof(BHoMObject.BHoM_Guid));
 
             string hashString = DefiningString(iObj, 0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions);
 
@@ -184,4 +196,3 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
-
