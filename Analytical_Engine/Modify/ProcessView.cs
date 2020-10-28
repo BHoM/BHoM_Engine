@@ -17,7 +17,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Public Constructors             ****/
         /***************************************************/
-        public static Graph ProcessView(this Graph graph)
+        public static Graph ProcessView(this Graph graph, double width, double height)
         {
             Graph clone = graph.DeepClone();
             clone.Entities.Values.ToList().ForEach(ent => ent.RemoveFragment(typeof(ProcessViewFragment)));
@@ -27,23 +27,31 @@ namespace BH.Engine.Analytical
             
             List<int> distinctDepths = depths.Values.Distinct().ToList();
             distinctDepths.Sort();
-            distinctDepths.Reverse();
-            double x = 0;
+            //distinctDepths.Reverse();
+            double cellY = (height *1.0) / distinctDepths.Count();
+            double y = 0;
+            
             foreach (int d in distinctDepths)
             {
+                double wobbleY = height / 40;
                 //all the entities at this level
                 IEnumerable<Guid> level = depths.Where(kvp => kvp.Value == d).Select(kvp => kvp.Key);
-                double y = 0;
+                double x = 0;
+                double cellX = (width * 1.0) / level.Count() ;
                 foreach (Guid entity in level)
                 {
                    
                     ProcessViewFragment view = new ProcessViewFragment();
+                    
+                    if (x % 2 == 0)
+                        view.Position = Geometry.Create.Point(x * cellX + cellX / 2, y * cellY - wobbleY, 0);
+                    else
+                        view.Position = Geometry.Create.Point(x * cellX + cellX / 2, y * cellY + wobbleY, 0);
 
-                    view.Position = Geometry.Create.Point(x, y, 0);
-                    y--;
+                    x++;
                     clone.Entities[entity] = clone.Entities[entity].AddFragment(view, true);
                 }
-                x++;
+                y--;
             }
             clone.RemoveRootEntity(root);
             return clone;
@@ -78,6 +86,19 @@ namespace BH.Engine.Analytical
                 graph.Relations.Remove(relation);
             }
             return root;
+        }
+        /***************************************************/
+        private static int biggestLevel(Dictionary<Guid, int> depths, List<int> distinctDepths)
+        {
+            int max = int.MinValue;
+            foreach (int d in distinctDepths)
+            {
+                //all the entities at this level
+                IEnumerable<Guid> level = depths.Where(kvp => kvp.Value == d).Select(kvp => kvp.Key);
+                if (level.Count() > max)
+                    max = level.Count();
+            }
+            return max;
         }
         /***************************************************/
         /****           Private Fields                  ****/
