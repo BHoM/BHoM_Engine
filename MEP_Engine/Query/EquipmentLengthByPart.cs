@@ -20,24 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.MEP;
-using BH.oM.MEP.Equipment;
-using BH.oM.Base;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
-using BH.oM.Geometry.SettingOut;
-
-using BH.Engine.Base;
+using BH.oM.Reflection.Attributes;
+using BH.oM.MEP.Elements;
 
 namespace BH.Engine.MEP
 {
@@ -49,14 +35,21 @@ namespace BH.Engine.MEP
         [Description("Returns the length of the equipment based on the input of a list of parts")]
         [Input("airsidePartsByLength", "Collection of airside parts from a dataset that contains parts by length")]
         [Output("length", "The total length of the equipment based on the length of the parts")]
-        public static double EquipmentLengthByPart (this List<CustomObject> airsidePartsByLength)
+        public static double EquipmentLengthByPart (this List<IFlow> airsidePartsByLength)
         {
             double length = 0;
-            foreach (CustomObject o in airsidePartsByLength)
+
+            foreach (IFlow o in airsidePartsByLength)
             {
-                if (o.CustomData.ContainsKey("length"))
-                    length += System.Convert.ToDouble(o.CustomData["length"]);
+                length += o.Length();
             }
+
+            if (length <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Elements have zero length.");
+                return double.NaN;
+            }
+
             return length;
         }
         /***************************************************/
