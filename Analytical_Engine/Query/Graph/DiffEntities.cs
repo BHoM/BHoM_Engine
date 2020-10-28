@@ -46,6 +46,7 @@ namespace BH.Engine.Analytical
         [Input("propertiesToConsider", "Property names to consider when attempting to determine unique entities.")]
         [Input("decimalPlaces", "The decimal places to consider when comparing double, decimal and float types.")]
         [Output("unique entities", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
+        
         public static Dictionary<Guid, IBHoMObject> DiffEntities(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 12)
         {
             
@@ -58,7 +59,25 @@ namespace BH.Engine.Analytical
                     if(entityA.GetType() == entityB.GetType())
                     {
                         //bool match = CompareEntities(entityA, entityB, propertiesToConsider , decimalPlaces)
-                        Dictionary<string, Tuple<object, object>> modifiedProps = Diffing.Query.DifferentProperties(entityA, entityB);
+                        List<string> props = new List<string>()
+                        {
+                            "Position.X",
+                            "Position.Y",
+                            "Position.Z",
+                            "StartNode.Position.X",
+                            "StartNode.Position.Y",
+                            "StartNode.Position.Z",
+                            "EndNode.Position.X",
+                            "EndNode.Position.Y",
+                            "EndNode.Position.Z",
+
+                        };
+                        DiffConfig diffConfig = new DiffConfig()
+                        {
+                            PropertiesToConsider = props,
+                            NumericTolerance = 0.001,
+                        };
+                        Dictionary<string, Tuple<object, object>> modifiedProps = Diffing.Query.DifferentProperties(entityA, entityB, diffConfig);
                         if (modifiedProps == null)
                         {
                             //matched entities
@@ -94,7 +113,7 @@ namespace BH.Engine.Analytical
 
             propertiesToConsider.ForEach(p => fractionalDigitsPerProperty.Add(p, decimalPlaces));
 
-            return Base.Compute.Hash(bhomobj, propertiesToIgnore );
+            return "";// Base.Compute.Hash(bhomobj, propertiesToIgnore );
         }
         /***************************************************/
     }
