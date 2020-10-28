@@ -84,7 +84,7 @@
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\UniqueEntities.cs" />
-    <Compile Include="Modify\UniqueNodeNames.cs" />
+    <Compile Include="Modify\UniqueEntityNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\ExternalPolycurve.cs" />
@@ -93,7 +93,7 @@
     <Compile Include="Query\Graph\EntityNeighbourhood.cs" />
     <Compile Include="Query\Graph\AStarShortestPath.cs" />
     <Compile Include="Query\Graph\ClosestIElement0D.cs" />
-    <Compile Include="Query\Graph\DepthDictionary.cs" />
+    <Compile Include="Query\Graph\Depth.cs" />
     <Compile Include="Query\Graph\Destinations.cs" />
     <Compile Include="Query\Graph\DiffEntities.cs" />
     <Compile Include="Query\Graph\DijkstraShortestPath.cs" />
@@ -101,7 +101,7 @@
     <Compile Include="Query\Graph\Entity.cs" />
     <Compile Include="Query\Graph\FilterEntities.cs" />
     <Compile Include="Query\Graph\FilterRelations.cs" />
-    <Compile Include="Query\Graph\IncomingNodes.cs" />
+    <Compile Include="Query\Graph\Incoming.cs" />
     <Compile Include="Query\Graph\RelationMatch.cs" />
     <Compile Include="Query\Graph\RelationLength.cs" />
     <Compile Include="Query\Graph\NotSinks.cs" />

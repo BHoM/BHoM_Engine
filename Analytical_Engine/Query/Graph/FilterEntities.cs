@@ -29,11 +29,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Dimensional;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Filter entities from a Graph.")]
+        [Input("graph", "The Graph to filter the entities from.")]
+        [Input("typeFilter", "The Type of the entities to filter.")]
+        [Output("filter entities", "Entity Dictionary containing the filtered entities.")]
         public static Dictionary<Guid, IBHoMObject> FilterEntities(this Graph graph, Type typeFilter)
         {
             Dictionary<Guid, IBHoMObject> entityDict = new Dictionary<Guid, IBHoMObject>();
@@ -41,5 +51,7 @@ namespace BH.Engine.Analytical
             filtered.ForEach(obj => entityDict.Add(obj.BHoM_Guid, obj));
             return entityDict;
         }
+
+        /***************************************************/
     }
 }

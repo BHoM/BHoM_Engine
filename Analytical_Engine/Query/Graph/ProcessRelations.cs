@@ -21,8 +21,10 @@
  */
 
 using BH.oM.Analytical.Elements;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +33,14 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the collection of ProcessResults from all IProcess objects on the Graph relations.")]
+        [Input("graph", "The graph to process.")]
+        [Output("process results", "The collection ProcessResults.")]
+
         public static List<ProcessResult> ProcessRelations(this Graph graph)
         {
             List<ProcessRelation> relations = graph.Relations.FindAll(rel => rel is ProcessRelation).Cast<ProcessRelation>().ToList();

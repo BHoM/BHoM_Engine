@@ -21,8 +21,10 @@
  */
 
 using BH.oM.Analytical.Elements;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +33,14 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the collection of entity Guids that are never used as Relation targets.")]
+        [Input("graph", "The graph to search.")]
+        [Output("sources", "The collection of entity Guids that are sources.")]
+
         public static List<Guid> Sources(this Graph graph)
         {
             //entity is a source if it never appears as target

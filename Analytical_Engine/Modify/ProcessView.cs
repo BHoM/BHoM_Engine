@@ -26,8 +26,10 @@ using BH.oM.Analytical.Elements;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,13 +41,20 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Public Constructors             ****/
         /***************************************************/
+
+        [Description("Modifies a graph by assigning ProcessViewFragements to all entities to assit with creating diagrams of graphs.")]
+        [Input("graph", "The graph to search.")]
+        [Input("width", "Width of the diagram.")]
+        [Input("height", "Height of the diagram.")]
+        [Output("isolated entities", "The collection of entity Guids that are isolated.")]
+
         public static Graph ProcessView(this Graph graph, double width, double height)
         {
             Graph clone = graph.DeepClone();
             clone.Entities.Values.ToList().ForEach(ent => ent.RemoveFragment(typeof(ProcessViewFragment)));
             IBHoMObject root = clone.AddRootEntity();
 
-            Dictionary<Guid, int> depths = clone.DepthDictionary(root.BHoM_Guid);
+            Dictionary<Guid, int> depths = clone.Depth(root.BHoM_Guid);
             
             List<int> distinctDepths = depths.Values.Distinct().ToList();
             distinctDepths.Sort();
@@ -78,6 +87,7 @@ namespace BH.Engine.Analytical
             clone.RemoveRootEntity(root);
             return clone;
         }
+
         /***************************************************/
         /****           Private Methods                 ****/
         /***************************************************/

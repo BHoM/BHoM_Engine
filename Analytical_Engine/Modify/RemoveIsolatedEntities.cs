@@ -22,8 +22,10 @@
 
 using BH.Engine.Base;
 using BH.oM.Analytical.Elements;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Analytical
@@ -33,6 +35,11 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Public Methods                  ****/
         /***************************************************/
+
+        [Description("Modifies a Graph by removing all entities that are not used by Relations.")]
+        [Input("graph", "The graph to modify.")]
+        [Output("graph", "The modified graph without isolated entities.")]
+
         public static Graph RemoveIsolatedEntities(this Graph graph)
         {
             Graph clone = graph.DeepClone();
@@ -41,6 +48,7 @@ namespace BH.Engine.Analytical
 
             return clone;
         }
+
         /***************************************************/
     }
 }

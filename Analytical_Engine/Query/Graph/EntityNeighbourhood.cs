@@ -24,6 +24,7 @@ using BH.Engine.Base;
 using BH.oM.Analytical.Elements;
 using BH.oM.Base;
 using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,7 +39,12 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Find all subgraphs around all entities at maximum depth 1 within a graph")]
+
+        [Description("Find all subgraphs around all entities at maximum depth 1 within a graph.")]
+        [Input("graph", "The Graph to search.")]
+        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
+
         public static List<Graph> EntityNeighbourhood(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             List<Graph> subGraphs = new List<Graph>();
@@ -50,15 +56,22 @@ namespace BH.Engine.Analytical
             return subGraphs;
         }
         /***************************************************/
-        [Description("Find the subgraph around an entity at a specified depth within a graph")]
-        public static Graph EntityNeighbourhood(this Graph graph, IBHoMObject entity, int maxDepth, RelationDirection relationDirection = RelationDirection.Forwards)
+
+        [Description("Find the subgraph around an entity at a specified depth within a graph.")]
+        [Input("graph", "The Graph to search.")]
+        [Input("entity", "The IBHoMObject entity to search from.")]
+        [Input("maximumDepth", "The maximum traversal depth from the given entity.")]
+        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Output("graph", "The sub Graph found in the input Graph.")]
+
+        public static Graph EntityNeighbourhood(this Graph graph, IBHoMObject entity, int maximumDepth, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             List<Graph> subGraphs = new List<Graph>();
             m_Adjacency = graph.Adjacency(relationDirection);
             m_AccessibleEntities = new List<Guid>();
             m_AccessibleRelations = new List<Guid>();
 
-            graph.Traverse(entity.BHoM_Guid,maxDepth,0);
+            graph.Traverse(entity.BHoM_Guid, maximumDepth, 0);
 
             Graph subgraph = new Graph();
             foreach(Guid guid in m_AccessibleEntities)
@@ -75,9 +88,11 @@ namespace BH.Engine.Analytical
             
             return subgraph;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
         private static void Traverse(this Graph graph, Guid node, int maxDepth, int currentDepth)
         {
             if (currentDepth >= maxDepth)
@@ -102,9 +117,11 @@ namespace BH.Engine.Analytical
            
             return subgraph;
         }
+
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
+
         private static List<Guid> m_AccessibleEntities = new List<Guid>();
         private static List<Guid> m_AccessibleRelations = new List<Guid>();
 

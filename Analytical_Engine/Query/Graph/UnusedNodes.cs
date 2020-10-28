@@ -34,6 +34,14 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the collection of entity Guids that are never used as Relation targets or sources.")]
+        [Input("graph", "The graph to search.")]
+        [Output("isolated entities", "The collection of entity Guids that are isolated.")]
+
         public static List<Guid> IsolatedEntities(this Graph graph)
         {
             List<Guid> unused = new List<Guid>();

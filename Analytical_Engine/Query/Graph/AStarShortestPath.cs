@@ -39,20 +39,37 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
+        [Description("Returns the a star shortest path for a graph. \n" +
+            "If the supplied graph does not contain entities that implement IElement0D or and spatial relations the shortest path is computed using the Dijkstra shortest path.")]
+        [Input("graph", "The Graph to query for the shortest path.")]
+        [Input("start", "The IBHoMObject entity used for the start of the path.")]
+        [Input("end", "The IBHoMObject entity used for the end of the path.")]
+        [Output("shortest path result", "The ShortestPathResult.")]
+
         public static ShortestPathResult AStarShortestPath(Graph graph, IBHoMObject start, IBHoMObject end)
         {
             ShortestPathResult result = AStarShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
             
             return result;
         }
+
         /***************************************************/
+
+        [Description("Returns the a star shortest path for a graph. \n" +
+            "If the supplied graph does not contain entities that implement IElement0D or and spatial relations the shortest path is computed using the Dijkstra shortest path.")]
+        [Input("graph", "The Graph to query for the shortest path.")]
+        [Input("start", "The Guid entity used for the start of the path.")]
+        [Input("end", "The Guid entity used for the end of the path.")]
+        [Output("shortest path result", "The ShortestPathResult.")]
+
         public static ShortestPathResult AStarShortestPath(Graph graph, Guid start, Guid end)
         {
             m_SpatialGraph = graph.SpatialGraph();
             if (m_SpatialGraph.Entities.Count == 0 || m_SpatialGraph.Relations.Count == 0)
             {
                 Reflection.Compute.RecordWarning("The graph provided does not contain sufficient entities or relations that implement IElement0D and IElement1D.\n" +
-                    "To use AStar shortest path provide a graph where some entities and some relations implement IElement0D and IElement1D.\n" +
+                    "To use a star shortest path provide a graph where some entities and some relations implement IElement0D and IElement1D.\n" +
                     "Shortest path is computed using Dijkstra shortest path instead.");
 
                 return DijkstraShortestPath(graph, start, end);
@@ -86,9 +103,11 @@ namespace BH.Engine.Analytical
             ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, nodesVisited, curves);
             return result;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
         private static void AStarSearch(Graph graph, Guid start, Guid end)
         {
             m_Fragments[start].MinCostToSource = 0;

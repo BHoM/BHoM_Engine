@@ -33,6 +33,14 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns the collection of entity Guids that are never used a Relation source.")]
+        [Input("graph", "The graph to search.")]
+        [Output("sinks", "The collection of entity Guids that are sinks.")]
+
         public static List<Guid> Sinks(this Graph graph)
         {
             List<Guid> notSinks = graph.NotSinks();

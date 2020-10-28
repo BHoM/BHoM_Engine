@@ -229,7 +229,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         private static IElement0D FindOrCreateEntity(List<IElement0D> entities, Point point, double tolerance, IElement0D prototypeEntity)
         {
-            IElement0D entity = entities.ClosestIElement0D(point, tolerance);
+            IElement0D entity = entities.ClosestIElement0D(point);
 
             if (entity == null || entity.IGeometry().Distance(point) > tolerance)
             {

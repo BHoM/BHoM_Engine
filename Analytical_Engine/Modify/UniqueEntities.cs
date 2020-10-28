@@ -20,8 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Analytical.Elements;
 using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,22 +38,28 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Public Methods                  ****/
         /***************************************************/
-        [Description("Enforce unique entities on a graph")]
+
+        [Description("Enforce unique entities on a graph. Source and Target properties of Relations are updated to match the unique entities.")]
+        [Input("graph", "The Graph from which duplicate entities should be removed.")]
+        [Output("graph", "The Graph with unique entities.")]
+
         public static Graph UniqueEntities(this Graph graph, Dictionary<Guid, IBHoMObject> replaceMap)
         {
+            Graph clone = graph.DeepClone();
+
             Dictionary<Guid, IBHoMObject> uniqueEntities = new Dictionary<Guid, IBHoMObject>();
 
-            foreach (KeyValuePair<Guid, IBHoMObject> kvp in graph.Entities)
+            foreach (KeyValuePair<Guid, IBHoMObject> kvp in clone.Entities)
             {
                 IBHoMObject unique = replaceMap[kvp.Key];
                 if (!uniqueEntities.ContainsKey(unique.BHoM_Guid))
                     uniqueEntities.Add(unique.BHoM_Guid, unique);
             }
 
-            graph.Entities = uniqueEntities;
+            clone.Entities = uniqueEntities;
 
             List<IRelation> uniqueRelations = new List<IRelation>();
-            foreach (IRelation relation in graph.Relations)
+            foreach (IRelation relation in clone.Relations)
             {
                 IRelation relation1 = relation.UniqueEntities(replaceMap);
                 //keep if it does not already exist
@@ -59,11 +67,15 @@ namespace BH.Engine.Analytical
                     uniqueRelations.Add(relation1);
 
             }
-            graph.Relations = uniqueRelations;
-            return graph;
+            clone.Relations = uniqueRelations;
+            return clone;
         }
+
         /***************************************************/
-        public static IRelation UniqueEntities(this IRelation relation, Dictionary<Guid, IBHoMObject> replaceMap)
+        /****           Private Methods                 ****/
+        /***************************************************/
+
+        private static IRelation UniqueEntities(this IRelation relation, Dictionary<Guid, IBHoMObject> replaceMap)
         {
             relation.Source = replaceMap[relation.Source].BHoM_Guid;
             relation.Target = replaceMap[relation.Target].BHoM_Guid;

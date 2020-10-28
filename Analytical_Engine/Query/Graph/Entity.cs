@@ -34,11 +34,24 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns an entity from a Graph, or null if it does not exist.")]
+        [Input("graph", "The Graph to extract the entity from.")]
+        [Output("entityName", "The name of the entity.")]
+
         public static IBHoMObject Entity(this Graph graph, string entityName)
         {
             return graph.Entities.Values.ToList().Find(x => x.Name == entityName);
         }
 
+        /***************************************************/
+
+        [Description("Returns an entity from a Graph, or null if it does not exist.")]
+        [Input("graph", "The Graph to extract the entity from.")]
+        [Output("entityGuid", "The Guid of the entity.")]
         public static IBHoMObject Entity(this Graph graph, Guid entityGuid)
         {
             return graph.Entities[entityGuid]; 
