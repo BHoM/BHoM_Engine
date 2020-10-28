@@ -6,9 +6,6 @@ using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BH.Engine.Analytical
 {
@@ -45,6 +42,19 @@ namespace BH.Engine.Analytical
         {
             List<IRelation> relations = new List<IRelation>();
             relations.Add(new Relation() { Source = dependency.Source, Target = dependency.Target });
+            return relations;
+        }
+        /***************************************************/
+        [Description("Convert ProcessDependencyFragment assigned to relations")]
+        public static List<IRelation> ToRelation(this ProcessDependencyFragment dependency, Guid owner)
+        {
+            List<IRelation> relations = new List<IRelation>();
+            relations.Add(new ProcessRelation() 
+            { 
+                Source = dependency.Source, 
+                Target = dependency.Target,
+                Processes = dependency.Processes
+            });
             return relations;
         }
         /***************************************************/
