@@ -39,7 +39,7 @@ namespace BH.Engine.Analytical
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Enforce unique entities on a graph. Source and Target properties of Relations are updated to match the unique entities.")]
+        [Description("Enforce unique entities on a Graph. Source and Target properties of relations are updated to match the unique entities.")]
         [Input("graph", "The Graph from which duplicate entities should be removed.")]
         [Output("graph", "The Graph with unique entities.")]
 

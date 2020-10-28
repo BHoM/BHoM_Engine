@@ -40,8 +40,8 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the a star shortest path for a graph. \n" +
-            "If the supplied graph does not contain entities that implement IElement0D or and spatial relations the shortest path is computed using the Dijkstra shortest path.")]
+        [Description("Returns the a star shortest path for a Graph. \n" +
+            "If the supplied Graph does not contain entities that implement IElement0D or and relations that are SpatialRelations the shortest path is computed using the Dijkstra shortest path.")]
         [Input("graph", "The Graph to query for the shortest path.")]
         [Input("start", "The IBHoMObject entity used for the start of the path.")]
         [Input("end", "The IBHoMObject entity used for the end of the path.")]
@@ -56,8 +56,8 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Returns the a star shortest path for a graph. \n" +
-            "If the supplied graph does not contain entities that implement IElement0D or and spatial relations the shortest path is computed using the Dijkstra shortest path.")]
+        [Description("Returns the a star shortest path for a Graph. \n" +
+            "If the supplied Graph does not contain entities that implement IElement0D or and spatial relations the shortest path is computed using the Dijkstra shortest path.")]
         [Input("graph", "The Graph to query for the shortest path.")]
         [Input("start", "The Guid entity used for the start of the path.")]
         [Input("end", "The Guid entity used for the end of the path.")]

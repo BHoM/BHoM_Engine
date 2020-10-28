@@ -37,10 +37,10 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the Dictionary of entity depths in a graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>")]
-        [Input("adjacency", "The adjacency dictionary of the graph to extract the depth dictionary from.")]
+        [Description("Returns the Dictionary of entity depths in a Graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>")]
+        [Input("adjacency", "The adjacency dictionary of the Graph to extract the depth dictionary from.")]
         [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
-        [Output("depths", "A Dictionary of the depths of the entities in the graph.")]
+        [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]
 
         public static Dictionary<Guid, int> Depth(Dictionary<Guid, List<Guid>> adjacency, Guid startEntity)
         {
@@ -88,10 +88,10 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Returns the Dictionary of entity depths in a graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>")]
+        [Description("Returns the Dictionary of entity depths in a Graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>")]
         [Input("graph", "The graph to extract the depth dictionary from.")]
         [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
-        [Output("depths", "A Dictionary of the depths of the entities in the graph.")]
+        [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]
 
         public static Dictionary<Guid, int> Depth(this Graph graph, Guid startEntity)
         {

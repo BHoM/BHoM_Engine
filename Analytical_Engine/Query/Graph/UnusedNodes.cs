@@ -39,7 +39,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Returns the collection of entity Guids that are never used as Relation targets or sources.")]
-        [Input("graph", "The graph to search.")]
+        [Input("graph", "The Graph to search.")]
         [Output("isolated entities", "The collection of entity Guids that are isolated.")]
 
         public static List<Guid> IsolatedEntities(this Graph graph)

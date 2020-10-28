@@ -51,8 +51,8 @@ namespace BH.Engine.Analytical
 
         [Description("Create a graph from a collection of IBHoMObjects, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
-        [Input("propertiesToConsider", "A collection of property names to compare when attempting to find unique entities.")]
-        [Input(" decimalPlaces", "Number of decimal places used when attempting to find unique entities.")]
+        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
+        [Input(" decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
         public static Graph Graph(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 12)
         {
@@ -63,8 +63,8 @@ namespace BH.Engine.Analytical
 
         [Description("Create a graph from a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("propertiesToConsider", "A collection of property names to compare when attempting to find unique entities.")]
-        [Input(" decimalPlaces", "Number of decimal places used when attempting to find unique entities.")]
+        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
+        [Input(" decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
 
         public static Graph Graph(List<IRelation> relations, List<string> propertiesToConsider = null, int decimalPlaces = 12)
@@ -75,10 +75,10 @@ namespace BH.Engine.Analytical
         /***************************************************/
         
         [Description("Create a graph from a collection of IBHoMObjects, a collection of IRelations, property names and decimal places to determine unique graph entities.")]
-        [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities can include DependencyFragments to determine the Graph Relations.")]
-        [Input("relations", "A collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("propertiesToConsider", "A collection of property names to compare when attempting to find unique entities.")]
-        [Input(" decimalPlaces", "Number of decimal places used when attempting to find unique entities.")]
+        [Input("entities", "Optional collection of IBHoMOBjects to use as Graph entities. Entities can include DependencyFragments to determine the Graph Relations.")]
+        [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
+        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
+        [Input(" decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
         public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, List<string> propertiesToConsider = null, int decimalPlaces = 12)
         {
@@ -124,8 +124,8 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of ICurves.")]
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
         [Input("entities", "Optional collection of IBHoMObjects to use as Graph entities.")]
-        [Input("snappingTolerance", "Tolerance between connectingCurves end points and provided entities.")]
-        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Input("snappingTolerance", "Optional tolerance between connectingCurves end points and provided entities.")]
+        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
 
         public static Graph Graph<T>(List<ICurve> connectingCurves, IElement0D prototypeEntity, List<IElement0D> entities = null, double snappingTolerance = 1e-6, RelationDirection relationDirection = RelationDirection.Forwards)
@@ -166,8 +166,8 @@ namespace BH.Engine.Analytical
         [Input("branching", "Total number of Relations between an entity and its closest neighbours.")]
         [Input("boundingBox", "BoundingBox defining the spatial limits of the Graph.")]
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
-        [Input("tolerance", "Minimum distance permitted between randomly generated entities.")]
-        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Input("tolerance", "Optional minimum distance permitted between randomly generated entities.")]
+        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
 
         public static Graph Graph(int entityCount, int branching, BoundingBox boundingBox, IElement0D prototypeEntity, double tolerance = 1e-6, RelationDirection relationDirection = RelationDirection.Forwards)
@@ -213,8 +213,7 @@ namespace BH.Engine.Analytical
         [Input("height", "Number of Points in the Z direction.")]
         [Input("cellsize", "Distance between points in X, Y and Z directions.")]
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
-        [Input("tolerance", "Minimum distance permitted between randomly generated entities.")]
-        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
 
         public static Graph Graph<T>(int width, int length, int height, double cellsize, T prototypeEntity, RelationDirection relationDirection = RelationDirection.Forwards)

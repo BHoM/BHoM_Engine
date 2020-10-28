@@ -36,9 +36,9 @@ namespace BH.Engine.Analytical
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Modifies a Graph by removing all entities that are not used by Relations.")]
-        [Input("graph", "The graph to modify.")]
-        [Output("graph", "The modified graph without isolated entities.")]
+        [Description("Modifies a Graph by removing all entities that are not used by relations.")]
+        [Input("graph", "The Graph to modify.")]
+        [Output("graph", "The modified Graph without isolated entities.")]
 
         public static Graph RemoveIsolatedEntities(this Graph graph)
         {

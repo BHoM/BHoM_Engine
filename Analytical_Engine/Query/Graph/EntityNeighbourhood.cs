@@ -40,9 +40,9 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Find all subgraphs around all entities at maximum depth 1 within a graph.")]
+        [Description("Find all sub Graphs around all entities at maximum depth 1 within a Graph.")]
         [Input("graph", "The Graph to search.")]
-        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
 
         public static List<Graph> EntityNeighbourhood(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
@@ -57,11 +57,11 @@ namespace BH.Engine.Analytical
         }
         /***************************************************/
 
-        [Description("Find the subgraph around an entity at a specified depth within a graph.")]
+        [Description("Find the sub Graph around an entity at a specified depth within a Graph.")]
         [Input("graph", "The Graph to search.")]
         [Input("entity", "The IBHoMObject entity to search from.")]
         [Input("maximumDepth", "The maximum traversal depth from the given entity.")]
-        [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "The sub Graph found in the input Graph.")]
 
         public static Graph EntityNeighbourhood(this Graph graph, IBHoMObject entity, int maximumDepth, RelationDirection relationDirection = RelationDirection.Forwards)
