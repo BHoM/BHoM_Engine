@@ -44,11 +44,11 @@ namespace BH.Engine.Analytical
 
             foreach (string name in distinctNames)
             {
-                List<IBHoMObject> matchnodes = entities.FindAll(x => x.Name == name);
-                if (matchnodes.Count > 1)
+                List<IBHoMObject> matchentities = entities.FindAll(x => x.Name == name);
+                if (matchentities.Count > 1)
                 {
-                    for (int i = 0; i < matchnodes.Count; i++)
-                        matchnodes[i].Name += "_" + i;
+                    for (int i = 0; i < matchentities.Count; i++)
+                        matchentities[i].Name += "_" + i;
                 }
             }    
         }

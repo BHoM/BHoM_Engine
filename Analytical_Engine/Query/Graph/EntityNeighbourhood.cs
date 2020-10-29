@@ -51,7 +51,7 @@ namespace BH.Engine.Analytical
             m_Adjacency = graph.Adjacency(relationDirection);
 
             foreach (KeyValuePair<Guid, List<Guid>> kvp in m_Adjacency)
-                subGraphs.Add(graph.SetSubGraph(kvp.Key, kvp.Value));
+                subGraphs.Add(graph.SetSubGraph(kvp.Key, kvp.Value, relationDirection));
             
             return subGraphs;
         }
@@ -71,13 +71,16 @@ namespace BH.Engine.Analytical
             m_AccessibleEntities = new List<Guid>();
             m_AccessibleRelations = new List<Guid>();
 
-            graph.Traverse(entity.BHoM_Guid, maximumDepth, 0);
+            //add start entity
+            m_AccessibleEntities.Add(entity.BHoM_Guid);
+
+            graph.Traverse(entity.BHoM_Guid, maximumDepth, 0, relationDirection);
 
             Graph subgraph = new Graph();
             foreach(Guid guid in m_AccessibleEntities)
             {
                 if (!subgraph.Entities.ContainsKey(guid))
-                    subgraph.Entities.Add(guid, graph.Entities[guid]);
+                    subgraph.Entities.Add(guid, graph.Entities[guid].DeepClone());
             }
 
             foreach (Guid guid in m_AccessibleRelations)
@@ -93,27 +96,28 @@ namespace BH.Engine.Analytical
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void Traverse(this Graph graph, Guid node, int maxDepth, int currentDepth)
+        private static void Traverse(this Graph graph, Guid entity, int maxDepth, int currentDepth, RelationDirection relationDirection)
         {
             if (currentDepth >= maxDepth)
                 return;
-            foreach (Guid c in m_Adjacency[node])
+            foreach (Guid c in m_Adjacency[entity])
             {
                 m_AccessibleEntities.Add(c);
-                m_AccessibleRelations.Add(graph.Relations.Find(r => r.Source.Equals(node) && r.Target.Equals(c)).BHoM_Guid);
-                graph.Traverse(c,maxDepth, currentDepth + 1);
+                m_AccessibleRelations.AddRange(graph.Relation(entity, c, relationDirection));
+                graph.Traverse(c, maxDepth, currentDepth + 1, relationDirection);
             }
         }
         /***************************************************/
-        private static Graph SetSubGraph(this Graph graph, Guid sourceEntity, List<Guid> entityAdjacency)
+        private static Graph SetSubGraph(this Graph graph, Guid sourceEntity, List<Guid> entityAdjacency, RelationDirection relationDirection)
         {
 
             Graph subgraph = new Graph();
+            //add start entity
+            subgraph.Entities.Add(sourceEntity, graph.Entities[sourceEntity].DeepClone());
 
-            subgraph.Entities.Add(sourceEntity, graph.Entities[sourceEntity]);
-            entityAdjacency.ForEach(ent => subgraph.Entities.Add(ent, graph.Entities[ent]));
+            entityAdjacency.ForEach(ent => subgraph.Entities.Add(ent, graph.Entities[ent].DeepClone()));
 
-            entityAdjacency.ForEach(ent => subgraph.Relations.AddRange(graph.RelationMatch(sourceEntity, ent)));
+            entityAdjacency.ForEach(ent => subgraph.Relations.AddRange(graph.Relation(graph.Entities[sourceEntity], graph.Entities[ent], relationDirection)));
            
             return subgraph;
         }

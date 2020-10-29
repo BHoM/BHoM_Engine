@@ -39,7 +39,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Returns the adjacency dictionary for a Graph.")]
-        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
+        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forwards indicating traversal is from source to target.")]
         [Output("adjacency", "The Dictionary where the keys are entities and the values are the collection of adjacent entities.")]
 
         public static Dictionary<Guid, List<Guid>> Adjacency(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
@@ -47,27 +47,27 @@ namespace BH.Engine.Analytical
             //should add input to control directionality
             Dictionary<Guid, List<Guid>> adjacency = new Dictionary<Guid, List<Guid>>();
             graph.Entities.ToList().ForEach(n => adjacency.Add(n.Key, new List<Guid>()));
-            foreach(Guid vertex in graph.Entities.Keys.ToList())
+            foreach(Guid entity in graph.Entities.Keys.ToList())
             {
                 List<Guid> connected = new List<Guid>();
                 switch (relationDirection)
                 {
                     case RelationDirection.Forwards:
-                        connected.AddRange(graph.Destinations(vertex));
+                        connected.AddRange(graph.Destinations(entity));
                         break;
                     case RelationDirection.Backwards:
-                        connected.AddRange(graph.Incoming(vertex));
+                        connected.AddRange(graph.Incoming(entity));
                         break;
                     case RelationDirection.Both:
-                        connected.AddRange(graph.Incoming(vertex));
-                        connected.AddRange(graph.Destinations(vertex));
+                        connected.AddRange(graph.Incoming(entity));
+                        connected.AddRange(graph.Destinations(entity));
                         break;
                 }
                 //keep unique only
                 foreach (Guid d in connected)
                 {
-                    if (!adjacency[vertex].Contains(d))
-                        adjacency[vertex].Add(d);
+                    if (!adjacency[entity].Contains(d))
+                        adjacency[entity].Add(d);
                 }
 
             }

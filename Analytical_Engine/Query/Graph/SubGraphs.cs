@@ -48,16 +48,16 @@ namespace BH.Engine.Analytical
             m_MarkedEntity = new Dictionary<Guid, int>();
             m_MarkedRelation = new Dictionary<Guid, int>();
             m_SubNumber = 0;
-            graph.Entities.Keys.ToList().ForEach(node => m_MarkedEntity[node] = -1);
+            graph.Entities.Keys.ToList().ForEach(entity => m_MarkedEntity[entity] = -1);
             graph.Relations.ForEach(rel => m_MarkedRelation[rel.BHoM_Guid] = -1);
             Random random = new Random(); 
             
             while (m_MarkedEntity.ContainsValue(-1))
             {
-                List<Guid> nodes = m_MarkedEntity.Where(pair => pair.Value == -1)
+                List<Guid> entitys = m_MarkedEntity.Where(pair => pair.Value == -1)
                                            .Select(pair => pair.Key).ToList();
-                //random start node
-                Guid start = nodes[random.Next(0, nodes.Count)];
+                //random start entity
+                Guid start = entitys[random.Next(0, entitys.Count)];
 
                 graph.Traverse(start);
 
@@ -72,14 +72,14 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void Traverse(this Graph graph, Guid node)
+        private static void Traverse(this Graph graph, Guid entity)
         {
-            m_MarkedEntity[node] = m_SubNumber;
+            m_MarkedEntity[entity] = m_SubNumber;
            
-            foreach(Guid c in m_Adjacency[node])
+            foreach(Guid c in m_Adjacency[entity])
             {
                 //tag the relation
-                IRelation relation = graph.Relations.Find(r => r.Source.Equals(node) && r.Target.Equals(c));
+                IRelation relation = graph.Relations.Find(r => r.Source.Equals(entity) && r.Target.Equals(c));
                 if (relation != null)
                     m_MarkedRelation[relation.BHoM_Guid] = m_SubNumber;
 

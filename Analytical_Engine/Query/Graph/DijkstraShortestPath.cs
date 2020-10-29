@@ -77,8 +77,8 @@ namespace BH.Engine.Analytical
             List<IBHoMObject> objPath = new List<IBHoMObject>();
             shortestPath.ForEach(g => objPath.Add(graph.Entities[g]));
 
-            List<IBHoMObject> nodesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => graph.Entities[kvp.Key]).ToList();
-            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "DijkstraShortestPath", -1, objPath, length, cost, nodesVisited);
+            List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => graph.Entities[kvp.Key]).ToList();
+            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "DijkstraShortestPath", -1, objPath, length, cost, entitiesVisited);
             return result;
         }
 
@@ -102,9 +102,9 @@ namespace BH.Engine.Analytical
             do
             {
                 prioQueue = prioQueue.OrderBy(x => m_Fragments[x].MinCostToSource).ToList();
-                Guid node = prioQueue.First();
-                prioQueue.Remove(node);
-                List<IRelation> relations = graph.Relations.FindAll(link => link.Source.Equals(node));
+                Guid currentEntity = prioQueue.First();
+                prioQueue.Remove(currentEntity);
+                List<IRelation> relations = graph.Relations.FindAll(link => link.Source.Equals(currentEntity));
                 
                 //use weight to define cost to end
                 foreach (IRelation r in relations)
@@ -112,44 +112,44 @@ namespace BH.Engine.Analytical
 
                 List<Guid> connections = relations.Select(link => link.Target).ToList();
 
-                foreach (Guid childNode in connections.OrderBy(x => m_Fragments[x].Cost))
+                foreach (Guid childEntity in connections.OrderBy(x => m_Fragments[x].Cost))
                 {
                     
-                    if (m_Fragments[childNode].Visited)
+                    if (m_Fragments[childEntity].Visited)
                         continue;
-                    //if min cost to start is null or cost of this node is less than child node cost
-                    if (!m_Fragments[childNode].MinCostToSource.HasValue ||
-                        m_Fragments[node].MinCostToSource + m_Fragments[childNode].Cost < m_Fragments[childNode].MinCostToSource)
+                    //if min cost to start is null or cost of this entity is less than child entity cost
+                    if (!m_Fragments[childEntity].MinCostToSource.HasValue ||
+                        m_Fragments[currentEntity].MinCostToSource + m_Fragments[childEntity].Cost < m_Fragments[childEntity].MinCostToSource)
                     {
                         //set cost
-                        m_Fragments[childNode].MinCostToSource = m_Fragments[node].MinCostToSource + m_Fragments[childNode].Cost;
-                        //set nearest node to start
-                        m_Fragments[childNode].NearestToSource = node;
+                        m_Fragments[childEntity].MinCostToSource = m_Fragments[currentEntity].MinCostToSource + m_Fragments[childEntity].Cost;
+                        //set nearest currentEntity to start
+                        m_Fragments[childEntity].NearestToSource = currentEntity;
                         //add to queue 
-                        if (!prioQueue.Contains(childNode))
-                            prioQueue.Add(childNode);
+                        if (!prioQueue.Contains(childEntity))
+                            prioQueue.Add(childEntity);
                     }
                 }
-                m_Fragments[node].Visited = true;
-                if (node.Equals(end))
+                m_Fragments[currentEntity].Visited = true;
+                if (currentEntity.Equals(end))
                     return;
             } while (prioQueue.Any());
         }
 
         /***************************************************/
-        private static void DijkstraResult(List<Guid> list, Guid node, ref double length, ref double cost)
+        private static void DijkstraResult(List<Guid> list, Guid currentEntity, ref double length, ref double cost)
         {
-            if (m_Fragments[node].NearestToSource == Guid.Empty)
+            if (m_Fragments[currentEntity].NearestToSource == Guid.Empty)
                 return;
-            Guid n = m_Fragments[node].NearestToSource;
+            Guid n = m_Fragments[currentEntity].NearestToSource;
             list.Add(n);
-            //assuming Dijkstra use is non-spatial
+            //assuming Dijkstra use is non-spatial increment by 1
             length += 1;
 
             if(m_Fragments[n].Cost.HasValue)
                 cost += m_Fragments[n].Cost.Value;
 
-            DijkstraResult(list, n,ref length, ref cost);
+            DijkstraResult(list, n, ref length, ref cost);
         }
 
         /***************************************************/
