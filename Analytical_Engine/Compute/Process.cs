@@ -26,7 +26,6 @@ using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
 using BH.oM.Base;
 using BH.oM.Dimensional;
-using BH.oM.Physical.Elements;
 using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Analytical
@@ -46,6 +45,7 @@ namespace BH.Engine.Analytical
         {
             return Process(process as dynamic, source, target);
         }
+
         /***************************************************/
 
         [Description("Execute processes assigned to a relation")]
