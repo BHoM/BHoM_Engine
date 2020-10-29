@@ -27,6 +27,7 @@ using BH.oM.Analytical.Elements;
 using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Physical.Elements;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Analytical
 {
@@ -37,6 +38,10 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Execute processes assigned to a relation")]
+        [Input("process", "IProcess to execute.")]
+        [Input("source", "IBHoMObject that is the source of this relation.")]
+        [Input("target", "IBHoMObject that is the target of this relation.")]
+        [Output("process result", "Results from the process.")]
         public static ProcessResult IProcess(this IProcess process, IBHoMObject source, IBHoMObject target)
         {
             return Process(process as dynamic, source, target);
@@ -44,6 +49,10 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Execute processes assigned to a relation")]
+        [Input("process", "ColumnGridProcess to execute.")]
+        [Input("source", "IBHoMObject that is the source of this relation.")]
+        [Input("target", "IBHoMObject that is the target of this relation.")]
+        [Output("process result", "Results from the process.")]
         public static ProcessResult Process(this ColumnGridProcess process, IBHoMObject source, IBHoMObject target)
         {
             IElement1D sourceElement = source as IElement1D;

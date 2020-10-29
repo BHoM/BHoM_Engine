@@ -1,6 +1,8 @@
 ﻿using BH.oM.Analytical.Elements;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,6 +15,13 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Public Methods                  ****/
         /***************************************************/
+
+        [Description("Convert a graph to DotFormat for visualisation")]
+        [Input("graph", "The Graph to convert.")]
+        [Input("shape", "The optional DotFormat shape to represent Graph entities. Default is \"box\".")]
+        [Input("fontsize", "The optional DotFormat fontsize for text in the DotFormat. Default is 12.")]
+        [Output("dotFormat", "The DotFormat string that can be copied and pasted in on line viewers like https://visjs.github.io/vis-network/examples/network/data/dotLanguage/dotPlayground.html for quick visualisation.")]
+        
         public static string ToDotFormat(this Graph graph, string shape = "box", int fontsize = 12)
         {
             string pattern = "[\\~#%&*{}()/:<>?|\"-]";

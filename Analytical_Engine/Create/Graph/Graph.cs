@@ -31,9 +31,6 @@ using BH.Engine.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.oM.Geometry;
 using System.ComponentModel;
 using BH.Engine.Geometry;
 using BH.Engine.GraphFlow;
@@ -52,7 +49,7 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of IBHoMObjects, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
         [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
-        [Input(" decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
+        [Input("decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
         public static Graph Graph(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 12)
         {
@@ -64,7 +61,7 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
         [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
-        [Input(" decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
+        [Input("decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
 
         public static Graph Graph(List<IRelation> relations, List<string> propertiesToConsider = null, int decimalPlaces = 12)
@@ -90,7 +87,7 @@ namespace BH.Engine.Analytical
 
             if (clonedEntities.Count == 0)
             {
-                Reflection.Compute.RecordWarning("No IBHoMObjects found");
+                Reflection.Compute.RecordWarning("No IBHoMObjects found.");
                 return graph;
             }
 
@@ -284,6 +281,9 @@ namespace BH.Engine.Analytical
                 
             return entity;
         }
+
+        /***************************************************/
+
         private static IElement0D ClonePositionGuid(this IElement0D element0D, Point position)
         {
             element0D = element0D.DeepClone();
@@ -291,6 +291,7 @@ namespace BH.Engine.Analytical
             ((IBHoMObject)element0D).BHoM_Guid = Guid.NewGuid();
             return element0D;
         }
+
         /***************************************************/
         private static List<IRelation> relationsToAdd(IRelation relation, RelationDirection linkDirection)
         {
@@ -309,25 +310,22 @@ namespace BH.Engine.Analytical
             }
             return relations;
         }
-       
+
         /***************************************************/
 
-        private static void SetMatchedObjects(Diff diff)
+        [Description("Extract relations from a collection of IBHoMObjects")]
+        private static List<IRelation> ToRelation(this List<IBHoMObject> objs)
         {
-            m_MatchedObjects = new Dictionary<Guid, IBHoMObject>();
-            foreach (Tuple<object, object> tuple in diff.UnchangedObjects)
+            List<IRelation> relations = new List<IRelation>();
+            foreach (IBHoMObject obj in objs)
             {
-                if (tuple.Item1 is IBHoMObject && tuple.Item2 is IBHoMObject)
-                {
-                    IBHoMObject original = (IBHoMObject)tuple.Item1;
-                    IBHoMObject matched = (IBHoMObject)tuple.Item2;
-                    if (!m_MatchedObjects.ContainsKey(original.BHoM_Guid))
-                        m_MatchedObjects.Add(original.BHoM_Guid, matched);
-                }
-
+                List<IFragment> dependencyFragments = obj.GetAllFragments(typeof(IDependencyFragment));
+                foreach (IDependencyFragment dependency in dependencyFragments)
+                    relations.AddRange(dependency.IToRelation(obj.BHoM_Guid));
             }
-
+            return relations;
         }
+
         /***************************************************/
         private static bool ToCloseToAny(List<IElement0D> entities, IElement0D entity, double tolerance)
         {

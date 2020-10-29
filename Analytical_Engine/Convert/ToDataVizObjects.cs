@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Analytical
 {
@@ -14,6 +16,11 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Public Constructors             ****/
         /***************************************************/
+
+        [Description("Convert a graph to CustomOBjects for visualisation")]
+        [Input("graph", "The Graph to convert.")]
+        [Output("custom objects", "CUstom objects representing the Graph.")]
+
         public static List<CustomObject> ToDataVizObjects(this Graph graph)
         {
             List<CustomObject> objects = new List<CustomObject>();
