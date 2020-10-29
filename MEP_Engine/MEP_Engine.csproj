@@ -94,7 +94,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\CircularEquivalentDiameter.cs" />
-    <Compile Include="Query\EquipmentLengthByPart.cs" />
     <Compile Include="Query\FaceAreaByVelocity.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HydraulicDiameter.cs" />
