@@ -74,9 +74,10 @@
     <Compile Include="Convert\ToDataVizObjects.cs" />
     <Compile Include="Convert\ToDotFormat.cs" />
     <Compile Include="Convert\ToRelation.cs" />
+    <Compile Include="Convert\ToSpatialRelations.cs" />
     <Compile Include="Create\Graph\Graph.cs" />
     <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
-    <Compile Include="Modify\ProcessView.cs" />
+    <Compile Include="Modify\Layout.cs" />
     <Compile Include="Modify\RemoveIsolatedEntities.cs" />
     <Compile Include="Modify\Reverse.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
@@ -102,7 +103,9 @@
     <Compile Include="Query\Graph\FilterEntities.cs" />
     <Compile Include="Query\Graph\FilterRelations.cs" />
     <Compile Include="Query\Graph\Incoming.cs" />
+    <Compile Include="Query\Graph\ProcessGraph.cs" />
     <Compile Include="Query\Graph\Relation.cs" />
+    <Compile Include="Query\Graph\RelationArrow.cs" />
     <Compile Include="Query\Graph\RelationLength.cs" />
     <Compile Include="Query\Graph\NotSinks.cs" />
     <Compile Include="Query\Graph\Sinks.cs" />
