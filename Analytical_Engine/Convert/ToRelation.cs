@@ -3,6 +3,7 @@ using BH.oM.Analytical.Elements;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,13 +15,24 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Convert IDependencyFragment assigned to relations")]
+
+        [Description("Convert an IDependencyFragment assigned to relations")]
+        [Input("dependency", "The IDependencyFragment to convert.")]
+        [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
+        [Output("relations", "Collection of the converted relations.")]
+
         public static List<IRelation> IToRelation(this IDependencyFragment dependency, Guid owningEntity)
         {
             return ToRelation(dependency as dynamic, owningEntity);
         }
+
         /***************************************************/
-        [Description("Convert InputsFragment assigned to relations")]
+
+        [Description("Convert an InputsFragment assigned to relations")]
+        [Input("dependency", "The InputsFragment to convert.")]
+        [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
+        [Output("relations", "Collection of the converted relations.")]
+
         public static List<IRelation> ToRelation(this InputsFragment dependency, Guid owningEntity)
         {
             List<IRelation> relations = new List<IRelation>();
@@ -29,7 +41,12 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        [Description("Convert DependencyFragment assigned to relations")]
+
+        [Description("Convert a DependencyFragment assigned to relations")]
+        [Input("dependency", "The DependencyFragment to convert.")]
+        [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
+        [Output("relations", "Collection of the converted relations.")]
+
         public static List<IRelation> ToRelation(this DependencyFragment dependency, Guid owningEntity)
         {
             List<IRelation> relations = new List<IRelation>();
@@ -41,7 +58,12 @@ namespace BH.Engine.Analytical
             return relations;
         }
         /***************************************************/
-        [Description("Convert SpatialDependencyFragment assigned to relations")]
+
+        [Description("Convert a SpatialDependencyFragment assigned to relations")]
+        [Input("dependency", "The DependencyFragment to convert.")]
+        [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
+        [Output("relations", "Collection of the converted relations.")]
+
         public static List<IRelation> ToRelation(this SpatialDependencyFragment dependency, Guid owningEntity)
         {
             List<IRelation> relations = new List<IRelation>();
@@ -59,7 +81,11 @@ namespace BH.Engine.Analytical
         /**** Public Methods non IDependency converts   ****/
         /***************************************************/
 
-        [Description("Convert an ILink to a collection of relations")]
+        [Description("Convert an ILink to a collection of relations.")]
+        [Input("link", "The ILink to convert.")]
+        [Input("linkDirection", "The optional RelationDirection defining the direction of the relation. Default is RelationDirection.Forwards.")]
+        [Output("relations", "Collection of the converted relations.")]
+
         public static List<IRelation> ToRelation<TNode>(this ILink<TNode> link, RelationDirection linkDirection = RelationDirection.Forwards)
             where TNode : INode
         {
@@ -81,8 +107,13 @@ namespace BH.Engine.Analytical
             return relations;
         }
         /***************************************************/
-        [Description("Convert a collection of ILinks to a collection of Relations")]
+
+        [Description("Convert a collection of ILinks to a collection of relations.")]
+        [Input("links", "The collection of ILinks to convert.")]
+        [Input("linkDirection", "The optional RelationDirection defining the direction of the relation. Default is RelationDirection.Forwards.")]
+        [Output("relations", "Collection of the converted relations.")]
         //UI cannot handle the list of generic inputs yet
+
         public static List<IRelation> ToRelation<TNode>(this List<ILink<TNode>> links, RelationDirection linkDirection)
             where TNode : INode
         {
@@ -90,8 +121,13 @@ namespace BH.Engine.Analytical
             links.ForEach(lnk => lnk.ToRelation(linkDirection));
             return relations;
         }
+
         /***************************************************/
-        [Description("Convert a an ILink to a single forward direction relation")]
+
+        [Description("Convert a an ILink to a single forward direction relation.")]
+        [Input("link", "The ILink to convert.")]
+        [Output("relation", "The converted relation.")]
+
         private static IRelation ToRelation<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
@@ -111,19 +147,6 @@ namespace BH.Engine.Analytical
             relation.Subgraph = subgraph;
 
             return relation;
-        }
-        /***************************************************/
-        [Description("Extract relations from a collection of IBHoMObjects")]
-        public static List<IRelation> ToRelation(this List<IBHoMObject> objs)
-        {
-            List<IRelation> relations = new List<IRelation>();
-            foreach (IBHoMObject obj in objs)
-            {
-                List<IFragment> dependencyFragments = obj.GetAllFragments(typeof(IDependencyFragment));
-                foreach (IDependencyFragment dependency in dependencyFragments)
-                    relations.AddRange(dependency.IToRelation(obj.BHoM_Guid));
-            }
-            return relations;
         }
 
         /***************************************************/
