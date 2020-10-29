@@ -32,6 +32,8 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.Engine.Spatial;
+using BH.oM.Analytical.Fragments;
+using BH.Engine.Base;
 
 namespace BH.Engine.Analytical
 {
@@ -184,6 +186,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
         [Description("Gets the geometry of a Graph. Method required for automatic display in UI packages.")]
         [Input("graph", "Graph to get the geometry from.")]
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
@@ -195,6 +198,16 @@ namespace BH.Engine.Analytical
             if (spatialGraph.Entities.Count == 0 || spatialGraph.Relations.Count == 0)
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
 
+            return SpatialGraphGeometry(spatialGraph);
+
+        }
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+        private static CompositeGeometry SpatialGraphGeometry(Graph spatialGraph)
+        {
+            List<IGeometry> geometries = new List<IGeometry>();
+
             foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in spatialGraph.Entities)
             {
                 if (kvp.Value is IElement0D)
@@ -202,56 +215,12 @@ namespace BH.Engine.Analytical
                     IElement0D entity = kvp.Value as IElement0D;
                     geometries.Add(entity.IGeometry());
                 }
+            }
+            foreach (SpatialRelation spatialRelation in spatialGraph.Relations)
+                geometries.Add(spatialRelation.RelationArrow());
 
-            }
-            foreach(SpatialRelation spatialRelation in spatialGraph.Relations)
-            {
-                ICurve curve = spatialRelation.Curve;
-                geometries.Add(curve);
-                if (curve is NurbsCurve)
-                {
-                    NurbsCurve nurbsCurve = curve as NurbsCurve;
-                    curve = Engine.Geometry.Create.Polyline(nurbsCurve.ControlPoints);
-                }
-                List<ICurve> nonNurbs = new List<ICurve>();
-                foreach(ICurve sub in curve.ISubParts())
-                {
-                    if(sub is NurbsCurve)
-                    {
-                        NurbsCurve nurbsCurve = sub as NurbsCurve;
-                        nonNurbs.Add(Engine.Geometry.Create.Polyline(nurbsCurve.ControlPoints));
-                    }
-                    else
-                    {
-                        nonNurbs.Add(sub);
-                        
-                    }
-                    
-                }
-                foreach (ICurve c in nonNurbs)
-                    geometries.Add(ArrowHead(c.IPointAtLength(c.ILength() * 0.9), c.IEndPoint()));
-                
-            }
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
         }
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-        private static CompositeGeometry ArrowHead(Point start, Point end)
-        {
-            Vector back = start - end;
-            Vector perp = back.CrossProduct(Vector.ZAxis);
-            if(perp.Length() == 0)
-                perp = back.CrossProduct(Vector.YAxis);
-            perp = perp.Normalise();
-            double l = perp.Length();
-            perp = perp * start.Distance(end)/2;
-            Point p1 = end + (back + perp);
-            Point p2 = end + (back - perp);
-            List<IGeometry> geometries = new List<IGeometry>();
-            geometries.Add(BH.Engine.Geometry.Create.Line(end, p1));
-            geometries.Add(BH.Engine.Geometry.Create.Line(end, p2));
-            return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
-        }
+        
     }
 }
