@@ -115,6 +115,7 @@
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\Thickness.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
+    <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\Walls.cs" />
     <Compile Include="Query\Windows.cs" />
   </ItemGroup>
