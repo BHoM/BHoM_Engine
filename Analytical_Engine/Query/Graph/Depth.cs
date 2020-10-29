@@ -45,20 +45,20 @@ namespace BH.Engine.Analytical
         public static Dictionary<Guid, int> Depth(Dictionary<Guid, List<Guid>> adjacency, Guid startEntity)
         {
             //https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
-            // dictionary to store level of each node  
+            // dictionary to store level of each entity  
             Dictionary<Guid, int> level = new Dictionary<Guid, int>();
             if (!adjacency.ContainsKey(startEntity))
             {
                 Reflection.Compute.RecordError("startEntity provided cannot be found in the adjacency dictionary. Ensure the entity exists in the original graph");
                 return level;
             }
-            // dictionary to store when node has been visited
+            // dictionary to store when entity has been visited
             Dictionary<Guid, bool> marked = new Dictionary<Guid, bool>();
             // create a queue  
             Queue<Guid> que = new Queue<Guid>();
             // enqueue element x  
             que.Enqueue(startEntity);
-            // initialize level of source node to 0  
+            // initialize level of source entity to 0  
             level[startEntity] = 0;
             // marked it as visited  
             marked[startEntity] = true;
@@ -67,10 +67,10 @@ namespace BH.Engine.Analytical
             {
                 // dequeue element  
                 startEntity = que.Dequeue();
-                // traverse neighbors of node x  
+                // traverse neighbours of startEntity 
                 foreach (Guid b in adjacency[startEntity])
                 {
-                    // b is neighbor of node x  
+                    // b is neighbour of startEntity 
                     // if b is not marked already  
                     if (!marked.ContainsKey(b))
                     {

@@ -48,10 +48,10 @@ namespace BH.Engine.Analytical
 
         [Description("Create a graph from a collection of IBHoMObjects, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
-        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
-        [Input("decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
+        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities. If none are supplied all object properties are considered.")]
+        [Input("decimalPlaces", "Optional number of decimal places used for comparing double, decimal and float types when attempting to find unique entities. Default is 3.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 12)
+        public static Graph Graph(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 3)
         {
             return Graph(entities, new List<IRelation>(), propertiesToConsider , decimalPlaces);
         }
@@ -60,11 +60,11 @@ namespace BH.Engine.Analytical
 
         [Description("Create a graph from a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
-        [Input("decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
+        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities. If none are supplied all object properties are considered.")]
+        [Input("decimalPlaces", "Optional number of decimal places used for comparing double, decimal and float types when attempting to find unique entities. Default is 3.")]
         [Output("graph", "Graph.")]
 
-        public static Graph Graph(List<IRelation> relations, List<string> propertiesToConsider = null, int decimalPlaces = 12)
+        public static Graph Graph(List<IRelation> relations, List<string> propertiesToConsider = null, int decimalPlaces = 3)
         {
             return Graph(new List<IBHoMObject>(), relations, propertiesToConsider, decimalPlaces);
         }
@@ -74,16 +74,17 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of IBHoMObjects, a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "Optional collection of IBHoMOBjects to use as Graph entities. Entities can include DependencyFragments to determine the Graph Relations.")]
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities.")]
-        [Input("decimalPlaces", "Optional number of decimal places used when attempting to find unique entities.")]
+        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities. If none are supplied all object properties are considered.")]
+        [Input("decimalPlaces", "Optional number of decimal places used for comparing double, decimal and float types when attempting to find unique entities. Default is 3.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, List<string> propertiesToConsider = null, int decimalPlaces = 12)
+        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, List<string> propertiesToConsider = null, int decimalPlaces = 3)
         {
             Graph graph = new Graph();
 
             List<IBHoMObject> clonedEntities = entities.DeepClone();
+            List<IRelation> clonedRelations = relations.DeepClone();
             //add objects from sub graphs if any
-            clonedEntities.AddRange(relations.SelectMany(r => r.Subgraph.Entities.Values.DeepClone()).ToList());
+            clonedEntities.AddRange(clonedRelations.SelectMany(r => r.Subgraph.Entities.Values.DeepClone()).ToList());
 
             if (clonedEntities.Count == 0)
             {
@@ -96,10 +97,10 @@ namespace BH.Engine.Analytical
 
             //SetMatchedObjects(diff);
 
-            //add all provided relations to single list
-            relations.AddRange(clonedEntities.ToRelation()); 
+            //convert dependency fragments attached to entities and add to relations
+            clonedRelations.AddRange(clonedEntities.ToRelation()); 
             //add to graph
-            graph.Relations.AddRange(relations);
+            graph.Relations.AddRange(clonedRelations);
 
             //add unique objects
             foreach (KeyValuePair< Guid, IBHoMObject> kvp in m_MatchedObjects)
@@ -121,11 +122,11 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of ICurves.")]
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
         [Input("entities", "Optional collection of IBHoMObjects to use as Graph entities.")]
-        [Input("snappingTolerance", "Optional tolerance between connectingCurves end points and provided entities.")]
+        [Input("snappingTolerance", "Optional tolerance used when comparing connectingCurves end points and provided entities. Default is Tolerance.Distance.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
 
-        public static Graph Graph<T>(List<ICurve> connectingCurves, IElement0D prototypeEntity, List<IElement0D> entities = null, double snappingTolerance = 1e-6, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static Graph Graph<T>(List<ICurve> connectingCurves, IElement0D prototypeEntity, List<IElement0D> entities = null, double snappingTolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
         where T : IElement0D
         {
 

@@ -42,46 +42,33 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Identifies unique objects from a collection IBHoMObjects using hash comparison.")]
-        [Input("entities", "A collection of IBHoMObjects to try and find unique instances.")]
-        [Input("propertiesToConsider", "Property names to consider when attempting to determine unique entities.")]
-        [Input("decimalPlaces", "The decimal places to consider when comparing double, decimal and float types.")]
+        [Input("entities", "A collection of IBHoMObjects from which unique instances are identified.")]
+        [Input("propertiesToConsider", "Property names to consider when attempting to determine unique entities. If none are supplied all object properties are considered.")]
+        [Input("decimalPlaces", "The decimal places to consider when comparing double, decimal and float types. Default is 3.")]
         [Output("unique entities", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
         
-        public static Dictionary<Guid, IBHoMObject> DiffEntities(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 12)
+        public static Dictionary<Guid, IBHoMObject> DiffEntities(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 3)
         {
-            
             Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
-            
-            foreach (IBHoMObject entityA in entities)
-            {
-                foreach (IBHoMObject entityB in entities)
-                {
-                    if(entityA.GetType() == entityB.GetType())
-                    {
-                        //bool match = CompareEntities(entityA, entityB, propertiesToConsider , decimalPlaces)
-                        List<string> props = new List<string>()
-                        {
-                            "Position.X",
-                            "Position.Y",
-                            "Position.Z",
-                            "StartNode.Position.X",
-                            "StartNode.Position.Y",
-                            "StartNode.Position.Z",
-                            "EndNode.Position.X",
-                            "EndNode.Position.Y",
-                            "EndNode.Position.Z",
+            Dictionary<IBHoMObject, string> objectHash = new Dictionary<IBHoMObject, string>();
+            //remove old hashes
+            entities.ForEach(ent => ent.RemoveFragment(typeof(HashFragment)));
+            //generate hashes
+            entities.ForEach(ent => objectHash.Add(ent,ent.HashEntity(propertiesToConsider, decimalPlaces)));
 
-                        };
-                        DiffConfig diffConfig = new DiffConfig()
+            foreach (KeyValuePair<IBHoMObject, string> entityA in objectHash)
+            {
+                foreach (KeyValuePair<IBHoMObject, string> entityB in objectHash)
+                {
+                    //only if same object type
+                    if(entityA.Key.GetType() == entityB.Key.GetType())
+                    {
+                        //compare hashes
+                        if (entityA.Value == entityB.Value)
                         {
-                            PropertiesToConsider = props,
-                            NumericTolerance = 0.001,
-                        };
-                        Dictionary<string, Tuple<object, object>> modifiedProps = Diffing.Query.DifferentProperties(entityA, entityB, diffConfig);
-                        if (modifiedProps == null)
-                        {
-                            //matched entities
-                            replaceMap[entityA.BHoM_Guid] = entityB;
+                            //store in map dictionary where key is original Guid and Value is replacement object
+                            replaceMap[entityA.Key.BHoM_Guid] = entityB.Key;
+                            //first match has been found so break inner loop.
                             break;
                         }
                     }
@@ -92,28 +79,12 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        private static bool CompareEntities(IBHoMObject entityA, IBHoMObject entityB, List<string> propertiesToConsider = null, int decimalPlaces = 12)
-        {
-            return HashEntity(entityA, propertiesToConsider , decimalPlaces) == HashEntity(entityB, propertiesToConsider, decimalPlaces);
-        }
 
-        /***************************************************/
-
-        private static string HashEntity(IBHoMObject entity, List<string> propertiesToConsider = null, int decimalPlaces = 12)
+        private static string HashEntity(this IBHoMObject entity, List<string> propertiesToConsider, int decimalPlaces)
         {
             List<string> propertiesToIgnore = BH.Engine.Reflection.Query.PropertyNames(entity).Except(propertiesToConsider).ToList();
 
-            // The current Hash must not be considered when computing the hash. Remove HashFragment if present. 
-            IBHoMObject bhomobj = BH.Engine.Base.Query.DeepClone(entity);
-            bhomobj.Fragments.Remove(typeof(HashFragment));
-            
-            Dictionary<string, int> fractionalDigitsPerProperty = new Dictionary<string, int>();
-            //fractionalDigitsPerProperty: fractionalDigitsPerProperty
-            //assign decimal places to hash input
-
-            propertiesToConsider.ForEach(p => fractionalDigitsPerProperty.Add(p, decimalPlaces));
-
-            return "";// Base.Compute.Hash(bhomobj, propertiesToIgnore );
+            return Base.Query.Hash(entity, propertiesToIgnore,  fractionalDigits: decimalPlaces );
         }
         /***************************************************/
     }
