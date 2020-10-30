@@ -22,6 +22,8 @@
 
 using BH.oM.Geometry;
 using BH.oM.Physical.Materials;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Physical
@@ -31,6 +33,10 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods - Bulk Material            ****/
         /***************************************************/
+
+        [Description("Return the total volume of BulkMaterial")]
+        [Input("bulkMaterial", "Solid geometric elements that have a material composition")]
+        [Output("volume","The combined volume of BulkMaterial")]
         public static double Volume(this BulkMaterial bulkMaterial)
         {
             return bulkMaterial.Geometry.Select(x => BH.Engine.Geometry.Query.IVolume((ISolid)x)).Sum();
