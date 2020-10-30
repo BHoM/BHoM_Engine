@@ -21,8 +21,9 @@
  */
 
 using BH.Engine.Base;
-using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
+using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -34,73 +35,62 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Analytical
 {
-    public static partial class Modify
+    public static partial class Query 
     {
         /***************************************************/
-        /****           Public Methods                  ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Modifies an IRelation by reversing it.")]
-        [Input("relation", "The IRelation to reverse.")]
-        [Output("relation", "The reversed IRelation.")]
+        [Description("Returns a Graph view defined by the view provided.")]
+        [Input("graph", "The Graph to query.")]
+        [Input("view", "The required IView.")]
+        [Output("graph", "The view of the original Graph.")]
 
-        public static IRelation IReverse(this IRelation relation)
+        public static Graph IGraphView(this Graph graph, IView view)
         {
-            return Reverse(relation as dynamic);
+            return GraphView(graph, view as dynamic);
         }
 
         /***************************************************/
 
-        [Description("Modifies a Relation by reversing it.")]
-        [Input("relation", "The Relation to reverse.")]
-        [Output("relation", "The reversed Relation.")]
+        [Description("Returns a Graph view that contains only spatial entities. Spatial entities are those implementing IElement0D.")]
+        [Input("graph", "The Graph to query.")]
+        [Input("view", "The SpatialView.")]
+        [Output("graph", "The spatial Graph.")]
 
-        public static IRelation Reverse(this Relation relation)
+        private static Graph GraphView(this Graph graph, SpatialView view)
         {
-            IRelation flip = relation.FlipSourceTarget();
-            ICurve curve = relation.Curve.DeepClone();
-            flip.Curve = curve.IFlip();
-            return flip;
-        }
-        
-
-        /***************************************************/
-
-        [Description("Modifies a Graph by reversing all Relations within it.")]
-        [Input("graph", "The Graph to reverse.")]
-        [Output("graph", "The reversed Graph.")]
-
-        public static Graph Reverse(this Graph graph)
-        {
-            List<IRelation> reversed = new List<IRelation>();
-            foreach (IRelation relation in graph.Relations)
-                reversed.Add(relation.Reverse());
-
-            graph.Relations = reversed;
-            return graph;
-        }
-        
-        /***************************************************/
-        /**** Fallback Method                           ****/
-        /***************************************************/
-        public static IRelation Reverse(this IRelation relation)
-        {
-
-            return relation;
+            Graph spatialGraph = graph.DeepClone();
+            spatialGraph.Entities = graph.FilterEntities(typeof(IElement0D)).DeepClone();
+            Modify.IRelationCurves(spatialGraph, view);
+            return spatialGraph;
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-        private static IRelation FlipSourceTarget(this IRelation relation)
-        {
-            Guid oldSource = relation.Source;
-            Guid oldTarget = relation.Target;
-            relation.Source = oldTarget;
-            relation.Target = oldSource;
-            relation.Subgraph.Reverse();
 
-            return relation;
+        [Description("Returns a Graph view that contains only spatial entities. Spatial entities are those implementing IElement0D.")]
+        [Input("graph", "The Graph to query.")]
+        [Input("view", "The ProcessView.")]
+        [Output("graph", "The process Graph.")]
+
+        private static Graph GraphView(this Graph graph, ProcessView view)
+        {
+            Graph processGraph = graph.DeepClone();
+            processGraph = processGraph.FilterGraph(view.ClustersToIgnore);
+            Modify.ILayout(processGraph, view.layout as dynamic);
+            Modify.IRelationCurves(processGraph, view);
+            return processGraph;
         }
+        /***************************************************/
+        /**** Fallback Methods                          ****/
+        /***************************************************/
+
+        private static Graph GraphView(this Graph graph, IView view)
+        {
+            Reflection.Compute.RecordError("IView provided has not been implemented.");
+            return new Graph();
+        }
+
+        /***************************************************/
     }
 }

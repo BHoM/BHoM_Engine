@@ -193,7 +193,7 @@ namespace BH.Engine.Analytical
         public static CompositeGeometry Geometry(this Graph graph)
         {
             List<IGeometry> geometries = new List<IGeometry>();
-            Graph spatialGraph = graph.SpatialGraph();
+            Graph spatialGraph = graph.GraphView(new SpatialView());
 
             if (spatialGraph.Entities.Count == 0 || spatialGraph.Relations.Count == 0)
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
@@ -216,8 +216,8 @@ namespace BH.Engine.Analytical
                     geometries.Add(entity.IGeometry());
                 }
             }
-            foreach (SpatialRelation spatialRelation in spatialGraph.Relations)
-                geometries.Add(spatialRelation.RelationArrow());
+            foreach (IRelation relation in spatialGraph.Relations)
+                geometries.Add(relation.RelationArrow());
 
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
         }

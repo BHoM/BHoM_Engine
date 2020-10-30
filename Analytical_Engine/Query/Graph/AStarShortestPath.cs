@@ -65,7 +65,8 @@ namespace BH.Engine.Analytical
 
         public static ShortestPathResult AStarShortestPath(Graph graph, Guid start, Guid end)
         {
-            m_SpatialGraph = graph.SpatialGraph();
+            m_SpatialGraph = graph.GraphView(new SpatialView());
+
             if (m_SpatialGraph.Entities.Count == 0 || m_SpatialGraph.Relations.Count == 0)
             {
                 Reflection.Compute.RecordWarning("The graph provided does not contain sufficient entities or relations that implement IElement0D and IElement1D.\n" +
@@ -123,8 +124,8 @@ namespace BH.Engine.Analytical
                 //use weight AND length of the relation to define cost to end
                 foreach (IRelation r in relations)
                 {
-                    SpatialRelation spatialRelation = r as SpatialRelation;
-                    double length = graph.RelationLength(spatialRelation);
+                    
+                    double length = graph.RelationLength(r);
                     m_Fragments[r.Target].Cost = length * r.Weight;
                 }
                     
@@ -160,7 +161,7 @@ namespace BH.Engine.Analytical
             Guid n = m_Fragments[entity].NearestToSource;
             list.Add(n);
             //relations linking entities working backwards from end
-            List<SpatialRelation> relations = m_SpatialGraph.Relation(m_SpatialGraph.Entities[n], m_SpatialGraph.Entities[entity]).Cast<SpatialRelation>().ToList();
+            List<IRelation> relations = m_SpatialGraph.Relation(m_SpatialGraph.Entities[n], m_SpatialGraph.Entities[entity]).ToList();
             //order by length
             relations = relations.OrderBy(sr => m_SpatialGraph.RelationLength(sr)).ToList();
 

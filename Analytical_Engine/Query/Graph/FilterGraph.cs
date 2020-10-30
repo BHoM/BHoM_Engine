@@ -20,54 +20,52 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
+using BH.Engine.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Analytical.Fragments;
 
 namespace BH.Engine.Analytical
 {
-    public static partial class Query 
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a Graph that contains only spatial entities and relations. Spatial entities are those implementing IElement0D and spatial relations are those implementing SpatialRelation.")]
-        [Input("graph", "The Graph to search.")]
-        [Output("graph", "The spatial Graph.")]
+        [Description("Filter a Graph.")]
+        [Input("graph", "The Graph to filter.")]
+        [Input("ignoreClusters", "The clusters to ignore. Entities in these clusters and the relations defined by them will be removed")]
+        [Output("filtered graph", "The filtered Graph.")]
 
-        public static Graph SpatialGraph(this Graph graph)
+        public static Graph FilterGraph(this Graph graph, List<string> ignoreClusters = null)
         {
-            Graph spatialGraph = new Graph();
-            spatialGraph.Entities = graph.FilterEntities(typeof(IElement0D));
-            spatialGraph.Relations = graph.FilterRelations(typeof(SpatialRelation));
-            spatialGraph.CreateMissingCurves();
-            return spatialGraph;
-        }
+            Graph filteredGraph = graph.DeepClone();
 
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
+            if (ignoreClusters.Count() == 0)
+                return filteredGraph;
 
-        private static void CreateMissingCurves(this Graph graph)
-        {
-            foreach(SpatialRelation spatialRelation in graph.Relations)
+            foreach (IBHoMObject entity in graph.Entities.Values.ToList())
             {
-                if(spatialRelation.Curve == null)
+                EntityViewFragment viewFragment = entity.FindFragment<EntityViewFragment>();
+                if(viewFragment!=null)
                 {
-                    IElement0D source = graph.Entities[spatialRelation.Source] as IElement0D;
-                    IElement0D target = graph.Entities[spatialRelation.Target] as IElement0D;
-                    spatialRelation.Curve = new Line() { Start = source.IGeometry(), End = target.IGeometry() };
+                    if (ignoreClusters.Contains(viewFragment.ClusterName))
+                    {
+                        filteredGraph.RemoveEntity(entity.BHoM_Guid);
+                    }
+                        
                 }
             }
+
+            return filteredGraph;
         }
     }
 }

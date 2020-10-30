@@ -53,29 +53,13 @@ namespace BH.Engine.Analytical
             relations.Add(new Relation() { 
                 Source = dependency.Source, 
                 Target = dependency.Target,
-                Processes = dependency.Processes
+                Processes = dependency.Processes,
+                Curve = dependency.Curve
+
             });
             return relations;
         }
-        /***************************************************/
-
-        [Description("Convert a SpatialDependencyFragment assigned to relations")]
-        [Input("dependency", "The DependencyFragment to convert.")]
-        [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
-        [Output("relations", "Collection of the converted relations.")]
-
-        public static List<IRelation> ToRelation(this SpatialDependencyFragment dependency, Guid owningEntity)
-        {
-            List<IRelation> relations = new List<IRelation>();
-            relations.Add(new SpatialRelation() 
-            { 
-                Source = dependency.Source, 
-                Target = dependency.Target,
-                Curve = dependency.Curve,
-                Processes = dependency.Processes
-            });
-            return relations;
-        }
+        
 
         /***************************************************/
         /**** Public Methods non IDependency converts   ****/
@@ -131,7 +115,7 @@ namespace BH.Engine.Analytical
         private static IRelation ToRelation<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
-            SpatialRelation relation = new SpatialRelation()
+            Relation relation = new Relation()
             {
                 Source = link.StartNode.BHoM_Guid,
                 Target = link.EndNode.BHoM_Guid,

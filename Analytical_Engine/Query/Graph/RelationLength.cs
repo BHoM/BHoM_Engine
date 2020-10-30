@@ -40,20 +40,20 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the length of the ICurve on SpatialRelations or distance between source and target entity if no ICurve has been defined.")]
-        [Input("graph", "The Graph that owns the SpatialRelation.")]
-        [Input("spatialRelation", "The SpatialRelation to query.")]
-        [Output("length", "The length of the SpatialRelation.")]
+        [Description("Returns the length of the ICurve on IRelations or distance between source and target entity if no ICurve has been defined.")]
+        [Input("graph", "The Graph that owns the IRelation.")]
+        [Input("relation", "The IRelation to query.")]
+        [Output("length", "The length of the IRelation.")]
 
-        public static double RelationLength(this Graph graph, SpatialRelation spatialRelation)
+        public static double RelationLength(this Graph graph, IRelation relation)
         {
             double length = 0;
-            if (spatialRelation.Curve != null)
-                length = spatialRelation.Curve.ILength();
+            if (relation.Curve != null)
+                length = relation.Curve.ILength();
             else
             {
-                IElement0D source = m_SpatialGraph.Entities[spatialRelation.Source] as IElement0D;
-                IElement0D target = m_SpatialGraph.Entities[spatialRelation.Target] as IElement0D;
+                IElement0D source = m_SpatialGraph.Entities[relation.Source] as IElement0D;
+                IElement0D target = m_SpatialGraph.Entities[relation.Target] as IElement0D;
                 length = source.IGeometry().Distance(target.IGeometry());
             }
             return length;
