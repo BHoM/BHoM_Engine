@@ -99,6 +99,7 @@
     <Compile Include="Modify\AddMaterialProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\AverageProfileArea.cs" />
+    <Compile Include="Query\TopCentreline.cs" />
     <Compile Include="Query\ConstructionByName.cs" />
     <Compile Include="Query\ExternalPolyline.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Query\Roofs.cs" />
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\Thickness.cs" />
+    <Compile Include="Query\BottomCentreline.cs" />
     <Compile Include="Query\UniqueConstructions.cs" />
     <Compile Include="Query\Walls.cs" />
     <Compile Include="Query\Windows.cs" />
