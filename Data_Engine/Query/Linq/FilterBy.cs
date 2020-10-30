@@ -44,7 +44,7 @@ namespace BH.Engine.Data
         [Input("ignoreStringCase", "Ignore upper/lower case letters if the property filtered by is a text/string.")]
         [Input("exactStringMatch", "If true checks if the property filtered by contains the text value (filtering must be a string/text)")]
         [Output("filteredObjects", "The collection of objects that match the given filter conditions")]
-        public static List<T> FilterBy<T>(this List<T> objects, string propertyName = null, object value = null, bool ignoreStringCase = false, bool exactStringMatch = true)
+        public static List<T> FilterBy<T>(this List<T> objects, string propertyName, object value, bool ignoreStringCase = false, bool exactStringMatch = true)
         {
             if (objects == null || objects.Count == 0)
             {
