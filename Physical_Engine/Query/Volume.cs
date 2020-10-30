@@ -22,6 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Physical.Materials;
+using System.Linq;
 
 namespace BH.Engine.Physical
 {
@@ -32,7 +33,7 @@ namespace BH.Engine.Physical
         /***************************************************/
         public static double Volume(this BulkMaterial bulkMaterial)
         {
-            return BH.Engine.Geometry.Query.IVolume((ISolid)bulkMaterial.Geometry);
+            return bulkMaterial.Geometry.Select(x => BH.Engine.Geometry.Query.IVolume((ISolid)x)).Sum();
         }
 
         /***************************************************/
