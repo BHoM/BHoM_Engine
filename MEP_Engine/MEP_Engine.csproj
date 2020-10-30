@@ -35,6 +35,10 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Analytical_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Architecture_oM">
+      <HintPath>..\..\BHoM\Build\Architecture_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="BHoM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
@@ -73,6 +77,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\PlumbingFixtureWaterDemandPerDay.cs" />
     <Compile Include="Create\CoolingCoil.cs" />
     <Compile Include="Create\ElectricalConnector.cs" />
     <Compile Include="Create\Elements\Duct.cs" />
