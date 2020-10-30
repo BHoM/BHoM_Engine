@@ -62,6 +62,7 @@ namespace BH.Engine.Analytical
             ColumnGridResult processResult = new ColumnGridResult(process.BHoM_Guid, "column grid result", -1, distance, passed);
             return processResult;
         }
+
         /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/

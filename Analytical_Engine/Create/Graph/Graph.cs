@@ -141,7 +141,7 @@ namespace BH.Engine.Analytical
                 IElement0D start = FindOrCreateEntity(entitiesCloned, curve.IStartPoint(), snappingTolerance, prototypeEntity);
                 IElement0D end = FindOrCreateEntity(entitiesCloned, curve.IEndPoint(), snappingTolerance, prototypeEntity);
 
-                SpatialRelation relation = new SpatialRelation()
+                Relation relation = new Relation()
                 {
                     Source = ((IBHoMObject)start).BHoM_Guid,
                     Target = ((IBHoMObject)end).BHoM_Guid,
@@ -187,7 +187,7 @@ namespace BH.Engine.Analytical
             {
                 foreach (IElement0D d in ClosestIElement0Ds(entities, entity, branching))
                 {
-                    SpatialRelation relation = new SpatialRelation()
+                    Relation relation = new Relation()
                     {
                         Source = ((IBHoMObject)entity).BHoM_Guid,
                         Target = ((IBHoMObject)d).BHoM_Guid
@@ -251,7 +251,7 @@ namespace BH.Engine.Analytical
                         List<IBHoMObject> connections = RandomNeighbours(entityGrid, i, j, k);
                         foreach (IBHoMObject c in connections)
                         {
-                            SpatialRelation relation = new SpatialRelation()
+                            Relation relation = new Relation()
                             {
                                 Source = entityGrid[k][i][j].BHoM_Guid,
                                 Target = c.BHoM_Guid

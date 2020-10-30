@@ -14,15 +14,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static CompositeGeometry IRelationArrow(this IRelation relation)
-        {
-            List<IGeometry> geometries = new List<IGeometry>();
-            geometries.Add(RelationArrow(relation as dynamic));
-            return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
-        }
-
-        /***************************************************/
-        public static CompositeGeometry RelationArrow(this SpatialRelation relation)
+        public static CompositeGeometry RelationArrow(this IRelation relation, double headLength = 0.0, double baseWidth = 0.0, bool closed = false)
         {
             List<IGeometry> geometries = new List<IGeometry>();
             ICurve curve = relation.Curve;
@@ -46,52 +38,44 @@ namespace BH.Engine.Analytical
                 }
             }
             foreach (ICurve c in nonNurbs)
-                geometries.AddRange(ArrowHead(c.IPointAtLength(c.ILength() * 0.9), c.IEndPoint()));
-
+            {
+                double length = c.ILength() - headLength;
+                if (headLength == 0)
+                    length = c.ILength() * 0.9;
+                geometries.Add(ArrowHead(c.IPointAtLength(length), c.IEndPoint(), baseWidth, closed));
+            }
+                
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
-        }
-        /***************************************************/
-        public static CompositeGeometry RelationArrow(this ProcessRelation relation)
-        {
-            List<IGeometry> geometries = new List<IGeometry>();
-            ICurve curve = relation.Curve;
-            geometries.Add(curve);
-            
-            geometries.AddRange(ArrowHead(curve.IPointAtLength(curve.ILength() * 0.9), curve.IEndPoint()));
-
-            return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
-        }
-
-        /***************************************************/
-        /**** Fallback Methods                          ****/
-        /***************************************************/
-
-        private static CompositeGeometry Process(this IRelation relation)
-        {
-            // Do nothing
-            return new CompositeGeometry();
         }
 
         /***************************************************/
         /**** Private Methods                          ****/
         /***************************************************/
-        private static List<Line> ArrowHead(Point start, Point end)
+        private static Polyline ArrowHead(Point start, Point end, double width = 0, bool closed = false)
         {
             Vector back = start - end;
             Vector perp = back.CrossProduct(Vector.ZAxis);
             if (perp.Length() == 0)
                 perp = back.CrossProduct(Vector.YAxis);
             perp = perp.Normalise();
-            double l = perp.Length();
-            perp = perp * start.Distance(end) / 2;
+
+            if(width == 0)
+                perp = perp * start.Distance(end) / 3;
+            else
+                perp = perp * width;
+
             Point p1 = end + (back + perp);
             Point p2 = end + (back - perp);
+
+            Polyline head = new Polyline();
+            head.ControlPoints.Add(p1);
+            head.ControlPoints.Add(end);
+            head.ControlPoints.Add(p2);
             
-            return new List<Line>() 
-            { 
-                BH.Engine.Geometry.Create.Line(end, p1),
-                BH.Engine.Geometry.Create.Line(end, p2)
-            };
+            if (closed)
+                head.ControlPoints.Add(p1);
+
+            return head;
         }
         /***************************************************/
     }
