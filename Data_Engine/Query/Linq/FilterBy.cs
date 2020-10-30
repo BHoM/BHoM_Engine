@@ -73,7 +73,7 @@ namespace BH.Engine.Data
             }
 
             object firstObject = objects.First();
-            System.Type type = firstObject.PropertyValue(propertyName).GetType();
+            System.Type type = firstObject.PropertyValue(propertyName)?.GetType();
             
             if(type == null)
             {
