@@ -36,7 +36,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Architecture_oM">
-      <HintPath>..\..\BHoM\Build\Architecture_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Architecture_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BHoM">
