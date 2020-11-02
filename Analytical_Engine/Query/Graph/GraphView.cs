@@ -23,6 +23,8 @@
 using BH.Engine.Base;
 using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Fragments;
+using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -68,7 +70,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Returns a Graph view that contains only spatial entities. Spatial entities are those implementing IElement0D.")]
+        [Description("Returns a process view of the Graph.")]
         [Input("graph", "The Graph to query.")]
         [Input("view", "The ProcessView.")]
         [Output("graph", "The process Graph.")]
@@ -76,8 +78,20 @@ namespace BH.Engine.Analytical
         private static Graph GraphView(this Graph graph, ProcessView view)
         {
             Graph processGraph = graph.DeepClone();
-            processGraph = processGraph.FilterGraph(view.ClustersToIgnore);
-            Modify.ILayout(processGraph, view.layout as dynamic);
+            foreach (IBHoMObject entity in processGraph.Entities.Values.ToList())
+            {
+                ProcessViewFragment viewFragment = entity.FindFragment<ProcessViewFragment>();
+                //if no process view fragment, remove entity
+                if (viewFragment == null)
+                    processGraph.RemoveEntity(entity.BHoM_Guid);
+                else
+                {
+                    //if all group names are in the ignore list remove entity
+                    if(!view.GroupsToIgnore.Except(viewFragment.GroupNames).Any())
+                        processGraph.RemoveEntity(entity.BHoM_Guid);
+                }
+            }
+            Modify.ILayout(processGraph, view.Layout as dynamic);
             Modify.IRelationCurves(processGraph, view);
             return processGraph;
         }
@@ -87,7 +101,7 @@ namespace BH.Engine.Analytical
 
         private static Graph GraphView(this Graph graph, IView view)
         {
-            Reflection.Compute.RecordError("IView provided has not been implemented.");
+            Reflection.Compute.RecordError("IView provided does not have a corresponding GraphView method implemented.");
             return new Graph();
         }
 

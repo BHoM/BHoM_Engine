@@ -20,14 +20,14 @@ namespace BH.Engine.Analytical
         public static void ILayout(this Graph graph, ILayout layout)
         {
             
-            graph.FindClusters();
-            if (layout.ClusterPoints.Count() < m_Clusters.Count())
+            graph.FindGroups();
+            if (layout.GroupPoints.Count() < m_Groups.Count())
             {
-                Reflection.Compute.RecordError("Insufficient cluster points provided to support the total clusters found.");
+                Reflection.Compute.RecordError("Insufficient group points provided to support the total groups found.");
                 return;
             }
             
-            graph.AddProcessViewFragment(layout);
+            graph.AddLayoutHelperFragment(layout);
 
             Layout(layout as dynamic, graph);
         }
@@ -37,21 +37,21 @@ namespace BH.Engine.Analytical
         /***************************************************/
         private static void Layout(this Radial layout, Graph graph)
         {
-            ProcessViewFragment processview = graph.FindFragment<ProcessViewFragment>();
+            LayoutHelperFragment layoutHelper = graph.FindFragment<LayoutHelperFragment>();
             int count = 0;
-            foreach(KeyValuePair<string, List<IBHoMObject>> kvp in m_Clusters)
+            foreach(KeyValuePair<string, List<IBHoMObject>> kvp in m_Groups)
             {
-                EntityCluster entityCluster = processview.EntityClusters.Find(c => c.Name.Equals(kvp.Key));
+                EntityGroup entityGroup = layoutHelper.EntityGroups.Find(c => c.Name.Equals(kvp.Key));
 
-                double radius = layout.Centre.Distance(layout.ClusterPoints[count]);
-                Vector startVector = layout.ClusterPoints[count] - layout.Centre;
+                double radius = layout.Centre.Distance(layout.GroupPoints[count]);
+                Vector startVector = layout.GroupPoints[count] - layout.Centre;
                 double startAngle = Vector.XAxis.Angle(startVector);
                 double theta = layout.SweepAngle / (kvp.Value.Count()-1);
                 for (int j = 0; j < kvp.Value.Count(); j++)
                 {
-                    entityCluster.EntityGuids.Add(kvp.Value[j].BHoM_Guid);
+                    entityGroup.EntityGuids.Add(kvp.Value[j].BHoM_Guid);
 
-                    EntityViewFragment view = graph.Entities[kvp.Value[j].BHoM_Guid].FindFragment<EntityViewFragment>();
+                    ProcessViewFragment view = graph.Entities[kvp.Value[j].BHoM_Guid].FindFragment<ProcessViewFragment>();
 
                     double x = radius * Math.Cos(theta * j + startAngle);
                     double y = radius * Math.Sin(theta * j + startAngle);
@@ -72,21 +72,46 @@ namespace BH.Engine.Analytical
             LayoutColumnsStacks(layout, graph, Vector.YAxis, layout.VerticalSpace); 
         }
         /***************************************************/
+        private static void Layout(this Bubbles layout, Graph graph)
+        {
+            LayoutHelperFragment layoutHelper = graph.FindFragment<LayoutHelperFragment>();
+            int count = 0;
+            foreach (KeyValuePair<string, List<IBHoMObject>> kvp in m_Groups)
+            {
+                EntityGroup entityGroup = layoutHelper.EntityGroups.Find(c => c.Name.Equals(kvp.Key));
+
+                double theta = layout.SweepAngle / (kvp.Value.Count() - 1);
+                for (int j = 0; j < kvp.Value.Count(); j++)
+                {
+                    entityGroup.EntityGuids.Add(kvp.Value[j].BHoM_Guid);
+
+                    ProcessViewFragment view = graph.Entities[kvp.Value[j].BHoM_Guid].FindFragment<ProcessViewFragment>();
+
+                    double x = layout.Radius * Math.Cos(theta * j ) + layout.GroupPoints[count].X;
+                    double y = layout.Radius * Math.Sin(theta * j ) + layout.GroupPoints[count].Y;
+
+                    view.Position = new Point() { X = x, Y = y, Z = 0 };
+
+                }
+                count++;
+            }
+        }
+        /***************************************************/
         private static void LayoutColumnsStacks(ILayout layout, Graph graph, Vector direction, double space)
         {
-            ProcessViewFragment processview = graph.FindFragment<ProcessViewFragment>();
+            LayoutHelperFragment layoutHelper = graph.FindFragment<LayoutHelperFragment>();
             int count = 0;
-            foreach (KeyValuePair<string, List<IBHoMObject>> kvp in m_Clusters)
+            foreach (KeyValuePair<string, List<IBHoMObject>> kvp in m_Groups)
             {
-                EntityCluster entityCluster = processview.EntityClusters.Find(c => c.Name.Equals(kvp.Key));
+                EntityGroup entityGroup = layoutHelper.EntityGroups.Find(c => c.Name.Equals(kvp.Key));
 
                 for (int j = 0; j < kvp.Value.Count(); j++)
                 {
-                    EntityViewFragment view = graph.Entities[kvp.Value[j].BHoM_Guid].FindFragment<EntityViewFragment>();
+                    ProcessViewFragment view = graph.Entities[kvp.Value[j].BHoM_Guid].FindFragment<ProcessViewFragment>();
 
-                    entityCluster.EntityGuids.Add(kvp.Value[j].BHoM_Guid);
+                    entityGroup.EntityGuids.Add(kvp.Value[j].BHoM_Guid);
 
-                    view.Position = layout.ClusterPoints[count] + direction * j * space;
+                    view.Position = layout.GroupPoints[count] + direction * j * space;
 
                 }
                 count++;
@@ -94,50 +119,53 @@ namespace BH.Engine.Analytical
         }
         /***************************************************/
 
-        private static void FindClusters(this Graph graph)
+        private static void FindGroups(this Graph graph)
         {
-            graph.CheckEntityViewFragments();
-            m_Clusters = new SortedDictionary<string, List<IBHoMObject>>();
+            graph.CheckProcessViewFragments();
+            m_Groups = new SortedDictionary<string, List<IBHoMObject>>();
             foreach (IBHoMObject entity in graph.Entities.Values.ToList())
             {
-                EntityViewFragment viewFrag = entity.FindFragment<EntityViewFragment>();
-
-                if (m_Clusters.ContainsKey(viewFrag.ClusterName))
-                    m_Clusters[viewFrag.ClusterName].Add(entity);
-                else
-                    m_Clusters[viewFrag.ClusterName] = new List<IBHoMObject>() { entity };
+                ProcessViewFragment viewFrag = entity.FindFragment<ProcessViewFragment>();
+                foreach(string group in viewFrag.GroupNames)
+                {
+                    if (m_Groups.ContainsKey(group))
+                        m_Groups[group].Add(entity);
+                    else
+                        m_Groups[group] = new List<IBHoMObject>() { entity };
+                }
+               
             }
             
         }
         /***************************************************/
-        private static void CheckEntityViewFragments(this Graph graph)
+        private static void CheckProcessViewFragments(this Graph graph)
         {
             List<IBHoMObject> entities = graph.Entities.Values.ToList();
             for (int i = 0; i < entities.Count(); i++)
             {
                 IBHoMObject entity = entities[i];
-                EntityViewFragment viewFrag = entity.FindFragment<EntityViewFragment>();
+                ProcessViewFragment viewFrag = entity.FindFragment<ProcessViewFragment>();
 
                 if (viewFrag == null)
                 {
-                    viewFrag = new EntityViewFragment();
-                    viewFrag.ClusterName = "New EntityViewFragments";
+                    viewFrag = new ProcessViewFragment();
+                    viewFrag.GroupNames.Add("New EntityViewFragments");
                     entity.Fragments.Add(viewFrag);
 
-                    Reflection.Compute.RecordWarning("No EntityViewFragment found on entity :" + entity.Name + ". Entity has been assigned to \"New EntityViewFragments\" cluster.");
+                    Reflection.Compute.RecordWarning("No ProcessViewFragment found on entity :" + entity.Name + ". Entity has been assigned to \"New EntityViewFragments\" group.");
 
                 }
             }
             
         }
-
-        private static void AddProcessViewFragment(this Graph graph, ILayout layout)
+        /***************************************************/
+        private static void AddLayoutHelperFragment(this Graph graph, ILayout layout)
         {
-            ProcessViewFragment processViewFragment = new ProcessViewFragment();
+            LayoutHelperFragment processViewFragment = new LayoutHelperFragment();
             int i = 0;
-            foreach (KeyValuePair<string, List<IBHoMObject>> kvp in m_Clusters)
+            foreach (KeyValuePair<string, List<IBHoMObject>> kvp in m_Groups)
             {
-                processViewFragment.EntityClusters.Add(new EntityCluster() { Name = kvp.Key, Postion = layout.ClusterPoints[i] });
+                processViewFragment.EntityGroups.Add(new EntityGroup() { Name = kvp.Key, Position = layout.GroupPoints[i] });
                 i++;
             }
             graph.Fragments.AddOrReplace(processViewFragment);
@@ -153,6 +181,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        private static SortedDictionary<string, List<IBHoMObject>> m_Clusters { get; set; }
+        private static SortedDictionary<string, List<IBHoMObject>> m_Groups { get; set; }
     }
 }

@@ -43,8 +43,8 @@ namespace BH.Engine.Analytical
             {
                 if (relation.Curve == null)
                 {
-                    EntityViewFragment sourceViewFrag = graph.Entities[relation.Source].FindFragment<EntityViewFragment>();
-                    EntityViewFragment targetViewFrag = graph.Entities[relation.Target].FindFragment<EntityViewFragment>();
+                    ProcessViewFragment sourceViewFrag = graph.Entities[relation.Source].FindFragment<ProcessViewFragment>();
+                    ProcessViewFragment targetViewFrag = graph.Entities[relation.Target].FindFragment<ProcessViewFragment>();
                     
                     if(sourceViewFrag!= null && targetViewFrag!=null)  
                         relation.Curve = new Line() { Start = sourceViewFrag.Position, End = targetViewFrag.Position };

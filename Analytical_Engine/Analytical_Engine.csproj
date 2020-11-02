@@ -102,10 +102,9 @@
     <Compile Include="Query\Graph\Entities.cs" />
     <Compile Include="Query\Graph\Entity.cs" />
     <Compile Include="Query\Graph\FilterEntities.cs" />
-    <Compile Include="Query\Graph\FilterGraph.cs" />
     <Compile Include="Query\Graph\FilterRelations.cs" />
     <Compile Include="Query\Graph\Incoming.cs" />
-    <Compile Include="Query\Graph\MaxProcessCluster.cs" />
+    <Compile Include="Query\Graph\MaxProcessGroup.cs" />
     <Compile Include="Query\Graph\Relation.cs" />
     <Compile Include="Query\Graph\RelationArrow.cs" />
     <Compile Include="Query\Graph\RelationLength.cs" />
