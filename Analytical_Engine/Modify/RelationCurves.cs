@@ -4,8 +4,10 @@ using BH.oM.Analytical.Elements;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,12 +19,24 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
+        [Description("Modifies a Graph by ensuring all relations have a representative ICurve. If no curve has been provided a line is created between the source and target entities.")]
+        [Input("graph", "The Graph to modify.")]
+        [Input("view", "The IView required of the Graph.")]
+        [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
+
         public static void IRelationCurves(this Graph graph, IView view)
         {
             RelationCurves(graph, view as dynamic);
         }
 
         /***************************************************/
+
+        [Description("Modifies a Graph by ensuring all relations have a representative ICurve. If no curve has been provided a line is created between the source and target entities.")]
+        [Input("graph", "The Graph to modify.")]
+        [Input("view", "SpatialView of the Graph.")]
+        [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
+
         private static void RelationCurves(this Graph graph, SpatialView view)
         {
             foreach (IRelation relation in graph.Relations)
@@ -37,6 +51,11 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
+        [Description("Modifies a Graph by ensuring all relations have a representative ICurve. If no curve has been provided a line is created between the source and target entities.")]
+        [Input("graph", "The Graph to modify.")]
+        [Input("view", "ProcessView of the Graph.")]
+        [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
         private static void RelationCurves(this Graph graph, ProcessView view)
         {
             foreach (IRelation relation in graph.Relations)
@@ -51,6 +70,7 @@ namespace BH.Engine.Analytical
                 }
             }
         }
+
         /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/
