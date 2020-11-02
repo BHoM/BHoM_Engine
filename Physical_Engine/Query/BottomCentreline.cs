@@ -76,9 +76,6 @@ namespace BH.Engine.Physical
                 Engine.Reflection.Compute.RecordError("Was not able to either extract height property or convert into double.");
                 return null;
             }
-
         }
-
     }
-
 }
