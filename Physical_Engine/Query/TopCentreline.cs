@@ -27,6 +27,7 @@ using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Spatial.ShapeProfiles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -45,7 +46,7 @@ namespace BH.Engine.Physical
         [Output("curve", "The top centreline of the IFramingElement.")]
 
         public static ICurve TopCentreline(this BH.oM.Physical.Elements.IFramingElement element)
-        {
+        {   
             ICurve location = element.Location;
 
             Vector normal;
@@ -54,25 +55,31 @@ namespace BH.Engine.Physical
 
             if (normal == null)
             {
-                Engine.Reflection.Compute.RecordError("Can only extract top centrelines from a linear IFramingElement.");
+                Engine.Reflection.Compute.RecordError("Was not able to compute element normal.");
                 return null;
             }
 
-            double height = 0;
-
-            object heightProperty = element.PropertyValue("Property.Profile.Height");
-
-            if (heightProperty is IConvertible)
+            if (element.Property is ConstantFramingProperty)
             {
-                height = ((IConvertible)heightProperty).ToDouble(null);
+                ConstantFramingProperty constantProperty = element.Property as ConstantFramingProperty;
 
-                ICurve topCentreline = location.ITranslate(normal * 0.5 * height);
+                IProfile profile = constantProperty.Profile;
+
+                BoundingBox profileBounds = profile.Edges.Bounds();
+
+                Point profileMax = profileBounds.Max;
+
+                Point profileMin = profileBounds.Min;
+
+                double height = profileMax.Y - profileMin.Y;
+
+                ICurve topCentreline = location.ITranslate(normal * -0.5 * height);
 
                 return topCentreline;
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Was not able to either extract height property or convert into double.");
+                Engine.Reflection.Compute.RecordError("Element does not have ConstantFramingProperty, ");
                 return null;
             }
         }
