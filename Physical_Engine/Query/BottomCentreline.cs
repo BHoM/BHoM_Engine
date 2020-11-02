@@ -27,6 +27,7 @@ using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Spatial.ShapeProfiles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,17 +56,23 @@ namespace BH.Engine.Physical
 
             if (normal == null)
             {
-                Engine.Reflection.Compute.RecordError("Can only extract bottom centrelines from a linear IFramingElement.");
+                Engine.Reflection.Compute.RecordError("Was not able to compute element normal.");
                 return null;
             }
 
-            double height = 0;
-
-            object heightProperty = element.PropertyValue("Property.Profile.Height");
-
-            if (heightProperty is IConvertible)
+            if(element.Property is ConstantFramingProperty)
             {
-                height = ((IConvertible)heightProperty).ToDouble(null);
+                ConstantFramingProperty constantProperty = element.Property as ConstantFramingProperty;
+
+                IProfile profile = constantProperty.Profile;
+
+                BoundingBox profileBounds = profile.Edges.Bounds();
+
+                Point profileMax = profileBounds.Max;
+
+                Point profileMin = profileBounds.Min;
+
+                double height = profileMax.Y - profileMin.Y;
 
                 ICurve bottomCentreline = location.ITranslate(normal * -0.5 * height);
 
@@ -73,7 +80,7 @@ namespace BH.Engine.Physical
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Was not able to either extract height property or convert into double.");
+                Engine.Reflection.Compute.RecordError("Element does not have ConstantFramingProperty, ");
                 return null;
             }
         }
