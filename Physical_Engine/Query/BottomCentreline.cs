@@ -52,7 +52,15 @@ namespace BH.Engine.Physical
 
             Vector normal;
 
-            normal = BH.Engine.Physical.Query.Normal(element);
+            try
+            {
+                normal = BH.Engine.Physical.Query.Normal(element);
+            }
+            catch
+            {
+                Engine.Reflection.Compute.RecordError("IFramingElement must have linear location line.");
+                return null;
+            }
 
             if (normal == null)
             {
@@ -80,7 +88,7 @@ namespace BH.Engine.Physical
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Element does not have ConstantFramingProperty, ");
+                Engine.Reflection.Compute.RecordError("Element does not have ConstantFramingProperty, was not able to compute section height.");
                 return null;
             }
         }
