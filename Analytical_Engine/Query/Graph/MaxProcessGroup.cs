@@ -9,11 +9,11 @@ namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
-        public static int LargestProcessCluster(this ProcessViewFragment processViewFragment)
+        public static int LargestProcessGroup(this LayoutHelperFragment layoutHelper)
         {
-            if (processViewFragment.EntityClusters.Count() == 0)
+            if (layoutHelper.EntityGroups.Count() == 0)
                 return 0;
-            return processViewFragment.EntityClusters.Select(c => c.EntityGuids.Count()).Max();
+            return layoutHelper.EntityGroups.Select(c => c.EntityGuids.Count()).Max();
         }
     }
 }

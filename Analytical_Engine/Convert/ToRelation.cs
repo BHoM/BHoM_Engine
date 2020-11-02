@@ -28,20 +28,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Convert an InputsFragment assigned to relations")]
-        [Input("dependency", "The InputsFragment to convert.")]
-        [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
-        [Output("relations", "Collection of the converted relations.")]
-
-        public static List<IRelation> ToRelation(this InputsFragment dependency, Guid owningEntity)
-        {
-            List<IRelation> relations = new List<IRelation>();
-            dependency.Inputs.ForEach(input => relations.Add(new Relation() { Source = input, Target = owningEntity, Processes = dependency.Processes }));
-            return relations;
-        }
-
-        /***************************************************/
-
         [Description("Convert a DependencyFragment assigned to relations")]
         [Input("dependency", "The DependencyFragment to convert.")]
         [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
@@ -50,17 +36,17 @@ namespace BH.Engine.Analytical
         public static List<IRelation> ToRelation(this DependencyFragment dependency, Guid owningEntity)
         {
             List<IRelation> relations = new List<IRelation>();
-            relations.Add(new Relation() { 
+            relations.Add(
+                new Relation() { 
                 Source = dependency.Source, 
                 Target = dependency.Target,
                 Processes = dependency.Processes,
-                Curve = dependency.Curve
+                Curve = dependency.Curve,
 
             });
             return relations;
         }
         
-
         /***************************************************/
         /**** Public Methods non IDependency converts   ****/
         /***************************************************/
@@ -119,7 +105,7 @@ namespace BH.Engine.Analytical
             {
                 Source = link.StartNode.BHoM_Guid,
                 Target = link.EndNode.BHoM_Guid,
-                Curve = (ICurve)link.IGeometry()
+                Curve = (ICurve)link.IGeometry(),
             };
 
             Graph subgraph = new Graph();

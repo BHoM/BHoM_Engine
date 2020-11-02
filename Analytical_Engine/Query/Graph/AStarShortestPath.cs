@@ -69,8 +69,8 @@ namespace BH.Engine.Analytical
 
             if (m_SpatialGraph.Entities.Count == 0 || m_SpatialGraph.Relations.Count == 0)
             {
-                Reflection.Compute.RecordWarning("The graph provided does not contain sufficient entities or relations that implement IElement0D and IElement1D.\n" +
-                    "To use a star shortest path provide a graph where some entities and some relations implement IElement0D and IElement1D.\n" +
+                Reflection.Compute.RecordWarning("The graph provided does not contain sufficient spatial entities or relations.\n" +
+                    "To use a star shortest path provide a graph where some entities implement IElement0D and spatial relations are defined between them.\n" +
                     "Shortest path is computed using Dijkstra shortest path instead.");
 
                 return DijkstraShortestPath(graph, start, end);
