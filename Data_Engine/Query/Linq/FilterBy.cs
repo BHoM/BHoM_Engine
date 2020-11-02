@@ -44,7 +44,7 @@ namespace BH.Engine.Data
         [Input("ignoreStringCase", "Ignore upper/lower case letters if the property filtered by is a text/string.")]
         [Input("exactStringMatch", "If true checks if the property filtered by contains the text value (filtering must be a string/text)")]
         [Output("filteredObjects", "The collection of objects that match the given filter conditions")]
-        public static List<T> FilterBy<T>(this List<T> objects, string propertyName = null, object value = null, bool ignoreStringCase = false, bool exactStringMatch = true)
+        public static List<T> FilterBy<T>(this List<T> objects, string propertyName, object value, bool ignoreStringCase = false, bool exactStringMatch = true)
         {
             if (objects == null || objects.Count == 0)
             {
@@ -73,8 +73,8 @@ namespace BH.Engine.Data
             }
 
             object firstObject = objects.First();
-
-            System.Type type = PropertyType(firstObject, propertyName);
+            System.Type type = firstObject.PropertyValue(propertyName)?.GetType();
+            
             if(type == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("That property name could not be resolved to a specific object type. Please check the property name and try again");
@@ -111,67 +111,5 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static System.Type PropertyType(this object obj, string propName)
-        {
-            if (obj == null || propName == null)
-                return null;
-
-            if (propName.Contains("."))
-            {
-                string[] props = propName.Split('.');
-                for (int i = 0; i < props.Count() - 1; i++)
-                {
-                    obj = BH.Engine.Reflection.Query.PropertyValue(obj, props[i]);
-                    if (obj == null)
-                        break;
-                }
-                return PropertyType(obj, props.Last());
-            }
-            
-            System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
-
-            if (prop != null) return prop.PropertyType;
-
-            if (obj is IBHoMObject)
-            {
-                IBHoMObject bhom = obj as IBHoMObject;
-                if (bhom.CustomData.ContainsKey(propName))
-                {
-                    if (!(bhom is CustomObject))
-                        BH.Engine.Reflection.Compute.RecordNote($"{propName} is stored in CustomData");
-                    return bhom.CustomData[propName].GetType();
-                }
-                else
-                {
-                    BH.Engine.Reflection.Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}]");
-                    return null;
-                }
-
-            }
-            else if (obj is IDictionary)
-            {
-                IDictionary dic = obj as IDictionary;
-                if (dic.Contains(propName))
-                {
-                    return dic[propName].GetType();
-                }
-                else
-                {
-                    BH.Engine.Reflection.Compute.RecordWarning($"{dic} does not contain the key: {propName}");
-                    return null;
-                }
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordWarning($"This instance of {obj.GetType()} does not contain the property: {propName}");
-                return null;
-            }
-        }
-
-        /***************************************************/
     }
 }
