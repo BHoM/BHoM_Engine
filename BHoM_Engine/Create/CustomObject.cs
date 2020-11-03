@@ -22,6 +22,7 @@
 
 using BH.oM.Base;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Base
 {
@@ -44,21 +45,89 @@ namespace BH.Engine.Base
 
         public static CustomObject CustomObject(List<string> propertyNames, List<object> propertyValues, string name = "")
         {
-            Dictionary<string, object> customData = new Dictionary<string, object>();
+            CustomObject result = new CustomObject();
 
             if (propertyNames.Count == propertyValues.Count)
             {
                 for (int i = 0; i < propertyValues.Count; i++)
-                    customData.Add(propertyNames[i], propertyValues[i]);
+                {
+                    string propName = propertyNames[i];
+                    object propValue = propertyValues[i];
+
+                    if (propName == "Name" && propValue is string)
+                        result.Name = propValue as string;
+                    else if (propName == "BHoM_Guid" && propValue is System.Guid)
+                        result.BHoM_Guid = (System.Guid)propValue;
+                    else if (propName == "Tags")
+                        SetTags(result, propValue as dynamic);
+                    else if (propName == "Fragments")
+                        SetFragments(result, propValue as dynamic);
+                    else
+                        result.CustomData.Add(propName, propValue);
+                }     
             }
             else
                 throw new System.Exception("The list of property names must be the same length as the list of property values when creating a Custon object.");
 
-            return new CustomObject
-            {
-                CustomData = customData,
-                Name = name
-            };
+            if (name != "")
+                result.Name = name;
+
+            return result;
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void SetFragments<T>(CustomObject custom, IEnumerable<T> fragments)
+        {
+            List<IFragment> valids = fragments.OfType<IFragment>().ToList();
+            if (valids.Count == fragments.Count())
+                custom.Fragments = new FragmentSet(valids);
+            else
+                SetFragments(custom, fragments as object);
+        }
+
+        /***************************************************/
+
+        private static void SetFragments(CustomObject custom, IFragment fragment)
+        {
+            custom.Fragments.Add(fragment);
+        }
+
+        /***************************************************/
+
+        private static void SetFragments(CustomObject custom, object fragments)
+        {
+            Engine.Reflection.Compute.RecordWarning("The Fragments property should be a List<IFragment>. It will be added in CustomData instead.");
+            custom.CustomData["Fragments"] = fragments;
+        }
+
+        /***************************************************/
+
+        private static void SetTags<T>(CustomObject custom, IEnumerable<T> tags)
+        {
+            List<string> valids = tags.OfType<string>().ToList();
+            if (valids.Count == tags.Count())
+                custom.Tags = new HashSet<string>(valids);
+            else
+                SetTags(custom, tags as object);
+        }
+
+        /***************************************************/
+
+        private static void SetTags(CustomObject custom, string tag)
+        {
+            custom.Tags.Add(tag);
+        }
+
+        /***************************************************/
+
+        private static void SetTags(CustomObject custom, object tags)
+        {
+            Engine.Reflection.Compute.RecordWarning("The Tags property should be a List<string>. It will be added in CustomData instead.");
+            custom.CustomData["Tags"] = tags;
         }
 
         /***************************************************/
