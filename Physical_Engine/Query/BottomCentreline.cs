@@ -45,12 +45,11 @@ namespace BH.Engine.Physical
         [Description("Returns the bottom centreline of an IFramingElement.")]
         [Input("element", "The IFramingElement to query the bottom centreline of.")]
         [Output("curve", "The bottom centreline of the IFramingElement.")]
-
         public static ICurve BottomCentreline(this BH.oM.Physical.Elements.IFramingElement element)
         {
             ICurve location = element.Location;
 
-            Vector normal;
+            Vector normal = null;
 
             try
             {
@@ -88,7 +87,7 @@ namespace BH.Engine.Physical
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Element does not have ConstantFramingProperty, was not able to compute section height.");
+                Engine.Reflection.Compute.RecordError("Element does not have a suitable framing property, so the section height could not be calculated.");
                 return null;
             }
         }
