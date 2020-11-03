@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.GraphFlow
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {

@@ -33,7 +33,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.Engine.Geometry;
-using BH.Engine.GraphFlow;
 using BH.oM.Dimensional;
 using BH.Engine.Spatial;
 using BH.oM.Reflection.Attributes;
