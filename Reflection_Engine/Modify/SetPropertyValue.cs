@@ -41,8 +41,14 @@ namespace BH.Engine.Reflection
         [Input("propName", "name of the property to set the value of")]
         [Input("value", "new value of the property")]
         [Output("result", "New object with its property changed to the new value")]
-        public static object SetPropertyValue(this object obj, string propName, object value)
+        public static object SetPropertyValue(this object obj, string propName, object value, out bool success, out CustomObject custom)
         {
+            custom = new CustomObject
+            {
+                CustomData = new Dictionary<string, object> { { "A", 1 }, { "B", true } }
+            };
+
+
             object toChange = obj;
             if (propName.Contains("."))
             {
@@ -63,6 +69,7 @@ namespace BH.Engine.Reflection
                 if (!prop.CanWrite)
                 {
                     Engine.Reflection.Compute.RecordError("This property doesn't have a public setter so it is not possible to modify it.");
+                    success = false;
                     return obj;
                 }
 
@@ -78,11 +85,12 @@ namespace BH.Engine.Reflection
                 }
 
                 prop.SetValue(toChange, value);
+                success = true;
                 return obj;
             }
             else 
             {
-                SetValue(toChange as dynamic, propName, value);
+                success = SetValue(toChange as dynamic, propName, value);
                 return obj;
             }
         }
@@ -116,9 +124,10 @@ namespace BH.Engine.Reflection
         private static bool SetValue<T>(this IEnumerable<T> list, string propName, object value)
         {
             bool success = true;
+            CustomObject custom = null;
 
             foreach (T item in list)
-                success &= SetPropertyValue(item, propName, value) != null;
+                SetPropertyValue(item, propName, value, out success, out custom);
 
             return success;
         }

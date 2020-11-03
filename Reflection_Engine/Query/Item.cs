@@ -266,6 +266,16 @@ namespace BH.Engine.Reflection
             }
         }
 
+
+        /***************************************************/
+        /**** Fallback Methods                          ****/
+        /***************************************************/
+
+        public static object Item(this object item, int index)
+        {
+            return item;
+        }
+
         /***************************************************/
     }
 }
