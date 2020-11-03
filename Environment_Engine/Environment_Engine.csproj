@@ -98,7 +98,7 @@
     <Compile Include="Compute\ImportEPW.cs" />
     <Compile Include="Compute\JulianDay.cs" />
     <Compile Include="Compute\LightingGain.cs" />
-    <Compile Include="Compute\MapSpaces.cs" />
+    <Compile Include="Compute\MapRegions.cs" />
     <Compile Include="Compute\MapToLevel.cs" />
     <Compile Include="Compute\Occupancy.cs" />
     <Compile Include="Compute\PeopleGain.cs" />
