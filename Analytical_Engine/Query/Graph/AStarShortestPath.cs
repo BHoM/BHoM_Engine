@@ -23,6 +23,7 @@
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
@@ -76,17 +77,17 @@ namespace BH.Engine.Analytical
                 return DijkstraShortestPath(graph, start, end);
             }
                 
-            SetFragments(graph);
+            SetFragments(m_SpatialGraph);
 
             //calculate straight line distance from each entity to the end
             IElement0D endEntity = m_SpatialGraph.Entities[end] as IElement0D;
-            foreach (Guid entity in graph.Entities.Keys.ToList())
+            foreach (Guid entity in m_SpatialGraph.Entities.Keys.ToList())
             {
                 IElement0D element0D = m_SpatialGraph.Entities[entity] as IElement0D;
                 m_Fragments[entity].StraightLineDistanceToTarget = element0D.IGeometry().Distance(endEntity.IGeometry());
             }
                 
-            AStarSearch(graph, start, end);
+            AStarSearch(m_SpatialGraph, start, ref end);
 
             List<Guid> shortestPath = new List<Guid>();
             shortestPath.Add(end);
@@ -98,9 +99,9 @@ namespace BH.Engine.Analytical
             shortestPath.Reverse();
 
             List<IBHoMObject> objPath = new List<IBHoMObject>();
-            shortestPath.ForEach(g => objPath.Add(graph.Entities[g]));
+            shortestPath.ForEach(g => objPath.Add(m_SpatialGraph.Entities[g]));
 
-            List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => graph.Entities[kvp.Key]).ToList();
+            List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => m_SpatialGraph.Entities[kvp.Key]).ToList();
             ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, curves);
             return result;
         }
@@ -109,7 +110,7 @@ namespace BH.Engine.Analytical
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void AStarSearch(Graph graph, Guid start, Guid end)
+        private static void AStarSearch(Graph graph, Guid start,ref Guid end)
         {
             m_Fragments[start].MinCostToSource = 0;
             List <Guid> prioQueue = new List<Guid>();
@@ -151,7 +152,10 @@ namespace BH.Engine.Analytical
                 m_Fragments[currentEntity].Visited = true;
                 if (currentEntity.Equals(end))
                     return;
-            } while (prioQueue.Any());
+            } 
+            while (prioQueue.Any());
+            //if we reach here the search failed to find the end
+            end = FindClosestEnd();
         }
         /***************************************************/
         private static void AStarResult(List<Guid> list, Guid entity, ref double length, ref double cost, ref List<ICurve> curves)
@@ -174,11 +178,30 @@ namespace BH.Engine.Analytical
 
             AStarResult(list, n, ref length, ref cost, ref curves);
         }
+
+        private static Guid FindClosestEnd()
+        {
+            Reflection.Compute.RecordWarning("Shortest path to target could not be computed. Check the target entity connected to the Graph. The shortest path to the accessible entity closest to the target has been computed.");
+            double minDist = double.MaxValue;
+            Guid nearestEntity = Guid.Empty;
+            foreach(KeyValuePair<Guid, RoutingFragment> kvp in m_Fragments)
+            {
+                if (kvp.Value.Visited)
+                {
+                    if(kvp.Value.StraightLineDistanceToTarget < minDist)
+                    {
+                        minDist = (double)kvp.Value.StraightLineDistanceToTarget;
+                        nearestEntity = kvp.Key;
+                    }
+                }
+            }
+
+            return nearestEntity;
+        }
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
         private static Graph m_SpatialGraph = new Graph();
-        
 
     }
 }
