@@ -59,6 +59,7 @@ namespace BH.Engine.Reflection
             // Get the list of properties corresponding to type P
             Dictionary<Type, List<PropertyInfo>> propertyDictionary = typeof(T).GetProperties().GroupBy(x => x.PropertyType).ToDictionary(x => x.Key, x => x.ToList());
             List<PropertyInfo> propertiesSingle, propertiesList, propertiesGroups;
+            bool isFragment = typeof(IFragment).IsAssignableFrom(typeof(P));
             bool singleExist, listExists;
             if (!(singleExist = propertyDictionary.TryGetValue(typeof(P), out propertiesSingle)))
             {
@@ -72,8 +73,10 @@ namespace BH.Engine.Reflection
             }
             if (!propertyDictionary.TryGetValue(typeof(BH.oM.Base.BHoMGroup<P>), out propertiesGroups))
             {
-                if (!singleExist && !listExists)
+                if (!singleExist && !listExists && !isFragment)
+                {
                     return new List<P>();
+                }
 
                 propertiesGroups = new List<PropertyInfo>();
             }
@@ -109,6 +112,12 @@ namespace BH.Engine.Reflection
 
                 // Collect the objects from this property
                 propertyObjects.AddRange(objects.SelectMany(x => (getProp(x)?.Elements ?? new List<P>()).Where(p => p != null)));
+            }
+
+            //If P is a Fragment, check for any instances in the fragment list
+            if (isFragment)
+            {
+                propertyObjects.AddRange(objects.SelectMany(x => x.Fragments.OfType<P>()));
             }
 
             //Return the disticnt property objects
