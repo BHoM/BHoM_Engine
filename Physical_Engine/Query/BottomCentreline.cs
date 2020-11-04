@@ -36,16 +36,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Physical.Elements;
 
 namespace BH.Engine.Physical
 {
     public static partial class Query
     {
-
         [Description("Returns the bottom centreline of an IFramingElement.")]
         [Input("element", "The IFramingElement to query the bottom centreline of.")]
         [Output("curve", "The bottom centreline of the IFramingElement.")]
-        public static ICurve BottomCentreline(this BH.oM.Physical.Elements.IFramingElement element)
+        public static ICurve BottomCentreline(this IFramingElement element)
         {
             ICurve location = element.Location;
 

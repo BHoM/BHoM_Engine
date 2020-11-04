@@ -36,6 +36,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Physical.Elements;
 
 namespace BH.Engine.Physical
 {
@@ -44,7 +45,7 @@ namespace BH.Engine.Physical
         [Description("Returns the top centreline of an IFramingElement.")]
         [Input("element", "The IFramingElement to query the top centreline of.")]
         [Output("curve", "The top centreline of the IFramingElement.")]
-        public static ICurve TopCentreline(this BH.oM.Physical.Elements.IFramingElement element)
+        public static ICurve TopCentreline(this IFramingElement element)
         {   
             ICurve location = element.Location;
 
@@ -57,6 +58,12 @@ namespace BH.Engine.Physical
             catch
             {
                 Engine.Reflection.Compute.RecordError("IFramingElement must have linear location line.");
+                return null;
+            }
+
+            if (normal == null)
+            {
+                Engine.Reflection.Compute.RecordError("Was not able to compute element normal.");
                 return null;
             }
 
