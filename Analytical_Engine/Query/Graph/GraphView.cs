@@ -87,11 +87,17 @@ namespace BH.Engine.Analytical
                 else
                 {
                     //if all group names are in the ignore list remove entity
-                    if(!view.GroupsToIgnore.Except(viewFragment.GroupNames).Any())
+                    int ignored = 0;
+                    foreach(string group in viewFragment.GroupNames)
+                    {
+                        if (view.GroupsToIgnore.Contains(group))
+                            ignored++;
+                    }
+                    if(ignored == viewFragment.GroupNames.Where(s => !string.IsNullOrWhiteSpace(s)).ToList().Count())
                         processGraph.RemoveEntity(entity.BHoM_Guid);
                 }
             }
-            Modify.ILayout(processGraph, view.Layout as dynamic);
+            Modify.ILayout(processGraph, view.Layout, view.GroupsToIgnore);
             Modify.IRelationCurves(processGraph, view);
             return processGraph;
         }

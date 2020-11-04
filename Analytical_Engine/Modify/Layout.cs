@@ -17,10 +17,10 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Public Constructors             ****/
         /***************************************************/
-        public static void ILayout(this Graph graph, ILayout layout)
+        public static void ILayout(this Graph graph, ILayout layout, List<string> groupsToIgnore = null)
         {
             
-            graph.FindGroups();
+            graph.FindGroups(groupsToIgnore);
             if (layout.GroupPoints.Count() < m_Groups.Count())
             {
                 Reflection.Compute.RecordError("Insufficient group points provided to support the total groups found.");
@@ -119,21 +119,24 @@ namespace BH.Engine.Analytical
         }
         /***************************************************/
 
-        private static void FindGroups(this Graph graph)
+        private static void FindGroups(this Graph graph, List<string> groupsToIgnore)
         {
             graph.CheckProcessViewFragments();
             m_Groups = new SortedDictionary<string, List<IBHoMObject>>();
             foreach (IBHoMObject entity in graph.Entities.Values.ToList())
             {
                 ProcessViewFragment viewFrag = entity.FindFragment<ProcessViewFragment>();
+                List<string> groupNames = new List<string>();
                 foreach(string group in viewFrag.GroupNames)
                 {
-                    if (m_Groups.ContainsKey(group))
-                        m_Groups[group].Add(entity);
-                    else
-                        m_Groups[group] = new List<IBHoMObject>() { entity };
+                    if (!groupsToIgnore.Contains(group))
+                        groupNames.Add(group);
                 }
-               
+                string groupName = string.Join("_", groupNames.Where(s => !string.IsNullOrWhiteSpace(s)).ToList());
+                if (m_Groups.ContainsKey(groupName))
+                    m_Groups[groupName].Add(entity);
+                else
+                    m_Groups[groupName] = new List<IBHoMObject>() { entity };
             }
             
         }
@@ -149,7 +152,7 @@ namespace BH.Engine.Analytical
                 if (viewFrag == null)
                 {
                     viewFrag = new ProcessViewFragment();
-                    viewFrag.GroupNames.Add("New EntityViewFragments");
+                    viewFrag.GroupNames.Add("New ProcessViewFragments");
                     entity.Fragments.Add(viewFrag);
 
                     Reflection.Compute.RecordWarning("No ProcessViewFragment found on entity :" + entity.Name + ". Entity has been assigned to \"New EntityViewFragments\" group.");
