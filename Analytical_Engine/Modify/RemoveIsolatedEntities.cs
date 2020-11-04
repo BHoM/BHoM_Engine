@@ -39,14 +39,12 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Graph by removing all entities that are not used by relations.")]
         [Input("graph", "The Graph to modify.")]
         [Output("graph", "The modified Graph without isolated entities.")]
-
         public static Graph RemoveIsolatedEntities(this Graph graph)
         {
-            Graph clone = graph.DeepClone();
-            foreach (Guid n in clone.IsolatedEntities())
-                clone.Entities.Remove(n);
+            foreach (Guid n in graph.IsolatedEntities())
+                graph.Entities.Remove(n);
 
-            return clone;
+            return graph;
         }
 
         /***************************************************/

@@ -37,18 +37,18 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the Dictionary of entity depths in a Graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>")]
+        [Description("Returns the Dictionary of entity depths in a Graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>.")]
         [Input("adjacency", "The adjacency dictionary of the Graph to extract the depth dictionary from.")]
         [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
         [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]
-        public static Dictionary<Guid, int> Depth(Dictionary<Guid, List<Guid>> adjacency, Guid startEntity)
+        public static Dictionary<Guid, int> Depth(this Dictionary<Guid, List<Guid>> adjacency, Guid startEntity)
         {
             //https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
             // dictionary to store level of each entity  
             Dictionary<Guid, int> level = new Dictionary<Guid, int>();
             if (!adjacency.ContainsKey(startEntity))
             {
-                Reflection.Compute.RecordError("startEntity provided cannot be found in the adjacency dictionary. Ensure the entity exists in the original graph");
+                Reflection.Compute.RecordError("startEntity provided cannot be found in the adjacency dictionary. Ensure the entity exists in the original graph.");
                 return level;
             }
             // dictionary to store when entity has been visited
@@ -87,7 +87,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Returns the Dictionary of entity depths in a Graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>")]
+        [Description("Returns the Dictionary of entity depths in a Graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>.")]
         [Input("graph", "The graph to extract the depth dictionary from.")]
         [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
         [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]

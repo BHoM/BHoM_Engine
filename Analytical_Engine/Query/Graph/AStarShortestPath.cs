@@ -47,7 +47,7 @@ namespace BH.Engine.Analytical
         [Input("start", "The IBHoMObject entity used for the start of the path.")]
         [Input("end", "The IBHoMObject entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-        public static ShortestPathResult AStarShortestPath(Graph graph, IBHoMObject start, IBHoMObject end)
+        public static ShortestPathResult AStarShortestPath(this Graph graph, IBHoMObject start, IBHoMObject end)
         {
             ShortestPathResult result = AStarShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
             
@@ -62,7 +62,7 @@ namespace BH.Engine.Analytical
         [Input("start", "The Guid entity used for the start of the path.")]
         [Input("end", "The Guid entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-        public static ShortestPathResult AStarShortestPath(Graph graph, Guid start, Guid end)
+        public static ShortestPathResult AStarShortestPath(this Graph graph, Guid start, Guid end)
         {
             m_SpatialGraph = graph.GraphView(new SpatialView());
 

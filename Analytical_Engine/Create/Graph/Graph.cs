@@ -105,7 +105,7 @@ namespace BH.Engine.Analytical
             }
             graph = graph.UniqueEntities(m_MatchedObjects);
 
-            Modify.UniqueEntityNames(graph.Entities.Values.ToList());
+            graph.UniqueEntityNames();
 
             return graph;
         }
@@ -113,6 +113,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Create a graph from a collection of ICurves.")]
+        [Input("connectingCurves", "A collection of ICurve representing the Graph Relations.")]
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
         [Input("entities", "Optional collection of IBHoMObjects to use as Graph entities.")]
         [Input("snappingTolerance", "Optional tolerance used when comparing connectingCurves end points and provided entities. Default is Tolerance.Distance.")]
@@ -138,13 +139,13 @@ namespace BH.Engine.Analytical
                     Target = ((IBHoMObject)end).BHoM_Guid,
                     Curve = curve
                 };
-                relations.AddRange(relationsToAdd(relation, relationDirection));
+                relations.AddRange(RelationsToAdd(relation, relationDirection));
             }
             Graph graph = new Graph();
             
             entitiesCloned.ForEach(n => graph.Entities.Add(((IBHoMObject)n).BHoM_Guid, ((IBHoMObject)n)));
             graph.Relations = relations;
-            Analytical.Modify.UniqueEntityNames(entitiesCloned.Cast<IBHoMObject>().ToList());
+            graph.UniqueEntityNames();
 
             return graph;
         }
@@ -184,11 +185,11 @@ namespace BH.Engine.Analytical
                         Source = ((IBHoMObject)entity).BHoM_Guid,
                         Target = ((IBHoMObject)d).BHoM_Guid
                     };
-                    relations.AddRange(relationsToAdd(relation, relationDirection));
+                    relations.AddRange(RelationsToAdd(relation, relationDirection));
                 }
             }
 
-            Analytical.Modify.UniqueEntityNames(entities.Cast<IBHoMObject>().ToList());
+            graph.UniqueEntityNames();
             entities.ForEach(n => graph.Entities.Add(((IBHoMObject)n).BHoM_Guid, ((IBHoMObject)n)));
             graph.Relations = relations;
 
@@ -247,14 +248,14 @@ namespace BH.Engine.Analytical
                                 Source = entityGrid[k][i][j].BHoM_Guid,
                                 Target = c.BHoM_Guid
                             };
-                            graph.Relations.AddRange(relationsToAdd(relation, relationDirection));
+                            graph.Relations.AddRange(RelationsToAdd(relation, relationDirection));
                                 
                         }
                     }
                 }
             }
 
-            Analytical.Modify.UniqueEntityNames(graph.Entities.Values.ToList());
+            graph.UniqueEntityNames();
             return graph;
         }
 
@@ -286,7 +287,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        private static List<IRelation> relationsToAdd(IRelation relation, RelationDirection linkDirection)
+        private static List<IRelation> RelationsToAdd(IRelation relation, RelationDirection linkDirection)
         {
             List<IRelation> relations = new List<IRelation>();
             if (linkDirection == RelationDirection.Forwards)
@@ -306,7 +307,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Extract relations from a collection of IBHoMObjects")]
         private static List<IRelation> ToRelation(this List<IBHoMObject> objs)
         {
             List<IRelation> relations = new List<IRelation>();

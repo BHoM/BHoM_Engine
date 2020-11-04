@@ -41,7 +41,7 @@ namespace BH.Engine.Analytical
         [Description("Returns an entity from a Graph, or null if it does not exist.")]
         [Input("graph", "The Graph to extract the entity from.")]
         [Input("entityName", "The name of the entity.")]
-        [Input("entity", "The entity as an IBHoMObject.")]
+        [Output("entity", "The entity as an IBHoMObject.")]
         public static IBHoMObject Entity(this Graph graph, string entityName)
         {
             return graph.Entities.Values.ToList().Find(x => x.Name == entityName);
@@ -52,7 +52,7 @@ namespace BH.Engine.Analytical
         [Description("Returns an entity from a Graph, or null if it does not exist.")]
         [Input("graph", "The Graph to extract the entity from.")]
         [Input("entityGuid", "The Guid of the entity.")]
-        [Input("entity", "The Guid of the entity.")]
+        [Output("entity", "The Guid of the entity.")]
         public static IBHoMObject Entity(this Graph graph, Guid entityGuid)
         {
             return graph.Entities[entityGuid]; 
