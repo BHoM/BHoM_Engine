@@ -41,25 +41,24 @@ namespace BH.Engine.Analytical
 
         [Description("Enforce unique entities on a Graph. Source and Target properties of relations are updated to match the unique entities.")]
         [Input("graph", "The Graph from which duplicate entities should be removed.")]
+        [Input("replaceMap", "A Dictionary providing the replacement mapping, where Key is replaced with Value.")]
         [Output("graph", "The Graph with unique entities.")]
-
         public static Graph UniqueEntities(this Graph graph, Dictionary<Guid, IBHoMObject> replaceMap)
         {
-            Graph clone = graph.DeepClone();
-
+            
             Dictionary<Guid, IBHoMObject> uniqueEntities = new Dictionary<Guid, IBHoMObject>();
 
-            foreach (KeyValuePair<Guid, IBHoMObject> kvp in clone.Entities)
+            foreach (KeyValuePair<Guid, IBHoMObject> kvp in graph.Entities)
             {
                 IBHoMObject unique = replaceMap[kvp.Key];
                 if (!uniqueEntities.ContainsKey(unique.BHoM_Guid))
                     uniqueEntities.Add(unique.BHoM_Guid, unique);
             }
 
-            clone.Entities = uniqueEntities;
+            graph.Entities = uniqueEntities;
 
             List<IRelation> uniqueRelations = new List<IRelation>();
-            foreach (IRelation relation in clone.Relations)
+            foreach (IRelation relation in graph.Relations)
             {
                 IRelation relation1 = relation.UniqueEntities(replaceMap);
                 //keep if it does not already exist
@@ -67,8 +66,8 @@ namespace BH.Engine.Analytical
                     uniqueRelations.Add(relation1);
 
             }
-            clone.Relations = uniqueRelations;
-            return clone;
+            graph.Relations = uniqueRelations;
+            return graph;
         }
 
         /***************************************************/

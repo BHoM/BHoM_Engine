@@ -43,7 +43,6 @@ namespace BH.Engine.Analytical
         [Description("Modifies an IRelation by reversing it.")]
         [Input("relation", "The IRelation to reverse.")]
         [Output("relation", "The reversed IRelation.")]
-
         public static IRelation IReverse(this IRelation relation)
         {
             return Reverse(relation as dynamic);
@@ -54,16 +53,14 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Relation by reversing it.")]
         [Input("relation", "The Relation to reverse.")]
         [Output("relation", "The reversed Relation.")]
-
-        public static IRelation Reverse(this Relation relation)
+        public static Relation Reverse(this Relation relation)
         {
-            IRelation flip = relation.FlipSourceTarget();
+            Relation flip = relation.FlipSourceTarget<Relation>();
             ICurve curve = relation.Curve.DeepClone();
             flip.Curve = curve.IFlip();
             return flip;
         }
         
-
         /***************************************************/
 
         [Description("Modifies a Graph by reversing all Relations within it.")]
@@ -79,20 +76,24 @@ namespace BH.Engine.Analytical
             graph.Relations = reversed;
             return graph;
         }
-        
+
         /***************************************************/
         /**** Fallback Method                           ****/
         /***************************************************/
+        [Description("Modifies a Relation by reversing it.")]
+        [Input("relation", "The Relation to reverse.")]
+        [Output("relation", "The reversed Relation.")]
         public static IRelation Reverse(this IRelation relation)
         {
-
             return relation;
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static IRelation FlipSourceTarget(this IRelation relation)
+
+        private static T FlipSourceTarget<T>(this T relation)
+            where T : IRelation
         {
             Guid oldSource = relation.Source;
             Guid oldTarget = relation.Target;

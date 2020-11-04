@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Analytical.Elements;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
@@ -35,11 +36,11 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [Description("Enforce unique entity names on a collection of entities.")]
-        [Input("entities", "A collection of IBHoMObject entities to enforce unique names.")]
-
-        public static void UniqueEntityNames(this List<IBHoMObject> entities)
+        [Input("graph", "The Graph to modify.")]
+        [Output("graph", "The modified graph.")]
+        public static Graph UniqueEntityNames(this Graph graph)
         {
-            
+            List<IBHoMObject> entities = graph.Entities.Values.ToList();
             List<string> distinctNames = entities.Select(x => x.Name).Distinct().ToList();
 
             foreach (string name in distinctNames)
@@ -50,7 +51,8 @@ namespace BH.Engine.Analytical
                     for (int i = 0; i < matchentities.Count; i++)
                         matchentities[i].Name += "_" + i;
                 }
-            }    
+            }
+            return graph;
         }
         /***************************************************/
     }

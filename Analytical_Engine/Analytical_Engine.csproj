@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="Diffing_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
@@ -51,6 +52,7 @@
     </Reference>
     <Reference Include="Physical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Quantities_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
@@ -111,7 +113,7 @@
     <Compile Include="Query\Graph\Sources.cs" />
     <Compile Include="Query\Graph\GraphView.cs" />
     <Compile Include="Query\Graph\SubGraphs.cs" />
-    <Compile Include="Query\Graph\UnusedNodes.cs" />
+    <Compile Include="Query\Graph\IsolatedEntities.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\IsAligned.cs" />
     <Compile Include="Query\IsHorizontal.cs" />
