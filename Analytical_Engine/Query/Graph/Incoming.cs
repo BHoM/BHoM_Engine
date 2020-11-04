@@ -43,7 +43,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The graph to search.")]
         [Input("entity", "The Guid of the entity for which the accessing entities are required.")]
         [Output("entities", "The collection of Guids of the accessing entities.")]
-
         public static List<Guid> Incoming(this Graph graph, Guid entity)
         {
             
@@ -56,7 +55,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The graph to search.")]
         [Input("entity", "The IBHoMObject entity for which the accessing entities are required.")]
         [Output("entities", "The collection of IBHoMObjects of the accessing entities.")]
-
         public static List<IBHoMObject> Incoming(this Graph graph, IBHoMObject entity)
         {
             List<IBHoMObject> incoming = new List<IBHoMObject>();

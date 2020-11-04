@@ -41,7 +41,6 @@ namespace BH.Engine.Analytical
         [Input("adjacency", "The adjacency dictionary of the Graph to extract the depth dictionary from.")]
         [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
         [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]
-
         public static Dictionary<Guid, int> Depth(Dictionary<Guid, List<Guid>> adjacency, Guid startEntity)
         {
             //https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
@@ -92,7 +91,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The graph to extract the depth dictionary from.")]
         [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
         [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]
-
         public static Dictionary<Guid, int> Depth(this Graph graph, Guid startEntity)
         {
             Dictionary<Guid, List<Guid>> adjacency = graph.Adjacency();

@@ -29,7 +29,6 @@ namespace BH.Engine.Analytical
             Layout(layout as dynamic, graph);
         }
 
-
         /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/
@@ -40,6 +39,5 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-
     }
 }

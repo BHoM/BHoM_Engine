@@ -47,7 +47,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("view", "The required IView.")]
         [Output("graph", "The view of the original Graph.")]
-
         public static Graph IGraphView(this Graph graph, IView view)
         {
             return GraphView(graph, view as dynamic);
@@ -59,7 +58,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("view", "The SpatialView.")]
         [Output("graph", "The spatial Graph.")]
-
         private static Graph GraphView(this Graph graph, SpatialView view)
         {
             Graph spatialGraph = graph.DeepClone();
@@ -74,7 +72,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("view", "The ProcessView.")]
         [Output("graph", "The process Graph.")]
-
         private static Graph GraphView(this Graph graph, ProcessView view)
         {
             Graph processGraph = graph.DeepClone();
@@ -95,6 +92,7 @@ namespace BH.Engine.Analytical
             Modify.IRelationCurves(processGraph, view);
             return processGraph;
         }
+
         /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/

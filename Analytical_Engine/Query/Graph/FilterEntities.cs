@@ -47,8 +47,10 @@ namespace BH.Engine.Analytical
         public static Dictionary<Guid, IBHoMObject> FilterEntities(this Graph graph, Type typeFilter)
         {
             Dictionary<Guid, IBHoMObject> entityDict = new Dictionary<Guid, IBHoMObject>();
+
             List<IBHoMObject> filtered = graph.Entities().Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList();
             filtered.ForEach(obj => entityDict.Add(obj.BHoM_Guid, obj));
+
             return entityDict;
         }
 

@@ -45,7 +45,6 @@ namespace BH.Engine.Analytical
         [Input("start", "The IBHoMObject entity used for the start of the path.")]
         [Input("end", "The IBHoMObject entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-
         public static ShortestPathResult DijkstraShortestPath(Graph graph, IBHoMObject start, IBHoMObject end)
         {
             ShortestPathResult result = DijkstraShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
@@ -59,7 +58,6 @@ namespace BH.Engine.Analytical
         [Input("start", "The Guid entity used for the start of the path.")]
         [Input("end", "The Guid entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-
         public static ShortestPathResult DijkstraShortestPath(Graph graph, Guid start, Guid end)
         {
             SetFragments(graph);
@@ -93,6 +91,7 @@ namespace BH.Engine.Analytical
                 m_Fragments[n] = new RoutingFragment();
             }
         }
+
         /***************************************************/
         private static void DijkstraSearch(Graph graph, Guid start, Guid end)
         {
@@ -155,6 +154,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
+
         private static Dictionary<Guid, RoutingFragment> m_Fragments = new Dictionary<Guid, RoutingFragment>();
     }
 }

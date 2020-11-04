@@ -20,7 +20,6 @@ namespace BH.Engine.Analytical
         [Description("Convert a graph to CustomOBjects for visualisation")]
         [Input("graph", "The Graph to convert.")]
         [Output("custom objects", "CUstom objects representing the Graph.")]
-
         public static List<CustomObject> ToDataVizObjects(this Graph graph)
         {
             List<CustomObject> objects = new List<CustomObject>();
@@ -42,7 +41,7 @@ namespace BH.Engine.Analytical
             }
             return objects;
         }
-        /***************************************************/
 
+        /***************************************************/
     }
 }

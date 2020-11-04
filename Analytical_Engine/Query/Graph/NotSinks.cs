@@ -40,7 +40,6 @@ namespace BH.Engine.Analytical
         [Description("Returns the collection of entity Guids that are used as at least one Relation source.")]
         [Input("graph", "The Graph to search.")]
         [Output("not sinks", "The collection of entity Guids that are not sinks.")]
-
         public static List<Guid> NotSinks(this Graph graph)
         {
             //entity is not a sink if it appears as a source in one or more relations
@@ -48,5 +47,4 @@ namespace BH.Engine.Analytical
             return notSinks;
         }
     }
-
 }
