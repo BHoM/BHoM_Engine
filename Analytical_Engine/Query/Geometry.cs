@@ -187,7 +187,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Graph. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a Graph if it comprises of entities that inherit from IElement0D. Method required for automatic display in UI packages.")]
         [Input("graph", "Graph to get the geometry from.")]
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
         public static CompositeGeometry Geometry(this Graph graph)
@@ -201,9 +201,11 @@ namespace BH.Engine.Analytical
             return SpatialGraphGeometry(spatialGraph);
 
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
         private static CompositeGeometry SpatialGraphGeometry(Graph spatialGraph)
         {
             List<IGeometry> geometries = new List<IGeometry>();

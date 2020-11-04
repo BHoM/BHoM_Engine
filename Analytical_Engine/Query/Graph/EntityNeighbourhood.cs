@@ -44,7 +44,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
-
         public static List<Graph> EntityNeighbourhood(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             List<Graph> subGraphs = new List<Graph>();
@@ -55,6 +54,7 @@ namespace BH.Engine.Analytical
             
             return subGraphs;
         }
+
         /***************************************************/
 
         [Description("Find the sub Graph around an entity at a specified depth within a Graph.")]
@@ -63,7 +63,6 @@ namespace BH.Engine.Analytical
         [Input("maximumDepth", "The maximum traversal depth from the given entity.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "The sub Graph found in the input Graph.")]
-
         public static Graph EntityNeighbourhood(this Graph graph, IBHoMObject entity, int maximumDepth, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             List<Graph> subGraphs = new List<Graph>();
@@ -95,7 +94,6 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-
         private static void Traverse(this Graph graph, Guid entity, int maxDepth, int currentDepth, RelationDirection relationDirection)
         {
             if (currentDepth >= maxDepth)
@@ -107,11 +105,13 @@ namespace BH.Engine.Analytical
                 graph.Traverse(c, maxDepth, currentDepth + 1, relationDirection);
             }
         }
+
         /***************************************************/
         private static Graph SetSubGraph(this Graph graph, Guid sourceEntity, List<Guid> entityAdjacency, RelationDirection relationDirection)
         {
 
             Graph subgraph = new Graph();
+
             //add start entity
             subgraph.Entities.Add(sourceEntity, graph.Entities[sourceEntity].DeepClone());
 

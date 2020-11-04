@@ -47,7 +47,6 @@ namespace BH.Engine.Analytical
         [Input("start", "The IBHoMObject entity used for the start of the path.")]
         [Input("end", "The IBHoMObject entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-
         public static ShortestPathResult AStarShortestPath(Graph graph, IBHoMObject start, IBHoMObject end)
         {
             ShortestPathResult result = AStarShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
@@ -63,7 +62,6 @@ namespace BH.Engine.Analytical
         [Input("start", "The Guid entity used for the start of the path.")]
         [Input("end", "The Guid entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-
         public static ShortestPathResult AStarShortestPath(Graph graph, Guid start, Guid end)
         {
             m_SpatialGraph = graph.GraphView(new SpatialView());
@@ -154,10 +152,13 @@ namespace BH.Engine.Analytical
                     return;
             } 
             while (prioQueue.Any());
+
             //if we reach here the search failed to find the end
             end = FindClosestEnd();
         }
+
         /***************************************************/
+
         private static void AStarResult(List<Guid> list, Guid entity, ref double length, ref double cost, ref List<ICurve> curves)
         {
             if (m_Fragments[entity].NearestToSource == Guid.Empty)
@@ -179,9 +180,14 @@ namespace BH.Engine.Analytical
             AStarResult(list, n, ref length, ref cost, ref curves);
         }
 
+        /***************************************************/
+
         private static Guid FindClosestEnd()
         {
-            Reflection.Compute.RecordWarning("Shortest path to target could not be computed. Check the target entity connected to the Graph. The shortest path to the accessible entity closest to the target has been computed.");
+            //finds the closest accessible entity to the end when the search fails
+            Reflection.Compute.RecordWarning("Shortest path to target could not be computed. The shortest path to the accessible entity closest to the target has been computed.\n" +
+                " Check the target entity is connected to the Graph through links that are all traversable from the start.");
+
             double minDist = double.MaxValue;
             Guid nearestEntity = Guid.Empty;
             foreach(KeyValuePair<Guid, RoutingFragment> kvp in m_Fragments)
@@ -198,9 +204,11 @@ namespace BH.Engine.Analytical
 
             return nearestEntity;
         }
+
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
+
         private static Graph m_SpatialGraph = new Graph();
 
     }

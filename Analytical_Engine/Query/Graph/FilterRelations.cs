@@ -43,7 +43,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to filter the relations from.")]
         [Input("typeFilter", "The Type of the relation to filter.")]
         [Output("filtered relations", "Collection of IRelations filtered from the Graph.")]
-
         public static List<IRelation> FilterRelations(this Graph graph, Type typeFilter)
         {
             return graph.Relations.Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList(); 

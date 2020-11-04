@@ -42,7 +42,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to extract the entity from.")]
         [Input("entityName", "The name of the entity.")]
         [Input("entity", "The entity as an IBHoMObject.")]
-
         public static IBHoMObject Entity(this Graph graph, string entityName)
         {
             return graph.Entities.Values.ToList().Find(x => x.Name == entityName);

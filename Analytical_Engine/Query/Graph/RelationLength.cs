@@ -44,7 +44,6 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph that owns the IRelation.")]
         [Input("relation", "The IRelation to query.")]
         [Output("length", "The length of the IRelation.")]
-
         public static double RelationLength(this Graph graph, IRelation relation)
         {
             double length = 0;

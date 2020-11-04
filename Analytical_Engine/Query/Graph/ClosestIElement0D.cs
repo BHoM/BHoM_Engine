@@ -37,6 +37,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [Description("Returns the entity closest to a Point from a collection of entities.")]
         [Input("entities", "The collection of entities to search.")]
         [Input("point", "The Point to search from.")]

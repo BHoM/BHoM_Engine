@@ -21,7 +21,6 @@ namespace BH.Engine.Analytical
         [Input("shape", "The optional DotFormat shape to represent Graph entities. Default is \"box\".")]
         [Input("fontsize", "The optional DotFormat fontsize for text in the DotFormat. Default is 12.")]
         [Output("dotFormat", "The DotFormat string that can be copied and pasted in on line viewers like https://visjs.github.io/vis-network/examples/network/data/dotLanguage/dotPlayground.html for quick visualisation.")]
-        
         public static string ToDotFormat(this Graph graph, string shape = "box", int fontsize = 12)
         {
             string pattern = "[\\~#%&*{}()/:<>?|\"-]";

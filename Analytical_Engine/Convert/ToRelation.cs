@@ -20,7 +20,6 @@ namespace BH.Engine.Analytical
         [Input("dependency", "The IDependencyFragment to convert.")]
         [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
         [Output("relations", "Collection of the converted relations.")]
-
         public static List<IRelation> IToRelation(this IDependencyFragment dependency, Guid owningEntity)
         {
             return ToRelation(dependency as dynamic, owningEntity);
@@ -32,7 +31,6 @@ namespace BH.Engine.Analytical
         [Input("dependency", "The DependencyFragment to convert.")]
         [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
         [Output("relations", "Collection of the converted relations.")]
-
         public static List<IRelation> ToRelation(this DependencyFragment dependency, Guid owningEntity)
         {
             List<IRelation> relations = new List<IRelation>();
@@ -40,7 +38,6 @@ namespace BH.Engine.Analytical
                 new Relation() { 
                 Source = dependency.Source, 
                 Target = dependency.Target,
-                Processes = dependency.Processes,
                 Curve = dependency.Curve,
 
             });
@@ -55,7 +52,6 @@ namespace BH.Engine.Analytical
         [Input("link", "The ILink to convert.")]
         [Input("linkDirection", "The optional RelationDirection defining the direction of the relation. Default is RelationDirection.Forwards.")]
         [Output("relations", "Collection of the converted relations.")]
-
         public static List<IRelation> ToRelation<TNode>(this ILink<TNode> link, RelationDirection linkDirection = RelationDirection.Forwards)
             where TNode : INode
         {
@@ -78,26 +74,9 @@ namespace BH.Engine.Analytical
         }
         /***************************************************/
 
-        [Description("Convert a collection of ILinks to a collection of relations.")]
-        [Input("links", "The collection of ILinks to convert.")]
-        [Input("linkDirection", "The optional RelationDirection defining the direction of the relation. Default is RelationDirection.Forwards.")]
-        [Output("relations", "Collection of the converted relations.")]
-        //UI cannot handle the list of generic inputs yet
-
-        public static List<IRelation> ToRelation<TNode>(this List<ILink<TNode>> links, RelationDirection linkDirection)
-            where TNode : INode
-        {
-            List<IRelation> relations = new List<IRelation>();
-            links.ForEach(lnk => lnk.ToRelation(linkDirection));
-            return relations;
-        }
-
-        /***************************************************/
-
         [Description("Convert a an ILink to a single forward direction relation.")]
         [Input("link", "The ILink to convert.")]
         [Output("relation", "The converted relation.")]
-
         private static IRelation ToRelation<TNode>(this ILink<TNode> link)
             where TNode : INode
         {

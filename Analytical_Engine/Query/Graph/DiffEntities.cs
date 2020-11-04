@@ -43,18 +43,21 @@ namespace BH.Engine.Analytical
 
         [Description("Identifies unique objects from a collection IBHoMObjects using hash comparison.")]
         [Input("entities", "A collection of IBHoMObjects from which unique instances are identified.")]
-        [Input("propertiesToConsider", "Property names to consider when attempting to determine unique entities. If none are supplied all object properties are considered.")]
-        [Input("decimalPlaces", "The decimal places to consider when comparing double, decimal and float types. Default is 3.")]
+        [Input("diffConfig", "Configuration of diffing used to find unique entities.")]
         [Output("unique entities", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
-        
-        public static Dictionary<Guid, IBHoMObject> DiffEntities(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 3)
+        public static Dictionary<Guid, IBHoMObject> DiffEntities(List<IBHoMObject> entities, DiffConfig diffConfig = null)
         {
             Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
             Dictionary<IBHoMObject, string> objectHash = new Dictionary<IBHoMObject, string>();
+
             //remove old hashes
             entities.ForEach(ent => ent.RemoveFragment(typeof(HashFragment)));
+
+            //find decimal places from numeric tolerance
+            int decimalPlaces = DecimalPlaces(diffConfig.NumericTolerance);
+
             //generate hashes
-            entities.ForEach(ent => objectHash.Add(ent,ent.HashEntity(propertiesToConsider, decimalPlaces)));
+            entities.ForEach(ent => objectHash.Add(ent, ent.HashEntity(diffConfig, decimalPlaces)));
 
             foreach (KeyValuePair<IBHoMObject, string> entityA in objectHash)
             {
@@ -66,27 +69,46 @@ namespace BH.Engine.Analytical
                         //compare hashes
                         if (entityA.Value == entityB.Value)
                         {
+
                             //store in map dictionary where key is original Guid and Value is replacement object
                             replaceMap[entityA.Key.BHoM_Guid] = entityB.Key;
+
                             //first match has been found so break inner loop.
                             break;
                         }
                     }
                 }
-                
             }
             return replaceMap;
         }
 
         /***************************************************/
-
-        private static string HashEntity(this IBHoMObject entity, List<string> propertiesToConsider, int decimalPlaces)
-        {
-            List<string> propertiesToIgnore = BH.Engine.Reflection.Query.PropertyNames(entity).Except(propertiesToConsider).ToList();
-
-            return Base.Query.Hash(entity, propertiesToIgnore,  fractionalDigits: decimalPlaces );
-        }
+        /****           Private Methods                 ****/
         /***************************************************/
+
+        private static string HashEntity(this IBHoMObject entity, DiffConfig diffConfig, int decimalPlaces)
+        {
+            if (diffConfig == null)
+                diffConfig = new DiffConfig();
+
+            List<string> propertiesToIgnore = BH.Engine.Reflection.Query.PropertyNames(entity).Except(diffConfig.PropertiesToConsider).ToList();
+
+            return Base.Query.Hash(entity, propertyNameExceptions: propertiesToIgnore, fractionalDigits: decimalPlaces);
+        }
+
+        /***************************************************/
+
+        private static int DecimalPlaces(double numericTolerance)
+        {
+            //horrible conversion from numeric tolerance to precision needed for Hashing 
+            int precision = 0;
+
+            while ((decimal)numericTolerance * (decimal)Math.Pow(10, precision) !=
+                    Math.Round((decimal)numericTolerance * (decimal)Math.Pow(10, precision)))
+                precision++;
+
+            return precision;
+        }
     }
 
 }

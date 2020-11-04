@@ -47,25 +47,22 @@ namespace BH.Engine.Analytical
 
         [Description("Create a graph from a collection of IBHoMObjects, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
-        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities. If none are supplied all object properties are considered.")]
-        [Input("decimalPlaces", "Optional number of decimal places used for comparing double, decimal and float types when attempting to find unique entities. Default is 3.")]
+        [Input("diffConfig", "Configuration of diffing used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities, List<string> propertiesToConsider = null, int decimalPlaces = 3)
+        public static Graph Graph(List<IBHoMObject> entities, DiffConfig diffConfig = null)
         {
-            return Graph(entities, new List<IRelation>(), propertiesToConsider , decimalPlaces);
+            return Graph(entities, new List<IRelation>(), diffConfig);
         }
 
         /***************************************************/
 
         [Description("Create a graph from a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities. If none are supplied all object properties are considered.")]
-        [Input("decimalPlaces", "Optional number of decimal places used for comparing double, decimal and float types when attempting to find unique entities. Default is 3.")]
+        [Input("diffConfig", "Configuration of diffing used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
-
-        public static Graph Graph(List<IRelation> relations, List<string> propertiesToConsider = null, int decimalPlaces = 3)
+        public static Graph Graph(List<IRelation> relations, DiffConfig diffConfig = null)
         {
-            return Graph(new List<IBHoMObject>(), relations, propertiesToConsider, decimalPlaces);
+            return Graph(new List<IBHoMObject>(), relations, diffConfig);
         }
 
         /***************************************************/
@@ -73,10 +70,9 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of IBHoMObjects, a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "Optional collection of IBHoMOBjects to use as Graph entities. Entities can include DependencyFragments to determine the Graph Relations.")]
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("propertiesToConsider", "Optional collection of property names to compare when attempting to find unique entities. If none are supplied all object properties are considered.")]
-        [Input("decimalPlaces", "Optional number of decimal places used for comparing double, decimal and float types when attempting to find unique entities. Default is 3.")]
+        [Input("diffConfig", "Configuration of diffing used when attempting to find unique entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, List<string> propertiesToConsider = null, int decimalPlaces = 3)
+        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, DiffConfig diffConfig = null)
         {
             Graph graph = new Graph();
 
@@ -91,13 +87,11 @@ namespace BH.Engine.Analytical
                 return graph;
             }
 
-            m_MatchedObjects = Query.DiffEntities(clonedEntities, propertiesToConsider, decimalPlaces);
-            //Diff diff = Diffing.Compute.DiffGenericObjects(entities, entities, diffConfig, false);
-
-            //SetMatchedObjects(diff);
+            m_MatchedObjects = Query.DiffEntities(clonedEntities, diffConfig);
 
             //convert dependency fragments attached to entities and add to relations
             clonedRelations.AddRange(clonedEntities.ToRelation()); 
+
             //add to graph
             graph.Relations.AddRange(clonedRelations);
 
@@ -124,11 +118,9 @@ namespace BH.Engine.Analytical
         [Input("snappingTolerance", "Optional tolerance used when comparing connectingCurves end points and provided entities. Default is Tolerance.Distance.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
-
-        public static Graph Graph<T>(List<ICurve> connectingCurves, IElement0D prototypeEntity, List<IElement0D> entities = null, double snappingTolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static Graph Graph<T>(List<ICurve> connectingCurves, T prototypeEntity, List<IElement0D> entities = null, double snappingTolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
         where T : IElement0D
         {
-
             if (entities == null)
                 entities = new List<IElement0D>();
 
@@ -156,6 +148,7 @@ namespace BH.Engine.Analytical
 
             return graph;
         }
+
         /***************************************************/
 
         [Description("Create a random graph from a randomly generated entities within a BoundingBox.")]
@@ -166,21 +159,21 @@ namespace BH.Engine.Analytical
         [Input("tolerance", "Optional minimum distance permitted between randomly generated entities.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
-
         public static Graph Graph(int entityCount, int branching, BoundingBox boundingBox, IElement0D prototypeEntity, double tolerance = 1e-6, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             Graph graph = new Graph();
-            Random rnd = new Random();
             List<IElement0D> entities = new List<IElement0D>();
+
             for (int i = 0; i < entityCount; i++)
             {
-                Point p = Geometry.Create.RandomPoint(rnd, boundingBox);
+                Point p = Geometry.Create.RandomPoint(m_Rnd, boundingBox);
                 IElement0D entity = prototypeEntity.ClonePositionGuid(p);
                 
                 if (!ToCloseToAny(entities, entity, tolerance))
                     entities.Add(entity);
 
             }
+
             List<IRelation> relations = new List<IRelation>();
             foreach (IElement0D entity in entities)
             {
@@ -212,7 +205,6 @@ namespace BH.Engine.Analytical
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
-
         public static Graph Graph<T>(int width, int length, int height, double cellsize, T prototypeEntity, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : IElement0D
         {
@@ -293,6 +285,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
         private static List<IRelation> relationsToAdd(IRelation relation, RelationDirection linkDirection)
         {
             List<IRelation> relations = new List<IRelation>();
@@ -327,6 +320,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
         private static bool ToCloseToAny(List<IElement0D> entities, IElement0D entity, double tolerance)
         {
             foreach (IElement0D n in entities)
@@ -337,7 +331,9 @@ namespace BH.Engine.Analytical
             }
             return false;
         }
+
         /***************************************************/
+
         private static List<IElement0D> ClosestIElement0Ds(List<IElement0D> entities, IElement0D element0D, int branching)
         {
 
@@ -359,35 +355,42 @@ namespace BH.Engine.Analytical
             int above = k + 1;
             if (left >= 0)
                 neighbours.Add(entities[k][left][j]);
+
             if (right <= entities[0].Count - 1)
                 neighbours.Add(entities[k][right][j]);
+
             if (behind >= 0)
                 neighbours.Add(entities[k][i][behind]);
+
             if (infront <= entities[0][0].Count - 1)
                 neighbours.Add(entities[k][i][infront]);
+
             if (below >= 0)
                 neighbours.Add(entities[below][i][j]);
+
             if (above <= entities.Count - 1)
                 neighbours.Add(entities[above][i][j]);
 
             if (neighbours.Count <= 2)
                 return neighbours;
 
-            int total = rnd.Next(2, neighbours.Count);
+            int total = m_Rnd.Next(2, neighbours.Count);
             List<IBHoMObject> wanted = new List<IBHoMObject>();
             while (wanted.Count < total)
             {
-                IBHoMObject next = neighbours[rnd.Next(0, neighbours.Count)];
+                IBHoMObject next = neighbours[m_Rnd.Next(0, neighbours.Count)];
                 if (wanted.Contains(next))
                     continue;
                 wanted.Add(next);
             }
             return wanted;
         }
+
         /***************************************************/
         /****           Private Fields                  ****/
         /***************************************************/
-        private static Random rnd = new Random();
+
+        private static Random m_Rnd = new Random();
         private static Dictionary<Guid, IBHoMObject> m_MatchedObjects = new Dictionary<Guid, IBHoMObject>();
     }
 }

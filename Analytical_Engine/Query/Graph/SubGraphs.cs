@@ -72,6 +72,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
         private static void Traverse(this Graph graph, Guid entity)
         {
             m_MarkedEntity[entity] = m_SubNumber;
@@ -87,6 +88,7 @@ namespace BH.Engine.Analytical
                     graph.Traverse(c);
             }
         }
+
         /***************************************************/
         private static Graph SetSubGraph(this Graph graph)
         {
