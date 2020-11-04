@@ -88,6 +88,8 @@ namespace BH.Engine.Environment
 
                 matchingPerimeter.AddRange(regionsOnLevel.Where((x => x.Perimeter.IIsContaining(perimeter, true, distanceTolerance))));
 
+                matchingPerimeter = matchingPerimeter.Distinct().ToList();
+
                 // Add a list of regions that haven't been mapped to any original regions
                 if (matchingPerimeter.Count == 0)
                     regionsNotMatched.Add(region);
