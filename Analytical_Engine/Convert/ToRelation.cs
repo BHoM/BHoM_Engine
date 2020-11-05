@@ -105,7 +105,7 @@ namespace BH.Engine.Analytical
                     break;
                 case RelationDirection.Both:
                     relations.Add(forward); 
-                    relations.Add(forward.DeepClone().Reverse());
+                    relations.Add(forward.DeepClone().IReverse());
                     break;
             }
             return relations;
