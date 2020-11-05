@@ -90,7 +90,7 @@ namespace BH.Engine.Analytical
             m_MatchedObjects = Query.DiffEntities(clonedEntities, diffConfig);
 
             //convert dependency fragments attached to entities and add to relations
-            clonedRelations.AddRange(clonedEntities.ToRelation()); 
+            clonedEntities.ForEach(ent => clonedRelations.AddRange(ent.ToRelation())); 
 
             //add to graph
             graph.Relations.AddRange(clonedRelations);
@@ -301,20 +301,6 @@ namespace BH.Engine.Analytical
                 relations.Add(relation);
                 IRelation clone = relation.DeepClone();
                 relations.Add(clone.IReverse());
-            }
-            return relations;
-        }
-
-        /***************************************************/
-
-        private static List<IRelation> ToRelation(this List<IBHoMObject> objs)
-        {
-            List<IRelation> relations = new List<IRelation>();
-            foreach (IBHoMObject obj in objs)
-            {
-                List<IFragment> dependencyFragments = obj.GetAllFragments(typeof(IDependencyFragment));
-                foreach (IDependencyFragment dependency in dependencyFragments)
-                    relations.AddRange(dependency.IToRelation(obj.BHoM_Guid));
             }
             return relations;
         }

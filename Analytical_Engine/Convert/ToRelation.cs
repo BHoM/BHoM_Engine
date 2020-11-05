@@ -65,9 +65,25 @@ namespace BH.Engine.Analytical
             });
             return relations;
         }
-        
+
         /***************************************************/
         /**** Public Methods non IDependency converts   ****/
+        /***************************************************/
+
+        [Description("Convert an IBHoMObject to a collection of relations.")]
+        [Input("obj", "The IBHoMObject to convert.")]
+        [Output("relations", "Collection of the converted relations.")]
+        public static List<IRelation> ToRelation(this IBHoMObject obj)
+        {
+            List<IRelation> relations = new List<IRelation>();
+
+            List<IFragment> dependencyFragments = obj.GetAllFragments(typeof(IDependencyFragment));
+            foreach (IDependencyFragment dependency in dependencyFragments)
+                relations.AddRange(dependency.IToRelation(obj.BHoM_Guid));
+
+            return relations;
+        }
+
         /***************************************************/
 
         [Description("Convert an ILink to a collection of relations.")]
@@ -89,7 +105,7 @@ namespace BH.Engine.Analytical
                     break;
                 case RelationDirection.Both:
                     relations.Add(forward); 
-                    relations.Add(forward.Reverse());
+                    relations.Add(forward.DeepClone().Reverse());
                     break;
             }
             return relations;

@@ -55,10 +55,9 @@ namespace BH.Engine.Analytical
         [Output("relation", "The reversed Relation.")]
         public static Relation Reverse(this Relation relation)
         {
-            Relation flip = relation.FlipSourceTarget<Relation>();
-            ICurve curve = relation.Curve.DeepClone();
-            flip.Curve = curve.IFlip();
-            return flip;
+            relation.FlipSourceTarget<Relation>();
+            relation.Curve = relation.Curve.IFlip();
+            return relation;
         }
         
         /***************************************************/
@@ -66,7 +65,6 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Graph by reversing all Relations within it.")]
         [Input("graph", "The Graph to reverse.")]
         [Output("graph", "The reversed Graph.")]
-
         public static Graph Reverse(this Graph graph)
         {
             List<IRelation> reversed = new List<IRelation>();
@@ -80,6 +78,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Fallback Method                           ****/
         /***************************************************/
+
         [Description("Modifies a Relation by reversing it.")]
         [Input("relation", "The Relation to reverse.")]
         [Output("relation", "The reversed Relation.")]
