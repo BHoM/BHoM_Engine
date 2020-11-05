@@ -50,8 +50,8 @@ namespace BH.Engine.Analytical
             Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
             Dictionary<IBHoMObject, string> objectHash = new Dictionary<IBHoMObject, string>();
 
-            //remove old hashes
-            entities.ForEach(ent => ent.RemoveFragment(typeof(HashFragment)));
+            //remove old hashes if any
+            RemoveExistingHashes(entities);
 
             //find decimal places from numeric tolerance
             int decimalPlaces = DecimalPlaces(diffConfig.NumericTolerance);
@@ -108,6 +108,19 @@ namespace BH.Engine.Analytical
                 precision++;
 
             return precision;
+        }
+
+        /***************************************************/
+
+        private static void RemoveExistingHashes(List<IBHoMObject> entities)
+        {
+            foreach(IBHoMObject entity in entities)
+            {
+                if (entity.Fragments.Contains(typeof(HashFragment)))
+                {
+                    entity.Fragments.Remove(typeof(HashFragment));
+                }
+            }
         }
     }
 
