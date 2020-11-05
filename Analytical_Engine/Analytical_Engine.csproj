@@ -76,6 +76,7 @@
     <Compile Include="Convert\ToDotFormat.cs" />
     <Compile Include="Convert\ToRelation.cs" />
     <Compile Include="Create\Graph\Graph.cs" />
+    <Compile Include="Create\Graph\Relation.cs" />
     <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Modify\RelationCurves.cs" />
     <Compile Include="Modify\Layout.cs" />
