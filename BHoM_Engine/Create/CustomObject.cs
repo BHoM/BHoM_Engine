@@ -69,7 +69,7 @@ namespace BH.Engine.Base
             else
                 throw new System.Exception("The list of property names must be the same length as the list of property values when creating a Custon object.");
 
-            if (name != "")
+            if (!string.IsNullOrEmpty(name))
                 result.Name = name;
 
             return result;
