@@ -121,6 +121,27 @@ namespace BH.Engine.Physical
             return (MaterialComposition)prop.Material;
         }
 
+        /******************************************************/
+        /**** ISolid Methods                               ****/
+        /******************************************************/
+
+        private static MaterialComposition IMaterialComposition(this ISolid prop)
+        {
+            return MaterialComposition(prop as dynamic);
+        }
+
+        /***************************************************/
+
+        private static MaterialComposition MaterialComposition(this BulkMaterial prop)
+        {
+            if (prop.Material == null)
+            {
+                Engine.Reflection.Compute.RecordError("The BulkMaterial MaterialComposition could not be calculated as no Material has been assigned.");
+                return null;
+            }
+            return (MaterialComposition)prop.Material;
+        }
+
         /***************************************************/
         /**** Private Fallback Methods                  ****/
         /***************************************************/
