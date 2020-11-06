@@ -28,6 +28,8 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -43,7 +45,7 @@ namespace BH.Engine.Environment
         [Output("element", "A 1D element object")]
         public static IElement1D NewElement1D(this Opening opening, ICurve curve)
         {
-            return curve.IClone();
+            return curve.DeepClone();
         }
 
         /***************************************************/
@@ -55,7 +57,7 @@ namespace BH.Engine.Environment
         [Output("element", "A 1D element object")]
         public static IElement1D NewElement1D(this Panel panel, ICurve curve)
         {
-            return curve.IClone();
+            return curve.DeepClone();
         }
 
         /***************************************************/
@@ -67,7 +69,7 @@ namespace BH.Engine.Environment
         [Output("element", "A 1D element object")]
         public static IElement1D NewElement1D(this Space space, ICurve curve)
         {
-            return curve.IClone();
+            return curve.DeepClone();
         }
     }
 }
