@@ -31,6 +31,7 @@ using BH.Engine.Base;
 using BH.oM.Physical.Materials;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Constructions;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -66,6 +67,21 @@ namespace BH.Engine.Physical
                 return null;
             }
             return surface.Construction.IMaterialComposition();
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the Materials a BulkMaterial is composed of and in which ratios")]
+        [Input("bulkMaterial", "The BulkMaterial to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the BulkMaterial is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this BulkMaterial bulkMaterial)
+        {
+            if (bulkMaterial.MaterialComposition == null)
+            {
+                Engine.Reflection.Compute.RecordError("The BulkMaterial MaterialComposition could not be calculated as no Materials have been assigned.");
+                return null;
+            }
+            return Matter.Create.MaterialComposition(bulkMaterial.MaterialComposition().Materials, bulkMaterial.MaterialComposition().Ratios);
         }
 
         /******************************************************/
@@ -116,27 +132,6 @@ namespace BH.Engine.Physical
             if (prop.Material == null)
             {
                 Engine.Reflection.Compute.RecordError("The ConstantFramingProperty MaterialComposition could not be calculated as no Material has been assigned.");
-                return null;
-            }
-            return (MaterialComposition)prop.Material;
-        }
-
-        /******************************************************/
-        /**** ISolid Methods                               ****/
-        /******************************************************/
-
-        private static MaterialComposition IMaterialComposition(this ISolid prop)
-        {
-            return MaterialComposition(prop as dynamic);
-        }
-
-        /***************************************************/
-
-        private static MaterialComposition MaterialComposition(this BulkMaterial prop)
-        {
-            if (prop.Material == null)
-            {
-                Engine.Reflection.Compute.RecordError("The BulkMaterial MaterialComposition could not be calculated as no Material has been assigned.");
                 return null;
             }
             return (MaterialComposition)prop.Material;
