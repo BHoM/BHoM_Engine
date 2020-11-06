@@ -23,7 +23,7 @@
 using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
 
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
@@ -43,7 +43,7 @@ namespace BH.Engine.MEP
         
         public static IGeometry Geometry(this IFlow obj)
         {
-            return new Line { Start = obj.StartNode.Position, End = obj.EndNode.Position};
+            return new Line { Start = obj.StartPoint.Position, End = obj.EndPoint.Position};
         }
 
         /***************************************************/

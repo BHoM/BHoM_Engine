@@ -24,7 +24,8 @@ using System.ComponentModel;
 
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
+using BH.oM.MEP.Fixtures;
 using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.MEP

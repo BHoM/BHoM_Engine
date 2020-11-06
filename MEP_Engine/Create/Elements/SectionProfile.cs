@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 using BH.oM.Reflection.Attributes;
 using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.MEP.SectionProperties;
+using BH.oM.MEP.System.SectionProperties;
 
 namespace BH.Engine.MEP
 {
