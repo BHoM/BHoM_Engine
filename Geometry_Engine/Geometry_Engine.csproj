@@ -247,6 +247,7 @@
     <Compile Include="Modify\Orient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\PointAtX.cs" />
+    <Compile Include="Query\Volume.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
