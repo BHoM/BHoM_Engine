@@ -95,6 +95,7 @@
     <Compile Include="Create\GeometryFragment.cs" />
     <Compile Include="Create\HeatingCoil.cs" />
     <Compile Include="Create\IdentityFragment.cs" />
+    <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\CircularEquivalentDiameter.cs" />
@@ -127,9 +128,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modify\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
