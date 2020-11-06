@@ -23,7 +23,6 @@
 using System.ComponentModel;
 
 using BH.oM.Geometry;
-using BH.Engine.Geometry;
 using BH.oM.MEP.System;
 using BH.oM.Reflection.Attributes;
 
@@ -37,9 +36,9 @@ namespace BH.Engine.MEP
         [Description("Returns the centreline of any IFlow object as the line between the StartPoint and EndPoint. No offsets or similar is accounted for.")]
         [Input("obj", "The IFlow object to get the centreline from.")]
         [Output("centreline", "The centreline of the IFlow object.")]
-        public static Line Centreline(this IFlow obj)
+        public static Line Centreline(this IFlow flowObj)
         {
-            return new Line { Start = obj.StartPoint.Point, End = obj.EndPoint.Position };
+            return new Line { Start = flowObj.StartPoint, End = flowObj.EndPoint };
         }
         /***************************************************/
     }

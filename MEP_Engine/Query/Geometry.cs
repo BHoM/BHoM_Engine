@@ -20,18 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using BH.oM.Geometry;
-using BH.Engine.Geometry;
 using BH.oM.MEP.System;
-
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using System.Collections.Generic;
-
-using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using BH.oM.Analytical.Elements;
 
 namespace BH.Engine.MEP
 {
@@ -41,9 +31,9 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
         
-        public static IGeometry Geometry(this IFlow obj)
+        public static IGeometry Geometry(this IFlow flowObj)
         {
-            return new Line { Start = obj.StartPoint.Position, End = obj.EndPoint.Position};
+            return new Line { Start = flowObj.StartPoint, End = flowObj.EndPoint};
         }
 
         /***************************************************/
