@@ -28,7 +28,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.MEP.MaterialFragments;
-using BH.oM.MEP.SectionProperties;
+using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;

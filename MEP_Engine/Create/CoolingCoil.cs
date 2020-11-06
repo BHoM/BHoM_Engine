@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-using BH.oM.MEP.Parts;
+using BH.oM.MEP.Equipment.Parts;
 
 namespace BH.Engine.MEP
 {

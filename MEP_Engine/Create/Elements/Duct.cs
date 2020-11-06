@@ -27,10 +27,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.SectionProperties;
+using BH.oM.MEP.System.SectionProperties;
 
 namespace BH.Engine.MEP
 {
@@ -49,8 +49,8 @@ namespace BH.Engine.MEP
         {
             return new Duct
             {
-                StartNode = (Node)line.Start,
-                EndNode = (Node)line.End,
+                StartPoint = (Point)line.Start,
+                EndPoint = (Point)line.End,
                 SectionProperty = sectionProperty,
                 OrientationAngle = orientationAngle,
             };
