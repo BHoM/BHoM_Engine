@@ -54,8 +54,8 @@ namespace BH.Engine.Reflection
                         if (types[i] != null)
                         {
                             desc += Environment.NewLine;
-                            QuantityAttribute quantityAttribute = outputDefs[i].Quantity;
-                            desc += types[i].UnderlyingType().Type.Description(quantityAttribute);
+                            InputClassificationAttribute clasification = outputDefs[i].Classification;
+                            desc += types[i].UnderlyingType().Type.Description(clasification);
                         }
                         outputs.Add(new OutputAttribute(outputDefs[i].Name, desc));
                     }

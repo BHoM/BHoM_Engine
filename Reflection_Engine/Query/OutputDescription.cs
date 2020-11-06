@@ -40,7 +40,7 @@ namespace BH.Engine.Reflection
         public static string OutputDescription(this MethodBase method)
         {
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            QuantityAttribute quantityAttribute = null;
+            InputClassificationAttribute classificationAttribute = null;
 
             string desc = "";
 
@@ -48,9 +48,9 @@ namespace BH.Engine.Reflection
                 desc = attribute.Description + Environment.NewLine;
 
             if (attribute != null)
-                quantityAttribute = attribute.Quantity;
+                classificationAttribute = attribute.Classification;
 
-            desc += method.OutputType().Description(quantityAttribute);
+            desc += method.OutputType().Description(classificationAttribute);
 
             return desc;
         }
