@@ -21,14 +21,8 @@
  */
 
 using System.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.MaterialFragments;
+using BH.oM.MEP.System.MaterialFragments;
 using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;

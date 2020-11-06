@@ -21,23 +21,9 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.MEP;
 using BH.oM.MEP.Equipment;
-using BH.oM.Base;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
-using BH.oM.Geometry.SettingOut;
-
-using BH.Engine.Base;
 
 namespace BH.Engine.MEP
 {
