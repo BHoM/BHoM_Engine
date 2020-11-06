@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
             {
                 returnPanels.Add(new List<Panel>());
                 foreach(Panel p in space)
-                    returnPanels.Last().Add(p.GetShallowClone() as Panel);
+                    returnPanels.Last().Add(p.ShallowClone());
             }
 
             foreach(List<Panel> space in returnPanels)

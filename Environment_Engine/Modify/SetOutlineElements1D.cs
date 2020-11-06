@@ -29,6 +29,8 @@ using System.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -43,7 +45,7 @@ namespace BH.Engine.Environment
         [Output("opening", "The updated Environment Opening")]
         public static Opening SetOutlineElements1D(this Opening opening, List<IElement1D> outlineElements1D)
         {
-            Opening o = opening.GetShallowClone() as Opening;
+            Opening o = opening.ShallowClone();
             o.Edges = outlineElements1D.Cast<ICurve>().ToList().ToEdges();
             return o;
         }
@@ -54,7 +56,7 @@ namespace BH.Engine.Environment
         [Output("panel", "The updated Environment Opening")]
         public static Panel SetOutlineElements1D(this Panel panel, List<IElement1D> outlineElements1D)
         {
-            Panel pp = panel.GetShallowClone() as Panel;
+            Panel pp = panel.ShallowClone();
             pp.ExternalEdges = outlineElements1D.Cast<ICurve>().ToList().ToEdges();
             return pp;
         }
@@ -65,7 +67,7 @@ namespace BH.Engine.Environment
         [Output("space", "The updated Environment Space")]
         public static Space SetOutlineElements1D(this Space space, List<IElement1D> outlineElements1D)
         {
-            Space r = space.GetShallowClone() as Space;
+            Space r = space.ShallowClone();
             r.Perimeter = BH.Engine.Geometry.Compute.IJoin(outlineElements1D.Cast<ICurve>().ToList())[0];
             return r;
         }

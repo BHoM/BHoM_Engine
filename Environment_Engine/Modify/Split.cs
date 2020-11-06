@@ -226,7 +226,7 @@ namespace BH.Engine.Environment
                         //Only do this if we have more than 1 BE to replace
                         foreach (Polyline p in kvp6.Value)
                         {
-                            Panel newBE = ori.GetShallowClone() as Panel;
+                            Panel newBE = ori.ShallowClone();
                             if (newBE.ExternalEdges.Count == 0)
                                 newBE.ExternalEdges = new List<Edge>(ori.ExternalEdges);
 
