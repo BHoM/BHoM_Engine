@@ -60,13 +60,10 @@ namespace BH.Engine.Spatial
         [Output("isNearLevel", "A boolean which is true if the geometrical representation of an IElement1D is within a set distance from the level elevation.")]
         public static bool IsNearLevel(this IElement1D element1D, Level level, double maxDistance)
         {
-
             ICurve curve = element1D.IGeometry();
-
             BoundingBox bBox = curve.IBounds();
 
             return bBox.Min.Z - maxDistance <= level.Elevation && level.Elevation <= bBox.Max.Z + maxDistance;
-
         }
 
         /******************************************/
@@ -78,12 +75,13 @@ namespace BH.Engine.Spatial
         [Output("isNearLevel", "A boolean which is true if the geometrical representation of an IElement2D is within a set distance from the level elevation.")]
         public static bool IsNearLevel(this IElement2D element2D, Level level, double maxDistance)
         {
-
             List<IElement1D> elements1D = element2D.IOutlineElements1D();
 
             foreach (IElement1D e1D in elements1D)
+            {
                 if (IsNearLevel(e1D, level, maxDistance))
                     return true;
+            }
             
             return false;
         }
