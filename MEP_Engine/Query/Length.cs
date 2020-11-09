@@ -38,9 +38,9 @@ namespace BH.Engine.MEP
         [Description("Query the length of any IFlow Object.")]
         [Input("iFlowObj", "Any IFlow object to extract length.")]
         [Output("length", "Linear length of the IFlow object.")]
-        public static double Length(this IFlow IFlowObj)
+        public static double Length(this IFlow flowObj)
         {
-            return (IFlowObj.Geometry() as ICurve).ILength();
+            return (flowObj.Geometry() as ICurve).ILength();
         }
         /***************************************************/
     }
