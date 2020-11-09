@@ -205,7 +205,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Return the custom description of a folder path attribute.")]
+        [Description("Return the description of a folder path attribute.")]
         [Input("folderPath", "Folder path attribute to be queried for description.")]
         public static string Description(this FolderPathAttribute folderPath)
         {
@@ -214,7 +214,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Return the custom description of a file path attribute.")]
+        [Description("Return the description of a file path attribute.")]
         [Input("filePath", "File path attribute to be queried for description.")]
         public static string Description(this FilePathAttribute filePath)
         {
