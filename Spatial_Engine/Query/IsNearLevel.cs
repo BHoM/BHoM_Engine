@@ -53,11 +53,11 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        [Description("Checks if the geometrical representation of an IElement1D, projected onto the XY Plane, is within a set distance from a level line.")]
+        [Description("Checks if the geometrical representation of an IElement1D is within a set distance from a level elevation.")]
         [Input("element1D", "The IElement1D that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
-        [Output("isNearLevel", "A boolean which is true if the geometrical representation of an IElement1D is within a set distance from the level line.")]
+        [Output("isNearLevel", "A boolean which is true if the geometrical representation of an IElement1D is within a set distance from the level elevation.")]
         public static bool IsNearLevel(this IElement1D element1D, Level level, double maxDistance)
         {
 
@@ -71,11 +71,11 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        [Description("Checks if the geometrical representation of an IElement2D, projected onto the XY Plane, is within a set distance from a level line.")]
+        [Description("Checks if the geometrical representation of an IElement2D is within a set distance from a level elevation.")]
         [Input("element2D", "The IElement2D that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
-        [Output("isNearLevel", "A boolean which is true if the geometrical representation of an IElement2D is within a set distance from the level line.")]
+        [Output("isNearLevel", "A boolean which is true if the geometrical representation of an IElement2D is within a set distance from the level elevation.")]
         public static bool IsNearLevel(this IElement2D element2D, Level level, double maxDistance)
         {
 
@@ -92,11 +92,11 @@ namespace BH.Engine.Spatial
         /****   Public Methods - Interfaces    ****/
         /******************************************/
 
-        [Description("Checks if the geometrical representation of an IElement, projected onto the XY Plane, is within a set distance from a level line.")]
+        [Description("Checks if the geometrical representation of an IElement is within a set distance from a level elevation.")]
         [Input("element", "The IElement that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
-        [Output("isNearLevel", "A boolean which is true if the geometrical representation of the IElement is within a set distance from the level line.")]
+        [Output("isNearLevel", "A boolean which is true if the geometrical representation of the IElement is within a set distance from the level elevation.")]
         public static bool IIsNearLevel(this IElement element, Level level, double maxDistance)
         {
             return IsNearLevel(element as dynamic, level, maxDistance);
