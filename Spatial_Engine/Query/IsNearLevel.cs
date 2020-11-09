@@ -43,7 +43,7 @@ namespace BH.Engine.Spatial
         [Input("element0D", "The IElement0D that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
-        [Output("isNearLevel", "A boolean which is true if the geometrical representation of the IElement0D is within a set distance from the level line.")]
+        [Output("isNearLevel", "A boolean which is true if the geometrical representation of the IElement0D is within a set distance from the level elevation.")]
         public static bool IsNearLevel(this IElement0D element0D, Level level, double maxDistance)
         {
             Point position = element0D.IGeometry();
