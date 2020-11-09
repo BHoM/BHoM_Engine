@@ -100,6 +100,16 @@ namespace BH.Engine.Spatial
             return IsNearLevel(element as dynamic, level, maxDistance);
         }
 
+        /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static bool IsNearLevel(this IElement element, Level level, double maxDistance)
+        {
+            Reflection.Compute.RecordError($"IsNearLevel is not implemented for IElements of type: {element.GetType().Name}.");
+            return false;
+        }
+
         /******************************************/
 
     }
