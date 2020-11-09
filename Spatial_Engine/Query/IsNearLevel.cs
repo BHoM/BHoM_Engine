@@ -39,7 +39,7 @@ namespace BH.Engine.Spatial
         /****  Public Methods                  ****/
         /******************************************/
 
-        [Description("Checks if the geometrical representation of an IElement0D, projected onto the XY Plane, is within a set distance from a level line.")]
+        [Description("Checks if the geometrical representation of an IElement0D is within a set distance from a level elevation.")]
         [Input("element0D", "The IElement0D that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
         [Input("maxDistance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
