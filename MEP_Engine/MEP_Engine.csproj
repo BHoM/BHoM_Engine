@@ -86,7 +86,7 @@
     <Compile Include="Create\Elements\Pipe.cs" />
     <Compile Include="Create\Elements\PipeSectionProperty.cs" />
     <Compile Include="Create\Elements\SectionProfile.cs" />
-    <Compile Include="Create\Elements\Wire.cs" />
+    <Compile Include="Create\Elements\WireSegment.cs" />
     <Compile Include="Create\Elements\WireSectionProperty.cs" />
     <Compile Include="Create\EnergyWheel.cs" />
     <Compile Include="Create\Fan.cs" />
