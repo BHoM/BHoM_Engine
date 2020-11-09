@@ -223,6 +223,18 @@ namespace BH.Engine.Reflection
 
 
         /***************************************************/
+        /**** Fallback Methods                          ****/
+        /***************************************************/
+
+        [Description("Fallback returning an empty string in case a type-specific Description method is missing for a given subtype of InputClassificationAttribute.")]
+        [Input("classification", "Input classification attribute to be queried for description.")]
+        private static string Description(this InputClassificationAttribute classification)
+        {
+            return "";
+        }
+
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
