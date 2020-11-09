@@ -81,7 +81,7 @@ namespace BH.Engine.Physical
                 Engine.Reflection.Compute.RecordError("The BulkMaterial MaterialComposition could not be calculated as no Materials have been assigned.");
                 return null;
             }
-            return Matter.Create.MaterialComposition(bulkMaterial.MaterialComposition().Materials, bulkMaterial.MaterialComposition().Ratios);
+            return Matter.Create.MaterialComposition(bulkMaterial.MaterialComposition.Materials, bulkMaterial.MaterialComposition.Ratios);
         }
 
         /******************************************************/
