@@ -83,9 +83,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Return the total volume of bulkSolids")]
+        [Description("Return the total volume of BulkSolids")]
         [Input("bulkSolids", "Solid geometric elements that have a material composition")]
-        [Output("volume", "The combined volume of BulkMaterial", typeof(Volume))]
+        [Output("volume", "The combined volume of BulkSolids", typeof(Volume))]
         public static double SolidVolume(this BulkSolids bulkSolids)
         {
             double solidVolume = bulkSolids.Geometry.Select(x => BH.Engine.Geometry.Query.IVolume(x)).Sum();
