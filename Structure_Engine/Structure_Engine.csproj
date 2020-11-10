@@ -94,7 +94,8 @@
     <Compile Include="Compute\PlasticModulus.cs" />
     <Compile Include="Compute\ShearAreaPolyline.cs" />
     <Compile Include="Compute\Integrate.cs" />
-    <Compile Include="Create\Loads\AreaTemperatureLoad.cs" />
+    <Compile Include="Create\Loads\AreaDifferentialTemperatureLoad.cs" />
+    <Compile Include="Create\Loads\AreaUniformTemperatureLoad.cs" />
     <Compile Include="Create\Loads\AreaUniformlyDistributedLoad.cs" />
     <Compile Include="Create\Loads\BarPointLoad.cs" />
     <Compile Include="Create\Loads\BarPrestressLoad.cs" />
