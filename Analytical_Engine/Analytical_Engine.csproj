@@ -70,7 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\Process.cs" />
     <Compile Include="Convert\ToDataVizObjects.cs" />
     <Compile Include="Convert\ToDotFormat.cs" />
     <Compile Include="Convert\ToRelation.cs" />
@@ -114,7 +113,7 @@
     <Compile Include="Query\Graph\GraphView.cs" />
     <Compile Include="Query\Graph\SubGraphs.cs" />
     <Compile Include="Query\Graph\UnusedNodes.cs" />
-    <Compile Include="Query\Graph\ProcessRelations.cs" />
+    <Compile Include="Query\Graph\RunProcesses.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\IsAligned.cs" />
     <Compile Include="Query\IsHorizontal.cs" />
@@ -124,7 +123,9 @@
     <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Compute\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
