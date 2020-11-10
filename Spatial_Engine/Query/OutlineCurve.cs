@@ -35,6 +35,8 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Outline(BH.oM.Structure.Elements.Panel)")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Outline(BH.oM.Structure.Elements.Opening)")]
         [PreviousVersion("3.2", "BH.Engine.Common.Query.IOutlineCurve(BH.oM.Dimensional.IElement2D)")]
         [Description("Returns a single polycurve outline created from the external elements.")]
         [Input("element2D", "The IElement2D to get the outline curve from.")]
@@ -46,6 +48,7 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Outline(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>)")]
         [PreviousVersion("3.2", "BH.Engine.Common.Query.IOutlineCurve(BH.oM.Dimensional.IElement1D)")]
         [Description("Returns a single polycurve outline created from the IElement1Ds.")]
         [Input("elements1D", "The IElement1Ds are expected to be provided in order in such a way that each elements end meets the start of the next.")]

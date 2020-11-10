@@ -38,6 +38,7 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Node, BH.oM.Geometry.Point)")]
         [Description("Updates the position of a INode.")]
         [Input("node", "The INode to set the postion to.")]
         [Input("point", "The new position of the INode.")]
@@ -51,6 +52,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Bar, BH.oM.Geometry.ICurve)")]
         [Description("Updates geometry of an ILink by updating the positions of its end Nodes.")]
         [Input("link", "The ILink to update.")]
         [Input("curve", "The new centreline curve of the ILink. Should be a linear curve. \n" +
@@ -73,6 +75,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Edge, BH.oM.Geometry.ICurve)")]
         [Description("Updates the curve geometry of an IEdge.")]
         [Input("edge", "The IEdge to update.")]
         [Input("curve", "The curve to set to the IEdge.")]
