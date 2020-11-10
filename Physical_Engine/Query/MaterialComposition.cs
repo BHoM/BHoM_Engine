@@ -71,17 +71,17 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets all the Materials a BulkMaterial is composed of and in which ratios")]
-        [Input("bulkMaterial", "The BulkMaterial to get the MaterialComposition from")]
-        [Output("materialComposition", "The kind of matter the BulkMaterial is composed of and in which ratios", typeof(Ratio))]
-        public static MaterialComposition MaterialComposition(this BulkMaterial bulkMaterial)
+        [Description("Gets all the Materials a BulkSolid is composed of and in which ratios")]
+        [Input("bulkSolids", "The BulkSolids to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the BulkSolids is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this BulkSolids bulkSolids)
         {
-            if (bulkMaterial.MaterialComposition == null)
+            if (bulkSolids.MaterialComposition == null)
             {
-                Engine.Reflection.Compute.RecordError("The BulkMaterial MaterialComposition could not be calculated as no Materials have been assigned.");
+                Engine.Reflection.Compute.RecordError("The BulkSolids MaterialComposition could not be calculated as no Materials have been assigned.");
                 return null;
             }
-            return Matter.Create.MaterialComposition(bulkMaterial.MaterialComposition.Materials, bulkMaterial.MaterialComposition.Ratios);
+            return Matter.Create.MaterialComposition(bulkSolids.MaterialComposition.Materials, bulkSolids.MaterialComposition.Ratios);
         }
 
         /******************************************************/
