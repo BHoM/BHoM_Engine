@@ -32,7 +32,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
-        public static LoadType LoadType(this AreaTemperatureLoad load)
+        public static LoadType LoadType(this AreaUniformTemperatureLoad load)
         {
             return oM.Structure.Loads.LoadType.AreaTemperature;
         }
