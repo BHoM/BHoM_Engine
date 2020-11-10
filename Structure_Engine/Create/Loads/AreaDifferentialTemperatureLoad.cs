@@ -45,8 +45,7 @@ namespace BH.Engine.Structure
         [Input("objects", "The collection of elements the load should be applied to.")]
         [Input("name", "The name of the created load.")]
         [Output("areaTempLoad", "The created AreaUniformTempratureLoad.")]
-        [PreviousVersion("3.4", "BH.Engine.Structure.Create.AreaTemperatureLoad(BH.oM.Structure.Loads.Loadcase, System.double, Systems.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.IAreaElement>, BH.oM.Structure.Loads.LoadAxis, System.Boolean, System.String)")]
-        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, Dictionary<double,double> temperatureProfile, Vector localDirection, IEnumerable<IAreaElement> objects, string name = "")
+        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, Dictionary<double, double> temperatureProfile, Vector localDirection, IEnumerable<IAreaElement> objects, string name = "")
         {
             return new AreaDifferentialTemperatureLoad
             {
