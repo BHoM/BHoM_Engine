@@ -36,6 +36,7 @@ namespace BH.Engine.Analytical
         /****               Public Methods              ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.InternalElements2D(BH.oM.Structure.Elements.Panel)")]
         [Description("Gets inner IElement2Ds from a IPanel. Method required for all IElement2Ds. \n" +
          "For a IPanel this method will return a list of all of its openings.")]
         [Input("panel", "The IPanel to get internal IElement2Ds from.")]
