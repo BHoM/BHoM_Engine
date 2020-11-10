@@ -72,23 +72,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Convert\ToDataVizObjects.cs" />
-    <Compile Include="Convert\ToDotFormat.cs" />
-    <Compile Include="Convert\ToRelation.cs" />
+    <Compile Include="Convert\Graph\ToDataVizObjects.cs" />
+    <Compile Include="Convert\Graph\ToDotFormat.cs" />
+    <Compile Include="Convert\Graph\ToRelation.cs" />
     <Compile Include="Create\Graph\Graph.cs" />
     <Compile Include="Create\Graph\Relation.cs" />
     <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
-    <Compile Include="Modify\RelationCurves.cs" />
-    <Compile Include="Modify\Layout.cs" />
-    <Compile Include="Modify\RemoveEntity.cs" />
-    <Compile Include="Modify\RemoveIsolatedEntities.cs" />
-    <Compile Include="Modify\Reverse.cs" />
+    <Compile Include="Modify\Graph\RelationCurves.cs" />
+    <Compile Include="Modify\Graph\Layout.cs" />
+    <Compile Include="Modify\Graph\RemoveEntity.cs" />
+    <Compile Include="Modify\Graph\RemoveIsolatedEntities.cs" />
+    <Compile Include="Modify\Graph\Reverse.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\SetInternalElements2D.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
-    <Compile Include="Modify\UniqueEntities.cs" />
-    <Compile Include="Modify\UniqueEntityNames.cs" />
+    <Compile Include="Modify\Graph\UniqueEntities.cs" />
+    <Compile Include="Modify\Graph\UniqueEntityNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\ExternalPolycurve.cs" />
