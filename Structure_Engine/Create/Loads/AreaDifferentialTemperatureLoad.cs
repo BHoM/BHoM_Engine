@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Input("localDirection", "The local direction of the temperature variation relative to the profile. Typically limited to local y or z.")]
         [Input("objects", "The collection of elements the load should be applied to.")]
         [Input("name", "The name of the created load.")]
-        [Output("areaTempLoad", "The created AreaUniformTempratureLoad.")]
+        [Output("areaDiffTempLoad", "The created AreaUniformTempratureLoad.")]
         public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, Dictionary<double, double> temperatureProfile, Vector localDirection, IEnumerable<IAreaElement> objects, string name = "")
         {
             return new AreaDifferentialTemperatureLoad

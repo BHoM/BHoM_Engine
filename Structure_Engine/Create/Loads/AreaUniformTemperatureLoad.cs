@@ -45,8 +45,8 @@ namespace BH.Engine.Structure
         [InputFromProperty("axis")]
         [InputFromProperty("projected")]
         [Input("name", "The name of the created load.")]
-        [Output("areaTempLoad", "The created AreaUniformTempratureLoad.")]
-        [PreviousVersion("3.4", "BH.Engine.Structure.Create.AreaTemperatureLoad(BH.oM.Structure.Loads.Loadcase, System.double, Systems.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.IAreaElement>, BH.oM.Structure.Loads.LoadAxis, System.Boolean, System.String)")]
+        [Output("areaUniformTempLoad", "The created AreaUniformTempratureLoad.")]
+        [PreviousVersion("3.4", "BH.Engine.Structure.Create.AreaTemperatureLoad(BH.oM.Structure.Loads.Loadcase, System.Double, Systems.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.IAreaElement>, BH.oM.Structure.Loads.LoadAxis, System.Boolean, System.String)")]
         public static AreaUniformTemperatureLoad AreaTemperatureLoad(Loadcase loadcase, double temperatureChange, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             return new AreaUniformTemperatureLoad
