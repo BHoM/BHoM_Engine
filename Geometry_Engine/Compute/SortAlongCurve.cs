@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -37,9 +38,9 @@ namespace BH.Engine.Geometry
         public static List<Point> SortAlongCurve(this List<Point> points, Arc arc, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (arc.Angle() <= angleTolerance)
-                return points.Select(p => p.Clone()).ToList();
+                return points.Select(p => p.DeepClone()).ToList();
 
-            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), arc.ParameterAtPoint(arc.ClosestPoint(p)))).ToList();
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.DeepClone(), arc.ParameterAtPoint(arc.ClosestPoint(p)))).ToList();
 
             cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
             {
@@ -54,9 +55,9 @@ namespace BH.Engine.Geometry
         public static List<Point> SortAlongCurve(this List<Point> points, Circle circle, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (circle.Radius <= distanceTolerance)
-                return points.Select(p => p.Clone()).ToList();
+                return points.Select(p => p.DeepClone()).ToList();
 
-            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), circle.ParameterAtPoint(circle.ClosestPoint(p)))).ToList();
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.DeepClone(), circle.ParameterAtPoint(circle.ClosestPoint(p)))).ToList();
 
             cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
             {
@@ -71,10 +72,10 @@ namespace BH.Engine.Geometry
         public static List<Point> SortAlongCurve(this List<Point> points, Line line, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (line.Length() <= distanceTolerance)
-                return points.Select(p => p.Clone()).ToList();
+                return points.Select(p => p.DeepClone()).ToList();
 
             Vector lDir = line.Direction();
-            List<Tuple<Point, Point>> cData = points.Select(p => new Tuple<Point, Point>(p.Clone(), (p.Project(line)))).ToList();
+            List<Tuple<Point, Point>> cData = points.Select(p => new Tuple<Point, Point>(p.DeepClone(), (p.Project(line)))).ToList();
 
             if ((Math.Abs(lDir.X)) > angleTolerance)
             {
@@ -115,7 +116,7 @@ namespace BH.Engine.Geometry
         public static List<Point> SortAlongCurve(this List<Point> points, PolyCurve curve, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
 
-            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.Clone(), curve.ParameterAtPoint(curve.ClosestPoint(p)))).ToList();
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.DeepClone(), curve.ParameterAtPoint(curve.ClosestPoint(p)))).ToList();
 
             cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
             {

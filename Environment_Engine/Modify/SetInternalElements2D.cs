@@ -29,6 +29,8 @@ using System.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -43,7 +45,7 @@ namespace BH.Engine.Environment
         [Output("panel", "The updated Environment Panel")]
         public static Panel SetInternalElements2D(this Panel panel, List<IElement2D> internalElements2D)
         {
-            Panel pp = panel.GetShallowClone() as Panel;
+            Panel pp = panel.ShallowClone();
             pp.Openings = new List<Opening>(internalElements2D.Cast<Opening>().ToList());
             return pp;
         }

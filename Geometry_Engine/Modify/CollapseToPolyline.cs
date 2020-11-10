@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -57,7 +58,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline CollapseToPolyline(this Polyline curve, double angleTolerance, int maxSegmentCount = 100)
         {
-            return curve.Clone();
+            return curve.DeepClone();
         }
 
         /***************************************************/
@@ -157,7 +158,7 @@ namespace BH.Engine.Geometry
 
         private static List<Point> CollapseToPolylineVertices(this Polyline curve, double angleTolerance, int maxSegmentCount = 100)
         {
-            return curve.ControlPoints.Select(p => p.Clone()).ToList();
+            return curve.ControlPoints.Select(p => p.DeepClone()).ToList();
         }
 
         /***************************************************/

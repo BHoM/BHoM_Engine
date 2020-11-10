@@ -26,6 +26,7 @@ using BH.oM.Reflection.Attributes;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using BH.Engine.Base;
 
 namespace BH.Engine.Geometry
 {
@@ -60,7 +61,7 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve Flip(this NurbsCurve curve)
         {
-            NurbsCurve result = curve.Clone();
+            NurbsCurve result = curve.DeepClone();
 
             result.ControlPoints.Reverse();
             result.Weights.Reverse();

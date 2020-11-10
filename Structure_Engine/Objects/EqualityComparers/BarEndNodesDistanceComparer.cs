@@ -58,10 +58,6 @@ namespace BH.Engine.Structure
             if (Object.ReferenceEquals(bar1, null) || Object.ReferenceEquals(bar2, null))
                 return false;
 
-            //Check if the GUIDs are the same
-            if (bar1.BHoM_Guid == bar2.BHoM_Guid)
-                return true;
-
             if (m_nodeComparer.Equals(bar1.StartNode, bar2.StartNode))
             {
                 return m_nodeComparer.Equals(bar1.EndNode, bar2.EndNode);
@@ -81,7 +77,7 @@ namespace BH.Engine.Structure
             //Check whether the object is null
             if (Object.ReferenceEquals(bar, null)) return 0;
 
-            return bar.StartNode.GetHashCode() ^ bar.EndNode.GetHashCode();
+            return m_nodeComparer.GetHashCode(bar.StartNode) ^ m_nodeComparer.GetHashCode(bar.EndNode);
         }
 
 

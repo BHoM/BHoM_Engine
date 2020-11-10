@@ -28,6 +28,8 @@ using BH.oM.Environment.Fragments;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -41,10 +43,9 @@ namespace BH.Engine.Environment
         [Output("panel", "The copied Environment Panel")]
         public static Panel Copy(this Panel panel)
         {
-            Panel aPanel = panel.GetShallowClone(true) as Panel;
+            Panel aPanel = panel.ShallowClone(true);
             aPanel.ExternalEdges = new List<Edge>(panel.ExternalEdges);
             aPanel.Openings = new List<Opening>(panel.Openings);
-            aPanel.CustomData = new Dictionary<string, object>(panel.CustomData);
             aPanel.ConnectedSpaces = new List<string>(panel.ConnectedSpaces);
             aPanel.Construction = panel.Construction;
             aPanel.Type = panel.Type;

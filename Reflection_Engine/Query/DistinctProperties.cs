@@ -98,7 +98,7 @@ namespace BH.Engine.Reflection
                 Func<T, List<P>> getProp = (Func<T, List<P>>)Delegate.CreateDelegate(typeof(Func<T, List<P>>), property.GetGetMethod());
 
                 // Collect the objects from this property
-                propertyObjects.AddRange(objects.SelectMany(x => getProp(x)));
+                propertyObjects.AddRange(objects.SelectMany(x => (getProp(x) ?? new List<P>()).Where(p => p != null)));
             }
 
             //Get the distinct properties for the group value properties
@@ -108,7 +108,7 @@ namespace BH.Engine.Reflection
                 Func<T, BH.oM.Base.BHoMGroup<P>> getProp = (Func<T, BHoMGroup<P>>)Delegate.CreateDelegate(typeof(Func<T, BHoMGroup<P>>), property.GetGetMethod());
 
                 // Collect the objects from this property
-                propertyObjects.AddRange(objects.SelectMany(x => getProp(x).Elements));
+                propertyObjects.AddRange(objects.SelectMany(x => (getProp(x)?.Elements ?? new List<P>()).Where(p => p != null)));
             }
 
             //Return the disticnt property objects

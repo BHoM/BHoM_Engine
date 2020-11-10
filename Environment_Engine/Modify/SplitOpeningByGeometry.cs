@@ -32,6 +32,8 @@ using System;
 
 using BH.oM.Geometry;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -46,7 +48,7 @@ namespace BH.Engine.Environment
 
             foreach (Polyline p in polylines)
             {
-                Opening pan = opening.GetShallowClone(true) as Opening;
+                Opening pan = opening.ShallowClone(true);
                 pan.Edges = p.ToEdges();
                 openings.Add(pan);
             }

@@ -65,7 +65,7 @@ namespace BH.Engine.Spatial
                     try
                     {
                         // Get biggest contributing curve and fit a plane to it
-                        plane = Geometry.Compute.IJoin(edges.ToList()).OrderBy(x => x.Area()).Last().ControlPoints().FitPlane();
+                        plane = Geometry.Compute.IJoin(edges.ToList()).OrderBy(x => Geometry.Query.Area(x)).Last().ControlPoints().FitPlane();
 
                         result = edges.Select(x => x.IProject(plane)).ToList();
                         Reflection.Compute.RecordWarning("The Profiles curves have been projected onto a plane fitted through the biggest curve's control points.");

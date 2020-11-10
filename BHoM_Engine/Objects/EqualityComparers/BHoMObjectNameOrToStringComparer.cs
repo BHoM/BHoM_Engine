@@ -41,10 +41,6 @@ namespace BH.Engine.Base.Objects
             if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
                 return false;
 
-            //Check if the GUIDs are the same
-            if (x.BHoM_Guid == y.BHoM_Guid)
-                return true;
-
             string xName = !string.IsNullOrWhiteSpace(x.Name) ? x.Name : x.ToString();
             string yName = !string.IsNullOrWhiteSpace(y.Name) ? y.Name : y.ToString();
 

@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SortCollinear(this List<Point> points, double tolerance = Tolerance.Distance)
         {
-            List<Point> cPoints = points.Select(p => p.Clone()).ToList();
+            List<Point> cPoints = points.Select(p => p.DeepClone()).ToList();
             for (int i = 1; i < cPoints.Count; i++)
             {
                 if (Math.Abs(cPoints[0].X - cPoints[i].X) > tolerance)

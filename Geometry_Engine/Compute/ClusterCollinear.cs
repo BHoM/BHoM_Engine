@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
@@ -43,14 +44,14 @@ namespace BH.Engine.Geometry
                 {
                     if (l.IsCollinear(ll[0], tolerance))
                     {
-                        ll.Add(l.Clone());
+                        ll.Add(l.DeepClone());
                         collinear = true;
                         break;
                     }
                 }
 
                 if (!collinear)
-                    lineClusters.Add(new List<Line> { l.Clone() });
+                    lineClusters.Add(new List<Line> { l.DeepClone() });
             }
 
             return lineClusters;
