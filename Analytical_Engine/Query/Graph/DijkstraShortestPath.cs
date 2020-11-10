@@ -60,6 +60,8 @@ namespace BH.Engine.Analytical
         [Output("shortest path result", "The ShortestPathResult.")]
         public static ShortestPathResult DijkstraShortestPath(this Graph graph, Guid start, Guid end)
         {
+            m_NonSpatialGraph = graph;
+
             SetFragments(graph);
             
             DijkstraSearch(graph, start, end);
@@ -69,14 +71,15 @@ namespace BH.Engine.Analytical
 
             double length = 0;
             double cost = 0;
+            List<IRelation> relations = new List<IRelation>();
 
-            DijkstraResult(shortestPath, end,ref length, ref cost);
+            DijkstraResult(shortestPath, end,ref length, ref cost, ref relations);
             shortestPath.Reverse();
             List<IBHoMObject> objPath = new List<IBHoMObject>();
             shortestPath.ForEach(g => objPath.Add(graph.Entities[g]));
 
             List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => graph.Entities[kvp.Key]).ToList();
-            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "DijkstraShortestPath", -1, objPath, length, cost, entitiesVisited);
+            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "DijkstraShortestPath", -1, objPath, length, cost, entitiesVisited, relations);
             return result;
         }
 
@@ -136,19 +139,26 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        private static void DijkstraResult(List<Guid> list, Guid currentEntity, ref double length, ref double cost)
+        private static void DijkstraResult(List<Guid> list, Guid currentEntity, ref double length, ref double cost, ref List<IRelation> relations)
         {
             if (m_Fragments[currentEntity].NearestToSource == Guid.Empty)
                 return;
             Guid n = m_Fragments[currentEntity].NearestToSource;
             list.Add(n);
+            
             //assuming Dijkstra use is non-spatial increment by 1
             length += 1;
 
-            if(m_Fragments[n].Cost.HasValue)
+            //relations linking entities working backwards from end
+            List<IRelation> links = m_NonSpatialGraph.Relation(m_SpatialGraph.Entities[n], m_SpatialGraph.Entities[currentEntity]).ToList();
+            
+            //hang on to all if multiple exist
+            relations.AddRange(links);
+
+            if (m_Fragments[n].Cost.HasValue)
                 cost += m_Fragments[n].Cost.Value;
 
-            DijkstraResult(list, n, ref length, ref cost);
+            DijkstraResult(list, n, ref length, ref cost, ref relations);
         }
 
         /***************************************************/
@@ -156,5 +166,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         private static Dictionary<Guid, RoutingFragment> m_Fragments = new Dictionary<Guid, RoutingFragment>();
+        
+        private static Graph m_NonSpatialGraph = new Graph();
     }
 }

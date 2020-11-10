@@ -93,14 +93,15 @@ namespace BH.Engine.Analytical
             double length = 0;
             double cost = 0;
             List<ICurve> curves = new List<ICurve>();
-            AStarResult(shortestPath, end,ref length, ref cost, ref curves);
+            List<IRelation> relations = new List<IRelation>();
+            AStarResult(shortestPath, end,ref length, ref cost, ref curves, ref relations);
             shortestPath.Reverse();
 
             List<IBHoMObject> objPath = new List<IBHoMObject>();
             shortestPath.ForEach(g => objPath.Add(m_SpatialGraph.Entities[g]));
 
             List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => m_SpatialGraph.Entities[kvp.Key]).ToList();
-            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, curves);
+            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, relations, curves);
             return result;
         }
 
@@ -159,25 +160,29 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        private static void AStarResult(List<Guid> list, Guid entity, ref double length, ref double cost, ref List<ICurve> curves)
+        private static void AStarResult(List<Guid> list, Guid entity, ref double length, ref double cost, ref List<ICurve> curves, ref List<IRelation> relations)
         {
             if (m_Fragments[entity].NearestToSource == Guid.Empty)
                 return;
             Guid n = m_Fragments[entity].NearestToSource;
             list.Add(n);
+
             //relations linking entities working backwards from end
-            List<IRelation> relations = m_SpatialGraph.Relation(m_SpatialGraph.Entities[n], m_SpatialGraph.Entities[entity]).ToList();
-            //order by length
-            relations = relations.OrderBy(sr => m_SpatialGraph.RelationLength(sr)).ToList();
+            List<IRelation> links = m_SpatialGraph.Relation(m_SpatialGraph.Entities[n], m_SpatialGraph.Entities[entity]).ToList();
 
-            length += m_SpatialGraph.RelationLength(relations[0]);
+            //order by length and only use the shortest.
+            links = links.OrderBy(sr => m_SpatialGraph.RelationLength(sr)).ToList();
 
-            curves.Add(relations[0].Curve);
+            length += m_SpatialGraph.RelationLength(links[0]);
+
+            relations.Add(links[0]);
+
+            curves.Add(links[0].Curve);
 
             if (m_Fragments[n].Cost.HasValue)
                 cost += m_Fragments[n].Cost.Value;
 
-            AStarResult(list, n, ref length, ref cost, ref curves);
+            AStarResult(list, n, ref length, ref cost, ref curves, ref relations);
         }
 
         /***************************************************/
