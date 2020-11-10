@@ -98,6 +98,7 @@
     <Compile Include="Create\Loads\AreaUniformlyDistributedLoad.cs" />
     <Compile Include="Create\Loads\BarPointLoad.cs" />
     <Compile Include="Create\Loads\BarPrestressLoad.cs" />
+    <Compile Include="Create\Loads\BarDifferentialTemperatureLoad.cs" />
     <Compile Include="Create\Loads\BarUniformTemperatureLoad.cs" />
     <Compile Include="Create\Loads\BarUniformlyDistributedLoad.cs" />
     <Compile Include="Create\Loads\BarVaryingDistributedLoad.cs" />
