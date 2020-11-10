@@ -38,7 +38,7 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Convert an IDependencyFragment assigned to relations.")]
+        [Description("Convert an IDependencyFragment to relations.")]
         [Input("dependency", "The IDependencyFragment to convert.")]
         [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
         [Output("relations", "Collection of the converted relations.")]
@@ -49,20 +49,55 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Convert a DependencyFragment assigned to relations.")]
+        [Description("Convert a SourcesDependencyFragment to relations.")]
         [Input("dependency", "The DependencyFragment to convert.")]
         [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
         [Output("relations", "Collection of the converted relations.")]
-        public static List<IRelation> ToRelation(this DependencyFragment dependency, Guid owningEntity)
+        public static List<IRelation> ToRelation(this SourcesDependencyFragment dependency, Guid owningEntity)
         {
             List<IRelation> relations = new List<IRelation>();
-            relations.Add(
-                new Relation() { 
-                Source = dependency.Source, 
-                Target = dependency.Target,
-                Curve = dependency.Curve,
+            for(int i = 0; i < dependency.Sources.Count; i++)
+            {
+                ICurve curve = null;
+                if (i < dependency.Curves.Count - 1)
+                    curve = dependency.Curves[i];
+                relations.Add(
+                new Relation()
+                {
+                    Source = dependency.Sources[i],
+                    Target = owningEntity,
+                    Curve = curve,
 
-            });
+                });
+            }
+            
+            return relations;
+        }
+
+        /***************************************************/
+
+        [Description("Convert a TargetsDependencyFragment to relations.")]
+        [Input("dependency", "The DependencyFragment to convert.")]
+        [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
+        [Output("relations", "Collection of the converted relations.")]
+        public static List<IRelation> ToRelation(this TargetsDependencyFragment dependency, Guid owningEntity)
+        {
+            List<IRelation> relations = new List<IRelation>();
+            for (int i = 0; i < dependency.Targets.Count; i++)
+            {
+                ICurve curve = null;
+                if (i < dependency.Curves.Count - 1)
+                    curve = dependency.Curves[i];
+                relations.Add(
+                new Relation()
+                {
+                    Source = owningEntity,
+                    Target = dependency.Targets[i],
+                    Curve = curve,
+
+                });
+            }
+
             return relations;
         }
 
