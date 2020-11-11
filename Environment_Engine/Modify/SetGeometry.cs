@@ -44,8 +44,8 @@ namespace BH.Engine.Environment
         [Output("node", "The Node with updated geometry")]
         public static Node SetGeometry(this Node node, Point point)
         {
-            Node clone = node.GetShallowClone(true) as Node;
-            clone.Position = point.Clone();
+            Node clone = node.ShallowClone(true);
+            clone.Position = point.DeepClone();
             return clone;
         }
 
@@ -64,8 +64,8 @@ namespace BH.Engine.Environment
         [Output("panel", "An Environment Panel with an updated external boundary")]
         public static Panel SetGeometry(this Panel panel, ICurve curve)
         {
-            Panel aPanel = panel.GetShallowClone() as Panel;
-            aPanel.ExternalEdges = curve.IClone().ToEdges();
+            Panel aPanel = panel.ShallowClone();
+            aPanel.ExternalEdges = curve.DeepClone().ToEdges();
             return aPanel;
         }
 
@@ -75,8 +75,8 @@ namespace BH.Engine.Environment
         [Output("opening", "An Environment Opening with an updated external boundary")]
         public static Opening SetGeometry(this Opening opening, ICurve curve)
         {
-            Opening aOpening = opening.GetShallowClone() as Opening;
-            aOpening.Edges = curve.IClone().ToEdges();
+            Opening aOpening = opening.ShallowClone();
+            aOpening.Edges = curve.DeepClone().ToEdges();
             return aOpening;
         }
 
@@ -86,8 +86,8 @@ namespace BH.Engine.Environment
         [Output("edge", "An Environment Edge with an updated geometry")]
         public static Edge SetGeometry(this Edge edge, ICurve curve)
         {
-            Edge clone = edge.GetShallowClone() as Edge;
-            clone.Curve = curve.IClone();
+            Edge clone = edge.ShallowClone();
+            clone.Curve = curve.DeepClone();
             return clone;
         }
 

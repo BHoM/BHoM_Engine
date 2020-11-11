@@ -33,6 +33,8 @@ using BH.oM.Geometry;
 
 using BH.Engine.Geometry;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.MEP
 {
     public static partial class Modify
@@ -47,8 +49,8 @@ namespace BH.Engine.MEP
         [Output("node", "The Node with updated geometry.")]
         public static BH.oM.MEP.Elements.Node SetGeometry(this BH.oM.MEP.Elements.Node node, Point point)
         {
-            BH.oM.MEP.Elements.Node clone = node.GetShallowClone(true) as Node;
-            clone.Position = point.Clone();
+            BH.oM.MEP.Elements.Node clone = node.ShallowClone(true);
+            clone.Position = point.DeepClone();
             return clone;
         }
         
@@ -66,7 +68,7 @@ namespace BH.Engine.MEP
                 return null;
             }
             
-            IFlow clone = obj.GetShallowClone(true) as IFlow;
+            IFlow clone = obj.ShallowClone(true);
             clone.StartNode = clone.StartNode.SetGeometry(curve.IStartPoint());
             clone.EndNode = clone.EndNode.SetGeometry(curve.IEndPoint());
             return clone;

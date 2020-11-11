@@ -51,6 +51,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this ISectionProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"I {profile.Height:G3}x{profile.Width:G3}x{profile.WebThickness:G3}x{profile.FlangeThickness:G3}";
         }
 
@@ -61,6 +64,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this BoxProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"Box {profile.Height:G3}x{profile.Width:G3}x{profile.Thickness:G3}";
         }
 
@@ -71,6 +77,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this AngleProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"Angle {profile.Height:G3}x{profile.Width:G3}x{profile.WebThickness:G3}x{profile.FlangeThickness:G3}";
         }
 
@@ -81,6 +90,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this ChannelProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"Channel {profile.Height:G3}x{profile.FlangeWidth:G3}x{profile.WebThickness:G3}x{profile.FlangeThickness:G3}";
         }
 
@@ -91,6 +103,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this CircleProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"Circle {profile.Diameter:G3}";
         }
 
@@ -101,6 +116,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this FabricatedBoxProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"FabBox {profile.Height:G3}x{profile.Width:G3}x" +
                 $"{profile.WebThickness:G3}x{profile.TopFlangeThickness:G3}x{profile.BotFlangeThickness:G3}";
         }
@@ -112,6 +130,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this GeneralisedFabricatedBoxProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             double width = Math.Max(profile.Width + profile.BotLeftCorbelWidth + profile.BotRightCorbelWidth, profile.Width + profile.TopLeftCorbelWidth + profile.TopRightCorbelWidth);
             return $"GenFabBox {profile.Height:G3}x{width:G3}x{profile.WebThickness:G3}x" +
                 $"{profile.TopFlangeThickness:G3}x{profile.BotFlangeThickness:G3}";
@@ -124,6 +145,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this KiteProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"Kite {profile.Angle1:G2}x{profile.Width1:G3}x{profile.Thickness:G3}";
         }
 
@@ -134,6 +158,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this FabricatedISectionProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"FabI {profile.Height:G3}x{profile.TopFlangeWidth:G3}x{profile.BotFlangeWidth:G3}x" +
                 $"{profile.WebThickness:G3}x{profile.TopFlangeThickness:G3}x{profile.BotFlangeThickness:G3}";
         }
@@ -145,6 +172,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this FreeFormProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return "FreeForm";
         }
 
@@ -155,6 +185,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this RectangleProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"Rectangle {profile.Height:G3}x{profile.Width:G3}x{profile.CornerRadius:G3}";
         }
 
@@ -165,6 +198,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this TSectionProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"T {profile.Height:G3}x{profile.Width:G3}x{profile.WebThickness:G3}x{profile.FlangeThickness:G3}";
         }
 
@@ -175,6 +211,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this GeneralisedTSectionProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"GenT {profile.Height:G3}x{profile.WebThickness}x" +
                 $"{profile.LeftOutstandWidth:G3}x{profile.LeftOutstandThickness:G3}x" +
                 $"{profile.RightOutstandWidth:G3}x{profile.RightOutstandThickness:G3}";
@@ -187,6 +226,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this TubeProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return $"Tube {profile.Diameter:G3} x {profile.Thickness:G3}";
         }
 
@@ -199,6 +241,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this SteelSection section)
         {
+            if (section == null)
+                return "null section";
+
             return "Steel " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
         }
 
@@ -209,6 +254,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this ConcreteSection section)
         {
+            if (section == null)
+                return "null section";
+
             return "Concrete " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
         }
 
@@ -219,6 +267,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this TimberSection section)
         {
+            if (section == null)
+                return "null section";
+
             return "Timber  " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
         }
 
@@ -229,6 +280,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this AluminiumSection section)
         {
+            if (section == null)
+                return "null section";
+
             return "Aluminium " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
         }
 
@@ -239,6 +293,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this GenericSection section)
         {
+            if (section == null)
+                return "null section";
+
             return "Generic " + section.SectionProfile.IDescription() + " - " + CheckGetMaterialName(section.Material);
         }
 
@@ -249,6 +306,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this CableSection section)
         {
+            if (section == null)
+                return "null section";
+
             return $"Cable {section.NumberOfCables:G3} x dia {section.CableDiameter:G3} - {CheckGetMaterialName(section.Material)}";
         }
 
@@ -259,6 +319,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the section based on its dimensions, material and type.")]
         public static string Description(this ExplicitSection section)
         {
+            if (section == null)
+                return "null section";
+
             return $"Explicit A: {section.Area:G3} Iy: {section.Iy:G3} Iz: {section.Iz:G3} J: {section.J:G3} - {CheckGetMaterialName(section.Material)}";
         }
 
@@ -271,6 +334,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this ConstantThickness property)
         {
+            if (property == null)
+                return "null property";
+
             return $"THK {property.Thickness:G3} - {CheckGetMaterialName(property.Material)}";
         }
 
@@ -281,6 +347,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this Ribbed property)
         {
+            if (property == null)
+                return "null property";
+
             return $"Ribbed Depth: {property.TotalDepth:G3} Spacing: {property.Spacing:G3} sWidth: {property.StemWidth:G3}" +
                 $" - {CheckGetMaterialName(property.Material)}";
         }
@@ -292,6 +361,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this Waffle property)
         {
+            if (property == null)
+                return "null property";
+
             return $"Waffle DepthX: {property.TotalDepthX:G3} DepthY: {property.TotalDepthY:G3} " +
                 $"SpacingX: {property.SpacingX:G3} SpacingY: {property.SpacingY:G3} " +
                 $"sWidthX: {property.StemWidthX:G3} sWidthY: {property.StemWidthY:G3} - {CheckGetMaterialName(property.Material)}";
@@ -304,6 +376,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property.")]
         public static string Description(this LoadingPanelProperty property)
         {
+            if (property == null)
+                return "null property";
+
             return "LoadingPanel Application: " + property.LoadApplication + " RefEdge: " + property.ReferenceEdge;
         }
 
@@ -316,6 +391,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint3DOF constraint)
         {
+            if (constraint == null)
+                return "null constraint";
+
             string desc = constraint.UX.DofSign() + constraint.UY.DofSign() + constraint.Normal.DofSign();
             if (constraint.IsNumericallyDependent())
             {
@@ -331,6 +409,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint4DOF constraint)
         {
+            if (constraint == null)
+                return "null constraint";
+
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
                           constraint.RotationX.DofSign();
 
@@ -349,6 +430,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Constraint6DOF constraint)
         {
+            if (constraint == null)
+                return "null constraint";
+
             string desc = constraint.TranslationX.DofSign() + constraint.TranslationY.DofSign() + constraint.TranslationZ.DofSign() +
                           constraint.RotationX.DofSign() + constraint.RotationY.DofSign() + constraint.RotationZ.DofSign();
 
@@ -367,6 +451,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the BarRelease.")]
         public static string Description(this BarRelease release)
         {
+            if (release == null)
+                return "null release";
+
             return release.StartRelease.DescriptionOrName() + " - " + release.EndRelease.DescriptionOrName();
         }
 
@@ -377,6 +464,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the LinkConstraint.")]
         public static string Description(this LinkConstraint constraint)
         {
+            if (constraint == null)
+                return "null constraint";
+
             string desc = constraint.XtoX ? "x" : "f";
             desc += constraint.YtoY ? "x" : "f";
             desc += constraint.ZtoZ ? "x" : "f";
@@ -406,6 +496,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the constraint.")]
         public static string Description(this Offset offset)
         {
+            if (offset == null)
+                return "null offset";
+
             return $"{offset.Start.VectorComponents()} - {offset.End.VectorComponents()}";
         }
 
@@ -418,6 +511,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Steel material)
         {
+            if (material == null)
+                return "null material";
+
             return $"Steel {material.MaterialAnalyticalValues():G3}, fy: {material.YieldStress:G3}, fu: {material.UltimateStress:G3}";
         }
 
@@ -428,6 +524,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Concrete material)
         {
+            if (material == null)
+                return "null material";
+
             return $"Concrete {material.MaterialAnalyticalValues()}, cyl: {material.CylinderStrength:G3}, cube: {material.CubeStrength:G3}";
         }
 
@@ -438,6 +537,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Aluminium material)
         {
+            if (material == null)
+                return "null material";
+
             return "Alum " + material.MaterialAnalyticalValues();
         }
 
@@ -448,6 +550,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this GenericIsotropicMaterial material)
         {
+            if (material == null)
+                return "null material";
+
             return "Gen " + material.MaterialAnalyticalValues();
         }
 
@@ -456,6 +561,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this Timber material)
         {
+            if (material == null)
+                return "null material";
+
             return "Timber " + material.MaterialAnalyticalValues();
         }
 
@@ -464,6 +572,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the material.")]
         public static string Description(this GenericOrthotropicMaterial material)
         {
+            if (material == null)
+                return "null material";
+
             return "Gen " + material.MaterialAnalyticalValues();
         }
 
@@ -476,6 +587,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the property, based on its property values.")]
         public static string IDescription(this IProperty property)
         {
+            if (property == null)
+                return "null property";
+
             return Description(property as dynamic);
         }
 
@@ -486,6 +600,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the SectionProperty based on its dimensions, material and type.")]
         public static string IDescription(this ISectionProperty section)
         {
+            if (section == null)
+                return "null section";
+
             return Description(section as dynamic);
         }
 
@@ -496,6 +613,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the Profile based on its dimensions.")]
         public static string IDescription(this IProfile profile)
         {
+            if (profile == null)
+                return "null profile";
+
             return Description(profile as dynamic);
         }
 
@@ -506,6 +626,9 @@ namespace BH.Engine.Structure
         [Output("desc", "The generated description for the SurfaceProperty based on its dimensions, material and type.")]
         public static string IDescription(this ISurfaceProperty property)
         {
+            if (property == null)
+                return "null property";
+
             return Description(property as dynamic);
         }
 
@@ -558,6 +681,9 @@ namespace BH.Engine.Structure
 
         private static string VectorComponents(this Vector vector)
         {
+            if (vector == null)
+                return null;
+
             return (vector != null) ? $"[{vector.X:G3}, {vector.Y:G3}, {vector.Z:G3}]" : "null";
         }
 
