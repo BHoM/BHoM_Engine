@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Input("objects", "The collection of elements the load should be applied to.")]
         [Input("name", "The name of the created load.")]
         [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
-        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, LocalLoadDirection localLoadDirection, IEnumerable<IAreaElement> objects, string name = "")
+        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, IEnumerable<IAreaElement> objects, string name = "")
         {
             //Checks for positions and profiles
             if (positions.Count != temperatures.Count)
@@ -77,7 +77,6 @@ namespace BH.Engine.Structure
             {
                 Loadcase = loadcase,
                 TemperatureProfile = temperatureProfile,
-                LocalLoadDirection = localLoadDirection,
                 Objects = new BHoMGroup<IAreaElement>() { Elements = objects.ToList() },
                 Name = name
             };
@@ -93,9 +92,9 @@ namespace BH.Engine.Structure
         [Input("objects", "The collection of elements the load should be applied to.")]
         [Input("name", "The name of the created load.")]
         [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
-        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, LocalLoadDirection localLoadDirection, IEnumerable<IAreaElement> objects, string name = "")
+        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, IEnumerable<IAreaElement> objects, string name = "")
         {
-            return AreaDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, localLoadDirection, objects, name);
+            return AreaDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, objects, name);
 
         }
 
