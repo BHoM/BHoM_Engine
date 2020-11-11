@@ -60,6 +60,13 @@ namespace BH.Engine.Structure
                 return null;
             }
 
+            // Check that top and bottom positions are included
+            if(!(positions.Contains(0) && positions.Contains(1)))
+            {
+                Reflection.Compute.RecordError("Positions must inlude the bottom (0) and top (1) position.");
+                return null;
+            }
+
             List<double> sortedPositions = positions;
             sortedPositions.Sort();
 
