@@ -37,7 +37,6 @@ namespace BH.Engine.MEP
         [Description("Creates a composite Cable Tray sectionProfile.")]
         [Input("material", "A base ShapeProfile upon which to base the composite section.")]
         [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
-        [Input("cableTrayMaterial", "Material properties for the Cable Tray object.")]
         [Output("cableTraySectionProperty", "Cable Tray Section property used to provide accurate Cable Tray assembly and capacities.")]
         public static CableTraySectionProperty CableTraySectionProperty(IMEPMaterial material, SectionProfile sectionProfile = null, string name = "")
         {

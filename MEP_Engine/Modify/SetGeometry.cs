@@ -35,7 +35,7 @@ namespace BH.Engine.MEP
         /***************************************************/
 
         [Description("Updates geometry of an IFlow Object by updating the positions of its end Nodes.")]
-        [Input("obj", "The IFlow Object to update.")]
+        [Input("flowObj", "The IFlow Object to update.")]
         [Input("curve", "The new centerline curve of the pipe.")]
         [Output("object", "The IFlow Object with updated geometry.")]
         public static IFlow SetGeometry(this IFlow flowObj, ICurve curve)
