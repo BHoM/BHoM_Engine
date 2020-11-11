@@ -68,7 +68,9 @@ namespace BH.Engine.Environment
             {
                 List<ProfileResult> pResults = sr.SimulationResults.Where(x => x.Type == resultType).ToList();
                 if (pResults.Count > 0)
-                    resultList.Add(Create.SimulationResult(sr.Name, sr.SimulationResultType, pResults));
+                {
+                    resultList.Add(new SimulationResult() {Name = sr.Name, SimulationResultType = sr.SimulationResultType, SimulationResults = pResults});
+                }
             }
 
             return resultList;
@@ -122,7 +124,9 @@ namespace BH.Engine.Environment
             {
                 List<ProfileResult> pResults = sr.SimulationResults.Where(x => x.Unit == unit).ToList();
                 if (pResults.Count > 0)
-                    resultList.Add(Create.SimulationResult(sr.Name, sr.SimulationResultType, pResults));
+                {
+                    resultList.Add(new SimulationResult { Name = sr.Name, SimulationResultType = sr.SimulationResultType, SimulationResults = pResults });
+                }
             }
 
             return resultList;
