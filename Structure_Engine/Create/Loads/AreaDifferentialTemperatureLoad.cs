@@ -40,13 +40,13 @@ namespace BH.Engine.Structure
 
         [Description("Creates a differential temperature load to be applied to area elements such as Panels and FEMeshes.")]
         [InputFromProperty("loadcase")]
-        [Input("positions", "The parametric distance distance from the top (local z) or left (local y) of the surface property.")]
+        [Input("positions", "The parametric distance distance from the top (local z) or left (local y) of the property.")]
         [Input("temperatures", "The temperature at the corresponding position on the surface property.")]
-        [Input("localDirection", "The local direction of the temperature variation relative to the profile. Typically limited to local y or z.")]
+        [Input("localDirection", "The local direction of the temperature variation relative to the property. Typically limited to local y or z.")]
         [Input("objects", "The collection of elements the load should be applied to.")]
         [Input("name", "The name of the created load.")]
-        [Output("areaDiffTempLoad", "The created AreaUniformTempratureLoad.")]
-        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, Vector localDirection, IEnumerable<IAreaElement> objects, string name = "")
+        [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
+        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, LocalLoadDirection localLoadDirection, IEnumerable<IAreaElement> objects, string name = "")
         {
             //Checks for positions and profiles
             if (positions.Count != temperatures.Count)
@@ -77,13 +77,27 @@ namespace BH.Engine.Structure
             {
                 Loadcase = loadcase,
                 TemperatureProfile = temperatureProfile,
-                LocalDirection = localDirection,
+                LocalLoadDirection = localLoadDirection,
                 Objects = new BHoMGroup<IAreaElement>() { Elements = objects.ToList() },
                 Name = name
             };
         }
 
         /***************************************************/
+
+        [Description("Creates a differential temperature load to be applied to area elements such as Panels and FEMeshes.")]
+        [InputFromProperty("loadcase")]
+        [Input("topTemperature", "The temperature at the top of the specified local axis e.g. the top of the property in the local z or the left of it in the local y.")]
+        [Input("bottomTemperature", "The temperature at the bottom of the specific local axis e.g. the bottom of the property in the local z or the right of it in the local y.")]
+        [Input("localDirection", "The local direction of the temperature variation relative to the property. Typically limited to local y or z.")]
+        [Input("objects", "The collection of elements the load should be applied to.")]
+        [Input("name", "The name of the created load.")]
+        [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
+        public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, LocalLoadDirection localLoadDirection, IEnumerable<IAreaElement> objects, string name = "")
+        {
+            return AreaDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, localLoadDirection, objects, name);
+
+        }
 
     }
 }
