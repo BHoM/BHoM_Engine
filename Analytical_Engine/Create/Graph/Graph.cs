@@ -223,7 +223,7 @@ namespace BH.Engine.Analytical
                     List<IBHoMObject> col = new List<IBHoMObject>();
                     for (int j = 0; j < length; j++)
                     {
-                        Point p = Geometry.Create.Point(i * cellsize, j * cellsize, k * cellsize);
+                        Point p = Geometry.Create.Point(i * cellSize, j * cellSize, k * cellSize);
 
                         IElement0D entity = prototypeEntity.DeepClone();
                         entity = entity.ISetGeometry(p);
