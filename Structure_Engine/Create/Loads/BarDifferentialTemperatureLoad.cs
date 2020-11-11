@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates an uniform temprature load to be applied to Bars.")]
+        [Description("Creates an differential temprature load to be applied to Bars.")]
         [InputFromProperty("loadcase")]
         [Input("positions", "The parametric distance distance from the top (local z) or left (local y) of the profile.")]
         [Input("temperatures", "The temperature at the corresponding position on the profile.")]
@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Input("objects", "The collection of Bars the load should be applied to.")]
         [Input("name", "The name of the created load.")]
         [Output("barDiffTempLoad", "The created BarDifferentialTemperatureLoad.")]
-        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, Vector localDirection, IEnumerable<Bar> objects, string name = "")
+        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, LocalLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
         {
             //Checks for positions and profiles
             if (positions.Count != temperatures.Count)
@@ -78,10 +78,26 @@ namespace BH.Engine.Structure
             {
                 Loadcase = loadcase,
                 TemperatureProfile = temperatureProfile,
-                LocalDirection = localDirection,
+                LocalLoadDirection = localLoadDirection,
                 Objects = new BHoMGroup<Bar>() { Elements = objects.ToList() },
                 Name = name
             };
+        }
+
+        /***************************************************/
+
+        [Description("Creates an differential temprature load to be applied to Bars.")]
+        [InputFromProperty("loadcase")]
+        [Input("topTemperature", "The temperature at the top of the specified local axis e.g. the top of the surface property in the local z or the left of it in the local y.")]
+        [Input("bottomTemperature", "The temperature at the bottom of the specific local axis e.g. the bottom of the surface property in the local z or the right of it in the local y.")]
+        [Input("localDirection", "The local direction of the temperature variation relative to the profile. Typically limited to local y or z.")]
+        [Input("objects", "The collection of elements the load should be applied to.")]
+        [Input("name", "The name of the created load.")]
+        [Output("areaDiffTempLoad", "The created AreaUniformTempratureLoad.")]
+        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, LocalLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
+        {
+            return BarDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, localLoadDirection, objects, name);
+
         }
 
         /***************************************************/
