@@ -88,5 +88,18 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Surface, BH.oM.Geometry.ISurface)")]
+        [Description("Updates the geometrical ISurface of a analytical ISurface.")]
+        [Input("anaSurface", "The analytical Surface to update.")]
+        [Input("geoSurface", "The geometrical ISurface to set to the structural Surface.")]
+        [Output("strSurface", "The analytical Surface with updated geometry.")]
+        public static BH.oM.Analytical.Elements.ISurface SetGeometry(this BH.oM.Analytical.Elements.ISurface anaSurface, BH.oM.Geometry.ISurface geoSurface)
+        {
+            anaSurface.Extents = geoSurface;
+            return anaSurface;
+        }
+
+        /***************************************************/
     }
 }
