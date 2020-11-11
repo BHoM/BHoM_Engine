@@ -92,6 +92,38 @@ namespace BH.Engine.Spatial
             return result;
         }
 
+        /******************************************/
+
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.ExternalEdgeCurves(BH.oM.Structure.Elements.Panel)")]
+        [Description("Queries the geometricly defining external curves of the IElement2Ds surface.")]
+        [Input("element2D", "The IElement2D of which to get the external curve definintion.")]
+        [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts.")]
+        [Output("elementCurves", "The curves defining the base surface geometry of the IElement2D.")]
+        public static List<ICurve> ExternalElementCurves(this IElement2D element2D, bool recursive = true)
+        {
+            List<ICurve> result = new List<ICurve>();
+            PolyCurve outline = element2D.OutlineCurve();
+            foreach (ICurve curve in outline.Curves)
+            {
+                if (recursive)
+                    result.AddRange(curve.ISubParts());
+                else
+                    result.Add(curve);
+            }
+            return result;
+        }
+
+        /******************************************/
+
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.InternalEdgeCurves(BH.oM.Structure.Elements.Panel)")]
+        [Description("Queries the geometricly defining internal curves, such as Openings, of the IElement2Ds surface.")]
+        [Input("element2D", "The IElement2D of which to get the internal curve definintion.")]
+        [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts.")]
+        [Output("elementCurves", "The curves defining the base surface geometry of the IElement2D.")]
+        public static List<ICurve> InternalElementCurves(this IElement2D element2D, bool recursive = true)
+        {
+            return element2D.IInternalElements2D().Where(x => x != null).SelectMany(x => x.ElementCurves(recursive)).ToList();
+        }
 
         /******************************************/
         /****            IElement              ****/
