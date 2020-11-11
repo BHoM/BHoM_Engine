@@ -47,6 +47,9 @@ namespace BH.Engine.Analytical
         [Output("unique entities", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
         public static Dictionary<Guid, IBHoMObject> DiffEntities(this List<IBHoMObject> entities, DiffConfig diffConfig = null)
         {
+            if (diffConfig == null)
+                diffConfig = new DiffConfig();
+
             Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
             Dictionary<IBHoMObject, string> objectHash = new Dictionary<IBHoMObject, string>();
 
