@@ -40,13 +40,40 @@ namespace BH.Engine.Structure
 
         [Description("Creates an uniform temprature load to be applied to Bars.")]
         [InputFromProperty("loadcase")]
-        [InputFromProperty("temperatureProfile")]
+        [Input("positions", "The parametric distance distance from the top (local z) or left (local y) of the profile.")]
+        [Input("temperatures", "The temperature at the corresponding position on the profile.")]
         [Input("localDirection", "The local direction of the temperature variation relative to the profile. Typically limited to local y or z.")]
         [Input("objects", "The collection of Bars the load should be applied to.")]
         [Input("name", "The name of the created load.")]
         [Output("barDiffTempLoad", "The created BarDifferentialTemperatureLoad.")]
-        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, Dictionary<double, double> temperatureProfile, Vector localDirection, IEnumerable<Bar> objects, string name = "")
+        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, Vector localDirection, IEnumerable<Bar> objects, string name = "")
         {
+            //Checks for positions and profiles
+            if (positions.Count != temperatures.Count)
+            {
+                Reflection.Compute.RecordError("Number of positions and temperatures provided are not equal");
+                return null;
+            }
+            else if (positions.Exists((double d) => { return d > 1; }) || positions.Exists((double d) => { return d < 0; }))
+            {
+                Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
+                return null;
+            }
+
+            List<double> sortedPositions = positions;
+            sortedPositions.Sort();
+
+            if (!positions.SequenceEqual(sortedPositions))
+            {
+                Reflection.Compute.RecordError("Positions must be sorted in ascending order.");
+                return null;
+            }
+
+            //Create ditionary for TaperedProfile
+            Dictionary<double, double> temperatureProfile = positions.Zip(temperatures, (z, T) => new { z, T })
+                .ToDictionary(x => x.z, x => x.T);
+
+
             return new BarDifferentialTemperatureLoad
             {
                 Loadcase = loadcase,
