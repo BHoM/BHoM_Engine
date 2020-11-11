@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -33,9 +33,9 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the height and width of the equipment based on the inputs of AirVelocityAcrossCoil and TotalAirFlow")]
-        [Input("mepEquipmentObject", "MEP object that contains properties for AirVelocityAcrossCoil and TotalAirFlow")]
-        [Output("widthlength", "This is the width OR the length (they are the same value), since the method is taking the square root of the airflow divided by the velocity")]
+        [Description("Returns the height and width of the equipment based on the inputs of AirVelocityAcrossCoil and TotalAirFlow.")]
+        [Input("mepEquipmentObject", "MEP object that contains properties for AirVelocityAcrossCoil and TotalAirFlow.")]
+        [Output("widthlength", "This is the width OR the length (they are the same value), since the method is taking the square root of the airflow divided by the velocity.")]
         public static double FaceAreaByVelocity(this AirHandlingUnit mepEquipmentObject)
         {
             return Math.Sqrt(mepEquipmentObject.TotalAirFlow / mepEquipmentObject.AirVelocityAcrossCoil);
