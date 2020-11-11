@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Input("objects", "The collection of Bars the load should be applied to.")]
         [Input("name", "The name of the created load.")]
         [Output("barDiffTempLoad", "The created BarDifferentialTemperatureLoad.")]
-        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, LocalLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
+        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, DifferentialTemperatureLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
         {
             //Checks for positions and profiles
             if (positions.Count != temperatures.Count)
@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
             {
                 Loadcase = loadcase,
                 TemperatureProfile = temperatureProfile,
-                LocalLoadDirection = localLoadDirection,
+                LoadDirection = localLoadDirection,
                 Objects = new BHoMGroup<Bar>() { Elements = objects.ToList() },
                 Name = name
             };
@@ -94,7 +94,7 @@ namespace BH.Engine.Structure
         [Input("objects", "The collection of elements the load should be applied to.")]
         [Input("name", "The name of the created load.")]
         [Output("areaDiffTempLoad", "The created AreaUniformTempratureLoad.")]
-        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, LocalLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
+        public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, DifferentialTemperatureLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
         {
             return BarDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, localLoadDirection, objects, name);
 
