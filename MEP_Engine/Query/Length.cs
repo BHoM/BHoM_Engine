@@ -36,7 +36,7 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
         [Description("Query the length of any IFlow Object.")]
-        [Input("iFlowObj", "Any IFlow object to extract length.")]
+        [Input("flowObj", "Any IFlow object to extract length.")]
         [Output("length", "Linear length of the IFlow object.")]
         public static double Length(this IFlow flowObj)
         {
