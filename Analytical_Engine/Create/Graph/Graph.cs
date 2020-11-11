@@ -78,6 +78,7 @@ namespace BH.Engine.Analytical
 
             List<IBHoMObject> clonedEntities = entities.DeepClone();
             List<IRelation> clonedRelations = relations.DeepClone();
+
             //add objects from sub graphs if any
             clonedEntities.AddRange(clonedRelations.SelectMany(r => r.Subgraph.Entities.Values.DeepClone()).ToList());
 
@@ -107,6 +108,9 @@ namespace BH.Engine.Analytical
 
             graph.UniqueEntityNames();
 
+            if(graph.Relations.Count == 0)
+                Reflection.Compute.RecordWarning("No Relations have been defined for this graph.");
+
             return graph;
         }
 
@@ -116,7 +120,7 @@ namespace BH.Engine.Analytical
         [Input("connectingCurves", "A collection of ICurve representing the Graph Relations.")]
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
         [Input("entities", "Optional collection of IBHoMObjects to use as Graph entities.")]
-        [Input("snappingTolerance", "Optional tolerance used when comparing connectingCurves end points and provided entities. Default is Tolerance.Distance.")]
+        [Input("snappingTolerance", "Optional tolerance used when comparing connectingCurves end points and provided entities. Default is Tolerance.Distance (1e-6).")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
         public static Graph Graph<T>(List<ICurve> connectingCurves, T prototypeEntity, List<IElement0D> entities = null, double snappingTolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
@@ -157,10 +161,10 @@ namespace BH.Engine.Analytical
         [Input("branching", "Total number of Relations between an entity and its closest neighbours.")]
         [Input("boundingBox", "BoundingBox defining the spatial limits of the Graph.")]
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
-        [Input("tolerance", "Optional minimum distance permitted between randomly generated entities.")]
+        [Input("tolerance", "Optional minimum distance permitted between randomly generated entities. Default is Tolerance.Distance (1e-6).")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(int entityCount, int branching, BoundingBox boundingBox, IElement0D prototypeEntity, double tolerance = 1e-6, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static Graph Graph(int entityCount, int branching, BoundingBox boundingBox, IElement0D prototypeEntity, double tolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             Graph graph = new Graph();
             List<IElement0D> entities = new List<IElement0D>();
@@ -202,11 +206,11 @@ namespace BH.Engine.Analytical
         [Input("width", "Number of Points in the X direction.")]
         [Input("length", "Number of Points in the Y direction.")]
         [Input("height", "Number of Points in the Z direction.")]
-        [Input("cellsize", "Distance between points in X, Y and Z directions.")]
+        [Input("cellSize", "Distance between points in X, Y and Z directions.")]
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph<T>(int width, int length, int height, double cellsize, T prototypeEntity, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static Graph Graph<T>(int width, int length, int height, double cellSize, T prototypeEntity, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : IElement0D
         {
             Graph graph = new Graph();

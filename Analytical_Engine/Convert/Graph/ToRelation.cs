@@ -150,7 +150,7 @@ namespace BH.Engine.Analytical
         [Description("Convert a an ILink to a single forward direction relation.")]
         [Input("link", "The ILink to convert.")]
         [Output("relation", "The converted relation.")]
-        private static IRelation ToRelation<TNode>(this ILink<TNode> link)
+        public static IRelation ToRelation<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
             Relation relation = new Relation()

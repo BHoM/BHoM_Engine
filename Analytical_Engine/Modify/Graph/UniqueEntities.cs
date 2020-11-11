@@ -45,7 +45,6 @@ namespace BH.Engine.Analytical
         [Output("graph", "The Graph with unique entities.")]
         public static Graph UniqueEntities(this Graph graph, Dictionary<Guid, IBHoMObject> replaceMap)
         {
-            
             Dictionary<Guid, IBHoMObject> uniqueEntities = new Dictionary<Guid, IBHoMObject>();
 
             foreach (KeyValuePair<Guid, IBHoMObject> kvp in graph.Entities)
@@ -61,6 +60,7 @@ namespace BH.Engine.Analytical
             foreach (IRelation relation in graph.Relations)
             {
                 IRelation relation1 = relation.UniqueEntities(replaceMap);
+
                 //keep if it does not already exist
                 if(!uniqueRelations.Any(r => r.Source.Equals(relation1.Source) && r.Target.Equals(relation1.Target)))
                     uniqueRelations.Add(relation1);
@@ -76,8 +76,17 @@ namespace BH.Engine.Analytical
 
         private static IRelation UniqueEntities(this IRelation relation, Dictionary<Guid, IBHoMObject> replaceMap)
         {
-            relation.Source = replaceMap[relation.Source].BHoM_Guid;
-            relation.Target = replaceMap[relation.Target].BHoM_Guid;
+            if(replaceMap.ContainsKey(relation.Source))
+                relation.Source = replaceMap[relation.Source].BHoM_Guid;
+            else
+                Reflection.Compute.RecordError($"The Source reference on IRelation of type {relation.GetType().ToString()} cannot be found in the entities provided. Check all required entities have been included.");
+                
+            if(replaceMap.ContainsKey(relation.Target))
+                relation.Target = replaceMap[relation.Target].BHoM_Guid;
+            else
+                Reflection.Compute.RecordError($"The Target reference on IRelation of type {relation.GetType().ToString()} cannot be found in the entities provided. Check all required entities have been included.");
+            
+            //go deeper into making the subgraph unique is an option for future use
             //relation.Subgraph.UniqueEntities(replaceMap);
             return relation;
         }
