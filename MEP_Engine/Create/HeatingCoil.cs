@@ -31,15 +31,15 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Returns an MEP Heating Coil part")]
-        [Input("sensibleCapacity", "Default 0")]
-        [Input("enteringDryBulbAirTemperature", "Default 0")]
-        [Input("leavingDryBulbAirTemperature", "Default 0")]
-        [Input("enteringWaterTemperature", "Default 0")]
-        [Input("leavingWaterTemperature", "Default 0")]
-        [Input("pressureDrop", "Default 0")]
-        [Input("numberOfRows", "Default 0")]
-        [Output("heatingCoil", "An MEP Heating Coil part")]
+        [Description("Returns an MEP Heating Coil part.")]
+        [Input("sensibleCapacity", "Default 0.")]
+        [Input("enteringDryBulbAirTemperature", "Default 0.")]
+        [Input("leavingDryBulbAirTemperature", "Default 0.")]
+        [Input("enteringWaterTemperature", "Default 0.")]
+        [Input("leavingWaterTemperature", "Default 0.")]
+        [Input("pressureDrop", "Default 0.")]
+        [Input("numberOfRows", "Default 0.")]
+        [Output("heatingCoil", "An MEP Heating Coil part.")]
         public static HeatingCoil HeatingCoil(double sensibleCapacity = 0.0, double enteringDryBulbAirTemperature = 0.0, double leavingDryBulbAirTemperature = 0.0, double enteringWaterTemperature = 0.0, double leavingWaterTemperature = 0.0, double pressureDrop = 0.0, int numberOfRows = 0)
         {
             return new HeatingCoil

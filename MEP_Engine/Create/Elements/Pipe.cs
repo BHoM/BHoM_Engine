@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -36,7 +36,7 @@ namespace BH.Engine.MEP
         [Input("line", "A line that determines the Pipe's length and direction.")]
         [Input("flowRate", "The volume of fluid being conveyed by the Pipe per second (m3/s).")]
         [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Pipe section for accurate capacity and spatial quality.")]
-        [Output("pipe", "A pipe object is a passageway which conveys material (water, waste, glycol)")]
+        [Output("pipe", "A pipe object is a passageway which conveys material (water, waste, glycol).")]
 
         public static BH.oM.MEP.System.Pipe Pipe(Line line, double flowRate = 0, PipeSectionProperty sectionProperty = null)
         {

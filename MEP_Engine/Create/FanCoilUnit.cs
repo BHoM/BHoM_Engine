@@ -34,9 +34,9 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an MEP Fan Coil Unit object")]
-        [Input("parts", "A collection of MEP Parts which are housed by the air handling unit, default null")]
-        [Output("airHandlingUnit", "An MEP Fan Coil Unit")]
+        [Description("Returns an MEP Fan Coil Unit object.")]
+        [Input("parts", "A collection of MEP Parts which are housed by the air handling unit, default null.")]
+        [Output("airHandlingUnit", "An MEP Fan Coil Unit.")]
         public static FanCoilUnit FanCoilUnit(List<IPart> parts = null)
         {
             parts = parts ?? new List<IPart>();

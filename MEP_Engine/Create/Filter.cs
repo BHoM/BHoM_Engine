@@ -32,13 +32,13 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an MEP Filter part")]
-        [Input("type", "Default 0")]
-        [Input("mervRating", "Default 0")]
-        [Input("initialPressureDrop", "Default 0")]
-        [Input("replacementPressureDrop", "Default 0")]
-        [Input("area", "Default 0")]
-        [Output("filter", "An MEP Filter part")]
+        [Description("Returns an MEP Filter part.")]
+        [Input("type", "Default 0.")]
+        [Input("mervRating", "Default 0.")]
+        [Input("initialPressureDrop", "Default 0.")]
+        [Input("replacementPressureDrop", "Default 0.")]
+        [Input("area", "Default 0.")]
+        [Output("filter", "An MEP Filter part.")]
         public static Filter Filter(string type = "", int mervRating = 0, double initialPressureDrop = 0.0, double replacementPressureDrop = 0.0, double area = 0)
         {
             return new Filter
