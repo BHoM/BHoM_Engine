@@ -81,8 +81,11 @@ namespace BH.Engine.Reflection
             }
             else
             {
-                Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}]");
-                return null;
+                IFragment fragment = obj.Fragments.FirstOrDefault(x => x.GetType().Name == propName);
+                if (fragment == null)
+                    Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}]");
+
+                return fragment;
             }
         }
 
