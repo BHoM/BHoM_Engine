@@ -57,22 +57,21 @@ namespace BH.Engine.Reflection
             }
 
             System.Reflection.PropertyInfo prop = toChange.GetType().GetProperty(propName);
-            Type propType = prop.PropertyType;
-
-            if (value == null)
-            {
-                if (propType == typeof(string))
-                    value = "";
-                else if (propType.IsValueType || typeof(IEnumerable).IsAssignableFrom(propType))
-                    value = Activator.CreateInstance(propType);
-            }
-
             if (prop != null)
             {
                 if (!prop.CanWrite)
                 {
                     Engine.Reflection.Compute.RecordError("This property doesn't have a public setter so it is not possible to modify it.");
                     return obj;
+                }
+
+                Type propType = prop.PropertyType;
+                if (value == null)
+                {
+                    if (propType == typeof(string))
+                        value = "";
+                    else if (propType.IsValueType || typeof(IEnumerable).IsAssignableFrom(propType))
+                        value = Activator.CreateInstance(propType);
                 }
 
                 if (value != null)
