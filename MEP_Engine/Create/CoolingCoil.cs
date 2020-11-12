@@ -20,16 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
-using BH.oM.MEP.Parts;
+using BH.oM.MEP.Equipment.Parts;
 
 namespace BH.Engine.MEP
 {
@@ -39,18 +32,18 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an MEP Cooling Coil part")]
-        [Input("totalCapacity", "Default 0")]
-        [Input("sensibleCapacity", "Default 0")]
-        [Input("enteringDryBulbAirTemperature", "Default 0")]
-        [Input("enteringWetBulbAirTemperature", "Default 0")]
-        [Input("leavingDryBulbAirTemperature", "Default 0")]
-        [Input("leavingWetBulbAirTemperature", "Default 0")]
-        [Input("enteringWaterTemperature", "Default 0")]
-        [Input("leavingWaterTemperature", "Default 0")]
-        [Input("pressureDrop", "Default 0")]
-        [Input("numberOfRows", "Default 0")]
-        [Output("coolingCoil", "An MEP Cooling Coil part")]
+        [Description("Returns an MEP Cooling Coil part.")]
+        [Input("totalCapacity", "Default 0.")]
+        [Input("sensibleCapacity", "Default 0.")]
+        [Input("enteringDryBulbAirTemperature", "Default 0.")]
+        [Input("enteringWetBulbAirTemperature", "Default 0.")]
+        [Input("leavingDryBulbAirTemperature", "Default 0.")]
+        [Input("leavingWetBulbAirTemperature", "Default 0.")]
+        [Input("enteringWaterTemperature", "Default 0.")]
+        [Input("leavingWaterTemperature", "Default 0.")]
+        [Input("pressureDrop", "Default 0.")]
+        [Input("numberOfRows", "Default 0.")]
+        [Output("coolingCoil", "An MEP Cooling Coil part.")]
         public static CoolingCoil CoolingCoil(double totalCapacity = 0.0, double sensibleCapacity = 0.0, double enteringDryBulbAirTemperature = 0.0, double enteringWetBulbAirTemperature = 0.0, double leavingDryBulbAirTemperature = 0.0, double leavingWetBulbAirTemperature = 0.0, double enteringWaterTemperature = 0.0, double leavingWaterTemperature = 0.0, double pressureDrop = 0.0, int numberOfRows = 0)
         {
             return new CoolingCoil

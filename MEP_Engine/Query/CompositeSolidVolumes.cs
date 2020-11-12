@@ -23,7 +23,7 @@
 using System.ComponentModel;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
 
 namespace BH.Engine.MEP
 {

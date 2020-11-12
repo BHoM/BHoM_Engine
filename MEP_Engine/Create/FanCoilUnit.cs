@@ -20,17 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
 using BH.oM.MEP.Equipment;
-using BH.oM.MEP.Parts;
+using BH.oM.MEP.Equipment.Parts;
 
 namespace BH.Engine.MEP
 {
@@ -40,9 +34,9 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an MEP Fan Coil Unit object")]
-        [Input("parts", "A collection of MEP Parts which are housed by the air handling unit, default null")]
-        [Output("airHandlingUnit", "An MEP Fan Coil Unit")]
+        [Description("Returns an MEP Fan Coil Unit object.")]
+        [Input("parts", "A collection of MEP Parts which are housed by the air handling unit, default null.")]
+        [Output("airHandlingUnit", "An MEP Fan Coil Unit.")]
         public static FanCoilUnit FanCoilUnit(List<IPart> parts = null)
         {
             parts = parts ?? new List<IPart>();
