@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 
@@ -39,7 +40,7 @@ namespace BH.Engine.Geometry
             double d = Math.Sqrt(x * x + y * y + z * z);
 
             if (d == 0)
-                return vector.Clone();
+                return vector.DeepClone();
 
             return new Vector { X = x / d, Y = y / d, Z = z / d };
         }

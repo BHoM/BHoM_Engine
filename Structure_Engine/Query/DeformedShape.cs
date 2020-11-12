@@ -29,13 +29,14 @@ using System.Threading.Tasks;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Results;
-using BH.oM.Structure.Loads;
+using BH.oM.Base;
 
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 
 using BH.Engine.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -46,16 +47,28 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.DeformedShape(System.Collections.Generic.List<BH.oM.Structure.Elements.Bar>, System.Collections.Generic.List<BH.oM.Structure.Results.BarDisplacement>, System.String, System.Object, System.Double, System.Boolean)")]
         [Description("Gets deformed shape of a Bar based on BarDisplacements.")]
         [Input("bars", "The Bars to get the deformed shape for. The Bars input here should generally have been pulled from an analysis package to ensure they carry the AdapterNameId.")]
         [Input("barDisplacements", "The displacement results used to compute the deformed shape. The displacements are assumed to be in global coordinates. This list does NOT need to match the Bar input list, grouping is completed by the method.")]
-        [Input("adapterNameId", "The CustomData identifier to look for identifying information on for the Bars. This will depend on the software package used, but generally be for example 'Robot_id', 'GSA_id' etc. Try exploding the CustomData of your Bars to find the name of the identifier.")]
+        [Input("adapterIdType", "The type of identifier fragment to look for identifying information on for the Bars. This will depend on the software package used, but generally be for example RobotId, GSAId etc. Try checking the fragments of the Bars to find the identifier.")]
         [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination.")]
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
         [Input("drawSections", "Toggles if output should be just centrelines or include section geometry. Note that currently section geometry only supports displacements, no rotations!")]
         [Output("deformed","The shape of the Bars from the displacements.")]
-        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, string adapterNameId, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
+        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, Type adapterIdType, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
         {
+            if (adapterIdType == null)
+            {
+                Reflection.Compute.RecordError("The provided adapter id type is null.");
+                return new List<IGeometry>();
+            }
+            if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
+            {
+                Reflection.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
+                return new List<IGeometry>();
+            }
+
             barDisplacements = barDisplacements.SelectCase(loadcase);
 
             List<IGeometry> geom = new List<IGeometry>();
@@ -63,11 +76,18 @@ namespace BH.Engine.Structure
             var resGroups = barDisplacements.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
 
             if (drawSections)
-                Reflection.Compute.RecordWarning("Display of rotations of sections is not yet supported for deformed shape");
+                Reflection.Compute.RecordWarning("Display of rotations of sections is not yet supported for deformed shape.");
 
             foreach (Bar bar in bars)
             {
-                string id = bar.CustomData[adapterNameId].ToString();
+                IAdapterId idFragment = bar.FindFragment<IAdapterId>(adapterIdType);
+                if (idFragment == null)
+                {
+                    Engine.Reflection.Compute.RecordWarning("Could not find the adapter id for at least one Bar.");
+                    continue;
+                }
+
+                string id = idFragment.Id.ToString();
 
                 List<BarDisplacement> deformations;
 
@@ -90,15 +110,27 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.DeformedShape(System.Collections.Generic.List<BH.oM.Structure.Elements.FEMesh>, System.Collections.Generic.List<BH.oM.Structure.Results.MeshResult>, System.String, System.Object, System.Double)")]
         [Description("Gets deformed shape of a FEMesh based on MeshDisplacements.")]
         [Input("meshes", "The FEMeshes to get the deformed shape for. The FEMeshes input here should generally have been pulled from an analysis package to ensure they carry the AdapterNameId.")]
         [Input("meshDisplacements", "The displacement results used to compute the deformed shape.  This input should be a list of MeshResults which in turn should contain results of type MeshDisplacements. The displacements are assumed to be in global coordinates. This list does NOT need to match the FEMesh input list, grouping is completed by the method.")]
-        [Input("adapterNameId", "The CustomData identifier to look for identifying information on for the FEMeshes. This will depend on the software package used, but generally be for example 'Robot_id', 'GSA_id' etc. Try exploding the CustomData of your FEMeshes to find the name of the identifier.")]
+        [Input("adapterIdType", "The type of identifier fragment to look for identifying information on for the FEMeshes. This will depend on the software package used, but generally be for example RobotId, GSAId etc. Try checking the fragments of the FEMeshes to find the identifier.")]
         [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination.")]
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
         [Output("deformed", "The shape of the FEMeshes from the displacements.")]
-        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDisplacements, string adapterNameId, object loadcase, double scaleFactor = 1.0)
+        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDisplacements, Type adapterIdType, object loadcase, double scaleFactor = 1.0)
         {
+            if (adapterIdType == null)
+            {
+                Reflection.Compute.RecordError("The provided adapter id type is null.");
+                return new List<Mesh>();
+            }
+            if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
+            {
+                Reflection.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
+                return new List<Mesh>();
+            }
+
             meshDisplacements = meshDisplacements.SelectCase(loadcase);
 
             List<Mesh> defMeshes = new List<Mesh>();
@@ -107,7 +139,14 @@ namespace BH.Engine.Structure
 
             foreach (FEMesh feMesh in meshes)
             {
-                string id = feMesh.CustomData[adapterNameId].ToString();
+                IAdapterId idFragment = feMesh.FindFragment<IAdapterId>(adapterIdType);
+                if (idFragment == null)
+                {
+                    Engine.Reflection.Compute.RecordWarning("Could not find the adapter id for at least one FEMesh.");
+                    continue;
+                }
+
+                string id = idFragment.Id.ToString();
 
                 List<MeshResult> deformations;
 
@@ -119,7 +158,7 @@ namespace BH.Engine.Structure
 
                 MeshResult singleDisp = deformations.Where(x => x.ObjectId.ToString() == id && x.Results.First() is IMeshDisplacement).First();
 
-                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<IMeshDisplacement>(), adapterNameId, scaleFactor));
+                defMeshes.Add(DeformedMesh(feMesh, singleDisp.Results.Cast<IMeshDisplacement>(), adapterIdType, scaleFactor));
             }
 
             return defMeshes;
@@ -178,17 +217,17 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<IMeshDisplacement> disps, string adapterNameId, double scaleFactor)
+        private static Mesh DeformedMesh(FEMesh feMesh, IEnumerable<IMeshDisplacement> disps, Type adapterIdType, double scaleFactor)
         {
             Mesh mesh = new Mesh();
 
             foreach (Node node in feMesh.Nodes)
             {
-                IMeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.CustomData[adapterNameId].ToString());
+                IMeshDisplacement disp = disps.FirstOrDefault(x => x.NodeId.ToString() == node.FindFragment<IAdapterId>(adapterIdType)?.Id?.ToString());
 
                 if (disp == null)
                 {
-                    Reflection.Compute.RecordError("Could not find displacement for node with adapter Id: " + node.CustomData[adapterNameId].ToString() + ", from mesh with Id: " + feMesh.CustomData[adapterNameId].ToString());
+                    Reflection.Compute.RecordError("Could not find displacement for node with adapter Id: " + node.FindFragment<IAdapterId>(adapterIdType)?.Id?.ToString() ?? "unkown" + ", from mesh with Id: " + feMesh.FindFragment<IAdapterId>(adapterIdType)?.Id?.ToString() ?? "unkown");
                     return new Mesh();
                 }
 

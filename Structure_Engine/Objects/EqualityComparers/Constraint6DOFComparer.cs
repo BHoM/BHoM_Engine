@@ -43,9 +43,6 @@ namespace BH.Engine.Structure
             if (Object.ReferenceEquals(support1, null) || Object.ReferenceEquals(support2, null))
                 return false;
 
-            //Check if the GUIDs are the same
-            if (support1.BHoM_Guid == support2.BHoM_Guid)
-                return true;
 
             if (support1.Name == support2.Name &&
                 support1.TranslationX == support2.TranslationX &&

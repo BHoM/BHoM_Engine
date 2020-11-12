@@ -27,6 +27,8 @@ using System.Linq;
 
 using BH.oM.Environment.Elements;
 
+using BH.Engine.Base;
+
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -40,7 +42,7 @@ namespace BH.Engine.Environment
 
             foreach (Panel p in panels)
             {
-                Panel pan = p.GetShallowClone(true) as Panel;
+                Panel pan = p.ShallowClone(true);
                 pan.Openings = new List<Opening>();
                 rtnPanels.Add(pan);
             }

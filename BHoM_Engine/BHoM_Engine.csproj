@@ -52,6 +52,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management.Automation" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\Hash.cs" />
+    <Compile Include="Query\Hash.cs" />
     <Compile Include="Create\BHoMGroup.cs" />
     <Compile Include="Create\IObject\RandomObject.cs" />
     <Compile Include="Create\CustomObject.cs" />

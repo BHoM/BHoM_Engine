@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -104,7 +105,7 @@ namespace BH.Engine.Geometry
                         area -= arcArea;
                 }
 
-                sPt = ePt.Clone();
+                sPt = ePt.DeepClone();
             }
 
             return Math.Abs(area);

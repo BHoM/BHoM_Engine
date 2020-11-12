@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,17 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.SectionProperties;
+using BH.oM.MEP.System.SectionProperties;
 
 namespace BH.Engine.MEP
 {
@@ -44,13 +38,13 @@ namespace BH.Engine.MEP
         [Input("flowRate", "The volume of fluid being conveyed by the Duct per second (m3/s).")]
         [Input("sectionProperty", "Provide a ductSectionProperty to prepare a composite Duct section for accurate capacity and spatial quality.")]
         [Input("orientationAngle", "This is the Duct's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
-        [Output("duct", "A duct object is a passageway which conveys material (typically air)")]
+        [Output("duct", "A duct object is a passageway which conveys material (typically air).")]
         public static Duct Duct(Line line, double flowRate = 0, DuctSectionProperty sectionProperty = null, double orientationAngle = 0)
         {
             return new Duct
             {
-                StartNode = (Node)line.Start,
-                EndNode = (Node)line.End,
+                StartPoint = (Point)line.Start,
+                EndPoint = (Point)line.End,
                 SectionProperty = sectionProperty,
                 OrientationAngle = orientationAngle,
             };

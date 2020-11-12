@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection.Debugging;
@@ -70,7 +71,7 @@ namespace BH.Engine.Geometry
             else
                 radius -= offset;
 
-            Arc result = curve.Clone();
+            Arc result = curve.DeepClone();
 
             if (radius > 0)
             {
@@ -107,7 +108,7 @@ namespace BH.Engine.Geometry
             else
                 radius -= offset;
 
-            Circle result = curve.Clone();
+            Circle result = curve.DeepClone();
 
             if (radius > 0)
             {
