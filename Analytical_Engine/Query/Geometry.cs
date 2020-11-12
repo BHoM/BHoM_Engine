@@ -54,6 +54,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousInputNames("link", "bar")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.Bar)")]
         [Description("Gets the geometry of a ILink as its centreline. Method required for automatic display in UI packages.")]
         [Input("link", "ILink to get the centreline geometry from.")]
@@ -115,6 +116,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousInputNames("mesh", "feMesh")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.FEMesh)")]
         [Description("Gets the geometry of a analytical IMesh as a geometrical Mesh. A geometrical mesh only supports 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("mesh", "Analytical IMesh to get the mesh geometry from.")]
@@ -134,6 +136,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousInputNames("faces", "feFaces")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(System.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.FEMeshFace>)")]
         [Description("Gets the geometry of a collection of IFaces as a geometrical Mesh's Faces. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("faces", "Analytical IFaces to get the mesh faces geometry from.")]
@@ -153,6 +156,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousInputNames("face", "feFace")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.FEMeshFace)")]
         [Description("Gets the geometry of a analytical IFace as a geometrical Mesh's Face. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("face", "Analytical IFace to get the mesh face geometry from.")]

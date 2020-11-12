@@ -36,6 +36,7 @@ namespace BH.Engine.Analytical
         /****            IElement1D            ****/
         /******************************************/
 
+        [PreviousInputNames("link", "bar")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.Elements0D(BH.oM.Structure.Elements.Bar)")]
         [Description("Gets the Element0Ds of an ILink, which for the case of a ILink means getting the StartNode and EndNode. Method necessary for IElement pattern.")]
         [Input("link", "The ILink to extract IElement0ds from.")]

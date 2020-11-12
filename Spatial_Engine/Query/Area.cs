@@ -66,6 +66,7 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [PreviousInputNames("element2D", "panel,opening")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.Area(BH.oM.Structure.Elements.Panel)")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.Area(BH.oM.Structure.Elements.Opening)")]
         [Description("Queries the IElement2Ds area defined as the area confined by the outline curves subtracting the area of the internal elements.")]

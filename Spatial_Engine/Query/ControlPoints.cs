@@ -47,6 +47,7 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
+        [PreviousInputNames("element1D", "bar,edges")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.ControlPoints(BH.oM.Structure.Elements.Bar)")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.ControlPoints(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>)")]
         [Description("Queries the control points of the one dimensional representation of the IElement1D.")]
@@ -62,6 +63,7 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [PreviousInputNames("element2D", "panel,opening")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.ControlPoints(BH.oM.Structure.Elements.Panel, System.Boolean)")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.ControlPoints(BH.oM.Structure.Elements.Opening)")]
         [Description("Queries the control points of the element curve representation of the IElement2D.")]
