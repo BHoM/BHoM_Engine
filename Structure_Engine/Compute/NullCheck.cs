@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,39 +20,50 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
-using BH.Engine.Geometry;
-using System.ComponentModel;
-
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+using System;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a Bar is vertical. A Bar is vertical if its projected length to the horizontal plane is less than 0.0001, i.e. a tolerance of 0.1mm on verticality. \n" +
-                     "For general structural conventions please see  https://github.com/BHoM/documentation/wiki/BHoM-Structural-Conventions.")]
-        [Input("bar", "The Bar to check for verticality.")]
-        [Output("result", "Returns true if the Bar is vertical.")]
-        public static bool IsVertical(this Bar bar)
+        [Description("Checks if a Bar or one of its Nodes are null and outputs relevant error message.")]
+        [Input("bar", "The Bar to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the bar passes the null check.")]
+        public static bool NullCheck(this Bar bar, string methodName = "Method")
         {
-            return bar.NullCheck("IsVertical") ? Engine.Geometry.Query.IsVertical(bar.Centreline()) : false;
+            string errorMessage = $"Cannot run {methodName} because {"{0}"} is null";
+
+            if (bar == null)
+            {
+                Engine.Reflection.Compute.RecordError(String.Format(errorMessage, "Bar"));
+                return false;
+            }
+            if (bar?.StartNode?.Position == null)
+            {
+                Engine.Reflection.Compute.RecordError(String.Format(errorMessage, "StartNode"));
+                return false;
+            }
+            if (bar?.EndNode?.Position == null)
+            {
+                Engine.Reflection.Compute.RecordError(String.Format(errorMessage, "EndNode"));
+                return false;
+            }
+
+            return true;
         }
 
         /***************************************************/
-
-        [Deprecated("3.1", "Moved to Geometry_Engine.")]
-        public static bool IsVertical(this Line line)
-        {
-            return Engine.Geometry.Query.IsVertical(line);
-        }
-
-        /***************************************************/
-
     }
 }
+

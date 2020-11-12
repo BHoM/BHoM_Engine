@@ -41,16 +41,7 @@ namespace BH.Engine.Structure
         [Output("tan", "The tangent Vector of the Bar.")]
         public static Vector Tangent(this Bar bar, bool normalise = false)
         {
-            Point start = bar?.StartNode?.Position;
-            Point end = bar?.EndNode?.Position;
-
-            if (start == null || end == null)
-            {
-                Engine.Reflection.Compute.RecordError("Bar or one of its nodes is null or has a null position.");
-                return null;
-            }
-
-            Vector tan = end - start;
+            Vector tan = bar.NullCheck("Tangent") ? bar.EndNode.Position - bar.StartNode.Position : null;
             return normalise ? tan?.Normalise() : tan;
         }
 
