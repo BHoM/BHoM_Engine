@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("normal", "Vector representing the local z-axis of the Bar.")]
         public static Vector Normal(this Bar bar)
         {
-            return bar.Centreline().ElementNormal(bar.OrientationAngle);
+            return bar.NullCheck("Normal") ? bar.Centreline().ElementNormal(bar.OrientationAngle) : null;
         }
 
         /***************************************************/
