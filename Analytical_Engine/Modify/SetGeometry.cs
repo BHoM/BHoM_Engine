@@ -52,6 +52,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousInputNames("link", "bar")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Bar, BH.oM.Geometry.ICurve)")]
         [Description("Updates geometry of an ILink by updating the positions of its end Nodes.")]
         [Input("link", "The ILink to update.")]
@@ -89,6 +90,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousInputNames("anaSurface", "strSurface")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Surface, BH.oM.Geometry.ISurface)")]
         [Description("Updates the geometrical ISurface of a analytical ISurface.")]
         [Input("anaSurface", "The analytical Surface to update.")]
