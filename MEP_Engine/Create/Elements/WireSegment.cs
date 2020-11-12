@@ -20,17 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.SectionProperties;
+using BH.oM.MEP.System.SectionProperties;
 
 namespace BH.Engine.MEP
 {
@@ -43,13 +37,13 @@ namespace BH.Engine.MEP
         [Input("line", "A line that determines the Wire's length and direction.")]
         [Input("flowRate", "The volume of fluid being conveyed by the Wire per second (m3/s).")]
         [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Wire section for accurate capacity and spatial quality.")]
-        [Output("wire", "Wire object to work within an MEP systems.")]
-        public static WireSegment Wire(Line line, double flowRate = 0, WireSectionProperty sectionProperty = null)
+        [Output("wireSegment", "Wire object to work within an MEP systems.")]
+        public static WireSegment WireSegment(Line line, double flowRate = 0, WireSectionProperty sectionProperty = null)
         {
             return new WireSegment
             {
-                StartNode = (Node)line.Start,
-                EndNode = (Node)line.End,
+                StartPoint = (Point)line.Start,
+                EndPoint = (Point)line.End,
                 SectionProperty = sectionProperty,
             };
         }

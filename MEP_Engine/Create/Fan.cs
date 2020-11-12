@@ -20,16 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
-using BH.oM.MEP.Parts;
+using BH.oM.MEP.Equipment.Parts;
 
 namespace BH.Engine.MEP
 {
@@ -39,16 +32,16 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an MEP Fan part")]
-        [Input("flowRate", "Default 0")]
-        [Input("externalStaticPressure", "Default 0")]
-        [Input("speed", "Default 0")]
-        [Input("driveType", "Default empty string")]
-        [Input("speedControl", "Default empty string")]
-        [Input("brakeHorsePower", "Default 0")]
-        [Input("horsePower", "Default 0")]
-        [Input("efficiency", "Default 0")]
-        [Output("fan", "An MEP Fan part")]
+        [Description("Returns an MEP Fan part.")]
+        [Input("flowRate", "Default 0.")]
+        [Input("externalStaticPressure", "Default 0.")]
+        [Input("speed", "Default 0.")]
+        [Input("driveType", "Default empty string.")]
+        [Input("speedControl", "Default empty string.")]
+        [Input("brakeHorsePower", "Default 0.")]
+        [Input("horsePower", "Default 0.")]
+        [Input("efficiency", "Default 0.")]
+        [Output("fan", "An MEP Fan part.")]
         public static Fan Fan(double flowRate = 0.0, double externalStaticPressure = 0.0, double speed = 0.0, string driveType = "", string speedControl = "", double brakeHorsePower = 0.0, double horsePower = 0.0, double efficiency = 0)
         {
             return new Fan
