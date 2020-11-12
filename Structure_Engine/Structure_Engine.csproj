@@ -253,6 +253,10 @@
     <Compile Include="Query\IsConstrained.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Analytical_Engine\Analytical_Engine.csproj">
+      <Project>{b3342b93-fdbc-465b-b2e7-da463589c96b}</Project>
+      <Name>Analytical_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>

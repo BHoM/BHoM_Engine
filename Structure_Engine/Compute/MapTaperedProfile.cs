@@ -31,6 +31,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.SectionProperties;
 using BH.Engine.Base;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -84,7 +85,7 @@ namespace BH.Engine.Structure
             }
 
             //Get geometry of Bars
-            List<Line> lines = bars.Select(x => Query.Geometry(x)).ToList();
+            List<Line> lines = bars.Select(x => x.Centreline()).ToList();
 
             //Checks bars form a single line
             List<Polyline> centrelines = lines.Join();
@@ -115,8 +116,8 @@ namespace BH.Engine.Structure
             //For each bar interpolate the profiles as necessary and create a TaperedProfile 
             foreach (Bar bar in bars)
             {
-                double startPosition = centreline.ParameterAtPoint(bar.StartNode.Geometry());
-                double endPosition = centreline.ParameterAtPoint(bar.EndNode.Geometry());
+                double startPosition = centreline.ParameterAtPoint(bar.StartNode.Position);
+                double endPosition = centreline.ParameterAtPoint(bar.EndNode.Position);
                 double newLength = endPosition - startPosition;
 
                 List<double> positions = new List<double>(originalPositions);

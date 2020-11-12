@@ -58,13 +58,18 @@ namespace BH.Engine.Structure
         [Output("edges", "The list of curves representing all internal and external edges of an element.")]
         public static IEnumerable<ICurve> IEdges(this IAreaElement element)
         {
-            if (element is Panel)
-                return (AllEdgeCurves(element as Panel));
-            else
                 return Edges(element as dynamic);
         }
 
         /***************************************************/
+
+        [Description("Extracts all the edge curves from an AreaElement.")]
+        [Input("element", "The element to extract opening edges from.")]
+        [Output("edges", "The list of curves representing all internal and external edges of an element.")]
+        private static IEnumerable<ICurve> Edges(this Panel element)
+        {
+            return Engine.Spatial.Query.ElementCurves(element, true);
+        }
 
         private static IEnumerable<ICurve> Edges(this IAreaElement element)
         {
