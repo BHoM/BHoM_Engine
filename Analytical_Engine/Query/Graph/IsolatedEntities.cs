@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
+using BH.oM.Analytical.Elements;
+using BH.oM.Base;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
@@ -36,26 +38,19 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Returns the collection of entity Guids that are never used as Relation targets or sources.")]
+        [Input("graph", "The Graph to search.")]
+        [Output("isolated entities", "The collection of entity Guids that are isolated.")]
+        public static List<Guid> IsolatedEntities(this Graph graph)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
-
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            List<Guid> unused = new List<Guid>();
+            foreach(Guid n in graph.Entities.Keys.ToList())
+            {
+                if (graph.Incoming(n).Count == 0 && !graph.NotSinks().Contains(n))
+                    unused.Add(n);
+            }
+            return unused;
         }
-
-        /***************************************************/
     }
-}
 
+}

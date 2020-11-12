@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,42 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
+using BH.oM.Analytical.Elements;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Modifies a Graph by removing all entities that are not used by relations.")]
+        [Input("graph", "The Graph to modify.")]
+        [Output("graph", "The modified Graph without isolated entities.")]
+        public static Graph RemoveIsolatedEntities(this Graph graph)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
+            foreach (Guid n in graph.IsolatedEntities())
+                graph.Entities.Remove(n);
 
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            return graph;
         }
 
         /***************************************************/
     }
 }
-

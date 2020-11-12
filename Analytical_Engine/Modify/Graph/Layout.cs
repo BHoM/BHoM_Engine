@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,42 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Analytical.Elements;
 using BH.oM.Reflection.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****           Public Constructors             ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Modifies a Graph by configuring ViewFragments for each entity.")]
+        [Input("graph", "The Graph to modify.")]
+        [Input("layout", "ILayout for the view of the of the Graph.")]
+        [Output("graph", "Graph with ILayout configured.")]
+        public static Graph ILayout(this Graph graph, ILayout layout)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
+            Layout(layout as dynamic, graph);
+            return graph;
+        }
 
-            string desc = "";
+        /***************************************************/
+        /**** Fallback Methods                          ****/
+        /***************************************************/
 
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+        private static void Layout(this ILayout layout, Graph graph)
+        {
+            // Do nothing
         }
 
         /***************************************************/
     }
 }
-

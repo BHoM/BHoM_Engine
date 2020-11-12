@@ -30,6 +30,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
+using BH.oM.Dimensional;
+using BH.Engine.Spatial;
+using BH.oM.Analytical.Fragments;
+using BH.Engine.Base;
 
 namespace BH.Engine.Analytical
 {
@@ -183,5 +187,42 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [Description("Gets the geometry of a Graph if it comprises of entities that inherit from IElement0D. Method required for automatic display in UI packages.")]
+        [Input("graph", "Graph to get the geometry from.")]
+        [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
+        public static CompositeGeometry Geometry(this Graph graph)
+        {
+            List<IGeometry> geometries = new List<IGeometry>();
+            Graph spatialGraph = graph.GraphView(new SpatialView());
+
+            if (spatialGraph.Entities.Count == 0 || spatialGraph.Relations.Count == 0)
+                return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
+
+            return SpatialGraphGeometry(spatialGraph);
+
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static CompositeGeometry SpatialGraphGeometry(Graph spatialGraph)
+        {
+            List<IGeometry> geometries = new List<IGeometry>();
+
+            foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in spatialGraph.Entities)
+            {
+                if (kvp.Value is IElement0D)
+                {
+                    IElement0D entity = kvp.Value as IElement0D;
+                    geometries.Add(entity.IGeometry());
+                }
+            }
+            foreach (IRelation relation in spatialGraph.Relations)
+                geometries.Add(relation.RelationArrow());
+
+            return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
+        }
+        
     }
 }

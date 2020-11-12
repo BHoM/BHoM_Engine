@@ -43,7 +43,7 @@ namespace BH.Engine.Reflection
         public static string Description(this MemberInfo member, bool addTypeDescription = true)
         {
             DescriptionAttribute descriptionAttribute = member.GetCustomAttribute<DescriptionAttribute>();
-            QuantityAttribute quantityAttribute = member.GetCustomAttribute<QuantityAttribute>();
+            InputClassificationAttribute classification = member.GetCustomAttribute<InputClassificationAttribute>();
 
             string desc = "";
             if (descriptionAttribute != null && !string.IsNullOrWhiteSpace(descriptionAttribute.Description))
@@ -51,7 +51,7 @@ namespace BH.Engine.Reflection
 
             if (addTypeDescription && member is PropertyInfo && (typeof(IObject).IsAssignableFrom(((PropertyInfo)member).PropertyType)))
             {
-                desc += ((PropertyInfo)member).PropertyType.Description(quantityAttribute) + Environment.NewLine;
+                desc += ((PropertyInfo)member).PropertyType.Description(classification) + Environment.NewLine;
             }
 
             return desc;
@@ -64,12 +64,12 @@ namespace BH.Engine.Reflection
         public static string Description(this ParameterInfo parameter, bool addTypeDescription = true)
         {
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
-            QuantityAttribute quantityAttribute = null;
+            InputClassificationAttribute classification = null;
             string desc = "";
             if (inputDesc.Count() > 0)
             {
                 desc = inputDesc.First().Description + Environment.NewLine;
-                quantityAttribute = inputDesc.First().Quantity;
+                classification = inputDesc.First().Classification;
             }
             else
             {
@@ -94,7 +94,7 @@ namespace BH.Engine.Reflection
             }
             if (addTypeDescription && parameter.ParameterType != null)
             {
-                desc += parameter.ParameterType.Description(quantityAttribute);
+                desc += parameter.ParameterType.Description(classification);
             }
             return desc;
         }
@@ -110,7 +110,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Return the custom description of a C# class")]
-        public static string Description(this Type type, QuantityAttribute quantityAttribute)
+        public static string Description(this Type type, InputClassificationAttribute classification)
         {
             if (type == null)
             {
@@ -122,9 +122,9 @@ namespace BH.Engine.Reflection
             string desc = "";
 
             //If a quantity attribute is present, this is used to generate the default description
-            if (quantityAttribute != null)
+            if (classification != null)
             {
-                desc += "This is a " + quantityAttribute.GetType().Name + " [" + quantityAttribute.SIUnit + "]";
+                desc += classification.IDescription();
                 desc += " (as a " + type.ToText(type.Namespace.StartsWith("BH.")) + ")";
                 return desc;
             }
@@ -184,6 +184,55 @@ namespace BH.Engine.Reflection
             else
                 return "";
         }
+
+        /***************************************************/
+
+        [Description("Return the custom description of a classification attribute.")]
+        [Input("classification", "Classification attribute to be queried for description.")]
+        public static string IDescription(this InputClassificationAttribute classification)
+        {
+            return Description(classification as dynamic);
+        }
+
+        /***************************************************/
+
+        [Description("Return the custom description of a quantity attribute.")]
+        [Input("quantity", "Quantity attribute to be queried for description.")]
+        public static string Description(this QuantityAttribute quantity)
+        {
+            return "This is a " + quantity.GetType().Name + " [" + quantity.SIUnit + "]";
+        }
+
+        /***************************************************/
+
+        [Description("Return the description of a folder path attribute.")]
+        [Input("folderPath", "Folder path attribute to be queried for description.")]
+        public static string Description(this FolderPathAttribute folderPath)
+        {
+            return "This is a folder path.";
+        }
+
+        /***************************************************/
+
+        [Description("Return the description of a file path attribute.")]
+        [Input("filePath", "File path attribute to be queried for description.")]
+        public static string Description(this FilePathAttribute filePath)
+        {
+            return "This is a file path.";
+        }
+
+
+        /***************************************************/
+        /**** Fallback Methods                          ****/
+        /***************************************************/
+
+        [Description("Fallback returning an empty string in case a type-specific Description method is missing for a given subtype of InputClassificationAttribute.")]
+        [Input("classification", "Input classification attribute to be queried for description.")]
+        private static string Description(this InputClassificationAttribute classification)
+        {
+            return "";
+        }
+
 
         /***************************************************/
         /**** Private Methods                           ****/

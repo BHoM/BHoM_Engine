@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,18 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Analytical.Elements;
+using BH.oM.Base;
+using BH.Engine.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
@@ -36,26 +39,13 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Filter relations from a Graph.")]
+        [Input("graph", "The Graph to filter the relations from.")]
+        [Input("typeFilter", "The Type of the relation to filter.")]
+        [Output("filtered relations", "Collection of IRelations filtered from the Graph.")]
+        public static List<IRelation> FilterRelations(this Graph graph, Type typeFilter)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
-
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            return graph.Relations.Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList(); 
         }
-
-        /***************************************************/
     }
 }
-

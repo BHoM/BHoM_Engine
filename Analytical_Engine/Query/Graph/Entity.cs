@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
+using BH.oM.Analytical.Elements;
+using BH.oM.Base;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
@@ -36,26 +38,24 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Returns an entity from a Graph, or null if it does not exist.")]
+        [Input("graph", "The Graph to extract the entity from.")]
+        [Input("entityName", "The name of the entity.")]
+        [Output("entity", "The entity as an IBHoMObject.")]
+        public static IBHoMObject Entity(this Graph graph, string entityName)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
-
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            return graph.Entities.Values.ToList().Find(x => x.Name == entityName);
         }
 
         /***************************************************/
+
+        [Description("Returns an entity from a Graph, or null if it does not exist.")]
+        [Input("graph", "The Graph to extract the entity from.")]
+        [Input("entityGuid", "The Guid of the entity.")]
+        [Output("entity", "The Guid of the entity.")]
+        public static IBHoMObject Entity(this Graph graph, Guid entityGuid)
+        {
+            return graph.Entities[entityGuid]; 
+        }
     }
 }
-
