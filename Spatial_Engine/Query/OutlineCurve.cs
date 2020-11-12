@@ -49,7 +49,7 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        [PreviousInputNames("element1D", "edges")]
+        [PreviousInputNames("elements1D", "edges")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.Outline(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>)")]
         [PreviousVersion("3.2", "BH.Engine.Common.Query.IOutlineCurve(BH.oM.Dimensional.IElement1D)")]
         [Description("Returns a single polycurve outline created from the IElement1Ds.")]
