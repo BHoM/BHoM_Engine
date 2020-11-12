@@ -43,32 +43,32 @@ namespace BH.Engine.Diffing
         ///**** Public Methods                            ****/
         ///***************************************************/ 
 
-        [Description("Computes the hash code required for the Diffing.")]
+        [Description("Computes the hash of the BHoMObject, disregarding any HashFragment already attached to it, if present.")]
         [Input("obj", "Objects the hash code should be calculated for")]
         [Input("diffConfig", "Sets configs for the hash calculation, such as properties to be ignored.")]
-        public static string DiffingHash(this object obj, DiffConfig diffConfig = null)
+        public static string CurrentHash(this object obj, DiffConfig diffConfig = null)
         {
             diffConfig = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
 
             // The following is to consider only the PropertiesToInclude specified in the diffConfig.
-            // Since the SHA hash algorithm can only consider "exceptions", we need to retrieve all the top level properties,
+            // Since the hash computation can only consider "exceptions", we need to retrieve all the top level properties,
             // intersect them with the set of PropertiesToInclude, and treat all the properties that remain out as "exceptions" (not to be considered).
-            if (diffConfig.PropertiesToConsider.Any())
+            if (diffConfig.HashConfig.PropertiesToConsider?.Any() ?? false)
             {
-                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(obj).Except(diffConfig.PropertiesToConsider);
-                diffConfig.PropertiesToIgnore.AddRange(exceptions);
+                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(obj).Except(diffConfig.HashConfig.PropertiesToConsider);
+                diffConfig.HashConfig.PropertyNameExceptions.AddRange(exceptions);
             }
 
-            // The current Hash must not be considered when computing the hash. Remove HashFragment if present. 
+            // Any HashFragment present on the object must not be considered. Remove if present.
             IBHoMObject bhomobj = obj as IBHoMObject;
             if (bhomobj != null)
             {
                 bhomobj = BH.Engine.Base.Query.DeepClone(obj) as IBHoMObject;
-                bhomobj.Fragments.Remove(typeof(HashFragment));
-                return Base.Query.Hash(bhomobj, diffConfig.PropertiesToIgnore);
+                List<IFragment> hashFragments = bhomobj.GetAllFragments(typeof(IHashFragment));
+                hashFragments.ForEach(f => bhomobj.Fragments.Remove(f.GetType()));
             }
 
-            return Base.Query.Hash(bhomobj, diffConfig.PropertiesToIgnore); // Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
+            return Base.Query.Hash(bhomobj, diffConfig.HashConfig); // Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
         }
     }
 }

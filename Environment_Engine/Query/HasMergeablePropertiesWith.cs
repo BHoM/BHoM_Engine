@@ -35,6 +35,7 @@ using BH.oM.Physical.Materials;
 using BH.Engine.Diffing;
 using BH.oM.Diffing;
 using BH.oM.Environment.Analysis;
+using BH.oM.Base;
 
 namespace BH.Engine.Environment
 {
@@ -57,16 +58,19 @@ namespace BH.Engine.Environment
         {
             DiffConfig config = new DiffConfig()
             {
-                PropertiesToIgnore = new List<string>
+                HashConfig = new HashConfig()
                 {
-                    "ExternalEdges",
-                    "Openings",
-                    "ConnectedSpaces",
-                    "Type",
-                    "BHoM_Guid",
-                    "CustomData",
-                },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                    PropertyNameExceptions = new List<string>
+                    {
+                        "ExternalEdges",
+                        "Openings",
+                        "ConnectedSpaces",
+                        "Type",
+                        "BHoM_Guid",
+                        "CustomData",
+                    },
+                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance
+                }
             };
 
             return Diffing.Query.DifferentProperties(element, other, config) == null;
@@ -80,16 +84,19 @@ namespace BH.Engine.Environment
         {
             DiffConfig config = new DiffConfig()
             {
-                PropertiesToIgnore = new List<string>
+                HashConfig = new HashConfig()
                 {
-                    "Edges",
-                    "FrameFactorValue",
-                    "InnerEdges",
-                    "Type",
-                    "BHoM_Guid",
-                    "CustomData",
-                },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                    PropertyNameExceptions = new List<string>
+                    {
+                        "Edges",
+                        "FrameFactorValue",
+                        "InnerEdges",
+                        "Type",
+                        "BHoM_Guid",
+                        "CustomData",
+                    },
+                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance
+                }
             };
 
             return Diffing.Query.DifferentProperties(element, other, config) == null;
@@ -112,14 +119,17 @@ namespace BH.Engine.Environment
         {
             DiffConfig config = new DiffConfig()
             {
-                PropertiesToIgnore = new List<string>
+                HashConfig = new HashConfig()
                 {
-                    "Location",
-                    "Type",
-                    "BHoM_Guid",
-                    "CustomData",
-                },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                    PropertyNameExceptions = new List<string>
+                    {
+                        "Location",
+                        "Type",
+                        "BHoM_Guid",
+                        "CustomData",
+                    },
+                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                }
             };
 
             return Diffing.Query.DifferentProperties(element, other, config) == null;

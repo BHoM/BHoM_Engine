@@ -79,7 +79,7 @@ namespace BH.Engine.Matter
                 for (int i = 0; i < localMatComps[j].Materials.Count; i++)
                 {
                     Material mat = localMatComps[j].Materials[i];
-                    mat = BH.Engine.Diffing.Modify.SetHashFragment(mat);
+                    mat = BH.Engine.Diffing.Modify.SetRevisionFragment(mat);
 
                     bool existed = false;
                     for (int k = 0; k < allMaterials.Count; k++)

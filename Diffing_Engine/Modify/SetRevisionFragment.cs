@@ -39,8 +39,9 @@ namespace BH.Engine.Diffing
 {
     public static partial class Modify
     {
-        [Description("Clones the IBHoMObjects, computes their hash and stores it in a HashFragment.")]
-        public static List<T> SetHashFragment<T>(this IEnumerable<T> objs, DiffConfig diffConfig = null) where T : IBHoMObject
+        [Description("Clones the IBHoMObjects, computes their hash and stores it in a RevisionFragment. " +
+            "If the object already has a RevisionFragment, it computes the current one and keeps the old one in the `previousHash` of the RevisionFragment.")]
+        public static List<T> SetRevisionFragment<T>(this IEnumerable<T> objs, DiffConfig diffConfig = null) where T : IBHoMObject
         {
             // Clone the current objects to preserve immutability
             List<T> objs_cloned = new List<T>();
@@ -50,13 +51,16 @@ namespace BH.Engine.Diffing
 
             // Calculate and set the object hashes
             foreach (var obj in objs)
-                objs_cloned.Add(SetHashFragment(obj, diffConfig));
+            {
+                objs_cloned.Add(SetRevisionFragment(obj, diffConfig));
+            }
 
             return objs_cloned;
         }
 
-        [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment.")]
-        public static T SetHashFragment<T>(T obj, DiffConfig diffConfig = null) where T : IBHoMObject
+        [Description("Clones the IBHoMObject, computes their hash and stores it in a RevisionFragment. " +
+            "If the object already has a RevisionFragment, it computes the current one and keeps the old one in the `previousHash` of the RevisionFragment.")]
+        public static T SetRevisionFragment<T>(T obj, DiffConfig diffConfig = null) where T : IBHoMObject
         {
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
@@ -66,18 +70,24 @@ namespace BH.Engine.Diffing
 
             // Calculate and set the object hashes
             string hash = BH.Engine.Diffing.Compute.CurrentHash(obj_cloned, diffConfig);
-            obj_cloned.Fragments.AddOrReplace(new HashFragment() { CurrentHash = hash });
+
+            RevisionFragment existingFragm = obj_cloned.RevisionFragment();
+
+            obj_cloned.Fragments.AddOrReplace(new RevisionFragment(hash, existingFragm?.CurrentHash));
 
             return obj_cloned;
         }
 
-        [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment.")]
-        public static T SetHashFragment<T>(T obj, string hash) where T : IBHoMObject
+        [Description("Clones the IBHoMObject, computes their hash and stores it in a RevisionFragment. " +
+            "If the object already has a RevisionFragment, it computes the current one and keeps the old one in the `previousHash` of the RevisionFragment.")]
+        public static T SetRevisionFragment<T>(T obj, string hash) where T : IBHoMObject
         {
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
 
-            obj_cloned.Fragments.AddOrReplace(new HashFragment() { CurrentHash = hash });
+            RevisionFragment existingFragm = obj_cloned.RevisionFragment();
+
+            obj_cloned.Fragments.AddOrReplace(new RevisionFragment(hash, existingFragm?.CurrentHash));
 
             return obj_cloned;
         }

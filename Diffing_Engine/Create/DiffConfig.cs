@@ -59,8 +59,11 @@ namespace BH.Engine.Diffing
             {
                 EnablePropertyDiffing = enablePropertyDiffing,
                 StoreUnchangedObjects = storeUnchangedObjects,
-                PropertiesToConsider = propertiesToConsider ?? new List<string>(),
-                PropertiesToIgnore = (propertiesToIgnore == null || !propertiesToIgnore.Any()) ? new List<string>() { "BHoM_Guid" } : propertiesToIgnore,
+                HashConfig = new HashConfig()
+                {
+                    PropertiesToConsider = propertiesToConsider,
+                    PropertyNameExceptions = propertiesToIgnore,
+                },
                 CustomDataToIgnore = (customDataToIgnore == null || !customDataToIgnore.Any()) ? new List<string>() { "RenderMesh" }: customDataToIgnore
             };
         }

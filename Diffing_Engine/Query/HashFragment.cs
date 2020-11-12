@@ -21,38 +21,21 @@
  */
 
 using BH.oM.Base;
-using BH.oM.Data.Collections;
+using BH.Engine.Base;
 using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
-using BH.Engine.Serialiser;
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Description("Clones the IBHoMObjects, computes their hash and stores it in a HashFragment. " +
-            "If the object already has a HashFragment, it computes the current one and keeps the old one in the `previousHash` of the HashFragment.")]
-        public static Diff AddToDiff(this Diff diff, Diff toAdd)
+        public static HashFragment HashFragment(this IBHoMObject obj)
         {
-            Diff newDiff = new Diff(
-                diff.AddedObjects.Concat(toAdd.AddedObjects),
-                diff.RemovedObjects.Concat(toAdd.RemovedObjects),
-                diff.ModifiedObjects.Concat(toAdd.ModifiedObjects),
-                diff.DiffConfig,
-                diff.ModifiedPropsPerObject.Concat(toAdd.ModifiedPropsPerObject).ToDictionary(x => x.Key, x => x.Value),
-                diff.UnchangedObjects.Concat(toAdd.UnchangedObjects)
-                );
-
-            return newDiff;
+            return obj.FindFragment<HashFragment>(); 
         }
     }
 }

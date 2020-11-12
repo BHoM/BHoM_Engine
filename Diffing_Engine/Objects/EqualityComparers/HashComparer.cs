@@ -36,7 +36,7 @@ using BH.Engine.Diffing;
 
 namespace BH.Engine.Diffing
 {
-    public class DiffingHashComparer<T> : IEqualityComparer<T> //where T : IBHoMObject
+    public class HashComparer<T> : IEqualityComparer<T> //where T : IBHoMObject
     {
         /***************************************************/
         /**** Constructors                              ****/
@@ -45,13 +45,13 @@ namespace BH.Engine.Diffing
         public bool StoreHash { get; set; } = false;
         public DiffConfig DiffConfig { get; set; } = new DiffConfig();
 
-        public DiffingHashComparer(DiffConfig diffConfig = null)
+        public HashComparer(DiffConfig diffConfig = null)
         {
             if (diffConfig != null)
                 DiffConfig = diffConfig;
         }
 
-        public DiffingHashComparer(DiffConfig diffConfig = null, bool storeHash = false) : this(diffConfig)
+        public HashComparer(DiffConfig diffConfig = null, bool storeHash = false) : this(diffConfig)
         {
             StoreHash = storeHash;
         }
@@ -72,30 +72,30 @@ namespace BH.Engine.Diffing
 
                 if (xbHoM != null && ybHoM != null)
                 {
-                    xHash = xbHoM?.GetHashFragment()?.CurrentHash;
-                    yHash = ybHoM?.GetHashFragment()?.CurrentHash;
+                    xHash = xbHoM?.HashFragment()?.CurrentHash;
+                    yHash = ybHoM?.HashFragment()?.CurrentHash;
 
                     if (string.IsNullOrWhiteSpace(xHash))
                     {
-                        xHash = x.DiffingHash(DiffConfig);
+                        xHash = x.CurrentHash(DiffConfig);
 
                         if (StoreHash)
-                            SetHashFragment(xbHoM, xHash);
+                            Modify.SetHashFragment(xbHoM, xHash);
                     }
 
                     if (string.IsNullOrWhiteSpace(yHash))
                     {
-                        yHash = y.DiffingHash(DiffConfig);
+                        yHash = y.CurrentHash(DiffConfig);
 
                         if (StoreHash)
-                            SetHashFragment(ybHoM, yHash);
+                            Modify.SetHashFragment(ybHoM, yHash);
                     }
 
                     return xHash == yHash;
                 }
 
 
-                return x.DiffingHash(DiffConfig) == y.DiffingHash(DiffConfig);
+                return x.CurrentHash(DiffConfig) == y.CurrentHash(DiffConfig);
             }
 
             return false;
@@ -108,22 +108,12 @@ namespace BH.Engine.Diffing
             if (typeof(IBHoMObject).IsAssignableFrom(typeof(T)))
             {
                 IBHoMObject bHoMObject = (IBHoMObject)obj;
-                HashFragment hashFragment = bHoMObject.GetHashFragment();
+                HashFragment hashFragment = bHoMObject.HashFragment();
                 if (!string.IsNullOrWhiteSpace(hashFragment?.CurrentHash))
                     return hashFragment.CurrentHash.GetHashCode();
             }
 
-            return obj.DiffingHash(DiffConfig).GetHashCode();
-        }
-
-        /***************************************************/
-
-        // Modify in-place.
-        private static bool SetHashFragment(IBHoMObject obj, string hash)
-        {
-            HashFragment existingFragm = obj.GetHashFragment();
-
-            return obj.Fragments.AddOrReplace(new HashFragment(hash, existingFragm?.CurrentHash));
+            return obj.CurrentHash(DiffConfig).GetHashCode();
         }
     }
 }
