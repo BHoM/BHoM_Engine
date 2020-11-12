@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Output("coordinateSystem", "The local cartesian coordinate system of the Node.")]
         public static Cartesian CoordinateSystem(this Node node)
         {
-            return Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y);
+            return node.NullCheck() ? Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y) : null;
         }
 
         /***************************************************/
