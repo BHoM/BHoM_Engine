@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Loads;
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -46,10 +47,10 @@ namespace BH.Engine.Structure
         [Output("grid", "Rectangular grid of points on the Panel.")]
         public static List<Point> PointGrid(this Panel panel)
         {
-            List<ICurve> curves = panel.ExternalEdgeCurves();
+            List<ICurve> curves = panel.ExternalElementCurves();
 
             List<PolyCurve> joined = BH.Engine.Geometry.Compute.IJoin(curves);
-            List<PolyCurve> joinedOpeningCurves = BH.Engine.Geometry.Compute.IJoin(panel.InternalEdgeCurves());
+            List<PolyCurve> joinedOpeningCurves = BH.Engine.Geometry.Compute.IJoin(panel.InternalElementCurves());
 
             Plane plane = joined.First().FitPlane();
 
