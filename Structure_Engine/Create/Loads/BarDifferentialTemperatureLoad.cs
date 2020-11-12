@@ -77,8 +77,8 @@ namespace BH.Engine.Structure
             }
 
             //Create ditionary for TaperedProfile
-            Dictionary<double, double> temperatureProfile = positions.Zip(temperatures, (z, T) => new { z, T })
-                .ToDictionary(x => x.z, x => x.T);
+            Dictionary<Double, Double> temperatureProfile = positions.Zip(temperatures, (z, t) => new { z, t })
+                .ToDictionary(x => x.z, x => x.t);
 
 
             return new BarDifferentialTemperatureLoad
