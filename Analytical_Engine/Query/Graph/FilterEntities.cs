@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,19 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Analytical.Elements;
+using BH.oM.Base;
+using BH.Engine.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
+using System.Text;
+using System.Threading.Tasks;
+using BH.oM.Dimensional;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
@@ -36,26 +40,20 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Filter entities from a Graph.")]
+        [Input("graph", "The Graph to filter the entities from.")]
+        [Input("typeFilter", "The Type of the entities to filter.")]
+        [Output("filter entities", "Entity Dictionary containing the filtered entities.")]
+        public static Dictionary<Guid, IBHoMObject> FilterEntities(this Graph graph, Type typeFilter)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
+            Dictionary<Guid, IBHoMObject> entityDict = new Dictionary<Guid, IBHoMObject>();
 
-            string desc = "";
+            List<IBHoMObject> filtered = graph.Entities().Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList();
+            filtered.ForEach(obj => entityDict.Add(obj.BHoM_Guid, obj));
 
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            return entityDict;
         }
 
         /***************************************************/
     }
 }
-

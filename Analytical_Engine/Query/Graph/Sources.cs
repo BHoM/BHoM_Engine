@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Analytical.Elements;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
@@ -36,26 +37,15 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Returns the collection of entity Guids that are never used as Relation targets.")]
+        [Input("graph", "The Graph to search.")]
+        [Output("sources", "The collection of entity Guids that are sources.")]
+        public static List<Guid> Sources(this Graph graph)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
-
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            //entity is a source if it never appears as target
+            List<Guid> targets = graph.Relations.Select(x => x.Target).Distinct().ToList();
+            List<Guid> sources = graph.Entities.Keys.ToList().Except(targets).ToList();
+            return sources;
         }
-
-        /***************************************************/
     }
 }
-

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,19 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
+using BH.Engine.Spatial;
+using BH.oM.Analytical.Elements;
+using BH.oM.Dimensional;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
@@ -36,26 +40,22 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Returns the length of the ICurve on IRelations or distance between source and target entity if no ICurve has been defined.")]
+        [Input("graph", "The Graph that owns the IRelation.")]
+        [Input("relation", "The IRelation to query.")]
+        [Output("length", "The length of the IRelation.")]
+        public static double RelationLength(this Graph graph, IRelation relation)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
-
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            double length = 0;
+            if (relation.Curve != null)
+                length = relation.Curve.ILength();
+            else
+            {
+                IElement0D source = m_SpatialGraph.Entities[relation.Source] as IElement0D;
+                IElement0D target = m_SpatialGraph.Entities[relation.Target] as IElement0D;
+                length = source.IGeometry().Distance(target.IGeometry());
+            }
+            return length;
         }
-
-        /***************************************************/
     }
 }
-

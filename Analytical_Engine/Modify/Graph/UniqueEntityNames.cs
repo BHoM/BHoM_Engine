@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,42 +20,40 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Enforce unique entity names on a collection of entities.")]
+        [Input("graph", "The Graph to modify.")]
+        [Output("graph", "The modified graph.")]
+        public static Graph UniqueEntityNames(this Graph graph)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
+            List<IBHoMObject> entities = graph.Entities.Values.ToList();
+            List<string> distinctNames = entities.Select(x => x.Name).Distinct().ToList();
 
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            foreach (string name in distinctNames)
+            {
+                List<IBHoMObject> matchentities = entities.FindAll(x => x.Name == name);
+                if (matchentities.Count > 1)
+                {
+                    for (int i = 0; i < matchentities.Count; i++)
+                        matchentities[i].Name += "_" + i;
+                }
+            }
+            return graph;
         }
-
         /***************************************************/
     }
 }
-

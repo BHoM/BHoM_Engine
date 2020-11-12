@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,42 +20,51 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****           Public Constructors             ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Modifies a Graph by removing the specified entity and any dependent relations.")]
+        [Input("graph", "The Graph to modify.")]
+        [Input("entityToRemove", "The IBHoMObject entity to remove.")]
+        [Output("graph", "The modified Graph with the specified entity and any dependent relations removed.")]
+        public static Graph RemoveEntity(this Graph graph, IBHoMObject entityToRemove)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
-
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            graph.RemoveEntity(entityToRemove.BHoM_Guid);
+            return graph;
         }
-
         /***************************************************/
+
+        [Description("Modifies a Graph by removing the specified entity and any dependent relations.")]
+        [Input("graph", "The Graph to modify.")]
+        [Input("entityToRemove", "The Guid of the entity to remove.")]
+        [Output("graph", "The modified Graph with the specified entity and any dependent relations removed.")]
+        public static Graph RemoveEntity(this Graph graph, Guid entityToRemove)
+        {
+            if (graph.Entities.ContainsKey(entityToRemove))
+            {
+                List<IRelation> relations = graph.Relations.FindAll(rel => rel.Source.Equals(entityToRemove) || rel.Target.Equals(entityToRemove)).ToList();
+                graph.Relations = graph.Relations.Except(relations).ToList();
+                graph.Entities.Remove(entityToRemove);
+            }
+            else
+                Reflection.Compute.RecordWarning("Entity was not found in the graph.");
+
+            return graph;
+        }
     }
 }
-

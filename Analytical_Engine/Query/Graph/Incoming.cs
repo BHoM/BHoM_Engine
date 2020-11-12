@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,18 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
+using BH.Engine.Geometry;
+using BH.oM.Analytical.Elements;
+using BH.oM.Base;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Analytical
 {
     public static partial class Query
     {
@@ -36,26 +39,30 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of the output of a C# method")]
-        public static string OutputDescription(this MethodBase method)
+        [Description("Returns the collection of entity Guids that can access the given entity.")]
+        [Input("graph", "The graph to search.")]
+        [Input("entity", "The Guid of the entity for which the accessing entities are required.")]
+        [Output("entities", "The collection of Guids of the accessing entities.")]
+        public static List<Guid> Incoming(this Graph graph, Guid entity)
         {
-            OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
-
-            string desc = "";
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
-                desc = attribute.Description + Environment.NewLine;
-
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
-
-            return desc;
+            
+            return graph.Relations.Where(e => e.Target.Equals(entity)).Select(e => e.Source).ToList();
         }
 
         /***************************************************/
-    }
-}
 
+        [Description("Returns the collection of IBoMObject entities that can access the given entity.")]
+        [Input("graph", "The graph to search.")]
+        [Input("entity", "The IBHoMObject entity for which the accessing entities are required.")]
+        [Output("entities", "The collection of IBHoMObjects of the accessing entities.")]
+        public static List<IBHoMObject> Incoming(this Graph graph, IBHoMObject entity)
+        {
+            List<IBHoMObject> incoming = new List<IBHoMObject>();
+            foreach (Guid g in  graph.Incoming(entity.BHoM_Guid))
+                incoming.Add(graph.Entities[g]);
+            return incoming;
+        }
+        
+    }
+
+}
