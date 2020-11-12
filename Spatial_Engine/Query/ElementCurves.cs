@@ -65,6 +65,7 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
+        [PreviousInputNames("element2D", "panel,opening")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.EdgeCurves(BH.oM.Structure.Elements.Opening)")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.AllEdgeCurves(BH.oM.Structure.Elements.Panel)")]
         [Description("Queries the geometricly defining curves of the IElement2Ds surface.")]
@@ -94,6 +95,7 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
+        [PreviousInputNames("element2D", "panel")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.ExternalEdgeCurves(BH.oM.Structure.Elements.Panel)")]
         [Description("Queries the geometricly defining external curves of the IElement2Ds surface.")]
         [Input("element2D", "The IElement2D of which to get the external curve definintion.")]
@@ -115,6 +117,7 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
+        [PreviousInputNames("element2D", "panel")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Query.InternalEdgeCurves(BH.oM.Structure.Elements.Panel)")]
         [Description("Queries the geometricly defining internal curves, such as Openings, of the IElement2Ds surface.")]
         [Input("element2D", "The IElement2D of which to get the internal curve definintion.")]
