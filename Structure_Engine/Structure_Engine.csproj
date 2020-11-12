@@ -94,11 +94,13 @@
     <Compile Include="Compute\PlasticModulus.cs" />
     <Compile Include="Compute\ShearAreaPolyline.cs" />
     <Compile Include="Compute\Integrate.cs" />
-    <Compile Include="Create\Loads\AreaTemperatureLoad.cs" />
+    <Compile Include="Create\Loads\AreaDifferentialTemperatureLoad.cs" />
+    <Compile Include="Create\Loads\AreaUniformTemperatureLoad.cs" />
     <Compile Include="Create\Loads\AreaUniformlyDistributedLoad.cs" />
     <Compile Include="Create\Loads\BarPointLoad.cs" />
     <Compile Include="Create\Loads\BarPrestressLoad.cs" />
-    <Compile Include="Create\Loads\BarTemperatureLoad.cs" />
+    <Compile Include="Create\Loads\BarDifferentialTemperatureLoad.cs" />
+    <Compile Include="Create\Loads\BarUniformTemperatureLoad.cs" />
     <Compile Include="Create\Loads\BarUniformlyDistributedLoad.cs" />
     <Compile Include="Create\Loads\BarVaryingDistributedLoad.cs" />
     <Compile Include="Create\Loads\ContourLoad.cs" />

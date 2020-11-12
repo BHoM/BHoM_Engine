@@ -21,12 +21,7 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Reflection.Attributes;
 
@@ -46,7 +41,7 @@ namespace BH.Engine.MEP
         }
         /***************************************************/
         [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        [Input("boxProfile", "Box Shape profile to query the Circular Equivalent Diameter.")]
+        [Input("box", "Box Shape profile to query the Circular Equivalent Diameter.")]
         [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
         public static double CircularEquivalentDiameter(this BoxProfile box)
         {

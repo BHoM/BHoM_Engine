@@ -20,16 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
-using BH.oM.MEP.Parts;
+using BH.oM.MEP.Equipment.Parts;
 
 namespace BH.Engine.MEP
 {
@@ -39,17 +32,17 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an MEP Electrical Connector part")]
-        [Input("motorHorsePower", "Default 0")]
-        [Input("brakeHorsePower", "Default 0")]
-        [Input("fullLoadAmps", "Default 0")]
-        [Input("maximumOvercurrentProtection", "Default 0")]
-        [Input("phase", "Default 0")]
-        [Input("frequency", "Default 0")]
-        [Input("voltage", "Default 0")]
-        [Input("emergencyPower", "Default false")]
-        [Input("standBy", "Default false")]
-        [Output("electricalConnector", "An MEP Electrical Connector part")]
+        [Description("Returns an MEP Electrical Connector part.")]
+        [Input("motorHorsePower", "Default 0.")]
+        [Input("brakeHorsePower", "Default 0.")]
+        [Input("fullLoadAmps", "Default 0.")]
+        [Input("maximumOvercurrentProtection", "Default 0.")]
+        [Input("phase", "Default 0.")]
+        [Input("frequency", "Default 0.")]
+        [Input("voltage", "Default 0.")]
+        [Input("emergencyPower", "Default false.")]
+        [Input("standBy", "Default false.")]
+        [Output("electricalConnector", "An MEP Electrical Connector part.")]
         public static ElectricalConnector ElectricalConnector(double motorHorsePower = 0.0, double brakeHorsePower = 0.0, double fullLoadAmps = 0.0, double maximumOvercurrentProtection = 0.0, double phase = 0.0, double frequency = 0.0, double voltage = 0.0, bool emergencyPower = false, bool standBy = false)
         {
             return new ElectricalConnector

@@ -20,39 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.MEP.Elements;
+using BH.Engine.Geometry;
+using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.SectionProperties;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
-namespace BH.Engine.MEP
+namespace BH.Engine.Analytical
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Creates a Wire object. Material that flows through this Pipe can be established at the system level.")]
-        [Input("line", "A line that determines the Wire's length and direction.")]
-        [Input("flowRate", "The volume of fluid being conveyed by the Wire per second (m3/s).")]
-        [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Wire section for accurate capacity and spatial quality.")]
-        [Output("wire", "Wire object to work within an MEP systems.")]
-        public static WireSegment Wire(Line line, double flowRate = 0, WireSectionProperty sectionProperty = null)
+
+        [Description("Returns the collection of entity Guids that are never used a Relation source.")]
+        [Input("graph", "The Graph to search.")]
+        [Output("sinks", "The collection of entity Guids that are sinks.")]
+        public static List<Guid> Sinks(this Graph graph)
         {
-            return new WireSegment
-            {
-                StartNode = (Node)line.Start,
-                EndNode = (Node)line.End,
-                SectionProperty = sectionProperty,
-            };
+            List<Guid> notSinks = graph.NotSinks();
+            List<Guid> sinks = graph.Entities.Keys.ToList().Except(notSinks).ToList();
+            return sinks;
         }
-        /***************************************************/
     }
+    
 }
