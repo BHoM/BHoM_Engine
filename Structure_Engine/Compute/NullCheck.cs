@@ -36,27 +36,15 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a Bar or one of its Nodes are null and outputs relevant error message.")]
-        [Input("bar", "The Bar to test for null.")]
+        [Description("Checks if a Node is null and outputs relevant error message.")]
+        [Input("node", "The Node to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("pass", "A boolean which is true if the bar passes the null check.")]
-        public static bool NullCheck(this Bar bar, string methodName = "Method")
+        public static bool NullCheck(this Node node, string methodName = "Method")
         {
-            string errorMessage = $"Cannot run {methodName} because {"{0}"} is null";
-
-            if (bar == null)
+            if (node?.Position == null)
             {
-                Engine.Reflection.Compute.RecordError(String.Format(errorMessage, "Bar"));
-                return false;
-            }
-            if (bar?.StartNode?.Position == null)
-            {
-                Engine.Reflection.Compute.RecordError(String.Format(errorMessage, "StartNode"));
-                return false;
-            }
-            if (bar?.EndNode?.Position == null)
-            {
-                Engine.Reflection.Compute.RecordError(String.Format(errorMessage, "EndNode"));
+                ErrorMessage(methodName, "Node");
                 return false;
             }
 
@@ -64,6 +52,30 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Checks if a Bar or one of its Nodes are null and outputs relevant error message.")]
+        [Input("bar", "The Bar to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the bar passes the null check.")]
+        public static bool NullCheck(this Bar bar, string methodName = "Method")
+        {
+            if (bar == null)
+            {
+                ErrorMessage(methodName, "Bar");
+                return false;
+            }
+
+            return bar.StartNode.NullCheck(methodName) || bar.EndNode.NullCheck(methodName);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ErrorMessage(string methodName, string type)
+        {
+            Engine.Reflection.Compute.RecordError($"Cannot run {methodName} because {type} is null");
+        }
     }
 }
 
