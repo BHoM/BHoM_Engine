@@ -23,6 +23,7 @@
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.MEP.System;
+using BH.oM.MEP.Fixtures;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
@@ -50,6 +51,33 @@ namespace BH.Engine.MEP
             clone.StartPoint = clone.StartPoint.SetGeometry(curve.IStartPoint());
             clone.EndPoint = clone.EndPoint.SetGeometry(curve.IEndPoint());
             return clone;
+        }
+
+        [Description("Updates geometry of a CameraDevice by setting its perimeter property.")]
+        [Input("camera", "The CameraDevice object to update.")]
+        [Input("perimeter", "The new perimeter curve of the CameraDevice cone. Must be a closed polyline.")]        
+        [Output("object", "The CameraDevice object with updated geometry.")]
+        public static CameraDevice SetGeometry(this CameraDevice camera, ICurve perimeter)
+        {
+            CameraDevice result = camera.GetShallowClone() as CameraDevice;
+
+            if (perimeter is Polyline)
+            {
+                if (perimeter.IIsClosed())
+                {
+                    camera.ConePerimeter = perimeter;
+                }
+                else
+                {
+                    Compute.NonClosedElementError();
+                }
+            }
+            else
+            {
+                Compute.NonPolylineElementError();
+            }
+
+            return result;
         }
 
         /***************************************************/

@@ -21,27 +21,32 @@
  */
 
 using System.ComponentModel;
-
-using BH.oM.Geometry;
-using BH.oM.MEP.System;
-using BH.oM.MEP.Fixtures;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using BH.oM.MEP.Fixtures;
+using BH.oM.Architecture.Elements;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.MEP
-{
-    public static partial class Query
+{ 
+    public static partial class Compute
     {
-        /***************************************************/
-        /****              Public Methods               ****/
-        /***************************************************/
-        [Description("Returns the centreline of any IFlow object as the line between the StartPoint and EndPoint. No offsets or similar is accounted for.")]
-        [Input("flowObj", "The IFlow object to get the centreline from.")]
-        [Output("centreline", "The centreline of the IFlow object.")]
-        public static Line Centreline(this IFlow flowObj)
+        /******************************************/
+        /****         Record an error          ****/
+        /******************************************/
+
+        internal static void NonPolylineElementError()
         {
-            return new Line { Start = flowObj.StartPoint, End = flowObj.EndPoint };
+            Reflection.Compute.RecordWarning("The method works only with Polyline, since it needs to a closed perimeter.");
         }
-        /***************************************************/
+
+        /******************************************/
+        
+        internal static void NonClosedElementError()
+        {
+            Reflection.Compute.RecordWarning("The method works only with closed curves Polyline.");
+        }
+        
+        /******************************************/
     }
 }
-
