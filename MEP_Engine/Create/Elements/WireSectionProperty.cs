@@ -21,15 +21,9 @@
  */
 
 using System.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.MaterialFragments;
-using BH.oM.MEP.SectionProperties;
+using BH.oM.MEP.System.MaterialFragments;
+using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 
@@ -42,9 +36,8 @@ namespace BH.Engine.MEP
         /***************************************************/
         [Description("Creates a composite Wire sectionProfile including interior lining and exterior insulation.")]
         [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
-        [Input("wireMaterial", "Material properties for the Wire object.")]
+        [Input("conductiveMaterial", "Material properties for the Wire object.")]
         [Input("insulationMaterial", "Material properties for the insulation material, or material that wraps the exterior of the Wire object.")]
-        [Input("liningMaterial", "Material properties for the lining material that wraps the inside surface of the Wire object. This is the layer that is in direct contact with interior flowing material.")]
         [Output("wireSectionProperty", "Wire Section property used to provide accurate wire assembly and capacities.")]
         public static WireSectionProperty WireSectionProperty(
             SectionProfile sectionProfile,

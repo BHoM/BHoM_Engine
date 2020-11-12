@@ -130,7 +130,7 @@ namespace BH.Engine.Structure
                 case LoadType.BarTemperature:
                     {
                         BHoMGroup<Bar> group = new BHoMGroup<Bar>() { Name = groupName };
-                        return BarTemperatureLoad(loadCase, mag, group, axis, isProjected, groupName);
+                        return BarUniformTemperatureLoad(loadCase, mag, group, axis, isProjected, groupName);
                     }
                 case LoadType.AreaUniformLoad:
                     {

@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Input("edgeDisplay", "Set to true to visualise the loads along the boundary of the elements.")]
         [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements.")]
         [Output("lines", "A list of lines representing the load.")]
-        public static List<ICurve> Visualize(this AreaTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
+        public static List<ICurve> Visualize(this AreaUniformTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
             List<ICurve> arrows = new List<ICurve>();
             double loadFactor = areaTempLoad.TemperatureChange * 1000 * scaleFactor; //Arrow methods are scaling down force to 1/1000
@@ -199,7 +199,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for Bar temprature loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for Bar temprature loads.")]
         [Output("lines", "A list of lines representing the load.")]
-        public static List<ICurve> Visualize(this BarTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> Visualize(this BarUniformTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
             double loadFactor = barTempLoad.TemperatureChange * 1000 * scaleFactor; //Arrow methods are scaling down force to 1/1000

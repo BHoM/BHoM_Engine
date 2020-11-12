@@ -23,7 +23,7 @@
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.Fixtures;
 using BH.oM.Architecture.Elements;
 using BH.Engine.Reflection;
 

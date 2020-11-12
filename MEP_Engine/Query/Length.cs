@@ -24,7 +24,8 @@ using System.ComponentModel;
 
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
+using BH.oM.MEP.Fixtures;
 using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.MEP
@@ -35,11 +36,11 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
         [Description("Query the length of any IFlow Object.")]
-        [Input("iFlowObj", "Any IFlow object to extract length.")]
+        [Input("flowObj", "Any IFlow object to extract length.")]
         [Output("length", "Linear length of the IFlow object.")]
-        public static double Length(this IFlow IFlowObj)
+        public static double Length(this IFlow flowObj)
         {
-            return (IFlowObj.Geometry() as ICurve).ILength();
+            return (flowObj.Geometry() as ICurve).ILength();
         }
         /***************************************************/
     }

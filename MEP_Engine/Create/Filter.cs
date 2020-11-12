@@ -20,16 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
-using BH.oM.MEP.Parts;
+using BH.oM.MEP.Equipment.Parts;
 
 namespace BH.Engine.MEP
 {
@@ -39,13 +32,13 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an MEP Filter part")]
-        [Input("type", "Default 0")]
-        [Input("mervRating", "Default 0")]
-        [Input("initialPressureDrop", "Default 0")]
-        [Input("replacementPressureDrop", "Default 0")]
-        [Input("area", "Default 0")]
-        [Output("filter", "An MEP Filter part")]
+        [Description("Returns an MEP Filter part.")]
+        [Input("type", "Default 0.")]
+        [Input("mervRating", "Default 0.")]
+        [Input("initialPressureDrop", "Default 0.")]
+        [Input("replacementPressureDrop", "Default 0.")]
+        [Input("area", "Default 0.")]
+        [Output("filter", "An MEP Filter part.")]
         public static Filter Filter(string type = "", int mervRating = 0, double initialPressureDrop = 0.0, double replacementPressureDrop = 0.0, double area = 0)
         {
             return new Filter
