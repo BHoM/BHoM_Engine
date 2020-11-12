@@ -54,15 +54,15 @@ namespace BH.Engine.Diffing
 
             // General configurations.
             comparer.Config.MaxDifferences = diffConfigCopy.MaxPropertyDifferences;
-            comparer.Config.DoublePrecision = diffConfigCopy.NumericTolerance;
+            comparer.Config.DoublePrecision = diffConfigCopy.HashConfig.NumericTolerance;
 
             // Set the properties to be ignored.
-            if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
-                diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid");
+            if (!diffConfigCopy.HashConfig.PropertyNameExceptions?.Contains("BHoM_Guid") ?? true)
+                diffConfigCopy.HashConfig.PropertyNameExceptions.Add("BHoM_Guid");
                 // the above should be replaced by BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(diffConfig.PropertiesToIgnore)}.");
                 // when the bug in the auto Create() method ("auto-property initialisers for ByRef values like lists do not populate default values") is resolved.
 
-            comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
+            comparer.Config.MembersToIgnore = diffConfigCopy.HashConfig.PropertyNameExceptions;
 
             // Removes the CustomData to be ignored.
             var bhomobj1 = (obj1Copy as IBHoMObject);
@@ -82,6 +82,7 @@ namespace BH.Engine.Diffing
 
             // Never include the changes in HashFragment.
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
+            comparer.Config.TypesToIgnore.Add(typeof(RevisionFragment));
 
             // Perform the comparison.
             ComparisonResult result = comparer.Compare(obj1Copy, obj2Copy);
@@ -107,7 +108,7 @@ namespace BH.Engine.Diffing
                     propertyName = splittedName.FirstOrDefault() + $"['{keyName}']." + splittedName.Last();
                 }
 
-                if (!diffConfigCopy.PropertiesToConsider.Any() || diffConfigCopy.PropertiesToConsider.Contains(difference.PropertyName))
+                if (diffConfigCopy.HashConfig.PropertyNameExceptions.Any() && !diffConfigCopy.HashConfig.PropertyNameExceptions.Contains(difference.PropertyName))
                     dict[propertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
 

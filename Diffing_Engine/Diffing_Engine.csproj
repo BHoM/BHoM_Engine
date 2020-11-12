@@ -72,8 +72,10 @@
     <Compile Include="Compute\DiffRevisions.cs" />
     <Compile Include="Convert\TryParseObjectToGuid.cs" />
     <Compile Include="Create\StreamPointer.cs" />
-    <Compile Include="Modify\AddToDiff.cs" />
-    <Compile Include="Objects\EqualityComparers\DiffingHashComparer.cs" />
+    <Compile Include="Modify\CombineDiffs.cs" />
+    <Compile Include="Modify\SetHashFragment.cs" />
+    <Compile Include="Objects\EqualityComparers\HashComparer.cs" />
+    <Compile Include="Objects\EqualityComparers\RevisionHashComparer.cs" />
     <Compile Include="Compute\DiffGenericObjects.cs" />
     <Compile Include="Compute\Hash\DiffingHash.cs" />
     <Compile Include="Create\Delta.cs" />
@@ -81,12 +83,13 @@
     <Compile Include="Create\Revision.cs" />
     <Compile Include="Modify\RemoveDuplicatesByHash.cs" />
     <Compile Include="Modify\PrepareForRevision.cs" />
-    <Compile Include="Modify\SetHashFragment.cs" />
+    <Compile Include="Modify\SetRevisionFragment.cs" />
     <Compile Include="Query\ListDifferentProperties.cs" />
     <Compile Include="Query\ListModifiedProperties.cs" />
     <Compile Include="Query\DifferentProperties.cs" />
     <Compile Include="Query\AnyDuplicateByHash.cs" />
-    <Compile Include="Query\GetHashFragment.cs" />
+    <Compile Include="Query\HashFragment.cs" />
+    <Compile Include="Query\RevisionFragment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

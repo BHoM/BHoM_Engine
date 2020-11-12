@@ -20,45 +20,22 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.Engine.Base;
+using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-namespace BH.Engine.Base
+namespace BH.Engine.Diffing
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Description("Returns a deep clone of a given BHoM Object with the Fragment of the input fragmentType removed.")]
-        [Input("iBHoMObject", "Any object implementing the IBHoMObject interface that can have fragment properties appended to it.")]
-        [Input("fragmentType", "The type of fragment that should be removed from the object.")]
-        [Output("iBHoMObject", "The BHoM object with the added fragment.")]
-        public static IBHoMObject RemoveFragment(this IBHoMObject iBHoMObject, Type fragmentType = null)
-       {
-            if (fragmentType == null) return iBHoMObject;
-            if (iBHoMObject == null) return null;
-            IBHoMObject o = iBHoMObject.DeepClone();
-
-            if (!typeof(IFragment).IsAssignableFrom(fragmentType))
-            {
-                Reflection.Compute.RecordError("Provided input in fragmentType is not a Fragment type (does not implement IFragment interface).");
-                return iBHoMObject;
-            }
-
-            if (!iBHoMObject.Fragments.Contains(fragmentType))
-            {
-                Reflection.Compute.RecordWarning($"{iBHoMObject.GetType().Name} does not contain any `{fragmentType.Name}` fragment.");
-                return iBHoMObject;
-            }
-
-            o.Fragments.Remove(fragmentType);
-           
-            return o;
+        public static RevisionFragment RevisionFragment(this IBHoMObject obj)
+        {
+            return obj.FindFragment<RevisionFragment>(); 
         }
     }
 }

@@ -48,7 +48,7 @@ namespace BH.Engine.Diffing
         [Input("currentObjects", "Following objects. Objects that were created after 'pastObjects'.")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         [Input("useExistingHash", "Advanced setting. If the objects already have an HashFragment assigned, but that only has the 'currentHash' populated. Can be used to avoid recomputing hash in some scenarios.")]
-        public static Diff DiffGenericObjects(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null, bool useExistingHash = false)
+        public static Diff DiffGenericObjects(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null, bool keepExistingHash = false)
         {
             BH.Engine.Reflection.Compute.RecordNote("This diffing method cannot track modified objects between different revisions." +
                 "\nIt will simply return the objects that appear exclusively in the past set, in the following set, and in both." +
@@ -61,7 +61,7 @@ namespace BH.Engine.Diffing
             List<object> pastObjects_cloned = BH.Engine.Base.Query.DeepClone(pastObjects).ToList();
             List<object> currentObjects_cloned = BH.Engine.Base.Query.DeepClone(currentObjects).ToList();
 
-            if (!useExistingHash)
+            if (!keepExistingHash)
             {
                 // Clean any existing hash fragment. 
                 // This ensures the hash will be re-computed within this method using the provided DiffConfig.
@@ -71,7 +71,7 @@ namespace BH.Engine.Diffing
 
             // Compute the "Diffing" by means of a VennDiagram.
             // Hashes are computed in the DiffingHashComparer, once per each object (the hash is stored in a hashFragment).
-            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects_cloned, currentObjects_cloned, new DiffingHashComparer<object>(diffConfigCopy, true));
+            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects_cloned, currentObjects_cloned, new HashComparer<object>(diffConfigCopy, true));
             
             return new Diff(vd.OnlySet2, vd.OnlySet1, null, diffConfigCopy, null, vd.Intersection);
         }

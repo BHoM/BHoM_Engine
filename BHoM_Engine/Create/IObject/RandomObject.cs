@@ -215,7 +215,11 @@ namespace BH.Engine.Base
             else if (type.IsInterface || type.IsAbstract)
             {
                 if (depth > 50) return null;
-                return GetValue(m_ImplementingTypes[type], rnd, depth + 1);
+
+                Type obj = null;
+                if (!m_ImplementingTypes.TryGetValue(type, out obj)) return null;
+
+                return GetValue(obj, rnd, depth + 1);
             }
             else
             {

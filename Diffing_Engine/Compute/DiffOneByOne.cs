@@ -49,7 +49,7 @@ namespace BH.Engine.Diffing
         [Input("currentObjects", "Following objects. Objects that were created after 'pastObjects'.")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         [Input("useExistingHash", "Advanced setting. If the objects already have an HashFragment assigned, but that only has the 'currentHash' populated. Can be used to avoid recomputing hash in some scenarios.")]
-        public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null, bool useExistingHash = false)
+        public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null)
         {
             if (pastObjects.Count() != currentObjects.Count())
             {

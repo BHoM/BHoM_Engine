@@ -32,6 +32,7 @@ using System.ComponentModel;
 using BH.oM.Physical.Constructions;
 
 using BH.oM.Diffing;
+using BH.oM.Base;
 
 namespace BH.Engine.Physical
 {
@@ -45,16 +46,18 @@ namespace BH.Engine.Physical
         {
             DiffConfig config = new DiffConfig()
             {
-                PropertiesToIgnore = new List<string>
+                HashConfig = new HashConfig()
                 {
-                    "BHoM_Guid",
-                    "CustomData",
-                },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                    PropertyFullNameExceptions = new List<string>
+                    {
+                        "CustomData"
+                    },
+                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance
+                }
             };
 
             if (!includeConstructionName)
-                config.PropertiesToIgnore.Add("Name");
+                config.HashConfig.PropertyNameExceptions.Add("Name");
 
             List<Construction> allConstructions = constructions.Where(x => x != null).ToList();
             List<Construction> hashedConstructions = BH.Engine.Diffing.Modify.SetHashFragment<Construction>(allConstructions, config);

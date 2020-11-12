@@ -54,7 +54,8 @@ namespace BH.Engine.Diffing
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
 
-            if (pastObjs.Count() == 1 && followingObjs.Count() == 1)
+            // Check if the inputs specified are Revisions. In that case, use the Diffing-Revision workflow.
+            if (string.IsNullOrWhiteSpace(customDataIdKey) && pastObjs.Count() == 1 && followingObjs.Count() == 1)
             {
                 Revision pastRev = pastObjs.First() as Revision;
                 Revision follRev = followingObjs.First() as Revision;
@@ -73,6 +74,7 @@ namespace BH.Engine.Diffing
             IEnumerable<IBHoMObject> bHoMObjects_past = pastObjs.OfType<IBHoMObject>();
             IEnumerable<IBHoMObject> bHoMObjects_following = followingObjs.OfType<IBHoMObject>();
 
+            // If a customDataKey was specified, use the Id found under that key in customdata to perform the Diffing.
             if (!string.IsNullOrWhiteSpace(customDataIdKey))
             {
                 if (bHoMObjects_past.Count() == pastObjs.Count() && bHoMObjects_following.Count() == followingObjs.Count())
@@ -84,26 +86,15 @@ namespace BH.Engine.Diffing
                     BH.Engine.Reflection.Compute.RecordWarning($"To perform the diffing based on an Id stored in the Custom Data, the inputs must be collections of IBHoMObjects.");
             }
 
-            // Check if the BHoMObjects all have a hashfragment assigned.
+            // Check if the BHoMObjects all have a RevisionFragment assigned.
             // If so, we may attempt the Revision diffing.
-            if (bHoMObjects_past.AllHaveHashFragment() && bHoMObjects_following.AllHaveHashFragment())
+            if (bHoMObjects_past.AllHaveRevisionFragment() && bHoMObjects_following.AllHaveRevisionFragment())
             {
                 BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisionObjects)}'.");
                 return DiffRevisionObjects(bHoMObjects_past, bHoMObjects_following, diffConfigCopy);
             }
 
-            // If `AllowOneByOneDiffing` is enabled and the collections have the same length,
-            // compare objects from the two collections one by one.
-            if (diffConfigCopy.AllowOneByOneDiffing && pastObjs.Count() == followingObjs.Count())
-            {
-                BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffOneByOne)}'" +
-                    $"\nThis will only identify 'modified' or 'unchanged' objects. It will work correctly only if the input objects are in the same order.");
-
-                return DiffOneByOne(pastObjs, followingObjs, diffConfigCopy);
-            }
-
-            // Check if the BHoMObjects have a `persistentId` assigned.
-            // If so, we may attempt the DiffWithFragmentId diffing.
+            // Check if the bhomObjects have a persistentId assigned.
             List<object> reminder_past, reminder_following;
             List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithNonNullPersistentAdapterId(out reminder_past);
             List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithNonNullPersistentAdapterId(out reminder_following);
@@ -111,8 +102,19 @@ namespace BH.Engine.Diffing
 
             if (bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
             {
+                // If the BHoMObjects have a `persistentId` assigned, attempt the DiffWithFragmentId diffing.
                 BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithFragmentId)}'.");
                 fragmentDiff = DiffWithFragmentId(bHoMObjects_past_persistId, bHoMObjects_following_persistId, typeof(IPersistentAdapterId), nameof(IPersistentAdapterId.PersistentId), diffConfigCopy);
+            }
+            else if (diffConfigCopy.AllowOneByOneDiffing && pastObjs.Count() == followingObjs.Count())
+            {
+                // If objects do not have any persistentId, `AllowOneByOneDiffing` is enabled and the collections have the same length,
+                // compare objects from the two collections one by one.
+
+                BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffOneByOne)}'" +
+                    $"\nThis will only identify 'modified' or 'unchanged' objects. It will work correctly only if the input objects are in the same order.");
+
+                return DiffOneByOne(pastObjs, followingObjs, diffConfigCopy);
             }
 
             // As last resort, compute the hash of each object and compare the objects with the same hash.
@@ -128,7 +130,7 @@ namespace BH.Engine.Diffing
             if (fragmentDiff == null)
                 return diffGeneric;
 
-            return fragmentDiff.AddToDiff(diffGeneric);
+            return fragmentDiff.CombineDiffs(diffGeneric);
         }
     }
 }

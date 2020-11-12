@@ -21,21 +21,41 @@
  */
 
 using BH.oM.Base;
-using BH.Engine.Base;
+using BH.oM.Data.Collections;
 using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Reflection;
+using BH.Engine.Serialiser;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Query
+    public static partial class Modify
     {
-        public static HashFragment GetHashFragment(this IBHoMObject obj)
+        [Description("Combines two given diffs into one, appending objects of the second to the first.")]
+        public static Diff CombineDiffs(this Diff diff, Diff toAdd)
         {
-            return obj.FindFragment<HashFragment>(); 
+            if (diff == null)
+                return toAdd;
+
+            if (toAdd == null)
+                return diff;
+
+            return new Diff(
+                diff.AddedObjects.Concat(toAdd.AddedObjects),
+                diff.RemovedObjects.Concat(toAdd.RemovedObjects),
+                diff.ModifiedObjects.Concat(toAdd.ModifiedObjects),
+                diff.DiffConfig,
+                diff.ModifiedPropsPerObject.Concat(toAdd.ModifiedPropsPerObject).ToDictionary(x => x.Key, x => x.Value),
+                diff.UnchangedObjects.Concat(toAdd.UnchangedObjects)
+                );
         }
     }
 }
