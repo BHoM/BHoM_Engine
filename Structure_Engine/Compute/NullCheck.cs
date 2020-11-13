@@ -65,7 +65,7 @@ namespace BH.Engine.Structure
                 return false;
             }
 
-            return bar.StartNode.NullCheck(methodName) || bar.EndNode.NullCheck(methodName);
+            return bar.StartNode.NullCheck(methodName) && bar.EndNode.NullCheck(methodName);
         }
 
         /***************************************************/
