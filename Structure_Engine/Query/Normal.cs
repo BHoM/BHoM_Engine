@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
         [Output("normal", "List of vectors representing the local z-axes of mesh faces. List order corresponds to the order of the faces.")]
         public static List<Vector> Normals(this FEMesh mesh)
         {
-            return mesh.Faces.Select(x => x.Normal(mesh)).ToList();
+            return mesh.NullCheck("Normals", false, false) ? mesh.Faces.Select(x => x.Normal(mesh)).ToList() : null;
         }
 
         /***************************************************/
@@ -66,6 +66,8 @@ namespace BH.Engine.Structure
         [Output("normal", "Vector representing the local z-axis of a mesh face.")]
         public static Vector Normal(this FEMeshFace face, FEMesh mesh)
         {
+            if (!face.NullCheck(mesh, "Normal"))
+                return null;
 
             if (face.NodeListIndices.Count < 3)
             {
