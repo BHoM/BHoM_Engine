@@ -76,7 +76,7 @@ namespace BH.Engine.Structure
             }
             else if (face.NodeListIndices.Count > 4)
             {
-                Engine.Reflection.Compute.RecordError("Can only determain normal from 3 or 4 sided faces.");
+                Engine.Reflection.Compute.RecordError("Can only determine normal from 3 or 4 sided faces.");
                 return null;
             }
 
