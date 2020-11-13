@@ -41,6 +41,17 @@ namespace BH.Engine.MEP
         {
             return new Line { Start = flowObj.StartPoint, End = flowObj.EndPoint };
         }
+
+        /***************************************************/
+
+        [Description("Returns the centreline of a CameraDevice object.")]
+        [Input("cameraDevice", "The CameraDevice object to get the centreline from.")]
+        [Output("centreline", "The centreline of the CameraDevice object.")]
+        public static Line Centreline(this CameraDevice cameraDevice)
+        {
+            return new Line { Start = cameraDevice.EyePosition, End = cameraDevice.TargetPosition };
+        }
+
         /***************************************************/
     }
 }
