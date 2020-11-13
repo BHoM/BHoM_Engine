@@ -44,6 +44,7 @@ namespace BH.Engine.Structure
         [Output("pass", "A boolean which is true if the bar passes the null check.")]
         public static bool NullCheck(this Node node, string methodName = "Method")
         {
+            // Check Node and Position
             if (node?.Position == null)
             {
                 ErrorMessage(methodName, "Node");
@@ -61,62 +62,90 @@ namespace BH.Engine.Structure
         [Output("pass", "A boolean which is true if the bar passes the null check.")]
         public static bool NullCheck(this Bar bar, string methodName = "Method")
         {
+            // Check bar
             if (bar == null)
             {
                 ErrorMessage(methodName, "Bar");
                 return false;
             }
 
+            // Check bar Nodes
             return bar.StartNode.NullCheck(methodName) && bar.EndNode.NullCheck(methodName);
         }
 
         [Description("Checks if an FEMesh or one of its Nodes are null and outputs relevant error message.")]
         [Input("mesh", "The FEMesh to test for null.")]
-        [Input("nodeListIndices", "Optional list of nodes to limit check to")]
         [Input("methodName", "Optional name of the method to reference in the error message.")]
+        [Input("checkFaces", "Optional bool to tell the method whether to check FEMeshFaces or not.")]
+        [Input("checkNodes", "Optional bool to tell the method whether to check mesh Nodes or not.")]
+        [Input("nodeListIndices", "Optional list of nodes to limit check to")]
         [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
-        public static bool NullCheck(this FEMesh mesh, List<int> nodeListIndices = default, string methodName = "Method")
+        public static bool NullCheck(this FEMesh mesh, string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = default)
         {
-            if (mesh?.Nodes == null || mesh?.Nodes.Count == 0)
+            // Check FEMesh
+            if (mesh?.Nodes == null || mesh?.Nodes.Count == 0 || mesh?.Faces == null || mesh?.Faces.Count == 0)
             {
                 ErrorMessage(methodName, "FEMesh");
                 return false;
             }
 
-            if (nodeListIndices == default(List<int>) || nodeListIndices.Count == 0)
+            // Make sure to check all mesh Nodes if none are specified
+            // When called from the FEMeshFace version of this method, we limit the Node check to relevant Nodes
+            if (checkNodes && (nodeListIndices == default(List<int>) || nodeListIndices.Count == 0))
             {
                 nodeListIndices = new List<int>();
                 nodeListIndices.AddRange(Enumerable.Range(0, mesh.Nodes.Count - 1));
             }
-            else if (mesh.Nodes.Count - 1 < nodeListIndices.Max())
+            // If mesh nodes are specified, check that they are in range
+            else if (checkNodes && mesh.Nodes.Count - 1 < nodeListIndices.Max())
             {
                 Engine.Reflection.Compute.RecordError($"Cannot run {methodName} because Node indices are out of range for FEMesh");
                 return false;
             }
 
+            // Check Nodes, but only if checkNodes is set to true
+            // When called from methods that run on the list of mesh FEMeshFaces, we only want a basic check as null checks will be performed individually for each face
             bool passes = true;
-            for (int i = 0; i < nodeListIndices.Count && passes; i++)
+            for (int i = 0; checkNodes && passes && i < nodeListIndices.Count ; i++)
             {
                 passes = mesh.Nodes[nodeListIndices[i]].NullCheck(methodName);
+            }
+
+            // Check FEMeshFaces, but only if checkFaces is set to true
+            // When called from the FEMeshFace version of this method, we do not need to check FEMeshFaces, as the only relevant face has already been checked
+            for (int i = 0; checkFaces && passes && i < mesh.Faces.Count; i++)
+            {
+                passes = mesh.Faces[i].NullCheck(methodName);
             }
 
             return passes;
         }
 
-        [Description("Checks if an FEMeshFace or one of its Nodes are null and outputs relevant error message.")]
+        [Description("Checks if an FEMeshFace or one of its Nodes in the FEMesh are null and outputs relevant error message.")]
         [Input("face", "The FEMeshFace to test for null.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
         public static bool NullCheck(this FEMeshFace face, FEMesh mesh, string methodName = "Method")
         {
+            // Check FEMeshFace and relevant nodes in FEMesh
+            return face.NullCheck(methodName) && mesh.NullCheck(methodName, false, true, face.NodeListIndices);
+        }
+
+        [Description("Checks if an FEMeshFace or its NodeListIndices is null and outputs relevant error message.")]
+        [Input("face", "The FEMeshFace to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
+        public static bool NullCheck(this FEMeshFace face, string methodName = "Method")
+        {
+            // Check FEMeshFace
             if (face?.NodeListIndices == null || face?.NodeListIndices.Count == 0)
             {
                 ErrorMessage(methodName, "FEMeshFace");
                 return false;
             }
 
-            return mesh.NullCheck(face.NodeListIndices, methodName);
+            return true;
         }
 
         /***************************************************/
