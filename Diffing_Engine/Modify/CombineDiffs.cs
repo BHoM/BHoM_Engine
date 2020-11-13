@@ -52,7 +52,7 @@ namespace BH.Engine.Diffing
                 diff.AddedObjects.Concat(toAdd.AddedObjects),
                 diff.RemovedObjects.Concat(toAdd.RemovedObjects),
                 diff.ModifiedObjects.Concat(toAdd.ModifiedObjects),
-                diff.DiffConfig,
+                diff.DiffingConfig,
                 diff.ModifiedPropsPerObject.Concat(toAdd.ModifiedPropsPerObject).ToDictionary(x => x.Key, x => x.Value),
                 diff.UnchangedObjects.Concat(toAdd.UnchangedObjects)
                 );

@@ -44,24 +44,20 @@ namespace BH.Engine.Physical
         [Output("uniqueConstructions", "A collection of unique Construction objects")]
         public static List<Construction> UniqueConstructions(this List<Construction> constructions, bool includeConstructionName = false)
         {
-            DiffConfig config = new DiffConfig()
+            DistinctConfig dc = new DistinctConfig()
             {
-                HashConfig = new HashConfig()
-                {
-                    PropertyFullNameExceptions = new List<string>
+                PropertyNameExceptions = new List<string>
                     {
                         "CustomData"
                     },
-                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance
-                }
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
             if (!includeConstructionName)
-                config.HashConfig.PropertyNameExceptions.Add("Name");
+                dc.PropertyNameExceptions.Add("Name");
 
             List<Construction> allConstructions = constructions.Where(x => x != null).ToList();
-            List<Construction> hashedConstructions = BH.Engine.Diffing.Modify.SetHashFragment<Construction>(allConstructions, config);
-            List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(hashedConstructions).ToList();
+            List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(allConstructions, dc).ToList();
 
             return uniqueConstructions;
         }

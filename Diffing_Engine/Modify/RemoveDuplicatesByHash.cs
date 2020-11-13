@@ -33,16 +33,29 @@ using System.Reflection;
 using BH.Engine.Serialiser;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
     public static partial class Modify
     {
-        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
+        [Description("Removes duplicates from a collection of objects. The comparison is made using their Hash. If hash is missing, it is computed.")]
         [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects) where T : IBHoMObject
+        [Input("distinctConfig", "Settings to determine the uniqueness of an Object.")]
+        [Input("useExistingHash", "If true, if objects already have a HashFragment, use that. If false, recompute the hash for all objects.")]
+        public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects, DistinctConfig distinctConfig = null, bool useExistingHash = true) where T : IBHoMObject
         {
-            return objects.GroupBy(obj => obj.RevisionFragment().CurrentHash).Select(gr => gr.First()).ToList();
+            return objects.GroupBy(obj =>
+            {
+                if (useExistingHash)
+                {
+                    string existingHash = obj.HashFragment()?.Hash;
+                    if (!string.IsNullOrWhiteSpace(existingHash))
+                        return existingHash;
+                }
+                return obj.Hash(distinctConfig);
+            }
+            ).Select(gr => gr.First()).ToList();
         }
     }
 }
