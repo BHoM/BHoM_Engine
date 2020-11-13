@@ -115,9 +115,7 @@ namespace BH.Engine.Spatial
             group.AddRange(externalEdges);
             group.AddRange(internalEdges);
 
-            group = group.Select(x => x.ITranslate(tranlation)).ToList();
-
-            return group;
+            return group.Select(x => x.ITranslate(tranlation)).ToList();
         }
 
         /***************************************************/

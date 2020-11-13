@@ -90,10 +90,6 @@ namespace BH.Engine.Spatial
             if (mirrorAboutLocalY)
                 curves = curves.MirrorAboutLocalY();
 
-            Point centroid = curves.IJoin().Centroid();
-            Vector tranlation = Point.Origin-centroid;
-            curves = curves.Select(x => x.ITranslate(tranlation)).ToList();
-
             return new AngleProfile(height, width, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, mirrorAboutLocalY, curves);
         }
 
@@ -121,10 +117,9 @@ namespace BH.Engine.Spatial
             perimeter.Add(new Line { Start = p, End = p = p - yAxis * (depth) });
             List<ICurve> translatedCurves = new List<ICurve>();
 
-            foreach (ICurve crv in perimeter)
-                translatedCurves.Add(crv.ITranslate(new Vector { X = -width / 2, Y = -depth / 2, Z = 0 }));
-
-            return translatedCurves;
+            Point centroid = perimeter.IJoin().Centroid();
+            Vector tranlation = Point.Origin - centroid;
+            return perimeter.Select(x => x.ITranslate(tranlation)).ToList();
         }
 
         /***************************************************/
