@@ -34,7 +34,6 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Base;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Physical.Fragments;
 using BH.Engine.Reflection;
 
 namespace BH.Engine.Physical
@@ -92,10 +91,8 @@ namespace BH.Engine.Physical
 
             if (solidVolume <= 0)
             {
-                solidVolume = bulkSolids.FindFragment<VolumeFragment>(typeof(VolumeFragment)).Volume;
-
-                Reflection.Compute.RecordNote("The SolidVolume of the BulkSolids is not based on Volume calculations, but has been set by VolumeFragment");
-                return solidVolume;
+                Engine.Reflection.Compute.RecordError("The BulkSolids Solid Volume could not be calculated. Returning zero volume.");
+                return 0;
             }
 
             return solidVolume;
