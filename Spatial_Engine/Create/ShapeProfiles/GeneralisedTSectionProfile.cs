@@ -116,9 +116,7 @@ namespace BH.Engine.Spatial
             Point centroid = perimeter.IJoin().Centroid();
             Vector tranlation = Point.Origin - centroid;
 
-            perimeter = perimeter.Select(x => x.ITranslate(tranlation)).ToList();
-
-            return perimeter;
+            return perimeter.Select(x => x.ITranslate(tranlation)).ToList();
         }
 
         /***************************************************/

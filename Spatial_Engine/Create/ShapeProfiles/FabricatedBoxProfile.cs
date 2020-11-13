@@ -70,8 +70,6 @@ namespace BH.Engine.Spatial
             }
 
             List<ICurve> curves = FabricatedBoxProfileCurves(width, height, webThickness, topFlangeThickness, botFlangeThickness, weldSize);
-
-
             return new FabricatedBoxProfile(height, width, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 
@@ -114,9 +112,7 @@ namespace BH.Engine.Spatial
 
             box.AddRange(innerBox);
 
-            box = box.Select(x => x.ITranslate(tranlation)).ToList();
-
-            return box;
+            return box.Select(x => x.ITranslate(tranlation)).ToList();
         }
 
         /***************************************************/
