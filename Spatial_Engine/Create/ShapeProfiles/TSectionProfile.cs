@@ -112,6 +112,11 @@ namespace BH.Engine.Spatial
             perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
             perimeter.Add(new Line { Start = origin + xAxis * (-wt / 2), End = origin + xAxis * (wt / 2) });
 
+            Point centroid = perimeter.IJoin().Centroid();
+            Vector tranlation = Point.Origin - centroid;
+
+            perimeter = perimeter.Select(x => x.ITranslate(tranlation)).ToList();
+
             return perimeter;
         }
 
