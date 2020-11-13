@@ -53,7 +53,7 @@ namespace BH.Engine.Diffing
         [Description("Defines configurations for the diffing.")]
         [Input("enablePropertyDiffing", "Enables the property-level diffing: differences in object properties are stored in the `ModifiedPropsPerObject` dictionary.")]
         [Input("storeUnchangedObjects", "If enabled, the Diff stores also the objects that did not change (`Unchanged` property).")]
-        public static DiffingConfig DiffingConfig(bool enablePropertyDiffing = false, bool storeUnchangedObjects = true, List<string> propertiesToConsider = null, List<string> propertiesToIgnore = null, List<string> customDataToIgnore = null)
+        public static DiffingConfig DiffingConfig(bool enablePropertyDiffing = false, bool storeUnchangedObjects = true, List<string> propertyNamesToConsider = null, List<string> propertiesToIgnore = null, List<string> customDataToIgnore = null)
         {
             return new DiffingConfig()
             {
@@ -61,7 +61,7 @@ namespace BH.Engine.Diffing
                 IncludeUnchangedObjects = storeUnchangedObjects,
                 DistinctConfig = new DistinctConfig()
                 {
-                    PropertiesToConsider = propertiesToConsider,
+                    PropertyNamesToConsider = propertyNamesToConsider,
                     PropertyNameExceptions = propertiesToIgnore,
                     CustomdataKeysExceptions = (customDataToIgnore == null || !customDataToIgnore.Any()) ? new List<string>() { "RenderMesh" } : customDataToIgnore
                 },
