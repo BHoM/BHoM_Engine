@@ -20,20 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
-
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
 using BH.oM.Geometry;
-
 using BH.Engine.Geometry;
-
-using BH.Engine.Base;
 
 namespace BH.Engine.MEP
 {
@@ -42,38 +33,25 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
-        [Description("Updates the position of a Node.")]
-        [Input("node", "The Node to set the postion to.")]
-        [Input("point", "The new position of the Node used to define an object.")]
-        [Output("node", "The Node with updated geometry.")]
-        public static BH.oM.MEP.Elements.Node SetGeometry(this BH.oM.MEP.Elements.Node node, Point point)
-        {
-            BH.oM.MEP.Elements.Node clone = node.ShallowClone(true);
-            clone.Position = point.DeepClone();
-            return clone;
-        }
-        
-        /***************************************************/
-        
+
         [Description("Updates geometry of an IFlow Object by updating the positions of its end Nodes.")]
-        [Input("obj", "The IFlow Object to update.")]
+        [Input("flowObj", "The IFlow Object to update.")]
         [Input("curve", "The new centerline curve of the pipe.")]
         [Output("object", "The IFlow Object with updated geometry.")]
-        public static IFlow SetGeometry(this IFlow obj, ICurve curve)
+        public static IFlow SetGeometry(this IFlow flowObj, ICurve curve)
         {
-            if(curve.IIsLinear() == false)
+            if (curve.IIsLinear() == false)
             {
                 Engine.Reflection.Compute.RecordError("IFlow objects are not linear.");
                 return null;
             }
-            
-            IFlow clone = obj.ShallowClone(true);
-            clone.StartNode = clone.StartNode.SetGeometry(curve.IStartPoint());
-            clone.EndNode = clone.EndNode.SetGeometry(curve.IEndPoint());
+
+            IFlow clone = flowObj.GetShallowClone(true) as IFlow;
+            clone.StartPoint = clone.StartPoint.SetGeometry(curve.IStartPoint());
+            clone.EndPoint = clone.EndPoint.SetGeometry(curve.IEndPoint());
             return clone;
         }
-        
+
         /***************************************************/
     }
 }

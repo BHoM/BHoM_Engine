@@ -20,15 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
 using BH.oM.MEP.Fragments;
 
 namespace BH.Engine.MEP
@@ -38,13 +32,13 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Returns an MEP Identity Fragment which can be applied to an MEP object to provide information about an objects origins")]
-        [Input("manufacturer", "The manufacturer of the equipment, default empty string")]
-        [Input("modelNumber", "The model number of the equipment, default empty string")]
-        [Input("location", "The location of the equipment within the model/building, default empty string")]
-        [Input("service", "The service of the equipment, default empty string")]
-        [Input("remarks", "A collection of remarks about the identity of the equipment, default null")]
-        [Output("identityFragment", "An MEP Identity Fragment")]
+        [Description("Returns an MEP Identity Fragment which can be applied to an MEP object to provide information about an objects origins.")]
+        [Input("manufacturer", "The manufacturer of the equipment, default empty string.")]
+        [Input("modelNumber", "The model number of the equipment, default empty string.")]
+        [Input("location", "The location of the equipment within the model/building, default empty string.")]
+        [Input("service", "The service of the equipment, default empty string.")]
+        [Input("remarks", "A collection of remarks about the identity of the equipment, default null.")]
+        [Output("identityFragment", "An MEP Identity Fragment.")]
         public static IdentityFragment IdentityFragment(string manufacturer = "", string modelNumber = "", string location = "", string service = "", List<string> remarks = null)
         {
             remarks = remarks ?? new List<string>();

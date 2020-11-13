@@ -21,14 +21,8 @@
  */
 
 using System.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.MEP.MaterialFragments;
-using BH.oM.MEP.SectionProperties;
+using BH.oM.MEP.System.MaterialFragments;
+using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -43,7 +37,6 @@ namespace BH.Engine.MEP
         [Description("Creates a composite Cable Tray sectionProfile.")]
         [Input("material", "A base ShapeProfile upon which to base the composite section.")]
         [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
-        [Input("cableTrayMaterial", "Material properties for the Cable Tray object.")]
         [Output("cableTraySectionProperty", "Cable Tray Section property used to provide accurate Cable Tray assembly and capacities.")]
         public static CableTraySectionProperty CableTraySectionProperty(IMEPMaterial material, SectionProfile sectionProfile = null, string name = "")
         {

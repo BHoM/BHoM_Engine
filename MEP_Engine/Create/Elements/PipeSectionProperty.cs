@@ -21,14 +21,8 @@
  */
 
 using System.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.MEP.MaterialFragments;
-using BH.oM.MEP.SectionProperties;
+using BH.oM.MEP.System.MaterialFragments;
+using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -44,7 +38,6 @@ namespace BH.Engine.MEP
         [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
         [Input("pipeMaterial", "Material properties for the Pipe object.")]
         [Input("insulationMaterial", "Material properties for the insulation material, or material that wraps the exterior of the Pipe object.")]
-        [Input("liningMaterial", "Material properties for the lining material that wraps the inside surface of the Pipe object. This is the layer that is in direct contact with interior flowing material.")]
         [Output("pipeSectionProperty", "Pipe Section property used to provide accurate pipe assembly and capacities.")]
         public static PipeSectionProperty PipeSectionProperty(
             SectionProfile sectionProfile,
