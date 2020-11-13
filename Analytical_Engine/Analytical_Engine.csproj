@@ -95,12 +95,12 @@
     <Compile Include="Query\ExternalPolycurve.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\Graph\Adjacency.cs" />
+    <Compile Include="Query\Graph\DistinctEntities.cs" />
     <Compile Include="Query\Graph\EntityNeighbourhood.cs" />
     <Compile Include="Query\Graph\AStarShortestPath.cs" />
     <Compile Include="Query\Graph\ClosestIElement0D.cs" />
     <Compile Include="Query\Graph\Depth.cs" />
     <Compile Include="Query\Graph\Destinations.cs" />
-    <Compile Include="Query\Graph\DiffEntities.cs" />
     <Compile Include="Query\Graph\DijkstraShortestPath.cs" />
     <Compile Include="Query\Graph\Entities.cs" />
     <Compile Include="Query\Graph\Entity.cs" />

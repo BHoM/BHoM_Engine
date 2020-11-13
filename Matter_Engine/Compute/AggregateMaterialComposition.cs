@@ -84,7 +84,7 @@ namespace BH.Engine.Matter
                     bool existed = false;
                     for (int k = 0; k < allMaterials.Count; k++)
                     {
-                        if (allMaterials[k].FindFragment<HashFragment>().CurrentHash == mat.FindFragment<HashFragment>().CurrentHash)
+                        if (allMaterials[k].FindFragment<HashFragment>().Hash == mat.FindFragment<HashFragment>().Hash)
                         {
                             allRatios[k] += localMatComps[j].Ratios[i] * localRatios[j];
                             existed = true;

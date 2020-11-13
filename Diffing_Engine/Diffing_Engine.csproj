@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Compute\DiffOneByOne.cs" />
     <Compile Include="Compute\DiffWithFragmentId.cs" />
+    <Compile Include="Compute\DiffWithHash.cs" />
     <Compile Include="Compute\_IDiffing.cs" />
     <Compile Include="Compute\DiffWithCustomId.cs" />
     <Compile Include="Compute\DiffRevisions.cs" />
@@ -75,9 +76,6 @@
     <Compile Include="Modify\CombineDiffs.cs" />
     <Compile Include="Modify\SetHashFragment.cs" />
     <Compile Include="Objects\EqualityComparers\HashComparer.cs" />
-    <Compile Include="Objects\EqualityComparers\RevisionHashComparer.cs" />
-    <Compile Include="Compute\DiffGenericObjects.cs" />
-    <Compile Include="Compute\Hash\DiffingHash.cs" />
     <Compile Include="Create\Delta.cs" />
     <Compile Include="Create\DiffConfig.cs" />
     <Compile Include="Create\Revision.cs" />
@@ -87,7 +85,6 @@
     <Compile Include="Query\ListDifferentProperties.cs" />
     <Compile Include="Query\ListModifiedProperties.cs" />
     <Compile Include="Query\DifferentProperties.cs" />
-    <Compile Include="Query\AnyDuplicateByHash.cs" />
     <Compile Include="Query\HashFragment.cs" />
     <Compile Include="Query\RevisionFragment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

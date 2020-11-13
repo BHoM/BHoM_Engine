@@ -33,26 +33,31 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using BH.Engine.Diffing;
+using System.Collections;
+using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
-    public class HashComparer<T> : IEqualityComparer<T> //where T : IBHoMObject
+    [Description("Computes and compares the Hash of the given Objects.")]
+    public class HashComparer<T> : IEqualityComparer<object>, IEqualityComparer
     {
         /***************************************************/
         /**** Constructors                              ****/
         /***************************************************/
 
+        [Description("If true, stores the computed hash for input BHoMObjects as a new HashFragment. False by default.")]
         public bool StoreHash { get; set; } = false;
-        public DiffConfig DiffConfig { get; set; } = new DiffConfig();
 
-        public HashComparer(DiffConfig diffConfig = null)
-        {
-            if (diffConfig != null)
-                DiffConfig = diffConfig;
-        }
+        [Description("If the objects are IObjects, computes the BHoM Hash using these configurations.")]
+        public DistinctConfig DistinctConfig { get; set; } = new DistinctConfig();
 
-        public HashComparer(DiffConfig diffConfig = null, bool storeHash = false) : this(diffConfig)
+        [Input("distinctConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
+        [Input("storeHash", "If true, stores the computed hash for input BHoMObjects as a new HashFragment.")]
+        public HashComparer(DistinctConfig distinctConfig = null, bool storeHash = false)
         {
+            if (distinctConfig != null)
+                DistinctConfig = distinctConfig;
+
             StoreHash = storeHash;
         }
 
@@ -60,42 +65,32 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public bool Equals(T x, T y)
+        public bool Equals(object x, object y)
         {
             if (x?.GetType() == y?.GetType())
             {
                 string xHash = null;
                 string yHash = null;
 
-                IBHoMObject xbHoM = x as IBHoMObject;
-                IBHoMObject ybHoM = y as IBHoMObject;
+                IObject xbHoM = x as IObject;
+                IObject ybHoM = y as IObject;
 
                 if (xbHoM != null && ybHoM != null)
                 {
-                    xHash = xbHoM?.HashFragment()?.CurrentHash;
-                    yHash = ybHoM?.HashFragment()?.CurrentHash;
+                    xHash = xbHoM.Hash();
+                    yHash = ybHoM.Hash();
 
-                    if (string.IsNullOrWhiteSpace(xHash))
-                    {
-                        xHash = x.CurrentHash(DiffConfig);
+                    if (xbHoM is IBHoMObject && StoreHash)
+                        x = Modify.SetHashFragment(xbHoM as IBHoMObject, xHash);
 
-                        if (StoreHash)
-                            Modify.SetHashFragment(xbHoM, xHash);
-                    }
-
-                    if (string.IsNullOrWhiteSpace(yHash))
-                    {
-                        yHash = y.CurrentHash(DiffConfig);
-
-                        if (StoreHash)
-                            Modify.SetHashFragment(ybHoM, yHash);
-                    }
+                    if (ybHoM is IBHoMObject && StoreHash)
+                        y = Modify.SetHashFragment(ybHoM as IBHoMObject, yHash);
 
                     return xHash == yHash;
                 }
 
 
-                return x.CurrentHash(DiffConfig) == y.CurrentHash(DiffConfig);
+                return GetHashCode(x) == GetHashCode(y);
             }
 
             return false;
@@ -103,17 +98,14 @@ namespace BH.Engine.Diffing
 
         /***************************************************/
 
-        public int GetHashCode(T obj)
+        public int GetHashCode(object obj)
         {
-            if (typeof(IBHoMObject).IsAssignableFrom(typeof(T)))
-            {
-                IBHoMObject bHoMObject = (IBHoMObject)obj;
-                HashFragment hashFragment = bHoMObject.HashFragment();
-                if (!string.IsNullOrWhiteSpace(hashFragment?.CurrentHash))
-                    return hashFragment.CurrentHash.GetHashCode();
-            }
+            IObject iObj = obj as IObject;
 
-            return obj.CurrentHash(DiffConfig).GetHashCode();
+            if (iObj != null)
+                return iObj.Hash(DistinctConfig).GetHashCode();
+
+            return obj.GetHashCode();
         }
     }
 }

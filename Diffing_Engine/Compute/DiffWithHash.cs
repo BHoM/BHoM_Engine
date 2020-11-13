@@ -42,38 +42,36 @@ namespace BH.Engine.Diffing
 {
     public static partial class Compute
     {
-        [Description("Computes the diffing for generic objects that do not have any Id or HashFragment assigned." +
-            "\nShould be seen as last resort if no other diffing method can be applied.")]
-        [Input("pastObjects", "Past objects. Objects whose creation precedes 'currentObjects'.")]
+        [Description("Computes the diffing using the Hash of the specified objects. If objects do not have an hash, compute it.")]
+        [Input("pastObjects", "Objects whose creation predates 'currentObjects'.")]
         [Input("currentObjects", "Following objects. Objects that were created after 'pastObjects'.")]
-        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-level diffing.")]
         [Input("useExistingHash", "Advanced setting. If the objects already have an HashFragment assigned, but that only has the 'currentHash' populated. Can be used to avoid recomputing hash in some scenarios.")]
-        public static Diff DiffGenericObjects(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null, bool keepExistingHash = false)
+        public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null, bool useExistingHash = false)
         {
             BH.Engine.Reflection.Compute.RecordNote("This diffing method cannot track modified objects between different revisions." +
                 "\nIt will simply return the objects that appear exclusively in the past set, in the following set, and in both." +
                 $"\nConsider using '{nameof(DiffWithCustomId)}', '{nameof(DiffWithFragmentId)}' or '{nameof(DiffRevisions)}' if this feature is needed.");
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
+            DiffingConfig dc = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();
 
             // Clone objects for immutability in the UI.
             List<object> pastObjects_cloned = BH.Engine.Base.Query.DeepClone(pastObjects).ToList();
             List<object> currentObjects_cloned = BH.Engine.Base.Query.DeepClone(currentObjects).ToList();
 
-            if (!keepExistingHash)
+            if (!useExistingHash)
             {
-                // Clean any existing hash fragment. 
-                // This ensures the hash will be re-computed within this method using the provided DiffConfig.
+                // Clean any existing hash fragment. This ensures the hash will be re-computed using the provided DiffingConfig.
                 pastObjects_cloned.OfType<IBHoMObject>().ToList().ForEach(o => o.Fragments.Remove(typeof(HashFragment)));
                 currentObjects_cloned.OfType<IBHoMObject>().ToList().ForEach(o => o.Fragments.Remove(typeof(HashFragment)));
             }
 
             // Compute the "Diffing" by means of a VennDiagram.
             // Hashes are computed in the DiffingHashComparer, once per each object (the hash is stored in a hashFragment).
-            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects_cloned, currentObjects_cloned, new HashComparer<object>(diffConfigCopy, true));
+            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects_cloned, currentObjects_cloned, new HashComparer<object>(dc.DistinctConfig, true));
             
-            return new Diff(vd.OnlySet2, vd.OnlySet1, null, diffConfigCopy, null, vd.Intersection);
+            return new Diff(vd.OnlySet2, vd.OnlySet1, null, dc, null, vd.Intersection);
         }
     }
 }
