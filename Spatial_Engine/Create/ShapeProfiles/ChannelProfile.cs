@@ -81,6 +81,10 @@ namespace BH.Engine.Spatial
             if (mirrorAboutLocalZ)
                 curves = curves.MirrorAboutLocalZ();
 
+            Point centroid = curves.IJoin().Centroid();
+            Vector tranlation = Point.Origin - centroid;
+            curves = curves.Select(x => x.ITranslate(tranlation)).ToList();
+
             return new ChannelProfile(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, curves);
         }
 
