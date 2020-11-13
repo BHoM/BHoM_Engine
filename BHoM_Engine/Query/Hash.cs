@@ -60,11 +60,11 @@ namespace BH.Engine.Base
             int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(hc.NumericTolerance)));
 
             // Process the "PropertiesToInclude" property.
-            if (hc.PropertiesToConsider?.Any() ?? false)
+            if (hc.PropertyNamesToConsider?.Any() ?? false)
             {
                 // The hash computation can only consider "exceptions".
                 // We need to retrieve all the object properties, intersect them with PropertiesToInclude, and treat all those remaining as "exceptions".
-                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(iObj).Except(hc.PropertiesToConsider);
+                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(iObj).Except(hc.PropertyNamesToConsider);
                 hc.PropertyNameExceptions.AddRange(exceptions);
             }
 
@@ -180,7 +180,7 @@ namespace BH.Engine.Base
                     if (isInPropertyNameExceptions || isInPropertyFullNameExceptions)
                         continue;
 
-                    if (dc.PropertiesToConsider?.Count() > 0 && !dc.PropertiesToConsider.Contains(prop.Name))
+                    if (dc.PropertyNamesToConsider?.Count() > 0 && !dc.PropertyNamesToConsider.Contains(prop.Name))
                         continue;
 
                     object propValue = prop.GetValue(obj);

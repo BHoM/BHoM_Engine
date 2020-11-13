@@ -39,7 +39,7 @@ using BH.Engine.Base;
 namespace BH.Engine.Diffing
 {
     [Description("Computes and compares the Hash of the given Objects.")]
-    public class HashComparer<T> : IEqualityComparer<object>, IEqualityComparer
+    public class HashComparer<T> : IEqualityComparer<T>
     {
         /***************************************************/
         /**** Constructors                              ****/
@@ -65,7 +65,7 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public bool Equals(object x, object y)
+        public bool Equals(T x, T y)
         {
             if (x?.GetType() == y?.GetType())
             {
@@ -81,10 +81,10 @@ namespace BH.Engine.Diffing
                     yHash = ybHoM.Hash();
 
                     if (xbHoM is IBHoMObject && StoreHash)
-                        x = Modify.SetHashFragment(xbHoM as IBHoMObject, xHash);
+                        x = (T)Modify.SetHashFragment(xbHoM as IBHoMObject, xHash);
 
                     if (ybHoM is IBHoMObject && StoreHash)
-                        y = Modify.SetHashFragment(ybHoM as IBHoMObject, yHash);
+                        y = (T)Modify.SetHashFragment(ybHoM as IBHoMObject, yHash);
 
                     return xHash == yHash;
                 }
@@ -98,7 +98,7 @@ namespace BH.Engine.Diffing
 
         /***************************************************/
 
-        public int GetHashCode(object obj)
+        public int GetHashCode(T obj)
         {
             IObject iObj = obj as IObject;
 
