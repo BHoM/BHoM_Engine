@@ -45,9 +45,9 @@ namespace BH.Engine.Analytical
         [Input("entities", "A collection of IBHoMObjects from which unique instances are identified.")]
         [Input("distinctConfig", "Configuration of diffing used to find unique entities.")]
         [Output("unique entities", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
-        public static Dictionary<Guid, IBHoMObject> DistinctEntities(this List<IBHoMObject> entities, DistinctConfig distinctConfig = null) // this is not a diff, it's finding unique entities
+        public static Dictionary<Guid, IBHoMObject> DistinctEntities(this List<IBHoMObject> entities, ComparisonConfig distinctConfig = null) // this is not a diff, it's finding unique entities
         {
-            DistinctConfig dc = distinctConfig ?? new DistinctConfig();
+            ComparisonConfig dc = distinctConfig ?? new ComparisonConfig();
 
             Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
             Dictionary<IBHoMObject, string> objectHash = new Dictionary<IBHoMObject, string>();

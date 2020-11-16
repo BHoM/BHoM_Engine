@@ -38,12 +38,12 @@ namespace BH.Engine.Diffing
     public static partial class Query
     {
         [Description("Checks two BHoMObjects property by property and returns the differences")]
-        [Input("diffConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
+        [Input("DiffingConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
         [Output("Dictionary whose key is the name of the property, and value is a tuple with its value in obj1 and obj2.")]
-        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffingConfig diffConfig = null)
+        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffingConfig DiffingConfig = null)
         {
-            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffingConfig dc = diffConfig == null ? new DiffingConfig() : diffConfig.DeepClone() as DiffingConfig;
+            // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.
+            DiffingConfig dc = DiffingConfig == null ? new DiffingConfig() : DiffingConfig.DeepClone() as DiffingConfig;
 
             object obj1Copy = obj1.DeepClone();
             object obj2Copy = obj2.DeepClone();
@@ -54,15 +54,15 @@ namespace BH.Engine.Diffing
 
             // General configurations.
             comparer.Config.MaxDifferences = dc.MaxPropertyDifferences;
-            comparer.Config.DoublePrecision = dc.DistinctConfig.NumericTolerance;
+            comparer.Config.DoublePrecision = dc.ComparisonConfig.NumericTolerance;
 
             // Set the properties to be ignored.
-            if (!dc.DistinctConfig.PropertyNameExceptions?.Contains("BHoM_Guid") ?? true)
-                dc.DistinctConfig.PropertyNameExceptions.Add("BHoM_Guid");
-                // the above should be replaced by BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(diffConfig.PropertiesToIgnore)}.");
+            if (!dc.ComparisonConfig.PropertyNameExceptions?.Contains("BHoM_Guid") ?? true)
+                dc.ComparisonConfig.PropertyNameExceptions.Add("BHoM_Guid");
+                // the above should be replaced by BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(DiffingConfig.PropertiesToIgnore)}.");
                 // when the bug in the auto Create() method ("auto-property initialisers for ByRef values like lists do not populate default values") is resolved.
 
-            comparer.Config.MembersToIgnore = dc.DistinctConfig.PropertyNameExceptions;
+            comparer.Config.MembersToIgnore = dc.ComparisonConfig.PropertyNameExceptions;
 
             // Removes the CustomData to be ignored.
             var bhomobj1 = (obj1Copy as IBHoMObject);
@@ -70,13 +70,13 @@ namespace BH.Engine.Diffing
 
             if (bhomobj1 != null)
             {
-                dc.DistinctConfig.CustomdataKeysExceptions.ForEach(k => bhomobj1.CustomData.Remove(k));
+                dc.ComparisonConfig.CustomdataKeysExceptions.ForEach(k => bhomobj1.CustomData.Remove(k));
                 obj1Copy = bhomobj1;
             }
 
             if (bhomobj2 != null)
             {
-                dc.DistinctConfig.CustomdataKeysExceptions.ForEach(k => bhomobj2.CustomData.Remove(k));
+                dc.ComparisonConfig.CustomdataKeysExceptions.ForEach(k => bhomobj2.CustomData.Remove(k));
                 obj2Copy = bhomobj2;
             }
 
@@ -108,7 +108,7 @@ namespace BH.Engine.Diffing
                     propertyName = splittedName.FirstOrDefault() + $"['{keyName}']." + splittedName.Last();
                 }
 
-                if (dc.DistinctConfig.PropertyNameExceptions.Any() && !dc.DistinctConfig.PropertyNameExceptions.Contains(difference.PropertyName))
+                if (dc.ComparisonConfig.PropertyNameExceptions.Any() && !dc.ComparisonConfig.PropertyNameExceptions.Contains(difference.PropertyName))
                     dict[propertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
 

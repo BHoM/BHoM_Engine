@@ -40,13 +40,13 @@ namespace BH.Engine.Diffing
     public static partial class Modify
     {
         [Description("Clones the IBHoMObjects, computes their hash and stores it in a HashFragment.")]
-        public static List<T> SetHashFragment<T>(this IEnumerable<T> objs, DistinctConfig distinctConfig = null) where T : IBHoMObject
+        public static List<T> SetHashFragment<T>(this IEnumerable<T> objs, ComparisonConfig distinctConfig = null) where T : IBHoMObject
         {
             // Clone the current objects to preserve immutability
             List<T> objs_cloned = new List<T>();
 
             // Set configurations if diffConfig is null
-            distinctConfig = distinctConfig == null ? new DistinctConfig() : distinctConfig;
+            distinctConfig = distinctConfig == null ? new ComparisonConfig() : distinctConfig;
 
             // Calculate and set the object hashes
             foreach (var obj in objs)
@@ -56,13 +56,13 @@ namespace BH.Engine.Diffing
         }
 
         [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment.")]
-        public static T SetHashFragment<T>(T obj, DistinctConfig distinctConfig = null) where T : IBHoMObject
+        public static T SetHashFragment<T>(T obj, ComparisonConfig distinctConfig = null) where T : IBHoMObject
         {
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
 
             // Set configurations if diffConfig is null
-            distinctConfig = distinctConfig == null ? new DistinctConfig() : distinctConfig;
+            distinctConfig = distinctConfig == null ? new ComparisonConfig() : distinctConfig;
 
             // Calculate and set the object hashes
             string hash = obj_cloned.Hash(distinctConfig);

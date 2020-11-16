@@ -43,7 +43,7 @@ namespace BH.Engine.Diffing
         [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
         [Input("distinctConfig", "Settings to determine the uniqueness of an Object.")]
         [Input("useExistingHash", "If true, if objects already have a HashFragment, use that. If false, recompute the hash for all objects.")]
-        public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects, DistinctConfig distinctConfig = null, bool useExistingHash = true) where T : IBHoMObject
+        public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects, ComparisonConfig distinctConfig = null, bool useExistingHash = true) where T : IBHoMObject
         {
             return objects.GroupBy(obj =>
             {

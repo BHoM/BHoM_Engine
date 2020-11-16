@@ -16,15 +16,15 @@ namespace BH.Engine.Analytical
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Create a simple DistinctConfig.")]
+        [Description("Create a simple ComparisonConfig.")]
         [Input("numericTolerance", "Tolerance used to determine numerical differences." +
             "\nDefaults to Tolerance.Distance (1e-6).")]
         [Input("propertyNamesToConsider", "By default, all the properties of the objects are considered in determining uniqueness." +
             "\nHere you can specify a list of property names. Only the properties with a name matching any of this list will be considered." +
             "\nE.g., if you input 'Name' only the differences in terms of name will be returned.")]
-        public static DistinctConfig DistinctConfig(double numericTolerance = oM.Geometry.Tolerance.Distance, List<string> propertyNamesToConsider = null)
+        public static ComparisonConfig ComparisonConfig(double numericTolerance = oM.Geometry.Tolerance.Distance, List<string> propertyNamesToConsider = null)
         {
-            DistinctConfig distinctConfig = new DistinctConfig()
+            ComparisonConfig distinctConfig = new ComparisonConfig()
             {
                 NumericTolerance = numericTolerance,
                 PropertyNamesToConsider = propertyNamesToConsider ?? new List<string>(),

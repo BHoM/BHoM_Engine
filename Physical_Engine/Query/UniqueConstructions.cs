@@ -44,7 +44,7 @@ namespace BH.Engine.Physical
         [Output("uniqueConstructions", "A collection of unique Construction objects")]
         public static List<Construction> UniqueConstructions(this List<Construction> constructions, bool includeConstructionName = false)
         {
-            DistinctConfig dc = new DistinctConfig()
+            ComparisonConfig dc = new ComparisonConfig()
             {
                 PropertyNameExceptions = new List<string>
                     {

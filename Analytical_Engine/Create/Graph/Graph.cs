@@ -49,7 +49,7 @@ namespace BH.Engine.Analytical
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
         [Input("distinctConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities, DistinctConfig distinctConfig = null)
+        public static Graph Graph(List<IBHoMObject> entities, ComparisonConfig distinctConfig = null)
         {
             return Graph(entities, new List<IRelation>(), distinctConfig);
         }
@@ -60,7 +60,7 @@ namespace BH.Engine.Analytical
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
         [Input("distinctConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IRelation> relations, DistinctConfig distinctConfig = null)
+        public static Graph Graph(List<IRelation> relations, ComparisonConfig distinctConfig = null)
         {
             return Graph(new List<IBHoMObject>(), relations, distinctConfig);
         }
@@ -72,7 +72,7 @@ namespace BH.Engine.Analytical
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
         [Input("distinctConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, DistinctConfig distinctConfig = null)
+        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, ComparisonConfig distinctConfig = null)
         {
             Graph graph = new Graph();
 
