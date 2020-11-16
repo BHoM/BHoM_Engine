@@ -81,7 +81,7 @@ namespace BH.Engine.Spatial
 
             foreach (IElement1D e1D in elements1D)
             {
-                isFullyOnLevel = isFullyOnLevel && IsFullyOnLevel(e1D, level, maxDistance);
+                isFullyOnLevel &= IsFullyOnLevel(e1D, level, maxDistance);
             }
             
             return isFullyOnLevel;
