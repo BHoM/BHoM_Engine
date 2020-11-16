@@ -78,8 +78,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\PlumbingFixtureWaterDemandPerDay.cs" />
-    <Compile Include="Create\CoolingCoil.cs" />
-    <Compile Include="Create\ElectricalConnector.cs" />
     <Compile Include="Create\Elements\Duct.cs" />
     <Compile Include="Create\Elements\CableTraySectionProperty.cs" />
     <Compile Include="Create\Elements\DuctSectionProperty.cs" />
@@ -88,13 +86,6 @@
     <Compile Include="Create\Elements\SectionProfile.cs" />
     <Compile Include="Create\Elements\WireSegment.cs" />
     <Compile Include="Create\Elements\WireSectionProperty.cs" />
-    <Compile Include="Create\EnergyWheel.cs" />
-    <Compile Include="Create\Fan.cs" />
-    <Compile Include="Create\FanCoilUnit.cs" />
-    <Compile Include="Create\Filter.cs" />
-    <Compile Include="Create\GeometryFragment.cs" />
-    <Compile Include="Create\HeatingCoil.cs" />
-    <Compile Include="Create\IdentityFragment.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Centreline.cs" />
