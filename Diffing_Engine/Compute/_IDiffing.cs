@@ -106,7 +106,7 @@ namespace BH.Engine.Diffing
                 if (diffingType == DiffingType.CustomDataId && !string.IsNullOrWhiteSpace(dc.CustomDataKey))
                     return DiffingError(diffingType);
 
-                if (bHoMObjects_past.Count() == pastObjs.Count() && bHoMObjects_following.Count() == followingObjs.Count())
+                if (!string.IsNullOrWhiteSpace(dc.CustomDataKey) && bHoMObjects_past.Count() == pastObjs.Count() && bHoMObjects_following.Count() == followingObjs.Count())
                 {
                     BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithCustomId)}'.");
                     return DiffWithCustomId(bHoMObjects_past, bHoMObjects_following, dc.CustomDataKey, dc);

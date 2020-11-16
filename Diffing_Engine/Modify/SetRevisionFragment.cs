@@ -41,18 +41,18 @@ namespace BH.Engine.Diffing
     {
         [Description("Clones the IBHoMObjects, computes their hash and stores it in a RevisionFragment. " +
             "If the object already has a RevisionFragment, it computes the current one and keeps the old one in the `previousHash` of the RevisionFragment.")]
-        public static List<T> SetRevisionFragment<T>(this IEnumerable<T> objs, DiffingConfig diffConfig = null) where T : IBHoMObject
+        public static List<T> SetRevisionFragment<T>(this IEnumerable<T> objs, DiffingConfig DiffingConfig = null) where T : IBHoMObject
         {
             // Clone the current objects to preserve immutability
             List<T> objs_cloned = new List<T>();
 
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffingConfig() : diffConfig;
+            // Set configurations if DiffingConfig is null
+            DiffingConfig = DiffingConfig == null ? new DiffingConfig() : DiffingConfig;
 
             // Calculate and set the object hashes
             foreach (var obj in objs)
             {
-                objs_cloned.Add(SetRevisionFragment(obj, diffConfig));
+                objs_cloned.Add(SetRevisionFragment(obj, DiffingConfig));
             }
 
             return objs_cloned;
@@ -60,16 +60,16 @@ namespace BH.Engine.Diffing
 
         [Description("Clones the IBHoMObject, computes their hash and stores it in a RevisionFragment. " +
             "If the object already has a RevisionFragment, it computes the current one and keeps the old one in the `previousHash` of the RevisionFragment.")]
-        public static T SetRevisionFragment<T>(T obj, DiffingConfig diffConfig = null) where T : IBHoMObject
+        public static T SetRevisionFragment<T>(T obj, DiffingConfig DiffingConfig = null) where T : IBHoMObject
         {
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
 
-            // Set configurations if diffConfig is null
-            diffConfig = diffConfig == null ? new DiffingConfig() : diffConfig;
+            // Set configurations if DiffingConfig is null
+            DiffingConfig = DiffingConfig == null ? new DiffingConfig() : DiffingConfig;
 
             // Calculate and set the object hashes
-            string hash = obj_cloned.Hash(diffConfig.DistinctConfig);
+            string hash = obj_cloned.Hash(DiffingConfig.ComparisonConfig);
 
             RevisionFragment existingFragm = obj_cloned.RevisionFragment();
 

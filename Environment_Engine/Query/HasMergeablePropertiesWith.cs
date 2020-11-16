@@ -58,7 +58,7 @@ namespace BH.Engine.Environment
         {
             DiffingConfig config = new DiffingConfig()
             {
-                DistinctConfig = new DistinctConfig()
+                ComparisonConfig = new ComparisonConfig()
                 {
                     PropertyNameExceptions = new List<string>
                     {
@@ -84,7 +84,7 @@ namespace BH.Engine.Environment
         {
             DiffingConfig config = new DiffingConfig()
             {
-                DistinctConfig = new DistinctConfig()
+                ComparisonConfig = new ComparisonConfig()
                 {
                     PropertyNameExceptions = new List<string>
                     {
@@ -119,7 +119,7 @@ namespace BH.Engine.Environment
         {
             DiffingConfig config = new DiffingConfig()
             {
-                DistinctConfig = new DistinctConfig()
+                ComparisonConfig = new ComparisonConfig()
                 {
                     PropertyNameExceptions = new List<string>
                     {

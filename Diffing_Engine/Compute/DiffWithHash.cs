@@ -69,7 +69,7 @@ namespace BH.Engine.Diffing
 
             // Compute the "Diffing" by means of a VennDiagram.
             // Hashes are computed in the DiffingHashComparer, once per each object (the hash is stored in a hashFragment).
-            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects_cloned, currentObjects_cloned, new HashComparer<object>(dc.DistinctConfig, true));
+            VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects_cloned, currentObjects_cloned, new HashComparer<object>(dc.ComparisonConfig, true));
             
             return new Diff(vd.OnlySet2, vd.OnlySet1, null, dc, null, vd.Intersection);
         }

@@ -59,7 +59,7 @@ namespace BH.Engine.Diffing
             {
                 EnablePropertyDiffing = enablePropertyDiffing,
                 IncludeUnchangedObjects = storeUnchangedObjects,
-                DistinctConfig = new DistinctConfig()
+                ComparisonConfig = new ComparisonConfig()
                 {
                     PropertyNamesToConsider = propertyNamesToConsider,
                     PropertyNameExceptions = propertiesToIgnore,

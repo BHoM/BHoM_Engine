@@ -46,12 +46,14 @@ namespace BH.Engine.Base
 
         [Description("Computes a Hash code for the iObject. The hash uniquely represents an object's state based on its combined properties and their values.")]
         [Input("iObj", "iObject the hash code should be calculated for.")]
-        public static string Hash(this IObject iObj, DistinctConfig distinctConfig = null)
+        public static string Hash(this IObject iObj, ComparisonConfig distinctConfig = null)
         {
-            // Make sure to clone for immutability, and always have a HashConfig.
-            DistinctConfig hc = distinctConfig == null ? new DistinctConfig() : distinctConfig.DeepClone();
+            // ------ SET UP OF CONFIGURATION ------
 
-            // Make sure that "BHoM_Guid" is added to the propertyNameExceptions of the HashConfig.
+            // Make sure we always have a config object. Clone for immutability.
+            ComparisonConfig hc = distinctConfig == null ? new ComparisonConfig() : distinctConfig.DeepClone();
+
+            // Make sure that "BHoM_Guid" is added to the propertyNameExceptions of the config.
             hc.PropertyNameExceptions = hc.PropertyNameExceptions ?? new List<string>();
             if (!hc.PropertyNameExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
                 hc.PropertyNameExceptions.Add(nameof(BHoMObject.BHoM_Guid));
@@ -68,24 +70,30 @@ namespace BH.Engine.Base
                 hc.PropertyNameExceptions.AddRange(exceptions);
             }
 
+            // ----- SET UP OF INPUT OBJECT -----
+
+            // Copy the object for immutability
+            IObject iObj_copy = iObj.ShallowClone();
+
             // Any HashFragment present on the object must not be considered when computing the Hash. Remove if present.
-            IBHoMObject bhomobj = iObj as IBHoMObject;
+            IBHoMObject bhomobj = iObj_copy as IBHoMObject;
             if (bhomobj != null)
             {
-                bhomobj = BH.Engine.Base.Query.DeepClone(iObj) as IBHoMObject;
                 List<IHashFragment> hashFragments = bhomobj.GetAllFragments(typeof(IHashFragment)).OfType<IHashFragment>().ToList();
                 hashFragments.ForEach(f => bhomobj.Fragments.Remove(f.GetType()));
+                iObj_copy = bhomobj;
             }
 
+            // ----- HASH -----
+
             // Compute the defining string.
-            string hashString = DefiningString(iObj, hc, fractionalDigits, 0);
+            string hashString = DefiningString(iObj_copy, hc, fractionalDigits, 0);
 
             if (string.IsNullOrWhiteSpace(hashString))
                 throw new Exception("Error computing the defining string of the object.");
 
             // Return the SHA256 hash of the defining string.
             return SHA256Hash(hashString);
-
         }
 
         /***************************************************/
@@ -114,7 +122,7 @@ namespace BH.Engine.Base
         [Input("hc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
         [Input("propertyPath", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
-        private static string DefiningString(object obj, DistinctConfig dc, int fractionalDigits, int nestingLevel, string propertyPath = null)
+        private static string DefiningString(object obj, ComparisonConfig dc, int fractionalDigits, int nestingLevel, string propertyPath = null)
         {
             string composedString = "";
             string tabs = new String('\t', nestingLevel);

@@ -49,14 +49,14 @@ namespace BH.Engine.Diffing
         public bool StoreHash { get; set; } = false;
 
         [Description("If the objects are IObjects, computes the BHoM Hash using these configurations.")]
-        public DistinctConfig DistinctConfig { get; set; } = new DistinctConfig();
+        public ComparisonConfig ComparisonConfig { get; set; } = new ComparisonConfig();
 
         [Input("distinctConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
         [Input("storeHash", "If true, stores the computed hash for input BHoMObjects as a new HashFragment.")]
-        public HashComparer(DistinctConfig distinctConfig = null, bool storeHash = false)
+        public HashComparer(ComparisonConfig distinctConfig = null, bool storeHash = false)
         {
             if (distinctConfig != null)
-                DistinctConfig = distinctConfig;
+                ComparisonConfig = distinctConfig;
 
             StoreHash = storeHash;
         }
@@ -103,7 +103,7 @@ namespace BH.Engine.Diffing
             IObject iObj = obj as IObject;
 
             if (iObj != null)
-                return iObj.Hash(DistinctConfig).GetHashCode();
+                return iObj.Hash(ComparisonConfig).GetHashCode();
 
             return obj.GetHashCode();
         }
