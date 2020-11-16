@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Engine.Architecture.Theatron
 {
@@ -43,9 +44,9 @@ namespace BH.Engine.Architecture.Theatron
             if (direction.Z != 0) direction.Z = 0;
             return new ProfileOrigin {
 
-                Origin = origin.Clone(),
+                Origin = origin.ShallowClone(),
 
-                Direction = direction.Clone(),
+                Direction = direction.ShallowClone(),
 
             };
 

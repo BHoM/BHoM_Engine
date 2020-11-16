@@ -66,7 +66,7 @@ namespace BH.Engine.Architecture.Theatron
         //this should be a modify method
         public static TierProfile TransformProfile(TierProfile originalSection, Vector scale, Point source, Point target, double angle)
         {
-            TierProfile transformedTier = (TierProfile)originalSection.DeepClone();
+            TierProfile transformedTier = originalSection.DeepClone();
             var xScale = Geometry.Create.ScaleMatrix(source, scale);
             var xRotate = Geometry.Create.RotationMatrix(source, Vector.ZAxis, angle);
             var xTrans = Geometry.Create.TranslationMatrix(target-source);
