@@ -113,7 +113,10 @@ namespace BH.Engine.Spatial
             perimeter.Add(new Line { Start = p, End = p = p + yAxis * (-height + rightOutstandThickness) });
             perimeter.Add(new Line { Start = p, End = p = p + xAxis * (-webThickness) });
 
-            return perimeter;
+            Point centroid = perimeter.IJoin().Centroid();
+            Vector translation = Point.Origin - centroid;
+
+            return perimeter.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/

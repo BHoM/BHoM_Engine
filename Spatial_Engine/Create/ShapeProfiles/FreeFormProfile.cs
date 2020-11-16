@@ -104,6 +104,8 @@ namespace BH.Engine.Spatial
                 }
             }
 
+            bool couldCentre = false;
+
             if (!result.Any(x => x.ISubParts().Any(y => y is NurbsCurve)))
             {
                 // Join the curves
@@ -136,12 +138,28 @@ namespace BH.Engine.Spatial
                     }
                     if (intersects)
                         Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
+
+                    try
+                    {
+                        //Try centering the curves around the origin;
+                        List<List<ICurve>> curves = result.ToList().IJoin().Cast<ICurve>().ToList().DistributeOutlines();
+                        Point centroid = curves.Select(x => x[0]).Centroid(curves.SelectMany(x => x.Skip(1)));
+                        Vector tranlation = Point.Origin - centroid;
+                        result = result.Select(x => x.ITranslate(tranlation)).ToList();
+                        couldCentre = true;
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
                 }
                 // Is SelfInteersecting
                 if (joinedCurves.Any(x => Geometry.Query.IsSelfIntersecting(x)))
                     Engine.Reflection.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
-
             }
+
+            if (!couldCentre)
+                Engine.Reflection.Compute.RecordWarning("Failed to align the centroid of the provided edgecurve with the global origin.");
 
             return new FreeFormProfile(result);
         }

@@ -25,6 +25,7 @@ using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Loads;
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -676,7 +677,7 @@ namespace BH.Engine.Structure
 
         private static List<List<ICurve>> SubElementBoundaries(Panel element)
         {
-            return new List<List<ICurve>> { element.AllEdgeCurves() };
+            return new List<List<ICurve>> { element.ElementCurves() };
         }
 
         /***************************************************/
