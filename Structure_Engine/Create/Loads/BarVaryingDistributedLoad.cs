@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (relativePositions && startPosition < 0 || startPosition > 1 || endPosition < 0 || endPosition > 1)
+            if (relativePositions && (startPosition < 0 || startPosition > 1 || endPosition < 0 || endPosition > 1))
             {
                 Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive) for relative positions set to true.");
                 return null;
@@ -109,7 +109,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Create.BarVaryingDistributedLoad(BH.oM.Structure.Loads.Loadcase, System.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.Bar>, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Structure.Loads.LoadAxis, System.Boolean, System.String)")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Create.BarVaryingDistributedLoad(BH.oM.Structure.Loads.Loadcase, BH.oM.Base.BHoMGroup<BH.oM.Structure.Elements.Bar>, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Structure.Loads.LoadAxis, System.Boolean, System.String)")]
         [PreviousInputNames("startToStartDistance", "distanceFromA")]
         [PreviousInputNames("endToEndDistance", "distanceFromB")]
         [PreviousInputNames("forceAtStart", "forceA")]
@@ -157,8 +157,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [PreviousVersion("4.0", "BH.Engine.Structure.Create.BarVaryingDistributedLoad(BH.oM.Structure.Loads.Loadcase, System.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.Bar>, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Structure.Loads.LoadAxis, System.Boolean, System.String)")]
-        [PreviousInputNames("startToStartDistance", "distanceFromA")]
-        [PreviousInputNames("endToEndDistance", "distanceFromB")]
+        [PreviousInputNames("startToStartDistance", "distFromA")]
+        [PreviousInputNames("endToEndDistance", "distFromB")]
         [PreviousInputNames("forceAtStart", "forceA")]
         [PreviousInputNames("forceAtEnd", "forceB")]
         [PreviousInputNames("momentAtStart", "momentA")]
@@ -195,7 +195,7 @@ namespace BH.Engine.Structure
         private static Dictionary<double, List<Bar>> GroupBarsByLength(this IEnumerable<Bar> bars, double tolerance)
         {
             //Check that bars have valid geometry
-            bars = bars.Where(x => x != null && x.StartNode != null && x.EndNode == null && x.StartNode.Position == null && x.EndNode.Position == null);
+            bars = bars.Where(x => x != null && x.StartNode != null && x.EndNode != null && x.StartNode.Position != null && x.EndNode.Position != null);
 
             Dictionary<double, List<Bar>> dict = new Dictionary<double, List<Bar>>();
             foreach (var group in bars.GroupBy(x => (int)Math.Round(x.Length() / tolerance)))
