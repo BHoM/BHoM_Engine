@@ -45,9 +45,6 @@ namespace BH.Engine.Diffing
             // Clone the current objects to preserve immutability
             List<T> objs_cloned = new List<T>();
 
-            // Set configurations if diffConfig is null
-            distinctConfig = distinctConfig == null ? new ComparisonConfig() : distinctConfig;
-
             // Calculate and set the object hashes
             foreach (var obj in objs)
                 objs_cloned.Add(SetHashFragment(obj, distinctConfig));
@@ -60,9 +57,6 @@ namespace BH.Engine.Diffing
         {
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
-
-            // Set configurations if diffConfig is null
-            distinctConfig = distinctConfig == null ? new ComparisonConfig() : distinctConfig;
 
             // Calculate and set the object hashes
             string hash = obj_cloned.Hash(distinctConfig);
