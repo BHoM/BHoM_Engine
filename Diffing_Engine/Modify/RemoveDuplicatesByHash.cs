@@ -41,9 +41,9 @@ namespace BH.Engine.Diffing
     {
         [Description("Removes duplicates from a collection of objects. The comparison is made using their Hash. If hash is missing, it is computed.")]
         [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        [Input("distinctConfig", "Settings to determine the uniqueness of an Object.")]
+        [Input("comparisonConfig", "Settings to determine the uniqueness of an Object.")]
         [Input("useExistingHash", "If true, if objects already have a HashFragment, use that. If false, recompute the hash for all objects.")]
-        public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects, ComparisonConfig distinctConfig = null, bool useExistingHash = true) where T : IBHoMObject
+        public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects, ComparisonConfig comparisonConfig = null, bool useExistingHash = true) where T : IBHoMObject
         {
             return objects.GroupBy(obj =>
             {
@@ -53,7 +53,7 @@ namespace BH.Engine.Diffing
                     if (!string.IsNullOrWhiteSpace(existingHash))
                         return existingHash;
                 }
-                return obj.Hash(distinctConfig);
+                return obj.Hash(comparisonConfig);
             }
             ).Select(gr => gr.First()).ToList();
         }

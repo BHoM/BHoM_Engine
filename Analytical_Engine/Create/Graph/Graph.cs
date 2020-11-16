@@ -47,22 +47,22 @@ namespace BH.Engine.Analytical
 
         [Description("Create a graph from a collection of IBHoMObjects, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
-        [Input("distinctConfig", "Settings to determine the uniqueness of entities.")]
+        [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities, ComparisonConfig distinctConfig = null)
+        public static Graph Graph(List<IBHoMObject> entities, ComparisonConfig comparisonConfig = null)
         {
-            return Graph(entities, new List<IRelation>(), distinctConfig);
+            return Graph(entities, new List<IRelation>(), comparisonConfig);
         }
 
         /***************************************************/
 
         [Description("Create a graph from a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("distinctConfig", "Settings to determine the uniqueness of entities.")]
+        [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IRelation> relations, ComparisonConfig distinctConfig = null)
+        public static Graph Graph(List<IRelation> relations, ComparisonConfig comparisonConfig = null)
         {
-            return Graph(new List<IBHoMObject>(), relations, distinctConfig);
+            return Graph(new List<IBHoMObject>(), relations, comparisonConfig);
         }
 
         /***************************************************/
@@ -70,9 +70,9 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of IBHoMObjects, a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "Optional collection of IBHoMOBjects to use as Graph entities. Entities can include DependencyFragments to determine the Graph Relations.")]
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("distinctConfig", "Settings to determine the uniqueness of entities.")]
+        [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, ComparisonConfig distinctConfig = null)
+        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, ComparisonConfig comparisonConfig = null)
         {
             Graph graph = new Graph();
 
@@ -88,7 +88,7 @@ namespace BH.Engine.Analytical
                 return graph;
             }
 
-            m_MatchedObjects = Query.DistinctEntities(clonedEntities, distinctConfig);
+            m_MatchedObjects = Query.DistinctEntities(clonedEntities, comparisonConfig);
 
             //convert dependency fragments attached to entities and add to relations
             clonedEntities.ForEach(ent => clonedRelations.AddRange(ent.ToRelation())); 

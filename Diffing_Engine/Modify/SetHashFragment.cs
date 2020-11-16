@@ -40,26 +40,26 @@ namespace BH.Engine.Diffing
     public static partial class Modify
     {
         [Description("Clones the IBHoMObjects, computes their hash and stores it in a HashFragment.")]
-        public static List<T> SetHashFragment<T>(this IEnumerable<T> objs, ComparisonConfig distinctConfig = null) where T : IBHoMObject
+        public static List<T> SetHashFragment<T>(this IEnumerable<T> objs, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
         {
             // Clone the current objects to preserve immutability
             List<T> objs_cloned = new List<T>();
 
             // Calculate and set the object hashes
             foreach (var obj in objs)
-                objs_cloned.Add(SetHashFragment(obj, distinctConfig));
+                objs_cloned.Add(SetHashFragment(obj, comparisonConfig));
 
             return objs_cloned;
         }
 
         [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment.")]
-        public static T SetHashFragment<T>(T obj, ComparisonConfig distinctConfig = null) where T : IBHoMObject
+        public static T SetHashFragment<T>(T obj, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
         {
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
 
             // Calculate and set the object hashes
-            string hash = obj_cloned.Hash(distinctConfig);
+            string hash = obj_cloned.Hash(comparisonConfig);
             obj_cloned.Fragments.AddOrReplace(new HashFragment() { Hash = hash });
 
             return obj_cloned;
