@@ -79,8 +79,8 @@ namespace BH.Engine.Spatial
             List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness, 0, 0, weldSize);
 
             Point centroid = curves.IJoin().Centroid();
-            Vector tranlation = Point.Origin - centroid;
-            curves = curves.Select(x => x.ITranslate(tranlation)).ToList();
+            Vector translation = Point.Origin - centroid;
+            curves = curves.Select(x => x.ITranslate(translation)).ToList();
 
             return new FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }

@@ -110,12 +110,12 @@ namespace BH.Engine.Spatial
             }
 
             Point centroid = externalEdges.IJoin().Centroid(internalEdges.IJoin());
-            Vector tranlation = Point.Origin - centroid;
+            Vector translation = Point.Origin - centroid;
 
             group.AddRange(externalEdges);
             group.AddRange(internalEdges);
 
-            return group.Select(x => x.ITranslate(tranlation)).ToList();
+            return group.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/

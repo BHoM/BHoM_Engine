@@ -113,9 +113,9 @@ namespace BH.Engine.Spatial
             perimeter.Add(new Line { Start = origin + xAxis * (-wt / 2), End = origin + xAxis * (wt / 2) });
 
             Point centroid = perimeter.IJoin().Centroid();
-            Vector tranlation = Point.Origin - centroid;
+            Vector translation = Point.Origin - centroid;
 
-            return perimeter.Select(x => x.ITranslate(tranlation)).ToList();
+            return perimeter.Select(x => x.ITranslate(translation)).ToList();
         }
 
 
