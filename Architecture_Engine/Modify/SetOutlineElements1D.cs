@@ -28,6 +28,7 @@ using System.Linq;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Architecture
 {
@@ -43,7 +44,7 @@ namespace BH.Engine.Architecture
         [Output("room", "The updated Architecture Room")]
         public static Room SetOutlineElements1D(this Room room, List<IElement1D> outlineElements1D)
         {
-            Room r = room.GetShallowClone() as Room;
+            Room r = room.ShallowClone() as Room;
             r.Perimeter = BH.Engine.Geometry.Compute.IJoin(outlineElements1D.Cast<ICurve>().ToList())[0];
             return r;
         }
