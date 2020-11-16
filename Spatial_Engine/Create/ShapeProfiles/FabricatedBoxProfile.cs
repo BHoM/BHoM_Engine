@@ -108,11 +108,11 @@ namespace BH.Engine.Spatial
             innerBox.Add(new Line { Start = q2 + wx, End = q1 - wx });
 
             Point centroid = box.IJoin().Centroid(innerBox.IJoin());
-            Vector tranlation = Point.Origin - centroid;
+            Vector translation = Point.Origin - centroid;
 
             box.AddRange(innerBox);
 
-            return box.Select(x => x.ITranslate(tranlation)).ToList();
+            return box.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/

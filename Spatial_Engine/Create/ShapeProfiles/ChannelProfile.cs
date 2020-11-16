@@ -108,8 +108,8 @@ namespace BH.Engine.Spatial
             }
 
             Point centroid = edges.IJoin().Centroid();
-            Vector tranlation = Point.Origin - centroid;
-            return edges.Select(x => x.ITranslate(tranlation)).ToList();
+            Vector translation = Point.Origin - centroid;
+            return edges.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/

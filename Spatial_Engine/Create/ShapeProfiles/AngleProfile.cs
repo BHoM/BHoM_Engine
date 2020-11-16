@@ -115,11 +115,10 @@ namespace BH.Engine.Spatial
             if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
             perimeter.Add(new Line { Start = p, End = p = p - xAxis * (webThickness - toeRadius) });
             perimeter.Add(new Line { Start = p, End = p = p - yAxis * (depth) });
-            List<ICurve> translatedCurves = new List<ICurve>();
 
             Point centroid = perimeter.IJoin().Centroid();
-            Vector tranlation = Point.Origin - centroid;
-            return perimeter.Select(x => x.ITranslate(tranlation)).ToList();
+            Vector translation = Point.Origin - centroid;
+            return perimeter.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/
