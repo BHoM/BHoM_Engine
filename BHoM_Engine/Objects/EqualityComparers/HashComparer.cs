@@ -22,8 +22,6 @@
 
 using BH.oM.Base;
 using BH.Engine;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,14 +75,14 @@ namespace BH.Engine.Diffing
 
                 if (xbHoM != null && ybHoM != null)
                 {
-                    xHash = xbHoM.Hash();
-                    yHash = ybHoM.Hash();
+                    xHash = xbHoM.Hash(ComparisonConfig);
+                    yHash = ybHoM.Hash(ComparisonConfig);
 
                     if (xbHoM is IBHoMObject && StoreHash)
-                        x = (T)Modify.SetHashFragment(xbHoM as IBHoMObject, xHash);
+                        x = (T)SetHashFragment(xbHoM as IBHoMObject, xHash);
 
                     if (ybHoM is IBHoMObject && StoreHash)
-                        y = (T)Modify.SetHashFragment(ybHoM as IBHoMObject, yHash);
+                        y = (T)SetHashFragment(ybHoM as IBHoMObject, yHash);
 
                     return xHash == yHash;
                 }
@@ -106,6 +104,15 @@ namespace BH.Engine.Diffing
                 return iObj.Hash(ComparisonConfig).GetHashCode();
 
             return obj.GetHashCode();
+        }
+
+        /***************************************************/
+
+        private Y SetHashFragment<Y>(Y obj, string hash) where Y : IBHoMObject
+        {
+            obj.Fragments.AddOrReplace(new HashFragment() { Hash = hash });
+
+            return obj;
         }
     }
 }

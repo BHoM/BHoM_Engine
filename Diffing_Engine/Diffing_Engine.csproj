@@ -75,7 +75,6 @@
     <Compile Include="Create\StreamPointer.cs" />
     <Compile Include="Modify\CombineDiffs.cs" />
     <Compile Include="Modify\SetHashFragment.cs" />
-    <Compile Include="Objects\EqualityComparers\HashComparer.cs" />
     <Compile Include="Create\Delta.cs" />
     <Compile Include="Create\DiffConfig.cs" />
     <Compile Include="Create\Revision.cs" />
