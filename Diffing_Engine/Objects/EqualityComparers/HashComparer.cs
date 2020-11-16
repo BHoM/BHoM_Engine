@@ -51,12 +51,12 @@ namespace BH.Engine.Diffing
         [Description("If the objects are IObjects, computes the BHoM Hash using these configurations.")]
         public ComparisonConfig ComparisonConfig { get; set; } = new ComparisonConfig();
 
-        [Input("distinctConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
+        [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
         [Input("storeHash", "If true, stores the computed hash for input BHoMObjects as a new HashFragment.")]
-        public HashComparer(ComparisonConfig distinctConfig = null, bool storeHash = false)
+        public HashComparer(ComparisonConfig comparisonConfig = null, bool storeHash = false)
         {
-            if (distinctConfig != null)
-                ComparisonConfig = distinctConfig;
+            if (comparisonConfig != null)
+                ComparisonConfig = comparisonConfig;
 
             StoreHash = storeHash;
         }
