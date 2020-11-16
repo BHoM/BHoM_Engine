@@ -39,6 +39,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a varying distributed load to be applied to Bar elements.")]
         [InputFromProperty("loadcase")]
         [InputFromProperty("group", "Objects")]
         [InputFromProperty("startPosition")]
@@ -86,6 +87,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a varying distributed load to be applied to Bar elements.")]
         [InputFromProperty("loadcase")]
         [Input("objects", "The collection of Bars the load should be applied to.")]
         [InputFromProperty("startPosition")]
@@ -129,7 +131,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("axis")]
         [InputFromProperty("projected")]
         [Input("name", "The name of the created load.")]
-        [Output("barVarLoad", "The created BarVaryingDistributedLoad.")]
+        [Output("barVarLoad", "The created BarVaryingDistributedLoads with bars grouped by length.")]
         public static List<BarVaryingDistributedLoad> BarVaryingDistributedLoadDistanceBothEnds(Loadcase loadcase, BHoMGroup<Bar> group, bool relativePositions, double startToStartDistance = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endToEndDistance = 0, Vector forceAtEnd = null, Vector momentAtEnd = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "", double groupingTolerance = Tolerance.Distance)
         {
             Dictionary<double, List<Bar>> barGroups = GroupBarsByLength(group.Elements, groupingTolerance);
@@ -176,7 +178,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("axis")]
         [InputFromProperty("projected")]
         [Input("name", "The name of the created load.")]
-        [Output("barVarLoad", "The created BarVaryingDistributedLoad.")]
+        [Output("barVarLoad", "The created BarVaryingDistributedLoads with bars grouped by length.")]
         public static List<BarVaryingDistributedLoad> BarVaryingDistributedLoadDistanceBothEnds(Loadcase loadcase, IEnumerable<Bar> objects, bool relativePositions, double startToStartDistance = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endToEndDistance = 0, Vector forceAtEnd = null, Vector momentAtEnd = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "", double groupingTolerance = Tolerance.Distance)
         {
             return BarVaryingDistributedLoadDistanceBothEnds(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, relativePositions, startToStartDistance, forceAtStart, forceAtEnd, endToEndDistance, forceAtEnd, momentAtEnd, axis, projected, name, groupingTolerance);
