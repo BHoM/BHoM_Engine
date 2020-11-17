@@ -48,8 +48,18 @@ namespace BH.Engine.Base
             "\nYou can change how the hash is computed by changing the settings in the ComparisonConfig.")]
         [Input("iObj", "iObject the hash code should be calculated for.")]
         [Input("comparisonConfig", "Configure how the hash is computed.")]
-        public static string Hash(this IObject iObj, ComparisonConfig comparisonConfig = null)
+        [Input("hashFromFragment", "If true, if the object is a BHoMObject storing a HashFragment, retrieve the hash from it instead of computing the hash.")]
+        public static string Hash(this IObject iObj, ComparisonConfig comparisonConfig = null, bool hashFromFragment = false)
         {
+            if (hashFromFragment && iObj is IBHoMObject)
+            {
+                // Instead of computing the Hash, first tryGet the hash in HashFragment
+                string hash = (iObj as IBHoMObject).FindFragment<HashFragment>()?.Hash;
+
+                if (!string.IsNullOrWhiteSpace(hash))
+                    return hash;
+            }
+
             // ------ SET UP OF CONFIGURATION ------
 
             // Make sure we always have a config object. Clone for immutability.

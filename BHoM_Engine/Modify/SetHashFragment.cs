@@ -20,29 +20,27 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
-using BH.Engine.Serialiser;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-using BH.Engine.Base;
+using BH.Engine.Serialiser;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Base
 {
     public static partial class Modify
     {
-        [Description("Clones the IBHoMObjects, computes their hash and stores it in a HashFragment.")]
+        [Description("Computes the hash of the input BHoMObjects and stores it in a HashFragment for each of them." +
+            "\nIf the hashFragment already existed, it is replaced.")]
         public static List<T> SetHashFragment<T>(this IEnumerable<T> objs, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
         {
-            // Clone the current objects to preserve immutability
+            // Each object will be cloned to avoid modification by reference.
             List<T> objs_cloned = new List<T>();
 
             // Calculate and set the object hashes
@@ -52,23 +50,21 @@ namespace BH.Engine.Diffing
             return objs_cloned;
         }
 
-        [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment.")]
+        [Description("Computes the hash of the BHoMObject and stores it in a HashFragment." +
+            "\nIf the hashFragment already existed, it is replaced.")]
         public static T SetHashFragment<T>(T obj, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
         {
-            // Clone the current object to preserve immutability
-            T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
-
             // Calculate and set the object hashes
-            string hash = obj_cloned.Hash(comparisonConfig);
-            obj_cloned.Fragments.AddOrReplace(new HashFragment() { Hash = hash });
-
-            return obj_cloned;
+            string hash = obj.Hash(comparisonConfig);
+            
+            return SetHashFragment<T>(obj, hash);
         }
 
-        [Description("Clones the IBHoMObject, computes their hash and stores it in a HashFragment.")]
+        [Description("Clones the IBHoMObject, computes its hash and stores it in a HashFragment." +
+            "\nIf the hashFragment already existed, it is replaced.")]
         public static T SetHashFragment<T>(T obj, string hash) where T : IBHoMObject
         {
-            // Clone the current object to preserve immutability
+            // Clone the current object to avoid modification by reference.
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
 
             obj_cloned.Fragments.AddOrReplace(new HashFragment() { Hash = hash });
