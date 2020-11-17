@@ -39,41 +39,41 @@ namespace BH.Engine.Spatial
         /****  Public Methods                  ****/
         /******************************************/
 
-        [Description("Checks if the geometrical representation of an IElement0D is fully within a set distance from a level elevation.")]
+        [Description("Checks if the geometrical representation of an IElement0D is fully within a set tolerance from a level elevation.")]
         [Input("element0D", "The IElement0D that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
-        [Input("maxDistance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
-        [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of the IElement0D is fully within a set distance from the level elevation.")]
-        public static bool IsFullyOnLevel(this IElement0D element0D, Level level, double maxDistance)
+        [Input("tolerance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
+        [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of the IElement0D is fully within a set tolerance from the level elevation.")]
+        public static bool IsFullyOnLevel(this IElement0D element0D, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             Point position = element0D.IGeometry();
 
-            return Math.Abs(level.Elevation - position.Z) <= maxDistance;
+            return Math.Abs(level.Elevation - position.Z) <= tolerance;
         }
 
         /******************************************/
 
-        [Description("Checks if the geometrical representation of an IElement1D is fully within a set distance from a level elevation.")]
+        [Description("Checks if the geometrical representation of an IElement1D is fully within a set tolerance from a level elevation.")]
         [Input("element1D", "The IElement1D that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
-        [Input("maxDistance", "The maximum distance allowed from the Level elevation for this method to return true.", typeof(Length))]
-        [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of an IElement1D is fully within a set distance from the level elevation.")]
-        public static bool IsFullyOnLevel(this IElement1D element1D, Level level, double maxDistance)
+        [Input("tolerance", "The maximum distance allowed from the Level elevation for this method to return true.", typeof(Length))]
+        [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of an IElement1D is fully within a set tolerance from the level elevation.")]
+        public static bool IsFullyOnLevel(this IElement1D element1D, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             ICurve curve = element1D.IGeometry();
             BoundingBox bBox = curve.IBounds();
 
-            return level.Elevation - maxDistance <= bBox.Min.Z && bBox.Max.Z <= level.Elevation + maxDistance;
+            return level.Elevation - tolerance <= bBox.Min.Z && bBox.Max.Z <= level.Elevation + tolerance;
         }
 
         /******************************************/
 
-        [Description("Checks if the geometrical representation of an IElement2D is fully within a set distance from a level elevation.")]
+        [Description("Checks if the geometrical representation of an IElement2D is fully within a set tolerance from a level elevation.")]
         [Input("element2D", "The IElement2D that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
-        [Input("maxDistance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
-        [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of an IElement2D is fully within a set distance from the level elevation.")]
-        public static bool IsFullyOnLevel(this IElement2D element2D, Level level, double maxDistance)
+        [Input("tolerance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
+        [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of an IElement2D is fully within a set tolerance from the level elevation.")]
+        public static bool IsFullyOnLevel(this IElement2D element2D, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             List<IElement1D> elements1D = element2D.IOutlineElements1D();
 
@@ -81,7 +81,7 @@ namespace BH.Engine.Spatial
 
             foreach (IElement1D e1D in elements1D)
             {
-                isFullyOnLevel &= IsFullyOnLevel(e1D, level, maxDistance);
+                isFullyOnLevel &= IsFullyOnLevel(e1D, level, tolerance);
             }
             
             return isFullyOnLevel;
@@ -91,21 +91,21 @@ namespace BH.Engine.Spatial
         /****   Public Methods - Interfaces    ****/
         /******************************************/
 
-        [Description("Checks if the geometrical representation of an IElement is fully within a set distance from a level elevation.")]
+        [Description("Checks if the geometrical representation of an IElement is fully within a set tolerance from a level elevation.")]
         [Input("element", "The IElement that will be checked for proximity to the Level.")]
         [Input("level", "The Level to use for evaulation.")]
-        [Input("maxDistance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
-        [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of the IElement is fully within a set distance from the level elevation.")]
-        public static bool IIsFullyOnLevel(this IElement element, Level level, double maxDistance)
+        [Input("tolerance", "The maximum distance allowed from the Level for this method to return true.", typeof(Length))]
+        [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of the IElement is fully within a set tolerance from the level elevation.")]
+        public static bool IIsFullyOnLevel(this IElement element, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            return IsFullyOnLevel(element as dynamic, level, maxDistance);
+            return IsFullyOnLevel(element as dynamic, level, tolerance);
         }
 
         /***************************************************/
         /**** Private Fallback Methods                  ****/
         /***************************************************/
 
-        private static bool IsFullyOnLevel(this IElement element, Level level, double maxDistance)
+        private static bool IsFullyOnLevel(this IElement element, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             Reflection.Compute.RecordError($"IsFullyOnLevel is not implemented for IElements of type: {element.GetType().Name}.");
             return false;
