@@ -38,8 +38,8 @@ namespace BH.Engine.Architecture
         [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
         public static Grid SetGeometry(this Grid grid, ICurve curve)
         {
-            Grid clone = grid.GetShallowClone() as Grid;
-            clone.Curve = curve.IClone();
+            Grid clone = grid.ShallowClone() as Grid;
+            clone.Curve = curve.DeepClone();
             return clone;
         }
 
@@ -52,9 +52,9 @@ namespace BH.Engine.Architecture
         [Output("room", "An Architecture Room with an updated geometry")]
         public static Room SetGeometry(this Room room, Point locationPoint = null, ICurve perimeterCurve = null)
         {
-            Room clone = room.DeepClone<Room>();
-            clone.Location = locationPoint == null ? room.Location.DeepClone<Point>() : locationPoint;
-            clone.Perimeter = perimeterCurve == null ? room.Perimeter.DeepClone<ICurve>() : perimeterCurve; 
+            Room clone = room.DeepClone();
+            clone.Location = locationPoint == null ? room.Location.DeepClone() : locationPoint;
+            clone.Perimeter = perimeterCurve == null ? room.Perimeter.DeepClone() : perimeterCurve; 
             return clone;
         }
     }

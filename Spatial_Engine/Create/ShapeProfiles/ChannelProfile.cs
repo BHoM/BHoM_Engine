@@ -107,7 +107,9 @@ namespace BH.Engine.Spatial
                 edges.Add(edges[i].IMirror(new Plane { Origin = oM.Geometry.Point.Origin, Normal = oM.Geometry.Vector.YAxis }));
             }
 
-            return edges;
+            Point centroid = edges.IJoin().Centroid();
+            Vector translation = Point.Origin - centroid;
+            return edges.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/

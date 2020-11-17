@@ -31,6 +31,7 @@ using BH.Engine.Base;
 using BH.oM.Physical.Materials;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Constructions;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -66,6 +67,21 @@ namespace BH.Engine.Physical
                 return null;
             }
             return surface.Construction.IMaterialComposition();
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the Materials a BulkSolid is composed of and in which ratios")]
+        [Input("bulkSolids", "The BulkSolids to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the BulkSolids is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this BulkSolids bulkSolids)
+        {
+            if (bulkSolids.MaterialComposition == null)
+            {
+                Engine.Reflection.Compute.RecordError("The BulkSolids MaterialComposition could not be calculated as no Materials have been assigned.");
+                return null;
+            }
+            return Matter.Create.MaterialComposition(bulkSolids.MaterialComposition.Materials, bulkSolids.MaterialComposition.Ratios);
         }
 
         /******************************************************/

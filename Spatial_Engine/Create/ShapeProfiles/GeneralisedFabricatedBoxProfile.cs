@@ -116,10 +116,13 @@ namespace BH.Engine.Spatial
                 internalEdges.Add(internalEdges[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
             }
 
+            Point centroid = externalEdges.IJoin().Centroid(internalEdges.IJoin());
+            Vector translation = Point.Origin - centroid;
+
             group.AddRange(externalEdges);
             group.AddRange(internalEdges);
 
-            return group;
+            return group.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/
