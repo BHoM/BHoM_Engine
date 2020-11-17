@@ -102,7 +102,8 @@
     <Compile Include="Create\Loads\BarDifferentialTemperatureLoad.cs" />
     <Compile Include="Create\Loads\BarUniformTemperatureLoad.cs" />
     <Compile Include="Create\Loads\BarUniformlyDistributedLoad.cs" />
-    <Compile Include="Create\Loads\BarVaryingDistributedLoad.cs" />
+    <Compile Include="Create\Loads\BarVaryingDistributedLoad\BarVaryingDistributedLoadDistanceBothEnds.cs" />
+    <Compile Include="Create\Loads\BarVaryingDistributedLoad\BarVaryingDistributedLoad.cs" />
     <Compile Include="Create\Loads\ContourLoad.cs" />
     <Compile Include="Create\Loads\GeometricalLineLoad.cs" />
     <Compile Include="Create\Loads\GravityLoad.cs" />
