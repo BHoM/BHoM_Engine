@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Objects\EqualityComparers\HashComparer.cs" />
+    <Compile Include="Query\UniquenessRestrictions.cs" />
     <Compile Include="Query\CanTarget.cs" />
     <Compile Include="Query\Hash.cs" />
     <Compile Include="Create\BHoMGroup.cs" />
@@ -70,6 +70,7 @@
     <Compile Include="Modify\RemoveFragment.cs" />
     <Compile Include="Modify\AddFragment.cs" />
 	<Compile Include="Modify\SetHashFragment.cs" />
+	<Compile Include="Objects\EqualityComparers\HashComparer.cs" />
     <Compile Include="Objects\EqualityComparers\TypeComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMGuidComparer.cs" />
     <Compile Include="Objects\EqualityComparers\BHoMObjectNameComparer.cs" />

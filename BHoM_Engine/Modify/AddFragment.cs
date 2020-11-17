@@ -45,6 +45,14 @@ namespace BH.Engine.Base
                 return null;
             IBHoMObject o = iBHoMObject.DeepClone();
 
+            // Give a warning if the fragment is supposed to be unique but is found on the object
+            List<Type> currentFragmentTypes = iBHoMObject.Fragments.Select(x => x.GetType()).ToList();
+            foreach (Type restriction in fragment.GetType().UniquenessRestrictions())
+            {
+                if (currentFragmentTypes.Any(x => restriction.IsAssignableFrom(x)))
+                    Engine.Reflection.Compute.RecordWarning("There is already a fragment of type " + restriction + " on this object. \nThe Fragment will still be aded but consider reviewing this task as fragments of that type are supposed to be unique.");
+            }
+
             // Make sure this fragment can be added to that object
             if (fragment.CanTarget(iBHoMObject))
             {
