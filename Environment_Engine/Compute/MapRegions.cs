@@ -131,7 +131,10 @@ namespace BH.Engine.Environment
                 }
 
                 foreach (IRegion r in mappedRegionsI)
-                    mappedRegions[x].Remove(r);                
+                {
+                    mappedRegions[x].Remove(r);
+                    regionsNotMatched.Add(r);
+                }
             }
 
             return new Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>>
