@@ -113,7 +113,7 @@ namespace BH.Engine.Structure
 
         [Description("Groups bars by length, within a tolerance.")]
         [Input("bars", "The bars to group.")]
-        [Input("tolerance", "Acceptable difference in length for each group")]
+        [Input("tolerance", "Acceptable difference in length for each group.")]
         [Output("barGroup", "The bars grouped, as a dictionary, with the key being the length and the value being the corresponding bars.")]
         private static Dictionary<double, List<Bar>> GroupBarsByLength(this IEnumerable<Bar> bars, double tolerance)
         {
