@@ -33,7 +33,7 @@ namespace BH.Engine.Spatial
     public static partial class Query
     {
         /******************************************/
-        /****            IProfile              ****/
+        /****          ShapeProfiles           ****/
         /******************************************/
 
         [Description("Returns the thickness of a boxProfile.")]
@@ -54,6 +54,8 @@ namespace BH.Engine.Spatial
             return tubeProfile.Thickness;
         }
 
+        /******************************************/
+        /****            IProfile              ****/
         /******************************************/
 
         [Description("Returns the thickness of a ShapeProfile.")]
