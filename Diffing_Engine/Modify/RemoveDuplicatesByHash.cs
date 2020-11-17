@@ -46,15 +46,7 @@ namespace BH.Engine.Diffing
         public static IEnumerable<T> RemoveDuplicatesByHash<T>(IEnumerable<T> objects, ComparisonConfig comparisonConfig = null, bool useExistingHash = true) where T : IBHoMObject
         {
             return objects.GroupBy(obj =>
-            {
-                if (useExistingHash)
-                {
-                    string existingHash = obj.HashFragment()?.Hash;
-                    if (!string.IsNullOrWhiteSpace(existingHash))
-                        return existingHash;
-                }
-                return obj.Hash(comparisonConfig);
-            }
+                 obj.Hash(comparisonConfig, useExistingHash)
             ).Select(gr => gr.First()).ToList();
         }
     }

@@ -74,7 +74,6 @@
     <Compile Include="Convert\TryParseObjectToGuid.cs" />
     <Compile Include="Create\StreamPointer.cs" />
     <Compile Include="Modify\CombineDiffs.cs" />
-    <Compile Include="Modify\SetHashFragment.cs" />
     <Compile Include="Create\Delta.cs" />
     <Compile Include="Create\DiffConfig.cs" />
     <Compile Include="Create\Revision.cs" />
@@ -84,7 +83,6 @@
     <Compile Include="Query\ListDifferentProperties.cs" />
     <Compile Include="Query\ListModifiedProperties.cs" />
     <Compile Include="Query\DifferentProperties.cs" />
-    <Compile Include="Query\HashFragment.cs" />
     <Compile Include="Query\RevisionFragment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modify\SetHashFragment.cs" />
     <Compile Include="Objects\EqualityComparers\HashComparer.cs" />
     <Compile Include="Query\Hash.cs" />
     <Compile Include="Create\BHoMGroup.cs" />
