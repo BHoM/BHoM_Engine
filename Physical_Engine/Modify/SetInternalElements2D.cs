@@ -27,6 +27,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.oM.Dimensional;
+using BH.Engine.Base;
 
 namespace BH.Engine.Physical
 {
@@ -43,7 +44,7 @@ namespace BH.Engine.Physical
         [Output("surface", "The ISurface with new internal elements.")]
         public static oM.Physical.Elements.ISurface SetInternalElements2D(this oM.Physical.Elements.ISurface surface, List<IElement2D> internalElements2D)
         {
-            oM.Physical.Elements.ISurface pp = surface.GetShallowClone() as oM.Physical.Elements.ISurface;
+            oM.Physical.Elements.ISurface pp = surface.ShallowClone();
             pp.Openings = new List<IOpening>(internalElements2D.Cast<IOpening>().ToList());
             return pp;
         }
