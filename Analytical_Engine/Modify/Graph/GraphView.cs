@@ -37,7 +37,7 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Analytical
 {
-    public static partial class Query 
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -49,7 +49,10 @@ namespace BH.Engine.Analytical
         [Output("graph", "The view of the original Graph.")]
         public static Graph IGraphView(this Graph graph, IView view)
         {
-            return GraphView(graph, view as dynamic);
+            Graph graphView = GraphView(graph, view as dynamic);
+            //ensure we have curves on relations
+            IRelationCurves(graphView, view as dynamic);
+            return graphView;
         }
 
         /***************************************************/
@@ -61,8 +64,12 @@ namespace BH.Engine.Analytical
         private static Graph GraphView(this Graph graph, SpatialView view)
         {
             Graph spatialGraph = graph.DeepClone();
-            spatialGraph.Entities = graph.FilterEntities(typeof(IElement0D)).DeepClone();
-            Modify.IRelationCurves(spatialGraph, view);
+            foreach (IBHoMObject entity in spatialGraph.Entities.Values.ToList())
+            {
+                if(!typeof(IElement0D).IsAssignableFrom(entity.GetType()))
+                    spatialGraph.RemoveEntity(entity.BHoM_Guid);
+            }
+            
             return spatialGraph;
         }
 
@@ -78,7 +85,7 @@ namespace BH.Engine.Analytical
             Graph processGraph = graph.DeepClone();
             foreach (IBHoMObject entity in processGraph.Entities.Values.ToList())
             {
-                ProcessViewFragment viewFragment = entity.FindFragment<ProcessViewFragment>();
+                EntityViewFragment viewFragment = entity.FindFragment<EntityViewFragment>();
                 //if no process view fragment, remove entity
                 if (viewFragment == null)
                     processGraph.RemoveEntity(entity.BHoM_Guid);
@@ -88,15 +95,14 @@ namespace BH.Engine.Analytical
                     int ignored = 0;
                     foreach (string group in viewFragment.GroupNames)
                     {
-                        if (view.GroupsToIgnore.Contains(group))
+                        if (view.ViewConfig.GroupsToIgnore.Contains(group))
                             ignored++;
                     }
                     if (ignored == viewFragment.GroupNames.Where(s => !string.IsNullOrWhiteSpace(s)).ToList().Count())
                         processGraph.RemoveEntity(entity.BHoM_Guid);
                 }
             }
-            Modify.ILayout(processGraph, view.Layout, view.GroupsToIgnore);
-            Modify.IRelationCurves(processGraph, view);
+            processGraph.ILayout(view);
             return processGraph;
         }
 

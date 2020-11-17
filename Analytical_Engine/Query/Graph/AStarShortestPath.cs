@@ -64,7 +64,7 @@ namespace BH.Engine.Analytical
         [Output("shortest path result", "The ShortestPathResult.")]
         public static ShortestPathResult AStarShortestPath(this Graph graph, Guid start, Guid end)
         {
-            m_SpatialGraph = graph.GraphView(new SpatialView());
+            m_SpatialGraph = graph.IGraphView(new SpatialView());
 
             if (m_SpatialGraph.Entities.Count == 0 || m_SpatialGraph.Relations.Count == 0)
             {

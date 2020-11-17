@@ -45,6 +45,7 @@ namespace BH.Engine.Analytical
         [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
         public static Graph IRelationCurves(this Graph graph, IView view)
         {
+           
             RelationCurves(graph, view as dynamic);
             return graph;
         }
@@ -76,8 +77,8 @@ namespace BH.Engine.Analytical
             {
                 if (relation.Curve == null)
                 {
-                    ProcessViewFragment sourceViewFrag = graph.Entities[relation.Source].FindFragment<ProcessViewFragment>();
-                    ProcessViewFragment targetViewFrag = graph.Entities[relation.Target].FindFragment<ProcessViewFragment>();
+                    EntityViewFragment sourceViewFrag = graph.Entities[relation.Source].FindFragment<EntityViewFragment>();
+                    EntityViewFragment targetViewFrag = graph.Entities[relation.Target].FindFragment<EntityViewFragment>();
                     
                     if(sourceViewFrag!= null && targetViewFrag!=null)  
                         relation.Curve = new Line() { Start = sourceViewFrag.Position, End = targetViewFrag.Position };
