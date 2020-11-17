@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Analytical
@@ -46,7 +47,7 @@ namespace BH.Engine.Analytical
     where TEdge : IEdge
     where TOpening : IOpening<TEdge>
         {
-            IPanel<TEdge, TOpening> pp = panel.GetShallowClone() as IPanel<TEdge, TOpening>;
+            IPanel<TEdge, TOpening> pp = panel.ShallowClone();
             pp.Openings = new List<TOpening>(openings.Cast<TOpening>().ToList());
             return pp;
         }
