@@ -41,13 +41,21 @@ namespace BH.Engine.Base
         [Output("iBHoMObject", "The BHoM object with the added fragment")]
         public static IBHoMObject AddFragment(this IBHoMObject iBHoMObject, IFragment fragment, bool replace = false)
         {
-            if (iBHoMObject == null) return null;
+            if (iBHoMObject == null || fragment == null)
+                return null;
             IBHoMObject o = iBHoMObject.DeepClone();
 
-            if (!replace)
-                o.Fragments.Add(fragment);
+            // Make sure this fragment can be added to that object
+            if (fragment.CanTarget(iBHoMObject))
+            {
+                if (!replace)
+                    o.Fragments.Add(fragment);
+                else
+                    o.Fragments.AddOrReplace(fragment);
+            }
             else
-                o.Fragments.AddOrReplace(fragment);
+                Engine.Reflection.Compute.RecordError("An object of type " + iBHoMObject.GetType() + " is not a valid target for a fragment of type " + fragment.GetType() + ". The fragment was not added.");
+            
 
             return o;
         }
