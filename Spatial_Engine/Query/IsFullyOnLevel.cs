@@ -20,15 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry.SettingOut;
-using System.Collections.Generic;
 using System.ComponentModel;
-using BH.Engine.Base;
 using System;
 
 namespace BH.Engine.Spatial
@@ -60,8 +57,7 @@ namespace BH.Engine.Spatial
         [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of an IElement1D is fully within a set tolerance from the level elevation.")]
         public static bool IsFullyOnLevel(this IElement1D element1D, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            ICurve curve = element1D.IGeometry();
-            BoundingBox bBox = curve.IBounds();
+            BoundingBox bBox = element1D.Bounds();
 
             return level.Elevation - tolerance <= bBox.Min.Z && bBox.Max.Z <= level.Elevation + tolerance;
         }
@@ -75,16 +71,9 @@ namespace BH.Engine.Spatial
         [Output("isFullyOnLevel", "A boolean which is true if the geometrical representation of an IElement2D is fully within a set tolerance from the level elevation.")]
         public static bool IsFullyOnLevel(this IElement2D element2D, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            List<IElement1D> elements1D = element2D.IOutlineElements1D();
+            BoundingBox bBox = element2D.Bounds();
 
-            bool isFullyOnLevel = true;
-
-            foreach (IElement1D e1D in elements1D)
-            {
-                isFullyOnLevel &= IsFullyOnLevel(e1D, level, tolerance);
-            }
-            
-            return isFullyOnLevel;
+            return level.Elevation - tolerance <= bBox.Min.Z && bBox.Max.Z <= level.Elevation + tolerance;
         }
 
         /******************************************/
