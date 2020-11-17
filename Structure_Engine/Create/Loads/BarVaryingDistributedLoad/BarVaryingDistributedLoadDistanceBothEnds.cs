@@ -29,6 +29,7 @@ using System.Linq;
 using System;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
@@ -61,6 +62,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("axis")]
         [InputFromProperty("projected")]
         [Input("name", "The name of the created load.")]
+        [Input("groupingTolerance", "The maximum difference in length between the Bars for the grouping.", typeof(Length))]
         [Output("barVarLoad", "The created BarVaryingDistributedLoads with bars grouped by length.")]
         public static List<BarVaryingDistributedLoad> BarVaryingDistributedLoadDistanceBothEnds(Loadcase loadcase, BHoMGroup<Bar> group, bool relativePositions, double startToStartDistance = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endToEndDistance = 0, Vector forceAtEnd = null, Vector momentAtEnd = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "", double groupingTolerance = Tolerance.Distance)
         {
@@ -108,6 +110,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("axis")]
         [InputFromProperty("projected")]
         [Input("name", "The name of the created load.")]
+        [Input("groupingTolerance", "The maximum difference in length between the Bars for the grouping.", typeof(Length))]
         [Output("barVarLoad", "The created BarVaryingDistributedLoads with bars grouped by length.")]
         public static List<BarVaryingDistributedLoad> BarVaryingDistributedLoadDistanceBothEnds(Loadcase loadcase, IEnumerable<Bar> objects, bool relativePositions, double startToStartDistance = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endToEndDistance = 0, Vector forceAtEnd = null, Vector momentAtEnd = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "", double groupingTolerance = Tolerance.Distance)
         {
