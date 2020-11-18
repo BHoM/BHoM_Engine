@@ -47,9 +47,9 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("view", "The required IView.")]
         [Output("graph", "The view of the original Graph.")]
-        public static Graph IGraphView(this Graph graph, IView view)
+        public static Graph IProjectGraph(this Graph graph, IView view)
         {
-            Graph graphView = GraphView(graph, view as dynamic);
+            Graph graphView = ProjectGraph(graph, view as dynamic);
             //ensure we have curves on relations
             IRelationCurves(graphView, view as dynamic);
             return graphView;
@@ -61,7 +61,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("view", "The SpatialView.")]
         [Output("graph", "The spatial Graph.")]
-        private static Graph GraphView(this Graph graph, SpatialView view)
+        private static Graph ProjectGraph(this Graph graph, SpatialView view)
         {
             Graph spatialGraph = graph.DeepClone();
             foreach (IBHoMObject entity in spatialGraph.Entities.Values.ToList())
@@ -80,7 +80,7 @@ namespace BH.Engine.Analytical
         [Input("view", "The ProcessView.")]
         [Output("graph", "The process Graph.")]
 
-        private static Graph GraphView(this Graph graph, ProcessView view)
+        private static Graph ProjectGraph(this Graph graph, ProcessView view)
         {
             Graph processGraph = graph.DeepClone();
             foreach (IBHoMObject entity in processGraph.Entities.Values.ToList())
@@ -110,7 +110,7 @@ namespace BH.Engine.Analytical
         /**** Fallback Methods                          ****/
         /***************************************************/
 
-        private static Graph GraphView(this Graph graph, IView view)
+        private static Graph ProjectGraph(this Graph graph, IView view)
         {
             Reflection.Compute.RecordError("IView provided does not have a corresponding GraphView method implemented.");
             return new Graph();
