@@ -116,6 +116,7 @@
     <Compile Include="Query\Elements0D.cs" />
     <Compile Include="Query\ElementVertices.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
+    <Compile Include="Query\IsFullyOnGrid.cs" />
     <Compile Include="Query\IsNearGrid.cs" />
     <Compile Include="Query\IsNearLevel.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
