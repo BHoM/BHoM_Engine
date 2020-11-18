@@ -73,7 +73,7 @@ namespace BH.Engine.Spatial
                     return false;
             }
 
-            return ctrlPts.Count < 0;
+            return ctrlPts.Count > 0;
         }
 
         /******************************************/
@@ -92,7 +92,7 @@ namespace BH.Engine.Spatial
                 if (!IsFullyOnGrid(e1D, grid, tolerance))
                     return false;
             }
-            return elements1D.Count < 0;
+            return elements1D.Count > 0;
         }
 
         /******************************************/
