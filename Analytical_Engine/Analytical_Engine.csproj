@@ -114,7 +114,7 @@
     <Compile Include="Query\Graph\NotSinks.cs" />
     <Compile Include="Query\Graph\Sinks.cs" />
     <Compile Include="Query\Graph\Sources.cs" />
-    <Compile Include="Modify\Graph\GraphView.cs" />
+    <Compile Include="Modify\Graph\ProjectGraph.cs" />
     <Compile Include="Query\Graph\SubGraphs.cs" />
     <Compile Include="Query\Graph\IsolatedEntities.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
