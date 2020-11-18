@@ -26,6 +26,7 @@ using BH.oM.MEP.System;
 using BH.oM.MEP.Fixtures;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.MEP
 {
@@ -47,7 +48,7 @@ namespace BH.Engine.MEP
                 return null;
             }
 
-            IFlow clone = flowObj.GetShallowClone(true) as IFlow;
+            IFlow clone = flowObj.ShallowClone();
             clone.StartPoint = clone.StartPoint.SetGeometry(curve.IStartPoint());
             clone.EndPoint = clone.EndPoint.SetGeometry(curve.IEndPoint());
             return clone;
