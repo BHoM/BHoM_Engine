@@ -45,7 +45,7 @@ namespace BH.Engine.Analytical
         [Output("node", "The INode with updated geometry.")]
         public static INode SetGeometry(this INode node, Point point)
         {
-            INode clone = node.ShallowClone(true);
+            INode clone = node.ShallowClone();
             clone.Position = point.Clone();
             return clone;
         }
@@ -68,7 +68,7 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            ILink<TNode> clone = link.ShallowClone(true);
+            ILink<TNode> clone = link.ShallowClone();
             clone.StartNode = (TNode)clone.StartNode.SetGeometry(curve.IStartPoint());
             clone.EndNode = (TNode)clone.EndNode.SetGeometry(curve.IEndPoint());
             return clone;
@@ -83,7 +83,7 @@ namespace BH.Engine.Analytical
         [Output("edge", "The IEdge with updated geometry.")]
         public static IEdge SetGeometry(this IEdge edge, ICurve curve)
         {
-            IEdge clone = edge.ShallowClone(true);
+            IEdge clone = edge.ShallowClone();
             clone.Curve = curve.IClone();
             return clone;
         }
