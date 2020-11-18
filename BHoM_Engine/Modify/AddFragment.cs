@@ -49,7 +49,7 @@ namespace BH.Engine.Base
             List<Type> currentFragmentTypes = iBHoMObject.Fragments.Select(x => x.GetType()).ToList();
             foreach (Type restriction in fragment.GetType().UniquenessRestrictions())
             {
-                if (currentFragmentTypes.Any(x => restriction.IsAssignableFrom(x)))
+                if (currentFragmentTypes.Any(x => restriction.IsAssignableFrom(x) && x != fragment.GetType()))
                     Engine.Reflection.Compute.RecordWarning("There is already a fragment of type " + restriction + " on this object. \nThe Fragment will still be added but consider reviewing this task as fragments of that type are supposed to be unique.");
             }
 
