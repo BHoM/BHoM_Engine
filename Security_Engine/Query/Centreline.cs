@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,32 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using BH.oM.Physical.Elements;
+
 using BH.oM.Geometry;
-using BH.Engine.Base;
+using BH.oM.Security.Elements;
+using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Physical
+namespace BH.Engine.Security
 {
-    public static partial class Modify
+    public static partial class Query
     {
-
+        /***************************************************/
+        /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Replaces the location curve of the IFramingElement with the provided curve.")]
-        [Input("framingElement", "The framingElement to modify the location curve of.")]
-        [Input("curve", "The new location of the IFramingElement as a ICurve.")]
-        [Output("element1D", "The IFramingElement with modified location curve.")]
-        public static IFramingElement SetGeometry(this IFramingElement framingElement, ICurve curve)
+        [Description("Returns the centreline of a CameraDevice object.")]
+        [Input("cameraDevice", "The CameraDevice object to get the centreline from.")]
+        [Output("centreline", "The centreline of the CameraDevice object.")]
+        public static Line Centreline(this CameraDevice cameraDevice)
         {
-            IFramingElement clone = framingElement.ShallowClone();
-            clone.Location = curve.DeepClone();
-            return clone;
+            return new Line { Start = cameraDevice.EyePosition, End = cameraDevice.TargetPosition };
         }
 
         /***************************************************/
-
     }
 }
 

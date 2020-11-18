@@ -23,6 +23,7 @@
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.MEP.System;
+using BH.oM.MEP.Fixtures;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
@@ -50,7 +51,7 @@ namespace BH.Engine.MEP
             clone.StartPoint = clone.StartPoint.SetGeometry(curve.IStartPoint());
             clone.EndPoint = clone.EndPoint.SetGeometry(curve.IEndPoint());
             return clone;
-        }
+        }        
 
         /***************************************************/
     }
