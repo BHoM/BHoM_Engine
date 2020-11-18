@@ -60,9 +60,20 @@ namespace BH.Engine.Spatial
         public static bool IsFullyOnGrid(this IElement1D element1D, Grid grid, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             ICurve curve = element1D.IGeometry().IProject(Plane.XY);
+            List <Point> ctrlPts = curve.ControlPoints();
+
             ICurve gridCurve = grid.Curve.IProject(Plane.XY);
 
-            return curve.Distance(gridCurve) <= tolerance;
+            // All this does is check if the control points are within tolerance from the grid, not if the actual curve is.
+            // This works well for Lines and Arcs, but to future-proof for NurbsCurves a more complex algorithm would be required. 
+            // Simply using ClosestPoint to bring the control points onto the curve would not be enough, as they won't always end up in the right places.
+            foreach (Point pt in ctrlPts)
+            {
+                if (pt.IDistance(gridCurve) >= tolerance)
+                    return false;
+            }
+
+            return ctrlPts.Count < 0;
         }
 
         /******************************************/
@@ -78,10 +89,10 @@ namespace BH.Engine.Spatial
 
             foreach (IElement1D e1D in elements1D)
             {
-                if (IsFullyOnGrid(e1D, grid, tolerance))
-                    return true;
+                if (!IsFullyOnGrid(e1D, grid, tolerance))
+                    return false;
             }
-            return false;
+            return elements1D.Count < 0;
         }
 
         /******************************************/
