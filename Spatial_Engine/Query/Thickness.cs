@@ -33,112 +33,12 @@ namespace BH.Engine.Spatial
         /****          ShapeProfiles           ****/
         /******************************************/
 
-        [Description("Returns the thickness of an angleProfile.")]
-        [Input("angleProfile", "The angleProfile to query.")]
-        [Output("thickness", "Thickness of the angleProfile.", typeof(Length))]
-        public static double Thickness(this AngleProfile angleProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {angleProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
         [Description("Returns the thickness of a boxProfile.")]
         [Input("boxProfile", "The boxProfile to query.")]
         [Output("thickness", "Thickness of the boxProfile.", typeof(Length))]
         public static double Thickness(this BoxProfile boxProfile)
         {
             return boxProfile.Thickness;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an channelProfile.")]
-        [Input("channelProfile", "The channelProfile to query.")]
-        [Output("thickness", "Thickness of the channelProfile.", typeof(Length))]
-        public static double Thickness(this ChannelProfile channelProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {channelProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an circleProfile.")]
-        [Input("circleProfile", "The circleProfile to query.")]
-        [Output("thickness", "Thickness of the circleProfile.", typeof(Length))]
-        public static double Thickness(this CircleProfile circleProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {circleProfile.GetType().Name} does not have a Thickness property as it is a solid profile.");
-            return double.NaN;
-        }
-
-
-        /******************************************/
-
-        [Description("Returns the thickness of an fabricatedBoxProfile.")]
-        [Input("fabricatedBoxProfile", "The fabricatedBoxProfile to query.")]
-        [Output("thickness", "Thickness of the fabricatedBoxProfile.", typeof(Length))]
-        public static double Thickness(this FabricatedBoxProfile fabricatedBoxProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {fabricatedBoxProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an fabricatedISectionProfile.")]
-        [Input("fabricatedISectionProfile", "The fabricatedISectionProfile to query.")]
-        [Output("thickness", "Thickness of the fabricatedISectionProfile.", typeof(Length))]
-        public static double Thickness(this FabricatedISectionProfile fabricatedISectionProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {fabricatedISectionProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an freeFormProfile.")]
-        [Input("freeFormProfile", "The freeFormProfile to query.")]
-        [Output("thickness", "Thickness of the freeFormProfile.", typeof(Length))]
-        public static double Thickness(this FreeFormProfile freeFormProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {freeFormProfile.GetType().Name} is unsupported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an generalisedFabricatedBoxProfile.")]
-        [Input("generalisedFabricatedBoxProfile", "The generalisedFabricatedBoxProfile to query.")]
-        [Output("thickness", "Thickness of the generalisedFabricatedBoxProfile.", typeof(Length))]
-        public static double Thickness(this GeneralisedFabricatedBoxProfile generalisedFabricatedBoxProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {generalisedFabricatedBoxProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an generalisedTSectionProfile.")]
-        [Input("generalisedTSectionProfile", "The generalisedTSectionProfile to query.")]
-        [Output("thickness", "Thickness of the generalisedTSectionProfile.", typeof(Length))]
-        public static double Thickness(this GeneralisedTSectionProfile generalisedTSectionProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {generalisedTSectionProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an iSectionProfile.")]
-        [Input("iSectionProfile", "The iSectionProfile to query.")]
-        [Output("thickness", "Thickness of the iSectionProfile.", typeof(Length))]
-        public static double Thickness(this ISectionProfile iSectionProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {iSectionProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
         }
 
         /******************************************/
@@ -153,56 +53,12 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        [Description("Returns the thickness of an rectangleProfile.")]
-        [Input("rectangleProfile", "The rectangleProfile to query.")]
-        [Output("thickness", "Thickness of the rectangleProfile.", typeof(Length))]
-        public static double Thickness(this RectangleProfile rectangleProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {rectangleProfile.GetType().Name} does not have a Thickness property as it is a solid profile.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an taperedProfile.")]
-        [Input("taperedProfile", "The taperedProfile to query.")]
-        [Output("thickness", "Thickness of the taperedProfile.", typeof(Length))]
-        public static double Thickness(this TaperedProfile taperedProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {taperedProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an tSectionProfile.")]
-        [Input("tSectionProfile", "The tSectionProfile to query.")]
-        [Output("thickness", "Thickness of the tSectionProfile.", typeof(Length))]
-        public static double Thickness(this TSectionProfile tSectionProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {tSectionProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
-        }
-
-        /******************************************/
-
         [Description("Returns the thickness of a tubeProfile.")]
         [Input("tubeProfile", "The tubeProfile to query.")]
         [Output("thickness", "Thickness of the tubeProfile.", typeof(Length))]
         public static double Thickness(this TubeProfile tubeProfile)
         {
             return tubeProfile.Thickness;
-        }
-
-        /******************************************/
-
-        [Description("Returns the thickness of an zSectionProfile.")]
-        [Input("zSectionProfile", "The zSectionProfile to query.")]
-        [Output("thickness", "Thickness of the zSectionProfile.", typeof(Length))]
-        public static double Thickness(this ZSectionProfile zSectionProfile)
-        {
-            Reflection.Compute.RecordError($"IProfile type: {zSectionProfile.GetType().Name} has multiple Thickness parameters and is not supported. Consider using a different method of accessing these values.");
-            return double.NaN;
         }
 
         /******************************************/
