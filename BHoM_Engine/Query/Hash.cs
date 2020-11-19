@@ -137,7 +137,7 @@ namespace BH.Engine.Base
 
         [Description("Generates a string representing the whole structure of the object with its assigned values.")]
         [Input("obj", "Objects the string should be calculated for.")]
-        [Input("hc", "HashConfig, options for the hash calculation.")]
+        [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
         [Input("propertyPath", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
         private static string DefiningString(object obj, ComparisonConfig cc, int fractionalDigits, int nestingLevel, string propertyPath = null)
