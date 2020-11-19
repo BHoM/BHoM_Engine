@@ -48,7 +48,7 @@
     </Reference>
     <Reference Include="Facade_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Facade_oM.dll</HintPath>
-	        <Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
@@ -118,9 +118,9 @@
     <Folder Include="Query\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-<PropertyGroup>
-  <PostBuildEvent>
+  <PropertyGroup>
+    <PostBuildEvent>
 xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
     </PostBuildEvent>
-</PropertyGroup>
+  </PropertyGroup>
 </Project>
