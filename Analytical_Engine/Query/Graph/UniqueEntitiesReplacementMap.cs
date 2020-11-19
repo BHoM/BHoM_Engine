@@ -32,6 +32,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Data.Collections;
 
 namespace BH.Engine.Analytical
 {
@@ -44,8 +45,8 @@ namespace BH.Engine.Analytical
         [Description("Identifies unique objects from a collection IBHoMObjects using hash comparison.")]
         [Input("entities", "A collection of IBHoMObjects from which unique instances are identified.")]
         [Input("comparisonConfig", "Configuration of diffing used to find unique entities.")]
-        [Output("unique entities", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
-        public static Dictionary<Guid, IBHoMObject> DistinctEntities(this List<IBHoMObject> entities, ComparisonConfig comparisonConfig = null) // this is not a diff, it's finding unique entities
+        [Output("replacementMap", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
+        public static Dictionary<Guid, IBHoMObject> UniqueEntitiesReplacementMap(this List<IBHoMObject> entities, ComparisonConfig comparisonConfig = null)
         {
             ComparisonConfig cc = comparisonConfig ?? new ComparisonConfig();
 
@@ -54,18 +55,20 @@ namespace BH.Engine.Analytical
 
             HashComparer<object> hashComparer = new HashComparer<object>(cc);
 
-            foreach (KeyValuePair<IBHoMObject, string> entityA in objectHash)
+            // Compute the "Diffing" by means of a VennDiagram.
+            // Hashes are computed in the DiffingHashComparer, once per each object (the hash is stored in a hashFragment).
+            foreach (var objA in entities)
             {
-                foreach (KeyValuePair<IBHoMObject, string> entityB in objectHash)
+                foreach (var objB in entities)
                 {
                     //only if same object type
-                    if (entityA.Key.GetType() == entityB.Key.GetType())
+                    if (objA.GetType() == objB.GetType())
                     {
                         //compare hashes
-                        if (hashComparer.Equals(entityA.Value, entityB.Value))
+                        if (hashComparer.Equals(objA, objB))
                         {
                             //store in map dictionary where key is original Guid and Value is replacement object
-                            replaceMap[entityA.Key.BHoM_Guid] = entityB.Key;
+                            replaceMap[objA.BHoM_Guid] = objA;
 
                             //first match has been found so break inner loop.
                             break;
