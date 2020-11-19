@@ -67,7 +67,7 @@ namespace BH.Engine.Analytical
                         if (hashComparer.Equals(objA, objB))
                         {
                             //store in map dictionary where key is original Guid and Value is replacement object
-                            replaceMap[objA.BHoM_Guid] = objA;
+                            replaceMap[objA.BHoM_Guid] = objB;
 
                             //first match has been found so break inner loop.
                             break;
