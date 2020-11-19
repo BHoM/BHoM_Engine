@@ -80,7 +80,6 @@
     <Compile Include="Create\Graph\Relation.cs" />
     <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Modify\Graph\RelationCurves.cs" />
-    <Compile Include="Modify\Graph\Layout.cs" />
     <Compile Include="Modify\Graph\RemoveEntity.cs" />
     <Compile Include="Modify\Graph\RemoveIsolatedEntities.cs" />
     <Compile Include="Modify\Graph\Reverse.cs" />

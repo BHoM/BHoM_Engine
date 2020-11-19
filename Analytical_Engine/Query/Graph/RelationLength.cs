@@ -51,8 +51,8 @@ namespace BH.Engine.Analytical
                 length = relation.Curve.ILength();
             else
             {
-                IElement0D source = m_SpatialGraph.Entities[relation.Source] as IElement0D;
-                IElement0D target = m_SpatialGraph.Entities[relation.Target] as IElement0D;
+                IElement0D source = graph.Entities[relation.Source] as IElement0D;
+                IElement0D target = graph.Entities[relation.Target] as IElement0D;
                 length = source.IGeometry().Distance(target.IGeometry());
             }
             return length;

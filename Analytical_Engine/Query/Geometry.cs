@@ -205,9 +205,9 @@ namespace BH.Engine.Analytical
         public static CompositeGeometry Geometry(this Graph graph)
         {
             List<IGeometry> geometries = new List<IGeometry>();
-            Graph spatialGraph = graph.IGraphView(new SpatialView());
+            Graph geometricGraph = graph.IProjectGraph(new GeometricProjection());
 
-            if (spatialGraph.Entities.Count == 0 || spatialGraph.Relations.Count == 0)
+            if (geometricGraph.Entities.Count == 0 || geometricGraph.Relations.Count == 0)
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
 
             return SpatialGraphGeometry(graph);
