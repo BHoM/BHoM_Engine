@@ -69,17 +69,20 @@ namespace BH.Engine.Facade
         [Input("outline", "A closed Curve defining the outline of the Panel. The ExternalEdges of the Panel will be the subparts of this curve, where each edge will corespond to one curve segment.")]
         [Input("openings", "A collection of closed curves representing the openings of the Panel.")]
         [InputFromProperty("construction")]
+        [Input("frameEdgeProperty", "The FrameEdgeProperty to apply to all edges of the panel.")]
         [Input("panelType", "The type of Panel this is, eg an external wall or spandrel panel.")]
+        [InputFromProperty("openingConstruction")]
+        [Input("openingFrameEdgeProperty", "The FrameEdgeProperty to apply to all edges of the openings.")]
         [Input("name", "The name of the created Panel.")]
         [Output("panel","The created Panel.")]
-        public static Panel Panel(ICurve outline, List<ICurve> openings = null, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, PanelType panelType = PanelType.Undefined, string name = "")
+        public static Panel Panel(ICurve outline, List<ICurve> openings = null, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, PanelType panelType = PanelType.Undefined, IConstruction openingConstruction = null, FrameEdgeProperty openingFrameEdgeProperty = null, string name = "")
         {
             if (!outline.IIsClosed())
             {
                 Reflection.Compute.RecordError("Outline not closed. Could not create Panel.");
                 return null;
             }
-            List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(new List<ICurve> {o}, frameEdgeProperty)).Where(x => x != null).ToList() : new List<Opening>();
+            List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(new List<ICurve> {o}, openingConstruction, frameEdgeProperty)).Where(x => x != null).ToList() : new List<Opening>();
             List<FrameEdge> externalEdges = outline.ISubParts().Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList();
 
             return Create.Panel(externalEdges, pOpenings, construction, panelType, name);
@@ -87,15 +90,15 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
-        [Description("Creates a structural Panel from a PlanarSurface, creating external edges from the ExternalBoundary and openings from the InternalBoundaries of the PlanarSurface.")]
+        [Description("Creates a Panel from a PlanarSurface, creating external edges from the ExternalBoundary and openings from the InternalBoundaries of the PlanarSurface.")]
         [Input("surface", "A planar surface used to define the geometry of the panel, i.e. the external edges and the openings.")]
         [InputFromProperty("construction")]
         [Input("panelType", "The type of Panel this is, eg an external wall or spandrel panel.")]
         [Input("name", "The name of the created Panel.")]
         [Output("panel", "The created Panel.")]
-        public static Panel Panel(PlanarSurface surface, Construction construction = null, FrameEdgeProperty frameEdgeProperty = null, PanelType panelType = PanelType.Undefined, string name = "")
+        public static Panel Panel(PlanarSurface surface, Construction construction = null, FrameEdgeProperty frameEdgeProperty = null, PanelType panelType = PanelType.Undefined, IConstruction openingConstruction = null, FrameEdgeProperty openingFrameEdgeProperty = null, string name = "")
         {
-            return Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), construction, frameEdgeProperty, panelType, name);
+            return Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), construction, frameEdgeProperty, panelType, openingConstruction, openingFrameEdgeProperty, name);
         }
 
         /***************************************************/
