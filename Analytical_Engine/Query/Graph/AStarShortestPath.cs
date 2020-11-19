@@ -64,9 +64,9 @@ namespace BH.Engine.Analytical
         [Output("shortest path result", "The ShortestPathResult.")]
         public static ShortestPathResult AStarShortestPath(this Graph graph, Guid start, Guid end)
         {
-            m_SpatialGraph = graph.IGraphView(new SpatialView());
+            m_GeometricGraph = graph.IProjectGraph(new GeometricProjection());
 
-            if (m_SpatialGraph.Entities.Count == 0 || m_SpatialGraph.Relations.Count == 0)
+            if (m_GeometricGraph.Entities.Count == 0 || m_GeometricGraph.Relations.Count == 0)
             {
                 Reflection.Compute.RecordWarning("The graph provided does not contain sufficient spatial entities or relations.\n" +
                     "To use a star shortest path provide a graph where some entities implement IElement0D and spatial relations are defined between them.\n" +
@@ -75,17 +75,17 @@ namespace BH.Engine.Analytical
                 return DijkstraShortestPath(graph, start, end);
             }
                 
-            SetFragments(m_SpatialGraph);
+            SetFragments(m_GeometricGraph);
 
             //calculate straight line distance from each entity to the end
-            IElement0D endEntity = m_SpatialGraph.Entities[end] as IElement0D;
-            foreach (Guid entity in m_SpatialGraph.Entities.Keys.ToList())
+            IElement0D endEntity = m_GeometricGraph.Entities[end] as IElement0D;
+            foreach (Guid entity in m_GeometricGraph.Entities.Keys.ToList())
             {
-                IElement0D element0D = m_SpatialGraph.Entities[entity] as IElement0D;
+                IElement0D element0D = m_GeometricGraph.Entities[entity] as IElement0D;
                 m_Fragments[entity].StraightLineDistanceToTarget = element0D.IGeometry().Distance(endEntity.IGeometry());
             }
                 
-            AStarSearch(m_SpatialGraph, start, ref end);
+            AStarSearch(m_GeometricGraph, start, ref end);
 
             List<Guid> shortestPath = new List<Guid>();
             shortestPath.Add(end);
@@ -98,9 +98,9 @@ namespace BH.Engine.Analytical
             shortestPath.Reverse();
 
             List<IBHoMObject> objPath = new List<IBHoMObject>();
-            shortestPath.ForEach(g => objPath.Add(m_SpatialGraph.Entities[g]));
+            shortestPath.ForEach(g => objPath.Add(m_GeometricGraph.Entities[g]));
 
-            List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => m_SpatialGraph.Entities[kvp.Key]).ToList();
+            List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => m_GeometricGraph.Entities[kvp.Key]).ToList();
             ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, relations, curves);
             return result;
         }
@@ -120,7 +120,7 @@ namespace BH.Engine.Analytical
                 Guid currentEntity = prioQueue.First();
                 prioQueue.Remove(currentEntity);
                 List<IRelation> relations = graph.Relations.FindAll(link => link.Source.Equals(currentEntity));
-                IBHoMObject current = m_SpatialGraph.Entities[currentEntity];
+                IBHoMObject current = m_GeometricGraph.Entities[currentEntity];
                 //use weight AND length of the relation to define cost to end
                 foreach (IRelation r in relations)
                 {
@@ -168,12 +168,12 @@ namespace BH.Engine.Analytical
             list.Add(n);
 
             //relations linking entities working backwards from end
-            List<IRelation> links = m_SpatialGraph.Relation(m_SpatialGraph.Entities[n], m_SpatialGraph.Entities[entity]).ToList();
+            List<IRelation> links = m_GeometricGraph.Relation(m_GeometricGraph.Entities[n], m_GeometricGraph.Entities[entity]).ToList();
 
             //order by length and only use the shortest.
-            links = links.OrderBy(sr => m_SpatialGraph.RelationLength(sr)).ToList();
+            links = links.OrderBy(sr => m_GeometricGraph.RelationLength(sr)).ToList();
 
-            length += m_SpatialGraph.RelationLength(links[0]);
+            length += m_GeometricGraph.RelationLength(links[0]);
 
             relations.Add(links[0]);
 
@@ -214,7 +214,7 @@ namespace BH.Engine.Analytical
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static Graph m_SpatialGraph = new Graph();
+        private static Graph m_GeometricGraph = new Graph();
 
     }
 }
