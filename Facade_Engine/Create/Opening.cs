@@ -23,6 +23,7 @@
 using BH.oM.Facade.Elements;
 using BH.oM.Facade.SectionProperties;
 using BH.oM.Geometry;
+using BH.oM.Physical.Constructions;
 using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +44,14 @@ namespace BH.Engine.Facade
         [Input("edges", "Closed curve defining the outline of the Opening.")]
         [Input("frameEdgeProperty", "An optional FrameEdgeProperty to apply to all edges of the opening.")]
         [Output("opening", "Created Opening.")]
-        public static Opening Opening(IEnumerable<ICurve> edges, FrameEdgeProperty frameEdgeProperty = null)
+        public static Opening Opening(IEnumerable<ICurve> edges, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
         {
+            List<ICurve> externalEdges = new List<ICurve>();
+            foreach (ICurve edge in edges)
+            {
+                externalEdges.AddRange(edge.ISubParts());
+            }
+
             List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
 
             if (joined.Count == 0)
@@ -60,7 +67,7 @@ namespace BH.Engine.Facade
 
             //Single joined curve
             if (joined[0].IIsClosed())
-                return new Opening { Edges = edges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList() };
+                return new Opening { Edges = externalEdges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList() };
             else
             {
                 Reflection.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
