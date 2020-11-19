@@ -102,18 +102,6 @@ namespace BH.Engine.Analytical
                 //if no process projection fragment, remove entity
                 if (projectionFragment == null)
                     processGraph.RemoveEntity(entity.BHoM_Guid);
-                else
-                {
-                    //if all group names are in the ignore list remove entity
-                    //int ignored = 0;
-                    //foreach (string group in projectionFragment.GroupNames)
-                    //{
-                    //    if (projection.ViewConfig.GroupsToIgnore.Contains(group))
-                    //        ignored++;
-                    //}
-                    //if (ignored == projectionFragment.GroupNames.Where(s => !string.IsNullOrWhiteSpace(s)).ToList().Count())
-                    //    processGraph.RemoveEntity(entity.BHoM_Guid);
-                }
             }
             //processGraph.ILayout(projection);
             return processGraph;
@@ -125,7 +113,7 @@ namespace BH.Engine.Analytical
 
         private static Graph ProjectGraph(this Graph graph, IProjection projection)
         {
-            Reflection.Compute.RecordError("IView provided does not have a corresponding GraphView method implemented.");
+            Reflection.Compute.RecordError("IProjection provided does not have a corresponding GraphView method implemented.");
             return new Graph();
         }
 
