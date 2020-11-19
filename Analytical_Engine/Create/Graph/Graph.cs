@@ -88,7 +88,7 @@ namespace BH.Engine.Analytical
                 return graph;
             }
 
-            m_MatchedObjects = Query.DistinctEntities(clonedEntities, comparisonConfig);
+            m_MatchedObjects = Query.UniqueEntitiesReplacementMap(clonedEntities, comparisonConfig);
 
             //convert dependency fragments attached to entities and add to relations
             clonedEntities.ForEach(ent => clonedRelations.AddRange(ent.ToRelation())); 

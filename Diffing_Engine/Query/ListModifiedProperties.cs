@@ -39,8 +39,8 @@ namespace BH.Engine.Diffing
 
         [MultiOutput(0, "identifier", "Identifier of the objects which have some modified properties.\nWhen using Revisions, this is the Hash of the objects. When Diffing using CustomData, this is the specified Id.")]
         [MultiOutput(1, "propNames", "List of properties changed per each object.")]
-        [MultiOutput(2, "value_Current", "List of current values of the properties.")]
-        [MultiOutput(3, "value_Past", "List of past values of the properties.")]
+        [MultiOutput(2, "value_obj1", "List of current values of the properties.")]
+        [MultiOutput(3, "value_obj2", "List of past values of the properties.")]
         public static Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>> ListModifiedProperties(Dictionary<string, Dictionary<string, Tuple<object, object>>> modProps, List<string> filterNames = null)
         {
             var output = new Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>>();
