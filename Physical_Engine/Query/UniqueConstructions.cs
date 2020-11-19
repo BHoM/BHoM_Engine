@@ -46,7 +46,7 @@ namespace BH.Engine.Physical
         {
             ComparisonConfig dc = new ComparisonConfig()
             {
-                PropertyNameExceptions = new List<string>
+                PropertyExceptions = new List<string>
                     {
                         "CustomData"
                     },
@@ -54,7 +54,7 @@ namespace BH.Engine.Physical
             };
 
             if (!includeConstructionName)
-                dc.PropertyNameExceptions.Add("Name");
+                dc.PropertyExceptions.Add("Name");
 
             List<Construction> allConstructions = constructions.Where(x => x != null).ToList();
             List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(allConstructions, dc).ToList();

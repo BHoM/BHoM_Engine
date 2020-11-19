@@ -27,7 +27,7 @@ namespace BH.Engine.Analytical
             ComparisonConfig cc = new ComparisonConfig()
             {
                 NumericTolerance = numericTolerance,
-                PropertyNamesToConsider = propertyNamesToConsider ?? new List<string>(),
+                //PropertyNamesToConsider = propertyNamesToConsider ?? new List<string>(),
             };
 
             return cc;

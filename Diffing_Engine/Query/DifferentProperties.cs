@@ -57,12 +57,12 @@ namespace BH.Engine.Diffing
             comparer.Config.DoublePrecision = dc.ComparisonConfig.NumericTolerance;
 
             // Set the properties to be ignored.
-            if (!dc.ComparisonConfig.PropertyNameExceptions?.Contains("BHoM_Guid") ?? true)
-                dc.ComparisonConfig.PropertyNameExceptions.Add("BHoM_Guid");
+            if (!dc.ComparisonConfig.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
+                dc.ComparisonConfig.PropertyExceptions.Add("BHoM_Guid");
                 // the above should be replaced by BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(DiffingConfig.PropertiesToIgnore)}.");
                 // when the bug in the auto Create() method ("auto-property initialisers for ByRef values like lists do not populate default values") is resolved.
 
-            comparer.Config.MembersToIgnore = dc.ComparisonConfig.PropertyNameExceptions;
+            comparer.Config.MembersToIgnore = dc.ComparisonConfig.PropertyExceptions;
 
             // Removes the CustomData to be ignored.
             var bhomobj1 = (obj1Copy as IBHoMObject);
@@ -108,7 +108,7 @@ namespace BH.Engine.Diffing
                     propertyName = splittedName.FirstOrDefault() + $"['{keyName}']." + splittedName.Last();
                 }
 
-                if (dc.ComparisonConfig.PropertyNameExceptions.Any() && !dc.ComparisonConfig.PropertyNameExceptions.Contains(difference.PropertyName))
+                if (dc.ComparisonConfig.PropertyExceptions.Any() && !dc.ComparisonConfig.PropertyExceptions.Contains(difference.PropertyName))
                     dict[propertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
 

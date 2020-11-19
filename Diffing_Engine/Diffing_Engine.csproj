@@ -75,7 +75,7 @@
     <Compile Include="Create\StreamPointer.cs" />
     <Compile Include="Modify\CombineDiffs.cs" />
     <Compile Include="Create\Delta.cs" />
-    <Compile Include="Create\DiffConfig.cs" />
+    <Compile Include="Create\DiffingConfig.cs" />
     <Compile Include="Create\Revision.cs" />
     <Compile Include="Modify\RemoveDuplicatesByHash.cs" />
     <Compile Include="Modify\PrepareForRevision.cs" />
