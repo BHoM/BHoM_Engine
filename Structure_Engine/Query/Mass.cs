@@ -23,6 +23,7 @@
 using BH.oM.Structure.Elements;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Spatial;
 using System.ComponentModel;
 
 namespace BH.Engine.Structure

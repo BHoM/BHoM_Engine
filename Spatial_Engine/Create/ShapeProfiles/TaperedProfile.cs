@@ -61,10 +61,7 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            List<double> sortedPositions = positions;
-            sortedPositions.Sort();
-
-            if (!positions.SequenceEqual(sortedPositions))
+            if (positions.Zip(positions.Skip(1), (a, b) => new { a, b }).Any(p => p.a > p.b))
             {
                 Reflection.Compute.RecordError("Positions must be sorted in ascending order.");
                 return null;

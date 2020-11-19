@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
 
             foreach (Panel p in panels)
             {
-                Panel pan = p.ShallowClone(true);
+                Panel pan = p.ShallowClone();
                 pan.Openings = new List<Opening>();
                 rtnPanels.Add(pan);
             }
