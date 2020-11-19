@@ -194,13 +194,16 @@ namespace BH.Engine.Base
 
                 foreach (PropertyInfo prop in properties)
                 {
+                    string propertyPath = propertyPath + "." + prop.Name;
+                    string propertyFullName = prop.DeclaringType.FullName + "." + prop.Name;
+
                     bool isInPropertyNameExceptions = cc.PropertyNameExceptions?.Count > 0 && cc.PropertyNameExceptions.Where(ex => prop.Name.Contains(ex)).Any();
                     bool isInPropertyFullNameExceptions = cc.PropertyFullNameExceptions?.Count > 0 && cc.PropertyFullNameExceptions.Where(ex => new WildcardPattern(ex).IsMatch(prop.Name + "." + prop.DeclaringType.FullName)).Any();
 
                     if (isInPropertyNameExceptions || isInPropertyFullNameExceptions)
                         continue;
 
-                    if (cc.PropertyNamesToConsider?.Count() > 0 && !cc.PropertyNamesToConsider.Contains(prop.Name))
+                    if (cc.PropertyNamesToConsider?.Count() > 0 && !cc.PropertyNamesToConsider.Any(pn => (propertyPath + "." + prop.Name).Contains(pn))) //!cc.PropertyNamesToConsider.Contains(prop.Name))
                         continue;
 
                     object propValue = prop.GetValue(obj);
