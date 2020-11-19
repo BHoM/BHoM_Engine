@@ -60,7 +60,7 @@ namespace BH.Engine.Environment
             {
                 ComparisonConfig = new ComparisonConfig()
                 {
-                    PropertyNameExceptions = new List<string>
+                    PropertyExceptions = new List<string>
                     {
                         "ExternalEdges",
                         "Openings",
@@ -86,7 +86,7 @@ namespace BH.Engine.Environment
             {
                 ComparisonConfig = new ComparisonConfig()
                 {
-                    PropertyNameExceptions = new List<string>
+                    PropertyExceptions = new List<string>
                     {
                         "Edges",
                         "FrameFactorValue",
@@ -121,7 +121,7 @@ namespace BH.Engine.Environment
             {
                 ComparisonConfig = new ComparisonConfig()
                 {
-                    PropertyNameExceptions = new List<string>
+                    PropertyExceptions = new List<string>
                     {
                         "Location",
                         "Type",

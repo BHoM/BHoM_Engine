@@ -65,22 +65,28 @@ namespace BH.Engine.Base
             // Make sure we always have a config object. Clone for immutability.
             ComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
-            // Make sure that "BHoM_Guid" is added to the propertyNameExceptions of the config.
-            cc.PropertyNameExceptions = cc.PropertyNameExceptions ?? new List<string>();
-            if (!cc.PropertyNameExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
-                cc.PropertyNameExceptions.Add(nameof(BHoMObject.BHoM_Guid));
-
-            // Convert from the Numeric Tolerance to fractionalDigits (required for the hash).
-            int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
+            // Make sure that "BHoM_Guid" is added to the PropertyExceptions of the config.
+            cc.PropertyExceptions = cc.PropertyExceptions ?? new List<string>();
+            if (!cc.PropertyExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
+                cc.PropertyExceptions.Add(nameof(BHoMObject.BHoM_Guid));
 
             // Process the "PropertiesToInclude" property.
-            if (cc.PropertyNamesToConsider?.Any() ?? false)
+            if (cc.PropertiesToConsider?.Any() ?? false)
             {
                 // The hash computation can only consider "exceptions".
                 // We need to retrieve all the object properties, intersect them with PropertiesToInclude, and treat all those remaining as "exceptions".
-                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(iObj).Except(cc.PropertyNamesToConsider);
-                cc.PropertyNameExceptions.AddRange(exceptions);
+                // Works only for top-level properties.
+                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(iObj).Except(cc.PropertiesToConsider);
+                cc.PropertyExceptions.AddRange(exceptions);
             }
+
+            // Make sure that the single Property exceptions are either:
+            // - explicitly referring to a property in its "property path": e.g. Bar.StartNode.Point.X
+            // - OR if it's only a property name e.g. BHoM_Guid make sure that we prepend the wildcard so we can match the single property inside any property path: e.g. *BHoM_Guid
+            cc.PropertyExceptions = cc.PropertyExceptions.Select(pe => pe = pe.Contains('.') ? pe : "*" + pe).ToList();
+
+            // Convert from the Numeric Tolerance to fractionalDigits (required for the hash).
+            int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
 
             // ----- SET UP OF INPUT OBJECT -----
 
@@ -194,25 +200,22 @@ namespace BH.Engine.Base
 
                 foreach (PropertyInfo prop in properties)
                 {
-                    string propertyPath = propertyPath + "." + prop.Name;
-                    string propertyFullName = prop.DeclaringType.FullName + "." + prop.Name;
+                    if (string.IsNullOrWhiteSpace(propertyPath))
+                        propertyPath = type.FullName + "." + prop.Name;
+                    else 
+                        propertyPath += "." + prop.Name;
 
-                    bool isInPropertyNameExceptions = cc.PropertyNameExceptions?.Count > 0 && cc.PropertyNameExceptions.Where(ex => prop.Name.Contains(ex)).Any();
-                    bool isInPropertyFullNameExceptions = cc.PropertyFullNameExceptions?.Count > 0 && cc.PropertyFullNameExceptions.Where(ex => new WildcardPattern(ex).IsMatch(prop.Name + "." + prop.DeclaringType.FullName)).Any();
-
-                    if (isInPropertyNameExceptions || isInPropertyFullNameExceptions)
+                    bool isInPropertyExceptions = cc.PropertyExceptions?.Count > 0 && cc.PropertyExceptions.Where(ex => new WildcardPattern(ex).IsMatch(propertyPath)).Any();
+                    if (isInPropertyExceptions)
                         continue;
 
-                    if (cc.PropertyNamesToConsider?.Count() > 0 && !cc.PropertyNamesToConsider.Any(pn => (propertyPath + "." + prop.Name).Contains(pn))) //!cc.PropertyNamesToConsider.Contains(prop.Name))
-                        continue;
+                    //if (cc.PropertyNamesToConsider?.Count() > 0 && !cc.PropertyNamesToConsider.Any(pn => (propertyPath).Contains(pn))) //!cc.PropertyNamesToConsider.Contains(prop.Name))
+                    //    continue;
 
                     object propValue = prop.GetValue(obj);
                     if (propValue != null)
                     {
-                        if (string.IsNullOrWhiteSpace(propertyPath))
-                            propertyPath = type.FullName + "." + prop.Name;
-                        else if (prop.PropertyType.IsClass)
-                            propertyPath += "." + prop.Name;
+
 
                         string outString = "";
 

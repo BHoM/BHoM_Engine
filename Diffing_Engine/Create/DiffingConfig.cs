@@ -47,13 +47,13 @@ namespace BH.Engine.Diffing
         [Input("storeUnchangedObjects", "If enabled, the Diff stores also the objects that did not change (`Unchanged` property).")]
         public static DiffingConfig DiffingConfig(bool enablePropertyDiffing, bool storeUnchangedObjects)
         {
-            return Create.DiffingConfig(enablePropertyDiffing, storeUnchangedObjects, null, null);
+            return Create.DiffingConfig(enablePropertyDiffing, storeUnchangedObjects, null);
         }
 
         [Description("Defines configurations for the diffing.")]
         [Input("enablePropertyDiffing", "Enables the property-level diffing: differences in object properties are stored in the `ModifiedPropsPerObject` dictionary.")]
         [Input("storeUnchangedObjects", "If enabled, the Diff stores also the objects that did not change (`Unchanged` property).")]
-        public static DiffingConfig DiffingConfig(bool enablePropertyDiffing = false, bool storeUnchangedObjects = true, List<string> propertyNamesToConsider = null, List<string> propertiesToIgnore = null, List<string> customDataToIgnore = null)
+        public static DiffingConfig DiffingConfig(bool enablePropertyDiffing = false, bool storeUnchangedObjects = true, List<string> propertyNamesToConsider = null)
         {
             return new DiffingConfig()
             {
@@ -61,9 +61,9 @@ namespace BH.Engine.Diffing
                 IncludeUnchangedObjects = storeUnchangedObjects,
                 ComparisonConfig = new ComparisonConfig()
                 {
-                    PropertyNamesToConsider = propertyNamesToConsider,
-                    PropertyNameExceptions = propertiesToIgnore,
-                    CustomdataKeysExceptions = (customDataToIgnore == null || !customDataToIgnore.Any()) ? new List<string>() { "RenderMesh" } : customDataToIgnore
+                    //PropertyNamesToConsider = propertyNamesToConsider,
+                    //PropertyExceptions = propertiesToIgnore,
+                    //CustomdataKeysExceptions = (customDataToIgnore == null || !customDataToIgnore.Any()) ? new List<string>() { "RenderMesh" } : customDataToIgnore
                 },
             };
         }
