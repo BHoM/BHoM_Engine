@@ -20,18 +20,19 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.Elements;
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
 using BH.oM.Geometry;
+using BH.oM.Physical.Constructions;
 using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
-
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Facade
 {
     public static partial class Create
     {
@@ -39,27 +40,18 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a structural Opening from a closed curve.")]
-        [Input("outline", "Closed curve defining the outline of the Opening.")]
-        [Output("opening", "Created structural Opening.")]
-        public static Opening Opening(ICurve outline)
-        {
-            if (outline.IIsClosed())
-                return new Opening { Edges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList() };
-            else
-            {
-                Reflection.Compute.RecordError("Provided curve is not closed. Could not create opening.");
-                return null;
-            }
-        }
-
-        /***************************************************/
-
-        [Description("Creates a structural Opening from a collection of curves forming a closed loop.")]
+        [Description("Creates a facade Opening from a collection of curves forming a closed loop.")]
         [Input("edges", "Closed curve defining the outline of the Opening.")]
-        [Output("opening", "Created structural Opening.")]
-        public static Opening Opening(IEnumerable<ICurve> edges)
+        [Input("frameEdgeProperty", "An optional FrameEdgeProperty to apply to all edges of the opening.")]
+        [Output("opening", "Created Opening.")]
+        public static Opening Opening(IEnumerable<ICurve> edges, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
         {
+            List<ICurve> externalEdges = new List<ICurve>();
+            foreach (ICurve edge in edges)
+            {
+                externalEdges.AddRange(edge.ISubParts());
+            }
+
             List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
 
             if (joined.Count == 0)
@@ -75,10 +67,10 @@ namespace BH.Engine.Structure
 
             //Single joined curve
             if (joined[0].IIsClosed())
-                return new Opening { Edges = edges.Select(x => new Edge { Curve = x }).ToList() };
+                return new Opening { Edges = externalEdges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList() };
             else
             {
-                Reflection.Compute.RecordError("Provided curves does not form a closed loop. Could not create opening.");
+                Reflection.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
                 return null;
             }
             
