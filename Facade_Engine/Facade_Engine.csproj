@@ -83,8 +83,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\Elemenets\Opening.cs" />
-    <Compile Include="Create\Elemenets\Panel.cs" />
+    <Compile Include="Create\Elements\Opening.cs" />
+    <Compile Include="Create\Elements\Panel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
