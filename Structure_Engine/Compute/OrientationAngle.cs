@@ -91,13 +91,19 @@ namespace BH.Engine.Structure
         [Output("orientationAngle", "The calculated orientation angle of the area element. Will return NaN if the normal and local x are parallel.")]
         public static double OrientationAngleAreaElement(this Vector normal, Vector localX)
         {
+            if (localX == null || normal == null)
+            {
+                Reflection.Compute.RecordError("The provided normal and/or local x are null. The orientation angle could not be calculated.");
+                return double.NaN;
+            }
+
             localX = localX.Normalise();
             normal = normal.Normalise();
             double dot = normal.DotProduct(localX);
 
             if (Math.Abs(1 - dot) < Tolerance.Angle)
             {
-                Reflection.Compute.RecordError("The provided local x  is parallel to the normal of the element. The orientation angle could not be calculated.");
+                Reflection.Compute.RecordError("The provided local x is parallel to the normal of the element. The orientation angle could not be calculated.");
                 return double.NaN;
             }
             else if (Math.Abs(dot) > Tolerance.Angle)
