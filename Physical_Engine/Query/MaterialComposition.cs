@@ -128,12 +128,12 @@ namespace BH.Engine.Physical
 
         [Description("Gets all the Materials a window is composed of and in which ratios")]
         [Input("window", "The window to get the MaterialComposition from")]
-        [Output("materialComposition", "The kind of matter the door is composed of and in which ratios", typeof(Ratio))]
+        [Output("materialComposition", "The kind of matter the window is composed of and in which ratios", typeof(Ratio))]
         public static MaterialComposition MaterialComposition(this Window window)
         {
             if (window.Construction.IMaterialComposition() == null)
             {
-                Engine.Reflection.Compute.RecordError("The Door's MaterialComposition could not be calculated as no Materials have been assigned.");
+                Engine.Reflection.Compute.RecordError("The window's MaterialComposition could not be calculated as no Materials have been assigned.");
                 return null;
             }
             return window.Construction.IMaterialComposition();
