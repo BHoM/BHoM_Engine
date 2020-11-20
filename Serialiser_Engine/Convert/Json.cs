@@ -26,6 +26,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using System;
 
 namespace BH.Engine.Serialiser
 {
@@ -76,17 +77,9 @@ namespace BH.Engine.Serialiser
             }
             else if (json.StartsWith("["))
             {
-                Reflection.Compute.RecordNote("The string provided represents a top-level Json Array instead of a Json object.\nDeserializing to a CustomObject.");
-
                 BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(json);
 
-                return new BH.oM.Base.CustomObject()
-                {
-                    CustomData = new Dictionary<string, object>()
-                    {
-                        { "Objects", array.Select(b => b.IsBsonDocument ? Convert.FromBson(b.AsBsonDocument) : Convert.FromJson(b.ToString())).ToList() }
-                    }
-                };
+                return array.Select(b => b.IsBsonDocument ? BH.Engine.Serialiser.Convert.FromBson(b.AsBsonDocument) : BH.Engine.Serialiser.Convert.FromJson(b.ToString())).ToList();
             }
 
             else
@@ -98,6 +91,27 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
+
+        [Description("Convert a List of objects to a Json array.")]
+        [Input("obj", "Object to be converted.")]
+        [Output("json", "String representing the object in json.")]
+        public static string ToJson(this IEnumerable<object> objs)
+        {
+            List<string> allLines = new List<string>();
+            string json = "";
+
+            // Append a comma to the invididually serialized objects
+            allLines.AddRange(objs.Where(c => c != null).Select(obj => obj.ToJson() + ","));
+
+            // Remove the trailing comma for the last element.
+            allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
+
+            // Join all individually serialised objects with a NewLine, and put between square brackets, to make a valid JSON array.
+            json = String.Join(Environment.NewLine, allLines);
+            json = "[" + json + "]";
+
+            return json;
+        }
     }
 }
 
