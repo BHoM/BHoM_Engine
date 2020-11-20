@@ -155,7 +155,7 @@ namespace BH.Engine.Physical
         {
             if (window.Construction == null)
             {
-                Engine.Reflection.Compute.RecordError("The Door's Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
+                Engine.Reflection.Compute.RecordError("The window's Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
                 return 0;
             }
 
