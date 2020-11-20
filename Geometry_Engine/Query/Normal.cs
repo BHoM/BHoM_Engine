@@ -111,10 +111,7 @@ namespace BH.Engine.Geometry
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
-            {
-                Reflection.Compute.RecordWarning("Curve is self intersecting");
-                return null;
-            }
+                Reflection.Compute.RecordWarning("Input curve is self intersecting. Resulting normal vector might be incorrect.");
 
             Point avg = curve.ControlPoints.Average();
             Vector normal = new Vector();
@@ -149,13 +146,10 @@ namespace BH.Engine.Geometry
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
-            {
-                Reflection.Compute.RecordWarning("Curve is self intersecting");
-                return null;
-            }
+                Reflection.Compute.RecordWarning("Input curve is self intersecting. Resulting normal vector might be incorrect.");
+
 
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
-
 
             if (crvs.Count() == 0)
                 return null;
