@@ -148,7 +148,6 @@ namespace BH.Engine.Geometry
             else if (curve.IsSelfIntersecting(tolerance))
                 Reflection.Compute.RecordWarning("Input curve is self intersecting. Resulting normal vector might be incorrect.");
 
-
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
 
             if (crvs.Count() == 0)
@@ -176,7 +175,6 @@ namespace BH.Engine.Geometry
                         return null;
                     }
                 }
-
 
                 Point avg = points.Average();
                 Vector normal = new Vector();
