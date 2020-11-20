@@ -45,7 +45,9 @@ namespace BH.Engine.Structure
         [Output("orienation", "The local orientation of the Panel as a vector Basis.")]
         public static Basis LocalOrientation(this Panel panel)
         {
-            return LocalOrientation(Engine.Spatial.Query.Normal(panel), panel.OrientationAngle);
+            Vector normal = panel.NullCheck("LocalOrientation") ? Engine.Spatial.Query.Normal(panel) : null;
+
+            return normal == null ? LocalOrientation(Engine.Spatial.Query.Normal(panel), panel.OrientationAngle) : null;
         }
 
         /***************************************************/
