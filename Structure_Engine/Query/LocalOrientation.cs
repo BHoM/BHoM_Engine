@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         {
             Vector normal = panel.NullCheck("LocalOrientation") ? Engine.Spatial.Query.Normal(panel) : null;
 
-            return normal == null ? LocalOrientation(Engine.Spatial.Query.Normal(panel), panel.OrientationAngle) : null;
+            return normal != null ? LocalOrientation(Engine.Spatial.Query.Normal(panel), panel.OrientationAngle) : null;
         }
 
         /***************************************************/

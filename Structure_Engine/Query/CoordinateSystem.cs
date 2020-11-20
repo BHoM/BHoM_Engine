@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Output("coordinateSystem", "The local cartesian coordinate system of the Node.")]
         public static Cartesian CoordinateSystem(this Node node)
         {
-            return node.NullCheck() ? Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y) : null;
+            return node.NullCheck("CoordinateSystem") ? Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y) : null;
         }
 
         /***************************************************/
@@ -54,9 +54,9 @@ namespace BH.Engine.Structure
         [Output("coordinateSystem", "The local cartesian coordinate system of the Bar.")]
         public static Cartesian CoordinateSystem(this Bar bar)
         {
-            Vector tan = bar.Tangent(true);
-            Vector ax = bar.Normal().CrossProduct(tan);
-            return Engine.Geometry.Create.CartesianCoordinateSystem(bar.StartNode.Position, tan, ax);
+            Vector tan = bar?.Tangent(true);
+            Vector ax = bar?.Normal()?.CrossProduct(tan);
+            return tan != null && ax != null ? Engine.Geometry.Create.CartesianCoordinateSystem(bar.StartNode.Position, tan, ax) : null;
         }
 
         /***************************************************/
@@ -66,8 +66,8 @@ namespace BH.Engine.Structure
         [Output("coordinateSystem", "The local cartesian coordinate system of the Panel.")]
         public static Cartesian CoordinateSystem(this Panel panel)
         {
-            Basis orientation = panel.LocalOrientation();
-            return new Cartesian(panel.Centroid(), orientation.X, orientation.Y, orientation.Z);
+            Basis orientation = panel?.LocalOrientation();
+            return orientation != null ? new Cartesian(panel.Centroid(), orientation.X, orientation.Y, orientation.Z) : null;
         }
 
         /***************************************************/
@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
         [Output("coordinateSystems", "The local cartesian coordinate systems of the FEMeshFaces of the FEMesh.")]
         public static List<Cartesian> CoordinateSystem(this FEMesh mesh)
         {
-            return mesh.Faces.Select(x => x.CoordinateSystem(mesh)).ToList();
+            return mesh.NullCheck("CoordinateSystem", false, false) ? mesh.Faces.Select(x => x.CoordinateSystem(mesh)).ToList() : null;
         }
 
         /***************************************************/
@@ -88,8 +88,8 @@ namespace BH.Engine.Structure
         [Output("coordinateSystem", "The local cartesian coordinate system of the FEMeshFace.")]
         public static Cartesian CoordinateSystem(this FEMeshFace face, FEMesh mesh)
         {
-            Basis orientation = face.LocalOrientation(mesh);
-            return new Cartesian(face.NodeListIndices.Select(i => mesh.Nodes[i].Position).Average(), orientation.X, orientation.Y, orientation.Z);
+            Basis orientation = face?.LocalOrientation(mesh);
+            return orientation != null ? new Cartesian(face.NodeListIndices.Select(i => mesh.Nodes[i].Position).Average(), orientation.X, orientation.Y, orientation.Z) : null;
         }
 
         /***************************************************/
