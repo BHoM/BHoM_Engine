@@ -25,9 +25,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Spatial.Layouts;
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Spatial
@@ -413,7 +413,7 @@ namespace BH.Engine.Spatial
         private static Vector AlignOffsetVector(Vector offsetVector, Point referencePoint, Point centre)
         {
             //Make the offset vector always point towards the centre when reference point is on the boundary
-            Vector clone = offsetVector.Clone();
+            Vector clone = offsetVector.ShallowClone();
 
             Vector refVector = centre - referencePoint;
 

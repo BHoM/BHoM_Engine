@@ -34,6 +34,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Base;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.Physical
 {
@@ -81,5 +82,22 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Return the total volume of BulkSolids")]
+        [Input("bulkSolids", "Solid geometric elements that have a material composition")]
+        [Output("volume", "The combined volume of BulkSolids", typeof(Volume))]
+        public static double SolidVolume(this BulkSolids bulkSolids)
+        {
+            double solidVolume = bulkSolids.Geometry.Select(x => BH.Engine.Geometry.Query.IVolume(x)).Sum();
+
+            if (solidVolume <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("The BulkSolids Solid Volume could not be calculated. Returning zero volume.");
+                return 0;
+            }
+
+            return solidVolume;
+        }
+
+        /***************************************************/
     }
 }

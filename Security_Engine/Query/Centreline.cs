@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,42 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using BH.oM.MEP.Equipment.Parts;
 
-namespace BH.Engine.MEP
+using BH.oM.Geometry;
+using BH.oM.Security.Elements;
+using BH.oM.Reflection.Attributes;
+
+namespace BH.Engine.Security
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Returns an MEP Fan part.")]
-        [Input("flowRate", "Default 0.")]
-        [Input("externalStaticPressure", "Default 0.")]
-        [Input("speed", "Default 0.")]
-        [Input("driveType", "Default empty string.")]
-        [Input("speedControl", "Default empty string.")]
-        [Input("brakeHorsePower", "Default 0.")]
-        [Input("horsePower", "Default 0.")]
-        [Input("efficiency", "Default 0.")]
-        [Output("fan", "An MEP Fan part.")]
-        public static Fan Fan(double flowRate = 0.0, double externalStaticPressure = 0.0, double speed = 0.0, string driveType = "", string speedControl = "", double brakeHorsePower = 0.0, double horsePower = 0.0, double efficiency = 0)
+        [Description("Returns the centreline of a CameraDevice object.")]
+        [Input("cameraDevice", "The CameraDevice object to get the centreline from.")]
+        [Output("centreline", "The centreline of the CameraDevice object.")]
+        public static Line Centreline(this CameraDevice cameraDevice)
         {
-            return new Fan
-            {
-                FlowRate = flowRate,
-                ExternalStaticPressure = externalStaticPressure,
-                Speed = speed,
-                DriveType = driveType,
-                SpeedControl = speedControl,
-                BrakeHorsePower = brakeHorsePower,
-                HorsePower = horsePower,
-                Efficiency = efficiency,
-            };
+            return new Line { Start = cameraDevice.EyePosition, End = cameraDevice.TargetPosition };
         }
+
+        /***************************************************/
     }
 }
 

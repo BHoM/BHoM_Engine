@@ -38,6 +38,7 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Node, BH.oM.Geometry.Point)")]
         [Description("Updates the position of a INode.")]
         [Input("node", "The INode to set the postion to.")]
         [Input("point", "The new position of the INode.")]
@@ -51,6 +52,8 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousInputNames("link", "bar")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Bar, BH.oM.Geometry.ICurve)")]
         [Description("Updates geometry of an ILink by updating the positions of its end Nodes.")]
         [Input("link", "The ILink to update.")]
         [Input("curve", "The new centreline curve of the ILink. Should be a linear curve. \n" +
@@ -73,6 +76,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Edge, BH.oM.Geometry.ICurve)")]
         [Description("Updates the curve geometry of an IEdge.")]
         [Input("edge", "The IEdge to update.")]
         [Input("curve", "The curve to set to the IEdge.")]
@@ -82,6 +86,20 @@ namespace BH.Engine.Analytical
             IEdge clone = edge.GetShallowClone(true) as IEdge;
             clone.Curve = curve.IClone();
             return clone;
+        }
+
+        /***************************************************/
+
+        [PreviousInputNames("anaSurface", "strSurface")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Surface, BH.oM.Geometry.ISurface)")]
+        [Description("Updates the geometrical ISurface of a analytical ISurface.")]
+        [Input("anaSurface", "The analytical Surface to update.")]
+        [Input("geoSurface", "The geometrical ISurface to set to the structural Surface.")]
+        [Output("strSurface", "The analytical Surface with updated geometry.")]
+        public static BH.oM.Analytical.Elements.ISurface SetGeometry(this BH.oM.Analytical.Elements.ISurface anaSurface, BH.oM.Geometry.ISurface geoSurface)
+        {
+            anaSurface.Extents = geoSurface;
+            return anaSurface;
         }
 
         /***************************************************/

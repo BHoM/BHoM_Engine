@@ -81,8 +81,19 @@ namespace BH.Engine.Reflection
             }
             else
             {
-                Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}]");
-                return null;
+                IFragment fragment = null;
+                Type fragmentType = Create.Type(propName, true);
+                if (fragmentType != null)
+                {
+                    List<IFragment> matches = bhom.Fragments.Where(fr => fragmentType.IsAssignableFrom(fr.GetType())).ToList();
+                    if (matches.Count > 1)
+                        Compute.RecordWarning($"{bhom} contains more than one fragment of type {fragmentType.IToText()}. The first one will be returned.");
+                    fragment = matches.FirstOrDefault();
+                }
+                if (fragment == null)
+                    Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}], or fragment of type {propName}.");
+
+                return fragment;
             }
         }
 
