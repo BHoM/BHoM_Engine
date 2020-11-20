@@ -109,6 +109,36 @@ namespace BH.Engine.Physical
             return explicitBulk.MaterialComposition;
         }
 
+        /***************************************************/
+
+        [Description("Gets all the Materials a door is composed of and in which ratios")]
+        [Input("door", "The door to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the door is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this Door door)
+        {
+            if (door.Construction.IMaterialComposition() == null)
+            {
+                Engine.Reflection.Compute.RecordError("The Door's MaterialComposition could not be calculated as no Materials have been assigned.");
+                return null;
+            }
+            return door.Construction.IMaterialComposition();
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the Materials a window is composed of and in which ratios")]
+        [Input("window", "The window to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the door is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this Window window)
+        {
+            if (window.Construction.IMaterialComposition() == null)
+            {
+                Engine.Reflection.Compute.RecordError("The Door's MaterialComposition could not be calculated as no Materials have been assigned.");
+                return null;
+            }
+            return window.Construction.IMaterialComposition();
+        }
+
         /******************************************************/
         /**** IConstruction Methods                        ****/
         /******************************************************/

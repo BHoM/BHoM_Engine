@@ -129,5 +129,41 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+
+        [Description("Returns an door's solid volume based on thickness and area.")]
+        [Input("door", "the door to get the volume from")]
+        [Output("volume", "The door's solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this oM.Physical.Elements.Door door)
+        {
+            if (door.Construction == null)
+            {
+                Engine.Reflection.Compute.RecordError("The Door's Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
+                return 0;
+            }
+
+            double area = door.Location.IArea();
+
+            return area * door.Construction.IThickness();
+        }
+
+        /***************************************************/
+
+        [Description("Returns an window's solid volume based on thickness and area.")]
+        [Input("window", "the window to get the volume from")]
+        [Output("volume", "The window's solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this oM.Physical.Elements.Window window)
+        {
+            if (window.Construction == null)
+            {
+                Engine.Reflection.Compute.RecordError("The Door's Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
+                return 0;
+            }
+
+            double area = window.Location.IArea();
+
+            return area * window.Construction.IThickness();
+        }
+
+        /***************************************************/
     }
 }
