@@ -64,9 +64,16 @@ namespace BH.Engine.Spatial
 
             ICurve gridCurve = grid.Curve.IProject(Plane.XY);
 
-            // All this does is check if the control points are within tolerance from the grid, not if the actual curve is.
-            // This works well for Lines and Arcs, but to future-proof for NurbsCurves a more complex algorithm would be required. 
-            // Simply using ClosestPoint to bring the control points onto the curve would not be enough, as they won't always end up in the right places.
+            // All this method does is check if the control points are within tolerance from the grid, not if the actual curve is.
+            // This works well for Lines and Arcs, but to properly support NurbsCurves a more complex algorithm would be required,
+            // as control points of NurbsCurves are not usually on the curve itself. Simply using ClosestPoint to bring the control 
+            // points onto the curve would not be enough, as they may often end up in completely the wrong place and may not accurately
+            // reflect local maximi in distance from the curve. ClosestPoint does not yet support NurbsCurves anyway.
+            if (curve.IsNurbsCurve())
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("IsFullyOnGrid does not fully support NurbsCurves. Results may be inaccurate.");
+            }
+
             foreach (Point pt in ctrlPts)
             {
                 if (pt.IDistance(gridCurve) >= tolerance)
