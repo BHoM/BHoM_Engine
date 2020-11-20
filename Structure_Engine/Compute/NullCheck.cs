@@ -148,6 +148,31 @@ namespace BH.Engine.Structure
             return true;
         }
 
+        [Description("Checks if a Panel OR MORE is null and outputs relevant error message.")]
+        [Input("panel", "The Panel to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
+        public static bool NullCheck(this Panel panel, string methodName = "Method")
+        {
+            // Check Panel
+            if (panel?.ExternalEdges == null || panel?.ExternalEdges.Count == 0)
+            {
+                ErrorMessage(methodName, "Panel");
+                return false;
+            }
+
+            foreach (Edge edge in panel.ExternalEdges) 
+            {
+                if (edge?.Curve == null)
+                {
+                    ErrorMessage(methodName, "Edge");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
