@@ -32,28 +32,52 @@ namespace BH.Engine.Geometry
 
         public static double DotProduct(this Vector a, Vector b)
         {
-            return a != null && b != null ? (a.X * b.X + a.Y * b.Y + a.Z * b.Z) : double.NaN;
+            if (a == null || b == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Could not compute Dot Product because one or both Vectors are null.");
+                return double.NaN;
+            }
+            
+            return (a.X * b.X + a.Y * b.Y + a.Z * b.Z);
         }
 
         /***************************************************/
 
         public static Vector CrossProduct(this Vector a, Vector b)
         {
-            return a != null && b != null ? new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X } : null;
+            if (a == null || b == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Could not compute Cross Product because one or both Vectors are null.");
+                return null;
+            }
+            
+            return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
         }
 
         /***************************************************/
 
         public static Vector CrossProduct(this Point a, Point b)
         {
-            return a != null && b != null ? new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X } : null;
+            if (a == null || b == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Could not compute Cross Product because one or both Points are null.");
+                return null;
+            }
+            
+            return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
         }
 
         /***************************************************/
 
         public static Quaternion Product(this Quaternion q1, Quaternion q2)
         {
-            return q1 != null && q2 != null ? q1 * q2 : null;
+            if (q1 == null || q2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Could not compute Product because one or both Quaternions are null.");
+                return null;
+            }
+            
+            return q1 * q2;
         }
 
         /***************************************************/
