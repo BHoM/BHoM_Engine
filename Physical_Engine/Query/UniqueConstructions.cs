@@ -47,9 +47,9 @@ namespace BH.Engine.Physical
             ComparisonConfig dc = new ComparisonConfig()
             {
                 PropertyExceptions = new List<string>
-                    {
-                        "CustomData"
-                    },
+                {
+                    "CustomData"
+                },
                 NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
