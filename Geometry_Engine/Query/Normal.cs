@@ -119,7 +119,13 @@ namespace BH.Engine.Geometry
             //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
             for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
                 normal += (curve.ControlPoints[i] - avg).CrossProduct(curve.ControlPoints[i + 1] - avg);
-            
+
+            if (normal.Length() < tolerance)
+            {
+                Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve");
+                return null;
+            }
+
             normal = normal.Normalise();
 
             //Check if normal needs to be flipped from the right hand rule
@@ -182,6 +188,12 @@ namespace BH.Engine.Geometry
                 //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
                 for (int i = 0; i < points.Count - 1; i++)
                     normal += (points[i] - avg).CrossProduct(points[i + 1] - avg);
+
+                if (normal.Length() < tolerance)
+                {
+                    Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve");
+                    return null;
+                }
 
                 normal = normal.Normalise();
 
