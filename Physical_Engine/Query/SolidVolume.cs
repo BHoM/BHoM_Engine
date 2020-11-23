@@ -118,50 +118,42 @@ namespace BH.Engine.Physical
             }
 
             double solidVolume = explicitBulk.Volume;
-
-            if (solidVolume <= 0)
+            if (solidVolume < 0)
             {
                 Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
                 return 0;
             }
-
             return solidVolume;
         }
 
-        /***************************************************/
-
-        [Description("Returns an door's solid volume based on thickness and area.")]
-        [Input("door", "the door to get the volume from")]
-        [Output("volume", "The door's solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this oM.Physical.Elements.Door door)
-        {
-            if (door.Construction == null)
-            {
-                Engine.Reflection.Compute.RecordError("The Door's Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
-                return 0;
-            }
-
-            double area = door.Location.IArea();
-
-            return area * door.Construction.IThickness();
-        }
-
-        /***************************************************/
-
-        [Description("Returns an window's solid volume based on thickness and area.")]
+        [Description("Returns an IOpening's solid volume based on thickness and area.")]
         [Input("window", "the window to get the volume from")]
         [Output("volume", "The window's solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this oM.Physical.Elements.Window window)
+        public static double SolidVolume(this IOpening opening)
         {
-            if (window.Construction == null)
+            if (opening is BH.oM.Physical.Elements.Void)
             {
-                Engine.Reflection.Compute.RecordError("The window's Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
+                Engine.Reflection.Compute.RecordError("Voids contain no solid volume. Try querying the desired value another way.");
                 return 0;
             }
 
-            double area = window.Location.IArea();
+            double area = opening.IArea();
 
-            return area * window.Construction.IThickness();
+            double thickness = 0;
+            if (opening is Window)
+                thickness = (opening as Window).Construction.IThickness();
+            else if (opening is Door)
+                thickness = (opening as Door).Construction.IThickness();
+
+            double solidVolume = area * thickness;
+
+            if (solidVolume <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Solid volume cannot be calculated for element of type :" + opening.GetType() + ". Returning zero volume.");
+                return 0;
+            }
+
+            return solidVolume;
         }
 
         /***************************************************/
