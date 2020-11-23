@@ -217,7 +217,8 @@ namespace BH.Engine.Base
                 if (depth > 50) return null;
 
                 Type obj = null;
-                if (!m_ImplementingTypes.TryGetValue(type, out obj)) return null;
+                if (!m_ImplementingTypes.TryGetValue(type, out obj))
+                    return null;
 
                 return GetValue(obj, rnd, depth + 1);
             }
@@ -308,4 +309,3 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
-
