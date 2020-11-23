@@ -43,7 +43,7 @@ namespace BH.Engine.Diffing
     public static partial class Compute
     {
         [Description("Dispatches to the most appropriate Diffing method, depending on the provided inputs.")]
-        public static Diff Diffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingType diffingType = DiffingType.Automatic, DiffingConfig diffConfig = null)
+        public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingType diffingType = DiffingType.Automatic, DiffingConfig diffConfig = null)
         {
             if (!pastObjs.Any() || !followingObjs.Any())
             {

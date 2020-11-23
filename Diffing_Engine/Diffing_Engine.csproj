@@ -68,7 +68,7 @@
     <Compile Include="Compute\DiffOneByOne.cs" />
     <Compile Include="Compute\DiffWithFragmentId.cs" />
     <Compile Include="Compute\DiffWithHash.cs" />
-    <Compile Include="Compute\_IDiffing.cs" />
+    <Compile Include="Compute\IDiffing.cs" />
     <Compile Include="Compute\DiffWithCustomId.cs" />
     <Compile Include="Compute\DiffRevisions.cs" />
     <Compile Include="Convert\TryParseObjectToGuid.cs" />
