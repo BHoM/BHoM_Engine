@@ -116,7 +116,8 @@ namespace BH.Engine.Diffing
             }
 
             // Check if the bhomObjects have a persistentId assigned.
-            List<object> reminder_past, reminder_following;
+            List<object> reminder_past;
+            List<object> reminder_following;
             List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithNonNullPersistentAdapterId(out reminder_past);
             List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithNonNullPersistentAdapterId(out reminder_following);
             Diff fragmentDiff = null;
@@ -148,4 +149,3 @@ namespace BH.Engine.Diffing
         }
     }
 }
-
