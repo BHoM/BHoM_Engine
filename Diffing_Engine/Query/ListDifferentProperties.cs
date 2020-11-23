@@ -38,8 +38,8 @@ namespace BH.Engine.Diffing
     {
 
         [MultiOutput(0, "propNames", "List of properties changed per each object.")]
-        [MultiOutput(1, "value_Current", "List of current values of the properties.")]
-        [MultiOutput(2, "value_Past", "List of past values of the properties.")]
+        [MultiOutput(1, "value_obj1", "List of current values of the properties.")]
+        [MultiOutput(2, "value_obj2", "List of past values of the properties.")]
         public static Output<List<string>, List<object>, List<object>> ListDifferentProperties(Dictionary<string, Tuple<object, object>> diffProps)
         {
             var output = new Output<List<string>, List<object>, List<object>>();
