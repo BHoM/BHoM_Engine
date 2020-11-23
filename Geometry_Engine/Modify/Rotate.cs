@@ -45,6 +45,12 @@ namespace BH.Engine.Geometry
 
         public static Vector Rotate(this Vector vector, double rad, Vector axis)
         {
+            if (vector == null || axis == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot rotate vector as it and/or the axis vector is null");
+                return null;
+            }
+
             // using Rodrigues' rotation formula
             axis = axis.Normalise();
 
