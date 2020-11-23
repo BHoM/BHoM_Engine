@@ -36,6 +36,12 @@ namespace BH.Engine.Geometry
 
         public static double Angle(this Vector v1, Vector v2)
         {
+            if (v1 == null || v2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute angle as one or both vectors are null");
+                return 0;
+            }
+
             double dotProduct = v1.DotProduct(v2);
             double length = v1.Length() * v2.Length();
 

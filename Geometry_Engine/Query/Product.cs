@@ -32,28 +32,28 @@ namespace BH.Engine.Geometry
 
         public static double DotProduct(this Vector a, Vector b)
         {
-            return (a.X * b.X + a.Y * b.Y + a.Z * b.Z);
+            return a != null && b != null ? (a.X * b.X + a.Y * b.Y + a.Z * b.Z) : double.NaN;
         }
 
         /***************************************************/
 
         public static Vector CrossProduct(this Vector a, Vector b)
         {
-            return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
+            return a != null && b != null ? new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X } : null;
         }
 
         /***************************************************/
 
         public static Vector CrossProduct(this Point a, Point b)
         {
-            return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
+            return a != null && b != null ? new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X } : null;
         }
 
         /***************************************************/
 
         public static Quaternion Product(this Quaternion q1, Quaternion q2)
         {
-            return q1 * q2;
+            return q1 != null && q2 != null ? q1 * q2 : null;
         }
 
         /***************************************************/
