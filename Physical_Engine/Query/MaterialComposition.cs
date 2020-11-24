@@ -71,17 +71,32 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets all the Materials a BulkSolid is composed of and in which ratios")]
-        [Input("bulkSolids", "The BulkSolids to get the MaterialComposition from")]
-        [Output("materialComposition", "The kind of matter the BulkSolids is composed of and in which ratios", typeof(Ratio))]
-        public static MaterialComposition MaterialComposition(this BulkSolids bulkSolids)
+        [Description("Gets all the Materials a SolidBulk is composed of and in which ratios")]
+        [Input("solidBulk", "The SolidBulk to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the SolidBulk is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this SolidBulk solidBulk)
         {
-            if (bulkSolids.MaterialComposition == null)
+            if (solidBulk.MaterialComposition == null)
             {
-                Engine.Reflection.Compute.RecordError("The BulkSolids MaterialComposition could not be calculated as no Materials have been assigned.");
+                Engine.Reflection.Compute.RecordError("The SolidBulk MaterialComposition could not be calculated as no Materials have been assigned.");
                 return null;
             }
-            return Matter.Create.MaterialComposition(bulkSolids.MaterialComposition.Materials, bulkSolids.MaterialComposition.Ratios);
+            return Matter.Create.MaterialComposition(solidBulk.MaterialComposition.Materials, solidBulk.MaterialComposition.Ratios);
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the Materials a ExplicitBulk is composed of and in which ratios")]
+        [Input("explicitBulk", "The ExplicitBulk to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the ExplicitBulk is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this ExplicitBulk explicitBulk)
+        {
+            if (explicitBulk.MaterialComposition == null)
+            {
+                Engine.Reflection.Compute.RecordError("The ExplicitBulk MaterialComposition could not be calculated as no Materials have been assigned.");
+                return null;
+            }
+            return Matter.Create.MaterialComposition(explicitBulk.MaterialComposition.Materials, explicitBulk.MaterialComposition.Ratios);
         }
 
         /******************************************************/
