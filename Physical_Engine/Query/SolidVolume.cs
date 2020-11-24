@@ -82,16 +82,34 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Return the total volume of BulkSolids")]
-        [Input("bulkSolids", "Solid geometric elements that have a material composition")]
-        [Output("volume", "The combined volume of BulkSolids", typeof(Volume))]
-        public static double SolidVolume(this BulkSolids bulkSolids)
+        [Description("Return the total volume of SolidBulk")]
+        [Input("solidBulk", "Solid geometric elements that have a material composition")]
+        [Output("volume", "The combined volume of solidBulk", typeof(Volume))]
+        public static double SolidVolume(this SolidBulk solidBulk)
         {
-            double solidVolume = bulkSolids.Geometry.Select(x => BH.Engine.Geometry.Query.IVolume(x)).Sum();
+            double solidVolume = solidBulk.Geometry.Select(x => BH.Engine.Geometry.Query.IVolume(x)).Sum();
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("The BulkSolids Solid Volume could not be calculated. Returning zero volume.");
+                Engine.Reflection.Compute.RecordError("The SolidBulk Solid Volume could not be calculated. Returning zero volume.");
+                return 0;
+            }
+
+            return solidVolume;
+        }
+
+        /***************************************************/
+
+        [Description("Return the total volume of ExplicitBulk")]
+        [Input("explicitBulk", "Solid geometric elements that have a material composition")]
+        [Output("volume", "The combined volume of ExplicitBulk", typeof(Volume))]
+        public static double SolidVolume(this ExplicitBulk explicitBulk)
+        {
+            double solidVolume = explicitBulk.Volume;
+
+            if (solidVolume <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("The explicitBulk Solid Volume could not be calculated. Returning zero volume.");
                 return 0;
             }
 
