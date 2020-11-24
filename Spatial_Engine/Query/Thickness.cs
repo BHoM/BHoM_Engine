@@ -33,9 +33,9 @@ namespace BH.Engine.Spatial
         /****          ShapeProfiles           ****/
         /******************************************/
 
-        [Description("Returns the thickness of a boxProfile.")]
-        [Input("boxProfile", "The boxProfile to query.")]
-        [Output("thickness", "Thickness of the boxProfile.", typeof(Length))]
+        [Description("Returns the thickness of a BoxProfile.")]
+        [Input("boxProfile", "The BoxProfile to query.")]
+        [Output("thickness", "Thickness of the BoxProfile.", typeof(Length))]
         public static double Thickness(this BoxProfile boxProfile)
         {
             return boxProfile.Thickness;
@@ -43,9 +43,9 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        [Description("Returns the thickness of a kiteProfile.")]
-        [Input("kiteProfile", "The kiteProfile to query.")]
-        [Output("thickness", "Thickness of the kiteProfile.", typeof(Length))]
+        [Description("Returns the thickness of a KiteProfile.")]
+        [Input("kiteProfile", "The KiteProfile to query.")]
+        [Output("thickness", "Thickness of the KiteProfile.", typeof(Length))]
         public static double Thickness(this KiteProfile kiteProfile)
         {
             return kiteProfile.Thickness;
@@ -53,9 +53,9 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        [Description("Returns the thickness of a tubeProfile.")]
-        [Input("tubeProfile", "The tubeProfile to query.")]
-        [Output("thickness", "Thickness of the tubeProfile.", typeof(Length))]
+        [Description("Returns the thickness of a TubeProfile.")]
+        [Input("tubeProfile", "The TubeProfile to query.")]
+        [Output("thickness", "Thickness of the TubeProfile.", typeof(Length))]
         public static double Thickness(this TubeProfile tubeProfile)
         {
             return tubeProfile.Thickness;
