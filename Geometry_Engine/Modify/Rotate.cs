@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
         {
             if (vector == null || axis == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot rotate vector as it and/or the axis vector is null");
+                BH.Engine.Reflection.Compute.RecordError("Cannot rotate vector as it and/or the axis vector is null.");
                 return null;
             }
 
