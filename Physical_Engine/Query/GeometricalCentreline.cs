@@ -40,37 +40,17 @@ namespace BH.Engine.Physical
         {   
             ICurve location = element.Location;
 
-            Vector normal = null;
-
-            try
-            {
-                normal = BH.Engine.Physical.Query.Normal(element);
-            }
-            catch
-            {
-                Engine.Reflection.Compute.RecordError("IFramingElement must have linear location line.");
-                return null;
-            }
-
-            if (normal == null)
-            {
-                Engine.Reflection.Compute.RecordError("Was not able to compute element normal.");
-                return null;
-            }
-
             if (element.Property is ConstantFramingProperty)
             {
                 ConstantFramingProperty constantProperty = element.Property as ConstantFramingProperty;
 
-                IProfile profile = constantProperty.Profile;
+                IProfile profile = constantProperty.Profile; 
 
-                BoundingBox profileBounds = profile.Edges.Bounds();
+                Point geometricalCentre = profile.Edges.Bounds().Centre();
 
-                Point profileCentre = profileBounds.Centre();
+                Vector translate = geometricalCentre - Point.Origin;
 
-                Point locationPoint = element.Location.Centroid();
-
-                ICurve geometricalCentreline = location.ITranslate(profileCentre - locationPoint);
+                ICurve geometricalCentreline = location.ITranslate(translate);
 
                 return geometricalCentreline;
             }
