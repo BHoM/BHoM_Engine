@@ -65,7 +65,7 @@ namespace BH.Engine.Physical
 
                 Vector sectionTranslate = geometricalCentre - Point.Origin;
 
-                return location.ITranslate(tangent * sectionTranslate.X + thirdAxis * sectionTranslate.Y + normal * sectionTranslate.Z);
+                return location.ITranslate(- thirdAxis * sectionTranslate.X + normal * sectionTranslate.Y);
 
             }
             else
