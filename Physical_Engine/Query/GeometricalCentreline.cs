@@ -38,25 +38,22 @@ namespace BH.Engine.Physical
         [Output("curve", "The geometrical centreline of the IFramingElement.")]
         public static ICurve GeometricalCentreline(this IFramingElement element)
         {   
-            ICurve location = element.Location;
+            ICurve location = element?.Location;
+            if (location == null)
+                return null;
 
             if (element.Property is ConstantFramingProperty)
             {
-                ConstantFramingProperty constantProperty = element.Property as ConstantFramingProperty;
+                Point geometricalCentre = (element.Property as ConstantFramingProperty)?.Profile?.Edges?.Bounds()?.Centre();
 
-                IProfile profile = constantProperty.Profile; 
+                if (geometricalCentre == null)
+                    return null;
 
-                Point geometricalCentre = profile.Edges.Bounds().Centre();
-
-                Vector translate = geometricalCentre - Point.Origin;
-
-                ICurve geometricalCentreline = location.ITranslate(translate);
-
-                return geometricalCentreline;
+                return location.ITranslate(geometricalCentre - Point.Origin);
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Element does not have a suitable framing property, was not able to extract section bounding box.");
+                Engine.Reflection.Compute.RecordError("Only suitable framing property for the IFramingElement is ConstantFramingProperty.");
                 return null;
             }
         }
