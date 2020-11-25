@@ -50,6 +50,9 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Graphics_oM">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Graphics_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Physical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
       <Private>False</Private>
@@ -140,6 +143,10 @@
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Graphics_Engine\Graphics_Engine.csproj">
+      <Project>{d5c7704d-f59a-4fc6-8d1e-356699a174e0}</Project>
+      <Name>Graphics_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>

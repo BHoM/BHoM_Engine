@@ -27,6 +27,8 @@ using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Graphics.Views;
+using BH.oM.Graphics.Components;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -34,6 +36,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.Engine.Graphics;
+using BH.oM.Graphics.Data;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.Analytical
 {
@@ -49,10 +54,9 @@ namespace BH.Engine.Analytical
         [Output("graph", "The projection of the original Graph.")]
         public static Graph IProjectGraph(this Graph graph, IProjection projection)
         {
-            Graph graphView = ProjectGraph(graph, projection as dynamic);
-            //ensure we have curves on relations
-            //IRelationCurves(graphView, projection as dynamic);
-            return graphView;
+            Graph graphProjected = ProjectGraph(graph, projection as dynamic);
+
+            return graphProjected;
         }
         /***************************************************/
 
@@ -96,14 +100,16 @@ namespace BH.Engine.Analytical
         private static Graph ProjectGraph(this Graph graph,  GraphicalProjection projection)
         {
             Graph processGraph = graph.DeepClone();
-            foreach (IBHoMObject entity in processGraph.Entities.Values.ToList())
-            {
-                ProjectionFragment projectionFragment = entity.FindFragment<ProjectionFragment>();
-                //if no process projection fragment, remove entity
-                if (projectionFragment == null)
-                    processGraph.RemoveEntity(entity.BHoM_Guid);
-            }
-            //processGraph.ILayout(projection);
+            //foreach (IBHoMObject entity in processGraph.Entities.Values.ToList())
+            //{
+            //    ProjectionFragment projectionFragment = entity.FindFragment<ProjectionFragment>();
+            //    //if no process projection fragment, remove entity
+            //    if (projectionFragment == null)
+            //        processGraph.RemoveEntity(entity.BHoM_Guid);
+            //}
+            
+                IView(projection.View as CustomView, processGraph);
+            
             return processGraph;
         }
 
@@ -118,5 +124,15 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+        /**** View Methods                              ****/
+        /***************************************************/
+        private static void IView(this CustomView view, Graph graph)
+        {
+            foreach(BH.oM.Graphics.Components.IComponent component in view.IComponents())
+            {
+                object data = graph.PropertyValue(component.Dataset.Collection);
+                component.IRepresentationFragment(data, view.ViewConfig);
+            }
+        }
     }
 }

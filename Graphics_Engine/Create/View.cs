@@ -39,7 +39,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        public static void View(DependencyChart view)
+        public static void View(this CustomView view)
         {
 
         }
