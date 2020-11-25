@@ -26,7 +26,6 @@ using BH.oM.Geometry;
 using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Spatial.ShapeProfiles;
 using System.ComponentModel;
 
 namespace BH.Engine.Physical
@@ -42,6 +41,21 @@ namespace BH.Engine.Physical
             if (location == null)
                 return null;
 
+            Vector normal = null;
+            normal = element.Normal();
+            if (normal == null)
+            {
+                Engine.Reflection.Compute.RecordError("IFramingElement must have linear location line.");
+                return null;
+            }
+
+            Vector tangent = null;
+            tangent = location.ITangentAtPoint(location.ICentroid());
+            if (tangent == null)
+                return null;
+
+            Vector thirdAxis = tangent.CrossProduct(normal);
+
             if (element.Property is ConstantFramingProperty)
             {
                 Point geometricalCentre = (element.Property as ConstantFramingProperty)?.Profile?.Edges?.Bounds()?.Centre();
@@ -49,7 +63,10 @@ namespace BH.Engine.Physical
                 if (geometricalCentre == null)
                     return null;
 
-                return location.ITranslate(geometricalCentre - Point.Origin);
+                Vector sectionTranslate = geometricalCentre - Point.Origin;
+
+                return location.ITranslate(tangent * sectionTranslate.X + thirdAxis * sectionTranslate.Y + normal * sectionTranslate.Z);
+
             }
             else
             {
