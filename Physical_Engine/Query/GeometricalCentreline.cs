@@ -49,10 +49,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            Vector tangent = null;
-            tangent = location.ITangentAtPoint(location.ICentroid());
-            if (tangent == null)
-                return null;
+            Vector tangent = (location.IEndPoint() - location.IStartPoint()).Normalise();
 
             Vector thirdAxis = tangent.CrossProduct(normal);
 
@@ -70,7 +67,7 @@ namespace BH.Engine.Physical
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Only suitable framing property for the IFramingElement is ConstantFramingProperty.");
+                Engine.Reflection.Compute.RecordError("Only suitable framing property for the action is ConstantFramingProperty.");
                 return null;
             }
         }
