@@ -33,7 +33,7 @@ namespace BH.Engine.Physical
 {
     public static partial class Query
     {
-        [Description("Returns the geometrical centreline of an IFramingElement.")]
+        [Description("Returns the centreline of an IFramingElement's section bounding box.")]
         [Input("element", "The IFramingElement to query the geometrical centreline of.")]
         [Output("curve", "The geometrical centreline of the IFramingElement.")]
         public static ICurve GeometricalCentreline(this IFramingElement element)
