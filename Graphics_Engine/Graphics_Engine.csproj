@@ -60,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convert\ToRenderMesh.cs" />
+    <Compile Include="Create\RepresentationFragment.cs" />
+    <Compile Include="Create\RepresentationFragments\DependencyLines.cs" />
+    <Compile Include="Create\RepresentationFragments\DependencyShapes.cs" />
     <Compile Include="Create\Gradient.cs" />
     <Compile Include="Create\SVGStyle.cs" />
     <Compile Include="Create\SVGObject.cs" />
@@ -69,6 +72,7 @@
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Convert\ToSVGString.cs" />
+    <Compile Include="Query\Components.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
