@@ -54,9 +54,22 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Matter_Engine">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\\Matter_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="MEP_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\MEP_oM.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Physical_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Quantities_oM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
@@ -95,6 +108,7 @@
     <Compile Include="Query\HydraulicDiameter.cs" />
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\CompositeSolidVolumes.cs" />
+    <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\SolidVolume.cs" />
   </ItemGroup>
   <ItemGroup>
