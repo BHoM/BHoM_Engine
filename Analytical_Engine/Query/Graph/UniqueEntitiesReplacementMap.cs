@@ -50,24 +50,23 @@ namespace BH.Engine.Analytical
             ComparisonConfig cc = comparisonConfig ?? new ComparisonConfig();
 
             Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
-            Dictionary<IBHoMObject, string> objectHash = new Dictionary<IBHoMObject, string>();
+            Dictionary<IBHoMObject, string> entitiesHash = new Dictionary<IBHoMObject, string>();
 
-            HashComparer<object> hashComparer = new HashComparer<object>(cc);
+            // populate dictionary
+            entities.ForEach(ent => entitiesHash.Add(ent, ent.Hash(cc)));
 
-            // Compute the "Diffing" by means of a VennDiagram.
-            // Hashes are computed in the DiffingHashComparer, once per each object (the hash is stored in a hashFragment).
-            foreach (var objA in entities)
+            foreach (KeyValuePair<IBHoMObject, string> entityA in entitiesHash)
             {
-                foreach (var objB in entities)
+                foreach (KeyValuePair<IBHoMObject, string> entityB in entitiesHash)
                 {
                     //only if same object type
-                    if (objA.GetType() == objB.GetType())
+                    if (entityA.Key.GetType() == entityB.Key.GetType())
                     {
                         //compare hashes
-                        if (hashComparer.Equals(objA, objB))
+                        if (entityA.Value == entityB.Value)
                         {
                             //store in map dictionary where key is original Guid and Value is replacement object
-                            replaceMap[objA.BHoM_Guid] = objB;
+                            replaceMap[entityA.Key.BHoM_Guid] = entityB.Key;
 
                             //first match has been found so break inner loop.
                             break;
