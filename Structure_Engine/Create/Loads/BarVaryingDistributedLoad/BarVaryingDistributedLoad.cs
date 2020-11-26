@@ -57,11 +57,17 @@ namespace BH.Engine.Structure
         {
             if ((forceAtStart == null || forceAtEnd == null) && (momentAtStart == null || momentAtEnd == null))
             {
-                Engine.Reflection.Compute.RecordError("Bar varying load requires either the force at start and end and/or the moment at start and end to be defined");
+                Engine.Reflection.Compute.RecordError("Bar varying load requires either the force at start and end and/or the moment at start and end to be defined.");
                 return null;
             }
 
-            if (relativePositions && (startPosition < 0 || startPosition > 1 || endPosition < 0 || endPosition > 1))
+            if (startPosition < 0 || endPosition < 0)
+            {
+                Reflection.Compute.RecordError("Positions need to be greater or equal to 0.");
+                return null;
+            }
+
+            if (relativePositions && (startPosition > 1 || endPosition > 1))
             {
                 Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive) for relative positions set to true.");
                 return null;
@@ -105,27 +111,6 @@ namespace BH.Engine.Structure
         {
             return BarVaryingDistributedLoad(loadcase, new BHoMGroup<Bar> { Elements = objects.ToList() }, startPosition, forceAtStart, forceAtEnd, endPosition, forceAtEnd, momentAtEnd, relativePositions, axis, projected, name);
 
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        [Description("Groups bars by length, within a tolerance.")]
-        [Input("bars", "The bars to group.")]
-        [Input("tolerance", "Acceptable difference in length for each group.")]
-        [Output("barGroup", "The bars grouped, as a dictionary, with the key being the length and the value being the corresponding bars.")]
-        private static Dictionary<double, List<Bar>> GroupBarsByLength(this IEnumerable<Bar> bars, double tolerance)
-        {
-            //Check that bars have valid geometry
-            bars = bars.Where(x => x != null && x.StartNode != null && x.EndNode != null && x.StartNode.Position != null && x.EndNode.Position != null);
-
-            Dictionary<double, List<Bar>> dict = new Dictionary<double, List<Bar>>();
-            foreach (var group in bars.GroupBy(x => (int)Math.Round(x.Length() / tolerance)))
-            {
-                dict[group.Key * tolerance] = group.ToList();
-            }
-            return dict;
         }
 
         /***************************************************/
