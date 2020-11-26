@@ -35,6 +35,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
+        [Description("Returns the normal vector to the specified face in the mesh.")]
+        [Input("face", "The Face to get the normal to.")]
+        [Input("mesh", "The Mesh containing the face to get the normal to.")]
+        [Output("normal", "The normal vector to the mesh's specified face.")]
         public static Vector Normal(this Face face, Mesh mesh)
         {
             List<Point> vertices = mesh.Vertices;
@@ -57,6 +61,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the list of normal vectors to the mesh's faces.")]
+        [Input("mesh", "The Mesh to get the normals to.")]
+        [Output("normals", "The List of normal vectors to the given mesh's faces.")]
         public static List<Vector> Normals(this Mesh mesh)
         {
             List<Vector> normals = new List<Vector>(mesh.Faces.Count);
@@ -87,6 +94,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the list of normal vectors to the mesh's faces.")]
+        [Input("mesh", "The Mesh3D to get the normals to.")]
+        [Output("normals", "The List of normal vectors to the given mesh's faces.")]
         public static List<Vector> Normals(this Mesh3D mesh)
         {
             return mesh.ToMesh().Normals();
@@ -97,17 +107,20 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Returns the normal vector to the curve's plane, oriented according to the rigth hand rule. Works only for closed and planar curves.")]
+        [Input("curve", "The Polyline to get the normal to.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("normal", "The normal vector to the curve's plane.")]
         public static Vector Normal(this Polyline curve, double tolerance = Tolerance.Distance)
         {
-
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve must be planar.");
+                Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve is not closed. Input must be a polygon");
+                Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
@@ -122,7 +135,7 @@ namespace BH.Engine.Geometry
 
             if (normal.Length() < tolerance)
             {
-                Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve");
+                Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve.");
                 return null;
             }
 
@@ -138,17 +151,20 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the normal vector to the curve's plane, oriented according to the rigth hand rule. Works only for closed and planar curves.")]
+        [Input("curve", "The PolyCurve to get the normal to.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("normal", "The normal vector to the curve's plane.")]
         public static Vector Normal(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
-
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve must be planar.");
+                Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve is not closed. Input must be a polygon");
+                Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
@@ -191,7 +207,7 @@ namespace BH.Engine.Geometry
 
                 if (normal.Length() < tolerance)
                 {
-                    Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve");
+                    Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve.");
                     return null;
                 }
 
@@ -207,27 +223,39 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Normal(this Circle circle, double tolerance = Tolerance.Distance)
+        [Description("Returns the normal vector to the circle's plane.")]
+        [Input("curve", "The Circle to get the normal to.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("normal", "The normal vector to the curve's plane.")]
+        public static Vector Normal(this Circle curve, double tolerance = Tolerance.Distance)
         {
-            return circle.Normal;
+            return curve.Normal;
         }
 
         /***************************************************/
 
-        public static Vector Normal(this Ellipse ellipse, double tolerance = Tolerance.Distance)
+        [Description("Returns the normal vector to the ellipse's plane.")]
+        [Input("curve", "The Ellipse to get the normal to.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("normal", "The normal vector to the curve's plane.")]
+        public static Vector Normal(this Ellipse curve, double tolerance = Tolerance.Distance)
         {
-            Vector normal = (ellipse.Axis1).CrossProduct(ellipse.Axis2);
+            Vector normal = (curve.Axis1).CrossProduct(curve.Axis2);
             return normal;
         }
 
         /***************************************************/
 
-        public static Vector Normal(this Arc arc, double tolerance = Tolerance.Distance)
+        [Description("Returns the normal vector to the arc's plane.")]
+        [Input("curve", "The Arc to get the normal to.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("normal", "The normal vector to the curve's plane.")]
+        public static Vector Normal(this Arc curve, double tolerance = Tolerance.Distance)
         {
-            if (arc.Angle() > 0)
-                return arc.CoordinateSystem.Z;
+            if (curve.Angle() > 0)
+                return curve.CoordinateSystem.Z;
             else
-                return arc.CoordinateSystem.Z.Reverse();
+                return curve.CoordinateSystem.Z.Reverse();
         }
 
 
@@ -235,6 +263,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
+        [Description("Returns the normal vector to the planar surface.")]
+        [Input("surface", "The PlanarSurface to get the normal to.")]
+        [Output("normal", "The normal vector to the surface.")]
         public static Vector Normal(this PlanarSurface surface)
         {
             return surface.ExternalBoundary.INormal();
@@ -245,6 +276,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Interface method that returns the normal vector to any ICurve's plane and oriented according to the rigth hand rule. Works only for closed and planar curves with an exception for single Arcs.")]
+        [Input("curve", "The ICurve to get the normal to.")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("normal", "The normal vector to the curve's plane.")]
         public static Vector INormal(this ICurve curve, double tolerance = Tolerance.Distance)
         {
             return Normal(curve as dynamic, tolerance);
@@ -252,6 +287,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Interface method that returns the list of normal vectors to any IGeometry.")]
+        [Input("geometry", "The IGeometry to get the normal to.")]
+        [Output("normals", "The List of normal vectors to the given geometry.")]
         public static List<Vector> INormals(this IGeometry geometry)
         {
             return Normals(geometry as dynamic);
