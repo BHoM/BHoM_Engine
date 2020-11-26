@@ -100,14 +100,10 @@ namespace BH.Engine.Serialiser
             List<string> allLines = new List<string>();
             string json = "";
 
-            // Append a comma to the invididually serialized objects
-            allLines.AddRange(objs.Where(c => c != null).Select(obj => obj.ToJson() + ","));
+            // Join all individually serialised objects with a comma and a newline
+            json = string.Join(",\n", objs.Where(c => c != null).Select(obj => obj.ToJson()));
 
-            // Remove the trailing comma for the last element.
-            allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
-
-            // Join all individually serialised objects with a NewLine, and put between square brackets, to make a valid JSON array.
-            json = String.Join(Environment.NewLine, allLines);
+            // Put between square brackets, to make a valid JSON array.
             json = "[" + json + "]";
 
             return json;
