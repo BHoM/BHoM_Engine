@@ -83,7 +83,7 @@ namespace BH.Engine.Base
             // Make sure that the single Property exceptions are either:
             // - explicitly referring to a property in its "property path": e.g. Bar.StartNode.Point.X
             // - OR if it's only a property name e.g. BHoM_Guid make sure that we prepend the wildcard so we can match the single property inside any property path: e.g. *BHoM_Guid
-            cc.PropertyExceptions = cc.PropertyExceptions.Select(pe => pe = pe.Contains('.') ? pe : "*" + pe).ToList();
+            //cc.PropertyExceptions = cc.PropertyExceptions.Select(pe => pe = pe.Contains('.') ? pe : "*" + pe).ToList();
 
             // Convert from the Numeric Tolerance to fractionalDigits (required for the hash).
             int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
@@ -200,12 +200,7 @@ namespace BH.Engine.Base
 
                 foreach (PropertyInfo prop in properties)
                 {
-                    if (string.IsNullOrWhiteSpace(propertyPath))
-                        propertyPath = type.FullName + "." + prop.Name;
-                    else 
-                        propertyPath += "." + prop.Name;
-
-                    bool isInPropertyExceptions = cc.PropertyExceptions?.Count > 0 && cc.PropertyExceptions.Where(ex => new WildcardPattern(ex).IsMatch(propertyPath)).Any();
+                    bool isInPropertyExceptions = cc.PropertyExceptions?.Count > 0 && cc.PropertyExceptions.Where(ex => prop.Name == ex).Any();
                     if (isInPropertyExceptions)
                         continue;
 
@@ -215,7 +210,10 @@ namespace BH.Engine.Base
                     object propValue = prop.GetValue(obj);
                     if (propValue != null)
                     {
-
+                        if (string.IsNullOrWhiteSpace(propertyPath))
+                            propertyPath = type.FullName + "." + prop.Name;
+                        else
+                            propertyPath += "." + prop.Name;
 
                         string outString = "";
 
