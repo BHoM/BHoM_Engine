@@ -32,10 +32,10 @@ namespace BH.Engine.Physical
 {
     public static partial class Query
     {
-        [Description("Returns the centreline of an IFramingElement's section bounding box.")]
-        [Input("element", "The IFramingElement to query the geometrical centreline of.")]
-        [Output("curve", "The geometrical centreline of the IFramingElement.")]
-        public static ICurve GeometricalCentreline(this IFramingElement element)
+        [Description("Returns the centreline of an IFramingElement's bounding box. The bounding box is aligned to the local coordinate system of the IFramingElement.")]
+        [Input("element", "The IFramingElement to query the bounding box centreline of.")]
+        [Output("curve", "The bounding box centreline of the IFramingElement.")]
+        public static ICurve BoundingBoxCentreline(this IFramingElement element)
         {   
             ICurve location = element?.Location;
             if (location == null)
@@ -51,18 +51,18 @@ namespace BH.Engine.Physical
 
             Vector tangent = (location.IEndPoint() - location.IStartPoint()).Normalise();
 
-            Vector thirdAxis = tangent.CrossProduct(normal);
+            Vector localx = tangent.CrossProduct(normal);
 
             if (element.Property is ConstantFramingProperty)
             {
-                Point geometricalCentre = (element.Property as ConstantFramingProperty)?.Profile?.Edges?.Bounds()?.Centre();
+                Point centre = (element.Property as ConstantFramingProperty)?.Profile?.Edges?.Bounds()?.Centre();
 
-                if (geometricalCentre == null)
+                if (centre == null)
                     return null;
 
-                Vector sectionTranslate = geometricalCentre - Point.Origin;
+                Vector sectionTranslate = centre - Point.Origin;
 
-                return location.ITranslate(- thirdAxis * sectionTranslate.X + normal * sectionTranslate.Y);
+                return location.ITranslate(- localx * sectionTranslate.X + normal * sectionTranslate.Y);
 
             }
             else
