@@ -35,10 +35,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        [Description("Returns the normal vector to the specified face in the mesh.")]
+        [Description("Returns a vector normal to a given face of the mesh.")]
         [Input("face", "The Face to get the normal to.")]
         [Input("mesh", "The Mesh containing the face to get the normal to.")]
-        [Output("normal", "The normal vector to the mesh's specified face.")]
+        [Output("normal", "Vector normal to the given mesh face.")]
         public static Vector Normal(this Face face, Mesh mesh)
         {
             List<Point> vertices = mesh.Vertices;
@@ -61,9 +61,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Returns the list of normal vectors to the mesh's faces.")]
+        [Description("Returns the list of vectors normal to each face of the mesh.")]
         [Input("mesh", "The Mesh to get the normals to.")]
-        [Output("normals", "The List of normal vectors to the given mesh's faces.")]
+        [Output("normals", "List of vectors normal to the faces of a given mesh.")]
         public static List<Vector> Normals(this Mesh mesh)
         {
             List<Vector> normals = new List<Vector>(mesh.Faces.Count);
@@ -94,9 +94,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Returns the list of normal vectors to the mesh's faces.")]
+        [Description("Returns the list of vectors normal to each face of the mesh.")]
         [Input("mesh", "The Mesh3D to get the normals to.")]
-        [Output("normals", "The List of normal vectors to the given mesh's faces.")]
+        [Output("normals", "List of vectors normal to the faces of a given mesh.")]
         public static List<Vector> Normals(this Mesh3D mesh)
         {
             return mesh.ToMesh().Normals();
@@ -107,10 +107,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [Description("Returns the normal vector to the curve's plane, oriented according to the rigth hand rule. Works only for closed and planar curves.")]
+        [Description("Returns the normal vector to the plane of a given curve, oriented according to the right hand rule. Works only for closed, planar curves.")]
         [Input("curve", "The Polyline to get the normal to.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
-        [Output("normal", "The normal vector to the curve's plane.")]
+        [Output("normal", "The normal vector to the plane of a curve.")]
         public static Vector Normal(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsPlanar(tolerance))
