@@ -35,6 +35,7 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Data_oM, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
@@ -61,9 +62,10 @@
   <ItemGroup>
     <Compile Include="Convert\ToRenderMesh.cs" />
     <Compile Include="Create\RepresentationFragment.cs" />
-    <Compile Include="Create\RepresentationFragments\DependencyLines.cs" />
-    <Compile Include="Create\RepresentationFragments\DependencyShapes.cs" />
+    <Compile Include="Create\RepresentationFragments\Links.cs" />
+    <Compile Include="Create\RepresentationFragments\Boxes.cs" />
     <Compile Include="Create\Gradient.cs" />
+    <Compile Include="Create\Scales\IScale.cs" />
     <Compile Include="Create\SVGStyle.cs" />
     <Compile Include="Create\SVGObject.cs" />
     <Compile Include="Create\SVGDocument.cs" />
@@ -73,8 +75,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Convert\ToSVGString.cs" />
     <Compile Include="Query\Components.cs" />
+    <Compile Include="Query\IsNumericType.cs" />
+    <Compile Include="Query\Scales\Scale.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
+      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
+      <Name>Data_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>

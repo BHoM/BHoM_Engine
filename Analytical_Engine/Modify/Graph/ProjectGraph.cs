@@ -28,7 +28,7 @@ using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Graphics.Views;
-using BH.oM.Graphics.Components;
+using BH.oM.Graphics.Scales;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -39,6 +39,8 @@ using System.Threading.Tasks;
 using BH.Engine.Graphics;
 using BH.oM.Graphics.Data;
 using BH.Engine.Reflection;
+using BH.oM.Data.Collections;
+using BH.oM.Graphics;
 
 namespace BH.Engine.Analytical
 {
@@ -108,7 +110,7 @@ namespace BH.Engine.Analytical
             //        processGraph.RemoveEntity(entity.BHoM_Guid);
             //}
             
-                IView(projection.View as CustomView, processGraph);
+                View(projection.View as DependencyChart, processGraph);
             
             return processGraph;
         }
@@ -126,13 +128,48 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** View Methods                              ****/
         /***************************************************/
-        private static void IView(this CustomView view, Graph graph)
+        //private static void IView(this CustomView view, Graph graph)
+        //{
+        //    foreach(BH.oM.Graphics.Components.IComponent component in view.IComponents())
+        //    {
+        //        object data = graph.PropertyValue(component.Dataset.Collection);
+        //        component.IRepresentationFragment(data, view.ViewConfig);
+        //    }
+        //}
+
+        /***************************************************/
+        private static void View(this DependencyChart chart, Graph graph)
         {
-            foreach(BH.oM.Graphics.Components.IComponent component in view.IComponents())
+            //set scales
+            List<object> viewX = new List<object>() { 0, chart.ViewConfig.Width};
+            List<object> viewY = new List<object>() { 0, chart.ViewConfig.Height};
+            object dataX = graph.Entities().PropertyValue(chart.Boxes.X);
+            object dataY = graph.Entities().PropertyValue(chart.Boxes.Y);
+
+            
+            IScale xScale = Graphics.Create.IScale(DataList(dataX), viewX);
+            xScale.Name = "xScale";
+            IScale yScale = Graphics.Create.IScale(DataList(dataY), viewY);
+            yScale.Name = "yScale";
+            Gradient gradient = Graphics.Create.Gradient();
+            List<IScale> scales = new List<IScale>() { xScale, yScale};
+            chart.Boxes.IRepresentationFragment(graph.Entities(), chart.ViewConfig, scales);            
+            
+        }
+
+        private static List<object> DataList(object obj)
+        {
+            List<object> list = new List<object>();
+            if (obj is IEnumerable<object>)
             {
-                object data = graph.PropertyValue(component.Dataset.Collection);
-                component.IRepresentationFragment(data, view.ViewConfig);
+                var enumerator = ((IEnumerable<object>)obj).GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    if(enumerator.Current!=null)
+                        list.Add(enumerator.Current);
+                }
             }
+            return list;
         }
     }
 }
