@@ -38,6 +38,7 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Data_oM, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Diffing_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
       <Private>False</Private>
@@ -135,6 +136,10 @@
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
       <Name>BHoM_Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
+      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
+      <Name>Data_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj">
       <Project>{073dfd36-0829-4792-8c32-67bf692a9413}</Project>

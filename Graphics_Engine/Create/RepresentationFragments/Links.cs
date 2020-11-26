@@ -1,6 +1,7 @@
 ﻿using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.Graphics.Components;
+using BH.oM.Graphics.Scales;
 using BH.oM.Graphics.Views;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,9 @@ namespace BH.Engine.Graphics
 {
     public static partial class Create
     {
-        private static void RepresentationFragment(this DependencyLines component, object data, ViewConfig viewConfig)
+        private static void RepresentationFragment(this Links component, List<IBHoMObject> entities, ViewConfig viewConfig, List<IScale> scales)
         {
-            object x = data.PropertyValue(component.Start);
+            
         }
         
     }
