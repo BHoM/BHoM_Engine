@@ -143,13 +143,36 @@ namespace BH.Engine.Analytical
             //set scales
             List<object> viewX = new List<object>() { 0, chart.ViewConfig.Width};
             List<object> viewY = new List<object>() { 0, chart.ViewConfig.Height};
-            object dataX = graph.Entities().PropertyValue(chart.Boxes.X);
-            object dataY = graph.Entities().PropertyValue(chart.Boxes.Y);
-
+            //object dataX = graph.Entities().PropertyValue(chart.Boxes.X);
+            //object dataY = graph.Entities().PropertyValue(chart.Boxes.Y);
+            object allGroupNames = graph.Entities().PropertyValue(chart.Boxes.Group);
+            var groups = DataList(allGroupNames).GroupBy(n => n);
+            int maxGroup = groups.Max(g => g.Count());
+            IScale xScale = null;
+            IScale yScale = null;
+            if (chart.Boxes.IsHorizontal)
+            {
+                //group for x scale
+                xScale = new ScaleLinear()
+                {
+                    Domain = new Domain(0,maxGroup),
+                    Range = new Domain(0, chart.ViewConfig.Width)
+                };
+                yScale = Graphics.Create.IScale(groups.Select(g => g.Key).ToList(), viewY);
+            }
+            else
+            {
+                //group for y scale
+                xScale = Graphics.Create.IScale(groups.Select(g => g.Key).ToList(), viewX);
+                yScale = new ScaleLinear()
+                {
+                    Domain = new Domain(0, maxGroup),
+                    Range = new Domain(0, chart.ViewConfig.Height)
+                };
+            }
             
-            IScale xScale = Graphics.Create.IScale(DataList(dataX), viewX);
             xScale.Name = "xScale";
-            IScale yScale = Graphics.Create.IScale(DataList(dataY), viewY);
+            
             yScale.Name = "yScale";
             Gradient gradient = Graphics.Create.Gradient();
             List<IScale> scales = new List<IScale>() { xScale, yScale};
@@ -157,6 +180,7 @@ namespace BH.Engine.Analytical
             
         }
 
+        
         private static List<object> DataList(object obj)
         {
             List<object> list = new List<object>();
