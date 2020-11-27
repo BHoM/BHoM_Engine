@@ -36,6 +36,9 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Data_oM, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Dimensional_oM">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Geometry_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>

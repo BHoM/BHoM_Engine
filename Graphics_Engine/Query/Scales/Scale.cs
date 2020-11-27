@@ -16,7 +16,7 @@ namespace BH.Engine.Graphics.Scales
         }
         public static object Scale(this ScaleLinear scale, object value)
         {
-            return Map(scale.Domain, scale.Range, (double)value);
+            return Map(scale.Domain, scale.Range, System.Convert.ToDouble(value));
         }
         public static object Scale(this ScaleOrdinal scale, object value)
         {
@@ -25,9 +25,9 @@ namespace BH.Engine.Graphics.Scales
                 return null;
             if (scale.Range.All(r => r.IsNumericType()) && scale.Range.Count == 2)
             {
-                Domain d = new Domain(0, scale.Domain.Count - 1);
+                Domain d = new Domain(0, scale.Domain.Count);
                 Domain r = new Domain(System.Convert.ToDouble(scale.Range[0]), System.Convert.ToDouble(scale.Range[1]));
-                return Map(d, r, i * 1.0 / (scale.Domain.Count - 1));
+                return Map(d, r, i);
             }
                 
             else
