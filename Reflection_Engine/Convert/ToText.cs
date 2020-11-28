@@ -146,7 +146,12 @@ namespace BH.Engine.Reflection
             }
         }
 
+        /***************************************************/
 
+        /*public static string ToText(this Enum e)
+        {
+            
+        }*/
 
         /***************************************************/
         /**** Fallback Methods                          ****/
@@ -156,7 +161,7 @@ namespace BH.Engine.Reflection
         {
             if (item == null)
                 return "null";
-            else if (item is string)
+            else if (item is string || item.GetType().IsEnum)
                 return item.ToString();
             else
                 return item.GetType().ToString();
