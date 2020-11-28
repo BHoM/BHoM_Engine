@@ -146,12 +146,7 @@ namespace BH.Engine.Reflection
             }
         }
 
-        /***************************************************/
 
-        /*public static string ToText(this Enum e)
-        {
-            
-        }*/
 
         /***************************************************/
         /**** Fallback Methods                          ****/
