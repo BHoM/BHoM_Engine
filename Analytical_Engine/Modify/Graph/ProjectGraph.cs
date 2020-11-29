@@ -34,13 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.Engine.Graphics;
-using BH.oM.Graphics.Data;
 using BH.Engine.Reflection;
-using BH.oM.Data.Collections;
-using BH.oM.Graphics;
 
 namespace BH.Engine.Analytical
 {
@@ -102,15 +96,10 @@ namespace BH.Engine.Analytical
         private static Graph ProjectGraph(this Graph graph,  GraphicalProjection projection)
         {
             Graph processGraph = graph.DeepClone();
-            //foreach (IBHoMObject entity in processGraph.Entities.Values.ToList())
-            //{
-            //    ProjectionFragment projectionFragment = entity.FindFragment<ProjectionFragment>();
-            //    //if no process projection fragment, remove entity
-            //    if (projectionFragment == null)
-            //        processGraph.RemoveEntity(entity.BHoM_Guid);
-            //}
-            
-                View(projection.View as DependencyChart, processGraph);
+
+            BHoMGroup<IBHoMObject> graphData = SetGraphDataSet(processGraph, projection.View);
+
+            Graphics.Create.IView(projection.View, graphData.Elements);
             
             return processGraph;
         }
@@ -125,75 +114,35 @@ namespace BH.Engine.Analytical
             return new Graph();
         }
 
+       
         /***************************************************/
-        /**** View Methods                              ****/
-        /***************************************************/
-        //private static void IView(this CustomView view, Graph graph)
-        //{
-        //    foreach(BH.oM.Graphics.Components.IComponent component in view.IComponents())
-        //    {
-        //        object data = graph.PropertyValue(component.Dataset.Collection);
-        //        component.IRepresentationFragment(data, view.ViewConfig);
-        //    }
-        //}
 
-        /***************************************************/
-        private static void View(this DependencyChart chart, Graph graph)
+        private static BHoMGroup<IBHoMObject> SetGraphDataSet(Graph graph, IView view)
         {
-            //set scales
-            List<object> viewX = new List<object>() { 0, chart.ViewConfig.Width};
-            List<object> viewY = new List<object>() { 0, chart.ViewConfig.Height};
-            //object dataX = graph.Entities().PropertyValue(chart.Boxes.X);
-            //object dataY = graph.Entities().PropertyValue(chart.Boxes.Y);
-            object allGroupNames = graph.Entities().PropertyValue(chart.Boxes.Group);
-            var groups = DataList(allGroupNames).GroupBy(n => n);
-            int maxGroup = groups.Max(g => g.Count());
-            IScale xScale = null;
-            IScale yScale = null;
-            if (chart.Boxes.IsHorizontal)
+            if(view is DependencyChart)
             {
-                //group for x scale
-                xScale = new ScaleLinear()
+                DependencyChart chart = view as DependencyChart;
+                foreach (IBHoMObject entity in graph.Entities())
                 {
-                    Domain = new Domain(0,maxGroup),
-                    Range = new Domain(0, chart.ViewConfig.Width)
-                };
-                yScale = Graphics.Create.IScale(groups.Select(g => g.Key).ToList(), viewY);
-            }
-            else
-            {
-                //group for y scale
-                xScale = Graphics.Create.IScale(groups.Select(g => g.Key).ToList(), viewX);
-                yScale = new ScaleLinear()
-                {
-                    Domain = new Domain(0, maxGroup),
-                    Range = new Domain(0, chart.ViewConfig.Height)
-                };
-            }
-            
-            xScale.Name = "xScale";
-            
-            yScale.Name = "yScale";
-            Gradient gradient = Graphics.Create.Gradient();
-            List<IScale> scales = new List<IScale>() { xScale, yScale};
-            chart.Boxes.IRepresentationFragment(graph.Entities(), chart.ViewConfig, scales);            
-            
-        }
-
-        
-        private static List<object> DataList(object obj)
-        {
-            List<object> list = new List<object>();
-            if (obj is IEnumerable<object>)
-            {
-                var enumerator = ((IEnumerable<object>)obj).GetEnumerator();
-                while (enumerator.MoveNext())
-                {
-                    if(enumerator.Current!=null)
-                        list.Add(enumerator.Current);
+                    if (chart.Boxes.GroupsToIgnore.Contains(entity.PropertyValue("GroupName")))
+                        graph.RemoveEntity(entity);
                 }
             }
-            return list;
+            
+            BHoMGroup<IBHoMObject> entities = new BHoMGroup<IBHoMObject>();
+            entities.Elements = graph.Entities();
+            entities.Name = "Entities";
+
+            BHoMGroup<IBHoMObject> relations = new BHoMGroup<IBHoMObject>();
+            relations.Elements = graph.Relations.Cast<IBHoMObject>().ToList();
+            relations.Name = "Relations";
+
+            BHoMGroup<IBHoMObject> graphData = new BHoMGroup<IBHoMObject>();
+            graphData.Elements = new List<IBHoMObject>() {entities, relations };
+            graphData.Name = "GraphData";
+
+            return graphData;
+
         }
     }
 }

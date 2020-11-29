@@ -20,9 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Reflection;
+using BH.oM.Base;
 using BH.oM.Graphics;
+using BH.oM.Graphics.Scales;
 using BH.oM.Graphics.Views;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Graphics
 {
@@ -32,23 +36,16 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static void IView(IView view)
+        public static void IView(IView view, List<IBHoMObject> data)
         {
-            View(view as dynamic);
+            View(view as dynamic, data);
         }
-
-        /***************************************************/
-
-        public static void View(this CustomView view)
-        {
-
-        }
-
+        
         /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/
 
-        public static void View(IView view)
+        public static void View(IView view, List<IBHoMObject> data)
         {
 
         }

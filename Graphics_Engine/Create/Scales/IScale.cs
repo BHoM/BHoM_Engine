@@ -20,15 +20,18 @@ namespace BH.Engine.Graphics
 
                 scale = new ScaleOrdinal()
                 {
-                    Domain = d.OrderBy(q => q).ToList(),
+                    Domain = d,
                     Range = range
                 };
             }
 
             if (domain.All(d => d.IsNumericType()) && range.All(d => d.IsNumericType()))
             {
-                List<double> d = domain.Cast<double>().ToList();
-                List<double> r = range.Cast<double>().ToList();
+                List<double> d = new List<double>();
+                domain.ForEach(x => d.Add(System.Convert.ToDouble(x)));
+                List<double> r = new List<double>();
+                range.ForEach(x => r.Add(System.Convert.ToDouble(x)));
+
                 scale = new ScaleLinear()
                 {
                     Domain = Data.Create.Domain(d),

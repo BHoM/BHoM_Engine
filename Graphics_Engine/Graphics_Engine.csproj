@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convert\ToRenderMesh.cs" />
+    <Compile Include="Create\ArrowMarker.cs" />
     <Compile Include="Create\RepresentationFragment.cs" />
     <Compile Include="Create\RepresentationFragments\Links.cs" />
     <Compile Include="Create\RepresentationFragments\Boxes.cs" />
@@ -72,16 +73,23 @@
     <Compile Include="Create\SVGStyle.cs" />
     <Compile Include="Create\SVGObject.cs" />
     <Compile Include="Create\SVGDocument.cs" />
-    <Compile Include="Create\View.cs" />
+    <Compile Include="Query\ColourFromObject.cs" />
+    <Compile Include="View\View.cs" />
     <Compile Include="Query\Color.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Convert\ToSVGString.cs" />
     <Compile Include="Query\Components.cs" />
+    <Compile Include="Query\GetDataList.cs" />
     <Compile Include="Query\IsNumericType.cs" />
     <Compile Include="Query\Scales\Scale.cs" />
+    <Compile Include="View\DependencyChart.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
+      <Project>{1AD45C88-DD54-48E5-951F-55EDFEB70E35}</Project>
+      <Name>BHoM_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
       <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
       <Name>Data_Engine</Name>
