@@ -16,16 +16,17 @@ namespace BH.Engine.Graphics
 {
     public static partial class Create
     {
-        public static void RepresentationFragment(this Boxes component, List<IBHoMObject> data,ViewConfig viewConfig, List<IScale> scales)
+        public static void RepresentationFragment(this Boxes component, List<IBHoMObject> data, ViewConfig viewConfig, List<IScale> scales)
         {
-            IScale xScale = scales.Find(s => s.Name == "xScale");
-            IScale yScale = scales.Find(s => s.Name == "yScale");
-            //properties to map to x
-            List<object> xObs = DataList(data.PropertyValue(component.X)).Distinct().ToList();
-            List<object> yObs = DataList(data.PropertyValue(component.Y)).Distinct().ToList();
-            var groups = data.GroupBy(d => d.PropertyValue(component.Group));
+            GetScales(scales);
+
+            BHoMGroup<IBHoMObject> entityGroup = (BHoMGroup<IBHoMObject>)data.Find(x => x.Name == "Entities");
+            List<IBHoMObject> entities = entityGroup.Elements;
+
+            var groups = entities.GroupBy(d => d.PropertyValue(component.Group));
             var groupNames = groups.Select(g => g.Key).Cast<string>().ToList();
             int maxGroup = groups.Max(g => g.Count());
+
             double xSpace = 0; 
             double ySpace = 0;
             
@@ -39,50 +40,66 @@ namespace BH.Engine.Graphics
                 xSpace = (viewConfig.Width / groupNames.Count) * (1 - component.Padding);
                 ySpace = (viewConfig.Height / maxGroup) * (1 - component.Padding);
             }
+            List<GroupRepresentation> groupRepresentations = new List<GroupRepresentation>();
+            GraphRepresentation graphRepresentation = new GraphRepresentation();
             foreach (var group in groups)
             {
                 int i = 0;
-                foreach (var obj in group)
+                var orderedgroup = group.OrderBy(g => g.PropertyValue(component.GroupOrder));
+                double x = 0;
+                double y = 0;
+                GroupRepresentation representation = new GroupRepresentation();
+                if (component.IsHorizontal)
                 {
-                    EntityRepresentation representation = new EntityRepresentation();
+                    x = System.Convert.ToDouble(m_Xscale.IScale(0));
+                    y = System.Convert.ToDouble(m_Yscale.IScale(group.Key));
+                    representation.Boundary = Box(Geometry.Create.Point(x, y, 0), xSpace * orderedgroup.Count(), ySpace );
+                }
+                else
+                {
+                    x = System.Convert.ToDouble(m_Xscale.IScale(group.Key));
+                    y = System.Convert.ToDouble(m_Yscale.IScale(0));
+                    representation.Boundary = Box(Geometry.Create.Point(x, y, 0), xSpace, ySpace * orderedgroup.Count());
+                }
 
-                    double x = 0; 
-                    double y = 0; 
-                    if (component.IsHorizontal)
-                    {
-                        x = System.Convert.ToDouble(xScale.IScale(i));
-                        y = System.Convert.ToDouble(yScale.IScale(obj.PropertyValue(component.Group)));
-                    }
-                    else
-                    {
-                        x = System.Convert.ToDouble(xScale.IScale(obj.PropertyValue(component.Group)));
-                        y = System.Convert.ToDouble(yScale.IScale(i));
-                    }
-                    Point basePt = Geometry.Create.Point(x, y, 0);
-                    representation.Boundary = Box(basePt, xSpace, ySpace);
-                    representation.Text = obj.Name;
-                    representation.TextPosition = SetTextPosition(basePt, xSpace, ySpace, component.Padding);
-                    representation.OutgoingRelationPoint = basePt;
-                    representation.IncomingRelationPoint = basePt;
-                    obj.Fragments.AddOrReplace(representation);
+                groupRepresentations.Add(representation);
+                foreach (var obj in orderedgroup)
+                {
+                    obj.SetEntityRepresentation(i, component, xSpace, ySpace);
                     i++;
                 }
                 
             }
+            graphRepresentation.Groups = groupRepresentations;
+            
         }
-        private static List<object> DataList(object obj)
+
+        private static void SetEntityRepresentation(this IBHoMObject obj,int seqNumber, Boxes component, double xSpace, double ySpace)
         {
-            List<object> list = new List<object>();
-            if (obj is IEnumerable<object>)
+            double x = 0;
+            double y = 0;
+            if (component.IsHorizontal)
             {
-                var enumerator = ((IEnumerable<object>)obj).GetEnumerator();
-                while (enumerator.MoveNext())
-                {
-                    if (enumerator.Current != null)
-                        list.Add(enumerator.Current);
-                }
+                x = System.Convert.ToDouble(m_Xscale.IScale(seqNumber));
+                y = System.Convert.ToDouble(m_Yscale.IScale(obj.PropertyValue(component.Group)));
             }
-            return list;
+            else
+            {
+                x = System.Convert.ToDouble(m_Xscale.IScale(obj.PropertyValue(component.Group)));
+                y = System.Convert.ToDouble(m_Yscale.IScale(seqNumber));
+            }
+
+            EntityRepresentation representation = new EntityRepresentation();
+
+            Point basePt = SetAnchorPoint(Geometry.Create.Point(x, y, 0), xSpace, ySpace, component.Padding);
+
+            representation.Boundary = Box(basePt, xSpace, ySpace);
+            representation.Text = obj.Name;
+            representation.TextPosition = SetAnchorPoint(basePt, xSpace, ySpace, component.Padding);
+            representation.OutgoingRelationPoint = SetAnchorPoint(basePt, xSpace, ySpace / 2, 1);
+            representation.IncomingRelationPoint = SetAnchorPoint(basePt, 0, ySpace / 2, 1);
+            representation.Colour = Query.ColourFromObject(m_Colourscale.IScale(obj.PropertyValue(component.Colour)));
+            obj.Fragments.AddOrReplace(representation);
         }
 
         private static Polyline Box(Point basePt, double x, double y)
@@ -96,9 +113,19 @@ namespace BH.Engine.Graphics
             return Geometry.Create.Polyline(points);
         }
 
-        private static Point SetTextPosition(Point basePt, double x, double y, double padding)
+        private static Point SetAnchorPoint(Point basePt, double x, double y, double padding)
         {
             return basePt + Vector.XAxis * x * padding + Vector.YAxis * y * padding;
         }
+        private static void GetScales(List<IScale> scales)
+        {
+            m_Xscale = scales.Find(s => s.Name == "xScale");
+            m_Yscale = scales.Find(s => s.Name == "yScale");
+            m_Colourscale = scales.Find(s => s.Name == "colourScale");
+        }
+
+        private static IScale m_Xscale = null;
+        private static IScale m_Yscale = null;
+        private static IScale m_Colourscale = null;
     }
 }
