@@ -97,7 +97,7 @@ namespace BH.Engine.Physical
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("The SolidBulk Solid Volume could not be queried. Returning zero volume.");
+                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
                 return 0;
             }
 
@@ -121,7 +121,7 @@ namespace BH.Engine.Physical
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("The ExplicitBulk Solid Volume could not be queried. Returning zero volume.");
+                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
                 return 0;
             }
 
