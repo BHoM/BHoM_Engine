@@ -1,14 +1,19 @@
-﻿using System;
+﻿using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Query
+    public static partial class Convert
     {
-        public static List<object> GetDataList(object obj)
+        [Description("Attempts to convert an object to a collection of objects.")]
+        [Input("object", "The object to convert.")]
+        [Output("dataList", "A collection of objects, empty if the conversion was not possible.")]
+        public static List<object> ToDataList(object obj)
         {
             List<object> list = new List<object>();
             if (obj is IEnumerable<object>)

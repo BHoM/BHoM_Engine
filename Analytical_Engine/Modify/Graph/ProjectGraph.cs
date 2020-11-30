@@ -35,6 +35,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.Engine.Reflection;
+using BH.oM.Graphics.Fragments;
+using BH.oM.Data.Library;
 
 namespace BH.Engine.Analytical
 {
@@ -97,10 +99,11 @@ namespace BH.Engine.Analytical
         {
             Graph processGraph = graph.DeepClone();
 
-            BHoMGroup<IBHoMObject> graphData = SetGraphDataSet(processGraph, projection.View);
+            Dataset graphData = SetGraphDataSet(processGraph, projection.View);
 
-            Graphics.Create.IView(projection.View, graphData.Elements);
-            
+            Graphics.Modify.IView(projection.View, graphData);
+
+            processGraph.Fragments.AddOrReplace(graphData.FindFragment<GraphRepresentation>());
             return processGraph;
         }
 
@@ -113,22 +116,22 @@ namespace BH.Engine.Analytical
             Reflection.Compute.RecordError("IProjection provided does not have a corresponding GraphView method implemented.");
             return new Graph();
         }
-
        
         /***************************************************/
 
-        private static BHoMGroup<IBHoMObject> SetGraphDataSet(Graph graph, IView view)
+        private static Dataset SetGraphDataSet(Graph graph, IView view)
         {
             if(view is DependencyChart)
             {
                 DependencyChart chart = view as DependencyChart;
+                string groupPropertName = chart.Boxes.Group;
                 foreach (IBHoMObject entity in graph.Entities())
                 {
-                    if (chart.Boxes.GroupsToIgnore.Contains(entity.PropertyValue("GroupName")))
+                    if (chart.Boxes.GroupsToIgnore.Contains(entity.PropertyValue(groupPropertName)))
                         graph.RemoveEntity(entity);
                 }
             }
-            
+
             BHoMGroup<IBHoMObject> entities = new BHoMGroup<IBHoMObject>();
             entities.Elements = graph.Entities();
             entities.Name = "Entities";
@@ -137,9 +140,10 @@ namespace BH.Engine.Analytical
             relations.Elements = graph.Relations.Cast<IBHoMObject>().ToList();
             relations.Name = "Relations";
 
-            BHoMGroup<IBHoMObject> graphData = new BHoMGroup<IBHoMObject>();
-            graphData.Elements = new List<IBHoMObject>() {entities, relations };
-            graphData.Name = "GraphData";
+            Dataset graphData = new Dataset();
+            graphData.Data = new List<IBHoMObject>(); 
+            graphData.Data.Add(entities);
+            graphData.Data.Add(relations);
 
             return graphData;
 
