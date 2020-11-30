@@ -89,7 +89,7 @@ namespace BH.Engine.Physical
         {
             if (solidBulk == null || solidBulk.Geometry == null)
             {
-                Engine.Reflection.Compute.RecordError("No SolidBulk objects have been provided.");
+                Engine.Reflection.Compute.RecordError("No valid SolidBulk objects have been provided. Returning NaN.");
                 return double.NaN;
             }
 
@@ -113,8 +113,8 @@ namespace BH.Engine.Physical
         {
             if (explicitBulk == null)
             {
-                Engine.Reflection.Compute.RecordError("No ExplicitBulk objects have been provided.");
-                return 0;
+                Engine.Reflection.Compute.RecordError("No valid ExplicitBulk objects have been provided. Returning NaN.");
+                return double.NaN;
             }
 
             double solidVolume = explicitBulk.Volume;
