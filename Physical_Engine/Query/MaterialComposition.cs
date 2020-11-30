@@ -48,7 +48,7 @@ namespace BH.Engine.Physical
         {
             if (framingElement.Property == null)
             {
-                Engine.Reflection.Compute.RecordError("The IFramingElement MaterialComposition could not be queried as no Property has been assigned.");
+                Engine.Reflection.Compute.RecordError("The MaterialComposition could not be queried as no Property has been assigned to the IFramingElement.");
                 return null;
             }
             return framingElement.Property.IMaterialComposition();
@@ -63,7 +63,7 @@ namespace BH.Engine.Physical
         {
             if (surface.Construction == null)
             {
-                Engine.Reflection.Compute.RecordError("The ISurface MaterialComposition could not be queried as no IConstruction has been assigned.");
+                Engine.Reflection.Compute.RecordError("The MaterialComposition could not be queried as no IConstruction has been assigned to the ISurface.");
                 return null;
             }
             return surface.Construction.IMaterialComposition();
@@ -83,10 +83,10 @@ namespace BH.Engine.Physical
 
             if (solidBulk.MaterialComposition == null)
             {
-                Engine.Reflection.Compute.RecordError("The SolidBulk MaterialComposition could not be queried as no Materials have been assigned.");
+                Engine.Reflection.Compute.RecordError("The SolidBulk MaterialComposition could not be queried as no Materials have been assigned to at least one of the layers of the Construction.");
                 return null;
             }
-            return Matter.Create.MaterialComposition(solidBulk.MaterialComposition.Materials, solidBulk.MaterialComposition.Ratios);
+            return solidBulk.MaterialComposition;
         }
 
         /***************************************************/
@@ -103,10 +103,10 @@ namespace BH.Engine.Physical
 
             if (explicitBulk.MaterialComposition == null)
             {
-                Engine.Reflection.Compute.RecordError("The ExplicitBulk MaterialComposition could not be queried as no Materials have been assigned.");
+                Engine.Reflection.Compute.RecordError("The ExplicitBulk MaterialComposition could not be queried as no Materials have been assigned to at least one of the layers of the Construction.");
                 return null;
             }
-            return Matter.Create.MaterialComposition(explicitBulk.MaterialComposition.Materials, explicitBulk.MaterialComposition.Ratios);
+            return explicitBulk.MaterialComposition;
         }
 
         /******************************************************/
@@ -156,7 +156,7 @@ namespace BH.Engine.Physical
         {
             if (prop.Material == null)
             {
-                Engine.Reflection.Compute.RecordError("The ConstantFramingProperty MaterialComposition could not be queried as no Material has been assigned.");
+                Engine.Reflection.Compute.RecordError("The ConstantFramingProperty MaterialComposition could not be queried as no Material has been assigned to the ConstantFramingProperty.");
                 return null;
             }
             return (MaterialComposition)prop.Material;
