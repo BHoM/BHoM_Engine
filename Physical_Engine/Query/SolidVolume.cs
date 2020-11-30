@@ -87,11 +87,17 @@ namespace BH.Engine.Physical
         [Output("volume", "The combined volume of SolidBulk.", typeof(Volume))]
         public static double SolidVolume(this SolidBulk solidBulk)
         {
-            double solidVolume = solidBulk.Geometry.Select(x => BH.Engine.Geometry.Query.IVolume(x)).Sum();
+            if (solidBulk == null || solidBulk.Geometry == null)
+            {
+                Engine.Reflection.Compute.RecordError("No SolidBulk objects have been provided.");
+                return double.NaN;
+            }
+
+            double solidVolume = solidBulk.Geometry.Select(x => x.IVolume()).Sum();
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("The SolidBulk Solid Volume could not be calculated. Returning zero volume.");
+                Engine.Reflection.Compute.RecordError("The SolidBulk Solid Volume could not be queried. Returning zero volume.");
                 return 0;
             }
 
@@ -105,11 +111,17 @@ namespace BH.Engine.Physical
         [Output("volume", "The combined volume of ExplicitBulk.", typeof(Volume))]
         public static double SolidVolume(this ExplicitBulk explicitBulk)
         {
+            if (explicitBulk == null)
+            {
+                Engine.Reflection.Compute.RecordError("No ExplicitBulk objects have been provided.");
+                return 0;
+            }
+
             double solidVolume = explicitBulk.Volume;
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("The ExplicitBulk Solid Volume could not be calculated. Returning zero volume.");
+                Engine.Reflection.Compute.RecordError("The ExplicitBulk Solid Volume could not be queried. Returning zero volume.");
                 return 0;
             }
 
