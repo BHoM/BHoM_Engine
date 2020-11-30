@@ -22,30 +22,36 @@
 
 using BH.Engine.Reflection;
 using BH.oM.Base;
+using BH.oM.Data.Library;
 using BH.oM.Graphics;
 using BH.oM.Graphics.Scales;
 using BH.oM.Graphics.Views;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Create
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static void IView(IView view, List<IBHoMObject> data)
+        [Description("Modifies a dataset by adding representation fragments to define a view of the data.")]
+        [Input("chart", "The configuration properties for the view representation.")]
+        [Input("dataset", "Dataset to generate a view of.")]
+        public static void IView(IView view, Dataset dataset)
         {
-            View(view as dynamic, data);
+            View(view as dynamic, dataset);
         }
         
         /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/
 
-        public static void View(IView view, List<IBHoMObject> data)
+        public static void View(IView view, Dataset dataset)
         {
 
         }

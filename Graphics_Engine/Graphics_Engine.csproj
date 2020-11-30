@@ -64,26 +64,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convert\ToRenderMesh.cs" />
-    <Compile Include="Create\ArrowMarker.cs" />
-    <Compile Include="Create\RepresentationFragment.cs" />
-    <Compile Include="Create\RepresentationFragments\Links.cs" />
-    <Compile Include="Create\RepresentationFragments\Boxes.cs" />
+    <Compile Include="Create\Marker.cs" />
+    <Compile Include="Modify\RepresentationFragment.cs" />
+    <Compile Include="Modify\RepresentationFragments\Links.cs" />
+    <Compile Include="Modify\RepresentationFragments\Boxes.cs" />
     <Compile Include="Create\Gradient.cs" />
     <Compile Include="Create\Scales\IScale.cs" />
     <Compile Include="Create\SVGStyle.cs" />
     <Compile Include="Create\SVGObject.cs" />
     <Compile Include="Create\SVGDocument.cs" />
-    <Compile Include="Query\ColourFromObject.cs" />
-    <Compile Include="View\View.cs" />
+    <Compile Include="Convert\ColourFromObject.cs" />
+    <Compile Include="Modify\View\View.cs" />
     <Compile Include="Query\Color.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Convert\ToSVGString.cs" />
-    <Compile Include="Query\Components.cs" />
-    <Compile Include="Query\GetDataList.cs" />
+    <Compile Include="Convert\GetDataList.cs" />
     <Compile Include="Query\IsNumericType.cs" />
     <Compile Include="Query\Scales\Scale.cs" />
-    <Compile Include="View\DependencyChart.cs" />
+    <Compile Include="Modify\View\DependencyChart.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">

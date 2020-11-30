@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -7,8 +9,15 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Query
+    public static partial class Convert
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Converts an object to a Color, first by casting the input object, secondly, if the object is a string attempts to extract ARGB values or html string.")]
+        [Input("colourObject", "The object to convert.")]
+        [Output("colour", "Colour extracted from the object or Color.Black if the conversion fails.")]
         public static Color ColourFromObject(object colourObject)
         {
             Color color = new Color();

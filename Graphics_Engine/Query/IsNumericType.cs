@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +10,8 @@ namespace BH.Engine.Graphics
 {
     public static partial class Query
     {
+        [Description("Query and object to see if it is a numeric type.")]
+        [Output("numeric", "Boolean indicating if the object is numeric.")]
         public static bool IsNumericType(this object o)
         {
             switch (Type.GetTypeCode(o.GetType()))
