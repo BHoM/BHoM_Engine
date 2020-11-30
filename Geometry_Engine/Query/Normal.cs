@@ -102,19 +102,16 @@ namespace BH.Engine.Geometry
 
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("Input must be planar.");
+                Reflection.Compute.RecordError("Input curve must be planar.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
+                Reflection.Compute.RecordError("Input curve is not closed. Input must be a polygon");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
-            {
-                Reflection.Compute.RecordWarning("Curve is self intersecting");
-                return null;
-            }
+                Reflection.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
 
             Point avg = curve.ControlPoints.Average();
             Vector normal = new Vector();
@@ -122,6 +119,12 @@ namespace BH.Engine.Geometry
             //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
             for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
                 normal += (curve.ControlPoints[i] - avg).CrossProduct(curve.ControlPoints[i + 1] - avg);
+
+            if (normal.Length() < tolerance)
+            {
+                Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve");
+                return null;
+            }
 
             normal = normal.Normalise();
 
@@ -140,22 +143,18 @@ namespace BH.Engine.Geometry
 
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("Input must be planar.");
+                Reflection.Compute.RecordError("Input curve must be planar.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
+                Reflection.Compute.RecordError("Input curve is not closed. Input must be a polygon");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
-            {
-                Reflection.Compute.RecordWarning("Curve is self intersecting");
-                return null;
-            }
+                Reflection.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
 
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
-
 
             if (crvs.Count() == 0)
                 return null;
@@ -183,13 +182,18 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-
                 Point avg = points.Average();
                 Vector normal = new Vector();
 
                 //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
                 for (int i = 0; i < points.Count - 1; i++)
                     normal += (points[i] - avg).CrossProduct(points[i + 1] - avg);
+
+                if (normal.Length() < tolerance)
+                {
+                    Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve");
+                    return null;
+                }
 
                 normal = normal.Normalise();
 

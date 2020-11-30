@@ -20,64 +20,60 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
 using BH.oM.Geometry;
+using BH.oM.Physical.Constructions;
+using BH.Engine.Geometry;
+using System.Collections.Generic;
+using System.Linq;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Geometry
+
+namespace BH.Engine.Facade
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double DotProduct(this Vector a, Vector b)
+        [Description("Creates a facade Opening from a collection of curves forming a closed loop.")]
+        [Input("edges", "Closed curve defining the outline of the Opening.")]
+        [Input("frameEdgeProperty", "An optional FrameEdgeProperty to apply to all edges of the opening.")]
+        [Output("opening", "Created Opening.")]
+        public static Opening Opening(IEnumerable<ICurve> edges, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
         {
-            if (a == null || b == null)
+            List<ICurve> externalEdges = new List<ICurve>();
+            foreach (ICurve edge in edges)
             {
-                BH.Engine.Reflection.Compute.RecordError("Could not compute Dot Product because one or both Vectors are null.");
-                return double.NaN;
+                externalEdges.AddRange(edge.ISubParts());
             }
-            
-            return (a.X * b.X + a.Y * b.Y + a.Z * b.Z);
-        }
 
-        /***************************************************/
+            List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
 
-        public static Vector CrossProduct(this Vector a, Vector b)
-        {
-            if (a == null || b == null)
+            if (joined.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Could not compute Cross Product because one or both Vectors are null.");
+                Reflection.Compute.RecordError("Could not join Curves. Opening not Created.");
+                return null;
+            }
+            else if (joined.Count > 1)
+            {
+                Reflection.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
+                return null;
+            }
+
+            //Single joined curve
+            if (joined[0].IIsClosed())
+                return new Opening { Edges = externalEdges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList() };
+            else
+            {
+                Reflection.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
                 return null;
             }
             
-            return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
-        }
-
-        /***************************************************/
-
-        public static Vector CrossProduct(this Point a, Point b)
-        {
-            if (a == null || b == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Could not compute Cross Product because one or both Points are null.");
-                return null;
-            }
-            
-            return new Vector { X = a.Y * b.Z - a.Z * b.Y, Y = a.Z * b.X - a.X * b.Z, Z = a.X * b.Y - a.Y * b.X };
-        }
-
-        /***************************************************/
-
-        public static Quaternion Product(this Quaternion q1, Quaternion q2)
-        {
-            if (q1 == null || q2 == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Could not compute Product because one or both Quaternions are null.");
-                return null;
-            }
-            
-            return q1 * q2;
         }
 
         /***************************************************/

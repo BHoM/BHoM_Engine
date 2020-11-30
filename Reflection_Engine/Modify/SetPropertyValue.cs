@@ -108,9 +108,19 @@ namespace BH.Engine.Reflection
             if (obj == null) return false;
 
             if (!obj.CustomData.ContainsKey(propName))
-                Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data");
+            {
+                if (value is IFragment)
+                {
+                    obj.Fragments.Add(value as IFragment);
+                    Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as a fragment.");
+                }
+                else
+                {
+                    obj.CustomData[propName] = value;
+                    Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data.");
+                }
+            }
 
-            obj.CustomData[propName] = value;
             return true;
         }
 
