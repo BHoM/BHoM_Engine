@@ -27,6 +27,7 @@ using System.Linq;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Structure
@@ -44,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("concSection", "The ConcreteSection with new Reinforcement.")]
         public static ConcreteSection SetReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
         {
-            ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
+            ConcreteSection clone = section.ShallowClone();
             clone.Reinforcement = reinforcement.ToList();
             return clone;
         }
