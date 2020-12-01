@@ -38,7 +38,7 @@ namespace BH.Engine.Base
     {
         [Description("Computes the hash of the input BHoMObjects and stores it in a HashFragment for each of them." +
             "\nIf the hashFragment already existed, it is replaced.")]
-        public static List<T> SetHashFragment<T>(this IEnumerable<T> objs, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
+        public static IEnumerable<T> SetHashFragment<T>(this IEnumerable<T> objs, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
         {
             // Each object will be cloned to avoid modification by reference.
             List<T> objs_cloned = new List<T>();
@@ -52,7 +52,7 @@ namespace BH.Engine.Base
 
         [Description("Computes the hash of the BHoMObject and stores it in a HashFragment." +
             "\nIf the hashFragment already existed, it is replaced.")]
-        public static T SetHashFragment<T>(T obj, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
+        public static T SetHashFragment<T>(this T obj, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
         {
             // Calculate and set the object hashes
             string hash = obj.Hash(comparisonConfig);
@@ -62,7 +62,7 @@ namespace BH.Engine.Base
 
         [Description("Clones the IBHoMObject, computes its hash and stores it in a HashFragment." +
             "\nIf the hashFragment already existed, it is replaced.")]
-        public static T SetHashFragment<T>(T obj, string hash) where T : IBHoMObject
+        public static T SetHashFragment<T>(this T obj, string hash) where T : IBHoMObject
         {
             // Clone the current object to avoid modification by reference.
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
