@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,39 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+using BH.oM.Geometry;
+using BH.oM.Security.Elements;
+using BH.oM.Reflection.Attributes;
+
+namespace BH.Engine.Security
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Returns an Environment Edge object")]
-        [Input("curve", "A BHoM Geometry Curve object (e.g. polyline, line, etc.)")]
-        [Input("name", "The name of the edge, default empty string")]
-        [Output("edge", "An Environment Edge object - used for defining panels and openings")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Edge Edge(ICurve curve, string name = "")
+        [Description("Returns the centreline of a CameraDevice object.")]
+        [Input("cameraDevice", "The CameraDevice object to get the centreline from.")]
+        [Output("centreline", "The centreline of the CameraDevice object.")]
+        public static Line Centreline(this CameraDevice cameraDevice)
         {
-            return new Edge
-            {
-                Name = name,
-                Curve = curve,
-            };
+            return new Line { Start = cameraDevice.EyePosition, End = cameraDevice.TargetPosition };
         }
+
+        /***************************************************/
     }
 }
 

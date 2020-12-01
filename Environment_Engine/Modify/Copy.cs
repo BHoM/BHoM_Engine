@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         [Output("panel", "The copied Environment Panel")]
         public static Panel Copy(this Panel panel)
         {
-            Panel aPanel = panel.ShallowClone(true);
+            Panel aPanel = panel.ShallowClone();
             aPanel.ExternalEdges = new List<Edge>(panel.ExternalEdges);
             aPanel.Openings = new List<Opening>(panel.Openings);
             aPanel.ConnectedSpaces = new List<string>(panel.ConnectedSpaces);

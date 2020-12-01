@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.Engine.Geometry;
 using System.ComponentModel;
+using BH.Engine.Analytical;
 
 namespace BH.Engine.Structure
 {
@@ -111,11 +112,11 @@ namespace BH.Engine.Structure
             foreach (List<List<IElement1D>> panelOutlines in sortedOutlines)
             {
                 Panel panel = new Panel();
-                panel = panel.SetOutlineElements1D(panelOutlines[0]);
+                panel = panel.SetOutlineElements1D(panelOutlines[0]) as Panel;
                 List<Opening> openings = new List<Opening>();
                 foreach (List<IElement1D> p in panelOutlines.Skip(1))
                 {
-                    Opening opening = (new Opening()).SetOutlineElements1D(p);
+                    Opening opening = (new Opening()).SetOutlineElements1D(p) as Opening;
                     openings.Add(opening);
                 }
                 panel.Openings = openings;

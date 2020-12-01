@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Analytical
@@ -37,6 +38,7 @@ namespace BH.Engine.Analytical
         /****               Public Methods              ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetInternalElements2D(BH.oM.Structure.Elements.Panel, System.Collections.Generic.List<BH.oM.Dimensional.IElement2D>)")]
         [Description("Sets internal IElement2Ds of a IPanel, i.e. sets the Openings of an IPanel. Method required for all IElement2Ds.")]
         [Input("panel", "The IPanel to update.")]
         [Input("openings", "The internal IElement2Ds to set. For an IPanel this should be a list of Openings matching the type of the IPanel.")]
@@ -45,7 +47,7 @@ namespace BH.Engine.Analytical
     where TEdge : IEdge
     where TOpening : IOpening<TEdge>
         {
-            IPanel<TEdge, TOpening> pp = panel.GetShallowClone() as IPanel<TEdge, TOpening>;
+            IPanel<TEdge, TOpening> pp = panel.ShallowClone();
             pp.Openings = new List<TOpening>(openings.Cast<TOpening>().ToList());
             return pp;
         }

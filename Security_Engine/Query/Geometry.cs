@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,33 +20,47 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-
-using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using System;
+using System.Collections.Generic;
+using BH.oM.Geometry;
+using BH.oM.Security.Elements;
+using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
 
-
-namespace BH.Engine.Structure
+namespace BH.Engine.MEP
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****             Public Methods                ****/
         /***************************************************/
 
-        [Description("Creates a new Element2D, appropriate to the input type. For this case the appropriate type for the Panel will be a new Opening, in the position provided. \n" +
-                     "Method required for any IElement2D that contians internal IElement2Ds.")]
-        [Input("panel", "Panel just used to determine the appropriate type of IElement2D to create.")]
-        [Output("opening", "The created Opening as a IElement2D.")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Gets the camera's geometry as a closed ICurve cone-shape. Method required for automatic display in UI packages.")]
+        [Input("cameraDevice", "Camera to get the ICurve from.")]
+        [Output("icurve", "The geometry of the Camera.")]
+        public static ICurve Geometry(this CameraDevice cameraDevice)
         {
-            return new Opening();
+            Vector direction = BH.Engine.Geometry.Create.Vector(
+                BH.Engine.Geometry.Create.Point(cameraDevice.EyePosition.X, cameraDevice.EyePosition.Y, 0),
+                BH.Engine.Geometry.Create.Point(cameraDevice.TargetPosition.X, cameraDevice.TargetPosition.Y, 0)).Normalise();
+
+            Vector perpendicular = direction.Rotate((Math.PI / 180) * 90, Vector.ZAxis);
+
+            List<Point> vertices = new List<Point>();
+            Point point1 = cameraDevice.EyePosition.Clone();
+            Point point2 = cameraDevice.TargetPosition.Clone().Translate(perpendicular * (cameraDevice.HorizontalFieldOfView / 2));
+            Point point3 = cameraDevice.TargetPosition.Clone().Translate(perpendicular * ((cameraDevice.HorizontalFieldOfView / 2)) * -1);
+            vertices.Add(point1);
+            vertices.Add(point2);
+            vertices.Add(point3);
+            vertices.Add(point1);
+
+            Polyline polyline = BH.Engine.Geometry.Create.Polyline(vertices);
+
+            return polyline;
         }
 
         /***************************************************/
     }
 }
-

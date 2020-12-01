@@ -27,6 +27,7 @@ using BH.Engine.Geometry;
 
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Architecture
 {
@@ -43,7 +44,7 @@ namespace BH.Engine.Architecture
         [Output("element", "A 1D element object")]
         public static IElement1D NewElement1D(this Room room, ICurve curve)
         {
-            return curve.IClone();
+            return curve.DeepClone();
         }
 
         /***************************************************/

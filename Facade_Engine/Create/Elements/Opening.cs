@@ -20,19 +20,19 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
+using BH.oM.Geometry;
+using BH.oM.Physical.Constructions;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment.Climate;
-using BH.oM.Geometry;
-
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+
+namespace BH.Engine.Facade
 {
     public static partial class Create
     {
@@ -40,49 +40,43 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an Environment Location object")]
-        [Input("latitude", "The latitude for the location, default 0")]
-        [Input("longitude", "The longitude for the location, default 0")]
-        [Input("elevation", "The elevation at the location, default 0")]
-        [Input("utcOffset", "The offset from UTC for the location (positive or negative), default 0")]
-        [Input("name", "The name of the location, default empty string")]
-        [Output("location", "An Environment location object - used for defining locations in space for climate analysis")]
-        [Deprecated("3.0", "Deprecated in favour of default create components produced by BHoM")]
-        public static Location Location(double latitude = 0, double longitude = 0, double elevation = 0, double utcOffset = 0, string name = "")
+        [Description("Creates a facade Opening from a collection of curves forming a closed loop.")]
+        [Input("edges", "Closed curve defining the outline of the Opening.")]
+        [Input("frameEdgeProperty", "An optional FrameEdgeProperty to apply to all edges of the opening.")]
+        [Output("opening", "Created Opening.")]
+        public static Opening Opening(IEnumerable<ICurve> edges, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
         {
-            if (latitude < -90 || latitude > 90)
+            List<ICurve> externalEdges = new List<ICurve>();
+            foreach (ICurve edge in edges)
             {
-                BH.Engine.Reflection.Compute.RecordError("Invalid Latitude passed. It should be between -90 and 90");
+                externalEdges.AddRange(edge.ISubParts());
+            }
+
+            List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
+
+            if (joined.Count == 0)
+            {
+                Reflection.Compute.RecordError("Could not join Curves. Opening not Created.");
+                return null;
+            }
+            else if (joined.Count > 1)
+            {
+                Reflection.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
                 return null;
             }
 
-            if (longitude < -180 || longitude > 180)
+            //Single joined curve
+            if (joined[0].IIsClosed())
+                return new Opening { Edges = externalEdges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList() };
+            else
             {
-                BH.Engine.Reflection.Compute.RecordError("Invalid Longitude passed. It should be between -180 and 180");
+                Reflection.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
                 return null;
             }
-
-            if (elevation < -413 || elevation > 8848)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Invalid Elevation passed. It should be between -413 and 8848");
-                return null;
-            }
-
-            if (utcOffset < -12 || utcOffset > 12)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Invalid UtcOffset passed. It should be between -12 and 12");
-                return null;
-            }
-
-            return new Location
-            {
-                Name = name,
-                Latitude = latitude,
-                Longitude = longitude,
-                Elevation = elevation,
-                UtcOffset = utcOffset,
-            };
+            
         }
+
+        /***************************************************/
     }
 }
 

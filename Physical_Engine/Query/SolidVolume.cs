@@ -34,6 +34,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Base;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.Physical
 {
@@ -81,5 +82,52 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Return the total volume of SolidBulk.")]
+        [Input("solidBulk", "Solid geometric elements that have a MaterialComposition.")]
+        [Output("volume", "The combined volume of SolidBulk.", typeof(Volume))]
+        public static double SolidVolume(this SolidBulk solidBulk)
+        {
+            if (solidBulk == null || solidBulk.Geometry == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid SolidBulk objects have been provided. Returning NaN.");
+                return double.NaN;
+            }
+
+            double solidVolume = solidBulk.Geometry.Select(x => x.IVolume()).Sum();
+
+            if (solidVolume <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
+                return 0;
+            }
+
+            return solidVolume;
+        }
+
+        /***************************************************/
+
+        [Description("Return the total volume of ExplicitBulk.")]
+        [Input("explicitBulk", "Elements containing Volume and MaterialComposition properties.")]
+        [Output("volume", "The combined volume of ExplicitBulk.", typeof(Volume))]
+        public static double SolidVolume(this ExplicitBulk explicitBulk)
+        {
+            if (explicitBulk == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid ExplicitBulk objects have been provided. Returning NaN.");
+                return double.NaN;
+            }
+
+            double solidVolume = explicitBulk.Volume;
+
+            if (solidVolume <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
+                return 0;
+            }
+
+            return solidVolume;
+        }
+
+        /***************************************************/
     }
 }
