@@ -71,6 +71,44 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Gets all the Materials an IOpening is composed of and in which ratios")]
+        [Input("opening", "The IOpening to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the IOpening is composed of and in which ratios")]
+        public static MaterialComposition MaterialComposition(this IOpening opening)
+        {
+            MaterialComposition materialComposition = null;
+            if (opening is Window)
+            {
+                if ((opening as Window).Construction == null)
+                {
+                    Engine.Reflection.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
+                    return null;
+                }
+
+                materialComposition = (opening as Window).Construction.IMaterialComposition();
+            }
+
+            if (opening is Door)
+            {
+                if ((opening as Door).Construction == null)
+                {
+                    Engine.Reflection.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
+                    return null;
+                }
+
+                materialComposition = (opening as Door).Construction.IMaterialComposition();
+            }
+
+            if (opening is BH.oM.Physical.Elements.Void)
+            {
+                Engine.Reflection.Compute.RecordError("Void's do not support constructions and therefore, contain no material composition. Returning null.");
+                return null;
+            }
+            return materialComposition;
+        }
+
+        /***************************************************/
+
         [Description("Gets all the Materials a SolidBulk is composed of and in which ratios")]
         [Input("solidBulk", "The SolidBulk to get the MaterialComposition from")]
         [Output("materialComposition", "The kind of matter the SolidBulk is composed of and in which ratios", typeof(Ratio))]
@@ -118,6 +156,24 @@ namespace BH.Engine.Physical
             return MaterialComposition(prop as dynamic);
         }
 
+        /******************************************************/
+        /**** IFramingElementProperty Methods              ****/
+        /******************************************************/
+
+        private static MaterialComposition IMaterialComposition(this IFramingElementProperty prop)
+        {
+            return MaterialComposition(prop as dynamic);
+        }
+
+        /******************************************************/
+        /****           IOpening Methods                   ****/
+        /******************************************************/
+
+        private static MaterialComposition IMaterialComposition(this IOpening prop)
+        {
+            return MaterialComposition(prop as dynamic);
+        }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
@@ -141,15 +197,6 @@ namespace BH.Engine.Physical
             throw new NotImplementedException();
         }
 
-        /******************************************************/
-        /**** IFramingElementProperty Methods              ****/
-        /******************************************************/
-
-        private static MaterialComposition IMaterialComposition(this IFramingElementProperty prop)
-        {
-            return MaterialComposition(prop as dynamic);
-        }
-
         /***************************************************/
 
         private static MaterialComposition MaterialComposition(this ConstantFramingProperty prop)
@@ -171,7 +218,6 @@ namespace BH.Engine.Physical
             throw new NotImplementedException();
         }
 
-        /***************************************************/
 
     }
 }
