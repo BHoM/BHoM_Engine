@@ -109,7 +109,7 @@ namespace BH.Engine.Structure
         [Output("barVarLoad", "The created BarVaryingDistributedLoad.")]
         public static BarVaryingDistributedLoad BarVaryingDistributedLoad(Loadcase loadcase, IEnumerable<Bar> objects, double startPosition = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endPosition = 1, Vector forceAtEnd = null, Vector momentAtEnd = null, bool relativePositions = true, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return BarVaryingDistributedLoad(loadcase, new BHoMGroup<Bar> { Elements = objects.ToList() }, startPosition, forceAtStart, forceAtEnd, endPosition, forceAtEnd, momentAtEnd, relativePositions, axis, projected, name);
+            return BarVaryingDistributedLoad(loadcase, new BHoMGroup<Bar> { Elements = objects.ToList() }, startPosition, forceAtStart, momentAtStart, endPosition, forceAtEnd, momentAtEnd, relativePositions, axis, projected, name);
 
         }
 
