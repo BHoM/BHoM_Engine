@@ -46,9 +46,9 @@ namespace BH.Engine.Diffing
         [Input("previousRevision", "A previous Revision")]
         [Input("currentRevision", "A new Revision")]
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the DiffingConfig property of the Revision. This input can be used to override it.")]
-        public static Delta Delta(Revision pastRevision, Revision currentRevision, DiffingConfig DiffingConfig = null, string comment = null)
+        public static Delta Delta(Revision pastRevision, Revision currentRevision, DiffingConfig diffingConfig = null, string comment = null)
         {
-            Diff diff = Compute.DiffRevisions(pastRevision, currentRevision, DiffingConfig);
+            Diff diff = Compute.DiffRevisions(pastRevision, currentRevision, diffingConfig);
 
             return new Delta(pastRevision.StreamId, diff, pastRevision.RevisionId, currentRevision.RevisionId, DateTime.UtcNow.Ticks, m_Author, comment);
         }
@@ -60,9 +60,9 @@ namespace BH.Engine.Diffing
         [Description("Returns a Delta object containing all the objects of the input Revision, also called `Revision-Based Delta`.")]
         [Input("revision", "A new Revision")]
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the DiffingConfig property of the Revision. This input can be used to override it.")]
-        public static Delta Delta(Revision revision, DiffingConfig DiffingConfig = null, string comment = null)
+        public static Delta Delta(Revision revision, DiffingConfig diffingConfig = null, string comment = null)
         {
-            Diff diff = Compute.DiffRevisions(null, revision, DiffingConfig);
+            Diff diff = Compute.DiffRevisions(null, revision, diffingConfig);
 
             return new Delta(revision.StreamId, diff, revision.RevisionId, new Guid(), DateTime.UtcNow.Ticks, m_Author, comment);
         }
@@ -74,10 +74,10 @@ namespace BH.Engine.Diffing
         [Input("comment", "Comment to be stored along the Revision that this Delta will produce.")]
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the DiffingConfig property of the Revision. This input can be used to override it.")]
         public static Delta Delta(List<IBHoMObject> objects, object streamId, string revisionName = null,
-             string comment = null, DiffingConfig DiffingConfig = null)
+             string comment = null, DiffingConfig diffingConfig = null)
         {
-            Revision revision = Create.Revision(objects, streamId, revisionName, comment, DiffingConfig);
-            return Delta(revision, DiffingConfig, comment);
+            Revision revision = Create.Revision(objects, streamId, revisionName, comment, diffingConfig);
+            return Delta(revision, diffingConfig, comment);
         }
 
         [Description("Returns a Delta object based on the provided Diff.")]
@@ -86,7 +86,7 @@ namespace BH.Engine.Diffing
         [Input("revisionName", "Name to be assigned to the Revision that this Delta will produce.")]
         [Input("comment", "Comment to be stored along the Revision that this Delta will produce.")]
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the DiffingConfig property of the Revision. This input can be used to override it.")]
-        public static Delta Delta(Diff diff, object streamId, Guid revision_from, string comment = null, DiffingConfig DiffingConfig = null)
+        public static Delta Delta(Diff diff, object streamId, Guid revision_from, string comment = null, DiffingConfig diffingConfig = null)
         {
             return new Delta(ProcessStreamId(streamId), diff, revision_from, new Guid(), DateTime.UtcNow.Ticks, m_Author, comment);
         }

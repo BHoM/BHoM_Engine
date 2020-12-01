@@ -40,10 +40,10 @@ namespace BH.Engine.Diffing
         [Description("Checks two BHoMObjects property by property and returns the differences")]
         [Input("DiffingConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
         [Output("Dictionary whose key is the name of the property, and value is a tuple with its value in obj1 and obj2.")]
-        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffingConfig DiffingConfig = null)
+        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffingConfig diffingConfig = null)
         {
             // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.
-            DiffingConfig dc = DiffingConfig == null ? new DiffingConfig() : DiffingConfig.DeepClone() as DiffingConfig;
+            DiffingConfig dc = diffingConfig == null ? new DiffingConfig() : diffingConfig.DeepClone() as DiffingConfig;
 
             object obj1Copy = obj1.DeepClone();
             object obj2Copy = obj2.DeepClone();
