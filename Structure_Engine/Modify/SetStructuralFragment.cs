@@ -28,6 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Physical.Materials;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -44,7 +45,7 @@ namespace BH.Engine.Structure
         public static Material SetStructuralFragment(this Material material, IMaterialFragment structuralFragment)
         {
             //Clone the object
-            Material clone = material.GetShallowClone() as Material;
+            Material clone = material.ShallowClone();
 
             //null check for the list
             clone.Properties = clone.Properties ?? new List<IMaterialProperties>();
