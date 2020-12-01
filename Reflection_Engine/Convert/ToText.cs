@@ -154,7 +154,12 @@ namespace BH.Engine.Reflection
 
         private static string ToText(object item, bool includePath = false)
         {
-            return item.ToString();
+            if (item == null)
+                return "null";
+            else if (item is string || item.GetType().IsEnum)
+                return item.ToString();
+            else
+                return item.GetType().ToString();
         }
 
         /***************************************************/

@@ -21,65 +21,53 @@
  */
 
 using BH.Engine.Geometry;
-using BH.Engine.Reflection;
 using BH.Engine.Spatial;
-using BH.oM.Base;
 using BH.oM.Geometry;
+using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Spatial.ShapeProfiles;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using BH.oM.Physical.Elements;
 
 namespace BH.Engine.Physical
 {
     public static partial class Query
     {
-        [Description("Returns the bottom centreline of an IFramingElement.")]
-        [Input("element", "The IFramingElement to query the bottom centreline of.")]
-        [Output("curve", "The bottom centreline of the IFramingElement.")]
-        public static ICurve BottomCentreline(this IFramingElement element)
-        {
-            ICurve location = element.Location;
+        [Description("Returns the centreline of an IFramingElement's bounding box. The bounding box is aligned to the local coordinate system of the IFramingElement.")]
+        [Input("element", "The IFramingElement to query the bounding box centreline of.")]
+        [Output("curve", "The bounding box centreline of the IFramingElement.")]
+        public static ICurve BoundingBoxCentreline(this IFramingElement element)
+        {   
+            ICurve location = element?.Location;
+            if (location == null)
+                return null;
 
             Vector normal = null;
-
-            try
-            {
-                normal = BH.Engine.Physical.Query.Normal(element);
-            }
-            catch
+            normal = element.Normal();
+            if (normal == null)
             {
                 Engine.Reflection.Compute.RecordError("IFramingElement must have linear location line.");
                 return null;
             }
 
-            if (normal == null)
+            Vector tangent = (location.IEndPoint() - location.IStartPoint()).Normalise();
+
+            Vector localx = tangent.CrossProduct(normal);
+
+            if (element.Property is ConstantFramingProperty)
             {
-                Engine.Reflection.Compute.RecordError("Was not able to compute element normal.");
-                return null;
-            }
+                Point centre = (element.Property as ConstantFramingProperty)?.Profile?.Edges?.Bounds()?.Centre();
 
-            if(element.Property is ConstantFramingProperty)
-            {
-                ConstantFramingProperty constantProperty = element.Property as ConstantFramingProperty;
+                if (centre == null)
+                    return null;
 
-                IProfile profile = constantProperty.Profile;
+                Vector sectionTranslate = centre - Point.Origin;
 
-                BoundingBox profileBounds = profile.Edges.Bounds();
+                return location.ITranslate(- localx * sectionTranslate.X + normal * sectionTranslate.Y);
 
-                return location.ITranslate(normal * profileBounds.Min.Y);
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Element does not have a suitable framing property, so the section height could not be calculated.");
+                Engine.Reflection.Compute.RecordError("Only suitable framing property for the action is ConstantFramingProperty.");
                 return null;
             }
         }

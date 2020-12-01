@@ -39,9 +39,9 @@ namespace BH.Engine.Reflection
         [Description("Set the value of a property with a given name for an object")]
         [Input("obj", "object to set the value for")]
         [Input("propName", "name of the property to set the value of")]
-        [Input("value", "new value of the property")]
+        [Input("value", "new value of the property. \nIf left empty, the value for that property will be cleared \n(enumerables will be emptied, primitives will be set to their default value, and objects will be set to null)")]
         [Output("result", "New object with its property changed to the new value")]
-        public static object SetPropertyValue(this object obj, string propName, object value)
+        public static object SetPropertyValue(this object obj, string propName, object value = null)
         {
             object toChange = obj;
             if (propName.Contains("."))
@@ -57,7 +57,6 @@ namespace BH.Engine.Reflection
             }
 
             System.Reflection.PropertyInfo prop = toChange.GetType().GetProperty(propName);
-
             if (prop != null)
             {
                 if (!prop.CanWrite)
@@ -66,17 +65,29 @@ namespace BH.Engine.Reflection
                     return obj;
                 }
 
-                if (value.GetType() != prop.PropertyType && value.GetType().GenericTypeArguments.Length > 0 && prop.PropertyType.GenericTypeArguments.Length > 0)
+                Type propType = prop.PropertyType;
+                if (value == null)
                 {
-                    value = Modify.CastGeneric(value as dynamic, prop.PropertyType.GenericTypeArguments[0]);
-                }
-                if (value.GetType() != prop.PropertyType)
-                {
-                    ConstructorInfo constructor = prop.PropertyType.GetConstructor(new Type[] { value.GetType() });
-                    if (constructor != null)
-                        value = constructor.Invoke(new object[] { value });
+                    if (propType == typeof(string))
+                        value = "";
+                    else if (propType.IsValueType || typeof(IEnumerable).IsAssignableFrom(propType))
+                        value = Activator.CreateInstance(propType);
                 }
 
+                if (value != null)
+                {
+                    if (value.GetType() != propType && value.GetType().GenericTypeArguments.Length > 0 && propType.GenericTypeArguments.Length > 0)
+                    {
+                        value = Modify.CastGeneric(value as dynamic, propType.GenericTypeArguments[0]);
+                    }
+                    if (value.GetType() != propType)
+                    {
+                        ConstructorInfo constructor = propType.GetConstructor(new Type[] { value.GetType() });
+                        if (constructor != null)
+                            value = constructor.Invoke(new object[] { value });
+                    }
+                }
+                
                 prop.SetValue(toChange, value);
                 return obj;
             }
@@ -97,9 +108,19 @@ namespace BH.Engine.Reflection
             if (obj == null) return false;
 
             if (!obj.CustomData.ContainsKey(propName))
-                Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data");
+            {
+                if (value is IFragment)
+                {
+                    obj.Fragments.Add(value as IFragment);
+                    Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as a fragment.");
+                }
+                else
+                {
+                    obj.CustomData[propName] = value;
+                    Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as custom data.");
+                }
+            }
 
-            obj.CustomData[propName] = value;
             return true;
         }
 

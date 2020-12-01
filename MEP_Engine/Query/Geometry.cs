@@ -20,15 +20,21 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.MEP.System;
+using BH.oM.MEP.Fixtures;
+using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.MEP
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****             Public Methods                ****/
         /***************************************************/
         
         public static IGeometry Geometry(this IFlow flowObj)

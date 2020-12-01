@@ -20,38 +20,62 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
+using BH.oM.Geometry;
+using BH.oM.Physical.Constructions;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
+using System.Linq;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
-using BH.oM.MEP.Fragments;
 
-namespace BH.Engine.MEP
+
+namespace BH.Engine.Facade
 {
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Returns an MEP Identity Fragment which can be applied to an MEP object to provide information about an objects origins.")]
-        [Input("manufacturer", "The manufacturer of the equipment, default empty string.")]
-        [Input("modelNumber", "The model number of the equipment, default empty string.")]
-        [Input("location", "The location of the equipment within the model/building, default empty string.")]
-        [Input("service", "The service of the equipment, default empty string.")]
-        [Input("remarks", "A collection of remarks about the identity of the equipment, default null.")]
-        [Output("identityFragment", "An MEP Identity Fragment.")]
-        public static IdentityFragment IdentityFragment(string manufacturer = "", string modelNumber = "", string location = "", string service = "", List<string> remarks = null)
-        {
-            remarks = remarks ?? new List<string>();
 
-            return new IdentityFragment
+        [Description("Creates a facade Opening from a collection of curves forming a closed loop.")]
+        [Input("edges", "Closed curve defining the outline of the Opening.")]
+        [Input("frameEdgeProperty", "An optional FrameEdgeProperty to apply to all edges of the opening.")]
+        [Output("opening", "Created Opening.")]
+        public static Opening Opening(IEnumerable<ICurve> edges, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
+        {
+            List<ICurve> externalEdges = new List<ICurve>();
+            foreach (ICurve edge in edges)
             {
-                Manufacturer = manufacturer,
-                ModelNumber = modelNumber,
-                Location = location,
-                Service = service,
-                Remarks = remarks,
-            };
+                externalEdges.AddRange(edge.ISubParts());
+            }
+
+            List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
+
+            if (joined.Count == 0)
+            {
+                Reflection.Compute.RecordError("Could not join Curves. Opening not Created.");
+                return null;
+            }
+            else if (joined.Count > 1)
+            {
+                Reflection.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
+                return null;
+            }
+
+            //Single joined curve
+            if (joined[0].IIsClosed())
+                return new Opening { Edges = externalEdges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList() };
+            else
+            {
+                Reflection.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
+                return null;
+            }
+            
         }
+
         /***************************************************/
     }
 }

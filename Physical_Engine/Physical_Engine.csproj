@@ -101,6 +101,7 @@
     <Compile Include="Query\AverageProfileArea.cs" />
     <Compile Include="Query\ConstructionByName.cs" />
     <Compile Include="Query\BottomCentreline.cs" />
+    <Compile Include="Query\BoundingBoxCentreline.cs" />
     <Compile Include="Query\TopCentreline.cs" />
     <Compile Include="Query\ExternalPolyline.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
