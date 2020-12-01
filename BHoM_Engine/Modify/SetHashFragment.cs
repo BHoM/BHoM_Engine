@@ -38,7 +38,7 @@ namespace BH.Engine.Base
     {
         [Description("Computes the hash of the input BHoMObjects and stores it in a HashFragment for each of them." +
             "\nIf the hashFragment already existed, it is replaced.")]
-        public static IEnumerable<T> SetHashFragment<T>(this IEnumerable<T> objs, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
+        public static List<T> SetHashFragment<T>(this List<T> objs, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
         {
             // Each object will be cloned to avoid modification by reference.
             List<T> objs_cloned = new List<T>();
