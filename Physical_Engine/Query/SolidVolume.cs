@@ -118,10 +118,38 @@ namespace BH.Engine.Physical
             }
 
             double solidVolume = explicitBulk.Volume;
+            if (solidVolume < 0)
+            {
+                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
+                return 0;
+            }
+            return solidVolume;
+        }
+
+        [Description("Returns an IOpening's solid volume based on thickness and area.")]
+        [Input("window", "the window to get the volume from")]
+        [Output("volume", "The window's solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this IOpening opening)
+        {
+            if (opening is BH.oM.Physical.Elements.Void)
+            {
+                Engine.Reflection.Compute.RecordError("Voids contain no solid volume. Try querying the desired value another way.");
+                return 0;
+            }
+
+            double area = opening.IArea();
+
+            double thickness = 0;
+            if (opening is Window)
+                thickness = (opening as Window).Construction.IThickness();
+            else if (opening is Door)
+                thickness = (opening as Door).Construction.IThickness();
+
+            double solidVolume = area * thickness;
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
+                Engine.Reflection.Compute.RecordError("Solid volume cannot be calculated for element of type :" + opening.GetType() + ". Returning zero volume.");
                 return 0;
             }
 
