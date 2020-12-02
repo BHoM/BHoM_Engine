@@ -30,6 +30,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using System.ComponentModel;
+using BH.Engine.Analytical;
 
 namespace BH.Engine.Structure
 {
@@ -39,37 +40,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the area of a Panel as the (area bound by the external edges) - (area of all openings).")]
-        [Input("panel", "The structural Panel to calculate the area for.")]
-        [Output("area","The area of the Panel.", typeof(Area))]
-        public static double Area(this Panel panel)
-        {
-            List<PolyCurve> externalEdges = BH.Engine.Geometry.Compute.IJoin(panel.ExternalEdgeCurves());
-            List<PolyCurve> internalEdges = BH.Engine.Geometry.Compute.IJoin(panel.InternalEdgeCurves());
-
-            return externalEdges.Select(x => x.Area()).Sum() - internalEdges.Select(x => x.Area()).Sum();
-        }
-
-        /***************************************************/
-
-        [Description("Calculates the area of an Opening as the area bound by its edges.")]
-        [Input("opening", "The structural Opening to calculate the area for.")]
-        [Output("area", "The area of the Opening.", typeof(Area))]
-        public static double Area(this Opening opening)
-        {
-            List<PolyCurve> edges = BH.Engine.Geometry.Compute.IJoin(opening.EdgeCurves());
-
-            return edges.Select(x => x.Area()).Sum();
-        }
-
-        /***************************************************/
-
         [Description("Calculates the area of a FEMesh as the sum of the area of all faces. Quad faces will be triangulated to perform the area calculation.")]
         [Input("mesh", "The FEMesh to calculate the area for.")]
         [Output("area", "The area of the FEMesh.", typeof(Area))]
         public static double Area(this FEMesh mesh)
         {
-            return mesh.Geometry().Area();
+            return Engine.Analytical.Query.Geometry(mesh).Area();
         }
 
         /***************************************************/
@@ -108,7 +84,10 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-
+        private static double Area(this BH.oM.Dimensional.IElement2D element)
+        {
+            return Engine.Spatial.Query.Area(element);
+        }
 
         /***************************************************/
     }

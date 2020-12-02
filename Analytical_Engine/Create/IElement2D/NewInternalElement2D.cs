@@ -37,6 +37,7 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Create.NewInternalElement2D(BH.oM.Structure.Elements.Panel)")]
         [Description("Creates a new Element2D, appropriate to the input type. For this case the appropriate type for the Panel will be a new Opening, in the position provided. \n" +
                      "Method required for any IElement2D that contians internal IElement2Ds.")]
         [Input("panel", "Panel just used to determine the appropriate type of IElement2D to create.")]

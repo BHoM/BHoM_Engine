@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System;
 using BH.oM.Physical.Materials;
 using BH.oM.Structure.SurfaceProperties;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {

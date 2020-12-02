@@ -37,6 +37,7 @@ namespace BH.Engine.Analytical
         /****               Public Methods              ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.OutlineElements1D(BH.oM.Structure.Elements.Opening)")]
         [Description("Gets the edge elements from an IOpening defining the boundary of the element. Method required for all IElement2Ds. \n" +
              "For an IOpening this will return a list of its Edges.")]
         [Input("opening", "The IOpening to get outline elements from.")]
@@ -49,6 +50,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Query.OutlineElements1D(BH.oM.Structure.Elements.Panel)")]
         [Description("Gets the edge elements from an IPanel defining the boundary of the element. Method required for all IElement2Ds. \n" +
                      "For an IPanel this will return a list of its ExternalEdges.")]
         [Input("panel", "The IPanel to get outline elements from.")]

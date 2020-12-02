@@ -28,7 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Base;
+using BH.Engine.Base;
 
 namespace BH.Engine.Analytical
 {
@@ -38,19 +38,22 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Node, BH.oM.Geometry.Point)")]
         [Description("Updates the position of a INode.")]
         [Input("node", "The INode to set the postion to.")]
         [Input("point", "The new position of the INode.")]
         [Output("node", "The INode with updated geometry.")]
         public static INode SetGeometry(this INode node, Point point)
         {
-            INode clone = node.GetShallowClone(true) as INode;
+            INode clone = node.ShallowClone();
             clone.Position = point.Clone();
             return clone;
         }
 
         /***************************************************/
 
+        [PreviousInputNames("link", "bar")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Bar, BH.oM.Geometry.ICurve)")]
         [Description("Updates geometry of an ILink by updating the positions of its end Nodes.")]
         [Input("link", "The ILink to update.")]
         [Input("curve", "The new centreline curve of the ILink. Should be a linear curve. \n" +
@@ -65,7 +68,7 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            ILink<TNode> clone = link.GetShallowClone(true) as ILink<TNode>;
+            ILink<TNode> clone = link.ShallowClone();
             clone.StartNode = (TNode)clone.StartNode.SetGeometry(curve.IStartPoint());
             clone.EndNode = (TNode)clone.EndNode.SetGeometry(curve.IEndPoint());
             return clone;
@@ -73,15 +76,30 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Edge, BH.oM.Geometry.ICurve)")]
         [Description("Updates the curve geometry of an IEdge.")]
         [Input("edge", "The IEdge to update.")]
         [Input("curve", "The curve to set to the IEdge.")]
         [Output("edge", "The IEdge with updated geometry.")]
         public static IEdge SetGeometry(this IEdge edge, ICurve curve)
         {
-            IEdge clone = edge.GetShallowClone(true) as IEdge;
+            IEdge clone = edge.ShallowClone();
             clone.Curve = curve.IClone();
             return clone;
+        }
+
+        /***************************************************/
+
+        [PreviousInputNames("anaSurface", "strSurface")]
+        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetGeometry(BH.oM.Structure.Elements.Surface, BH.oM.Geometry.ISurface)")]
+        [Description("Updates the geometrical ISurface of a analytical ISurface.")]
+        [Input("anaSurface", "The analytical Surface to update.")]
+        [Input("geoSurface", "The geometrical ISurface to set to the structural Surface.")]
+        [Output("strSurface", "The analytical Surface with updated geometry.")]
+        public static BH.oM.Analytical.Elements.ISurface SetGeometry(this BH.oM.Analytical.Elements.ISurface anaSurface, BH.oM.Geometry.ISurface geoSurface)
+        {
+            anaSurface.Extents = geoSurface;
+            return anaSurface;
         }
 
         /***************************************************/

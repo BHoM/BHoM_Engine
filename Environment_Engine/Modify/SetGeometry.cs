@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         [Output("node", "The Node with updated geometry")]
         public static Node SetGeometry(this Node node, Point point)
         {
-            Node clone = node.ShallowClone(true);
+            Node clone = node.ShallowClone();
             clone.Position = point.DeepClone();
             return clone;
         }

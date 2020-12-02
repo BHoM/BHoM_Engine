@@ -42,7 +42,7 @@ namespace BH.Engine.Architecture
         [Output("cleanedRoom", "A room that has been cleaned")]
         public static Room CleanRoom(this Room room, double angleTolerance = Tolerance.Angle, double minimumSegmentLength = Tolerance.Distance)
         {
-            Room clonedRoom = room.DeepClone<Room>();
+            Room clonedRoom = room.DeepClone();
             clonedRoom.Perimeter = clonedRoom.Perimeter.ICollapseToPolyline(Tolerance.Angle).CleanPolyline(angleTolerance, minimumSegmentLength);
             return clonedRoom;
         }

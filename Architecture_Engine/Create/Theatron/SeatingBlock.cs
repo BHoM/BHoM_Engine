@@ -246,14 +246,14 @@ namespace BH.Engine.Architecture.Theatron
             List<Point> vertices = new List<Point>();
             for (int j = 0; j < block.Sections.Count; j++)
             {
-                temp = block.Sections[j].FloorPoints.Select(item => item.Clone()).ToList(); 
+                temp = block.Sections[j].FloorPoints.Select(item => item.ShallowClone()).ToList(); 
 
                 if (j == 1)//on the vom
                 {
                     //transfrom right
                     for (int p = 0; p < temp.Count; p++) temp[p] = temp[p] + rightShift;
                     vertices.AddRange(temp);
-                    temp = block.Sections[j].FloorPoints.Select(item => item.Clone()).ToList();
+                    temp = block.Sections[j].FloorPoints.Select(item => item.ShallowClone()).ToList();
                     //transfrom left
                     for (int p = 0; p < temp.Count; p++) temp[p] = temp[p] + leftShift;
                 }
