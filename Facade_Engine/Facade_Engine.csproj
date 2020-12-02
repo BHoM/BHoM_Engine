@@ -88,9 +88,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\FrameEdgeAdjacencies.cs" />
+    <Compile Include="Compute\AdjacentElements.cs" />
+    <Compile Include="Compute\UniqueAdjacencies.cs" />
     <Compile Include="Create\Elements\Opening.cs" />
     <Compile Include="Create\Elements\Panel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\PrimaryPropertyName.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Analytical_Engine\Analytical_Engine.csproj">
@@ -121,7 +124,6 @@
   <ItemGroup>
     <Folder Include="Convert\" />
     <Folder Include="Modify\" />
-    <Folder Include="Query\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
