@@ -28,6 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry.SettingOut;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -59,8 +60,8 @@ namespace BH.Engine.Spatial
         [Output("isFullyOnGrid", "A boolean which is true if the geometrical representation of an IElement1D is fully within a set tolerance from the grid line.")]
         public static bool IsFullyOnGrid(this IElement1D element1D, Grid grid, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            ICurve curve = element1D.IGeometry().IProject(Plane.XY);
-            List <Point> ctrlPts = curve.ControlPoints();
+            ICurve curve = element1D.IGeometry();
+            IEnumerable <Point> ctrlPts = curve.ControlPoints().Select(x => x.Project(Plane.XY));
 
             ICurve gridCurve = grid.Curve.IProject(Plane.XY);
 
@@ -80,7 +81,7 @@ namespace BH.Engine.Spatial
                     return false;
             }
 
-            return ctrlPts.Count > 0;
+            return true;
         }
 
         /******************************************/
@@ -99,7 +100,7 @@ namespace BH.Engine.Spatial
                 if (!IsFullyOnGrid(e1D, grid, tolerance))
                     return false;
             }
-            return elements1D.Count > 0;
+            return true;
         }
 
         /******************************************/
