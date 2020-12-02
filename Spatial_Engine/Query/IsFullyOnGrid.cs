@@ -65,6 +65,15 @@ namespace BH.Engine.Spatial
 
             ICurve gridCurve = grid.Curve.IProject(Plane.XY);
 
+            // This method, the way it currently works, can produce inaccurate results when checking linear elements against curved grids.
+            // For now, support for curved grids has been disabled. A more sophisticated algorithm could fix it. A possible quicker fix could be
+            // to also check grid curve control points against input element1D, though this may still leave some holes open.
+            if (gridCurve.IIsLinear())
+            {
+                BH.Engine.Reflection.Compute.RecordError("IsFullyOnGrid does not support non-linear grid curves.");
+                return false;
+            }
+
             // All this method does is check if the control points are within tolerance from the grid, not if the actual curve is.
             // This works well for Lines and Arcs, but to properly support NurbsCurves a more complex algorithm would be required,
             // as control points of NurbsCurves are not usually on the curve itself. Simply using ClosestPoint to bring the control 
