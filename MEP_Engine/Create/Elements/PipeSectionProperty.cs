@@ -26,6 +26,7 @@ using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.MEP
 {
@@ -41,8 +42,8 @@ namespace BH.Engine.MEP
         [Output("pipeSectionProperty", "Pipe Section property used to provide accurate pipe assembly and capacities.")]
         public static PipeSectionProperty PipeSectionProperty(
             SectionProfile sectionProfile,
-            IMEPMaterial pipeMaterial = null,
-            IMEPMaterial insulationMaterial = null,
+            Material pipeMaterial = null,
+            Material insulationMaterial = null,
             string name = "")
         {
             double elementSolidArea = sectionProfile.ElementProfile.Area();
