@@ -44,10 +44,11 @@ namespace BH.Engine.Facade
 
         [Description("Returns unique adjacent edge and element conditions for a collection of elements, based on their property names")]
         [Input("elems", "Facade elements to use to find unique edge adjacencies")]
+        [Input("splitHorAndVert", "If true, matching horizontal and vertical adjacencies are counted as unique and labeled.")]
         [MultiOutput(0, "uniqueAdjacencyNames", "A list of the unique adjacencies existent within the collection of elements")]
         [MultiOutput(1, "uniqueAdjacencyEdges", "The collection of edges that represents the first found case of the unique adjacency")]
         [MultiOutput(2, "uniqueAdjacencyElements", "The collection of elements that represents the first found case of the unique adjacency")]
-        public static Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>> UniqueAdjacencies(List<IElement2D> elems)
+        public static Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>> UniqueAdjacencies(List<IElement2D> elems, bool splitHorAndVert = false)
         {
             List<string> adjacencyIDs = new List<string>();
             List<List<IElement1D>> adjEdges = new List<List<IElement1D>>();
@@ -55,21 +56,25 @@ namespace BH.Engine.Facade
 
             foreach (IElement2D elem in elems)
             {
-                List<IElement2D> tempElems = elems;
-                tempElems.Remove(elem);
+                List<IElement2D> tempElems = elems.Except(new List<IElement2D> { elem }).ToList();
                 foreach (IEdge edge in elem.IOutlineElements1D())
                 {                  
-                    BH.oM.Reflection.Output<List<IElement1D>, List<IElement2D>> result = edge.FrameEdgeAdjacencies(tempElems);
+                    BH.oM.Reflection.Output<List<IElement1D>, List<IElement2D>> result = edge.EdgeAdjacencies(tempElems);
                     for (int i = 0; i < result.Item1.Count; i++)
                     {
+                        string adjPrefix = "";
                         List<IElement1D> edgeAdjPair = new List<IElement1D> { edge, result.Item1[i] };
                         List<IElement2D> elemAdjPair = new List<IElement2D> { elem, result.Item2[i] };
-                        string adjacencyID = AdjacencyID(edgeAdjPair, elemAdjPair);
+                        if (splitHorAndVert)
+                        {
+                            adjPrefix = Math.Abs(edge.Curve.IEndDir().Z) > 0.707 ? "Vertical-" : "Horizontal-"; // check if line is closer to vertical or horizontal
+                        }
+                        string adjacencyID = adjPrefix + AdjacencyID(edgeAdjPair, elemAdjPair);
                         if (!adjacencyIDs.Contains(adjacencyID))
                         {
                             adjacencyIDs.Add(adjacencyID);
                             adjEdges.Add(edgeAdjPair);
-                            adjElems.Add(result.Item2);
+                            adjElems.Add(elemAdjPair);
                         }
                     }
                 }
@@ -94,7 +99,6 @@ namespace BH.Engine.Facade
         [Output("adjacencyID", "The generated name of the adjacency.")]
         public static string AdjacencyID(List<IElement1D> edges, List<IElement2D> elems)
         {
-            string adjIDFull = "";
             string separator = "_";
             List<string> adjIDs = new List<string>();
             if (edges.Count != elems.Count)
@@ -108,13 +112,12 @@ namespace BH.Engine.Facade
                 {
                     IElement1D edge = edges[i];
                     IElement2D elem = elems[i];
-                    string adjID = "Elem:" + elem.IPrimaryPropertyName() + "-" + "Edge:" + edge.IPrimaryPropertyName();
+                    string adjID = "Elem:" + elem.IPrimaryPropertyName() + " " + "Edge:" + edge.IPrimaryPropertyName();
                     adjIDs.Add(adjID);
                 }
             }
             adjIDs.Sort();
-            string.Join(separator, adjIDs);    
-            return adjIDFull;
+            return string.Join(separator, adjIDs);    
         }
 
 

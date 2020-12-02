@@ -42,9 +42,7 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
 
-        /***************************************************/
-
-        [Description("Returns elements adjacent to a provided element from a collection of elements")]
+        [Description("Returns elements adjacent to a provided Element2D from a collection of elements")]
         [Input("elem", "Element to find adjacencies at")]
         [Input("refElems", "Elements to use to find element adjacencies")]
         [Output("adjElems", "Adjacents elements to the provided element")]
@@ -58,6 +56,30 @@ namespace BH.Engine.Facade
             {
                 PolyCurve refOutline = refElem.OutlineCurve();
                 BH.oM.Reflection.Output<Point, Point> results = outline.CurveProximity(refOutline);
+                double distance = results.Item1.Distance(results.Item2);
+                if (distance < Tolerance.Distance)
+                    adjElems.Add(refElem);
+            }
+
+            return adjElems;
+        }
+
+        /***************************************************/
+
+        [Description("Returns elements adjacent to a provided Element1D from a collection of elements")]
+        [Input("elem", "Element to find adjacencies at")]
+        [Input("refElems", "Elements to use to find element adjacencies")]
+        [Output("adjElems", "Adjacents elements to the provided element")]
+        public static List<IElement2D> AdjacentElements(this IElement1D elem, List<IElement2D> refElems)
+        {
+            List<IElement2D> adjElems = new List<IElement2D>();
+
+            PolyCurve outline = elem.ElementCurves().IJoin()[0];
+
+            foreach (IElement2D refElem in refElems)
+            {
+                PolyCurve refOutline = refElem.OutlineCurve();
+                BH.oM.Reflection.Output<Point, Point> results = refOutline.CurveProximity(outline);
                 double distance = results.Item1.Distance(results.Item2);
                 if (distance < Tolerance.Distance)
                     adjElems.Add(refElem);
