@@ -20,30 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Base;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Physical.Materials;
+using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Physical.Elements;
+using BH.Engine.Matter;
 
-namespace BH.Engine.Diffing
+
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
 
-        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
-        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        public static bool AnyDuplicateByHash<T>(this IEnumerable<T> objects) where T : IBHoMObject
+        [Description("Evaluates the mass of an object based its Solid Volume and Density.\nRequires a single consistent value of Density to be provided across all MaterialProperties of a given element.")]
+        [Input("opening", "The element to evaluate the mass of")]
+        [Output("mass", "The physical mass of the element", typeof(Mass))]
+        public static double Mass(this IOpening opening)
         {
-            return Modify.RemoveDuplicatesByHash(objects).ToList().Count != objects.ToList().Count;
+            MaterialComposition mat = opening.IMaterialComposition();
+            return opening.SolidVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density()).Sum();
         }
+
+        /******************************************/
     }
 }
-

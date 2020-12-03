@@ -35,6 +35,7 @@ using BH.oM.Physical.Materials;
 using BH.Engine.Diffing;
 using BH.oM.Diffing;
 using BH.oM.Environment.Analysis;
+using BH.oM.Base;
 
 namespace BH.Engine.Environment
 {
@@ -55,18 +56,21 @@ namespace BH.Engine.Environment
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
         public static bool HasMergeablePropertiesWith(Panel element, Panel other)
         {
-            DiffConfig config = new DiffConfig()
+            DiffingConfig config = new DiffingConfig()
             {
-                PropertiesToIgnore = new List<string>
+                ComparisonConfig = new ComparisonConfig()
                 {
-                    "ExternalEdges",
-                    "Openings",
-                    "ConnectedSpaces",
-                    "Type",
-                    "BHoM_Guid",
-                    "CustomData",
-                },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                    PropertyExceptions = new List<string>
+                    {
+                        "ExternalEdges",
+                        "Openings",
+                        "ConnectedSpaces",
+                        "Type",
+                        "BHoM_Guid",
+                        "CustomData",
+                    },
+                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance
+                }
             };
 
             return Diffing.Query.DifferentProperties(element, other, config) == null;
@@ -78,18 +82,21 @@ namespace BH.Engine.Environment
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
         public static bool HasMergeablePropertiesWith(Opening element, Opening other)
         {
-            DiffConfig config = new DiffConfig()
+            DiffingConfig config = new DiffingConfig()
             {
-                PropertiesToIgnore = new List<string>
+                ComparisonConfig = new ComparisonConfig()
                 {
-                    "Edges",
-                    "FrameFactorValue",
-                    "InnerEdges",
-                    "Type",
-                    "BHoM_Guid",
-                    "CustomData",
-                },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                    PropertyExceptions = new List<string>
+                    {
+                        "Edges",
+                        "FrameFactorValue",
+                        "InnerEdges",
+                        "Type",
+                        "BHoM_Guid",
+                        "CustomData",
+                    },
+                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance
+                }
             };
 
             return Diffing.Query.DifferentProperties(element, other, config) == null;
@@ -110,16 +117,19 @@ namespace BH.Engine.Environment
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
         public static bool HasMergeablePropertiesWith(Space element, Space other)
         {
-            DiffConfig config = new DiffConfig()
+            DiffingConfig config = new DiffingConfig()
             {
-                PropertiesToIgnore = new List<string>
+                ComparisonConfig = new ComparisonConfig()
                 {
-                    "Location",
-                    "Type",
-                    "BHoM_Guid",
-                    "CustomData",
-                },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                    PropertyExceptions = new List<string>
+                    {
+                        "Location",
+                        "Type",
+                        "BHoM_Guid",
+                        "CustomData",
+                    },
+                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                }
             };
 
             return Diffing.Query.DifferentProperties(element, other, config) == null;

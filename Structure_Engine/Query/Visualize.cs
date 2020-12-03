@@ -261,17 +261,22 @@ namespace BH.Engine.Structure
         {
             List<ICurve> arrows = new List<ICurve>();
 
-            Vector forceA = barVaryingDistLoad.ForceA * scaleFactor;
-            Vector forceB = barVaryingDistLoad.ForceB * scaleFactor;
-            Vector momentA = barVaryingDistLoad.MomentA * scaleFactor;
-            Vector momentB = barVaryingDistLoad.MomentB * scaleFactor;
+            Vector forceA = barVaryingDistLoad.ForceAtStart * scaleFactor;
+            Vector forceB = barVaryingDistLoad.ForceAtEnd * scaleFactor;
+            Vector momentA = barVaryingDistLoad.MomentAtStart * scaleFactor;
+            Vector momentB = barVaryingDistLoad.MomentAtEnd * scaleFactor;
 
             int divisions = 5;
             double sqTol = Tolerance.Distance * Tolerance.Distance;
 
             foreach (Bar bar in barVaryingDistLoad.Objects.Elements)
             {
-                List<Point> pts = DistributedPoints(bar, divisions, barVaryingDistLoad.DistanceFromA, barVaryingDistLoad.DistanceFromB);
+                double length = bar.Length();
+
+                double startLength = barVaryingDistLoad.RelativePositions ? length * barVaryingDistLoad.StartPosition : barVaryingDistLoad.StartPosition;
+                double endLength = barVaryingDistLoad.RelativePositions ? length * (1.0 - barVaryingDistLoad.EndPosition) : length - barVaryingDistLoad.EndPosition;
+
+                List<Point> pts = DistributedPoints(bar, divisions, startLength, endLength);
 
                 Basis orientation;
 

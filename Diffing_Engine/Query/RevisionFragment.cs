@@ -20,53 +20,22 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.Engine.Base;
+using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Diffing;
-using BH.oM.Base;
-using System.Reflection;
-using BH.oM.Reflection;
 
 namespace BH.Engine.Diffing
 {
     public static partial class Query
     {
-        [MultiOutput(0, "propNames", "List of properties changed per each object.")]
-        [MultiOutput(1, "value_obj1", "List of current values of the properties.")]
-        [MultiOutput(2, "value_obj2", "List of past values of the properties.")]
-        public static Output<List<string>, List<object>, List<object>> ListDifferentProperties(this Dictionary<string, Tuple<object, object>> diffProps)
+        public static RevisionFragment RevisionFragment(this IBHoMObject obj)
         {
-            var output = new Output<List<string>, List<object>, List<object>>();
-
-            List<string> propNameList = new List<string>();
-            List<object> propValue_CurrentList = new List<object>();
-            List<object> propValue_ReadList = new List<object>();
-
-            // These first empty assignments are needed to avoid UI to throw error "Object not set to an instance of an object" when input is null.
-            output.Item1 = propNameList;
-            output.Item2 = propValue_CurrentList;
-            output.Item3 = propValue_ReadList;
-
-            if (diffProps == null)
-                return output;
-
-            foreach (var item in diffProps)
-            {
-                propNameList.Add(item.Key);
-                propValue_CurrentList.Add(item.Value.Item1);
-                propValue_ReadList.Add(item.Value.Item2);
-            }
-
-            output.Item1 = propNameList;
-            output.Item2 = propValue_CurrentList;
-            output.Item3 = propValue_ReadList;
-
-            return output;
+            return obj.FindFragment<RevisionFragment>(); 
         }
     }
 }

@@ -39,15 +39,27 @@ namespace BH.Engine.Diffing
 {
     public static partial class Modify
     {
-        [Description("Removes duplicates from a collection of objects. The comparison is made using their Hash. If hash is missing, it is computed.")]
-        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        [Input("comparisonConfig", "Settings to determine the uniqueness of an Object.")]
-        [Input("useExistingHash", "If true, if objects already have a HashFragment, use that. If false, recompute the hash for all objects.")]
-        public static IEnumerable<T> RemoveDuplicatesByHash<T>(this IEnumerable<T> objects, ComparisonConfig comparisonConfig = null, bool useExistingHash = true) where T : IBHoMObject
+        [Description("Combines two given diffs into one, appending objects of the second to the first.")]
+        public static Diff CombineDiffs(this Diff diff, Diff toAdd)
         {
-            return objects.GroupBy(obj =>
-                 obj.Hash(comparisonConfig, useExistingHash)
-            ).Select(gr => gr.First()).ToList();
+            if (diff == null)
+                return toAdd;
+
+            if (toAdd == null)
+                return diff;
+
+            return new Diff(
+                diff.AddedObjects != null ? diff.AddedObjects.Concat(toAdd.AddedObjects ?? new List<object>()) : toAdd.AddedObjects ?? new List<object>(),
+                diff.RemovedObjects != null ? diff.RemovedObjects.Concat(toAdd.RemovedObjects ?? new List<object>()) : toAdd.RemovedObjects ?? new List<object>(),
+                diff.ModifiedObjects != null ? diff.ModifiedObjects.Concat(toAdd.ModifiedObjects ?? new List<object>()) : toAdd.ModifiedObjects ?? new List<object>(),
+                diff.DiffingConfig,
+                diff.ModifiedPropsPerObject != null ?
+                        diff.ModifiedPropsPerObject
+                        .Concat(toAdd.ModifiedPropsPerObject ?? new Dictionary<string, Dictionary<string, Tuple<object, object>>>())
+                        .ToDictionary(x => x.Key, x => x.Value)
+                        : toAdd.ModifiedPropsPerObject ?? new Dictionary<string, Dictionary<string, Tuple<object, object>>>(),
+                diff.UnchangedObjects != null ? diff.UnchangedObjects.Concat(toAdd.UnchangedObjects ?? new List<object>()) : toAdd.UnchangedObjects ?? new List<object>()
+                );
         }
     }
 }

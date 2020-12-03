@@ -20,36 +20,56 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data.Collections;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
-using BH.Engine.Serialiser;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
+using BH.Engine.Serialiser;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Base
 {
     public static partial class Modify
     {
-        public static IEnumerable<T> PrepareForRevision<T>(this IEnumerable<T> objects, DiffingConfig diffConfig = null) where T : IBHoMObject
+        [Description("Computes the hash of the input BHoMObjects and stores it in a HashFragment for each of them." +
+            "\nIf the hashFragment already existed, it is replaced.")]
+        public static List<T> SetHashFragment<T>(this List<T> objs, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
         {
-            // Clone the current objects to preserve immutability; calculate and set the hash fragment
-            IEnumerable<T> objs_cloned = Modify.SetRevisionFragment(objects, diffConfig);
+            // Each object will be cloned to avoid modification by reference.
+            List<T> objs_cloned = new List<T>();
 
-            // Remove duplicates by hash
-            objs_cloned = Modify.RemoveDuplicatesByHash(objs_cloned);
-
-            if (objs_cloned.Count() != objects.Count())
-                Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
+            // Calculate and set the object hashes
+            foreach (var obj in objs)
+                objs_cloned.Add(SetHashFragment(obj, comparisonConfig));
 
             return objs_cloned;
+        }
+
+        [Description("Computes the hash of the BHoMObject and stores it in a HashFragment." +
+            "\nIf the hashFragment already existed, it is replaced.")]
+        public static T SetHashFragment<T>(this T obj, ComparisonConfig comparisonConfig = null) where T : IBHoMObject
+        {
+            // Calculate and set the object hashes
+            string hash = obj.Hash(comparisonConfig);
+            
+            return SetHashFragment<T>(obj, hash);
+        }
+
+        [Description("Clones the IBHoMObject, computes its hash and stores it in a HashFragment." +
+            "\nIf the hashFragment already existed, it is replaced.")]
+        public static T SetHashFragment<T>(this T obj, string hash) where T : IBHoMObject
+        {
+            // Clone the current object to avoid modification by reference.
+            T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
+
+            obj_cloned.Fragments.AddOrReplace(new HashFragment() { Hash = hash });
+
+            return obj_cloned;
         }
     }
 }

@@ -82,16 +82,74 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Return the total volume of BulkSolids")]
-        [Input("bulkSolids", "Solid geometric elements that have a material composition")]
-        [Output("volume", "The combined volume of BulkSolids", typeof(Volume))]
-        public static double SolidVolume(this BulkSolids bulkSolids)
+        [Description("Return the total volume of SolidBulk.")]
+        [Input("solidBulk", "Solid geometric elements that have a MaterialComposition.")]
+        [Output("volume", "The combined volume of SolidBulk.", typeof(Volume))]
+        public static double SolidVolume(this SolidBulk solidBulk)
         {
-            double solidVolume = bulkSolids.Geometry.Select(x => BH.Engine.Geometry.Query.IVolume(x)).Sum();
+            if (solidBulk == null || solidBulk.Geometry == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid SolidBulk objects have been provided. Returning NaN.");
+                return double.NaN;
+            }
+
+            double solidVolume = solidBulk.Geometry.Select(x => x.IVolume()).Sum();
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("The BulkSolids Solid Volume could not be calculated. Returning zero volume.");
+                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
+                return 0;
+            }
+
+            return solidVolume;
+        }
+
+        /***************************************************/
+
+        [Description("Return the total volume of ExplicitBulk.")]
+        [Input("explicitBulk", "Elements containing Volume and MaterialComposition properties.")]
+        [Output("volume", "The combined volume of ExplicitBulk.", typeof(Volume))]
+        public static double SolidVolume(this ExplicitBulk explicitBulk)
+        {
+            if (explicitBulk == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid ExplicitBulk objects have been provided. Returning NaN.");
+                return double.NaN;
+            }
+
+            double solidVolume = explicitBulk.Volume;
+            if (solidVolume < 0)
+            {
+                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
+                return 0;
+            }
+            return solidVolume;
+        }
+
+        [Description("Returns an IOpening's solid volume based on thickness and area.")]
+        [Input("window", "the window to get the volume from")]
+        [Output("volume", "The window's solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this IOpening opening)
+        {
+            if (opening is BH.oM.Physical.Elements.Void)
+            {
+                Engine.Reflection.Compute.RecordError("Voids contain no solid volume. Try querying the desired value another way.");
+                return 0;
+            }
+
+            double area = opening.IArea();
+
+            double thickness = 0;
+            if (opening is Window)
+                thickness = (opening as Window).Construction.IThickness();
+            else if (opening is Door)
+                thickness = (opening as Door).Construction.IThickness();
+
+            double solidVolume = area * thickness;
+
+            if (solidVolume <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Solid volume cannot be calculated for element of type :" + opening.GetType() + ". Returning zero volume.");
                 return 0;
             }
 
