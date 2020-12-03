@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="Analytical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Analytical_oM.dll</HintPath>
-	  <Private>False</Private>
+      <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="BHoM">
@@ -80,7 +80,7 @@
     </Reference>
     <Reference Include="Spatial_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
-	  <Private>False</Private>
+      <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
@@ -95,6 +95,7 @@
   <ItemGroup>
     <Compile Include="Compute\EdgeAdjacencies.cs" />
     <Compile Include="Compute\AdjacentElements.cs" />
+    <Compile Include="Query\AdjacencyId.cs" />
     <Compile Include="Compute\UniqueAdjacencies.cs" />
     <Compile Include="Create\Elements\Opening.cs" />
     <Compile Include="Create\Elements\Panel.cs" />

@@ -137,8 +137,8 @@ namespace BH.Engine.Facade
         }
 
         [Description("Returns if curves are adjacent")]
-        [Input("curve1", "First element to check adjacency for")]
-        [Input("curve2", "Second element to check adjacency for")]
+        [Input("elem1", "First element to check adjacency for")]
+        [Input("elem2", "Second element to check adjacency for")]
         [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
         [Output("bool", "True if provided elements are adjacent")]
 
