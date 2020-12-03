@@ -42,7 +42,7 @@ namespace BH.Engine.Data
 
         [Description("Groups objects by their property values. Note that not all object properties have groupable values")]
         [Input("objects", "List of objects to be grouped. All objects in the list should be of similar type")]
-        [Input("propertyName", "The name of the property to group the list of objects by. Note that the property must be able to be grouped - e.g. numbers / text")]
+        [Input("propertyName", "The name of the property to group the list of objects by.")]
         [Output("groupedObjects", "The collection of objects grouped by the given property")]
         public static List<List<T>> GroupBy<T>(this List<T> objects, string propertyName)
         {
