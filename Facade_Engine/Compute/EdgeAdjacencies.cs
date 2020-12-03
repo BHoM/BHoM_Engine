@@ -54,11 +54,11 @@ namespace BH.Engine.Facade
             List<IElement1D> adjEdges = new List<IElement1D>();
             List<IElement2D> adjElems = new List<IElement2D>();
 
-            List<IElement2D> adjFullElems = AdjacentElements(edge, elems);
+            //List<IElement2D> adjFullElems = AdjacentElements(edge, elems);
             PolyCurve edgeGeo = edge.ElementCurves().IJoin()[0];
             Vector edgeDir = edge.IGeometry().IEndDir();
 
-            foreach (IElement2D elem in adjFullElems)
+            foreach (IElement2D elem in elems)
             {
                 List<IElement1D> edges = elem.IOutlineElements1D();
 

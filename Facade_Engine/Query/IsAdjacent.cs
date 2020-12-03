@@ -46,34 +46,19 @@ namespace BH.Engine.Facade
 
         public static bool IsAdjacent(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
-            bool isAdj = false;
-
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
-            double distance = results.Item1.Distance(results.Item2);
-            if (distance < Tolerance.Distance)
+            List<Point> testPts = new List<Point> { curve1.Start, curve1.End, curve2.Start, curve2.End };
+            if (testPts.IsCollinear())
             {
-                List<Point> testPts = new List<Point> { curve1.Start, curve1.End, curve2.Start, curve2.End };
-                if (testPts.IsCollinear())
+                // Check that lines overlap
+                double dist1 = curve1.Start.Distance(curve2.Start) + curve1.Start.Distance(curve2.End);
+                double dist2 = curve1.End.Distance(curve2.Start) + curve1.End.Distance(curve2.End);
+                double distCheck = Math.Max(dist1, dist2);
+                if (curve1.Length() + curve2.Length() - distCheck > tolerance)
                 {
-                    Vector scaleVec = new Vector { X = tolerance, Y = tolerance, Z = tolerance };
-                    
-                    // Check that adjacency is not only at touching endpoints
-                    if (results.Item1.Distance(curve1.Start) < tolerance)
-                    {
-                        Point tempPt = results.Item1.Translate(curve1.Direction().Normalise().Scale(Point.Origin, scaleVec));
-                        if (tempPt.Distance(curve2.Start) < results.Item1.Distance(curve2.Start) || tempPt.Distance(curve2.End) < results.Item1.Distance(curve2.End))
-                            isAdj = true;  
-                    }
-                    else if (results.Item1.Distance(curve1.End) < tolerance)
-                    {
-                        Point tempPt = results.Item1.Translate(curve1.Direction().Reverse().Normalise().Scale(Point.Origin, scaleVec));
-                        if (tempPt.Distance(curve2.Start) < results.Item1.Distance(curve2.Start) || tempPt.Distance(curve2.End) < results.Item1.Distance(curve2.End))
-                            isAdj = true;
-                    }
-                    else isAdj = true;
+                    return true;
                 }
             }
-            return isAdj;
+            return false;
         }
 
         /***************************************************/
@@ -169,7 +154,7 @@ namespace BH.Engine.Facade
 
         private static bool IsAdjacent(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"IsAdjacent is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
+            Reflection.Compute.RecordWarning($"IsAdjacent is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
             return false;
         }
 
@@ -177,7 +162,7 @@ namespace BH.Engine.Facade
 
         private static bool IsAdjacent(this IElement1D elem1, IElement1D elem2, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"IsAdjacent is not implemented for a combination of {elem1.GetType().Name} and {elem2.GetType().Name}.");
+            Reflection.Compute.RecordWarning($"IsAdjacent is not implemented for a combination of {elem1.GetType().Name} and {elem2.GetType().Name}.");
             return false;
         }
 
