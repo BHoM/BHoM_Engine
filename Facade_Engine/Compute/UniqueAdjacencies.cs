@@ -42,12 +42,12 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns unique adjacent edge and element conditions for a collection of elements, based on their property names")]
-        [Input("elems", "Facade elements to use to find unique edge adjacencies")]
+        [Description("Returns unique adjacent edge and element conditions for a collection of elements, based on their property names.")]
+        [Input("elems", "Facade elements to use to find unique edge adjacencies.")]
         [Input("splitHorAndVert", "If true, matching horizontal and vertical adjacencies are counted as unique and labeled.")]
-        [MultiOutput(0, "uniqueAdjacencyNames", "A list of the unique adjacencies existent within the collection of elements")]
-        [MultiOutput(1, "uniqueAdjacencyEdges", "The collection of edges that represents the first found case of the unique adjacency")]
-        [MultiOutput(2, "uniqueAdjacencyElements", "The collection of elements that represents the first found case of the unique adjacency")]
+        [MultiOutput(0, "uniqueAdjacencyNames", "A list of the unique adjacencies existent within the collection of elements.")]
+        [MultiOutput(1, "uniqueAdjacencyEdges", "The collection of edges that represents the first found case of the unique adjacency.")]
+        [MultiOutput(2, "uniqueAdjacencyElements", "The collection of elements that represents the first found case of the unique adjacency.")]
         public static Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>> UniqueAdjacencies(List<IElement2D> elems, bool splitHorAndVert = false)
         {
             List<string> adjacencyIDs = new List<string>();
@@ -69,7 +69,7 @@ namespace BH.Engine.Facade
                         {
                             adjPrefix = Math.Abs(edge.Curve.IEndDir().Z) > 0.707 ? "Vertical-" : "Horizontal-"; // check if line is closer to vertical or horizontal
                         }
-                        string adjacencyID = adjPrefix + AdjacencyID(edgeAdjPair, elemAdjPair);
+                        string adjacencyID = adjPrefix + Query.AdjacencyID(edgeAdjPair, elemAdjPair);
                         if (!adjacencyIDs.Contains(adjacencyID))
                         {
                             adjacencyIDs.Add(adjacencyID);
@@ -88,38 +88,6 @@ namespace BH.Engine.Facade
             };
 
         }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        [Description("Creates adjacency ID from adjacency elements.")]
-        [Input("adjacencyEdges", "Adjacency edges.")]
-        [Input("adjacencyElems", "Adjacency elements.")]
-        [Output("adjacencyID", "The generated name of the adjacency.")]
-        public static string AdjacencyID(List<IElement1D> edges, List<IElement2D> elems)
-        {
-            string separator = "_";
-            List<string> adjIDs = new List<string>();
-            if (edges.Count != elems.Count)
-            {
-                Reflection.Compute.RecordWarning("edge and element list lengths do not match. Each edge should have a corresponding element, please check your inputs.");
-                return null;
-            }
-            else
-            {
-                for (int i = 0; i < edges.Count; i++)
-                {
-                    IElement1D edge = edges[i];
-                    IElement2D elem = elems[i];
-                    string adjID = "Elem:" + elem.IPrimaryPropertyName() + " " + "Edge:" + edge.IPrimaryPropertyName();
-                    adjIDs.Add(adjID);
-                }
-            }
-            adjIDs.Sort();
-            return string.Join(separator, adjIDs);    
-        }
-
 
     }
 }
