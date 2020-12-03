@@ -65,9 +65,12 @@ namespace BH.Engine.Facade
             }
 
             BoundingBox bounds = propProfileBounds.Bounds();
-            List<Line> rectEdges = bounds.Edges();
-            rectEdges.CullDuplicateLines();
-            Polyline rect = rectEdges.Join()[0];
+            double maxY = bounds.Max.Y;
+            double minY = bounds.Min.Y;
+            double maxX = bounds.Max.X;
+            double minX = bounds.Min.X;
+
+            Polyline rect = Engine.Geometry.Create.Polyline(new List<Point>() { new Point { X = minX, Y = maxY }, new Point { X = maxX, Y = maxY }, new Point { X = maxX, Y = minY }, new Point { X = minX, Y = minY }, new Point { X = minX, Y = maxY } });
             return rect;
         }
 
