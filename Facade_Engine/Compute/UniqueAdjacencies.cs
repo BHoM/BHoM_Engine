@@ -78,7 +78,40 @@ namespace BH.Engine.Facade
                         }
                     }
                 }
+
+                if (elem.InternalOutlineCurves().Count > 0)
+                {
+                    List<ICurve> intCrvs = new List<ICurve>();
+                    foreach (PolyCurve intPanelEdge in elem.InternalOutlineCurves())
+                    {
+                        List<ICurve> subCrvs = intPanelEdge.SubParts();
+                        intCrvs.AddRange(subCrvs);
+                    }
+
+                    foreach (ICurve intPanelEdge in intCrvs)
+                    {
+                        BH.oM.Reflection.Output<List<IElement1D>, List<IElement2D>> result = intPanelEdge.EdgeAdjacencies(tempElems);
+                        for (int i = 0; i < result.Item1.Count; i++)
+                        {
+                            string adjPrefix = "";
+                            List<IElement1D> edgeAdjPair = new List<IElement1D> { intPanelEdge, result.Item1[i] };
+                            List<IElement2D> elemAdjPair = new List<IElement2D> { elem, result.Item2[i] };
+                            if (splitHorAndVert)
+                            {
+                                adjPrefix = Math.Abs(intPanelEdge.IEndDir().Z) > 0.707 ? "Vertical-" : "Horizontal-"; // check if line is closer to vertical or horizontal
+                            }
+                            string adjacencyID = adjPrefix + Query.AdjacencyID(edgeAdjPair, elemAdjPair);
+                            if (!adjacencyIDs.Contains(adjacencyID))
+                            {
+                                adjacencyIDs.Add(adjacencyID);
+                                adjEdges.Add(edgeAdjPair);
+                                adjElems.Add(elemAdjPair);
+                            }
+                        }
+                    }
+                }
             }
+
             // Return the adjacency ids and elemens as multi output
             return new Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>>
             {
