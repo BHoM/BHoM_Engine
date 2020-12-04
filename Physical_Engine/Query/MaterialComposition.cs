@@ -48,7 +48,7 @@ namespace BH.Engine.Physical
         {
             if (framingElement.Property == null)
             {
-                Engine.Reflection.Compute.RecordError("The IFramingElement MaterialComposition could not be calculated as no Property has been assigned.");
+                Engine.Reflection.Compute.RecordError("The MaterialComposition could not be queried as no Property has been assigned to the IFramingElement.");
                 return null;
             }
             return framingElement.Property.IMaterialComposition();
@@ -63,7 +63,7 @@ namespace BH.Engine.Physical
         {
             if (surface.Construction == null)
             {
-                Engine.Reflection.Compute.RecordError("The ISurface MaterialComposition could not be calculated as no IConstruction has been assigned.");
+                Engine.Reflection.Compute.RecordError("The MaterialComposition could not be queried as no IConstruction has been assigned to the ISurface.");
                 return null;
             }
             return surface.Construction.IMaterialComposition();
@@ -71,17 +71,80 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets all the Materials a BulkSolid is composed of and in which ratios")]
-        [Input("bulkSolids", "The BulkSolids to get the MaterialComposition from")]
-        [Output("materialComposition", "The kind of matter the BulkSolids is composed of and in which ratios", typeof(Ratio))]
-        public static MaterialComposition MaterialComposition(this BulkSolids bulkSolids)
+        [Description("Gets all the Materials an IOpening is composed of and in which ratios")]
+        [Input("opening", "The IOpening to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the IOpening is composed of and in which ratios")]
+        public static MaterialComposition MaterialComposition(this IOpening opening)
         {
-            if (bulkSolids.MaterialComposition == null)
+            MaterialComposition materialComposition = null;
+            if (opening is Window)
             {
-                Engine.Reflection.Compute.RecordError("The BulkSolids MaterialComposition could not be calculated as no Materials have been assigned.");
+                if ((opening as Window).Construction == null)
+                {
+                    Engine.Reflection.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
+                    return null;
+                }
+
+                materialComposition = (opening as Window).Construction.IMaterialComposition();
+            }
+
+            if (opening is Door)
+            {
+                if ((opening as Door).Construction == null)
+                {
+                    Engine.Reflection.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
+                    return null;
+                }
+
+                materialComposition = (opening as Door).Construction.IMaterialComposition();
+            }
+
+            if (opening is BH.oM.Physical.Elements.Void)
+            {
+                Engine.Reflection.Compute.RecordError("Void's do not support constructions and therefore, contain no material composition. Returning null.");
                 return null;
             }
-            return Matter.Create.MaterialComposition(bulkSolids.MaterialComposition.Materials, bulkSolids.MaterialComposition.Ratios);
+            return materialComposition;
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the Materials a SolidBulk is composed of and in which ratios")]
+        [Input("solidBulk", "The SolidBulk to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the SolidBulk is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this SolidBulk solidBulk)
+        {
+            if (solidBulk == null)
+            {
+                return null;
+            }
+
+            if (solidBulk.MaterialComposition == null)
+            {
+                Engine.Reflection.Compute.RecordError("The SolidBulk MaterialComposition could not be queried as no Materials have been assigned to at least one of the layers of the Construction.");
+                return null;
+            }
+            return solidBulk.MaterialComposition;
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the Materials a ExplicitBulk is composed of and in which ratios")]
+        [Input("explicitBulk", "The ExplicitBulk to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the ExplicitBulk is composed of and in which ratios", typeof(Ratio))]
+        public static MaterialComposition MaterialComposition(this ExplicitBulk explicitBulk)
+        {
+            if (explicitBulk == null)
+            {
+                return null;
+            }
+
+            if (explicitBulk.MaterialComposition == null)
+            {
+                Engine.Reflection.Compute.RecordError("The ExplicitBulk MaterialComposition could not be queried as no Materials have been assigned to at least one of the layers of the Construction.");
+                return null;
+            }
+            return explicitBulk.MaterialComposition;
         }
 
         /******************************************************/
@@ -89,6 +152,24 @@ namespace BH.Engine.Physical
         /******************************************************/
 
         public static MaterialComposition IMaterialComposition(this IConstruction prop)
+        {
+            return MaterialComposition(prop as dynamic);
+        }
+
+        /******************************************************/
+        /**** IFramingElementProperty Methods              ****/
+        /******************************************************/
+
+        private static MaterialComposition IMaterialComposition(this IFramingElementProperty prop)
+        {
+            return MaterialComposition(prop as dynamic);
+        }
+
+        /******************************************************/
+        /****           IOpening Methods                   ****/
+        /******************************************************/
+
+        private static MaterialComposition IMaterialComposition(this IOpening prop)
         {
             return MaterialComposition(prop as dynamic);
         }
@@ -101,7 +182,7 @@ namespace BH.Engine.Physical
         {
             if (prop.Layers.Any(x => x.Material == null))
             {
-                Engine.Reflection.Compute.RecordError("The Construction MaterialComposition could not be calculated as no Material has been assigned.");
+                Engine.Reflection.Compute.RecordError("The Construction MaterialComposition could not be queried as no Material has been assigned.");
                 return null;
             }
             return Matter.Create.MaterialComposition(prop.Layers.Select(x => x.Material), prop.Layers.Select(x => x.Thickness));
@@ -116,22 +197,13 @@ namespace BH.Engine.Physical
             throw new NotImplementedException();
         }
 
-        /******************************************************/
-        /**** IFramingElementProperty Methods              ****/
-        /******************************************************/
-
-        private static MaterialComposition IMaterialComposition(this IFramingElementProperty prop)
-        {
-            return MaterialComposition(prop as dynamic);
-        }
-
         /***************************************************/
 
         private static MaterialComposition MaterialComposition(this ConstantFramingProperty prop)
         {
             if (prop.Material == null)
             {
-                Engine.Reflection.Compute.RecordError("The ConstantFramingProperty MaterialComposition could not be calculated as no Material has been assigned.");
+                Engine.Reflection.Compute.RecordError("The ConstantFramingProperty MaterialComposition could not be queried as no Material has been assigned to the ConstantFramingProperty.");
                 return null;
             }
             return (MaterialComposition)prop.Material;
@@ -146,7 +218,6 @@ namespace BH.Engine.Physical
             throw new NotImplementedException();
         }
 
-        /***************************************************/
 
     }
 }

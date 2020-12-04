@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,23 +20,42 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.Engine.Base;
-using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
+using System.Collections;
+using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+using BH.Engine.Reflection;
+
+namespace BH.Engine.Data
 {
     public static partial class Query
     {
-        public static HashFragment GetHashFragment(this IBHoMObject obj)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Groups objects by their property values. Note that not all object properties have groupable values")]
+        [Input("objects", "List of objects to be grouped. All objects in the list should be of similar type")]
+        [Input("propertyName", "The name of the property to group the list of objects by.")]
+        [Output("groupedObjects", "The collection of objects grouped by the given property")]
+        public static List<List<T>> GroupBy<T>(this List<T> objects, string propertyName)
         {
-            return obj.FindFragment<HashFragment>(); 
+            var grouping = objects.GroupBy(x => x.PropertyValue(propertyName));
+            List<List<T>> groupedObjects = new List<List<T>>();
+
+            foreach (var group in grouping)
+                groupedObjects.Add(group.ToList());
+            
+            return groupedObjects;
         }
+
+        /***************************************************/
+
     }
 }
-

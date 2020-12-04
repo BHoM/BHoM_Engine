@@ -33,42 +33,39 @@ using System.Reflection;
 using BH.Engine.Serialiser;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Compute
+    public static partial class Create
     {
         ///***************************************************/
         ///**** Public Methods                            ****/
-        ///***************************************************/ 
-
-        [Description("Computes the hash code required for the Diffing.")]
-        [Input("obj", "Objects the hash code should be calculated for")]
-        [Input("diffConfig", "Sets configs for the hash calculation, such as properties to be ignored.")]
-        public static string DiffingHash(this object obj, DiffConfig diffConfig = null)
+        ///***************************************************/
+        ///
+        [Description("Defines configurations for the diffing.")]
+        [Input("enablePropertyDiffing", "Enables the property-level diffing: differences in object properties are stored in the `ModifiedPropsPerObject` dictionary.")]
+        [Input("storeUnchangedObjects", "If enabled, the Diff stores also the objects that did not change (`Unchanged` property).")]
+        public static DiffingConfig DiffingConfig(bool enablePropertyDiffing, bool storeUnchangedObjects)
         {
-            diffConfig = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
+            return Create.DiffingConfig(enablePropertyDiffing, storeUnchangedObjects, null);
+        }
 
-            // The following is to consider only the PropertiesToInclude specified in the diffConfig.
-            // Since the SHA hash algorithm can only consider "exceptions", we need to retrieve all the top level properties,
-            // intersect them with the set of PropertiesToInclude, and treat all the properties that remain out as "exceptions" (not to be considered).
-            if (diffConfig.PropertiesToConsider.Any())
+        [Description("Defines configurations for the diffing.")]
+        [Input("enablePropertyDiffing", "Enables the property-level diffing: differences in object properties are stored in the `ModifiedPropsPerObject` dictionary.")]
+        [Input("storeUnchangedObjects", "If enabled, the Diff stores also the objects that did not change (`Unchanged` property).")]
+        public static DiffingConfig DiffingConfig(bool enablePropertyDiffing = false, bool storeUnchangedObjects = true, List<string> propertyNamesToConsider = null)
+        {
+            return new DiffingConfig()
             {
-                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(obj).Except(diffConfig.PropertiesToConsider);
-                diffConfig.PropertiesToIgnore.AddRange(exceptions);
-            }
-
-            // The current Hash must not be considered when computing the hash. Remove HashFragment if present. 
-            IBHoMObject bhomobj = obj as IBHoMObject;
-            if (bhomobj != null)
-            {
-                bhomobj = BH.Engine.Base.Query.DeepClone(obj) as IBHoMObject;
-                bhomobj.Fragments.Remove(typeof(HashFragment));
-                return Base.Query.Hash(bhomobj, diffConfig.PropertiesToIgnore);
-            }
-
-            return Base.Query.Hash(bhomobj, diffConfig.PropertiesToIgnore); // Compute.SHA256Hash(obj, diffConfig.PropertiesToIgnore);
+                EnablePropertyDiffing = enablePropertyDiffing,
+                IncludeUnchangedObjects = storeUnchangedObjects,
+                ComparisonConfig = new ComparisonConfig()
+                {
+                    //PropertyNamesToConsider = propertyNamesToConsider,
+                    //PropertyExceptions = propertiesToIgnore,
+                    //CustomdataKeysExceptions = (customDataToIgnore == null || !customDataToIgnore.Any()) ? new List<string>() { "RenderMesh" } : customDataToIgnore
+                },
+            };
         }
     }
 }

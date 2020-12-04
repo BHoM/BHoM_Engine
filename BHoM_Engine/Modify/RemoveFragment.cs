@@ -39,7 +39,7 @@ namespace BH.Engine.Base
         [Input("fragmentType", "The type of fragment that should be removed from the object.")]
         [Output("iBHoMObject", "The BHoM object with the added fragment.")]
         public static IBHoMObject RemoveFragment(this IBHoMObject iBHoMObject, Type fragmentType = null)
-        {
+       {
             if (fragmentType == null) return iBHoMObject;
             if (iBHoMObject == null) return null;
             IBHoMObject o = iBHoMObject.DeepClone();

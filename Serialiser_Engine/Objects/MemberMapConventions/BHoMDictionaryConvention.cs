@@ -39,7 +39,7 @@ namespace BH.Engine.Serialiser.Conventions
             Type memberType = memberMap.MemberType;
             TypeInfo typeInfo = memberType.GetTypeInfo();
 
-            if (typeInfo.Name == "Dictionary`2")
+            if (typeInfo.Name == "Dictionary`2" || typeInfo.Name == "ReadOnlyDictionary`2")
             {
                 Type keyType = typeInfo.GenericTypeArguments[0];
 

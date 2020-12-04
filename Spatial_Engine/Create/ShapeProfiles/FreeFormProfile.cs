@@ -39,6 +39,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.0", "BH.Engine.Spatial.Create.FreeFormProfile(System.Collections.Generic.IEnumerable<BH.oM.Geometry.ICurve>)")]
         [PreviousVersion("4.0", "BH.Engine.Geometry.Create.FreeFormProfile(System.Collections.Generic.IEnumerable<BH.oM.Geometry.ICurve>)")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Create.FreeFormProfile(System.Collections.Generic.IEnumerable<BH.oM.Geometry.ICurve>)")]
         [Description("Creates a single FreeFormProfile from a collection of ICurves. \n" +
@@ -47,7 +48,8 @@ namespace BH.Engine.Spatial
                      " - coplanarity with XYPlane, by rotating the curves to align. \n" +
                      " - curves on the XYPlane, by translating from one controlpoint to the origin. \n" +
                      "Checks if it's a valid profile; If they're closed, Not zero area, curve curve intersections, selfintersections. ")]
-        public static FreeFormProfile FreeFormProfile(IEnumerable<ICurve> edges)
+        [Input("centreProfile", "If true, the total centre of area of the provided curves will be aligned with the global origin.")]
+        public static FreeFormProfile FreeFormProfile(IEnumerable<ICurve> edges, bool centreProfile = true)
         {
             IEnumerable<ICurve> result = edges.ToList();
 
@@ -139,18 +141,22 @@ namespace BH.Engine.Spatial
                     if (intersects)
                         Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
 
-                    try
+                    if (centreProfile)
                     {
-                        //Try centering the curves around the origin;
-                        List<List<ICurve>> curves = result.ToList().IJoin().Cast<ICurve>().ToList().DistributeOutlines();
-                        Point centroid = curves.Select(x => x[0]).Centroid(curves.SelectMany(x => x.Skip(1)));
-                        Vector tranlation = Point.Origin - centroid;
-                        result = result.Select(x => x.ITranslate(tranlation)).ToList();
-                        couldCentre = true;
-                    }
-                    catch (Exception e)
-                    {
+                        try
+                        {
 
+                            //Try centering the curves around the origin;
+                            List<List<ICurve>> curves = result.ToList().IJoin().Cast<ICurve>().ToList().DistributeOutlines();
+                            Point centroid = curves.Select(x => x[0]).Centroid(curves.SelectMany(x => x.Skip(1)));
+                            Vector tranlation = Point.Origin - centroid;
+                            result = result.Select(x => x.ITranslate(tranlation)).ToList();
+                            couldCentre = true;
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
                     }
                 }
                 // Is SelfInteersecting
@@ -158,7 +164,7 @@ namespace BH.Engine.Spatial
                     Engine.Reflection.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
             }
 
-            if (!couldCentre)
+            if (centreProfile && !couldCentre)
                 Engine.Reflection.Compute.RecordWarning("Failed to align the centroid of the provided edgecurve with the global origin.");
 
             return new FreeFormProfile(result);

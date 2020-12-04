@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
 
             foreach (Polyline p in polylines)
             {
-                Opening pan = opening.ShallowClone(true);
+                Opening pan = opening.ShallowClone();
                 pan.Edges = p.ToEdges();
                 openings.Add(pan);
             }
