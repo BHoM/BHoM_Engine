@@ -29,7 +29,6 @@ using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Analytical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.Engine.Geometry;
-using BH.Engine.Spatial;
 using BH.oM.Reflection;
 using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
@@ -43,41 +42,17 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a simple rectangular geometric representation a frame edge property")]
+        [Description("Returns total width of a frame edge property")]
         [Input("frameEdgeProp", "FrameEdgeProperty to get total profile width of")]
-        [Output("geo", "Simplified geometric representation of the FrameEdgeProperty")]
+        [Output("width", "Width of FrameEdgeProperty from Opening edge inboard")]
 
-        public static Polyline SimpleGeometry(this FrameEdgeProperty frameEdgeProp)
+        public static double WidthIntoOpening(this FrameEdgeProperty frameEdgeProp)
         {
-            List<BoundingBox> propProfileBounds = new List<BoundingBox>();
-            List<ICurve> profileOutlines = new List<ICurve>();
-
-            if  (frameEdgeProp.SectionProperties.Count == 0)
-            {
-                BH.Engine.Reflection.Compute.RecordWarning("This FrameEdgeProperty has no SectionProperties and therefore no geometry associated with it.");
-                return new Polyline();
-            }
-
-            foreach (ConstantFramingProperty prop in frameEdgeProp.SectionProperties)
-            {
-                List<ICurve> crv = new List<ICurve>(prop.Profile.Edges);
-                profileOutlines.AddRange(crv);
-            }
-
-            List<PolyCurve> crvs = profileOutlines.IJoin();
-            foreach (PolyCurve outline in crvs)
-            {
-                propProfileBounds.Add(outline.Bounds());
-            }
-
-            BoundingBox bounds = propProfileBounds.Bounds();
-            double maxY = bounds.Max.Y;
-            double minY = bounds.Min.Y;
-            double maxX = bounds.Max.X;
-            double minX = bounds.Min.X;
-
-            Polyline rect = Engine.Geometry.Create.Polyline(new List<Point>() { new Point { X = minX, Y = maxY }, new Point { X = maxX, Y = maxY }, new Point { X = maxX, Y = minY }, new Point { X = minX, Y = minY }, new Point { X = minX, Y = maxY } });
-            return rect;
+            Polyline rectGeo = frameEdgeProp.SimpleGeometry();
+            BoundingBox bounds = rectGeo.Bounds();
+            if (bounds == null)
+                return 0;
+            return bounds.Max.Y;
         }
 
     }

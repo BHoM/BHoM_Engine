@@ -29,6 +29,8 @@ using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Analytical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.Engine.Geometry;
+using BH.Engine.Analytical;
+using BH.Engine.Base;
 using BH.oM.Reflection;
 using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
@@ -42,15 +44,33 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns total height of a frame edge property")]
-        [Input("frameEdgeProp", "FrameEdgeProperty to get total profile width of")]
-        [Output("height", "Height of FrameEdgeProperty")]
+        [Description("Returns 2D Geometry representing the frame's projected elevation extents")]
+        [Input("opening", "The opening to get the frame geometry for")]
+        [Output("geo", "The projected elevation extents of the frame")]
 
-        public static double Height(this FrameEdgeProperty frameEdgeProp)
+        public static PlanarSurface FrameGeometry2D(this Opening opening)
         {
-            Polyline rectGeo = frameEdgeProp.SimpleGeometry();
-            BoundingBox bounds = rectGeo.Bounds();
-            return bounds.Extents().Y;
+            List<ICurve> extCrvs = new List<ICurve>();
+            PolyCurve extCrv = opening.Geometry();
+            List<double> widths = new List<double>();
+
+            if (!extCrv.IsPlanar(Tolerance.Distance))
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("This method only works on planar curves. Openings with non-planar curves will be ignored.");
+                return null;
+            }
+
+            Plane openingPlane = extCrv.FitPlane();            
+            foreach (FrameEdge edge in opening.Edges)
+            {
+                double width = edge.FrameEdgeProperty.WidthIntoOpening();
+                widths.Add(width*-1);
+            }
+
+            PolyCurve intCrv = Modify.OffsetVariable(extCrv, widths);
+            PlanarSurface geo = BH.Engine.Geometry.Create.PlanarSurface(extCrv, new List<ICurve> { intCrv });
+
+            return geo;
         }
 
     }
