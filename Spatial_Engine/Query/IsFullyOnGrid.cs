@@ -68,7 +68,7 @@ namespace BH.Engine.Spatial
             // This method, the way it currently works, can produce inaccurate results when checking linear elements against curved grids.
             // For now, support for curved grids has been disabled. A more sophisticated algorithm could fix it. A possible quicker fix could be
             // to also check grid curve control points against input element1D, though this may still leave some holes open.
-            if (gridCurve.IIsLinear())
+            if (!gridCurve.IIsLinear())
             {
                 BH.Engine.Reflection.Compute.RecordError("IsFullyOnGrid does not support non-linear grid curves.");
                 return false;
