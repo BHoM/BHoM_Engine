@@ -81,8 +81,9 @@ namespace BH.Engine.Facade
 
                 if (elem.InternalOutlineCurves().Count > 0)
                 {
+                    List<PolyCurve> internalEdgesOfPanel = elem.InternalOutlineCurves().BooleanUnion();
                     List<ICurve> intCrvs = new List<ICurve>();
-                    foreach (PolyCurve intPanelEdge in elem.InternalOutlineCurves())
+                    foreach (PolyCurve intPanelEdge in internalEdgesOfPanel)
                     {
                         List<ICurve> subCrvs = intPanelEdge.SubParts();
                         intCrvs.AddRange(subCrvs);
