@@ -49,13 +49,41 @@ namespace BH.Engine.Facade
             List<Point> testPts = new List<Point> { curve1.Start, curve1.End, curve2.Start, curve2.End };
             if (testPts.IsCollinear())
             {
-                // Check that lines overlap
-                double dist1 = curve1.Start.Distance(curve2.Start) + curve1.Start.Distance(curve2.End);
-                double dist2 = curve1.End.Distance(curve2.Start) + curve1.End.Distance(curve2.End);
-                double distCheck = Math.Max(dist1, dist2);
-                if (curve1.Length() + curve2.Length() - distCheck > tolerance)
+                Point s1 = curve1.Start;
+                Point e1 = curve1.End;
+                Point s2 = curve2.Start;
+                Point e2 = curve2.End;
+
+                // Check if lines have matching end points
+                if ((s1.Distance(s2) == 0 && e1.Distance(e2) == 0) ||
+                    (s1.Distance(e2) == 0 && e1.Distance(s2) == 0))
                 {
                     return true;
+                }
+
+                // Check that lines overlap using domain bounds
+                foreach (Point pt in curve1.ControlPoints())
+                {
+                    if (pt.X <= Math.Max(s2.X, e2.X) && pt.X >= Math.Min(s2.X, e2.X) &&
+                        pt.Y <= Math.Max(s2.Y, e2.Y) && pt.Y >= Math.Min(s2.Y, e2.Y) &&
+                        pt.Distance(s2) != 0 &&
+                        pt.Distance(e2) != 0)
+                    {
+                        return true;
+                    }
+                }
+
+                foreach (Point pt in curve2.ControlPoints())
+                {
+                    Point s = curve1.Start;
+                    Point e = curve1.End;
+                    if (pt.X <= Math.Max(s1.X, e1.X) && pt.X >= Math.Min(s1.X, e1.X) &&
+                        pt.Y <= Math.Max(s1.Y, e1.Y) && pt.Y >= Math.Min(s1.Y, e1.Y) &&
+                        pt.Distance(s1) != 0 &&
+                        pt.Distance(e1) != 0)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

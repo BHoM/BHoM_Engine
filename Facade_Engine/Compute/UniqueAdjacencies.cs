@@ -46,11 +46,12 @@ namespace BH.Engine.Facade
         [Input("elems", "Facade elements to use to find unique edge adjacencies.")]
         [Input("splitHorAndVert", "If true, matching horizontal and vertical adjacencies are counted as unique and labeled.")]
         [MultiOutput(0, "uniqueAdjacencyNames", "A list of the unique adjacencies existent within the collection of elements.")]
-        [MultiOutput(1, "uniqueAdjacencyEdges", "The collection of edges that represents the first found case of the unique adjacency.")]
-        [MultiOutput(2, "uniqueAdjacencyElements", "The collection of elements that represents the first found case of the unique adjacency.")]
-        public static Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>> UniqueAdjacencies(List<IElement2D> elems, bool splitHorAndVert = false)
+        [MultiOutput(1, "uniqueAdjacencyEdge1", "The first edge of each pair per each unique adjacency.")]
+        [MultiOutput(2, "uniqueAdjacencyElement1", "The first element of each pair per each unique adjacency.")]
+        [MultiOutput(3, "uniqueAdjacencyEdge2", "The second edge of each pair per each unique adjacency.")]
+        [MultiOutput(4, "uniqueAdjacencyElement2", "The second element of each pair per each unique adjacency.")]
+        public static Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>, List<List<IElement1D>>, List<List<IElement2D>>> UniqueAdjacencies(List<IElement2D> elems, bool splitHorAndVert = false)
         {
-            List<string> adjacencyIDs = new List<string>();
             List<List<IElement1D>> adjEdges = new List<List<IElement1D>>();
             List<List<IElement2D>> adjElems = new List<List<IElement2D>>();
 
@@ -63,6 +64,10 @@ namespace BH.Engine.Facade
             }
 
             List<IElement2D> uniqueElems = elems.Distinct().ToList();
+            Dictionary <string, List<IElement1D>> edgeDict1 = new Dictionary <string, List<IElement1D>> ();
+            Dictionary<string, List<IElement1D>> edgeDict2 = new Dictionary<string, List<IElement1D>>();
+            Dictionary <string, List<IElement2D>> elemDict1 = new Dictionary <string, List<IElement2D>>();
+            Dictionary<string, List<IElement2D>> elemDict2 = new Dictionary<string, List<IElement2D>>();
 
             foreach (IElement2D elem in uniqueElems)
             {
@@ -80,11 +85,35 @@ namespace BH.Engine.Facade
                             adjPrefix = Math.Abs(edge.ElementCurves()[0].IEndDir().Z) > 0.707 ? "Vertical-" : "Horizontal-"; // check if line is closer to vertical or horizontal
                         }
                         string adjacencyID = adjPrefix + Query.AdjacencyID(edgeAdjPair, elemAdjPair);
-                        if (!adjacencyIDs.Contains(adjacencyID))
+                        if (edgeDict1.Keys.Contains(adjacencyID))
                         {
-                            adjacencyIDs.Add(adjacencyID);
-                            adjEdges.Add(edgeAdjPair);
-                            adjElems.Add(elemAdjPair);
+                            List<IElement1D> prevVals = edgeDict1[adjacencyID];
+                            prevVals.Add(edgeAdjPair[0]);
+                            edgeDict1[adjacencyID] = prevVals;
+                            prevVals = edgeDict2[adjacencyID];
+                            prevVals.Add(edgeAdjPair[1]);
+                            edgeDict2[adjacencyID] = prevVals;
+                            List<IElement2D> prevVals2D = elemDict1[adjacencyID];
+                            prevVals2D.Add(elemAdjPair[0]);
+                            elemDict1[adjacencyID] = prevVals2D;
+                            prevVals2D = elemDict2[adjacencyID];
+                            prevVals2D.Add(elemAdjPair[1]);
+                            elemDict2[adjacencyID] = prevVals2D;
+                        }
+                        else
+                        {
+                            List<IElement1D> vals = new List<IElement1D>();
+                            vals.Add(edgeAdjPair[0]);
+                            edgeDict1.Add(adjacencyID, vals);
+                            vals = new List<IElement1D>();
+                            vals.Add(edgeAdjPair[1]);
+                            edgeDict2.Add(adjacencyID, vals);
+                            List<IElement2D> vals2D = new List<IElement2D>();
+                            vals2D.Add(elemAdjPair[0]);
+                            elemDict1.Add(adjacencyID, vals2D);
+                            vals2D = new List<IElement2D>();
+                            vals2D.Add(elemAdjPair[1]);
+                            elemDict2.Add(adjacencyID, vals2D);
                         }
                     }
                 }
@@ -112,23 +141,52 @@ namespace BH.Engine.Facade
                                 adjPrefix = Math.Abs(intPanelEdge.IEndDir().Z) > 0.707 ? "Vertical-" : "Horizontal-"; // check if line is closer to vertical or horizontal
                             }
                             string adjacencyID = adjPrefix + Query.AdjacencyID(edgeAdjPair, elemAdjPair);
-                            if (!adjacencyIDs.Contains(adjacencyID))
+                            if (edgeDict1.Keys.Contains(adjacencyID))
                             {
-                                adjacencyIDs.Add(adjacencyID);
-                                adjEdges.Add(edgeAdjPair);
-                                adjElems.Add(elemAdjPair);
+                                List<IElement1D> prevVals = edgeDict1[adjacencyID];
+                                prevVals.Add(edgeAdjPair[0]);
+                                edgeDict1[adjacencyID] = prevVals;
+                                prevVals = edgeDict2[adjacencyID];
+                                prevVals.Add(edgeAdjPair[1]);
+                                edgeDict2[adjacencyID] = prevVals;
+                                List<IElement2D> prevVals2D = elemDict1[adjacencyID];
+                                prevVals2D.Add(elemAdjPair[0]);
+                                elemDict1[adjacencyID] = prevVals2D;
+                                prevVals2D = elemDict2[adjacencyID];
+                                prevVals2D.Add(elemAdjPair[1]);
+                                elemDict2[adjacencyID] = prevVals2D;
+                            }
+                            else
+                            {
+                                List<IElement1D> vals = new List<IElement1D>();
+                                vals.Add(edgeAdjPair[0]);
+                                edgeDict1.Add(adjacencyID, vals);
+                                vals = new List<IElement1D>();
+                                vals.Add(edgeAdjPair[1]);
+                                edgeDict2.Add(adjacencyID, vals);
+                                List<IElement2D> vals2D = new List<IElement2D>();
+                                vals2D.Add(elemAdjPair[0]);
+                                elemDict1.Add(adjacencyID, vals2D);
+                                vals2D = new List<IElement2D>();
+                                vals2D.Add(elemAdjPair[1]);
+                                elemDict2.Add(adjacencyID, vals2D);
                             }
                         }
                     }
                 }
             }
-
-            // Return the adjacency ids and elemens as multi output
-            return new Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>>
+            List<List<IElement1D>> edgePair1 = edgeDict1.Values.ToList();
+            List<List<IElement2D>> elemPair1 = elemDict1.Values.ToList();
+            List<List<IElement1D>> edgePair2 = edgeDict2.Values.ToList();
+            List<List<IElement2D>> elemPair2 = elemDict2.Values.ToList();
+            // Return the adjacency ids and elements as multi output
+            return new Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>, List<List<IElement1D>>, List<List<IElement2D>>>
             {
-                Item1 = adjacencyIDs,
-                Item2 = adjEdges,
-                Item3 = adjElems,
+                Item1 = edgeDict1.Keys.ToList(),
+                Item2 = edgePair1,
+                Item3 = elemPair1,
+                Item4 = edgePair2,
+                Item5 = elemPair2,
             };
 
         }
