@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,30 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BH.Engine.Diffing
+using BH.oM.Geometry;
+using BH.oM.Security.Elements;
+using BH.oM.Reflection.Attributes;
+
+namespace BH.Engine.Security
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
-        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        public static bool AnyDuplicateByHash<T>(this IEnumerable<T> objects) where T : IBHoMObject
+        [Description("Returns the centreline of a CameraDevice object.")]
+        [Input("cameraDevice", "The CameraDevice object to get the centreline from.")]
+        [Output("centreline", "The centreline of the CameraDevice object.")]
+        public static Line Centreline(this CameraDevice cameraDevice)
         {
-            return Modify.RemoveDuplicatesByHash(objects).ToList().Count != objects.ToList().Count;
+            return new Line { Start = cameraDevice.EyePosition, End = cameraDevice.TargetPosition };
         }
+
+        /***************************************************/
     }
 }
 

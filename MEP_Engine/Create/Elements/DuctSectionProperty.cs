@@ -26,6 +26,8 @@ using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Materials;
+using System.Collections.Generic;
 
 namespace BH.Engine.MEP
 {
@@ -42,9 +44,9 @@ namespace BH.Engine.MEP
         [Output("ductSectionProperty", "Duct Section property used to provide accurate duct assembly and capacities.")]
         public static DuctSectionProperty DuctSectionProperty(
             SectionProfile sectionProfile,
-            IMEPMaterial ductMaterial = null,
-            IMEPMaterial insulationMaterial = null,
-            IMEPMaterial liningMaterial = null,
+            Material ductMaterial = null,
+            Material insulationMaterial = null,
+            Material liningMaterial = null,
             string name = "")
         {
             double elementSolidArea = sectionProfile.ElementProfile.Area();

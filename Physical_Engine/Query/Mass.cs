@@ -20,23 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.Engine.Base;
-using BH.oM.Diffing;
-using System;
-using System.Collections.Generic;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Physical.Materials;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Physical.Elements;
+using BH.Engine.Matter;
 
-namespace BH.Engine.Diffing
+
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
-        public static HashFragment GetHashFragment(this IBHoMObject obj)
+        /******************************************/
+        /****            IElement1D            ****/
+        /******************************************/
+
+        [Description("Evaluates the mass of an object based its Solid Volume and Density.\nRequires a single consistent value of Density to be provided across all MaterialProperties of a given element.")]
+        [Input("opening", "The element to evaluate the mass of")]
+        [Output("mass", "The physical mass of the element", typeof(Mass))]
+        public static double Mass(this IOpening opening)
         {
-            return obj.FindFragment<HashFragment>(); 
+            MaterialComposition mat = opening.IMaterialComposition();
+            return opening.SolidVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density()).Sum();
         }
+
+        /******************************************/
     }
 }
-

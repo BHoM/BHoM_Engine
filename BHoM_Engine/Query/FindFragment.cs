@@ -51,5 +51,8 @@ namespace BH.Engine.Base
 
             return (T)System.Convert.ChangeType(fragment, fragmentType);
         }
+
+        /***************************************************/
+
     }
 }

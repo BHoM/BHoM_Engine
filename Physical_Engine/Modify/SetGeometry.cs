@@ -24,7 +24,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
-using BH.Engine.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Physical
 {
@@ -36,11 +36,11 @@ namespace BH.Engine.Physical
         [Description("Replaces the location curve of the IFramingElement with the provided curve.")]
         [Input("framingElement", "The framingElement to modify the location curve of.")]
         [Input("curve", "The new location of the IFramingElement as a ICurve.")]
-        [Output("element1D", "The IFramingElement with modified location curve")]
+        [Output("element1D", "The IFramingElement with modified location curve.")]
         public static IFramingElement SetGeometry(this IFramingElement framingElement, ICurve curve)
         {
-            IFramingElement clone = (IFramingElement)framingElement.GetShallowClone();
-            clone.Location = curve.IClone();
+            IFramingElement clone = framingElement.ShallowClone();
+            clone.Location = curve.DeepClone();
             return clone;
         }
 

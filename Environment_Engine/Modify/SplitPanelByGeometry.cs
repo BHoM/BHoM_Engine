@@ -51,7 +51,7 @@ namespace BH.Engine.Environment
 
             foreach (Polyline p in polylines)
             {
-                Panel pan = panel.ShallowClone(true);
+                Panel pan = panel.ShallowClone();
                 pan.ExternalEdges = p.ToEdges();
                 panels.Add(pan);
             }

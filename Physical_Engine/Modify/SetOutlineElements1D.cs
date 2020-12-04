@@ -30,6 +30,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.Engine.Spatial;
+using BH.Engine.Base;
 
 namespace BH.Engine.Physical
 {
@@ -46,7 +47,7 @@ namespace BH.Engine.Physical
         [Output("surface", "The ISurface with new location surface.")]
         public static oM.Physical.Elements.ISurface SetOutlineElements1D(this oM.Physical.Elements.ISurface surface, List<IElement1D> outlineElements1D)
         {
-            oM.Physical.Elements.ISurface clone = (oM.Physical.Elements.ISurface)surface.GetShallowClone();
+            oM.Physical.Elements.ISurface clone = surface.ShallowClone();
             ICurve outline = Engine.Geometry.Compute.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList()).Single();
             clone.Location = Engine.Geometry.Create.PlanarSurface(outline);
             return clone;
@@ -60,7 +61,7 @@ namespace BH.Engine.Physical
         [Output("opening", "The IOpening with new location surface.")]
         public static IOpening SetOutlineElements1D(this IOpening opening, List<IElement1D> outlineElements1D)
         {
-            IOpening clone = (IOpening)opening.GetShallowClone();
+            IOpening clone = opening.ShallowClone();
             ICurve outline = Engine.Geometry.Compute.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList()).Single();
             clone.Location = Engine.Geometry.Create.PlanarSurface(outline);
             return clone;
