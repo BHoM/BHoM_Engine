@@ -64,6 +64,12 @@ namespace BH.Engine.Facade
                 profileOutlines.AddRange(crv);
             }
 
+            if (profileOutlines.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("This FrameEdgeProperty's SectionProperties have no profile geometry associated with them.");
+                return new Polyline();
+            }
+
             List<PolyCurve> crvs = profileOutlines.IJoin();
             foreach (PolyCurve outline in crvs)
             {
