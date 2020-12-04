@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Linq;
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Facade.Elements;
@@ -48,7 +49,7 @@ namespace BH.Engine.Facade
         [Input("opening", "The opening to get the frame geometry for")]
         [Output("geo", "The projected elevation extents of the frame")]
 
-        public static PlanarSurface FrameGeometry2D(this Opening opening)
+        public static IGeometry FrameGeometry2D(this Opening opening)
         {
             List<ICurve> extCrvs = new List<ICurve>();
             PolyCurve extCrv = opening.Geometry();
@@ -67,7 +68,14 @@ namespace BH.Engine.Facade
                 widths.Add(width*-1);
             }
 
+            if (widths.Max() == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("All frame edges have widths of zero. Returning opening outline.");
+                return extCrv;
+            }
+
             PolyCurve intCrv = Modify.OffsetVariable(extCrv, widths);
+
             PlanarSurface geo = BH.Engine.Geometry.Create.PlanarSurface(extCrv, new List<ICurve> { intCrv });
 
             return geo;

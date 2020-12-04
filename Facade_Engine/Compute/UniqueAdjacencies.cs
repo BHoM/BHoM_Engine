@@ -54,20 +54,30 @@ namespace BH.Engine.Facade
             List<List<IElement1D>> adjEdges = new List<List<IElement1D>>();
             List<List<IElement2D>> adjElems = new List<List<IElement2D>>();
 
-            foreach (IElement2D elem in elems)
+            IEnumerable<Panel> panels = elems.OfType<Panel>();
+
+            foreach (Panel panel in panels.ToList())
+            {
+                List<Opening> panelOpenings = panel.Openings;
+                elems.AddRange(panelOpenings);
+            }
+
+            List<IElement2D> uniqueElems = elems.Distinct().ToList();
+
+            foreach (IElement2D elem in uniqueElems)
             {
                 List<IElement2D> tempElems = elems.Except(new List<IElement2D> { elem }).ToList();
-                foreach (IEdge edge in elem.IOutlineElements1D())
+                foreach (IElement1D edge in elem.IOutlineElements1D())
                 {                  
                     BH.oM.Reflection.Output<List<IElement1D>, List<IElement2D>> result = edge.EdgeAdjacencies(tempElems);
                     for (int i = 0; i < result.Item1.Count; i++)
                     {
-                        string adjPrefix = "";
+                        string adjPrefix = ""; 
                         List<IElement1D> edgeAdjPair = new List<IElement1D> { edge, result.Item1[i] };
                         List<IElement2D> elemAdjPair = new List<IElement2D> { elem, result.Item2[i] };
                         if (splitHorAndVert)
                         {
-                            adjPrefix = Math.Abs(edge.Curve.IEndDir().Z) > 0.707 ? "Vertical-" : "Horizontal-"; // check if line is closer to vertical or horizontal
+                            adjPrefix = Math.Abs(edge.ElementCurves()[0].IEndDir().Z) > 0.707 ? "Vertical-" : "Horizontal-"; // check if line is closer to vertical or horizontal
                         }
                         string adjacencyID = adjPrefix + Query.AdjacencyID(edgeAdjPair, elemAdjPair);
                         if (!adjacencyIDs.Contains(adjacencyID))
