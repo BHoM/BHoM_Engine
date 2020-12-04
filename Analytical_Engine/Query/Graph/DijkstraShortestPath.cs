@@ -62,7 +62,7 @@ namespace BH.Engine.Analytical
         {
             m_NonSpatialGraph = graph;
 
-            SetFragments(graph);
+            SetFragments(graph, ref m_Fragments);
             
             DijkstraSearch(graph, start, end);
 
@@ -86,12 +86,12 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void SetFragments(Graph graph)
+        private static void SetFragments(Graph graph, ref Dictionary<Guid, RoutingFragment> fragments)
         {
-            m_Fragments = new Dictionary<Guid, RoutingFragment>();
+            fragments = new Dictionary<Guid, RoutingFragment>();
             foreach (Guid n in graph.Entities.Keys.ToList())
             {
-                m_Fragments[n] = new RoutingFragment();
+                fragments[n] = new RoutingFragment();
             }
         }
 

@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BH.Engine.Analytical
 {
@@ -41,51 +42,116 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the a star shortest path for a Graph. \n" +
-            "If the supplied Graph does not contain entities that implement IElement0D or and relations that are SpatialRelations the shortest path is computed using the Dijkstra shortest path.")]
-        [Input("graph", "The Graph to query for the shortest path.")]
-        [Input("start", "The IBHoMObject entity used for the start of the path.")]
-        [Input("end", "The IBHoMObject entity used for the end of the path.")]
-        [Output("shortest path result", "The ShortestPathResult.")]
-        public static ShortestPathResult AStarShortestPath(this Graph graph, IBHoMObject start, IBHoMObject end)
-        {
-            ShortestPathResult result = AStarShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
+        //[Description("Returns the a star shortest path for a Graph. \n" +
+        //    "If the supplied Graph does not contain entities that implement IElement0D or and relations that are SpatialRelations the shortest path is computed using the Dijkstra shortest path.")]
+        //[Input("graph", "The Graph to query for the shortest path.")]
+        //[Input("start", "The IBHoMObject entity used for the start of the path.")]
+        //[Input("end", "The IBHoMObject entity used for the end of the path.")]
+        //[Output("shortest path result", "The ShortestPathResult.")]
+        //public static ShortestPathResult AStarShortestPath(this Graph graph, IBHoMObject start, IBHoMObject end)
+        //{
+        //    ShortestPathResult result = AStarShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
             
-            return result;
-        }
+        //    return result;
+        //}
 
         /***************************************************/
 
-        [Description("Returns the a star shortest path for a Graph. \n" +
-            "If the supplied Graph does not contain entities that implement IElement0D or and spatial relations the shortest path is computed using the Dijkstra shortest path.")]
+        //[Description("Returns the a star shortest path for a Graph. \n" +
+        //    "If the supplied Graph does not contain entities that implement IElement0D or and spatial relations the shortest path is computed using the Dijkstra shortest path.")]
+        //[Input("graph", "The Graph to query for the shortest path.")]
+        //[Input("start", "The Guid entity used for the start of the path.")]
+        //[Input("end", "The Guid entity used for the end of the path.")]
+        //[Output("shortest path result", "The ShortestPathResult.")]
+        //public static ShortestPathResult AStarShortestPath(this Graph graph, Guid start, Guid end)
+        //{
+        //    m_SpatialGraph = graph.GraphView(new SpatialView());
+
+        //    if (m_SpatialGraph.Entities.Count == 0 || m_SpatialGraph.Relations.Count == 0)
+        //    {
+        //        Reflection.Compute.RecordWarning("The graph provided does not contain sufficient spatial entities or relations.\n" +
+        //            "To use a star shortest path provide a graph where some entities implement IElement0D and spatial relations are defined between them.\n" +
+        //            "Shortest path is computed using Dijkstra shortest path instead.");
+
+        //        return DijkstraShortestPath(graph, start, end);
+        //    }
+                
+        //    SetFragments(m_SpatialGraph);
+
+        //    //calculate straight line distance from each entity to the end
+        //    IElement0D endEntity = m_SpatialGraph.Entities[end] as IElement0D;
+        //    foreach (Guid entity in m_SpatialGraph.Entities.Keys.ToList())
+        //    {
+        //        IElement0D element0D = m_SpatialGraph.Entities[entity] as IElement0D;
+        //        m_Fragments[entity].StraightLineDistanceToTarget = element0D.IGeometry().Distance(endEntity.IGeometry());
+        //    }
+                
+        //    AStarSearch(m_SpatialGraph, start, ref end);
+
+        //    List<Guid> shortestPath = new List<Guid>();
+        //    shortestPath.Add(end);
+
+        //    double length = 0;
+        //    double cost = 0;
+        //    List<ICurve> curves = new List<ICurve>();
+        //    List<IRelation> relations = new List<IRelation>();
+        //    AStarResult(shortestPath, end,ref length, ref cost, ref curves, ref relations);
+        //    shortestPath.Reverse();
+
+        //    List<IBHoMObject> objPath = new List<IBHoMObject>();
+        //    shortestPath.ForEach(g => objPath.Add(m_SpatialGraph.Entities[g]));
+
+        //    List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => m_SpatialGraph.Entities[kvp.Key]).ToList();
+        //    ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, relations, curves);
+        //    return result;
+        //}
+        /***************************************************/
+
+        [Description("Returns the a star shortest path for a batch of searches within a Graph. \n" +
+            "The supplied Graph must contain entities that implement IElement0D or and relations that are SpatialRelations.")]
         [Input("graph", "The Graph to query for the shortest path.")]
-        [Input("start", "The Guid entity used for the start of the path.")]
-        [Input("end", "The Guid entity used for the end of the path.")]
-        [Output("shortest path result", "The ShortestPathResult.")]
-        public static ShortestPathResult AStarShortestPath(this Graph graph, Guid start, Guid end)
+        [Input("starts", "The collection of IBHoMObject entities used for the start of the path.")]
+        [Input("ends", "The collection IBHoMObject entities used for the end of the path.")]
+        [Output("shortest path result", "The collection of ShortestPathResults.")]
+        public static List<ShortestPathResult> AStarShortestPath(this Graph graph, List<IBHoMObject> starts, List<List<IBHoMObject>> ends)
         {
             m_SpatialGraph = graph.GraphView(new SpatialView());
 
             if (m_SpatialGraph.Entities.Count == 0 || m_SpatialGraph.Relations.Count == 0)
             {
                 Reflection.Compute.RecordWarning("The graph provided does not contain sufficient spatial entities or relations.\n" +
-                    "To use a star shortest path provide a graph where some entities implement IElement0D and spatial relations are defined between them.\n" +
-                    "Shortest path is computed using Dijkstra shortest path instead.");
+                    "To use a star shortest path provide a graph where some entities implement IElement0D and spatial relations are defined between them.");
 
-                return DijkstraShortestPath(graph, start, end);
+                return null;
             }
-                
-            SetFragments(m_SpatialGraph);
+            List<ShortestPathResult> results = new List<ShortestPathResult>();
+            for(int i =0;i<starts.Count;i++)
+            { 
+                foreach (IBHoMObject end in ends[i])
+                {
+                    results.Add(Search(starts[i].BHoM_Guid, end.BHoM_Guid, 200));
+                }
+            }
+
+            return results;
+        }
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+        private static ShortestPathResult Search(Guid start, Guid end,int limit)
+        {
+            
+            SetFragments(m_SpatialGraph, ref m_Fragments);
 
             //calculate straight line distance from each entity to the end
             IElement0D endEntity = m_SpatialGraph.Entities[end] as IElement0D;
             foreach (Guid entity in m_SpatialGraph.Entities.Keys.ToList())
             {
                 IElement0D element0D = m_SpatialGraph.Entities[entity] as IElement0D;
-                m_Fragments[entity].StraightLineDistanceToTarget = element0D.IGeometry().Distance(endEntity.IGeometry());
+                m_Fragments[entity].StraightLineDistanceToTarget = element0D.IGeometry().SquareDistance(endEntity.IGeometry());
             }
-                
-            AStarSearch(m_SpatialGraph, start, ref end);
+
+            AStarSearch(m_SpatialGraph, start, ref end, limit);
 
             List<Guid> shortestPath = new List<Guid>();
             shortestPath.Add(end);
@@ -94,32 +160,30 @@ namespace BH.Engine.Analytical
             double cost = 0;
             List<ICurve> curves = new List<ICurve>();
             List<IRelation> relations = new List<IRelation>();
-            AStarResult(shortestPath, end,ref length, ref cost, ref curves, ref relations);
+            AStarResult(shortestPath, end, ref length, ref cost, ref curves, ref relations);
             shortestPath.Reverse();
 
             List<IBHoMObject> objPath = new List<IBHoMObject>();
             shortestPath.ForEach(g => objPath.Add(m_SpatialGraph.Entities[g]));
 
             List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => m_SpatialGraph.Entities[kvp.Key]).ToList();
-            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, relations, curves);
+            ShortestPathResult result = new ShortestPathResult(m_SpatialGraph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, relations, curves);
             return result;
         }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void AStarSearch(Graph graph, Guid start,ref Guid end)
+        private static void AStarSearch(Graph graph, Guid start, ref Guid end, int limit = 300)
         {
+            
             m_Fragments[start].MinCostToSource = 0;
             List <Guid> prioQueue = new List<Guid>();
             prioQueue.Add(start);
+            int loops = 0;
             do
             {
-                prioQueue = prioQueue.OrderBy(x => m_Fragments[x].MinCostToSource + m_Fragments[x].StraightLineDistanceToTarget).ToList();
+                prioQueue = prioQueue.AsParallel().OrderBy(x => m_Fragments[x].MinCostToSource + m_Fragments[x].StraightLineDistanceToTarget).ToList();
                 Guid currentEntity = prioQueue.First();
                 prioQueue.Remove(currentEntity);
-                List<IRelation> relations = graph.Relations.FindAll(link => link.Source.Equals(currentEntity));
+                var relations = graph.Relations.AsParallel().Where(l => l.Source.Equals(currentEntity));
+                //FindAll(link => link.Source.Equals(currentEntity));
                 IBHoMObject current = m_SpatialGraph.Entities[currentEntity];
                 //use weight AND length of the relation to define cost to end
                 foreach (IRelation r in relations)
@@ -149,13 +213,16 @@ namespace BH.Engine.Analytical
                     }
                 }
                 m_Fragments[currentEntity].Visited = true;
+                loops++;
+                if (loops > limit)
+                    return;
                 if (currentEntity.Equals(end))
                     return;
             } 
             while (prioQueue.Any());
 
             //if we reach here the search failed to find the end
-            end = FindClosestEnd();
+            //end = FindClosestEnd(m_Fragments);
         }
 
         /***************************************************/
