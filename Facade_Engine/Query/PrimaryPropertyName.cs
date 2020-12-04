@@ -124,5 +124,14 @@ namespace BH.Engine.Facade
         }
 
         /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static string PrimaryPropertyName(this IElement1D elem)
+        {
+            return "";
+        }
+
+        /***************************************************/
     }
 }
