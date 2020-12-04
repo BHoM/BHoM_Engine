@@ -20,40 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using BH.oM.Analytical.Elements;
 using BH.oM.Facade.Elements;
 using BH.oM.Facade.SectionProperties;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Analytical.Elements;
-using BH.oM.Physical.FramingProperties;
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 using BH.oM.Reflection;
-using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Facade
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns total width of a frame edge property")]
-        [Input("frameEdgeProp", "FrameEdgeProperty to get total profile width of")]
-        [Output("width", "Total width of FrameEdgeProperty")]
-
-        public static double Width(this FrameEdgeProperty frameEdgeProp)
+        [Description("Returns frame and clear opening areas for an Opening.")]
+        [Input("opening", "Opening to find areas for.")]
+        [MultiOutput(0, "openingArea", "Area of the portion of the opening not covered by the frame as per a projected elevation of the opening.")]
+        [MultiOutput(1, "frameArea", "Adjacent Elements per adjacent edge")]
+        public static Output<double, double> ComponentAreas(this Opening opening)
         {
-            Polyline rectGeo = frameEdgeProp.SimpleGeometry();
-            BoundingBox bounds = rectGeo.Bounds();
-            if (bounds == null)
-                return 0;
-            return bounds.Extents().Y;
+            double frameArea = opening.FrameGeometry2D().Area();
+            double openArea = opening.Area()-frameArea;
+
+            return new Output<double, double>
+            {
+                Item1 = openArea,
+                Item2 = frameArea,
+            };
         }
 
+        /***************************************************/
     }
 }
+
