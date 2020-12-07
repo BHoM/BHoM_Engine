@@ -61,14 +61,12 @@ namespace BH.Engine.Spatial
         public static bool IsFullyOnGrid(this IElement1D element1D, Grid grid, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             ICurve curve = element1D.IGeometry();
-            IEnumerable <Point> ctrlPts = curve.ControlPoints().Select(x => x.Project(Plane.XY));
-
-            ICurve gridCurve = grid.Curve.IProject(Plane.XY);
+            List <Point> ctrlPts = curve.ControlPoints();
 
             // This method, the way it currently works, can produce inaccurate results when checking linear elements against curved grids.
             // For now, support for curved grids has been disabled. A more sophisticated algorithm could fix it. A possible quicker fix could be
             // to also check grid curve control points against input element1D, though this may still leave some holes open.
-            if (!gridCurve.IIsLinear())
+            if (!grid.Curve.IIsLinear())
             {
                 BH.Engine.Reflection.Compute.RecordError("IsFullyOnGrid does not support non-linear grid curves.");
                 return false;
@@ -86,7 +84,7 @@ namespace BH.Engine.Spatial
 
             foreach (Point pt in ctrlPts)
             {
-                if (pt.IDistance(gridCurve) >= tolerance)
+                if (!IsFullyOnGrid(pt, grid, tolerance))
                     return false;
             }
 
