@@ -66,8 +66,9 @@ namespace BH.Engine.Facade
                 {
                     if (pt.X <= Math.Max(s2.X, e2.X) && pt.X >= Math.Min(s2.X, e2.X) &&
                         pt.Y <= Math.Max(s2.Y, e2.Y) && pt.Y >= Math.Min(s2.Y, e2.Y) &&
-                        pt.Distance(s2) != 0 &&
-                        pt.Distance(e2) != 0)
+                        pt.Z <= Math.Max(s2.Z, e2.Z) && pt.Z >= Math.Min(s2.Z, e2.Z) &&
+                        pt.Distance(s2) > Tolerance.Distance &&
+                        pt.Distance(e2) > Tolerance.Distance)
                     {
                         return true;
                     }
@@ -75,12 +76,11 @@ namespace BH.Engine.Facade
 
                 foreach (Point pt in curve2.ControlPoints())
                 {
-                    Point s = curve1.Start;
-                    Point e = curve1.End;
                     if (pt.X <= Math.Max(s1.X, e1.X) && pt.X >= Math.Min(s1.X, e1.X) &&
                         pt.Y <= Math.Max(s1.Y, e1.Y) && pt.Y >= Math.Min(s1.Y, e1.Y) &&
-                        pt.Distance(s1) != 0 &&
-                        pt.Distance(e1) != 0)
+                        pt.Z <= Math.Max(s1.Z, e1.Z) && pt.Z >= Math.Min(s1.Z, e1.Z) &&
+                        pt.Distance(s1) > Tolerance.Distance &&
+                        pt.Distance(e1) > Tolerance.Distance)
                     {
                         return true;
                     }
