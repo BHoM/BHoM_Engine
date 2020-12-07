@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+
 using BH.Engine.Reflection;
 
 namespace BH.Engine.Graphics
@@ -37,10 +38,10 @@ namespace BH.Engine.Graphics
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Creates a colour gradient with colour values correspondnig to values between 0 and 1")]
-        [Input("colors", "A list of colors for the gradient")]
-        [Input("positions", "A corresponding list of positions for the colored markers between 0 and 1")]
-        [Output("gradient", "A colour Gradient")]
+        [Description("Creates a colour gradient with colour values corresponding to values between 0 and 1.")]
+        [Input("colours", "A list of colours for the gradient.")]
+        [Input("positions", "A corresponding list of positions for the coloured markers between 0 and 1.")]
+        [Output("gradient", "A colour Gradient.")]
         public static Gradient Gradient(IEnumerable<Color> colors, IEnumerable<decimal> positions)
         {
             if (colors.Count() != positions.Count())
@@ -59,6 +60,32 @@ namespace BH.Engine.Graphics
                     )
             };
         }
+
+        /***************************************************/
+
+        [Description("Creates a default colour gradient with colour values corresponding to values between 0 and 1")]
+        [Output("gradient", "Default colour Gradient")]
+        public static Gradient Gradient()
+        {
+            List<Color> colors = new List<Color>();
+            List<decimal> positions = new List<decimal>();
+            double inc = 1.0 / m_DefaultOrdinal.Length;
+            for(int i = 0;i< m_DefaultOrdinal.Length; i++)
+            {
+                colors.Add(System.Drawing.ColorTranslator.FromHtml(m_DefaultOrdinal[i]));
+                positions.Add(System.Convert.ToDecimal(inc * i));
+            }
+
+            return Gradient(colors, positions);
+
+        }
+
+        /***************************************************/
+        /****           Private Fields                  ****/
+        /***************************************************/
+        //data viz hex colour sets
+        private static string[] m_DefaultOrdinal = new string[] { "#E6484D", "#8db9ca", "#EE7837", "#FCD16D", "#AFC1A2", "#b62b77", "#8f72b0", "#5d822d", "#585253", "#24135f", "#6d104e", "#006da8", "#f0ac1b", "#1c3660", "#bc204b", "#d06a13" };
+      
     }
 }
 

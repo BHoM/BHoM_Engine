@@ -26,6 +26,7 @@ using BH.oM.MEP.System.MaterialFragments;
 using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.MEP
 {
@@ -41,8 +42,8 @@ namespace BH.Engine.MEP
         [Output("wireSectionProperty", "Wire Section property used to provide accurate wire assembly and capacities.")]
         public static WireSectionProperty WireSectionProperty(
             SectionProfile sectionProfile,
-            IMEPMaterial conductiveMaterial = null,
-            IMEPMaterial insulationMaterial = null,
+            Material conductiveMaterial = null,
+            Material insulationMaterial = null,
             string name = "")
         {
             double elementSolidArea = sectionProfile.ElementProfile.Area();

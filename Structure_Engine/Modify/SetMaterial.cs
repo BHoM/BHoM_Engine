@@ -26,6 +26,7 @@ using BH.oM.Structure.SectionProperties;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Structure
@@ -42,13 +43,13 @@ namespace BH.Engine.Structure
         [Output("bar", "The Bar with updated material.")]
         public static Bar SetMaterial(this Bar bar, IMaterialFragment material)
         {
-            Bar clone = bar.GetShallowClone() as Bar;
+            Bar clone = bar.ShallowClone();
             if (bar.SectionProperty == null)
             {
                 Engine.Reflection.Compute.RecordError("The section property parameter is null - material has not been assigned");
                 return clone;
             }
-            ISectionProperty sectionClone = bar.SectionProperty.GetShallowClone() as ISectionProperty;
+            ISectionProperty sectionClone = bar.SectionProperty.ShallowClone();
             sectionClone.Material = material;
             clone.SectionProperty = sectionClone;
             return clone;

@@ -75,15 +75,7 @@ namespace BH.Engine.Physical
 
                 BoundingBox profileBounds = profile.Edges.Bounds();
 
-                Point profileMax = profileBounds.Max;
-
-                Point profileMin = profileBounds.Min;
-
-                double height = profileMax.Y - profileMin.Y;
-
-                ICurve bottomCentreline = location.ITranslate(normal * -0.5 * height);
-
-                return bottomCentreline;
+                return location.ITranslate(normal * profileBounds.Min.Y);
             }
             else
             {
