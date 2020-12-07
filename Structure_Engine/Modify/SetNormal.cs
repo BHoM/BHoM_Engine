@@ -27,7 +27,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
-using BH.oM.Base;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
             if (double.IsNaN(orientationAngle))
                 return bar;
 
-            Bar clone = bar.GetShallowClone() as Bar;
+            Bar clone = bar.ShallowClone();
 
             clone.OrientationAngle = orientationAngle;
 

@@ -20,23 +20,40 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.Engine.Base;
-using BH.oM.Diffing;
 using System;
+using BH.oM.Geometry;
+using BH.oM.Dimensional;
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
+using BH.oM.Spatial.ShapeProfiles;
+using BH.oM.Analytical.Elements;
+using BH.oM.Physical.FramingProperties;
+using BH.Engine.Geometry;
+using BH.oM.Reflection;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Facade
 {
     public static partial class Query
     {
-        public static HashFragment GetHashFragment(this IBHoMObject obj)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns total depth of a frame edge property")]
+        [Input("frameEdgeProp", "FrameEdgeProperty to get total profile width of")]
+        [Output("depth", "Total depth of FrameEdgeProperty")]
+
+        public static double Depth(this FrameEdgeProperty frameEdgeProp)
         {
-            return obj.FindFragment<HashFragment>(); 
+            Polyline rectGeo = frameEdgeProp.SimpleGeometry();
+            BoundingBox bounds = rectGeo.Bounds();
+            if (bounds == null)
+                return 0;
+            return bounds.Extents().X;
         }
+
     }
 }
-

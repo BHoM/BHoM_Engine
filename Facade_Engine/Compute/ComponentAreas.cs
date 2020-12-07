@@ -20,30 +20,52 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry;
+using BH.oM.Dimensional;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Analytical.Elements;
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
+using BH.Engine.Geometry;
+using BH.Engine.Spatial;
+using BH.oM.Reflection;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Facade
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Removes duplicates from a collection of objects. The comparison is made through their Diffing Hash.")]
-        [Input("objects", "Collection of objects whose duplicates have to be removed. If they don't already have an Hash assigned, it will be calculated.")]
-        public static bool AnyDuplicateByHash<T>(this IEnumerable<T> objects) where T : IBHoMObject
+        [Description("Returns frame and clear opening areas for an Opening.")]
+        [Input("opening", "Opening to find areas for.")]
+        [MultiOutput(0, "openingArea", "Area of the portion of the opening not covered by the frame as per a projected elevation of the opening.")]
+        [MultiOutput(1, "frameArea", "Adjacent Elements per adjacent edge")]
+        public static Output<double, double> ComponentAreas(this Opening opening)
         {
-            return Modify.RemoveDuplicatesByHash(objects).ToList().Count != objects.ToList().Count;
+            IGeometry frameGeo = opening.FrameGeometry2D();
+            double frameArea = 0;
+
+            if (frameGeo is PlanarSurface)
+            {
+                PlanarSurface frameSrf = frameGeo as PlanarSurface;
+                frameArea = frameSrf.Area();
+            }
+            double openArea = opening.Area()-frameArea;
+
+            return new Output<double, double>
+            {
+                Item1 = openArea,
+                Item2 = frameArea,
+            };
         }
+
+        /***************************************************/
     }
 }
 

@@ -27,6 +27,7 @@ using System.Linq;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Structure
@@ -37,14 +38,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Structure.Modify.SetReinforcement(BH.oM.Structure.SectionProperties.ConcreteSection, System.Collections.Generic.IEnumerable<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Sets Reinforcement to a ConcreteSection. Any previous Reinforcement will be overwritten.")]
         [Input("section", "The ConcreteSection to set Reinforcement to.")]
         [Input("reinforcement", "The collection of Reinforcement to set to the ConcreteSection.")]
         [Output("concSection", "The ConcreteSection with new Reinforcement.")]
         public static ConcreteSection SetReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
         {
-            ConcreteSection clone = section.GetShallowClone() as ConcreteSection;
+            ConcreteSection clone = section.ShallowClone();
             clone.Reinforcement = reinforcement.ToList();
             return clone;
         }
