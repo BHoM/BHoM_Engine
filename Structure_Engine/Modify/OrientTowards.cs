@@ -30,6 +30,7 @@ using BH.oM.Geometry;
 using BH.oM.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -73,7 +74,7 @@ namespace BH.Engine.Structure
         [Output("mesh", "FEMesh with updated local orientations. If the calcualtion of the orientation angle fails for an FEMeshFace, it remains unchanged.")]
         public static FEMesh OrientTowards(this FEMesh mesh, Point orientationPoint)
         {
-            FEMesh clone = mesh.GetShallowClone() as FEMesh;
+            FEMesh clone = mesh.ShallowClone();
             clone.Faces = clone.Faces.Select(x => x.OrientTowards(mesh, orientationPoint)).ToList();
             return clone;
         }

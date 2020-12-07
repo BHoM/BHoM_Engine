@@ -20,49 +20,56 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
+using BH.oM.Dimensional;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using BH.oM.Analytical.Elements;
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
+using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
-using BH.Engine.Base;
 
-
-namespace BH.Engine.Structure
+namespace BH.Engine.Facade
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Flips the StartNode and EndNode of the Bar, i.e. the StartNode is set to the EndNode and vice versa. No modification is being made to releases, orientation angle, offsets etc.")]
-        [Input("bar", "The Bar to flip.")]
-        [Output("bar", "The Bar with flipped end Nodes.")]
-        public static Bar Flip(this Bar bar)
+        [Description("Creates adjacency ID from adjacency elements.")]
+        [Input("edges", "Adjacency edges.")]
+        [Input("elems", "Adjacency elements.")]
+        [Output("adjacencyID", "The generated name of the adjacency.")]
+        public static string AdjacencyID(List<IElement1D> edges, List<IElement2D> elems)
         {
-            Bar flipped = bar.ShallowClone();
-
-            Node tempNode = flipped.StartNode;
-            flipped.StartNode = flipped.EndNode;
-            flipped.EndNode = tempNode;
-
-            return flipped;
+            string separator = "_";
+            List<string> adjIDs = new List<string>();
+            if (edges.Count != elems.Count)
+            {
+                Reflection.Compute.RecordWarning("edge and element list lengths do not match. Each edge should have a corresponding element, please check your inputs.");
+                return null;
+            }
+            else
+            {
+                for (int i = 0; i < edges.Count; i++)
+                {
+                    IElement1D edge = edges[i];
+                    IElement2D elem = elems[i];
+                    string adjID = "Elem:" + elem.IPrimaryPropertyName() + " " + "Edge:" + edge.IPrimaryPropertyName();
+                    adjIDs.Add(adjID);
+                }
+            }
+            adjIDs.Sort();
+            return string.Join(separator, adjIDs);    
         }
 
-        /***************************************************/
 
-        [Description("Flips the location curve of the Edge, i.e. the start becomes the end and vice versa.")]
-        [Input("edge", "The Edge to flip.")]
-        [Output("edge", "The Edge with a flipped location curve.")]
-        public static Edge Flip(this Edge edge)
-        {
-            Edge flipped = edge.ShallowClone();
-            flipped.Curve = flipped.Curve.IFlip();
-
-            return flipped;
-        }
     }
 }
 

@@ -150,7 +150,7 @@ namespace BH.Engine.Analytical
             length += 1;
 
             //relations linking entities working backwards from end
-            List<IRelation> links = m_NonSpatialGraph.Relation(m_SpatialGraph.Entities[n], m_SpatialGraph.Entities[currentEntity]).ToList();
+            List<IRelation> links = m_NonSpatialGraph.Relation(m_NonSpatialGraph.Entities[n], m_NonSpatialGraph.Entities[currentEntity]).ToList();
             
             //hang on to all if multiple exist
             relations.AddRange(links);

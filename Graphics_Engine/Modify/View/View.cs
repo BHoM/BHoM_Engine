@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,16 +20,18 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Structure.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
+using BH.Engine.Reflection;
+using BH.oM.Base;
+using BH.oM.Data.Library;
+using BH.oM.Graphics;
+using BH.oM.Graphics.Scales;
+using BH.oM.Graphics.Views;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
-using BH.Engine.Base;
+using System.Linq;
 
-
-namespace BH.Engine.Structure
+namespace BH.Engine.Graphics
 {
     public static partial class Modify
     {
@@ -37,31 +39,21 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Flips the StartNode and EndNode of the Bar, i.e. the StartNode is set to the EndNode and vice versa. No modification is being made to releases, orientation angle, offsets etc.")]
-        [Input("bar", "The Bar to flip.")]
-        [Output("bar", "The Bar with flipped end Nodes.")]
-        public static Bar Flip(this Bar bar)
+        [Description("Modifies a dataset by adding representation fragments to define a view of the data.")]
+        [Input("chart", "The configuration properties for the view representation.")]
+        [Input("dataset", "Dataset to generate a view of.")]
+        public static void IView(IView view, Dataset dataset)
         {
-            Bar flipped = bar.ShallowClone();
-
-            Node tempNode = flipped.StartNode;
-            flipped.StartNode = flipped.EndNode;
-            flipped.EndNode = tempNode;
-
-            return flipped;
+            View(view as dynamic, dataset);
         }
-
+        
+        /***************************************************/
+        /**** Fallback Methods                          ****/
         /***************************************************/
 
-        [Description("Flips the location curve of the Edge, i.e. the start becomes the end and vice versa.")]
-        [Input("edge", "The Edge to flip.")]
-        [Output("edge", "The Edge with a flipped location curve.")]
-        public static Edge Flip(this Edge edge)
+        public static void View(IView view, Dataset dataset)
         {
-            Edge flipped = edge.ShallowClone();
-            flipped.Curve = flipped.Curve.IFlip();
 
-            return flipped;
         }
     }
 }
