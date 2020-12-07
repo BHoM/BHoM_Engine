@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
         [Input("checkNodes", "Optional bool to tell the method whether to check mesh Nodes or not.")]
         [Input("nodeListIndices", "Optional list of nodes to limit check to")]
         [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
-        public static bool NullCheck(this FEMesh mesh, string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = default(List<int>))
+        public static bool NullCheck(this FEMesh mesh, string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = null)
         {
             // Check FEMesh
             if (mesh?.Nodes == null || mesh?.Nodes.Count == 0 || mesh?.Faces == null || mesh?.Faces.Count == 0)
@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
 
             // Make sure to check all mesh Nodes if none are specified
             // When called from the FEMeshFace version of this method, we limit the Node check to relevant Nodes
-            if (checkNodes && (nodeListIndices == default(List<int>) || nodeListIndices.Count == 0))
+            if (checkNodes && (nodeListIndices == null || nodeListIndices.Count == 0))
             {
                 nodeListIndices = new List<int>();
                 nodeListIndices.AddRange(Enumerable.Range(0, mesh.Nodes.Count - 1));
