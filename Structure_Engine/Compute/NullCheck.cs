@@ -148,7 +148,7 @@ namespace BH.Engine.Structure
             return true;
         }
 
-        [Description("Checks if a Panel OR MORE is null and outputs relevant error message.")]
+        [Description("Checks if a Panel or its ExternalEdges are null and outputs relevant error message.")]
         [Input("panel", "The Panel to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
