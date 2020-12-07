@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("dampingRatio")]
         [Output("concrete", "The created structural Concrete material fragment.")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Create.Concrete(System.String, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)")]
-        public static Concrete Concrete(string name, double youngsModulus = 33000000000, double poissonsRatio = 0.2, double thermalExpansionCoeff = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0, double embodiedCarbon = 0.12)
+        public static Concrete Concrete(string name, double youngsModulus = 33000000000, double poissonsRatio = 0.2, double thermalExpansionCoeff = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0)
         {
             return new Concrete()
             {

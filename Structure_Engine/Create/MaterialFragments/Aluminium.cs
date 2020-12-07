@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("dampingRatio")]
         [Output("aluminium", "The created structural Aluminium material fragment.")]
         [PreviousVersion("4.0","BH.Engine.Structure.Create.Aluminium(System.String, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)")]
-        public static Aluminium Aluminium(string name, double youngsModulus = 70000000000, double poissonsRatio = 0.34, double thermalExpansionCoeff = 0.000023, double density = 2710, double dampingRatio = 0, double embodiedCarbon = 7.9)
+        public static Aluminium Aluminium(string name, double youngsModulus = 70000000000, double poissonsRatio = 0.34, double thermalExpansionCoeff = 0.000023, double density = 2710, double dampingRatio = 0)
         {
             return new Aluminium()
             {
