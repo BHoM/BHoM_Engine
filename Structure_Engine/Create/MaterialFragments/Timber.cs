@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("dampingRatio")]
         [Output("timber", "The created structural Timber material fragment.")]
         [PreviousVersion("4.0", "BH.Engine.Structure.Create.Timber(System.String, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Double, System.Double, System.Double)")]
-        public static Timber Timber(string name, Vector youngsModulus, Vector poissonsRatio, Vector shearModulus, Vector thermalExpansionCoeff, double density, double dampingRatio, double embodiedCarbon = 0.4)
+        public static Timber Timber(string name, Vector youngsModulus, Vector poissonsRatio, Vector shearModulus, Vector thermalExpansionCoeff, double density, double dampingRatio)
         {
             return new Timber()
             {
