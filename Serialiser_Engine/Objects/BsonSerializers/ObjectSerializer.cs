@@ -345,8 +345,18 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     
                     if (result is CustomObject)
                     {
-                        Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
-                        Config.TypesWithoutUpgrade.Add(actualType);
+                        context.Reader.ReturnToBookmark(bookmark);
+                        IBsonSerializer bSerializer = BsonSerializer.LookupSerializer(typeof(BsonDocument));
+                        BsonDocument doc = bSerializer.Deserialize(context, args) as BsonDocument;
+                        BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
+
+                        if (newDoc == null || doc == newDoc)
+                        {
+                            Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
+                            Config.TypesWithoutUpgrade.Add(actualType);
+                        }
+                        else
+                            return BH.Engine.Serialiser.Convert.FromBson(newDoc);
                     }
                         
                     return result;
