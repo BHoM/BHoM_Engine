@@ -62,8 +62,8 @@ namespace BH.Engine.Geometry
 
         [Description("Evaluates the Gaussian and Mean curvature at the parameter.")]
         [Input("surface", "Surface to evaluate.")]
-        [Input("u", "Parameter to evaluate at.")]
-        [Input("v", "Parameter to evaluate at.")]
+        [Input("u", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
+        [Input("v", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [MultiOutput(0, "gauss", "Gaussian curvature at the parameter.")]
         [MultiOutput(1, "mean", "Mean curvature at the parameter.")]
         public static Output<double, double> CurvatureAtParameter(this NurbsSurface surface, double u, double v)

@@ -145,14 +145,6 @@ namespace BH.Engine.Geometry
 
         public static Point PointAtParameter(this NurbsSurface surface, double u, double v)
         {
-            double minU = surface.UKnots.First();
-            double maxU = surface.UKnots.Last();
-            double minV = surface.VKnots.First();
-            double maxV = surface.VKnots.Last();
-
-            u = u < minU ? minU : u > maxU ? maxU : u;
-            v = v < minV ? minV : v > maxV ? maxV : v;
-
             double a = 0;
             Point result = new Point();
 
