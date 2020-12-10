@@ -75,13 +75,7 @@ namespace BH.Engine.Geometry
         
         public static Point PointAtParameter(this NurbsCurve curve, double t)
         {
-            double min = curve.Knots.First();
-            double max = curve.Knots.Last();
-
-            t = t < min ? min : t > max ? max : t;
-
             int n = curve.Degree();
-
             double a = 0;
             Point result = new Point();
 

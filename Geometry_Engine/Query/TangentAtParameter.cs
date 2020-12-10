@@ -73,12 +73,7 @@ namespace BH.Engine.Geometry
 
         public static Vector TangentAtParameter(this NurbsCurve curve, double t, double tolerance = Tolerance.Distance)
         {
-            double min = curve.Knots.First();
-            double max = curve.Knots.Last();
-
-            t = t < min ? min : t > max ? max : t;
-
-            return DerivativeAtParameter(curve, t, 1).Normalise();
+            return DerivativeAtParameter(curve, t, 1)?.Normalise();
         }
 
         /***************************************************/
