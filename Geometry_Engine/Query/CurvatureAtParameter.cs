@@ -35,9 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Curvature of the NurbsCurve at the parameter t. Points towards the center of a fitted circle at the parameter with a magnitude equal to the inverse of the circles radius.")]
+        [Description("Curvature of the NurbsCurve at the parameter t, where t is a normalised parameter. Points towards the center of a fitted circle at the parameter with a magnitude equal to the inverse of the circles radius.")]
         [Input("curve", "Curve to evaluate.")]
-        [Input("t", "Parameter to evaluate at.")]
+        [Input("t", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Output("curvature", "Curvature of the NurbsCurve at the parameter t.")]
         public static Vector CurvatureAtParameter(this NurbsCurve curve, double t)
         {
