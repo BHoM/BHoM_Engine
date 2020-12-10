@@ -83,8 +83,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the vector which is the k'th derivative of the surface at the point of u, v, where u and v are normalised parameters.")]
+        [Input("surface", "Surface to evaluate.")]
+        [Input("u", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
+        [Input("v", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Input("k", "Degree of derivative for u.")]
         [Input("l", "Degree of derivative for v.")]
+        [Output("Vector which is the k'th derivative of the surface at the point of t.")]
         public static Vector DerivativeAtParameter(this NurbsSurface surface, double u, double v, int k, int l)
         {
             if (k == 0 && l == 0)

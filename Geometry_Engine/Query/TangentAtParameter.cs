@@ -123,14 +123,6 @@ namespace BH.Engine.Geometry
         [MultiOutput(1, "vTangent", "The tangent of the surface along it's V direction.")]
         public static Output<Vector, Vector> TangentAtParameter(this NurbsSurface surface, double u, double v, double tolerance = Tolerance.Distance)
         {
-            double minU = surface.UKnots.First();
-            double maxU = surface.UKnots.Last();
-            double minV = surface.VKnots.First();
-            double maxV = surface.VKnots.Last();
-
-            u = u < minU ? minU : u > maxU ? maxU : u;
-            v = v < minV ? minV : v > maxV ? maxV : v;
-
             double a = 0;
             double dua = 0;
             double dva = 0;
