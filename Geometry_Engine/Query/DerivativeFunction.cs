@@ -51,6 +51,23 @@ namespace BH.Engine.Geometry
             return DerivativeFunctionGlobal(knots, i, n, t, k);
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static double DerivativeFunctionGlobal(List<double> knots, int i, int n, double t, int k = 1)
+        {
+            if (k == 0)
+                return BasisFunctionGlobal(knots, i, n, t);
+
+            double result = n * (
+                KnotFactor(knots, i, n) * DerivativeFunctionGlobal(knots, i, n - 1, t, k - 1) -
+                KnotFactor(knots, i + 1, n) * DerivativeFunctionGlobal(knots, i + 1, n - 1, t, k - 1));
+
+            return result;
+        }
+
         /***************************************************/
 
         private static double KnotFactor(List<double> knots, int i, int n)
@@ -62,30 +79,6 @@ namespace BH.Engine.Geometry
                 return 0;
 
             return 1 / (eKnot - sKnot);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static double DerivativeFunctionGlobal(List<double> knots, int i, int n, double t, int k = 1)
-        {
-            t = t < 0 ? 0 : t > 1 ? 1 : t;
-
-
-            double min = knots[n - 1];
-            double max = knots[knots.Count - n];
-            t = min + (max - min) * t;
-
-            if (k == 0)
-                return BasisFunction(knots, i, n, t);
-
-            double result = n * (
-                KnotFactor(knots, i, n) * DerivativeFunctionGlobal(knots, i, n - 1, t, k - 1) -
-                KnotFactor(knots, i + 1, n) * DerivativeFunctionGlobal(knots, i + 1, n - 1, t, k - 1));
-
-            return result;
         }
 
         /***************************************************/

@@ -57,9 +57,9 @@ namespace BH.Engine.Geometry
 
             List<double> knots = curve.Knots;
 
-            Point Ak = new Point();
+            Point ak = new Point();
             for (int j = 0; j < curve.Weights.Count; j++)
-                Ak += curve.ControlPoints[j] * DerivativeFunction(knots, j - 1, n, t, k) * curve.Weights[j];
+                ak += curve.ControlPoints[j] * DerivativeFunction(knots, j - 1, n, t, k) * curve.Weights[j];
 
             Point sum = new Point();
             for (int i = 1; i <= k; i++)
@@ -78,7 +78,7 @@ namespace BH.Engine.Geometry
             for (int j = 0; j < curve.Weights.Count; j++)
                 a += BasisFunction(knots, j - 1, n, t) * curve.Weights[j];
 
-            return (Ak - sum) / a;
+            return (ak - sum) / a;
         }
 
         /***************************************************/

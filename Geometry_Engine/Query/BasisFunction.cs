@@ -50,20 +50,10 @@ namespace BH.Engine.Geometry
             return BasisFunctionGlobal(knots, i, n, t);
         }
 
+
         /***************************************************/
-
-        [Description("Finds the function value of f(t) in the knot-span (i,n)")]
-        private static double LinearKnotInterpelation(List<double> knots, int i, int n, double t)
-        {
-            double sKnot = knots[Math.Max(Math.Min(i, knots.Count - 1), 0)];
-            double eKnot = knots[Math.Max(Math.Min(i + n, knots.Count - 1), 0)];
-
-            if (sKnot == eKnot)
-                return 0;
-
-            return (t - sKnot) / (eKnot - sKnot);
-        }
-
+        /**** Private Methods                           ****/
+        /***************************************************/
 
         private static double BasisFunctionGlobal(List<double> knots, int i, int n, double t)
         {
@@ -84,6 +74,19 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Finds the function value of f(t) in the knot-span (i,n)")]
+        private static double LinearKnotInterpelation(List<double> knots, int i, int n, double t)
+        {
+            double sKnot = knots[Math.Max(Math.Min(i, knots.Count - 1), 0)];
+            double eKnot = knots[Math.Max(Math.Min(i + n, knots.Count - 1), 0)];
+
+            if (sKnot == eKnot)
+                return 0;
+
+            return (t - sKnot) / (eKnot - sKnot);
+        }
+
+        /***************************************************/
     }
 }
 
