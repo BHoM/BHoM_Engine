@@ -41,19 +41,13 @@ namespace BH.Engine.Geometry
         [Output("Value of the function for the specified index. The full value of the function should be a sum of all possible i's.")]
         public static double BasisFunction(List<double> knots, int i, int n, double t)
         {
-            if (n == 0)
-            {
-                double sKnot = knots[Math.Max(Math.Min(i, knots.Count - 1), 0)];
-                double eKnot = knots[Math.Max(Math.Min(i + 1, knots.Count - 1), 0)];
+            t = t < 0 ? 0 : t > 1 ? 1 : t;
 
-                if (t >= knots[knots.Count - 1])
-                    return t > sKnot && t <= eKnot ? 1 : 0;
-                else
-                    return t >= sKnot && t < eKnot ? 1 : 0;
-            }
+            double min = knots[n - 1];
+            double max = knots[knots.Count - n];
+            t = min + (max - min) * t;
 
-            return LinearKnotInterpelation(knots, i, n, t) * BasisFunction(knots, i, n - 1, t) +
-                   (1 - LinearKnotInterpelation(knots, i + 1, n, t)) * BasisFunction(knots, i + 1, n - 1, t);
+            return BasisFunctionGlobal(knots, i, n, t);
         }
 
         /***************************************************/
@@ -68,6 +62,24 @@ namespace BH.Engine.Geometry
                 return 0;
 
             return (t - sKnot) / (eKnot - sKnot);
+        }
+
+
+        private static double BasisFunctionGlobal(List<double> knots, int i, int n, double t)
+        {
+            if (n == 0)
+            {
+                double sKnot = knots[Math.Max(Math.Min(i, knots.Count - 1), 0)];
+                double eKnot = knots[Math.Max(Math.Min(i + 1, knots.Count - 1), 0)];
+
+                if (t >= knots[knots.Count - 1])
+                    return t > sKnot && t <= eKnot ? 1 : 0;
+                else
+                    return t >= sKnot && t < eKnot ? 1 : 0;
+            }
+
+            return LinearKnotInterpelation(knots, i, n, t) * BasisFunctionGlobal(knots, i, n - 1, t) +
+                   (1 - LinearKnotInterpelation(knots, i + 1, n, t)) * BasisFunctionGlobal(knots, i + 1, n - 1, t);
         }
 
         /***************************************************/

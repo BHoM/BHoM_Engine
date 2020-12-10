@@ -55,11 +55,6 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            double min = curve.Knots.First();
-            double max = curve.Knots.Last();
-
-            t = t < min ? min : t > max ? max : t;
-
             List<double> knots = curve.Knots;
 
             Point Ak = new Point();
