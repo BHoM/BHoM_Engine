@@ -42,6 +42,7 @@ namespace BH.Engine.Facade
 
         [Description("Creates a facade Opening from a collection of curves forming a closed loop.")]
         [Input("edges", "Closed curve defining the outline of the Opening.")]
+        [Input("construction", "Construction applied to the Opening.")]
         [Input("frameEdgeProperty", "An optional FrameEdgeProperty to apply to all edges of the opening.")]
         [Output("opening", "Created Opening.")]
         public static Opening Opening(IEnumerable<ICurve> edges, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
@@ -67,7 +68,7 @@ namespace BH.Engine.Facade
 
             //Single joined curve
             if (joined[0].IIsClosed())
-                return new Opening { Edges = externalEdges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList() };
+                return new Opening { Edges = externalEdges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList(), OpeningConstruction = construction, Name = name };
             else
             {
                 Reflection.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
