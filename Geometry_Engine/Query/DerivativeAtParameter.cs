@@ -35,9 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the vector which is the k'th derivative of the curve at the point of t.")]
+        [Description("Gets the vector which is the k'th derivative of the curve at the point of t, where t is a normalised parameter.")]
         [Input("curve", "Curve to evaluate.")]
-        [Input("t", "Parameter to evaluate at")]
+        [Input("t", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Input("k", "Degree of the derivation.")]
         [Output("Vector which is the k'th derivative of the curve at the point of t.")]
         public static Vector DerivativeAtParameter(this NurbsCurve curve, double t, int k)

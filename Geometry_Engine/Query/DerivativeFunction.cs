@@ -33,11 +33,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the partial value derivatives of the B-spline Basis function.")]
+        [Description("Gets the partial value derivatives of the B-spline Basis function for t value as normalised parameter.")]
         [Input("knots", "Knot vector defining the basis function.")]
         [Input("i", "Index the function is evaluated at. The value of the function is the sum of this functions value for all values of i.")]
         [Input("n", "Degree of the of the basis function. Affects how many adjacent knots control the value.")]
-        [Input("t", "Parameter to evaluate the function at. Should be between the first and last knots value.")]
+        [Input("t", "Parameter to evaluate the function at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Input("k", "Degree of the derivation.")]
         [Output("Value of the function for the specified index. The full value of the function should be a sum of all possible i's.")]
         public static double DerivativeFunction(List<double> knots, int i, int n, double t, int k = 1)
@@ -56,6 +56,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
+        [Description("Gets the partial value derivatives of the B-spline Basis function for t value as global parameter.")]
         private static double DerivativeFunctionGlobal(List<double> knots, int i, int n, double t, int k = 1)
         {
             if (k == 0)
