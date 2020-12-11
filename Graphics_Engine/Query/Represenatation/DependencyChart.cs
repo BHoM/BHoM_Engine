@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Modify
+    public static partial class Create
     {
 
         /***************************************************/
@@ -24,13 +24,16 @@ namespace BH.Engine.Graphics
         [Description("Modifies a dataset by adding representation fragments to define a view of the data.")]
         [Input("view", "The configuration properties for the view representation.")]
         [Input("dataset", "Dataset of a BH.oM.Analytical.Elements.Graph where Graph.Entities are one element of type BHoMGroup in Dataset.Data and Graph.Relations are another element of type BHoMGroup in Dataset.Data.")]
-        public static void View(this DependencyChart view, Dataset dataset)
+        public static List<IRepresentation> View(this DependencyChart view, Dataset dataset)
         {
+            List<IRepresentation> representations = new List<IRepresentation>();
 
-            view.Boxes.IRepresentationFragment(dataset, view.ViewConfig);
+            representations.AddRange(view.Boxes.IComponent(dataset, view.ViewConfig));
 
-            view.Links.IRepresentationFragment(dataset, view.ViewConfig);
+            representations.AddRange(view.Links.IComponent(dataset, view.ViewConfig));
+
+            return representations;
         }
-       
+
     }
 }

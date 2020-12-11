@@ -33,7 +33,7 @@ using System.Linq;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -42,19 +42,19 @@ namespace BH.Engine.Graphics
         [Description("Modifies a dataset by adding representation fragments to define a view of the data.")]
         [Input("chart", "The configuration properties for the view representation.")]
         [Input("dataset", "Dataset to generate a view of.")]
-        public static void IView(IView view, Dataset dataset)
+        public static List<IRepresentation> IView(IView view, Dataset dataset)
         {
-            View(view as dynamic, dataset);
+            return View(view as dynamic, dataset);
         }
-        
+
         /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/
 
-        public static void View(IView view, Dataset dataset)
+        public static List<IRepresentation> View(IView view, Dataset dataset)
         {
+            return new List<IRepresentation>();
 
         }
     }
 }
-

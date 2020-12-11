@@ -77,12 +77,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convert\Graph\ToDataset.cs" />
     <Compile Include="Convert\Graph\ToDataVizObjects.cs" />
     <Compile Include="Convert\Graph\ToDotFormat.cs" />
     <Compile Include="Convert\Graph\ToRelation.cs" />
     <Compile Include="Create\Graph\ComparisonConfig.cs" />
     <Compile Include="Create\Graph\Graph.cs" />
     <Compile Include="Create\Graph\Relation.cs" />
+    <Compile Include="Query\Graph\Representation.cs" />
     <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
     <Compile Include="Modify\Graph\RelationCurves.cs" />
     <Compile Include="Modify\Graph\RemoveEntity.cs" />

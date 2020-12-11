@@ -1,11 +1,11 @@
-﻿using BH.Engine.Graphics.Scales;
+﻿using BH.Engine.Geometry;
+using BH.Engine.Graphics.Scales;
 using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.Data.Library;
 using BH.oM.Geometry;
 using BH.oM.Graphics;
 using BH.oM.Graphics.Components;
-using BH.oM.Graphics.Fragments;
 using BH.oM.Graphics.Scales;
 using BH.oM.Graphics.Views;
 using BH.oM.Reflection.Attributes;
@@ -18,19 +18,22 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Adds box representation fragments to IBHoMObjects.")]
+        [Description("Create box representation.")]
         [Input("component", "The configuration properties for the box representation.")]
         [Input("dataset", "Dataset of a BH.oM.Analytical.Elements.Graph where Graph.Entities are one element of type BHoMGroup in Dataset.Data.")]
         [Input("viewConfig", "The configuration properties for the view.")]
+        [Output("representation", "Collection of IRepresentation objects.")]
 
-        public static void RepresentationFragment(this Boxes component, Dataset dataset, ViewConfig viewConfig)
+        public static List<IRepresentation> Component(this Boxes component, Dataset dataset, ViewConfig viewConfig)
         {
+            List<IRepresentation> representations = new List<IRepresentation>();
             SetScales(component,dataset, viewConfig);
+            m_EntityRepresentation = new Dictionary<Guid, IRepresentation>();
 
             BHoMGroup<IBHoMObject> entityGroup = (BHoMGroup<IBHoMObject>)dataset.Data.Find(x => x.Name == "Entities");
             List<IBHoMObject> entities = entityGroup.Elements;
@@ -52,79 +55,92 @@ namespace BH.Engine.Graphics
                 xSpace = (viewConfig.Width - (groupNames.Count * component.Padding))/ groupNames.Count;
                 ySpace = viewConfig.Height / maxGroup;
             }
-            List<GroupRepresentation> groupRepresentations = new List<GroupRepresentation>();
-            GraphRepresentation graphRepresentation = new GraphRepresentation();
+
             foreach (var group in groups)
             {
+                GeometricRepresentation geoRep = new GeometricRepresentation();
+                TextRepresentation textRep = new TextRepresentation();
                 int i = 0;
                 var orderedgroup = group.OrderBy(g => g.PropertyValue(component.GroupOrder));
                 double x = 0;
                 double y = 0;
-                GroupRepresentation representation = new GroupRepresentation();
+                Vector textX = new Vector();
+                Point textorigin = new Point();
                 if (component.IsHorizontal)
                 {
                     x = System.Convert.ToDouble(m_Xscale.IScale(0));
                     y = System.Convert.ToDouble(m_Yscale.IScale(group.Key));
-                    representation.Boundary = Box(Geometry.Create.Point(x, y, 0), xSpace * orderedgroup.Count(), ySpace );
-                    representation.TextPosition = SetAnchorPoint(Geometry.Create.Point(x, y, 0), -component.Padding, 0, 0);
-                    representation.TextDirection = Vector.YAxis;
+                    geoRep.Geometry = Box(Geometry.Create.Point(x, y, 0), xSpace * orderedgroup.Count(), ySpace );
+                    textorigin = SetAnchorPoint(Geometry.Create.Point(x, y, 0), -component.Padding, 0, 0);
+                    textX = Vector.YAxis;
+                    
                 }
                 else
                 {
                     x = System.Convert.ToDouble(m_Xscale.IScale(group.Key));
                     y = System.Convert.ToDouble(m_Yscale.IScale(0));
-                    representation.Boundary = Box(Geometry.Create.Point(x, y, 0), xSpace, ySpace * orderedgroup.Count());
-                    representation.TextPosition = SetAnchorPoint(Geometry.Create.Point(x, y, 0), 0, -viewConfig.Padding.Bottom, 0);
-                    representation.TextDirection = Vector.XAxis;
+                    geoRep.Geometry = Box(Geometry.Create.Point(x, y, 0), xSpace, ySpace * orderedgroup.Count());
+                    textorigin = SetAnchorPoint(Geometry.Create.Point(x, y, 0), 0, -viewConfig.Padding.Bottom, 0);
+                    textX = Vector.XAxis;
                 }
-                representation.Colour = Convert.ColourFromObject(m_Colourscale.IScale(group.Key));
-                representation.Text = group.Key.ToString();
+
+                textRep.Cartesian = Geometry.Create.CartesianCoordinateSystem(textorigin, textX, Geometry.Query.CrossProduct(Vector.ZAxis, textX));
+
+                geoRep.Colour = Convert.ColourFromObject(m_Colourscale.IScale(group.Key));
                 
-                groupRepresentations.Add(representation);
+                representations.Add(geoRep);
+                textRep.Text = group.Key.ToString();
+                textRep.FontConfig = component.FontConfig;
+                representations.Add(textRep);
+                representations.Add(geoRep);
+
                 foreach (var obj in orderedgroup)
                 {
-                    obj.SetEntityRepresentation(i, component, xSpace, ySpace);
+                    representations.AddRange(obj.SetEntityRepresentation(i, component, xSpace, ySpace));
                     i++;
                 }
                 
             }
-            graphRepresentation.Groups = groupRepresentations;
-            dataset.Fragments.AddOrReplace(graphRepresentation);
+            return representations;
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void SetEntityRepresentation(this IBHoMObject obj,int seqNumber, Boxes component, double xSpace, double ySpace)
+        private static List<IRepresentation> SetEntityRepresentation(this IBHoMObject obj, int seqNumber, Boxes component, double xSpace, double ySpace)
         {
             double x = 0;
             double y = 0;
             double cellX = xSpace - 2 * component.Padding;
             double cellY = ySpace - 2 * component.Padding;
-
+            GeometricRepresentation geoRep = new GeometricRepresentation();
+            TextRepresentation textRep = new TextRepresentation();
+            Vector textX = new Vector();
             if (component.IsHorizontal)
             {
                 x = System.Convert.ToDouble(m_Xscale.IScale(seqNumber));
                 y = System.Convert.ToDouble(m_Yscale.IScale(obj.PropertyValue(component.Group)));
+                textX = Vector.YAxis;
             }
             else
             {
                 x = System.Convert.ToDouble(m_Xscale.IScale(obj.PropertyValue(component.Group)));
                 y = System.Convert.ToDouble(m_Yscale.IScale(seqNumber));
+                textX = Vector.XAxis;
             }
-
-            EntityRepresentation representation = new EntityRepresentation();
 
             Point basePt = SetAnchorPoint(Geometry.Create.Point(x, y, 0), component.Padding, component.Padding, 0);
 
-            representation.Boundary = Box(basePt, cellX, cellY);
-            representation.Text = obj.PropertyValue(component.Text).ToString();
-            representation.TextPosition = SetAnchorPoint(basePt, component.Padding, component.Padding, 0);
-            representation.OutgoingRelationPoint = SetAnchorPoint(basePt, cellX, cellY / 2, 0);
-            representation.IncomingRelationPoint = SetAnchorPoint(basePt, 0, cellY / 2, 0);
-            representation.Colour = Convert.ColourFromObject(m_Colourscale.IScale(obj.PropertyValue(component.Colour)));
-            obj.Fragments.AddOrReplace(representation);
+            geoRep.Geometry = Box(basePt, cellX, cellY);
+            textRep.Text = obj.PropertyValue(component.Text).ToString();
+            textRep.Cartesian = Geometry.Create.CartesianCoordinateSystem(basePt, textX, Geometry.Query.CrossProduct(Vector.ZAxis, textX));
+            textRep.FontConfig = component.FontConfig;
+            //representation.OutgoingRelationPoint = SetAnchorPoint(basePt, cellX, cellY / 2, 0);
+            //representation.IncomingRelationPoint = SetAnchorPoint(basePt, 0, cellY / 2, 0);
+            geoRep.Colour = Convert.ColourFromObject(m_Colourscale.IScale(obj.PropertyValue(component.Colour)));
+            m_EntityRepresentation.Add(obj.BHoM_Guid, geoRep);
+            return new List<IRepresentation>() { geoRep, textRep };
         }
 
         /***************************************************/
@@ -192,5 +208,6 @@ namespace BH.Engine.Graphics
         private static IScale m_Xscale = null;
         private static IScale m_Yscale = null;
         private static IScale m_Colourscale = null;
+        private static Dictionary<Guid, IRepresentation> m_EntityRepresentation = new Dictionary<Guid, IRepresentation>();
     }
 }

@@ -64,8 +64,10 @@ namespace BH.Engine.Base
         {
             if (obj is IGeometry)
                 return obj as IGeometry;
+
             else if (obj is IBHoMObject)
                 return ((IBHoMObject)obj).IGeometry();
+
             else if (obj is IEnumerable)
             {
                 List<IGeometry> geometries = new List<IGeometry>();
