@@ -41,7 +41,7 @@ namespace BH.Engine.Facade
         [Description("Returns if lines are adjacent")]
         [Input("curve1", "First crv to check adjacency for")]
         [Input("curve2", "Second crv to check adjacency for")]
-        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
+        [Input("tolerance", "Tolerance to apply to adjacency check")]
         [Output("bool", "True if provided lines are adjacent")]
 
         public static bool IsAdjacent(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
@@ -55,8 +55,8 @@ namespace BH.Engine.Facade
                 Point e2 = curve2.End;
 
                 // Check if lines have matching end points
-                if ((s1.Distance(s2) == 0 && e1.Distance(e2) == 0) ||
-                    (s1.Distance(e2) == 0 && e1.Distance(s2) == 0))
+                if ((s1.Distance(s2) <= tolerance && e1.Distance(e2) == tolerance) ||
+                    (s1.Distance(e2) == tolerance && e1.Distance(s2) == tolerance))
                 {
                     return true;
                 }
@@ -67,8 +67,8 @@ namespace BH.Engine.Facade
                     if (pt.X <= Math.Max(s2.X, e2.X) && pt.X >= Math.Min(s2.X, e2.X) &&
                         pt.Y <= Math.Max(s2.Y, e2.Y) && pt.Y >= Math.Min(s2.Y, e2.Y) &&
                         pt.Z <= Math.Max(s2.Z, e2.Z) && pt.Z >= Math.Min(s2.Z, e2.Z) &&
-                        pt.Distance(s2) > Tolerance.Distance &&
-                        pt.Distance(e2) > Tolerance.Distance)
+                        pt.Distance(s2) > tolerance &&
+                        pt.Distance(e2) > tolerance)
                     {
                         return true;
                     }
@@ -79,8 +79,8 @@ namespace BH.Engine.Facade
                     if (pt.X <= Math.Max(s1.X, e1.X) && pt.X >= Math.Min(s1.X, e1.X) &&
                         pt.Y <= Math.Max(s1.Y, e1.Y) && pt.Y >= Math.Min(s1.Y, e1.Y) &&
                         pt.Z <= Math.Max(s1.Z, e1.Z) && pt.Z >= Math.Min(s1.Z, e1.Z) &&
-                        pt.Distance(s1) > Tolerance.Distance &&
-                        pt.Distance(e1) > Tolerance.Distance)
+                        pt.Distance(s1) > tolerance &&
+                        pt.Distance(e1) > tolerance)
                     {
                         return true;
                     }
