@@ -60,12 +60,27 @@ namespace BH.Engine.Serialiser.BsonSerializers
             bool overflow = false;
             if (doc.Contains("BHoM_Guid"))
             {
-                Guid objectId = doc.GetElement("BHoM_Guid").Value.AsGuid;
-                if (m_StackCounter.ContainsKey(objectId))
-                    m_StackCounter[objectId] += 1;
+                string objectId = "";
+                BsonValue value = doc.GetElement("BHoM_Guid").Value;
+                
+                if (value.BsonType == BsonType.String)
+                    objectId = value.AsString;
                 else
-                    m_StackCounter[objectId] = 1;
-                overflow = m_StackCounter[objectId] > 5;
+                {
+                    try
+                    {
+                        objectId = value.AsGuid.ToString();
+                    }
+                    catch { }
+                }
+                if (!string.IsNullOrWhiteSpace(objectId))
+                {
+                    if (m_StackCounter.ContainsKey(objectId))
+                        m_StackCounter[objectId] += 1;
+                    else
+                        m_StackCounter[objectId] = 1;
+                    overflow = m_StackCounter[objectId] > 10;
+                }
             }
 
             if (newDoc == null || doc == newDoc || overflow)
@@ -84,7 +99,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static Dictionary<Guid, int> m_StackCounter = new Dictionary<Guid, int>();
+        private static Dictionary<string, int> m_StackCounter = new Dictionary<string, int>();
 
         /*******************************************/
     }
