@@ -44,6 +44,7 @@ namespace BH.Engine.Facade
         [Input("edges", "Closed curve defining the outline of the Opening.")]
         [Input("construction", "Construction applied to the Opening.")]
         [Input("frameEdgeProperty", "An optional FrameEdgeProperty to apply to all edges of the opening.")]
+        [Input("name", "Name of the opening to be created.")]
         [Output("opening", "Created Opening.")]
         public static Opening Opening(IEnumerable<ICurve> edges, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
         {
