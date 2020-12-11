@@ -120,7 +120,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                                 {
                                     Dictionary<string, object> customData = value as Dictionary<string, object>;
                                     if (customData.Count > 0)
-                                        dic["AdditionalData"] = value;
+                                        dic["CustomData"] = value;
                                 }
                                 break;
                             default:
