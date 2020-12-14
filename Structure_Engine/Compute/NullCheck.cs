@@ -99,7 +99,7 @@ namespace BH.Engine.Structure
             // If mesh nodes are specified, check that they are in range
             else if (checkNodes && mesh.Nodes.Count - 1 < nodeListIndices.Max())
             {
-                Engine.Reflection.Compute.RecordError($"Cannot run {methodName} because Node indices are out of range for FEMesh");
+                Engine.Reflection.Compute.RecordError($"Cannot evaluate {methodName} because Node indices are out of range for FEMesh");
                 return false;
             }
 
@@ -179,8 +179,7 @@ namespace BH.Engine.Structure
 
         private static void ErrorMessage(string methodName, string type)
         {
-            Engine.Reflection.Compute.RecordError($"Cannot run {methodName} because {type} failed a null check");
+            Engine.Reflection.Compute.RecordError($"Cannot evaluate {methodName} because {type} failed a null check");
         }
     }
 }
-
