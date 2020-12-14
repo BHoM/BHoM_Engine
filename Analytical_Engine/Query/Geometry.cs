@@ -231,7 +231,7 @@ namespace BH.Engine.Analytical
                 }
             }
             foreach (IRelation relation in spatialGraph.Relations)
-                geometries.Add(relation.RelationArrow());
+                geometries.Add(relation.RelationArrow(0.2,0.05));
 
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
         }
