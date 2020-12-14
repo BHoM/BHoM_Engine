@@ -27,7 +27,7 @@ using BH.Engine.Analytical;
 using BH.oM.Base;
 using BH.oM.Diffing;
 using BH.oM.Geometry;
-using BH.Engine.Data;
+using BH.Engine.Diffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +36,6 @@ using BH.Engine.Geometry;
 using BH.oM.Dimensional;
 using BH.Engine.Spatial;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Data.Collections;
-using Accord.Collections;
 
 namespace BH.Engine.Analytical
 {
@@ -132,7 +130,7 @@ namespace BH.Engine.Analytical
                 entities = new List<IElement0D>();
 
             List<IElement0D> entitiesCloned = entities.DeepClone();
-            SetKDTree(entitiesCloned);
+
             List<IRelation> relations = new List<IRelation>();
             foreach (ICurve curve in connectingCurves)
             {
@@ -268,53 +266,17 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Private Methods                 ****/
         /***************************************************/
-        private static void SetKDTree(List<IElement0D> entities)
-        {
-            List<double[]> points = new List<double[]>();
-
-            foreach (IElement0D s in entities)
-            {
-                Point p = s.IGeometry();
-                double[] pt = new double[] { p.X, p.Y, p.Z };
-                points.Add(pt);
-            }
-            m_KDTree = KDTree.FromData<IElement0D>(points.ToArray(), entities.ToArray(), true);
-        }
         private static IElement0D FindOrCreateEntity(List<IElement0D> entities, Point point, double tolerance, IElement0D prototypeEntity)
         {
+            IElement0D entity = entities.ClosestIElement0D(point);
 
-            double[] query = new double[] { point.X, point.Y, point.Z };
-            var neighbours = m_KDTree.Nearest(query, radius: tolerance);
-            double minDist = double.MaxValue;
-            IElement0D entity = null;
-            foreach (var n in neighbours)
-            {
-                Point p = new Point() { X = n.Node.Position[0], Y = n.Node.Position[1], Z = n.Node.Position[2] };
-                double sqDist = p.SquareDistance(point);
-                if (sqDist < minDist)
-                {
-                    minDist = sqDist;
-                    entity = n.Node.Value;
-                }
-            }
-
-            if (entity == null )
+            if (entity == null || entity.IGeometry().Distance(point) > tolerance)
             {
                 entity = prototypeEntity.ClonePositionGuid(point);
                 entities.Add(entity);
-                
-                m_KDTree.Add(new double[] { point.X, point.Y, point.Z }, entity);
             }
+                
             return entity;
-            //IElement0D entity = entities.ClosestIElement0D(point);
-
-            //if (entity == null || entity.IGeometry().Distance(point) > tolerance)
-            //{
-            //    entity = prototypeEntity.ClonePositionGuid(point);
-            //    entities.Add(entity);
-            //}
-
-            //return entity;
         }
 
         /***************************************************/
@@ -420,7 +382,6 @@ namespace BH.Engine.Analytical
 
         private static Random m_Rnd = new Random();
         private static Dictionary<Guid, IBHoMObject> m_MatchedObjects = new Dictionary<Guid, IBHoMObject>();
-        private static KDTree<IElement0D> m_KDTree = null;
     }
 }
 
