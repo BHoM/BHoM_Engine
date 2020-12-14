@@ -177,7 +177,12 @@ namespace BH.Engine.Geometry
         public static double Area(this PlanarSurface pSurf)
         {
             double area = pSurf.ExternalBoundary.IArea();
-            area -= pSurf.InternalBoundaries.Sum(x => x.IArea());
+
+            if (pSurf.InternalBoundaries != null)
+            {
+                area -= pSurf.InternalBoundaries.Sum(x => x.IArea());
+            }
+
             return area;
         }
 
