@@ -108,7 +108,13 @@ namespace BH.Engine.Base
             string hashString = DefiningString(iObj_copy, cc, fractionalDigits, 0);
 
             if (string.IsNullOrWhiteSpace(hashString))
-                throw new Exception("Error computing the defining string of the object.");
+            {
+                // This means that:
+                // - all properties of the input object were disregarded due to the settings specified in the ComparisonConfig, or
+                // - all properties of the input object that were not disregarded were null or empty,
+                // Since a hash has to be always returned, for this scenario we are forced to build a defining string out of the type full name.
+                hashString = iObj_copy.GetType().FullName;
+            }
 
             // Return the SHA256 hash of the defining string.
             return SHA256Hash(hashString);

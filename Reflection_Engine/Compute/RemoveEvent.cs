@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,48 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Debugging;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Physical.Materials;
-using BH.oM.Structure.MaterialFragments;
-using BH.oM.Geometry;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Reflection
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a structural Steel material fragment to be used on analytical structural elements, or as a fragment of the physical material.")]
-        [Input("name", "The name of the created Steel material. This is required for various structural packages to create the object.")]
-        [InputFromProperty("youngsModulus")]
-        [InputFromProperty("poissonsRatio")]
-        [InputFromProperty("thermalExpansionCoeff")]
-        [InputFromProperty("density")]
-        [InputFromProperty("dampingRatio")]
-        [Output("steel", "The created structural Steel material fragment.")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Create.Steel(System.String, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)")]
-        public static Steel Steel(string name, double youngsModulus = 210000000000, double poissonsRatio = 0.3, double thermalExpansionCoeff = 0.000012, double density = 7850, double dampingRatio = 0, double yieldStress = 0, double ultimateStress = 0)
+        public static bool RemoveEvent(Event newEvent)
         {
-            return new Steel()
-            {
-                Name = name,
-                Density = density,
-                YoungsModulus = youngsModulus,
-                PoissonsRatio = poissonsRatio,
-                ThermalExpansionCoeff = thermalExpansionCoeff,
-                DampingRatio = dampingRatio,
-                YieldStress = yieldStress,
-                UltimateStress = ultimateStress,
-            };
+            Log log = Query.DebugLog();
+            bool success = log.AllEvents.Remove(newEvent);
+            success &= log.CurrentEvents.Remove(newEvent);
+            return success;
         }
 
         /***************************************************/
 
+        public static bool RemoveEvents(List<Event> events)
+        {
+            Log log = Query.DebugLog();
+            bool success = true;
+            foreach (Event e in events)
+            {
+                success &= log.AllEvents.Remove(e);
+                success &= log.CurrentEvents.Remove(e);
+            }
+            
+            return success;
+        }
+
+        /***************************************************/
     }
 }
+
