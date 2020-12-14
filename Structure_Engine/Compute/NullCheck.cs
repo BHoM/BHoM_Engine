@@ -179,8 +179,7 @@ namespace BH.Engine.Structure
 
         private static void ErrorMessage(string methodName, string type)
         {
-            Engine.Reflection.Compute.RecordError($"Cannot run {methodName} because {type} failed a null check");
+            Engine.Reflection.Compute.RecordError($"Cannot evaluate {methodName} because {type} failed a null check");
         }
     }
 }
-
