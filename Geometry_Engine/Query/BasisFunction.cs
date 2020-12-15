@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
         [Input("n", "Degree of the of the basis function. Affects how many adjacent knots control the value.")]
         [Input("t", "Parameter to evaluate the function at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Output("Value of the function for the specified index. The full value of the function should be a sum of all possible i's.")]
-        public static double BasisFunction(List<double> knots, int i, int n, double t)
+        public static double BasisFunction(this List<double> knots, int i, int n, double t)
         {
             t = t < 0 ? 0 : t > 1 ? 1 : t;
 
