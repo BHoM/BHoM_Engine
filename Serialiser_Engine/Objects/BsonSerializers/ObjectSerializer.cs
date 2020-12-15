@@ -181,7 +181,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 case BsonType.String:
                     return reader.ReadString();
             }
-            throw new FormatException($"ObjectSerializer does not support BSON type '{currentBsonType}'.");
+
+            Engine.Reflection.Compute.RecordError($"ObjectSerializer does not support BSON type '{currentBsonType}'.");
+            return null;
         }
 
 
