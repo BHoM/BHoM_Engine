@@ -55,8 +55,8 @@ namespace BH.Engine.Facade
                 Point e2 = curve2.End;
 
                 // Check if lines have matching end points
-                if ((s1.Distance(s2) <= tolerance && e1.Distance(e2) == tolerance) ||
-                    (s1.Distance(e2) == tolerance && e1.Distance(s2) == tolerance))
+                if ((s1.Distance(s2) <= tolerance && e1.Distance(e2) <= tolerance) ||
+                    (s1.Distance(e2) <= tolerance && e1.Distance(s2) <= tolerance))
                 {
                     return true;
                 }
