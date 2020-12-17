@@ -57,33 +57,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             BsonDocument doc = bSerializer.Deserialize(context, args) as BsonDocument;
             BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
 
-            bool overflow = false;
-            if (doc.Contains("BHoM_Guid"))
-            {
-                string objectId = "";
-                BsonValue value = doc.GetElement("BHoM_Guid").Value;
-                
-                if (value.BsonType == BsonType.String)
-                    objectId = value.AsString;
-                else
-                {
-                    try
-                    {
-                        objectId = value.AsGuid.ToString();
-                    }
-                    catch { }
-                }
-                if (!string.IsNullOrWhiteSpace(objectId))
-                {
-                    if (m_StackCounter.ContainsKey(objectId))
-                        m_StackCounter[objectId] += 1;
-                    else
-                        m_StackCounter[objectId] = 1;
-                    overflow = m_StackCounter[objectId] > 10;
-                }
-            }
-
-            if (newDoc == null || doc == newDoc || overflow)
+            if (newDoc == null || doc == newDoc)
             {
                 Engine.Reflection.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
                 context.Reader.ReturnToBookmark(bookmark);
@@ -94,16 +68,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 return BH.Engine.Serialiser.Convert.FromBson(newDoc);
         }
 
-
-        /***************************************************/
-        /**** Private Fields                            ****/
         /***************************************************/
 
-        private static Dictionary<string, int> m_StackCounter = new Dictionary<string, int>();
-
-        /*******************************************/
     }
-
-
 }
 
