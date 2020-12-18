@@ -153,7 +153,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 }
 
                 if (type == null)
-                    Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
+                    if (!string.IsNullOrWhiteSpace(fullName))
+                        Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
                 else if (type.IsGenericType && type.GetGenericArguments().Length == genericTypes.Where(x => x != null).Count())
                     type = type.MakeGenericType(genericTypes.ToArray()); 
 
@@ -161,7 +162,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             catch
             {
-                Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
+                if (!string.IsNullOrWhiteSpace(fullName))
+                    Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
                 return null;
             }
         }
