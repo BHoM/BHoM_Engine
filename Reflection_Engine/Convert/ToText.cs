@@ -37,7 +37,10 @@ namespace BH.Engine.Reflection
 
         public static string IToText(this object member, bool includePath = false)
         {
-            return ToText(member as dynamic, includePath);
+            if (member == null)
+                return "null";
+            else
+                return ToText(member as dynamic, includePath);
         }
 
 
@@ -47,7 +50,9 @@ namespace BH.Engine.Reflection
 
         public static string ToText(this MemberInfo member, bool includePath = false)
         {
-            if (member is MethodBase)
+            if (member == null)
+                return "null";
+            else if(member is MethodBase)
                 return ToText(member as MethodBase, includePath);
             else if (member is Type)
                 return ToText(member as Type, includePath);
@@ -60,6 +65,9 @@ namespace BH.Engine.Reflection
 
         public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false)
         {
+            if (method == null)
+                return "null";
+
             string name = (method is ConstructorInfo) ? method.DeclaringType.ToText(false, true) : method.Name;
             if (removeIForInterface && Query.IsInterfaceMethod(method))
                 name = name.Substring(1);
@@ -116,6 +124,9 @@ namespace BH.Engine.Reflection
 
         public static string ToText(this Type type, bool includePath = false, bool replaceGeneric = false, string genericStart = "<", string genericSeparator = ", ", string genericEnd = ">")
         {
+            if (type == null)
+                return "null";
+
             IEnumerable<string> interfaces = type.GetInterfaces().Select(x => x.ToString());
 
             if (!type.IsGenericType)
