@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -136,7 +137,7 @@ namespace BH.Engine.Reflection
                     {
                         foreach (Type type in asm.GetTypes())
                         {
-                            if (type.Namespace != null && type.Namespace.StartsWith("BH.oM"))
+                            if (type.Namespace != null && type.Namespace.StartsWith("BH.oM") && typeof(IObject).IsAssignableFrom(type))
                             {
                                 AddBHoMTypeToDictionary(type.FullName, type);
                                 if (!type.IsInterface && !(type.IsAbstract && type.IsSealed)) // Avoid interfaces and static classes
