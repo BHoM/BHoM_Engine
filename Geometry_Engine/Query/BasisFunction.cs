@@ -33,13 +33,30 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the partial values of the B-spline basis function.")]
+        [Description("Gets the partial values of the B-spline basis function for t value as normalised parameter.")]
         [Input("knots", "Knot vector defining the basis function.")]
         [Input("i", "Index the function is evaluated at. The value of the function is the sum of this functions value for all values of i.")]
         [Input("n", "Degree of the of the basis function. Affects how many adjacent knots control the value.")]
-        [Input("t", "Parameter to evaluate the function at. Should be between the first and last knots value.")]
+        [Input("t", "Parameter to evaluate the function at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Output("Value of the function for the specified index. The full value of the function should be a sum of all possible i's.")]
-        public static double BasisFunction(List<double> knots, int i, int n, double t)
+        public static double BasisFunction(this List<double> knots, int i, int n, double t)
+        {
+            t = t < 0 ? 0 : t > 1 ? 1 : t;
+
+            double min = knots[n - 1];
+            double max = knots[knots.Count - n];
+            t = min + (max - min) * t;
+
+            return BasisFunctionGlobal(knots, i, n, t);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Gets the partial values of the B-spline basis function for t value as global parameter.")]
+        private static double BasisFunctionGlobal(List<double> knots, int i, int n, double t)
         {
             if (n == 0)
             {
@@ -52,8 +69,8 @@ namespace BH.Engine.Geometry
                     return t >= sKnot && t < eKnot ? 1 : 0;
             }
 
-            return LinearKnotInterpelation(knots, i, n, t) * BasisFunction(knots, i, n - 1, t) +
-                   (1 - LinearKnotInterpelation(knots, i + 1, n, t)) * BasisFunction(knots, i + 1, n - 1, t);
+            return LinearKnotInterpelation(knots, i, n, t) * BasisFunctionGlobal(knots, i, n - 1, t) +
+                   (1 - LinearKnotInterpelation(knots, i + 1, n, t)) * BasisFunctionGlobal(knots, i + 1, n - 1, t);
         }
 
         /***************************************************/
@@ -71,7 +88,6 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
     }
 }
 

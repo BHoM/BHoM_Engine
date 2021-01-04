@@ -68,9 +68,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 return BH.Engine.Serialiser.Convert.FromBson(newDoc);
         }
 
-        /*******************************************/
+        /***************************************************/
+
     }
-
-
 }
 

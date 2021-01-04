@@ -35,9 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Curvature of the NurbsCurve at the parameter t. Points towards the center of a fitted circle at the parameter with a magnitude equal to the inverse of the circles radius.")]
+        [Description("Curvature of the NurbsCurve at the parameter t, where t is a normalised parameter. Points towards the center of a fitted circle at the parameter with a magnitude equal to the inverse of the circles radius.")]
         [Input("curve", "Curve to evaluate.")]
-        [Input("t", "Parameter to evaluate at.")]
+        [Input("t", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Output("curvature", "Curvature of the NurbsCurve at the parameter t.")]
         public static Vector CurvatureAtParameter(this NurbsCurve curve, double t)
         {
@@ -62,8 +62,8 @@ namespace BH.Engine.Geometry
 
         [Description("Evaluates the Gaussian and Mean curvature at the parameter.")]
         [Input("surface", "Surface to evaluate.")]
-        [Input("u", "Parameter to evaluate at.")]
-        [Input("v", "Parameter to evaluate at.")]
+        [Input("u", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
+        [Input("v", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [MultiOutput(0, "gauss", "Gaussian curvature at the parameter.")]
         [MultiOutput(1, "mean", "Mean curvature at the parameter.")]
         public static Output<double, double> CurvatureAtParameter(this NurbsSurface surface, double u, double v)

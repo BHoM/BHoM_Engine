@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if the Bar is vertical.")]
         public static bool IsVertical(this Bar bar)
         {
-            return Engine.Geometry.Query.IsVertical(bar.Centreline());
+            return bar.NullCheck("IsVertical") ? Engine.Geometry.Query.IsVertical(bar.Centreline()) : false;
         }
 
         /***************************************************/
