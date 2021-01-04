@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -386,7 +386,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the point load at the location of the Nodes of the load.")]
         [Input("pointAcceleration", "The node load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s² per metre.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/sï¿½ per metre.")]
         [Input("displayTranslations", "Toggles whether translational acceleration should be displayed or not.")]
         [Input("displayRotations", "Toggles whether rotational acceleration should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -966,4 +966,5 @@ namespace BH.Engine.Structure
     }
 
 }
+
 
