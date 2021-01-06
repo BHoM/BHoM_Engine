@@ -117,7 +117,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
 
 
-        [Description("Convert a Json string to a BHoMObject")]
+        [Description("Convert a Json string to a collection of objects")]
         [Input("jsonArray", "String representing the objects in a Json Array form.")]
         [Output("obj", "Object recovered from the Json string")]
         public static IEnumerable<object> FromJsonArray(this string jsonArray)
@@ -136,5 +136,4 @@ namespace BH.Engine.Serialiser
         }
     }
 }
-
 
