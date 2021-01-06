@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections;
 
 namespace BH.Engine.Serialiser
 {
@@ -46,7 +47,10 @@ namespace BH.Engine.Serialiser
 
             if (obj is string)
                 return "{ \"_t\": \"System.String\", \"_v\": " + BsonExtensionMethods.ToJson<string>(obj as string) + "}";
-                
+
+            if (obj is IEnumerable)
+                return ToJsonArray((obj as IEnumerable).OfType<object>());
+
             var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
             return Convert.ToBson(obj).ToJson<BsonDocument>(jsonWriterSettings);
         }
@@ -77,9 +81,10 @@ namespace BH.Engine.Serialiser
             }
             else if (json.StartsWith("["))
             {
-                BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(json);
+                Reflection.Compute.RecordWarning($"The string provided appears to be a Json Array and will be deserialized as a `List<object>`." +
+                    $"\nIf calling this method from an UI and you intend to retrieve the individual list items, please use the method {nameof(FromJsonArray)} instead.");
 
-                return array.Select(b => b.IsBsonDocument ? BH.Engine.Serialiser.Convert.FromBson(b.AsBsonDocument) : BH.Engine.Serialiser.Convert.FromJson(b.ToString())).ToList();
+                return FromJsonArray(json);
             }
 
             else
@@ -95,7 +100,7 @@ namespace BH.Engine.Serialiser
         [Description("Convert a List of objects to a Json array.")]
         [Input("obj", "Object to be converted.")]
         [Output("json", "String representing the object in json.")]
-        public static string ToJson(this IEnumerable<object> objs)
+        public static string ToJsonArray(this IEnumerable<object> objs)
         {
             List<string> allLines = new List<string>();
             string json = "";
@@ -107,6 +112,27 @@ namespace BH.Engine.Serialiser
             json = "[" + json + "]";
 
             return json;
+        }
+
+        /*******************************************/
+
+
+        [Description("Convert a Json string to a BHoMObject")]
+        [Input("jsonArray", "String representing the objects in a Json Array form.")]
+        [Output("obj", "Object recovered from the Json string")]
+        public static IEnumerable<object> FromJsonArray(this string jsonArray)
+        {
+            if (!jsonArray.StartsWith("[") || !jsonArray.EndsWith("]"))
+            {
+                BH.Engine.Reflection.Compute.RecordError("The specified text is not a well-formed Json Array.");
+                return null;
+            }
+
+            BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonArray);
+
+            IEnumerable<object> objList = array.Select(b => b.IsBsonDocument ? BH.Engine.Serialiser.Convert.FromBson(b.AsBsonDocument) : BH.Engine.Serialiser.Convert.FromJson(b.ToString())).ToList();
+
+            return objList;
         }
     }
 }
