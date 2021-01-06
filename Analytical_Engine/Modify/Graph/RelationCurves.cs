@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -41,11 +41,12 @@ namespace BH.Engine.Analytical
 
         [Description("Modifies a Graph by ensuring all relations have a representative ICurve. If no curve has been provided a line is created between the source and target entities.")]
         [Input("graph", "The Graph to modify.")]
-        [Input("view", "The IView required of the Graph.")]
+        [Input("projection", "The IProjection required of the Graph.")]
         [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
-        public static Graph IRelationCurves(this Graph graph, IView view)
+        public static Graph IRelationCurves(this Graph graph, IProjection projection)
         {
-            RelationCurves(graph, view as dynamic);
+           
+            RelationCurves(graph, projection as dynamic);
             return graph;
         }
 
@@ -53,10 +54,11 @@ namespace BH.Engine.Analytical
 
         [Description("Modifies a Graph by ensuring all relations have a representative ICurve. If no curve has been provided a line is created between the source and target entities.")]
         [Input("graph", "The Graph to modify.")]
-        [Input("view", "SpatialView of the Graph.")]
+        [Input("projection", "SpatialProjection of the Graph.")]
         [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
-        private static Graph RelationCurves(this Graph graph, SpatialView view)
+        private static Graph RelationCurves(this Graph graph, SpatialProjection projection)
         {
+            //these should set representationfragment on relations
             foreach (IRelation relation in graph.Relations)
             {
                 if (relation.Curve == null)
@@ -70,17 +72,17 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        private static void RelationCurves(this Graph graph, ProcessView view)
+        private static void RelationCurves(this Graph graph, GraphicalProjection projection)
         {
             foreach (IRelation relation in graph.Relations)
             {
                 if (relation.Curve == null)
                 {
-                    ProcessViewFragment sourceViewFrag = graph.Entities[relation.Source].FindFragment<ProcessViewFragment>();
-                    ProcessViewFragment targetViewFrag = graph.Entities[relation.Target].FindFragment<ProcessViewFragment>();
+                    ProjectionFragment sourceProjectionFrag = graph.Entities[relation.Source].FindFragment<ProjectionFragment>();
+                    ProjectionFragment targetProjectionFrag = graph.Entities[relation.Target].FindFragment<ProjectionFragment>();
                     
-                    if(sourceViewFrag!= null && targetViewFrag!=null)  
-                        relation.Curve = new Line() { Start = sourceViewFrag.Position, End = targetViewFrag.Position };
+                    //if(sourceProjectionFrag!= null && targetProjectionFrag!=null)  
+                    //    relation.Curve = new Line() { Start = sourceProjectionFrag.Position, End = targetProjectionFrag.Position };
                 }
             }
         }
@@ -89,12 +91,13 @@ namespace BH.Engine.Analytical
         /**** Fallback Methods                          ****/
         /***************************************************/
 
-        private static void RelationCurves(this Graph graph, IView view)
+        private static void RelationCurves(this Graph graph, IProjection projection)
         {
-            Reflection.Compute.RecordError("Modify method RelationCurves for IView provided has not been implemented.");
+            Reflection.Compute.RecordError("Modify method RelationCurves for IProjection provided has not been implemented.");
             return;
         }
 
         /***************************************************/
     }
 }
+

@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -51,11 +51,12 @@ namespace BH.Engine.Analytical
                 length = relation.Curve.ILength();
             else
             {
-                IElement0D source = m_SpatialGraph.Entities[relation.Source] as IElement0D;
-                IElement0D target = m_SpatialGraph.Entities[relation.Target] as IElement0D;
+                IElement0D source = graph.Entities[relation.Source] as IElement0D;
+                IElement0D target = graph.Entities[relation.Target] as IElement0D;
                 length = source.IGeometry().Distance(target.IGeometry());
             }
             return length;
         }
     }
 }
+

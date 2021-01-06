@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -41,11 +41,12 @@ namespace BH.Engine.Structure
         [Output("tan", "The tangent Vector of the Bar.")]
         public static Vector Tangent(this Bar bar, bool normalise = false)
         {
-            Vector tan = bar.EndNode.Position - bar.StartNode.Position;
-            return normalise ? tan.Normalise() : tan;
+            Vector tan = bar.NullCheck("Tangent") ? bar.EndNode.Position - bar.StartNode.Position : null;
+            return normalise ? tan?.Normalise() : tan;
         }
 
         /***************************************************/
     }
 }
+
 

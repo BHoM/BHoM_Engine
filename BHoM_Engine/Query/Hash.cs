@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -44,46 +44,81 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Computes a Hash code for the iObject. The hash uniquely represents an object's state based on its combined properties and their values.")]
+        [Description("Computes a Hash code for the iObject. The hash uniquely represents an object's state, based on its properties and their values. It can be used for comparisons." +
+            "\nYou can change how the hash is computed by changing the settings in the ComparisonConfig.")]
         [Input("iObj", "iObject the hash code should be calculated for.")]
-        public static string Hash(this IObject iObj)
+        [Input("comparisonConfig", "Configure how the hash is computed.")]
+        [Input("hashFromFragment", "If true, if the object is a BHoMObject storing a HashFragment, retrieve the hash from it instead of computing the hash.")]
+        public static string Hash(this IObject iObj, ComparisonConfig comparisonConfig = null, bool hashFromFragment = false)
         {
-            return Hash(iObj, null);
-        }
+            if (hashFromFragment && iObj is IBHoMObject)
+            {
+                // Instead of computing the Hash, first tryGet the hash in HashFragment
+                string hash = (iObj as IBHoMObject).FindFragment<HashFragment>()?.Hash;
 
-        /***************************************************/
+                if (!string.IsNullOrWhiteSpace(hash))
+                    return hash;
+            }
 
-        [Description("Computes a Hash code for the iObject with exceptions and custom options.\n"
-            + "The hash uniquely represents an object's state based on the included properties and their values.")]
-        [Input("iObj", "iObject the hash code should be calculated for.")]
-        [Input("propertyNameExceptions", "(Optional) e.g. `Fragments`. If you want to exclude a property that many objects have.")]
-        [Input("propertyFullNameExceptions", "(Optional) e.g. `BH.oM.Structure.Elements.Bar.Fragments`. If you want to exclude a specific property of an object.")]
-        [Input("namespaceExceptions", "(Optional) e.g. `BH.oM.Structure`. Any corresponding namespace is ignored.")]
-        [Input("typeExceptions", "(Optional) e.g. `typeof(Guid)`. Any corresponding type is ignored.")]
-        [Input("maxNesting", "(Optional) e.g. `100`. If any property is nested into the object over that level, it is ignored.")]
-        [Input("fractionalDigits", "(Optional) Defaults to 12. Number of digits retained after the comma; applies rounding.")]
-        [Input("fractionalDigitsPerProperty", "(Optional) e.g. `{ { StartNode.Point.X, 2 } }`. If a property name matches this, applies a rounding to the corresponding number of digits specified.\nSupports * wildcard.")]
-        public static string Hash(
-            this IObject iObj,
-            List<string> propertyNameExceptions = null, //e.g. `BHoM_Guid`
-            List<string> propertyFullNameExceptions = null, //e.g. `BH.oM.Structure.Elements.Bar.Fragments` – can use * wildcard here.
-            List<string> namespaceExceptions = null, //e.g. `BH.oM.Structure`
-            List<Type> typeExceptions = null, //e.g. `typeof(Guid)`
-            int maxNesting = 100,
-            int fractionalDigits = 12,
-            Dictionary<string, int> fractionalDigitsPerProperty = null // e.g. { { StartNode.Point.X, 2 } } – can use * wildcard here.
-            )
-        {
-            // Make sure that "BHoM_Guid" is added to the propertyNameExceptions.
-            propertyNameExceptions = propertyNameExceptions ?? new List<string>();
-            if (!propertyNameExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
-                propertyNameExceptions.Add(nameof(BHoMObject.BHoM_Guid));
+            // ------ SET UP OF CONFIGURATION ------
 
-            string hashString = DefiningString(iObj, 0, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions, fractionalDigits, fractionalDigitsPerProperty);
+            // Make sure we always have a config object. Clone for immutability.
+            ComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
+            // Make sure that "BHoM_Guid" is added to the PropertyExceptions of the config.
+            cc.PropertyExceptions = cc.PropertyExceptions ?? new List<string>();
+            if (!cc.PropertyExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
+                cc.PropertyExceptions.Add(nameof(BHoMObject.BHoM_Guid));
+
+            // Process the "PropertiesToInclude" property.
+            if (cc.PropertiesToConsider?.Any() ?? false)
+            {
+                // The hash computation can only consider "exceptions".
+                // We need to retrieve all the object properties, intersect them with PropertiesToInclude, and treat all those remaining as "exceptions".
+                // Works only for top-level properties.
+                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(iObj).Except(cc.PropertiesToConsider);
+                cc.PropertyExceptions.AddRange(exceptions);
+            }
+
+            // Make sure that the single Property exceptions are either:
+            // - explicitly referring to a property in its "property path": e.g. Bar.StartNode.Point.X
+            // - OR if it's only a property name e.g. BHoM_Guid make sure that we prepend the wildcard so we can match the single property inside any property path: e.g. *BHoM_Guid
+            //cc.PropertyExceptions = cc.PropertyExceptions.Select(pe => pe = pe.Contains('.') ? pe : "*" + pe).ToList();
+
+            // Convert from the Numeric Tolerance to fractionalDigits (required for the hash).
+            int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
+
+            // ----- SET UP OF INPUT OBJECT -----
+
+            // Copy the object for immutability
+            IObject iObj_copy = iObj.ShallowClone();
+
+            // Any HashFragment present on the object must not be considered when computing the Hash. Remove if present.
+            IBHoMObject bhomobj = iObj_copy as IBHoMObject;
+            if (bhomobj != null)
+            {
+                List<IHashFragment> hashFragments = bhomobj.GetAllFragments(typeof(IHashFragment)).OfType<IHashFragment>().ToList();
+                hashFragments.ForEach(f => bhomobj.Fragments.Remove(f.GetType()));
+                iObj_copy = bhomobj;
+            }
+
+            // ----- HASH -----
+
+            // Compute the defining string.
+            string hashString = DefiningString(iObj_copy, cc, fractionalDigits, 0);
+
+            if (string.IsNullOrWhiteSpace(hashString))
+            {
+                // This means that:
+                // - all properties of the input object were disregarded due to the settings specified in the ComparisonConfig, or
+                // - all properties of the input object that were not disregarded were null or empty,
+                // Since a hash has to be always returned, for this scenario we are forced to build a defining string out of the type full name.
+                hashString = iObj_copy.GetType().FullName;
+            }
+
+            // Return the SHA256 hash of the defining string.
             return SHA256Hash(hashString);
         }
-
 
         /***************************************************/
         /**** Private Methods                           ****/
@@ -108,26 +143,10 @@ namespace BH.Engine.Base
 
         [Description("Generates a string representing the whole structure of the object with its assigned values.")]
         [Input("obj", "Objects the string should be calculated for.")]
+        [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
-        [Input("maxNesting", "(Optional) e.g. `100`. If any property is nested into the object over that level, it is ignored.")]
-        [Input("propertyNameExceptions", "(Optional) e.g. `Fragments`. If you want to exclude a property that many objects have.")]
-        [Input("propertyFullNameExceptions", "(Optional) e.g. `BH.oM.Structure.Elements.Bar.Fragments`. If you want to exclude a specific property of an object.")]
-        [Input("namespaceExceptions", "(Optional) e.g. `BH.oM.Structure`. Any corresponding namespace is ignored.")]
-        [Input("typeExceptions", "(Optional) e.g. `typeof(Guid)`. Any corresponding type is ignored.")]
-        [Input("fractionalDigits", "(Optional) Defaults to 12. Number of digits retained after the comma; applies rounding.")]
-        [Input("fractionalDigitsPerProperty", "(Optional) e.g. `{ { StartNode.Point.X, 2 } }`. If a property name matches this, applies a rounding to the corresponding number of digits specified.")]
         [Input("propertyPath", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
-        private static string DefiningString(
-            object obj,
-            int nestingLevel,
-            int maxNesting = 100,
-            List<string> propertyNameExceptions = null, //e.g. "BHoM_Guid"
-            List<string> propertyFullNameExceptions = null, //e.g. "BH.oM.Structure.Elements.Bar.Fragments"
-            List<string> namespaceExceptions = null, //e.g. "BH.oM.Structure"
-            List<Type> typeExceptions = null, //e.g. typeof(Guid)
-            int fractionalDigits = 12,
-            Dictionary<string, int> fractionalDigitsPerProperty = null, // e.g. { { StartNode.Point.X, 2 } } – can use * wildcard here.
-            string propertyPath = null) // Indicates the "property path" of the current object, e.g. BH.oM.Structure.Elements.Bar.StartNode.Point.X
+        private static string DefiningString(object obj, ComparisonConfig cc, int fractionalDigits, int nestingLevel, string propertyPath = null)
         {
             string composedString = "";
             string tabs = new String('\t', nestingLevel);
@@ -135,9 +154,9 @@ namespace BH.Engine.Base
             Type type = obj?.GetType();
 
             if (type == null
-                || (typeExceptions != null && typeExceptions.Contains(type))
-                || (namespaceExceptions != null && namespaceExceptions.Where(ex => type.Namespace.Contains(ex)).Any())
-                || nestingLevel >= maxNesting)
+                || (cc.TypeExceptions != null && cc.TypeExceptions.Contains(type))
+                || (cc.NamespaceExceptions != null && cc.NamespaceExceptions.Where(ex => type.Namespace.Contains(ex)).Any())
+                || nestingLevel >= cc.MaxNesting)
             {
                 return composedString;
             }
@@ -151,20 +170,26 @@ namespace BH.Engine.Base
             else if (type.IsArray)
             {
                 foreach (var element in (obj as dynamic))
-                    composedString += $"\n{tabs}" + DefiningString(element, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions, fractionalDigits, fractionalDigitsPerProperty, propertyPath);
+                    composedString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, propertyPath);
             }
             else if (typeof(IDictionary).IsAssignableFrom(type))
             {
                 IDictionary dic = obj as IDictionary;
+
+                bool isCustomDataDic = propertyPath.EndsWith("CustomData");
+
                 foreach (DictionaryEntry entry in dic)
                 {
-                    composedString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions, fractionalDigits, fractionalDigitsPerProperty, propertyPath)}";
+                    if (isCustomDataDic && cc.CustomdataKeysExceptions.Contains(entry.Key))
+                        continue;
+
+                    composedString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, fractionalDigits, nestingLevel + 1, propertyPath)}";
                 }
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type) || typeof(IList).IsAssignableFrom(type) || typeof(ICollection).IsAssignableFrom(type))
             {
                 foreach (var element in (obj as dynamic))
-                    composedString += $"\n{tabs}" + DefiningString(element, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions, fractionalDigits, fractionalDigitsPerProperty, propertyPath);
+                    composedString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, propertyPath);
             }
             else if (type.FullName.Contains("System.Collections.Generic.ObjectEqualityComparer`1"))
             {
@@ -173,7 +198,7 @@ namespace BH.Engine.Base
             else if (type == typeof(System.Data.DataTable))
             {
                 DataTable dt = obj as DataTable;
-                return composedString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + DefiningString(dt.AsEnumerable(), nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions, fractionalDigits, fractionalDigitsPerProperty, propertyPath);
+                return composedString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + DefiningString(dt.AsEnumerable(), cc, fractionalDigits, nestingLevel + 1, propertyPath);
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
@@ -181,30 +206,31 @@ namespace BH.Engine.Base
 
                 foreach (PropertyInfo prop in properties)
                 {
-                    bool isInPropertyNameExceptions = propertyNameExceptions != null && propertyNameExceptions.Where(ex => prop.Name.Contains(ex)).Any();
-                    bool isInPropertyFullNameExceptions = propertyFullNameExceptions != null && propertyFullNameExceptions.Where(ex => new WildcardPattern(ex).IsMatch(prop.Name + "." + prop.DeclaringType.FullName)).Any();
-
-                    if (isInPropertyNameExceptions || isInPropertyFullNameExceptions)
+                    bool isInPropertyExceptions = cc.PropertyExceptions?.Count > 0 && cc.PropertyExceptions.Where(ex => prop.Name == ex).Any();
+                    if (isInPropertyExceptions)
                         continue;
+
+                    //if (cc.PropertyNamesToConsider?.Count() > 0 && !cc.PropertyNamesToConsider.Any(pn => (propertyPath).Contains(pn))) //!cc.PropertyNamesToConsider.Contains(prop.Name))
+                    //    continue;
 
                     object propValue = prop.GetValue(obj);
                     if (propValue != null)
                     {
                         if (string.IsNullOrWhiteSpace(propertyPath))
                             propertyPath = type.FullName + "." + prop.Name;
-                        else if (prop.PropertyType.IsClass)
+                        else
                             propertyPath += "." + prop.Name;
 
                         string outString = "";
 
-                        if (fractionalDigitsPerProperty != null &&
+                        if (cc.FractionalDigitsPerProperty != null &&
                             prop.PropertyType == typeof(double) || prop.PropertyType == typeof(decimal) || prop.PropertyType == typeof(float))
                         {
                             Dictionary<string, int> matches = new Dictionary<string, int>();
 
                             string path = propertyPath + "." + prop.Name;
 
-                            foreach (var kv in fractionalDigitsPerProperty)
+                            foreach (var kv in cc.FractionalDigitsPerProperty)
                             {
                                 if (path.Contains(kv.Key) ||
                                 new WildcardPattern(kv.Key).IsMatch(path))
@@ -212,14 +238,14 @@ namespace BH.Engine.Base
                             }
 
                             if (matches.Count() > 1)
-                                throw new ArgumentException($"Too many matching results obtained with specified {nameof(fractionalDigitsPerProperty)}.");
+                                throw new ArgumentException($"Too many matching results obtained with specified {nameof(cc.FractionalDigitsPerProperty)}.");
 
                             int fracDigits = matches.Count() == 1 ? matches.FirstOrDefault().Value : fractionalDigits;
 
-                            outString = DefiningString(propValue, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions, fracDigits, fractionalDigitsPerProperty, path) ?? "";
+                            outString = DefiningString(propValue, cc, fracDigits, nestingLevel + 1, path) ?? "";
                         }
                         else
-                            outString = DefiningString(propValue, nestingLevel + 1, maxNesting, propertyNameExceptions, propertyFullNameExceptions, namespaceExceptions, typeExceptions, fractionalDigits, fractionalDigitsPerProperty, propertyPath) ?? "";
+                            outString = DefiningString(propValue, cc, fractionalDigits, nestingLevel + 1, propertyPath) ?? "";
 
                         if (!string.IsNullOrWhiteSpace(outString))
                             composedString += $"\n{tabs}" + $"{type.FullName}.{prop.Name}:\n{tabs}{outString} ";
@@ -240,3 +266,4 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
+

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,9 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the vector which is the k'th derivative of the curve at the point of t.")]
+        [Description("Gets the vector which is the k'th derivative of the curve at the point of t, where t is a normalised parameter.")]
         [Input("curve", "Curve to evaluate.")]
-        [Input("t", "Parameter to evaluate at")]
+        [Input("t", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Input("k", "Degree of the derivation.")]
         [Output("Vector which is the k'th derivative of the curve at the point of t.")]
         public static Vector DerivativeAtParameter(this NurbsCurve curve, double t, int k)
@@ -55,16 +55,11 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            double min = curve.Knots.First();
-            double max = curve.Knots.Last();
-
-            t = t < min ? min : t > max ? max : t;
-
             List<double> knots = curve.Knots;
 
-            Point Ak = new Point();
+            Point ak = new Point();
             for (int j = 0; j < curve.Weights.Count; j++)
-                Ak += curve.ControlPoints[j] * DerivativeFunction(knots, j - 1, n, t, k) * curve.Weights[j];
+                ak += curve.ControlPoints[j] * DerivativeFunction(knots, j - 1, n, t, k) * curve.Weights[j];
 
             Point sum = new Point();
             for (int i = 1; i <= k; i++)
@@ -83,13 +78,18 @@ namespace BH.Engine.Geometry
             for (int j = 0; j < curve.Weights.Count; j++)
                 a += BasisFunction(knots, j - 1, n, t) * curve.Weights[j];
 
-            return (Ak - sum) / a;
+            return (ak - sum) / a;
         }
 
         /***************************************************/
 
+        [Description("Gets the vector which is the k'th derivative of the surface at the point of u, v, where u and v are normalised parameters.")]
+        [Input("surface", "Surface to evaluate.")]
+        [Input("u", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
+        [Input("v", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Input("k", "Degree of derivative for u.")]
         [Input("l", "Degree of derivative for v.")]
+        [Output("Vector which is the k'th derivative of the surface at the point of t.")]
         public static Vector DerivativeAtParameter(this NurbsSurface surface, double u, double v, int k, int l)
         {
             if (k == 0 && l == 0)
@@ -211,4 +211,5 @@ namespace BH.Engine.Geometry
 
     }
 }
+
 

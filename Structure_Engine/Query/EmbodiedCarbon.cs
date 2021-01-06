@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -34,26 +34,31 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [ToBeRemoved("4.0","Method deprecated as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit.")]
         [Description("Calculates the total amount of embodied carbon of a Bar by getting the mass of the Bar (generally as section area*length*density) multiplied by the EmbodiedCarbon value of the material.")]
         [Input("bar", "The Bar to get the total embodied carbon from.")]
         [Output("embodiedCarbon", "The total embodied carbon of the Bar.", typeof(Mass))]
         public static double EmbodiedCarbon(this Bar bar)
         {
-            return bar.Mass() * bar.SectionProperty.Material.EmbodiedCarbon;
+            Engine.Reflection.Compute.RecordWarning("Method deprecated as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit.");
+            return 0;
         }
 
         /***************************************************/
 
+        [ToBeRemoved("4.0", "Method deprecated as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit.")]
         [Description("Calculates the total amount of embodied carbon of a Panel by getting the mass of the Panel (generally as area*thickness*density) multiplied by the EmbodiedCarbon value of the material.")]
         [Input("panel", "The Panel to get the total embodied carbon from.")]
         [Output("embodiedCarbon", "The total embodied carbon of the Panel.", typeof(Mass))]
         public static double EmbodiedCarbon(this Panel panel)
         {
-            return panel.Mass() * panel.Property.Material.EmbodiedCarbon;
+            Engine.Reflection.Compute.RecordWarning("Method deprecated as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit.");
+            return 0;
         }
 
         /***************************************************/
 
     }
 }
+
 

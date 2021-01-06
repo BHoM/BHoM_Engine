@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -47,22 +47,22 @@ namespace BH.Engine.Analytical
 
         [Description("Create a graph from a collection of IBHoMObjects, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
-        [Input("diffConfig", "Configuration of diffing used when attempting to find unique entities.")]
+        [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities, DiffConfig diffConfig = null)
+        public static Graph Graph(List<IBHoMObject> entities, ComparisonConfig comparisonConfig = null)
         {
-            return Graph(entities, new List<IRelation>(), diffConfig);
+            return Graph(entities, new List<IRelation>(), comparisonConfig);
         }
 
         /***************************************************/
 
         [Description("Create a graph from a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("diffConfig", "Configuration of diffing used when attempting to find unique entities.")]
+        [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IRelation> relations, DiffConfig diffConfig = null)
+        public static Graph Graph(List<IRelation> relations, ComparisonConfig comparisonConfig = null)
         {
-            return Graph(new List<IBHoMObject>(), relations, diffConfig);
+            return Graph(new List<IBHoMObject>(), relations, comparisonConfig);
         }
 
         /***************************************************/
@@ -70,9 +70,9 @@ namespace BH.Engine.Analytical
         [Description("Create a graph from a collection of IBHoMObjects, a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "Optional collection of IBHoMOBjects to use as Graph entities. Entities can include DependencyFragments to determine the Graph Relations.")]
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
-        [Input("diffConfig", "Configuration of diffing used when attempting to find unique entities.")]
+        [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, DiffConfig diffConfig = null)
+        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, ComparisonConfig comparisonConfig = null)
         {
             Graph graph = new Graph();
 
@@ -88,7 +88,7 @@ namespace BH.Engine.Analytical
                 return graph;
             }
 
-            m_MatchedObjects = Query.DiffEntities(clonedEntities, diffConfig);
+            m_MatchedObjects = Query.UniqueEntitiesReplacementMap(clonedEntities, comparisonConfig);
 
             //convert dependency fragments attached to entities and add to relations
             clonedEntities.ForEach(ent => clonedRelations.AddRange(ent.ToRelation())); 
@@ -384,4 +384,5 @@ namespace BH.Engine.Analytical
         private static Dictionary<Guid, IBHoMObject> m_MatchedObjects = new Dictionary<Guid, IBHoMObject>();
     }
 }
+
 

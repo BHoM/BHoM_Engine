@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -49,7 +49,7 @@ namespace BH.Engine.Analytical
         public static IOpening<TEdge> SetOutlineElements1D<TEdge>(this IOpening<TEdge> opening, IEnumerable<IElement1D> edges)
                 where TEdge : IEdge
         {
-            IOpening<TEdge> o = opening.GetShallowClone(true) as IOpening<TEdge>;
+            IOpening<TEdge> o = opening.ShallowClone();
 
             o.Edges = ConvertToEdges<TEdge>(edges);
             return o;
@@ -67,7 +67,7 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            IPanel<TEdge, TOpening> pp = panel.GetShallowClone(true) as IPanel<TEdge, TOpening>;
+            IPanel<TEdge, TOpening> pp = panel.ShallowClone();
 
             pp.ExternalEdges = ConvertToEdges<TEdge>(edges);
             return pp;
@@ -81,7 +81,7 @@ namespace BH.Engine.Analytical
         [Output("region", "The region with updated perimiter.")]
         public static IRegion SetOutlineElements1D(this IRegion region, IEnumerable<IElement1D> outlineElements)
         {
-            IRegion r = region.GetShallowClone(true) as IRegion;
+            IRegion r = region.ShallowClone();
 
             IEnumerable<ICurve> joinedCurves = outlineElements.Cast<ICurve>();
             if (outlineElements.Count() != 1)
@@ -132,3 +132,4 @@ namespace BH.Engine.Analytical
         /***************************************************/
     }
 }
+

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,6 +45,12 @@ namespace BH.Engine.Geometry
 
         public static Vector Rotate(this Vector vector, double rad, Vector axis)
         {
+            if (vector == null || axis == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot rotate vector as it and/or the axis vector is null.");
+                return null;
+            }
+
             // using Rodrigues' rotation formula
             axis = axis.Normalise();
 
@@ -251,3 +257,4 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+

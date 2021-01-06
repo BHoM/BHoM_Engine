@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -44,9 +44,9 @@ namespace BH.Engine.Structure
         [InputFromProperty("thermalExpansionCoeff")]
         [InputFromProperty("density")]
         [InputFromProperty("dampingRatio")]
-        [InputFromProperty("embodiedCarbon")]
         [Output("concrete", "The created structural Concrete material fragment.")]
-        public static Concrete Concrete(string name, double youngsModulus = 33000000000, double poissonsRatio = 0.2, double thermalExpansionCoeff = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0, double embodiedCarbon = 0.12)
+        [PreviousVersion("4.0", "BH.Engine.Structure.Create.Concrete(System.String, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)")]
+        public static Concrete Concrete(string name, double youngsModulus = 33000000000, double poissonsRatio = 0.2, double thermalExpansionCoeff = 0.00001, double density = 2550, double dampingRatio = 0, double cubeStrength = 0, double cylinderStrength = 0)
         {
             return new Concrete()
             {
@@ -58,7 +58,6 @@ namespace BH.Engine.Structure
                 CubeStrength = cubeStrength,
                 DampingRatio = dampingRatio,
                 CylinderStrength = cylinderStrength,
-                EmbodiedCarbon = embodiedCarbon,
             };
         }
 
@@ -66,3 +65,4 @@ namespace BH.Engine.Structure
 
     }
 }
+

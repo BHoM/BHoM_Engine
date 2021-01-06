@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -48,8 +48,7 @@ namespace BH.Engine.Diffing
         [Input("pastObjects", "Past objects. Objects whose creation precedes 'currentObjects'.")]
         [Input("currentObjects", "Following objects. Objects that were created after 'pastObjects'.")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        [Input("useExistingHash", "Advanced setting. If the objects already have an HashFragment assigned, but that only has the 'currentHash' populated. Can be used to avoid recomputing hash in some scenarios.")]
-        public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffConfig diffConfig = null, bool useExistingHash = false)
+        public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null)
         {
             if (pastObjects.Count() != currentObjects.Count())
             {
@@ -57,12 +56,12 @@ namespace BH.Engine.Diffing
                 return null;
             }
 
-            BH.Engine.Reflection.Compute.RecordNote($"This diffing method is equivalent to Equivalent to calling '{nameof(Query.DifferentProperties)}' on the input lists. " +
+            BH.Engine.Reflection.Compute.RecordNote($"This diffing method is equivalent to calling '{nameof(Query.DifferentProperties)}' on the input lists. " +
                 $"\nThis will only identify 'modified' or 'unchanged' objects. For 'modified' objects, the property differences are also returned." +
                 $"\nIt will work correctly only if the objects in the lists are in the same order and at most they have been modified (i.e. no new object has been added, no object has been deleted).");
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
+            DiffingConfig diffConfigCopy = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();
             diffConfigCopy.EnablePropertyDiffing = true; // must be forced on for this Diffing method to make sense.
 
             // Clone objects for immutability in the UI.
@@ -84,7 +83,7 @@ namespace BH.Engine.Diffing
                     modifiedObjects.Add(currentObjects_cloned[i]);
                     anyChangeDetected = true;
                 }
-                else if (diffConfig.StoreUnchangedObjects)
+                else if (diffConfig.IncludeUnchangedObjects)
                     unchangedObjects.Add(currentObjects_cloned[i]);
 
                 allModifiedProps[$"Object #{i}"] = modifiedProps ?? new Dictionary<string, Tuple<object, object>>();
@@ -97,4 +96,5 @@ namespace BH.Engine.Diffing
         }
     }
 }
+
 

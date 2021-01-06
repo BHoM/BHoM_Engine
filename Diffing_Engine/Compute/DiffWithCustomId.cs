@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -48,10 +48,10 @@ namespace BH.Engine.Diffing
         [Input("customdataIdKey", "Name of the key where the Id of the objects may be found in the BHoMObjects' CustomData. The diff will be attempted using the Ids found there." +
             "\nE.g. 'Revit_UniqueId' may be used; an id must be stored under object.CustomData['Revit_UniqueId'].")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
-        public static Diff DiffWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdKey, DiffConfig diffConfig = null)
+        public static Diff DiffWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdKey, DiffingConfig diffConfig = null)
         {
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : (DiffConfig)diffConfig.DeepClone();
+            DiffingConfig diffConfigCopy = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();
 
             HashSet<string> currentObjectsIds = new HashSet<string>();
             HashSet<string> pastObjectsIds = new HashSet<string>();
@@ -109,7 +109,7 @@ namespace BH.Engine.Diffing
                     else
                     {
                         // It's NOT been modified
-                        if (diffConfigCopy.StoreUnchangedObjects)
+                        if (diffConfigCopy.IncludeUnchangedObjects)
                             unChanged.Add(currentObj);
                     }
                 }
@@ -131,7 +131,7 @@ namespace BH.Engine.Diffing
                     $"\n\t * the input objects come from models that were not completely re-created between revisions.");
             }
             else if (!diffConfig.EnablePropertyDiffing)
-                BH.Engine.Reflection.Compute.RecordWarning($"For this Diffing method to detect modified/unchanged objects, you need to set '{nameof(DiffConfig.EnablePropertyDiffing)}' to true in the DiffConfig.");
+                BH.Engine.Reflection.Compute.RecordWarning($"For this Diffing method to detect modified/unchanged objects, you need to set '{nameof(DiffingConfig.EnablePropertyDiffing)}' to true in the DiffingConfig.");
 
             return new Diff(newObjs, deletedObjs, modifiedObjs, diffConfigCopy, objModifiedProps, unChanged);
         }
@@ -202,4 +202,5 @@ namespace BH.Engine.Diffing
         }
     }
 }
+
 

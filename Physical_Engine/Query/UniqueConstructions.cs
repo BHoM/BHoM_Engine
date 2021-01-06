@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -32,6 +32,7 @@ using System.ComponentModel;
 using BH.oM.Physical.Constructions;
 
 using BH.oM.Diffing;
+using BH.oM.Base;
 
 namespace BH.Engine.Physical
 {
@@ -43,24 +44,23 @@ namespace BH.Engine.Physical
         [Output("uniqueConstructions", "A collection of unique Construction objects")]
         public static List<Construction> UniqueConstructions(this List<Construction> constructions, bool includeConstructionName = false)
         {
-            DiffConfig config = new DiffConfig()
+            ComparisonConfig dc = new ComparisonConfig()
             {
-                PropertiesToIgnore = new List<string>
+                PropertyExceptions = new List<string>
                 {
-                    "BHoM_Guid",
-                    "CustomData",
+                    "CustomData"
                 },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
             if (!includeConstructionName)
-                config.PropertiesToIgnore.Add("Name");
+                dc.PropertyExceptions.Add("Name");
 
             List<Construction> allConstructions = constructions.Where(x => x != null).ToList();
-            List<Construction> hashedConstructions = BH.Engine.Diffing.Modify.SetHashFragment<Construction>(allConstructions, config);
-            List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(hashedConstructions).ToList();
+            List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(allConstructions, dc).ToList();
 
             return uniqueConstructions;
         }
     }
 }
+

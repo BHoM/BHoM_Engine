@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("feaType", "FEAType")]
         [Input("name", "The name of the created Bar.")]
         [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
-        public static Bar Bar(Line line, ISectionProperty sectionProperty = null, Vector normal =  null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
+        public static Bar Bar(Line line, ISectionProperty sectionProperty = null, Vector normal = null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {
             double orientationAngle = Compute.OrientationAngleBar(normal, line);
 
@@ -108,4 +108,5 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 

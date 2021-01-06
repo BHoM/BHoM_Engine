@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,7 +45,9 @@ namespace BH.Engine.Structure
         [Output("orienation", "The local orientation of the Panel as a vector Basis.")]
         public static Basis LocalOrientation(this Panel panel)
         {
-            return LocalOrientation(Engine.Spatial.Query.Normal(panel), panel.OrientationAngle);
+            Vector normal = panel.NullCheck("LocalOrientation") ? Engine.Spatial.Query.Normal(panel) : null;
+
+            return normal != null ? LocalOrientation(normal, panel.OrientationAngle) : null;
         }
 
         /***************************************************/
@@ -55,7 +57,7 @@ namespace BH.Engine.Structure
         [Output("orienations", "The local orientations of the mesh faces as a list of vector Bases.")]
         public static List<Basis> LocalOrientations(this FEMesh mesh)
         {
-            return mesh.Faces.Select(x => x.LocalOrientation(mesh)).ToList();
+            return mesh.NullCheck("LocalOrientations", false, false) ? mesh.Faces.Select(x => x.LocalOrientation(mesh)).ToList() : null;
         }
 
         /***************************************************/
@@ -66,7 +68,7 @@ namespace BH.Engine.Structure
         [Output("orienation", "The local orientation of the FEMeshFace as a vector Basis.")]
         public static Basis LocalOrientation(this FEMeshFace face, FEMesh mesh)
         {
-            return LocalOrientation(face.Normal(mesh), face.OrientationAngle);
+            return face.NullCheck(mesh, "LocalOrientation") ? LocalOrientation(face.Normal(mesh), face.OrientationAngle) : null;
         }
 
         /***************************************************/

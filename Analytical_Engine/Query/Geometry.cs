@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -205,12 +205,12 @@ namespace BH.Engine.Analytical
         public static CompositeGeometry Geometry(this Graph graph)
         {
             List<IGeometry> geometries = new List<IGeometry>();
-            Graph spatialGraph = graph.GraphView(new SpatialView());
+            Graph geometricGraph = graph.IProjectGraph(new GeometricProjection());
 
-            if (spatialGraph.Entities.Count == 0 || spatialGraph.Relations.Count == 0)
+            if (geometricGraph.Entities.Count == 0 || geometricGraph.Relations.Count == 0)
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
 
-            return SpatialGraphGeometry(spatialGraph);
+            return SpatialGraphGeometry(graph);
 
         }
 
@@ -238,3 +238,4 @@ namespace BH.Engine.Analytical
         
     }
 }
+

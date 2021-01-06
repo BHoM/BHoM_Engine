@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -75,15 +75,7 @@ namespace BH.Engine.Physical
 
                 BoundingBox profileBounds = profile.Edges.Bounds();
 
-                Point profileMax = profileBounds.Max;
-
-                Point profileMin = profileBounds.Min;
-
-                double height = profileMax.Y - profileMin.Y;
-
-                ICurve bottomCentreline = location.ITranslate(normal * -0.5 * height);
-
-                return bottomCentreline;
+                return location.ITranslate(normal * profileBounds.Min.Y);
             }
             else
             {
@@ -93,3 +85,4 @@ namespace BH.Engine.Physical
         }
     }
 }
+

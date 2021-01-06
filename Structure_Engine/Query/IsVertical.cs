@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if the Bar is vertical.")]
         public static bool IsVertical(this Bar bar)
         {
-            return Engine.Geometry.Query.IsVertical(bar.Centreline());
+            return bar.NullCheck("IsVertical") ? Engine.Geometry.Query.IsVertical(bar.Centreline()) : false;
         }
 
         /***************************************************/
@@ -56,3 +56,4 @@ namespace BH.Engine.Structure
 
     }
 }
+

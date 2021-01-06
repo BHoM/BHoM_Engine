@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -38,10 +38,10 @@ namespace BH.Engine.Diffing
 {
     public static partial class Modify
     {
-        public static IEnumerable<T> PrepareForRevision<T>(this IEnumerable<T> objects, DiffConfig diffConfig = null) where T : IBHoMObject
+        public static IEnumerable<T> PrepareForRevision<T>(this IEnumerable<T> objects, DiffingConfig diffConfig = null) where T : IBHoMObject
         {
             // Clone the current objects to preserve immutability; calculate and set the hash fragment
-            IEnumerable<T> objs_cloned = Modify.SetHashFragment(objects, diffConfig);
+            IEnumerable<T> objs_cloned = Modify.SetRevisionFragment(objects, diffConfig);
 
             // Remove duplicates by hash
             objs_cloned = Modify.RemoveDuplicatesByHash(objs_cloned);
@@ -53,4 +53,5 @@ namespace BH.Engine.Diffing
         }
     }
 }
+
 

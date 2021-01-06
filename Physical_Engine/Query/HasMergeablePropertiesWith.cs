@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -75,7 +75,7 @@ namespace BH.Engine.Physical
             if (element.Property.Name != other.Property.Name)
                 return false;
 
-            return Diffing.Query.DifferentProperties(element.Property, other.Property, new DiffConfig()) == null;
+            return Diffing.Query.DifferentProperties(element.Property, other.Property, new DiffingConfig()) == null;
         }
         
 
@@ -102,7 +102,7 @@ namespace BH.Engine.Physical
             if (element.Construction.Name != other.Construction.Name)
                 return false;
 
-            return Diffing.Query.DifferentProperties(element.Construction, other.Construction, new DiffConfig()) == null;
+            return Diffing.Query.DifferentProperties(element.Construction, other.Construction, new DiffingConfig()) == null;
         }
 
         /***************************************************/
@@ -120,3 +120,4 @@ namespace BH.Engine.Physical
 
     }
 }
+

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -42,7 +42,7 @@ namespace BH.Engine.Diffing
         [Input("revisionName", "Name of the Revision.")]
         [Input("comment", "Any comment to be added for this Revision. Much like git commit comment.")]
         [Input("diffConfig", "Diffing settings for this Stream Revision. Hashes of objects contained in this stream will be computed based on these configs.")]
-        public static Revision Revision(IEnumerable<IBHoMObject> objects, object streamId, string revisionName = null, string comment = null, DiffConfig diffConfig = null)
+        public static Revision Revision(IEnumerable<IBHoMObject> objects, object streamId, string revisionName = null, string comment = null, DiffingConfig diffConfig = null)
         {
             return new Revision(Modify.PrepareForRevision(objects, diffConfig), ProcessStreamId(streamId), diffConfig, revisionName, comment);
         }
@@ -60,4 +60,5 @@ namespace BH.Engine.Diffing
         }
     }
 }
+
 

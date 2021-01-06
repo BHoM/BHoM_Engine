@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,9 +45,9 @@ namespace BH.Engine.Structure
         [InputFromProperty("thermalExpansionCoeff")]
         [InputFromProperty("density")]
         [InputFromProperty("dampingRatio")]
-        [InputFromProperty("embodiedCarbon")]
         [Output("timber", "The created structural Timber material fragment.")]
-        public static Timber Timber(string name, Vector youngsModulus, Vector poissonsRatio, Vector shearModulus, Vector thermalExpansionCoeff, double density, double dampingRatio, double embodiedCarbon = 0.4)
+        [PreviousVersion("4.0", "BH.Engine.Structure.Create.Timber(System.String, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Double, System.Double, System.Double)")]
+        public static Timber Timber(string name, Vector youngsModulus, Vector poissonsRatio, Vector shearModulus, Vector thermalExpansionCoeff, double density, double dampingRatio)
         {
             return new Timber()
             {
@@ -58,7 +58,6 @@ namespace BH.Engine.Structure
                 ShearModulus = shearModulus,
                 ThermalExpansionCoeff = thermalExpansionCoeff,
                 DampingRatio = dampingRatio,
-                EmbodiedCarbon = embodiedCarbon,
             };
 
         }
@@ -66,3 +65,4 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+

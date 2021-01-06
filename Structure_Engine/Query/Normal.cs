@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("normal", "Vector representing the local z-axis of the Bar.")]
         public static Vector Normal(this Bar bar)
         {
-            return bar.Centreline().ElementNormal(bar.OrientationAngle);
+            return bar.NullCheck("Normal") ? bar.Centreline().ElementNormal(bar.OrientationAngle) : null;
         }
 
         /***************************************************/
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
         [Output("normal", "List of vectors representing the local z-axes of mesh faces. List order corresponds to the order of the faces.")]
         public static List<Vector> Normals(this FEMesh mesh)
         {
-            return mesh.Faces.Select(x => x.Normal(mesh)).ToList();
+            return mesh.NullCheck("Normals", false, false) ? mesh.Faces.Select(x => x.Normal(mesh)).ToList() : null;
         }
 
         /***************************************************/
@@ -66,6 +66,8 @@ namespace BH.Engine.Structure
         [Output("normal", "Vector representing the local z-axis of a mesh face.")]
         public static Vector Normal(this FEMeshFace face, FEMesh mesh)
         {
+            if (!face.NullCheck(mesh, "Normal"))
+                return null;
 
             if (face.NodeListIndices.Count < 3)
             {
@@ -74,7 +76,7 @@ namespace BH.Engine.Structure
             }
             else if (face.NodeListIndices.Count > 4)
             {
-                Engine.Reflection.Compute.RecordError("Can only determain normal from 3 or 4 sided faces.");
+                Engine.Reflection.Compute.RecordError("Can only determine normal from 3 or 4 sided faces.");
                 return null;
             }
 
@@ -133,3 +135,4 @@ namespace BH.Engine.Structure
 
     }
 }
+

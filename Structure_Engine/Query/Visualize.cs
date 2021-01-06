@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -261,17 +261,22 @@ namespace BH.Engine.Structure
         {
             List<ICurve> arrows = new List<ICurve>();
 
-            Vector forceA = barVaryingDistLoad.ForceA * scaleFactor;
-            Vector forceB = barVaryingDistLoad.ForceB * scaleFactor;
-            Vector momentA = barVaryingDistLoad.MomentA * scaleFactor;
-            Vector momentB = barVaryingDistLoad.MomentB * scaleFactor;
+            Vector forceA = barVaryingDistLoad.ForceAtStart * scaleFactor;
+            Vector forceB = barVaryingDistLoad.ForceAtEnd * scaleFactor;
+            Vector momentA = barVaryingDistLoad.MomentAtStart * scaleFactor;
+            Vector momentB = barVaryingDistLoad.MomentAtEnd * scaleFactor;
 
             int divisions = 5;
             double sqTol = Tolerance.Distance * Tolerance.Distance;
 
             foreach (Bar bar in barVaryingDistLoad.Objects.Elements)
             {
-                List<Point> pts = DistributedPoints(bar, divisions, barVaryingDistLoad.DistanceFromA, barVaryingDistLoad.DistanceFromB);
+                double length = bar.Length();
+
+                double startLength = barVaryingDistLoad.RelativePositions ? length * barVaryingDistLoad.StartPosition : barVaryingDistLoad.StartPosition;
+                double endLength = barVaryingDistLoad.RelativePositions ? length * (1.0 - barVaryingDistLoad.EndPosition) : length - barVaryingDistLoad.EndPosition;
+
+                List<Point> pts = DistributedPoints(bar, divisions, startLength, endLength);
 
                 Basis orientation;
 
@@ -381,7 +386,7 @@ namespace BH.Engine.Structure
 
         [Description("Draws arrows representing the point load at the location of the Nodes of the load.")]
         [Input("pointAcceleration", "The node load to visualise.")]
-        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/s² per metre.")]
+        [Input("scaleFactor", "Scales the arrows drawn. Default scaling of 1 means 1 m/sï¿½ per metre.")]
         [Input("displayTranslations", "Toggles whether translational acceleration should be displayed or not.")]
         [Input("displayRotations", "Toggles whether rotational acceleration should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
@@ -961,4 +966,5 @@ namespace BH.Engine.Structure
     }
 
 }
+
 

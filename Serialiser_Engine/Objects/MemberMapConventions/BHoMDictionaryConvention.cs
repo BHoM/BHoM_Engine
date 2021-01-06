@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -39,7 +39,7 @@ namespace BH.Engine.Serialiser.Conventions
             Type memberType = memberMap.MemberType;
             TypeInfo typeInfo = memberType.GetTypeInfo();
 
-            if (typeInfo.Name == "Dictionary`2")
+            if (typeInfo.Name == "Dictionary`2" || typeInfo.Name == "ReadOnlyDictionary`2")
             {
                 Type keyType = typeInfo.GenericTypeArguments[0];
 
@@ -59,4 +59,5 @@ namespace BH.Engine.Serialiser.Conventions
         }
     }
 }
+
 

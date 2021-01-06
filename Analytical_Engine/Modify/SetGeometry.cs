@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -28,7 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Base;
+using BH.Engine.Base;
 
 namespace BH.Engine.Analytical
 {
@@ -45,7 +45,7 @@ namespace BH.Engine.Analytical
         [Output("node", "The INode with updated geometry.")]
         public static INode SetGeometry(this INode node, Point point)
         {
-            INode clone = node.GetShallowClone(true) as INode;
+            INode clone = node.ShallowClone();
             clone.Position = point.Clone();
             return clone;
         }
@@ -68,7 +68,7 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            ILink<TNode> clone = link.GetShallowClone(true) as ILink<TNode>;
+            ILink<TNode> clone = link.ShallowClone();
             clone.StartNode = (TNode)clone.StartNode.SetGeometry(curve.IStartPoint());
             clone.EndNode = (TNode)clone.EndNode.SetGeometry(curve.IEndPoint());
             return clone;
@@ -83,7 +83,7 @@ namespace BH.Engine.Analytical
         [Output("edge", "The IEdge with updated geometry.")]
         public static IEdge SetGeometry(this IEdge edge, ICurve curve)
         {
-            IEdge clone = edge.GetShallowClone(true) as IEdge;
+            IEdge clone = edge.ShallowClone();
             clone.Curve = curve.IClone();
             return clone;
         }
@@ -105,3 +105,4 @@ namespace BH.Engine.Analytical
         /***************************************************/
     }
 }
+

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -31,6 +31,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure.Fragments;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Structure
@@ -56,7 +57,7 @@ namespace BH.Engine.Structure
         [Output("prop", "SurfaceProperty with applied modifiers.")]
         public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double fxx = 1, double fxy = 1, double fyy = 1, double mxx = 1, double mxy = 1, double myy = 1, double vxz = 1, double vyz = 1, double mass = 1, double weight = 1)
         {
-            ISurfaceProperty clone = prop.GetShallowClone() as ISurfaceProperty;
+            ISurfaceProperty clone = prop.ShallowClone();
 
             SurfacePropertyModifier modifier = new SurfacePropertyModifier
             {
@@ -90,7 +91,7 @@ namespace BH.Engine.Structure
         [Output("prop", "SectionProperty with applied modifiers.")]
         public static ISectionProperty ApplyModifiers(this ISectionProperty prop, double area = 1, double iy = 1, double iz = 1, double j = 1, double asy = 1, double asz = 1)
         {
-            ISectionProperty clone = prop.GetShallowClone() as ISectionProperty;
+            ISectionProperty clone = prop.ShallowClone();
 
             double[] modifiers = new double[] { area, iy, iz, j, asy, asz };
 
@@ -113,4 +114,5 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 

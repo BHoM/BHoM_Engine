@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -177,7 +177,12 @@ namespace BH.Engine.Geometry
         public static double Area(this PlanarSurface pSurf)
         {
             double area = pSurf.ExternalBoundary.IArea();
-            area -= pSurf.InternalBoundaries.Sum(x => x.IArea());
+
+            if (pSurf.InternalBoundaries != null)
+            {
+                area -= pSurf.InternalBoundaries.Sum(x => x.IArea());
+            }
+
             return area;
         }
 

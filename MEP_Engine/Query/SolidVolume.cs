@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -187,5 +187,36 @@ namespace BH.Engine.MEP
         }
 
         /***************************************************/
+
+        [Description("Queries the solid volume of a WireSegment by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
+        [Input("wireSegment", "The WireSegment to query solid volume.")]
+        [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
+
+        public static double SolidVolume(this CableTray cableTray)
+        {
+            double length = cableTray.Length();
+            double elementSolidArea = cableTray.SectionProperty.ElementSolidArea;
+
+            if (length <= 0)
+            {
+                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
+                return double.NaN;
+            }
+
+            if (cableTray.SectionProperty.SectionProfile.ElementProfile == null)
+            {
+                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + cableTray.BHoM_Guid);
+            }
+
+            if (elementSolidArea <= 0)
+            {
+                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+            }
+
+            return length * elementSolidArea;
+        }
+
+        /***************************************************/
     }
 }
+

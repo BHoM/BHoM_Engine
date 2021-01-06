@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -36,6 +36,12 @@ namespace BH.Engine.Geometry
 
         public static double Angle(this Vector v1, Vector v2)
         {
+            if (v1 == null || v2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute angle as one or both vectors are null.");
+                return 0;
+            }
+
             double dotProduct = v1.DotProduct(v2);
             double length = v1.Length() * v2.Length();
 

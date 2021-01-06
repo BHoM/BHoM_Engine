@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -150,7 +150,7 @@ namespace BH.Engine.Analytical
             length += 1;
 
             //relations linking entities working backwards from end
-            List<IRelation> links = m_NonSpatialGraph.Relation(m_SpatialGraph.Entities[n], m_SpatialGraph.Entities[currentEntity]).ToList();
+            List<IRelation> links = m_NonSpatialGraph.Relation(m_NonSpatialGraph.Entities[n], m_NonSpatialGraph.Entities[currentEntity]).ToList();
             
             //hang on to all if multiple exist
             relations.AddRange(links);
@@ -170,3 +170,4 @@ namespace BH.Engine.Analytical
         private static Graph m_NonSpatialGraph = new Graph();
     }
 }
+

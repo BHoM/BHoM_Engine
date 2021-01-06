@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,6 +26,7 @@ using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.MEP
 {
@@ -41,8 +42,8 @@ namespace BH.Engine.MEP
         [Output("pipeSectionProperty", "Pipe Section property used to provide accurate pipe assembly and capacities.")]
         public static PipeSectionProperty PipeSectionProperty(
             SectionProfile sectionProfile,
-            IMEPMaterial pipeMaterial = null,
-            IMEPMaterial insulationMaterial = null,
+            Material pipeMaterial = null,
+            Material insulationMaterial = null,
             string name = "")
         {
             double elementSolidArea = sectionProfile.ElementProfile.Area();
@@ -80,3 +81,4 @@ namespace BH.Engine.MEP
         /***************************************************/
     }
 }
+

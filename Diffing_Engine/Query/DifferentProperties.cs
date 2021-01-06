@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -38,12 +38,12 @@ namespace BH.Engine.Diffing
     public static partial class Query
     {
         [Description("Checks two BHoMObjects property by property and returns the differences")]
-        [Input("diffConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
+        [Input("DiffingConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
         [Output("Dictionary whose key is the name of the property, and value is a tuple with its value in obj1 and obj2.")]
-        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffConfig diffConfig = null)
+        public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffingConfig diffingConfig = null)
         {
-            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffConfig diffConfigCopy = diffConfig == null ? new DiffConfig() : diffConfig.DeepClone() as DiffConfig;
+            // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.
+            DiffingConfig dc = diffingConfig == null ? new DiffingConfig() : diffingConfig.DeepClone() as DiffingConfig;
 
             object obj1Copy = obj1.DeepClone();
             object obj2Copy = obj2.DeepClone();
@@ -53,16 +53,16 @@ namespace BH.Engine.Diffing
             CompareLogic comparer = new CompareLogic();
 
             // General configurations.
-            comparer.Config.MaxDifferences = diffConfigCopy.MaxPropertyDifferences;
-            comparer.Config.DoublePrecision = diffConfigCopy.NumericTolerance;
+            comparer.Config.MaxDifferences = dc.MaxPropertyDifferences;
+            comparer.Config.DoublePrecision = dc.ComparisonConfig.NumericTolerance;
 
             // Set the properties to be ignored.
-            if (!diffConfigCopy.PropertiesToIgnore.Contains("BHoM_Guid"))
-                diffConfigCopy.PropertiesToIgnore.Add("BHoM_Guid");
-                // the above should be replaced by BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(diffConfig.PropertiesToIgnore)}.");
+            if (!dc.ComparisonConfig.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
+                dc.ComparisonConfig.PropertyExceptions.Add("BHoM_Guid");
+                // the above should be replaced by BH.Engine.Reflection.Compute.RecordWarning($"`BHoM_Guid` should generally be ignored when computing the diffing. Consider adding it to the {nameof(DiffingConfig.PropertiesToIgnore)}.");
                 // when the bug in the auto Create() method ("auto-property initialisers for ByRef values like lists do not populate default values") is resolved.
 
-            comparer.Config.MembersToIgnore = diffConfigCopy.PropertiesToIgnore;
+            comparer.Config.MembersToIgnore = dc.ComparisonConfig.PropertyExceptions;
 
             // Removes the CustomData to be ignored.
             var bhomobj1 = (obj1Copy as IBHoMObject);
@@ -70,18 +70,19 @@ namespace BH.Engine.Diffing
 
             if (bhomobj1 != null)
             {
-                diffConfigCopy.CustomDataToIgnore.ForEach(k => bhomobj1.CustomData.Remove(k));
+                dc.ComparisonConfig.CustomdataKeysExceptions.ForEach(k => bhomobj1.CustomData.Remove(k));
                 obj1Copy = bhomobj1;
             }
 
             if (bhomobj2 != null)
             {
-                diffConfigCopy.CustomDataToIgnore.ForEach(k => bhomobj2.CustomData.Remove(k));
+                dc.ComparisonConfig.CustomdataKeysExceptions.ForEach(k => bhomobj2.CustomData.Remove(k));
                 obj2Copy = bhomobj2;
             }
 
             // Never include the changes in HashFragment.
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
+            comparer.Config.TypesToIgnore.Add(typeof(RevisionFragment));
 
             // Perform the comparison.
             ComparisonResult result = comparer.Compare(obj1Copy, obj2Copy);
@@ -107,7 +108,7 @@ namespace BH.Engine.Diffing
                     propertyName = splittedName.FirstOrDefault() + $"['{keyName}']." + splittedName.Last();
                 }
 
-                if (!diffConfigCopy.PropertiesToConsider.Any() || diffConfigCopy.PropertiesToConsider.Contains(difference.PropertyName))
+                if (dc.ComparisonConfig.PropertyExceptions.Any() && !dc.ComparisonConfig.PropertyExceptions.Contains(difference.PropertyName))
                     dict[propertyName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
 
@@ -118,4 +119,5 @@ namespace BH.Engine.Diffing
         }
     }
 }
+
 

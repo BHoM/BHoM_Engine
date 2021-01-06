@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -181,7 +181,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 case BsonType.String:
                     return reader.ReadString();
             }
-            throw new FormatException($"ObjectSerializer does not support BSON type '{currentBsonType}'.");
+
+            Engine.Reflection.Compute.RecordError($"ObjectSerializer does not support BSON type '{currentBsonType}'.");
+            return null;
         }
 
 
@@ -345,8 +347,18 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     
                     if (result is CustomObject)
                     {
-                        Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
-                        Config.TypesWithoutUpgrade.Add(actualType);
+                        context.Reader.ReturnToBookmark(bookmark);
+                        IBsonSerializer bSerializer = BsonSerializer.LookupSerializer(typeof(BsonDocument));
+                        BsonDocument doc = bSerializer.Deserialize(context, args) as BsonDocument;
+                        BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
+
+                        if (newDoc == null || doc == newDoc)
+                        {
+                            Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
+                            Config.TypesWithoutUpgrade.Add(actualType);
+                        }
+                        else
+                            return BH.Engine.Serialiser.Convert.FromBson(newDoc);
                     }
                         
                     return result;
@@ -393,4 +405,5 @@ namespace BH.Engine.Serialiser.BsonSerializers
         /*******************************************/
     }
 }
+
 

@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -26,6 +26,7 @@ using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.MEP
 {
@@ -38,7 +39,7 @@ namespace BH.Engine.MEP
         [Input("material", "A base ShapeProfile upon which to base the composite section.")]
         [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
         [Output("cableTraySectionProperty", "Cable Tray Section property used to provide accurate Cable Tray assembly and capacities.")]
-        public static CableTraySectionProperty CableTraySectionProperty(IMEPMaterial material, SectionProfile sectionProfile = null, string name = "")
+        public static CableTraySectionProperty CableTraySectionProperty(Material material, SectionProfile sectionProfile = null, string name = "")
         {
             double elementSolidArea = sectionProfile.ElementProfile.Area();
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();          
@@ -58,3 +59,4 @@ namespace BH.Engine.MEP
         /***************************************************/
     }
 }
+

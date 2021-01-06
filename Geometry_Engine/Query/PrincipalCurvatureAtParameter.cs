@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -37,8 +37,8 @@ namespace BH.Engine.Geometry
 
         [Description("Principal curvature is the max and min curvature of the intersection curve between the surface and a plane formed by the span of the normal vector and the principal  direction.")]
         [Input("surface", "Surface to evaluate.")]
-        [Input("u", "The parameter to evaluate at.")]
-        [Input("v", "The parameter to evaluate at.")]
+        [Input("u", "The parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
+        [Input("v", "The parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [MultiOutput(0, "minC", "Minimum principal curvature. Curvature of the intersection of the surface and a plane spanned by the normal and minimum principal direction.")]
         [MultiOutput(1, "maxC", "Maximum principal curvature. Curvature of the intersection of the surface and a plane spanned by the normal and maximum principal  direction.")]
         [MultiOutput(2, "minK", "Minimum principal direction. Tangent of the curve on the surface with the least curvature.")]
@@ -133,3 +133,4 @@ namespace BH.Engine.Geometry
 
     }
 }
+

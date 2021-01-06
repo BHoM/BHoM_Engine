@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -28,6 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Physical.Materials;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -44,7 +45,7 @@ namespace BH.Engine.Structure
         public static Material SetStructuralFragment(this Material material, IMaterialFragment structuralFragment)
         {
             //Clone the object
-            Material clone = material.GetShallowClone() as Material;
+            Material clone = material.ShallowClone();
 
             //null check for the list
             clone.Properties = clone.Properties ?? new List<IMaterialProperties>();
@@ -62,4 +63,5 @@ namespace BH.Engine.Structure
         
     }
 }
+
 

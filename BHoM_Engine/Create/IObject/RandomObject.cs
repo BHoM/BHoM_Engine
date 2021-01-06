@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -215,7 +215,12 @@ namespace BH.Engine.Base
             else if (type.IsInterface || type.IsAbstract)
             {
                 if (depth > 50) return null;
-                return GetValue(m_ImplementingTypes[type], rnd, depth + 1);
+
+                Type obj = null;
+                if (!m_ImplementingTypes.TryGetValue(type, out obj))
+                    return null;
+
+                return GetValue(obj, rnd, depth + 1);
             }
             else
             {

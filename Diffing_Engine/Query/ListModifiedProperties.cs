@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -36,12 +36,11 @@ namespace BH.Engine.Diffing
 {
     public static partial class Query
     {
-
         [MultiOutput(0, "identifier", "Identifier of the objects which have some modified properties.\nWhen using Revisions, this is the Hash of the objects. When Diffing using CustomData, this is the specified Id.")]
         [MultiOutput(1, "propNames", "List of properties changed per each object.")]
-        [MultiOutput(2, "value_Current", "List of current values of the properties.")]
-        [MultiOutput(3, "value_Past", "List of past values of the properties.")]
-        public static Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>> ListModifiedProperties(Dictionary<string, Dictionary<string, Tuple<object, object>>> modProps, List<string> filterNames = null)
+        [MultiOutput(2, "value_current", "List of current values of the properties.")]
+        [MultiOutput(3, "value_past", "List of past values of the properties.")]
+        public static Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>> ListModifiedProperties(this Dictionary<string, Dictionary<string, Tuple<object, object>>> modProps, List<string> filterNames = null)
         {
             var output = new Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>>();
 
@@ -97,4 +96,5 @@ namespace BH.Engine.Diffing
         }
     }
 }
+
 

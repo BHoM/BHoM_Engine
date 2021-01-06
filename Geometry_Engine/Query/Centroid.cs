@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -97,17 +97,17 @@ namespace BH.Engine.Geometry
         {
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("Input must be planar.");
+                Reflection.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Curve is not closed. Input must be a polygon");
+                Reflection.Compute.RecordError("Input curve is not closed. Cannot calculate centroid.");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
             {
-                Reflection.Compute.RecordWarning("Curve is self intersecting");
+                Reflection.Compute.RecordError("Input curve is self-intersecting. Cannot calculate centroid.");
                 return null;
             }
 
@@ -162,17 +162,17 @@ namespace BH.Engine.Geometry
         {
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("Input must be planar.");
+                Reflection.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Curve is not closed.");
+                Reflection.Compute.RecordError("Input curve is not closed. Cannot calculate centroid.");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
             {
-                Reflection.Compute.RecordWarning("Curve is self intersecting");
+                Reflection.Compute.RecordError("Input curve is self-intersecting. Cannot calculate centroid.");
                 return null;
             }
 
@@ -344,3 +344,4 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+

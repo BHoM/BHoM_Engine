@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,7 +35,7 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
         
-        [Description("Returns the normal to the IElement2D which is perpendicular to its plane and oriented according to the rigth hand rule in relation to the outline curve.")]
+        [Description("Returns the normal to the IElement2D which is perpendicular to its plane and oriented according to the right hand rule in relation to the outline curve.")]
         [Input("element2D", "The IElement2D to get the normal from.")]
         [Output("n", "The normal of the IElement2D based on the external outline curve.")]
         public static Vector Normal(this IElement2D element2D)
@@ -46,3 +46,4 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
+
