@@ -81,7 +81,7 @@ namespace BH.Engine.Serialiser
             }
             else if (json.StartsWith("["))
             {
-                Reflection.Compute.RecordWarning($"The string provided appears to be a Json Array and will be deserialized as a `List<object>`." +
+                Reflection.Compute.RecordNote($"The string provided appears to be a Json Array and will be deserialized as a `List<object>`." +
                     $"\nIf calling this method from an UI and you intend to retrieve the individual list items, please use the method {nameof(FromJsonArray)} instead.");
 
                 return FromJsonArray(json);
@@ -98,7 +98,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
 
         [Description("Convert a List of objects to a Json array.")]
-        [Input("obj", "Object to be converted.")]
+        [Input("objs", "Objects to be converted.")]
         [Output("json", "String representing the object in json.")]
         public static string ToJsonArray(this IEnumerable<object> objs)
         {
@@ -116,10 +116,9 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-
         [Description("Convert a Json string to a collection of objects")]
         [Input("jsonArray", "String representing the objects in a Json Array form.")]
-        [Output("obj", "Object recovered from the Json string")]
+        [Output("objs", "Objects recovered from the Json string")]
         public static IEnumerable<object> FromJsonArray(this string jsonArray)
         {
             if (!jsonArray.StartsWith("[") || !jsonArray.EndsWith("]"))
@@ -130,10 +129,12 @@ namespace BH.Engine.Serialiser
 
             BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonArray);
 
-            IEnumerable<object> objList = array.Select(b => b.IsBsonDocument ? BH.Engine.Serialiser.Convert.FromBson(b.AsBsonDocument) : BH.Engine.Serialiser.Convert.FromJson(b.ToString())).ToList();
+            IEnumerable<object> objList = array.Select(b => b.IsBsonDocument ? FromBson(b.AsBsonDocument) : FromJson(b.ToString())).ToList();
 
             return objList;
         }
+
+        /*******************************************/
     }
 }
 
