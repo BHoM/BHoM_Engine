@@ -64,9 +64,9 @@ namespace BH.Engine.Reflection
 
         private static void ExtractAllAssemblies()
         {
-            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First());
             m_BHoMAssemblies = assemblies.Where(x => x.IsBHoM()).ToDictionary(x => x.FullName);
-            m_AllAssemblies = assemblies.GroupBy(x => x.FullName).Select(g => g.First()).ToDictionary(x => x.FullName);
+            m_AllAssemblies = assemblies.ToDictionary(x => x.FullName);
         }
 
         /***************************************************/
