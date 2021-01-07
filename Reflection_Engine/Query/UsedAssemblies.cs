@@ -26,6 +26,8 @@ using System.Reflection;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Reflection;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Reflection
 {
@@ -35,7 +37,12 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Assembly> UsedAssemblies(this Assembly assembly, bool onlyBHoM = false)
+        [Description("Collect al the assemblies referenced by the input assembly.")]
+        [Input("assembly", "Assembly that needs its references collected.")]
+        [Input("onlyBHoM", "Only return referenced assemblies that are part of the BHoM.")]
+        [Input("goDeep", "Recursively collect all references so that indirect references are also returned.")]
+        [Output("assemblies", "List of assemblies referenced by the input assembly.")]
+        public static List<Assembly> UsedAssemblies(this Assembly assembly, bool onlyBHoM = false, bool goDeep = false)
         {
             try
             {
@@ -44,11 +51,14 @@ namespace BH.Engine.Reflection
                     if (m_AllAssemblies == null || m_AllAssemblies.Count == 0)
                         ExtractAllAssemblies();
 
-                    IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
-                    foreach (AssemblyName name in assemblyNames)
-                        Compute.RecordWarning("Could not find the assembly with the name " + name);
-
-                    return assemblyNames.Where(x => m_BHoMAssemblies.ContainsKey(x.FullName)).Select(x => m_BHoMAssemblies[x.FullName]).ToList();
+                    if (goDeep)
+                        return DeepDependencies(new List<Assembly> { assembly }, onlyBHoM);
+                    else
+                    {
+                        IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
+                        Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
+                        return assemblyNames.Where(x => dic.ContainsKey(x.FullName)).Select(x => dic[x.FullName]).ToList();
+                    }  
                 }
             }
             catch (Exception e)
@@ -57,7 +67,54 @@ namespace BH.Engine.Reflection
                 return new List<Assembly>();
             }
         }
+
+        /***************************************************/
+
+        [Description("Collect al the assemblies referenced by the list of input assemblies.")]
+        [Input("assemblyNames", "List of all the assembly namesthat needs that need their references collected.")]
+        [Input("onlyBHoM", "Only return referenced assemblies that are part of the BHoM.")]
+        [Input("goDeep", "Recursively collect all references so that indirect references are also returned.")]
+        [Output("assemblies", "List of assemblies referenced by the input assemblies.")]
+        public static List<string> UsedAssemblies(List<string> assemblyNames, bool onlyBHoM = false, bool goDeep = false)
+        {
+            AllAssemblyList();
+            Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
+            List<Assembly> assemblies = assemblyNames.Where(x => dic.ContainsKey(x)).Select(x => dic[x]).ToList();
+
+            if (goDeep)
+                return DeepDependencies(assemblies, onlyBHoM).Select(x => x.Location).ToList();
+            else
+                return assemblies.SelectMany(x => x.UsedAssemblies(onlyBHoM)).Select(x => x.Location).Distinct().ToList();
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<Assembly> DeepDependencies(List<Assembly> assemblies, bool onlyBHoM = false, List<Assembly> collected = null, int depth = 0)
+        {
+            if (collected == null)
+                collected = assemblies.ToList();
+
+            if (depth > 20)
+                return new List<Assembly>();
+
+            Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
+
+            IEnumerable<AssemblyName> assemblyNames = assemblies.SelectMany(x => x.GetReferencedAssemblies())
+                .GroupBy(x => x.FullName).Select(x => x.First())
+                .ToList();
             
+            List<Assembly> dependencies = assemblyNames.Where(x => dic.ContainsKey(x.FullName))
+                .Select(x => dic[x.FullName])
+                .Except(collected)
+                .ToList();
+
+            collected.AddRange(dependencies);
+
+            return dependencies.Concat(DeepDependencies(dependencies, onlyBHoM, collected, depth+1)).ToList();
+        }
 
         /***************************************************/
     }
