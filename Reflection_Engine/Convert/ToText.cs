@@ -98,7 +98,7 @@ namespace BH.Engine.Reflection
                             break;
                         }
 
-                        paramText += ", " + singleParamText;
+                        paramText += paramSeparator + singleParamText;
                     }
                 }
 
