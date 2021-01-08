@@ -137,7 +137,7 @@ namespace BH.Engine.Reflection
                     {
                         foreach (Type type in asm.GetTypes())
                         {
-                            if (type.Namespace != null && type.Namespace.StartsWith("BH.oM") && typeof(IObject).IsAssignableFrom(type))
+                            if (type.Namespace != null && type.Namespace.StartsWith("BH.oM"))
                             {
                                 AddBHoMTypeToDictionary(type.FullName, type);
                                 if (!type.IsInterface && !(type.IsAbstract && type.IsSealed)) // Avoid interfaces and static classes
