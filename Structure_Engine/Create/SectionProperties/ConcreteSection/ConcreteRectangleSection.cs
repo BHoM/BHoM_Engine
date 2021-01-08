@@ -41,7 +41,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteRectangleSection(System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Creates a rectangular solid concrete section from input dimensions.")]
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]

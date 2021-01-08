@@ -40,7 +40,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Create.BarVaryingDistributedLoad(BH.oM.Structure.Loads.Loadcase, BH.oM.Base.BHoMGroup<BH.oM.Structure.Elements.Bar>, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Structure.Loads.LoadAxis, System.Boolean, System.String)")]
         [PreviousInputNames("startToStartDistance", "distanceFromA")]
         [PreviousInputNames("endToEndDistance", "distanceFromB")]
         [PreviousInputNames("forceAtStart", "forceA")]
@@ -88,7 +87,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Create.BarVaryingDistributedLoad(BH.oM.Structure.Loads.Loadcase, System.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.Bar>, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Double, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Structure.Loads.LoadAxis, System.Boolean, System.String)")]
         [PreviousInputNames("startToStartDistance", "distFromA")]
         [PreviousInputNames("endToEndDistance", "distFromB")]
         [PreviousInputNames("forceAtStart", "forceA")]

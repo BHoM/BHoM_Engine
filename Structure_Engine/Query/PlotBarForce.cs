@@ -43,7 +43,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.PlotBarForce(System.Collections.Generic.List<BH.oM.Structure.Elements.Bar>, System.Collections.Generic.List<BH.oM.Structure.Results.BarForce>, System.String, System.Double, System.Object, System.Boolean, System.Boolean, System.Boolean, System.Boolean, System.Boolean, System.Boolean)")]
         public static List<ICurve> PlotBarForce(List<Bar> bars, List<BarForce> forces, Type adapterIdType, double scaleFactor = 1.0, object loadCase = null, bool fx = true, bool fy = true, bool fz = true, bool mx = true, bool my = true, bool mz = true)
         {
             if (adapterIdType == null)

@@ -43,7 +43,6 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.Node)")]
         [Description("Gets the geometry of a INode as a Point. Method required for automatic display in UI packages.")]
         [Input("node", "INode to get the Point from.")]
         [Output("point", "The geometry of the INode.")]
@@ -55,7 +54,6 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [PreviousInputNames("link", "bar")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.Bar)")]
         [Description("Gets the geometry of a ILink as its centreline. Method required for automatic display in UI packages.")]
         [Input("link", "ILink to get the centreline geometry from.")]
         [Output("line", "The geometry of the ILink as its centreline.")]
@@ -67,7 +65,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.Edge)")]
         [Description("Gets the geometry of a IEdge as its Curve. Method required for automatic display in UI packages.")]
         [Input("edge", "IEdge to get the curve geometry from.")]
         [Output("curve", "The geometry of the IEdge as its Curve.")]
@@ -78,7 +75,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.Panel)")]
         [Description("Gets the geometry of a analytical IPanel at its centre. Method required for automatic display in UI packages.")]
         [Input("panel", "IPanel to get the planar surface geometry from.")]
         [Output("surface", "The geometry of the analytical IPanel at its centre.")]
@@ -105,7 +101,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.Surface)")]
         [Description("Gets the geometry of a analytical ISurface at its centre. Method required for automatic display in UI packages.")]
         [Input("surface", "Analytical ISurface to get the geometrical Surface geometry from.")]
         [Output("surface", "The underlying surface geometry of the analytical ISurface at its centre.")]
@@ -117,7 +112,6 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [PreviousInputNames("mesh", "feMesh")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.FEMesh)")]
         [Description("Gets the geometry of a analytical IMesh as a geometrical Mesh. A geometrical mesh only supports 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("mesh", "Analytical IMesh to get the mesh geometry from.")]
         [Output("mesh", "The geometry of the IMesh as a geometrical Mesh.")]
@@ -137,7 +131,6 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [PreviousInputNames("faces", "feFaces")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(System.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.FEMeshFace>)")]
         [Description("Gets the geometry of a collection of IFaces as a geometrical Mesh's Faces. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("faces", "Analytical IFaces to get the mesh faces geometry from.")]
         [Output("faces", "The geometry of the IFaces as geometrical Mesh Faces.")]
@@ -157,7 +150,6 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         [PreviousInputNames("face", "feFace")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.FEMeshFace)")]
         [Description("Gets the geometry of a analytical IFace as a geometrical Mesh's Face. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("face", "Analytical IFace to get the mesh face geometry from.")]
         [Output("face", "The geometry of the IFace as geometrical Mesh Face.")]

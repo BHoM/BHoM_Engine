@@ -34,7 +34,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.Arc)")]
         public static List<Point> DiscontinuityPoints(this Arc curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             return new List<Point> { curve.StartPoint(), curve.EndPoint() };
@@ -42,7 +41,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.Circle)")]
         public static List<Point> DiscontinuityPoints(this Circle curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             return new List<Point>();
@@ -50,7 +48,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.Line)")]
         public static List<Point> DiscontinuityPoints(this Line curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             return new List<Point> { curve.Start, curve.End };
@@ -58,7 +55,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.PolyCurve)")]
         public static List<Point> DiscontinuityPoints(this PolyCurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             List<Point> result = new List<Point>();
@@ -125,7 +121,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Geometry.Query.IDiscontinuityPoints(BH.oM.Geometry.ICurve)")]
         public static List<Point> IDiscontinuityPoints(this ICurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             return DiscontinuityPoints(curve as dynamic, distanceTolerance, angleTolerance);
@@ -136,7 +131,6 @@ namespace BH.Engine.Geometry
         /**** Private Fallback Methods                  ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.ICurve)")]
         private static List<Point> DiscontinuityPoints(this ICurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             Reflection.Compute.RecordError($"DiscontinuityPoints is not implemented for ICurves of type: {curve.GetType().Name}.");

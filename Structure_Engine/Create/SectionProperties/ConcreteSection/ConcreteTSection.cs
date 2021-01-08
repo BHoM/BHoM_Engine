@@ -41,7 +41,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Structure.Create.ConcreteTSection(System.Double, System.Double, System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement>)")]
         [Description("Creates a rectangular solid concrete section from input dimensions.")]
         [Input("height", "Full height of the section.", typeof(Length))]
         [Input("webThickness", "Thickness of the web.", typeof(Length))]

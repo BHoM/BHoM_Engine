@@ -48,8 +48,6 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [PreviousInputNames("element1D", "bar,edges")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.ControlPoints(BH.oM.Structure.Elements.Bar)")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.ControlPoints(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>)")]
         [Description("Queries the control points of the one dimensional representation of the IElement1D.")]
         [Input("element1D", "The IElement1D with the geometry to get the control points from.")]
         [Output("cPoints", "The control points of the defining geometry for the one dimensional representation.")]
@@ -64,8 +62,6 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [PreviousInputNames("element2D", "panel,opening")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.ControlPoints(BH.oM.Structure.Elements.Panel, System.Boolean)")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.ControlPoints(BH.oM.Structure.Elements.Opening)")]
         [Description("Queries the control points of the element curve representation of the IElement2D.")]
         [Input("element2D", "The IElement2D with the element curves to get the control points from.")]
         [Input("externalOnly", "Controls if the control points from the internal elements are queried as well.")]

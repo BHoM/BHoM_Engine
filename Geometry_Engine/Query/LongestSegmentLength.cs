@@ -43,7 +43,6 @@ namespace BH.Engine.Geometry
         [Description("Returns the length of the longest segment from a BHoM Geometry Polyline")]
         [Input("polyline", "A BHoM Geometry Polyline")]
         [Output("segmentLength", "The length of the longest segment")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.LongestSegmentLength(BH.oM.Geometry.Polyline)")]
         public static double LongestSegmentLength(Polyline polyline)
         {
             List<Point> pts = polyline.DiscontinuityPoints();

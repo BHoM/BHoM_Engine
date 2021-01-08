@@ -38,7 +38,6 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [PreviousInputNames("element1D", "bar")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.Length(BH.oM.Structure.Elements.Bar)")]
         [Description("Returns the length of the IElement1Ds curve.")]
         [Input("element1D", "The IElement1D to get the length from.")]
         [Output("l", "The length of the IElement1Ds curve.", typeof(Length))]

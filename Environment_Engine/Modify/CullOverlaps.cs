@@ -43,7 +43,6 @@ namespace BH.Engine.Environment
         [Description("Removes panels which overlap each other")]
         [Input("panels", "A collection of Environment Panels")]
         [Output("panels", "A collection of Environment Panels with no overlaps")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.CullOverlaps(System.Collections.Generic.List<BH.oM.Environment.Element.Panel>)")]
         public static List<Panel> CullOverlaps(this List<Panel> panels)
         {
             List<Panel> ori = new List<Panel>(panels);

@@ -39,7 +39,6 @@ namespace BH.Engine.Environment
         [Input("weatherfile", "A BHoM Weatherfile object")]
         [Input("outputPath", "Full path to target output file")]
         [Output("outputPath", "Full path to target output file")]
-        [PreviousVersion("3.3", "BH.Engine.Climate.Create.ExportEPW(BH.oM.Climate.WeatherFile, System.String)")]
         public static string ExportEPW(WeatherFile weatherfile, string outputPath)
         {
             List<string> outputStrings = new List<string>();

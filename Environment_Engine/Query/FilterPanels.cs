@@ -51,7 +51,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels")]
         [Input("elementID", "The Element ID to filter by")]
         [Output("panels", "A collection of Environment Panel objects that match the element ID")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByElementID(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, System.String)")]
         public static List<Panel> FilterPanelsByElementID(this List<Panel> panels, string elementID)
         {
             List<IEnvironmentObject> envObjects = new List<IEnvironmentObject>();
@@ -73,7 +72,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels")]
         [Input("searchGeometry", "The BHoM Geometry ICurve representation to search by")]
         [Output("panels", "A collection of Environment Panel where the external edges match the given search geometry")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByGeometry(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Geometry.ICurve)")]
         public static List<Panel> FilterPanelsByGeometry(this List<Panel> panels, ICurve searchGeometry)
         {
             List<Point> searchPoints = searchGeometry.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).DiscontinuityPoints();
@@ -84,7 +82,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to filter")]
         [Input("searchLevel", "The Setting Out Level to search by")]
         [Output("panels", "A collection of Environment Panels which match the given level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Geometry.SettingOut.Level)")]
         public static List<Panel> FilterPanelsByLevel(this List<Panel> panels, Level searchLevel)
         {
             return panels.FilterPanelsByLevel(searchLevel.Elevation);
@@ -94,7 +91,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to filter")]
         [Input("searchLevel", "The level to search by")]
         [Output("panels", "A collection of Environment Panels which match the given level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, System.Double)")]
         public static List<Panel> FilterPanelsByLevel(this List<Panel> panels, double searchLevel)
         {
             return panels.Where(x => x.MinimumLevel() == searchLevel && x.MaximumLevel() == searchLevel).ToList();
@@ -104,7 +100,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to filter")]
         [Input("searchLevel", "The Setting Level to search by")]
         [Output("panels", "A collection of Environment Panels where the maximum level meets the search level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByMaximumLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Geometry.SettingOut.Level)")]
         public static List<Panel> FilterPanelsByMaximumLevel(this List<Panel> panels, Level searchLevel)
         {
             return panels.FilterPanelsByMaximumLevel(searchLevel.Elevation);
@@ -114,7 +109,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to filter")]
         [Input("searchLevel", "The level to search by")]
         [Output("panels", "A collection of Environment Panels where the maximum level meets the search level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByMaximumLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, System.Double)")]
         public static List<Panel> FilterPanelsByMaximumLevel(this List<Panel> panels, double searchLevel)
         {
             return panels.Where(x => x.MaximumLevel() == searchLevel).ToList();
@@ -124,7 +118,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to filter")]
         [Input("searchLevel", "The Setting Out Level to search by")]
         [Output("panels", "A collection of Environment Panels where the minimum level meets the search level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByMinimumLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Geometry.SettingOut.Level)")]
         public static List<Panel> FilterPanelsByMinimumLevel(this List<Panel> panels, Level searchLevel)
         {
             return panels.FilterPanelsByMinimumLevel(searchLevel.Elevation);
@@ -134,7 +127,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to filter")]
         [Input("searchLevel", "The level to search by")]
         [Output("panels", "A collection of Environment Panels where the minimum level meets the search level")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByMinimumLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, System.Double)")]
         public static List<Panel> FilterPanelsByMinimumLevel(this List<Panel> panels, double searchLevel)
         {
             return panels.Where(x => x.MinimumLevel() == searchLevel).ToList();
@@ -144,7 +136,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels")]
         [Input("name", "The name of the panel to filter by")]
         [Output("panels", "A collection of Environment Panel that match the given name")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByName(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, System.String)")]
         public static List<Panel> FilterPanelsByName(this List<Panel> panels, string name)
         {
             return panels.Where(x => x.Name == name).ToList();
@@ -154,7 +145,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels")]
         [Input("tilt", "The tilt to filter by")]
         [Output("panels", "A collection of Environment Panel that match the given tilt")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByTilt(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, System.Double)")]
         public static List<Panel> FilterPanelsByTilt(this List<Panel> panels, double tilt)
         {
             return panels.Where(x => x.Tilt() == tilt).ToList();
@@ -165,7 +155,6 @@ namespace BH.Engine.Environment
         [Input("minTilt", "The minimum tilt to filter by")]
         [Input("maxTilt", "The maximum tilt to filter by")]
         [Output("panels", "A collection of Environment Panel that are between the given tilt range")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByTiltRange(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, System.Double, System.Double)")]
         public static List<Panel> FilterPanelsByTiltRange(this List<Panel> panels, double minTilt, double maxTilt)
         {
             return panels.Where(x => x.Tilt() >= minTilt && x.Tilt() <= maxTilt).ToList();
@@ -175,7 +164,6 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels")]
         [Input("type", "A Panel Type to filter by from the Panel Type enum")]
         [Output("panels", "A collection of Environment Panel that DO NOT match the given type")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsNotByType(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Environment.Elements.PanelType)")]
         [ToBeRemoved("3.3", "Replaced by FilterPanelsByType which provides the panels which match and don't match a given type")]
         public static List<Panel> FilterPanelsNotByType(this List<Panel> panels, PanelType type)
         {
@@ -187,7 +175,6 @@ namespace BH.Engine.Environment
         [Input("type", "A Panel Type to filter by from the Panel Type enum")]
         [MultiOutput(0, "panelsMatchingType", "A collection of Environment Panels that match the provided type")]
         [MultiOutput(1, "panelsNotMatchingType", "A collection of Environment Panel that DO NOT match the provided type")]
-        [PreviousVersion("3.3", "BH.Engine.Environment.Query.PanelsByType(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Environment.Elements.PanelType)")]
         public static Output<List<Panel>, List<Panel>> FilterPanelsByType(this List<Panel> panels, PanelType type)
         {
             return new Output<List<Panel>, List<Panel>>

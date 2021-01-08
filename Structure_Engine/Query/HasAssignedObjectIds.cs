@@ -36,7 +36,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.HasAssignedObjectIds(BH.oM.Structure.Loads.IElementLoad<BH.Engine.Structure.T>, System.String)")]
         [Description("Checks if the objects assigned to the IElementLoad all have an identifier matching the AdapterIdName assigned.\n" + 
                      "Loads without correctly assigned ids to the objects can generally not be pushed through to structural packages.")]
         [Input("load", "The load to check for id assignment.")]

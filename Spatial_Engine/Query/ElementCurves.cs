@@ -66,8 +66,6 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [PreviousInputNames("element2D", "panel,opening")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.EdgeCurves(BH.oM.Structure.Elements.Opening)")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.AllEdgeCurves(BH.oM.Structure.Elements.Panel)")]
         [Description("Queries the geometricly defining curves of the IElement2Ds surface.")]
         [Input("element2D", "The IElement2D of which to get the curve definintion.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts.")]
@@ -96,7 +94,6 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [PreviousInputNames("element2D", "panel")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.ExternalEdgeCurves(BH.oM.Structure.Elements.Panel)")]
         [Description("Queries the geometricly defining external curves of the IElement2Ds surface.")]
         [Input("element2D", "The IElement2D of which to get the external curve definintion.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts.")]
@@ -118,7 +115,6 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [PreviousInputNames("element2D", "panel")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.InternalEdgeCurves(BH.oM.Structure.Elements.Panel)")]
         [Description("Queries the geometricly defining internal curves, such as Openings, of the IElement2Ds surface.")]
         [Input("element2D", "The IElement2D of which to get the internal curve definintion.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts.")]
@@ -132,7 +128,6 @@ namespace BH.Engine.Spatial
         /****            IElement              ****/
         /******************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Common.Query.IElementCurves(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElement>, System.Boolean)")]
         [Description("Queries the geometricly defining curves of the IElements geometries.")]
         [Input("elements", "The IElements of which to get the curve definintions.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts if it is an IElement2D.")]
