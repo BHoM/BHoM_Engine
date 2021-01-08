@@ -40,7 +40,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.FEMesh(BH.oM.Geometry.Mesh, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a FEMesh based on a geometrical Mesh.")]
         [Input("mesh","The geometrical Mesh to extract geometrical and topological information from.")]
         [InputFromProperty("property")]

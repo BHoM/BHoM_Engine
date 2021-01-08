@@ -39,8 +39,6 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.FabricatedBoxProfile(System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)")]
-        [PreviousVersion("4.0", "BH.Engine.Structure.Create.FabricatedBoxProfile(System.Double, System.Double, System.Double, System.Double, System.Double, System.Double)")]
         [Description("Creates a rectangular hollow profile based on input dimensions. Method generates edge curves based on the inputs.")]
         [InputFromProperty("height")]
         [InputFromProperty("width")]

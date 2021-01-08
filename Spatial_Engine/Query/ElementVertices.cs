@@ -98,7 +98,6 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Common.Query.IElementVertices(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElement>)")]
         [Description("Returns the discontinuity points from the defining ICurves of the IElements.")]
         [Input("elements", "The IElements of which to get the vertecies from.")]
         [Output("vertices", "The IElements element curves discontinuity points.")]

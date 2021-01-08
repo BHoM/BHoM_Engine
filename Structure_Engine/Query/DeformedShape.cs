@@ -47,7 +47,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.DeformedShape(System.Collections.Generic.List<BH.oM.Structure.Elements.Bar>, System.Collections.Generic.List<BH.oM.Structure.Results.BarDisplacement>, System.String, System.Object, System.Double, System.Boolean)")]
         [Description("Gets deformed shape of a Bar based on BarDisplacements.")]
         [Input("bars", "The Bars to get the deformed shape for. The Bars input here should generally have been pulled from an analysis package to ensure they carry the AdapterNameId.")]
         [Input("barDisplacements", "The displacement results used to compute the deformed shape. The displacements are assumed to be in global coordinates. This list does NOT need to match the Bar input list, grouping is completed by the method.")]
@@ -110,7 +109,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Query.DeformedShape(System.Collections.Generic.List<BH.oM.Structure.Elements.FEMesh>, System.Collections.Generic.List<BH.oM.Structure.Results.MeshResult>, System.String, System.Object, System.Double)")]
         [Description("Gets deformed shape of a FEMesh based on MeshDisplacements.")]
         [Input("meshes", "The FEMeshes to get the deformed shape for. The FEMeshes input here should generally have been pulled from an analysis package to ensure they carry the AdapterNameId.")]
         [Input("meshDisplacements", "The displacement results used to compute the deformed shape.  This input should be a list of MeshResults which in turn should contain results of type MeshDisplacements. The displacements are assumed to be in global coordinates. This list does NOT need to match the FEMesh input list, grouping is completed by the method.")]

@@ -39,8 +39,6 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.TaperedProfile(System.Collections.Generic.List<System.Double>, System.Collections.Generic.List<BH.oM.Geometry.ShapeProfiles.IProfile>, System.Collections.Generic.List<System.Int32>)")]
-        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.TaperedProfile(System.Collections.Generic.List<System.Decimal>, System.Collections.Generic.List<BH.oM.Geometry.ShapeProfiles.IProfile>)")]
         [Input("positions", "Describes the position of each profile parametrically (i.e. between 0 and 1) along the Bar it is assigned to. " +
             "The smallest position indicates the start profile and the largest position indicates the end profile.")]
         [Input("profiles", "The ShapeProfile at each of the positions specified.")]
@@ -103,8 +101,6 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.TaperedProfile(BH.oM.Geometry.ShapeProfiles.IProfile, BH.oM.Geometry.ShapeProfiles.IProfile, System.Int32)")]
-        [PreviousVersion("4.0", "BH.Engine.Geometry.Create.TaperedProfile(BH.oM.Geometry.ShapeProfiles.IProfile, BH.oM.Geometry.ShapeProfiles.IProfile)")]
         [Input("interpolationOrder", "Describes the polynomial function between each profile whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc." +
             "For nonlinear profiles a concave profile is achieved by setting the larger profile at the startProfile. To achieve a convex profile, the larger profile must be at the endProfile.")]
         public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile, int interpolationOrder = 1)

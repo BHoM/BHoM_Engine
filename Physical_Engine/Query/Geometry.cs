@@ -36,7 +36,6 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.FramingElement)")]
         [Description("Gets the centreline geometry from the framing element")]
         [Output("CL", "The centre line curve of the framing element")]
         public static ICurve Geometry(this IFramingElement framingElement)

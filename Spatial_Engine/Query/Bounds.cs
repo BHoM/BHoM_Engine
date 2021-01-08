@@ -86,7 +86,6 @@ namespace BH.Engine.Spatial
         /****            IElement              ****/
         /******************************************/
 
-        [PreviousVersion("3.2", "BH.Engine.Common.Query.IBounds(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElement>)")]
         [Description("Queries the IElements BoundingBox. Acts on the elements geometrical definition of the IElement through the Geometry_Engine.")]
         [Input("elements", "The IElements with the geometry to get the BoundingBox of. i.e. added properties implying extents will not be considered.")]
         [Output("bounds", "A BoundingBox encapsulating the geometrical definition of the IElements.")]

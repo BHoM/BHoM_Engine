@@ -41,8 +41,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.Panel(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>, System.Collections.Generic.List<BH.oM.Structure.Elements.Opening>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>, System.Collections.Generic.List<BH.oM.Structure.Elements.Opening>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a structural Panel from its fundamental parts and an local orientation vector.")]
         [InputFromProperty("externalEdges")]
         [InputFromProperty("openings")]
@@ -68,8 +66,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.Panel(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a structural Panel from a closed curve defining the outline, and any number of closed curves defining openings.")]
         [Input("outline", "A closed Curve defining the outline of the Panel. The ExternalEdges of the Panel will be the subparts of this curve, where each edge will corespond to one curve segment.")]
         [Input("openings", "A collection of closed curves representing the openings of the Panel.")]
@@ -92,9 +88,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.Panel(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(System.Collections.Generic.List<BH.oM.Geometry.Polyline>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a list of Panels based on a collection of outline curves. \n" + 
                      "Method will distribute the outlines such that the outermost curve will be assumed to be an external outline of a panel, and any curve contained in this outline will be assumed as an opening of this Panel. \n" +
                      "Any outline curve inside an opening will again be assumed to be the outline of a new Panel.")]
@@ -133,7 +126,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.Panel(BH.oM.Geometry.PlanarSurface, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [Description("Creates a structural Panel from a PlanarSurface, creating external edges from the ExternalBoundary and openings from the InternalBoundaries of the PlanarSurface.")]
         [Input("surface", "A planar surface used to define the geometry of the panel, i.e. the external edges and the openings.")]
         [InputFromProperty("property")]
@@ -149,7 +141,6 @@ namespace BH.Engine.Structure
         /**** Public Methods - Deprecated               ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [ToBeRemoved("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]
         public static Panel Panel(List<Edge> externalEdges, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
         {
@@ -159,7 +150,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.PanelPlanar(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Structure.Elements.Opening>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)")]
         [ToBeRemoved("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]
         public static Panel Panel(ICurve outline, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
         {

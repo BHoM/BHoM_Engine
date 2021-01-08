@@ -38,7 +38,6 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Reflection.Query.Description(System.Reflection.MemberInfo)")]
         [Description("Return the custom description of a C# class member (e.g. property, method, field)")]
         public static string Description(this MemberInfo member, bool addTypeDescription = true)
         {
@@ -59,7 +58,6 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Reflection.Query.Description(System.Reflection.ParameterInfo)")]
         [Description("Return the custom description of a C# method argument")]
         public static string Description(this ParameterInfo parameter, bool addTypeDescription = true)
         {

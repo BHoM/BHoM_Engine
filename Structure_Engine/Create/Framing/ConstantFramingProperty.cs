@@ -38,7 +38,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Create.ConstantFramingElementProperty(BH.oM.Structure.SectionProperties.ISectionProperty, System.Double, System.String)")]
         [Description("Creates a ConstantFramingProperty from a ISectionProperty and orientation angle. Extracts the SectionProfile (if existing) and Structural MaterialFragment and creates a physical material with the same name.")]
         [Input("sectionProperty", "Structural section property to extract profile and material from. For explicit sections lacking a profile only the material will get extracted.")]
         [Input("orientationAngle", "Defines the sections rotation around its own axis.", typeof(Angle))]

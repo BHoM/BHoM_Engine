@@ -43,8 +43,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Query.AnalyticalBars(BH.oM.Structure.Elements.FramingElement)")]
-        [PreviousVersion("3.3", "BH.Engine.Structure.Query.AnalyticalBars(BH.oM.Structure.Elements.FramingElement, System.Double, System.Int32)")]
         [Description("Create a series of analytical Bar elements from the framing element. The relationship of Bars to FramingElements is not necessarily one to one and this is dictated by property and curve type of the FramingElement.")]
         [Input("elements", "The framing element to generate bars from.")]
         [Input("angleTolerance", "Angle tolerance to control the splitting up of non-linear curves. Unused for line based FramingElements.", typeof(Angle))]

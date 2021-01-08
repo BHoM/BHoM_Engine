@@ -40,7 +40,6 @@ namespace BH.Engine.Analytical
         /****               Public Methods              ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetOutlineElements1D(BH.oM.Structure.Elements.Opening, System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>)")]
         [Description("Sets the Outline Element1Ds of an opening, i.e. the Edges of an Opening. Method required for all IElement2Ds.")]
         [Input("opening", "The Opening to update the Edges of.")]
         [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the Opening or Geometrical ICurve. \n" +
@@ -57,7 +56,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Structure.Modify.SetOutlineElements1D(BH.oM.Structure.Elements.Panel, System.Collections.Generic.List<BH.oM.Dimensional.IElement1D>)")]
         [Description("Sets the outline Element1Ds of a IPanel, i.e. the ExternalEdges of a IPanel. Method required for all IElement2Ds.")]
         [Input("panel", "The IPanel to update the ExternalEdges of.")]
         [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the IPanel or Geometrical ICurve. \n" +

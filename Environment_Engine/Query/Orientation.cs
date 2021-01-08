@@ -36,7 +36,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.0", "BH.Engine.Environment.Query.Orientation(BH.oM.Environment.IEnvironmentObject)")]
         [Description("Returns the angle to north of a given environmental object on an xyPlane")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
         [Input("northAngle", "The angle in radians for north. Default is 0.")]

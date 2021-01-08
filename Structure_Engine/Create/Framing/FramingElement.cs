@@ -39,7 +39,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("3.3", "BH.Engine.Structure.Convert.ToFramingElement(BH.oM.Structure.Elements.Bar, BH.oM.Structure.Elements.StructuralUsage1D)")]
         [Description("Creates a physical IFramingElement from a Bar. The framing element will be assigned a ConstantFramingProperty based on the sectionproeprty of the bar and have a type based on the structural usage.")]
         [Input("bar", "The Bar to use as the base for the framing element.")]
         [Input("structuralUsage", "Used to determine which type of framing element that should be constructed.")]
