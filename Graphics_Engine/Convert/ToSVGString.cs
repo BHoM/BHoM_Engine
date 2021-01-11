@@ -206,7 +206,7 @@ namespace BH.Engine.Graphics
             Point end = arc.EndPoint();
             string arcString = "<path d=\"M" + start.X.ToString()
                                 + "," + start.Y.ToString()
-                                + " A" + arc.Radius() + "," + arc.Radius()
+                                + " A" + arc.Radius + "," + arc.Radius
                                 + " 0"
                                 + " " + largeArcFlag
                                 + "," + sweepFlag

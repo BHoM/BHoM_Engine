@@ -108,7 +108,7 @@ namespace BH.Engine.Geometry
         public static bool IsContaining(this Arc curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsClosed(tolerance)) return false;
-            Circle circle = new Circle { Centre = curve.Centre(), Radius = curve.Radius(), Normal = curve.FitPlane().Normal };
+            Circle circle = new Circle { Centre = curve.Centre(), Radius = curve.Radius, Normal = curve.FitPlane().Normal };
             return circle.IsContaining(points, acceptOnEdge, tolerance);
         }
 
@@ -360,7 +360,7 @@ namespace BH.Engine.Geometry
         public static bool IsContaining(this Arc curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (!curve1.IsClosed(tolerance)) return false;
-            Circle circle = new Circle { Centre = curve1.Centre(), Radius = curve1.Radius(), Normal = curve1.FitPlane().Normal };
+            Circle circle = new Circle { Centre = curve1.Centre(), Radius = curve1.Radius, Normal = curve1.FitPlane().Normal };
             return circle.IsContaining(curve2);
         }
 

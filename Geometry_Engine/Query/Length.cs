@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
 
         public static double Length(this Arc curve)
         {
-            return curve.Angle() * curve.Radius();
+            return curve.Angle() * curve.Radius;
         }
 
         /***************************************************/
