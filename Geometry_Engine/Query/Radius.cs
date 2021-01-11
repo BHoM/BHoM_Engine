@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -30,6 +31,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Deprecated("4.1", "To be removed as radius is a public property of the Arc class.")]
         public static double Radius(this Arc arc)
         {
             //TODO: remove this method?
