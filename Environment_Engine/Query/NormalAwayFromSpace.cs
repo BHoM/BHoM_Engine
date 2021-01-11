@@ -66,7 +66,7 @@ namespace BH.Engine.Environment
             if (centrePt == null)
                 centrePt = polyline.Centroid();
             if (centrePt == null)
-                centrePt = polyline.Centre();
+                centrePt = polyline.ControlPoints.CullDuplicates().Average();
             if (centrePt == null)
                 return false; //Problems
 
