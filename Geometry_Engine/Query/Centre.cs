@@ -21,9 +21,8 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
-using System.Linq;
-using System;
 
 namespace BH.Engine.Geometry
 {
@@ -40,6 +39,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [ToBeRemoved("4.1", "To be removed as it is generally incorrect. Advising using Centroid instead.")]
         public static Point Centre(this Polyline polyline, double tolerance = Tolerance.Distance)
         {
             //TODO: this is an average point, not centroid - should be distinguished
