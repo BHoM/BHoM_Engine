@@ -60,13 +60,12 @@ namespace BH.Engine.Environment
             Vector normal = polyline.Normal();
             if (!polyline.NormalAwayFromSpace(panelsAsSpace))
                 normal = polyline.Flip().Normal();
+            if (normal == null)
+                return null;
 
             Point centre = polyline.Centroid();
             if (centre == null)
                 centre = polyline.ControlPoints.CullDuplicates().Average();
-
-            if(normal == null)
-                return null;
 
             Line line = new Line
             {
