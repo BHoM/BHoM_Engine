@@ -22,7 +22,6 @@
 
 using BH.Engine.Base;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,20 +46,27 @@ namespace BH.Engine.Geometry
 
         public static double Area(this Arc curve)
         {
-            return curve.IsClosed() ? curve.Angle() * Math.Pow(curve.Radius, 2) : 0;
+            if (curve.IsClosed())
+                return Math.PI * curve.Radius * curve.Radius;
+            else
+            {
+                Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
+                return 0;
+            }
         }
 
         /***************************************************/
 
         public static double Area(this Circle curve)
         {
-            return Math.PI * Math.Pow(curve.Radius, 2);
+            return Math.PI * curve.Radius * curve.Radius;
         }
 
         /***************************************************/
 
         public static double Area(this Line curve)
         {
+            Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
             return 0;
         }
 
@@ -72,7 +78,10 @@ namespace BH.Engine.Geometry
                 return (curve.Curves[0] as Circle).Area();
 
             if (!curve.IsClosed())
+            {
+                Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
+            }
 
             Plane p = curve.FitPlane();
             if (p == null)
@@ -116,7 +125,10 @@ namespace BH.Engine.Geometry
         public static double Area(this Polyline curve)
         {
             if (!curve.IsClosed())
+            {
+                Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
+            }
 
             List<Point> pts = curve.ControlPoints;
             int ptsCount = pts.Count;
