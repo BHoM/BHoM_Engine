@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -56,7 +56,7 @@ namespace BH.Engine.Base
 
         [Description("Check if the input fragment can be added to a specific object.")]
         [Input("fragment", "The fragment object you want to add to that object.")]
-        [Input("targetType", "The object you want to apply the fragment to.")]
+        [Input("target", "The object you want to apply the fragment to.")]
         public static bool CanTarget(this IFragment fragment, object target)
         {
             if (target == null)
