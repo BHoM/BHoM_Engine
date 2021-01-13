@@ -38,8 +38,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Return the list of inherited types that are limited to one per collection.")]
-        [Input("fragment", "The fragment object you want to add to an object.")]
-        [Input("targetType", "The type of object you want to apply the fragment to.")]
+        [Input("type", "The type of object you want to apply the fragment to.")]
         public static List<Type> UniquenessRestrictions(this Type type)
         {
             // Do not cover value types
