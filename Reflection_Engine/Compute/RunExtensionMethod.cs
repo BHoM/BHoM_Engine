@@ -109,9 +109,18 @@ namespace BH.Engine.Reflection
                 MethodInfo finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
 
                 //Turn the MethodInfo to a compiled function, store it and finally call it
-                Func<object[], object> func = finalMethod.ToFunc();
-                StoreExtensionMethod(key, func);
-                return func(parameters);
+                try
+                {
+                    Func<object[], object> func = finalMethod.ToFunc();
+                    object result = func(parameters);
+                    StoreExtensionMethod(key, func);
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"Failed to run extension method {methodName}.\nError: {e.Message}");
+                    return null;
+                }
             }
 
             //If nothing found, store null, to avoid having to search again in vain

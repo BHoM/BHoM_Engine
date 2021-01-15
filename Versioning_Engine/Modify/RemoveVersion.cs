@@ -20,59 +20,27 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
+using System;
+using System.Collections.Generic;
 using BH.oM.Base;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
-using MongoDB.Bson.Serialization.Serializers;
-using BH.Engine.Versioning;
-using System;
-using System.Reflection;
-using BH.Engine.Serialiser.Objects;
-using System.Collections.Generic;
 
-namespace BH.Engine.Serialiser.BsonSerializers
+namespace BH.Engine.Versioning
 {
-    public class DeprecatedSerializer : MongoDB.Bson.Serialization.Serializers.ObjectSerializer
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        /***************************************************/
 
-        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, object value)
+        public static void RemoveVersion(this BsonDocument document)
         {
-            var bsonWriter = context.Writer;
-            bsonWriter.WriteNull();
+            if (document != null)
+                document.Remove("_bhomVersion");
         }
 
         /***************************************************/
-
-        public override object Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
-        {
-            // This is where we can call the Version_Engine to return the new type string from the old on if exist
-            BsonReaderBookmark bookmark = context.Reader.GetBookmark();
-            IBsonSerializer bSerializer = BsonSerializer.LookupSerializer(typeof(BsonDocument));
-            BsonDocument doc = bSerializer.Deserialize(context, args) as BsonDocument;
-            BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
-
-            if (newDoc == null || newDoc.Equals(doc))
-            {
-                Engine.Reflection.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
-                context.Reader.ReturnToBookmark(bookmark);
-                IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
-                return customSerializer.Deserialize(context, args);
-            }   
-            else
-            {
-                return Convert.FromBson(newDoc);
-            }
-                
-        }
-
-        /***************************************************/
-
     }
 }
 

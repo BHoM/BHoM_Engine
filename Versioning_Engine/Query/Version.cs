@@ -20,27 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Serialiser.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Base;
+using MongoDB.Bson;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Versioning
 {
-    public static partial class Compute
+    public static partial class Query
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        public static void AllowUpgradeFromBson(bool allow)
+        public static string Version(this BsonDocument document)
         {
-            Config.AllowUpgradeFromBson = allow;
+            if (document != null && document.Contains("_bhomVersion"))
+                return document["_bhomVersion"].ToString();
+            else
+                return "";
         }
 
-        /*******************************************/
+        /***************************************************/
+
     }
 }
+
 

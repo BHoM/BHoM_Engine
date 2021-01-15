@@ -55,12 +55,16 @@
   <ItemGroup>
     <Compile Include="Compute\VersionKey.cs" />
     <Compile Include="Convert\ToNewVersion.cs" />
+    <Compile Include="Modify\AddVersion.cs" />
+    <Compile Include="Modify\RemoveVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\UpgradersToCall.cs" />
+    <Compile Include="Query\UpgraderVersions.cs" />
+    <Compile Include="Query\Version.cs" />
     <Compile Include="Query\VersionKey.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Create\" />
-    <Folder Include="Modify\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">

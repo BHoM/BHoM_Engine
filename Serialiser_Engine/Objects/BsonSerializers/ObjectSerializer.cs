@@ -32,6 +32,8 @@ using System;
 using System.Reflection;
 using BH.Engine.Serialiser.Objects;
 using System.Collections.Generic;
+using BH.Engine.Serialiser.Objects.MemberMapConventions;
+using System.Linq;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -201,20 +203,15 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 actualType = typeof(Enum);
 
             if (!BsonClassMap.IsClassMapRegistered(actualType))
-            {
                 Compute.RegisterClassMap(actualType);
-            }
 
             var serializer = BsonSerializer.LookupSerializer(actualType);
-
             if (serializer.GetType().Name == "EnumerableInterfaceImplementerSerializer`2" && context.Writer.State == BsonWriterState.Initial)
             {
                 if (!m_FallbackSerialisers.ContainsKey(actualType))
                     CreateFallbackSerialiser(actualType);
                 serializer = m_FallbackSerialisers[actualType];
             }
-
-            
 
             var polymorphicSerializer = serializer as IBsonPolymorphicSerializer;
             if (polymorphicSerializer != null && polymorphicSerializer.IsDiscriminatorCompatibleWithObjectSerializer)
@@ -267,31 +264,20 @@ namespace BH.Engine.Serialiser.BsonSerializers
             {
                 actualType = _discriminatorConvention.GetActualType(reader, typeof(object));
             }
-            catch (Exception e)
+            catch 
             {
-                BsonDocument doc = null;
-
                 try
                 {
                     context.Reader.ReturnToBookmark(bookmark);
-                    IBsonSerializer bSerializer = BsonSerializer.LookupSerializer(typeof(BsonDocument));
-                    doc = bSerializer.Deserialize(context, args) as BsonDocument;
+                    DeprecatedSerializer deprecatedSerialiser = new DeprecatedSerializer();
+                    return deprecatedSerialiser.Deserialize(context, args);
                 }
                 catch { }
-                
-                if (doc != null && doc.Contains("_t") && doc["_t"].AsString == "DBNull")
-                    return null;
-                else
-                    actualType = typeof(IDeprecated);
             }
             context.Reader.ReturnToBookmark(bookmark);
 
             if (actualType == null)
                 return null;
-
-            // Make sure the type is not deprecated
-            if (Config.AllowUpgradeFromBson && actualType.IIsDeprecated() && !Config.TypesWithoutUpgrade.Contains(actualType))
-                actualType = typeof(IDeprecated);
 
             // Handle the special case where the type is object
             if (actualType == typeof(object))
@@ -318,65 +304,14 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     bsonSerializer = m_FallbackSerialisers[actualType];
                 }
 
+
                 return bsonSerializer.Deserialize(context, args);
             }
             catch (Exception e)
             {
                 context.Reader.ReturnToBookmark(bookmark);
-
-                if (e is FormatException && e.InnerException != null && (e.InnerException is FormatException || e.InnerException is BsonSerializationException))
-                {
-                    // A child of the object is causing problems. Try to recover from custom object
-                    IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
-                    object result = customSerializer.Deserialize(context, args);
-                    Guid objectId = ((CustomObject)result).BHoM_Guid;
-
-                    if (!Config.TypesWithoutUpgrade.Contains(actualType))
-                    {
-                        if (m_StackCounter.ContainsKey(objectId))
-                            m_StackCounter[objectId] += 1;
-                        else
-                            m_StackCounter[objectId] = 1;
-
-                        if (m_StackCounter[objectId] < 10)
-                        {
-                            result = Convert.FromBson(result.ToBson());
-                            m_StackCounter.Remove(objectId);
-                        }
-                    }
-                    
-                    if (result is CustomObject)
-                    {
-                        context.Reader.ReturnToBookmark(bookmark);
-                        IBsonSerializer bSerializer = BsonSerializer.LookupSerializer(typeof(BsonDocument));
-                        BsonDocument doc = bSerializer.Deserialize(context, args) as BsonDocument;
-                        BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
-
-                        if (newDoc == null || doc == newDoc)
-                        {
-                            Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
-                            Config.TypesWithoutUpgrade.Add(actualType);
-                        }
-                        else
-                            return BH.Engine.Serialiser.Convert.FromBson(newDoc);
-                    }
-                        
-                    return result;
-
-                }
-                else if (actualType != typeof(IDeprecated))
-                {
-                    // Try the deprecated object serialiser
-                    IBsonSerializer deprecatedSerializer = BsonSerializer.LookupSerializer(typeof(IDeprecated));
-                    return deprecatedSerializer.Deserialize(context, args);
-                }
-                else
-                {
-                    // Last resort: just return the custom object 
-                    Engine.Reflection.Compute.RecordWarning("The type " + actualType.FullName + " is unknown -> data returned as custom objects.");
-                    IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
-                    return customSerializer.Deserialize(context, args);
-                }
+                DeprecatedSerializer deprecatedSerialiser = new DeprecatedSerializer();
+                return deprecatedSerialiser.Deserialize(context, args);
             }
         }
 
@@ -396,9 +331,6 @@ namespace BH.Engine.Serialiser.BsonSerializers
         /***************************************************/
 
         private readonly IDiscriminatorConvention _discriminatorConvention;
-
-        private static Dictionary<Guid, int> m_StackCounter = new Dictionary<Guid, int>();
-
         private Dictionary<Type, IBsonSerializer> m_FallbackSerialisers = new Dictionary<Type, IBsonSerializer>();
 
 

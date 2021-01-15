@@ -22,14 +22,39 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Base;
+using MongoDB.Bson;
+using MongoDB.Bson.IO;
 
-namespace BH.Engine.Serialiser.Objects
+namespace BH.Engine.Versioning
 {
-    public interface IDeprecated
+    public static partial class Modify
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static void AddVersion(this BsonDocument document)
+        {
+            // TODO: Uncomment this code after producing the next beta
+            /*if (document != null)
+                document["_bhomVersion"] = Reflection.Query.BHoMVersion();*/
+        }
+
+        /***************************************************/
+
+        public static void AddVersion(this IBsonWriter writer)
+        {
+            // TODO: Uncomment this code after producing the next beta
+            /*if (writer != null)
+            {
+                writer.WriteName("_bhomVersion");
+                writer.WriteString(Reflection.Query.BHoMVersion());
+            }*/
+        }
+
+        /***************************************************/
     }
 }
+
 

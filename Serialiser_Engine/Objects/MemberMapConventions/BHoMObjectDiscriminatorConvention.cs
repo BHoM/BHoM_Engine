@@ -21,8 +21,10 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BH.Engine.Serialiser.BsonSerializers;
 using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
@@ -62,7 +64,24 @@ namespace BH.Engine.Serialiser.Objects.MemberMapConventions
                 {
                     var context = BsonDeserializationContext.CreateRoot(bsonReader);
                     var discriminator = BsonValueSerializer.Instance.Deserialize(context);
-                    actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
+                    try
+                    {
+                        actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
+                    }
+                    catch
+                    {
+                        BsonDocument doc = new BsonDocument
+                        {
+                            { "_t", "System.Type" },
+                            { "Name", discriminator.ToString() }
+                        };
+
+                        try
+                        {
+                            actualType = Convert.FromBson(doc) as Type;
+                        }
+                        catch { }
+                    }
                 }
                 else
                     actualType = typeof(CustomObject);
