@@ -35,7 +35,8 @@ namespace BH.Engine.Reflection
 
         public static string BHoMVersion()
         {
-            string version = "";
+            if (m_BHoMVersion.Length > 0)
+                return m_BHoMVersion;
 
             // First try to get the assembly file version
             object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
@@ -46,20 +47,26 @@ namespace BH.Engine.Reflection
                 {
                     string[] split = attribute.Version.Split('.');
                     if (split.Length >= 2)
-                        version = split[0] + "." + split[1];
+                        m_BHoMVersion = split[0] + "." + split[1];
                 }
             }
 
             // Get the assembly version as a fallback
-            if (version.Length == 0)
+            if (m_BHoMVersion.Length == 0)
             {
                 Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                version = currentVersion.Major + "." + currentVersion.Minor;
+                m_BHoMVersion = currentVersion.Major + "." + currentVersion.Minor;
             }
 
-            return version;
+            return m_BHoMVersion;
         }
 
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static string m_BHoMVersion = "";
 
         /***************************************************/
     }

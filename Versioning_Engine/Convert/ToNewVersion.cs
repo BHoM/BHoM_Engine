@@ -63,7 +63,7 @@ namespace BH.Engine.Versioning
 
         /***************************************************/
 
-        public static BsonDocument ToNewVersion(BsonDocument document, string version = "")
+        public static BsonDocument ToNewVersion(this BsonDocument document, string version = "")
         {
             if (document == null)
                 return null;
@@ -71,20 +71,30 @@ namespace BH.Engine.Versioning
             if (document.Contains("_t") && document["_t"].ToString() == "DBNull")
                 return null;
 
-            // Get the current version of the BHoM if not provided
-            if (version.Length == 0)
-                version = Reflection.Query.BHoMVersion();
+            if (version == "")
+                version = document.Version();
 
-            // Create a connection with the upgrader
-            NamedPipeServerStream pipe = GetPipe(version);
-            if (pipe == null)
-                return null;
+            // Get the list of upgraders to call
+            List<string> versions = Query.UpgradersToCall(version);
 
-            // Send the document
-            SendDocument(document, pipe);
+            // Call all the upgraders in sequence
+            for (int i = 0; i < versions.Count; i++)
+            {
+                // Create a connection with the upgrader
+                NamedPipeServerStream pipe = GetPipe(versions[i]);
+                if (pipe == null)
+                    return document;
 
-            // Get the new version back
-            return ReadDocument(pipe);
+                // Send the document
+                SendDocument(document, pipe);
+
+                // Get the new version back
+                BsonDocument result = ReadDocument(pipe);
+                if (result != null)
+                    document = result;
+            }
+
+            return document;
         }
 
 
@@ -131,8 +141,8 @@ namespace BH.Engine.Versioning
             // Create the process for the upgrader
             Process process = new Process();
             process.StartInfo = new ProcessStartInfo(processFile, pipeName);
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
+            //process.StartInfo.UseShellExecute = false;
+            //process.StartInfo.CreateNoWindow = true;
             bool ok = process.Start();                
 
             // Waiting for pipe to connect

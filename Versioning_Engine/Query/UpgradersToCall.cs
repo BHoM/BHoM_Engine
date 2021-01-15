@@ -20,20 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Reflection;
+using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Serialiser.Objects
+namespace BH.Engine.Versioning
 {
-    public class Config
+    public static partial class Query
     {
-        public static bool AllowUpgradeFromBson { get; set; } = true;
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        public static HashSet<Type> TypesWithoutUpgrade { get; set; } = new HashSet<Type>();
+        [Description("Provide the sequence of BHoM upgrader that need to be called for an object from a given version.")]
+        [Input("version", "Version of the object that need to be upgraded.")]
+        [Output("upgraders", "BHoM upgrader versions that need to be called.")]
+        public static List<string> UpgradersToCall(string version)
+        {
+            if (m_UpgradersToCall.ContainsKey(version))
+                return m_UpgradersToCall[version];
+
+            List<string> upgraders = UpgraderVersions();
+            int index = upgraders.IndexOf(version);
+            return upgraders.Skip(index + 1).ToList();
+        }
+
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static Dictionary<string, List<string>> m_UpgradersToCall = new Dictionary<string, List<string>>();
+
+        /***************************************************/
     }
-    
 }
 

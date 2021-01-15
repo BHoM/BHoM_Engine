@@ -21,6 +21,7 @@
  */
 
 using BH.Engine.Reflection;
+using BH.Engine.Versioning;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -69,6 +70,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 bsonWriter.WriteString(info.ParameterType.ToJson());
             bsonWriter.WriteEndArray();
 
+            bsonWriter.AddVersion();
+
             bsonWriter.WriteEndDocument();
         }
 
@@ -96,6 +99,10 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 paramTypesJson.Add(bsonReader.ReadString());
             bsonReader.ReadEndArray();
 
+            string version = "";
+            if (bsonReader.FindElement("_bhomVersion"))
+                version = bsonReader.ReadString();
+
             context.Reader.ReadEndDocument();
 
             try
@@ -110,7 +117,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     doc["TypeName"] = typeName;
                     doc["MethodName"] = methodName;
                     doc["Parameters"] = new BsonArray(paramTypesJson);
-                    BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
+                    BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc, version);
                     if (newDoc != null && newDoc.Contains("TypeName") && newDoc.Contains("MethodName") && newDoc.Contains("Parameters"))
                         method = GetMethod(newDoc["MethodName"].AsString, newDoc["TypeName"].AsString, newDoc["Parameters"].AsBsonArray.Select(x => x.AsString).ToList());
                 }

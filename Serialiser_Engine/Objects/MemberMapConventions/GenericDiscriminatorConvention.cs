@@ -68,14 +68,8 @@ namespace BH.Engine.Serialiser.Objects.MemberMapConventions
                     }
                     if (BsonSerializer.IsTypeDiscriminated(nominalType))
                         actualType = BsonSerializer.LookupActualType(nominalType, discriminator);
-                    else if (Reflection.Compute.UnqualifiedName(nominalType.FullName) != Reflection.Compute.UnqualifiedName(discriminator.ToString()) && Config.AllowUpgradeFromBson && !Config.TypesWithoutUpgrade.Contains(actualType))
-                        actualType = typeof(IDeprecated);
-
                 }
                 bsonReader.ReturnToBookmark(bookmark);
-
-                if (Config.AllowUpgradeFromBson && actualType.IsDeprecated() && !Config.TypesWithoutUpgrade.Contains(actualType))
-                    actualType = typeof(IDeprecated);
             }
 
             return actualType;

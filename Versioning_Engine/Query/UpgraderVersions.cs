@@ -22,58 +22,59 @@
 
 using BH.Engine.Reflection;
 using BH.oM.Base;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
-using MongoDB.Bson.Serialization.Serializers;
-using BH.Engine.Versioning;
+using BH.oM.Reflection.Attributes;
 using System;
-using System.Reflection;
-using BH.Engine.Serialiser.Objects;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Pipes;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Serialiser.BsonSerializers
+namespace BH.Engine.Versioning
 {
-    public class DeprecatedSerializer : MongoDB.Bson.Serialization.Serializers.ObjectSerializer
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, object value)
+        [Description("Provide the list of BHoM versions covered by an upgrader")]
+        [Output("versions", "BHoM versions covered by an upgrader.")]
+        public static List<string> UpgraderVersions()
         {
-            var bsonWriter = context.Writer;
-            bsonWriter.WriteNull();
+            if (m_UpgraderVersions != null)
+                return m_UpgraderVersions;
+
+            string upgraderFolder = Path.Combine(Reflection.Query.BHoMFolder(), "..", "Upgrades");
+
+            m_UpgraderVersions = Directory.GetDirectories(upgraderFolder, "BHoMUpgrader*", SearchOption.TopDirectoryOnly).Select(folder =>
+            {
+                string number = Path.GetFileName(folder).Replace("BHoMUpgrader", "");
+                return number.Insert(number.Length - 1, ".");
+            })
+            .OrderBy(x =>
+            {
+                double n = 0;
+                double.TryParse(x, out n);
+                return n;
+            })
+            .ToList();
+
+            return m_UpgraderVersions;
         }
 
-        /***************************************************/
-
-        public override object Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
-        {
-            // This is where we can call the Version_Engine to return the new type string from the old on if exist
-            BsonReaderBookmark bookmark = context.Reader.GetBookmark();
-            IBsonSerializer bSerializer = BsonSerializer.LookupSerializer(typeof(BsonDocument));
-            BsonDocument doc = bSerializer.Deserialize(context, args) as BsonDocument;
-            BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
-
-            if (newDoc == null || newDoc.Equals(doc))
-            {
-                Engine.Reflection.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
-                context.Reader.ReturnToBookmark(bookmark);
-                IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
-                return customSerializer.Deserialize(context, args);
-            }   
-            else
-            {
-                return Convert.FromBson(newDoc);
-            }
-                
-        }
 
         /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
 
+        private static List<string> m_UpgraderVersions = null;
+
+        /***************************************************/
     }
 }
-
 

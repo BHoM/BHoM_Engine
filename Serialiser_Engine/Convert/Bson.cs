@@ -39,6 +39,7 @@ using System.Reflection;
 using BH.Engine.Serialiser.Objects;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using BH.Engine.Versioning;
 
 namespace BH.Engine.Serialiser
 {
@@ -59,7 +60,13 @@ namespace BH.Engine.Serialiser
                 return document;
             }
             else
-                return obj.ToBsonDocument();
+            {
+                BsonDocument document = obj.ToBsonDocument();
+                if (document != null)
+                    document.AddVersion();
+                return document;
+            }
+                
         }
 
         /*******************************************/
@@ -73,6 +80,8 @@ namespace BH.Engine.Serialiser
                 return bson["_v"].AsString;
 
             bson.Remove("_id");
+            bson.RemoveVersion();
+
             object obj = BsonSerializer.Deserialize(bson, typeof(object));
             if (obj is ExpandoObject)
             {
@@ -171,7 +180,6 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(BsonType.String));
                 BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(Enum), new EnumSerializer());
-                BsonSerializer.RegisterSerializer(typeof(IDeprecated), new DeprecatedSerializer());
                 BsonSerializer.RegisterSerializer(typeof(DataTable), new DataTableSerialiser());
                 BsonSerializer.RegisterSerializer(typeof(Bitmap), new BitmapSerializer());
                 BsonSerializer.RegisterSerializer(typeof(IntPtr), new IntPtrSerializer());

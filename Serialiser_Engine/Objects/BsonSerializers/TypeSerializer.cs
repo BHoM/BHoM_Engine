@@ -31,6 +31,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
+using BH.Engine.Versioning;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -107,6 +108,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
                         BsonSerializer.Serialize(bsonWriter, arg);
                     bsonWriter.WriteEndArray();
                 }
+
+                // Add the BHoM verion 
+                bsonWriter.AddVersion();
             }
 
             bsonWriter.WriteEndDocument();
@@ -123,16 +127,31 @@ namespace BH.Engine.Serialiser.BsonSerializers
             if (text == m_DiscriminatorConvention.ElementName)
                 bsonReader.SkipValue();
 
-            bsonReader.ReadName();
-            var fullName = context.Reader.ReadString();
-
+            string fullName = "";
+            string version = "";
             List<Type> genericTypes = new List<Type>();
-            if (context.Reader.FindElement("GenericArguments"))
+
+            while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
             {
-                bsonReader.ReadStartArray();
-                while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
-                    genericTypes.Add(BsonSerializer.Deserialize(bsonReader, typeof(Type)) as Type);
-                bsonReader.ReadEndArray();
+                string name = bsonReader.ReadName();
+
+                switch (name)
+                {
+                    case "Name":
+                        fullName = bsonReader.ReadString();
+                        break;
+                    case "_bhomVersion":
+                        version = bsonReader.ReadString();
+                        break;
+                    case "GenericArguments":
+                        bsonReader.ReadStartArray();
+                        while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
+                            genericTypes.Add(BsonSerializer.Deserialize(bsonReader, typeof(Type)) as Type);
+                        bsonReader.ReadEndArray();
+                        break;
+                    default:
+                        break;
+                }
             }
 
             context.Reader.ReadEndDocument();
@@ -147,7 +166,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     BsonDocument doc = new BsonDocument();
                     doc["_t"] = "System.Type";
                     doc["Name"] = fullName;
-                    BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
+                    BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc, version);
                     if (newDoc != null && newDoc.Contains("Name"))
                         type = GetTypeFromName(newDoc["Name"].AsString);
                 }
