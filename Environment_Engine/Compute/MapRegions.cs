@@ -91,8 +91,8 @@ namespace BH.Engine.Environment
                 matchingPerimeter = matchingPerimeter.Distinct().ToList();
 
                 // Add a list of regions that haven't been mapped to any original regions
-                if (matchingPerimeter.Count == 0)
-                    regionsNotMatched.Add(region);
+                //if (matchingPerimeter.Count == 0)
+                    //regionsNotMatched.Add(region);
 
                 // Map the matching regions to the original regions 
                 foreach (IRegion match in matchingPerimeter)
@@ -108,6 +108,34 @@ namespace BH.Engine.Environment
                     regionNotFound.Add(originalRegions[x]);
             }
 
+            // Check if the original regions are enclosed by regionsToMap and add those regionsToMap to mappedRegions
+            
+            List<IRegion> matched = new List<IRegion>();
+            List<IRegion> regionsNotFound = new List<IRegion>();
+           
+            foreach (IRegion originalRegion in regionNotFound)
+            {
+                bool wasMatched = false;
+                for (int x = 0; x < regionsToMap.Count; x++)
+                {
+                    if (regionsToMap[x].Perimeter.IIsContaining(originalRegion.Perimeter.ICollapseToPolyline(angleTolerance).IControlPoints()))
+                    {
+                        mappedRegions[originalRegions.IndexOf(originalRegion)].Add(regionsToMap[x]);
+                        matched.Add(regionsToMap[x]);
+                        wasMatched = true;
+                        break; //Delete this line if regionsToMap can overlap and have multipled original regions wholly contained within them
+                    }
+                }
+
+                if (!wasMatched)
+                    regionsNotFound.Add(originalRegion);
+
+                foreach (IRegion m in matched)
+                {
+                    regionsNotMatched.Remove(m);                    
+                }               
+            }        
+                        
             // Add percentage of original regions matched to the mapped regions
             for (int x = 0; x < originalRegions.Count; x++)
             {
@@ -130,19 +158,34 @@ namespace BH.Engine.Environment
                         mappedRegionsI.Add(region);
                 }
 
+                //Remove regions without any intersectioning area from mappedRegions and add them to regionsNotMatched 
+                //Add regions that have line intersections but no intersecting area to regionsNotMatched
                 foreach (IRegion r in mappedRegionsI)
                 {
                     mappedRegions[x].Remove(r);
-                    regionsNotMatched.Add(r);
                 }
+
+                if (mappedRegions[x].Count == 0)
+                    regionsNotFound.Add(originalRegions[x]);
             }
+
+            foreach(IRegion r in regionsToMap)
+            {
+                //Find out which ones haven't been mapped anywhere
+                int includedElsewhere = mappedRegions.Where(x => x.Contains(r)).Count();
+                if (includedElsewhere == 0)
+                    regionsNotMatched.Add(r);
+            }
+
+            regionsNotFound = regionsNotFound.Distinct().ToList();
+            regionsNotMatched = regionsNotMatched.Distinct().ToList();
 
             return new Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>>
             {
                 Item1 = mappedRegions,
                 Item2 = percentages,
                 Item3 = regionsNotMatched,
-                Item4 = regionNotFound,           
+                Item4 = regionsNotFound,           
             };
         }
     }
