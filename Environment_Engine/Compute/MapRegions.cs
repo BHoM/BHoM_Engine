@@ -47,29 +47,29 @@ namespace BH.Engine.Environment
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Maps regions based on geometry to an original set of regions. This is done by taking the intersections of the regions to map perimeters with the original region perimeters and checking which original region contains those intersections. E.G. mapping IES zoned regions back to original Revit regions. Also filters out unmatched regions and calculates the area percentage of the mapped regions that has been matched to the original regions.")]
-        [Input("regionsToMap", "A collection of Environment regions to map to original regions")]
-        [Input("originalRegions", "A collection of original regions to map to")]
+        [Description("Maps a regions based on geometry to another set of regions by using intersections and overlapping of the region perimeters. E.G. mapping IES zoned regions to Revit regions. This method also filters out unmatched regions and calculates the area percentage of the mapped regions.")]
+        [Input("regionListA", "Regions to be grouped according to their intersection or overlap with regionListB")]
+        [Input("regionListB", "Regions to use as basis for grouping of regionListA according to their intersection with regionsA")]
         [Input("distanceTolerance", "the tolerance used for distance calculations")]
         [Input("angleTolerance", "the tolerance used for angle calculations")]
-        [MultiOutput(0, "mappedRegions", "A list of the mapped regions")]
-        [MultiOutput(1, "percentages", "A list of area percentages of the mapped regions matched to the original region")]
-        [MultiOutput(2, "regionsNotMatched", "A list of the regions that didn't map to any original regions")]
-        [MultiOutput(3, "regionsNotFound", "A list of the original regions that didn't find any regions to map")]
-        public static Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>> MapRegions(this List<IRegion> regionsToMap, List<IRegion> originalRegions, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
+        [MultiOutput(0, "regionListAMapped", "For each item in regionListB, returns the list of intersecting regions from regionListA")]
+        [MultiOutput(1, "percentageAreaOverlap", "For each item in regionListB, returns the area of overlap of intersecting regions from regionsA")]
+        [MultiOutput(2, "regionListANotMapped", "Regions from regionListA which do not intersect with any region from regionListB")]
+        [MultiOutput(3, "regionListBNotMapped", "Regions from regionListB which do not intersect with any region from regionListA")]
+        public static Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>> MapRegions(this List<IRegion> regionListA, List<IRegion> regionListB, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
-            List<List<IRegion>> mappedRegions = new List<List<IRegion>>();
-            List<List<double>> percentages = new List<List<double>>();
-            List<IRegion> regionsNotMatched = new List<IRegion>();
+            List<List<IRegion>> regionListAMapped = new List<List<IRegion>>();
+            List<List<double>> percentageAreaOverlap = new List<List<double>>();
+            List<IRegion> regionListANotMapped = new List<IRegion>();
             List<IRegion> regionNotFound = new List<IRegion>();
 
-            foreach (IRegion region in originalRegions)
+            foreach (IRegion region in regionListB)
             {
-                mappedRegions.Add(new List<IRegion>());
-                percentages.Add(new List<double>());
+                regionListAMapped.Add(new List<IRegion>());
+                percentageAreaOverlap.Add(new List<double>());
             }
 
-            foreach (IRegion region in regionsToMap)
+            foreach (IRegion region in regionListA)
             {          
                 // Find the regions to map for each floor by using line intersections
                 Polyline perimeter = region.Perimeter.ICollapseToPolyline(angleTolerance);
@@ -78,73 +78,69 @@ namespace BH.Engine.Environment
                 double minZ = controlPoints.Select(x => x.Z).Min() - distanceTolerance;
                 double maxZ = controlPoints.Select(x => x.Z).Max() + distanceTolerance;
 
-                List<IRegion> regionsOnLevel = originalRegions.Where(x =>
+                List<IRegion> regionsOnLevel = regionListB.Where(x =>
                                                             {
                                                                 double zL = x.Perimeter.IControlPoints()[0].Z;
                                                                 return (zL >= minZ && zL <= maxZ);
                                                             }).ToList();
 
+                // Match regions by checking both line intersections and if regionsB are containing the perimeter of regionsA
                 List<IRegion> matchingPerimeter = regionsOnLevel.Where(x => x.Perimeter.ICollapseToPolyline(angleTolerance).LineIntersections(perimeter, distanceTolerance).Count > 0).ToList();
 
                 matchingPerimeter.AddRange(regionsOnLevel.Where((x => x.Perimeter.IIsContaining(perimeter, true, distanceTolerance))));
 
                 matchingPerimeter = matchingPerimeter.Distinct().ToList();
 
-                // Add a list of regions that haven't been mapped to any original regions
-                //if (matchingPerimeter.Count == 0)
-                    //regionsNotMatched.Add(region);
-
-                // Map the matching regions to the original regions 
+                // Map the matching regionsA to the corresponding regionB 
                 foreach (IRegion match in matchingPerimeter)
                 {
-                    mappedRegions[originalRegions.IndexOf(match)].Add(region);
+                    regionListAMapped[regionListB.IndexOf(match)].Add(region);
                 }
             }
 
-            // Add a list for original regions without mapped regions
-            for (int x = 0; x < mappedRegions.Count; x++)
+            // Add a list for regionsB without mapped regionsA
+            for (int x = 0; x < regionListAMapped.Count; x++)
             {
-                if (mappedRegions[x].Count == 0)
-                    regionNotFound.Add(originalRegions[x]);
+                if (regionListAMapped[x].Count == 0)
+                    regionNotFound.Add(regionListB[x]);
             }
 
-            // Check if the original regions are enclosed by regionsToMap and add those regionsToMap to mappedRegions
-            
+            // Check if any regionsB are wholly contained by a regionA and add those regionsA to regionListAMapped           
             List<IRegion> matched = new List<IRegion>();
-            List<IRegion> regionsNotFound = new List<IRegion>();
+            List<IRegion> regionListBNotMapped = new List<IRegion>();
            
-            foreach (IRegion originalRegion in regionNotFound)
+            foreach (IRegion regionB in regionNotFound)
             {
                 bool wasMatched = false;
-                for (int x = 0; x < regionsToMap.Count; x++)
+                for (int x = 0; x < regionListA.Count; x++)
                 {
-                    if (regionsToMap[x].Perimeter.IIsContaining(originalRegion.Perimeter.ICollapseToPolyline(angleTolerance).IControlPoints()))
+                    if (regionListA[x].Perimeter.IIsContaining(regionB.Perimeter.ICollapseToPolyline(angleTolerance).IControlPoints()))
                     {
-                        mappedRegions[originalRegions.IndexOf(originalRegion)].Add(regionsToMap[x]);
-                        matched.Add(regionsToMap[x]);
+                        regionListAMapped[regionListB.IndexOf(regionB)].Add(regionListA[x]);
+                        matched.Add(regionListA[x]);
                         wasMatched = true;
-                        break; //Delete this line if regionsToMap can overlap and have multipled original regions wholly contained within them
+                        break; //Delete this line if regionsA can overlap and have multipled regionsB wholly contained within them
                     }
                 }
 
                 if (!wasMatched)
-                    regionsNotFound.Add(originalRegion);
+                    regionListBNotMapped.Add(regionB);
 
                 foreach (IRegion m in matched)
                 {
-                    regionsNotMatched.Remove(m);                    
+                    regionListANotMapped.Remove(m);                    
                 }               
             }        
                         
-            // Add percentage of original regions matched to the mapped regions
-            for (int x = 0; x < originalRegions.Count; x++)
+            // Add area percentage of regionsA intersecting with regionsB
+            for (int x = 0; x < regionListB.Count; x++)
             {
                 List<IRegion> mappedRegionsI = new List<IRegion>();
 
-                foreach (IRegion region in mappedRegions[x])
+                foreach (IRegion region in regionListAMapped[x])
                 {
                     double areaIntersecting = 0.0;
-                    Polyline originalPerimeter = originalRegions[x].Perimeter.ICollapseToPolyline(angleTolerance);
+                    Polyline originalPerimeter = regionListB[x].Perimeter.ICollapseToPolyline(angleTolerance);
                     Polyline mappedPerimeter = region.Perimeter.ICollapseToPolyline(angleTolerance);
 
                     List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance);                  
@@ -152,40 +148,39 @@ namespace BH.Engine.Environment
 
                     if (areaIntersecting != 0)
                     {
-                        percentages[x].Add(areaIntersecting / mappedPerimeter.Area());
+                        percentageAreaOverlap[x].Add(areaIntersecting / mappedPerimeter.Area());
                     }
                     else
                         mappedRegionsI.Add(region);
                 }
 
-                //Remove regions without any intersectioning area from mappedRegions and add them to regionsNotMatched 
-                //Add regions that have line intersections but no intersecting area to regionsNotMatched
+                //Remove regionsA without any intersectioning area from the mapped regions and add the empty regionsB to regionListBNotMapped
                 foreach (IRegion r in mappedRegionsI)
                 {
-                    mappedRegions[x].Remove(r);
+                    regionListAMapped[x].Remove(r);
                 }
 
-                if (mappedRegions[x].Count == 0)
-                    regionsNotFound.Add(originalRegions[x]);
+                if (regionListAMapped[x].Count == 0)
+                    regionListBNotMapped.Add(regionListB[x]);
             }
 
-            foreach(IRegion r in regionsToMap)
+            foreach(IRegion r in regionListA)
             {
                 //Find out which ones haven't been mapped anywhere
-                int includedElsewhere = mappedRegions.Where(x => x.Contains(r)).Count();
+                int includedElsewhere = regionListAMapped.Where(x => x.Contains(r)).Count();
                 if (includedElsewhere == 0)
-                    regionsNotMatched.Add(r);
+                    regionListANotMapped.Add(r);
             }
 
-            regionsNotFound = regionsNotFound.Distinct().ToList();
-            regionsNotMatched = regionsNotMatched.Distinct().ToList();
+            regionListBNotMapped = regionListBNotMapped.Distinct().ToList();
+            regionListANotMapped = regionListANotMapped.Distinct().ToList();
 
             return new Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>>
             {
-                Item1 = mappedRegions,
-                Item2 = percentages,
-                Item3 = regionsNotMatched,
-                Item4 = regionsNotFound,           
+                Item1 = regionListAMapped,
+                Item2 = percentageAreaOverlap,
+                Item3 = regionListANotMapped,
+                Item4 = regionListBNotMapped,           
             };
         }
     }
