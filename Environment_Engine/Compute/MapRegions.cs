@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Maps a regions based on geometry to another set of regions by using intersections and overlapping of the region perimeters. E.G. mapping IES zoned regions to Revit regions. This method also filters out unmatched regions and calculates the area percentage of the mapped regions.")]
+        [Description("Maps a set regions based on geometry to another set of regions by using intersections and overlapping of the region perimeters. E.G. mapping IES zoned regions to Revit regions. This method also filters out unmatched regions and calculates the area percentage of the mapped regions.")]
         [Input("regionListA", "Regions to be grouped according to their intersection or overlap with regionListB")]
         [Input("regionListB", "Regions to use as basis for grouping of regionListA according to their intersection with regionsA")]
         [Input("distanceTolerance", "the tolerance used for distance calculations")]
@@ -56,6 +56,10 @@ namespace BH.Engine.Environment
         [MultiOutput(1, "percentageAreaOverlap", "For each item in regionListB, returns the area of overlap of intersecting regions from regionsA")]
         [MultiOutput(2, "regionListANotMapped", "Regions from regionListA which do not intersect with any region from regionListB")]
         [MultiOutput(3, "regionListBNotMapped", "Regions from regionListB which do not intersect with any region from regionListA")]
+
+        [PreviousInputNames("regionListA","regionsToMap")]
+        [PreviousInputNames("regionListB", "originalRegions")]
+
         public static Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>> MapRegions(this List<IRegion> regionListA, List<IRegion> regionListB, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             List<List<IRegion>> regionListAMapped = new List<List<IRegion>>();
