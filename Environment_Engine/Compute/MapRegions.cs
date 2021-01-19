@@ -56,10 +56,8 @@ namespace BH.Engine.Environment
         [MultiOutput(1, "percentageAreaOverlap", "For each item in regionListB, returns the area of overlap of intersecting regions from regionsA")]
         [MultiOutput(2, "regionListANotMapped", "Regions from regionListA which do not intersect with any region from regionListB")]
         [MultiOutput(3, "regionListBNotMapped", "Regions from regionListB which do not intersect with any region from regionListA")]
-
         [PreviousInputNames("regionListA","regionsToMap")]
         [PreviousInputNames("regionListB", "originalRegions")]
-
         public static Output<List<List<IRegion>>, List<List<double>>, List<IRegion>, List<IRegion>> MapRegions(this List<IRegion> regionListA, List<IRegion> regionListB, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             List<List<IRegion>> regionListAMapped = new List<List<IRegion>>();

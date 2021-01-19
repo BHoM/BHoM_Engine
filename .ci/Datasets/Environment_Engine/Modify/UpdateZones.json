@@ -1,0 +1,1581 @@
+[
+  {
+    "_t": "BH.oM.Data.Library.Dataset",
+    "BHoM_Guid": "302c94c1-329d-4e6e-8655-ff3388e6e4ba",
+    "Name": "UpdateZonesUnitTest",
+    "Fragments": [],
+    "Tags": [],
+    "CustomData": {},
+    "SourceInformation": {
+      "_t": "BH.oM.Data.Library.Source",
+      "BHoM_Guid": "e1866098-87e3-4340-b953-d33b277fa0d8",
+      "Name": "",
+      "Fragments": [],
+      "Tags": [],
+      "CustomData": {},
+      "SourceLink": "",
+      "Title": "",
+      "Author": "JOlin",
+      "ItemReference": "",
+      "Version": "",
+      "Publisher": "",
+      "Schema": "",
+      "Language": "",
+      "Location": "",
+      "Copyright": "",
+      "Contributors": ""
+    },
+    "TimeOfCreation": {
+      "$date": 1611058897334
+    },
+    "Data": [
+      {
+        "_t": "BH.oM.Test.UnitTests.UnitTest",
+        "BHoM_Guid": "6af42b28-bbb1-426f-abd5-45b416905b1d",
+        "Name": "",
+        "Fragments": [],
+        "Tags": [],
+        "CustomData": {},
+        "Method": {
+          "_t": "System.Reflection.MethodBase",
+          "TypeName": "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022BH.Engine.Environment.Modify, Environment_Engine, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null\u0022 }",
+          "MethodName": "UpdateZones",
+          "Parameters": [
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022BH.oM.Environment.Elements.Space\u0022 }",
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.Collections.Generic.List\u00601, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022, \u0022GenericArguments\u0022 : [{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022 }] }",
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022 }"
+          ]
+        },
+        "Data": [
+          {
+            "_t": "BH.oM.Test.UnitTests.TestData",
+            "BHoM_Guid": "df962473-e28a-49bc-90a9-01c8dee75e44",
+            "Name": "",
+            "Fragments": [],
+            "Tags": [],
+            "CustomData": {},
+            "Inputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "9e30a554-d0db-4b2a-b50c-79c4d6deef9c",
+                "Name": "Space 1",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "AHU Zone A",
+                  "AHU Zone B",
+                  "AHU Zone A",
+                  "AHU Zone B"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              },
+              [
+                "AHU Zone A",
+                "AHU Zone B"
+              ],
+              false
+            ],
+            "Outputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "9e30a554-d0db-4b2a-b50c-79c4d6deef9c",
+                "Name": "Space 1",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "AHU Zone A",
+                  "AHU Zone B",
+                  "AHU Zone A",
+                  "AHU Zone B"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              }
+            ]
+          },
+          {
+            "_t": "BH.oM.Test.UnitTests.TestData",
+            "BHoM_Guid": "3302bed0-1ed2-40a1-bf9c-598245ee2283",
+            "Name": "",
+            "Fragments": [],
+            "Tags": [],
+            "CustomData": {},
+            "Inputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "5c9ad60f-ddf5-42c2-ac9f-c5af71699757",
+                "Name": "Space",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "Zone A",
+                  "Zone B",
+                  "AHU Zone A",
+                  "AHU Zone B",
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3",
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3",
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              },
+              [
+                "Zone 1",
+                "Zone 2",
+                "Zone 3"
+              ],
+              false
+            ],
+            "Outputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "5c9ad60f-ddf5-42c2-ac9f-c5af71699757",
+                "Name": "Space",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "Zone A",
+                  "Zone B",
+                  "AHU Zone A",
+                  "AHU Zone B",
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3",
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3",
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              }
+            ]
+          },
+          {
+            "_t": "BH.oM.Test.UnitTests.TestData",
+            "BHoM_Guid": "280d20db-892c-41da-8698-eaec74f468e8",
+            "Name": "",
+            "Fragments": [],
+            "Tags": [],
+            "CustomData": {},
+            "Inputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "220aa067-2e32-45ca-9d1b-57bf16189bbc",
+                "Name": "Space",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              },
+              [
+                "Zone 1",
+                "Zone 2",
+                "Zone 3"
+              ],
+              true
+            ],
+            "Outputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "220aa067-2e32-45ca-9d1b-57bf16189bbc",
+                "Name": "Space",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              }
+            ]
+          },
+          {
+            "_t": "BH.oM.Test.UnitTests.TestData",
+            "BHoM_Guid": "45e8e21c-9adb-4a85-8f1e-71c83d1b742d",
+            "Name": "",
+            "Fragments": [],
+            "Tags": [],
+            "CustomData": {},
+            "Inputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "9ada7e10-5759-4dd1-9810-f83278a4f381",
+                "Name": "Space",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "51691ae5-abba-42a6-9590-d4961714fc9a",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "501f0153-8eb6-4ce5-9c2e-faa33fc5f14f",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "c6d75f88-0599-4776-9648-4e510d2206ad",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "fb0336d9-dc35-4941-9234-7aacbb365c53",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": [
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 1.0,
+                      "Y": -12.0,
+                      "Z": 0.0
+                    },
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 21.0,
+                      "Y": -12.0,
+                      "Z": 0.0
+                    },
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 21.0,
+                      "Y": 10.0,
+                      "Z": 0.0
+                    },
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 1.0,
+                      "Y": 10.0,
+                      "Z": 0.0
+                    },
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 1.0,
+                      "Y": -12.0,
+                      "Z": 0.0
+                    }
+                  ]
+                }
+              },
+              [
+                "Zone 1",
+                "Zone 2",
+                "Zone 3"
+              ],
+              true
+            ],
+            "Outputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "9ada7e10-5759-4dd1-9810-f83278a4f381",
+                "Name": "Space",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "Zone 1",
+                  "Zone 2",
+                  "Zone 3"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "51691ae5-abba-42a6-9590-d4961714fc9a",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "501f0153-8eb6-4ce5-9c2e-faa33fc5f14f",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "c6d75f88-0599-4776-9648-4e510d2206ad",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "fb0336d9-dc35-4941-9234-7aacbb365c53",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": [
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 1.0,
+                      "Y": -12.0,
+                      "Z": 0.0
+                    },
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 21.0,
+                      "Y": -12.0,
+                      "Z": 0.0
+                    },
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 21.0,
+                      "Y": 10.0,
+                      "Z": 0.0
+                    },
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 1.0,
+                      "Y": 10.0,
+                      "Z": 0.0
+                    },
+                    {
+                      "_t": "BH.oM.Geometry.Point",
+                      "X": 1.0,
+                      "Y": -12.0,
+                      "Z": 0.0
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_t": "BH.oM.Data.Library.Dataset",
+    "BHoM_Guid": "5a77c257-5521-45b7-8f6c-db55e1180e68",
+    "Name": "UpdateZonesUnitTest",
+    "Fragments": [],
+    "Tags": [],
+    "CustomData": {},
+    "SourceInformation": {
+      "_t": "BH.oM.Data.Library.Source",
+      "BHoM_Guid": "e1866098-87e3-4340-b953-d33b277fa0d8",
+      "Name": "",
+      "Fragments": [],
+      "Tags": [],
+      "CustomData": {},
+      "SourceLink": "",
+      "Title": "",
+      "Author": "JOlin",
+      "ItemReference": "",
+      "Version": "",
+      "Publisher": "",
+      "Schema": "",
+      "Language": "",
+      "Location": "",
+      "Copyright": "",
+      "Contributors": ""
+    },
+    "TimeOfCreation": {
+      "$date": 1611058897334
+    },
+    "Data": [
+      {
+        "_t": "BH.oM.Test.UnitTests.UnitTest",
+        "BHoM_Guid": "c16911ad-3e51-4cee-9798-37b1b4938e8a",
+        "Name": "",
+        "Fragments": [],
+        "Tags": [],
+        "CustomData": {},
+        "Method": {
+          "_t": "System.Reflection.MethodBase",
+          "TypeName": "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022BH.Engine.Environment.Modify, Environment_Engine, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null\u0022 }",
+          "MethodName": "UpdateZones",
+          "Parameters": [
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022BH.oM.Environment.Elements.Space\u0022 }",
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.Collections.Generic.List\u00601, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022, \u0022GenericArguments\u0022 : [{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022 }] }",
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022 }"
+          ]
+        },
+        "Data": [
+          {
+            "_t": "BH.oM.Test.UnitTests.TestData",
+            "BHoM_Guid": "2e344ab4-8ce7-4265-8e52-da38bd783db9",
+            "Name": "",
+            "Fragments": [],
+            "Tags": [],
+            "CustomData": {},
+            "Inputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "db6d550d-e6e4-4f60-b286-19b7b0e1b0fb",
+                "Name": "Space 1",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "AHU Zone A",
+                  "Lighting Zone 2",
+                  "Htg Zone 1"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              },
+              [
+                "AHU Zone A",
+                "Lighting Zone 2",
+                "Htg Zone 1"
+              ],
+              false
+            ],
+            "Outputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "db6d550d-e6e4-4f60-b286-19b7b0e1b0fb",
+                "Name": "Space 1",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "AHU Zone A",
+                  "Lighting Zone 2",
+                  "Htg Zone 1"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_t": "BH.oM.Data.Library.Dataset",
+    "BHoM_Guid": "e42729a4-5ad6-4551-adec-0fbf530e03c7",
+    "Name": "UpdateZonesUnitTest",
+    "Fragments": [],
+    "Tags": [],
+    "CustomData": {},
+    "SourceInformation": {
+      "_t": "BH.oM.Data.Library.Source",
+      "BHoM_Guid": "e1866098-87e3-4340-b953-d33b277fa0d8",
+      "Name": "",
+      "Fragments": [],
+      "Tags": [],
+      "CustomData": {},
+      "SourceLink": "",
+      "Title": "",
+      "Author": "JOlin",
+      "ItemReference": "",
+      "Version": "",
+      "Publisher": "",
+      "Schema": "",
+      "Language": "",
+      "Location": "",
+      "Copyright": "",
+      "Contributors": ""
+    },
+    "TimeOfCreation": {
+      "$date": 1611058897334
+    },
+    "Data": [
+      {
+        "_t": "BH.oM.Test.UnitTests.UnitTest",
+        "BHoM_Guid": "4469593a-0996-49d2-8cd8-a35e094fcb2d",
+        "Name": "",
+        "Fragments": [],
+        "Tags": [],
+        "CustomData": {},
+        "Method": {
+          "_t": "System.Reflection.MethodBase",
+          "TypeName": "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022BH.Engine.Environment.Modify, Environment_Engine, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null\u0022 }",
+          "MethodName": "UpdateZones",
+          "Parameters": [
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022BH.oM.Environment.Elements.Space\u0022 }",
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.Collections.Generic.List\u00601, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022, \u0022GenericArguments\u0022 : [{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022 }] }",
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022 }"
+          ]
+        },
+        "Data": [
+          {
+            "_t": "BH.oM.Test.UnitTests.TestData",
+            "BHoM_Guid": "c20626af-3aa7-4532-b295-ccf27966fcd9",
+            "Name": "",
+            "Fragments": [],
+            "Tags": [],
+            "CustomData": {},
+            "Inputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "0f0a4d28-78d0-4a20-a5a2-8ab2d7345aa3",
+                "Name": "Space 2",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "AHU Zone B",
+                  "Lighting Zone 1",
+                  "Htg Zone 1"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              },
+              [
+                "AHU Zone B",
+                "Lighting Zone 1",
+                "Htg Zone 1"
+              ],
+              false
+            ],
+            "Outputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "0f0a4d28-78d0-4a20-a5a2-8ab2d7345aa3",
+                "Name": "Space 2",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "AHU Zone B",
+                  "Lighting Zone 1",
+                  "Htg Zone 1"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_t": "BH.oM.Data.Library.Dataset",
+    "BHoM_Guid": "5d247a38-dd33-472e-b239-c87a391638c1",
+    "Name": "UpdateZonesUnitTest",
+    "Fragments": [],
+    "Tags": [],
+    "CustomData": {},
+    "SourceInformation": {
+      "_t": "BH.oM.Data.Library.Source",
+      "BHoM_Guid": "e1866098-87e3-4340-b953-d33b277fa0d8",
+      "Name": "",
+      "Fragments": [],
+      "Tags": [],
+      "CustomData": {},
+      "SourceLink": "",
+      "Title": "",
+      "Author": "JOlin",
+      "ItemReference": "",
+      "Version": "",
+      "Publisher": "",
+      "Schema": "",
+      "Language": "",
+      "Location": "",
+      "Copyright": "",
+      "Contributors": ""
+    },
+    "TimeOfCreation": {
+      "$date": 1611058897334
+    },
+    "Data": [
+      {
+        "_t": "BH.oM.Test.UnitTests.UnitTest",
+        "BHoM_Guid": "37fe7556-101a-403c-99d1-e094f45e6182",
+        "Name": "",
+        "Fragments": [],
+        "Tags": [],
+        "CustomData": {},
+        "Method": {
+          "_t": "System.Reflection.MethodBase",
+          "TypeName": "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022BH.Engine.Environment.Modify, Environment_Engine, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null\u0022 }",
+          "MethodName": "UpdateZones",
+          "Parameters": [
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022BH.oM.Environment.Elements.Space\u0022 }",
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.Collections.Generic.List\u00601, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022, \u0022GenericArguments\u0022 : [{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022 }] }",
+            "{ \u0022_t\u0022 : \u0022System.Type\u0022, \u0022Name\u0022 : \u0022System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\u0022 }"
+          ]
+        },
+        "Data": [
+          {
+            "_t": "BH.oM.Test.UnitTests.TestData",
+            "BHoM_Guid": "3613b547-6c47-4a8d-b3e0-f3213fb58c13",
+            "Name": "",
+            "Fragments": [],
+            "Tags": [],
+            "CustomData": {},
+            "Inputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "d1459597-571d-4866-973e-780cc458b3e5",
+                "Name": "Space 3",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "AHU Zone B",
+                  "Lighting Zone 3",
+                  "Htg Zone 1"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              },
+              [
+                "AHU Zone B",
+                "Lighting Zone 3",
+                "Htg Zone 1"
+              ],
+              false
+            ],
+            "Outputs": [
+              {
+                "_t": "BH.oM.Environment.Elements.Space",
+                "BHoM_Guid": "d1459597-571d-4866-973e-780cc458b3e5",
+                "Name": "Space 3",
+                "Fragments": [],
+                "Tags": [],
+                "CustomData": {},
+                "Zones": [
+                  "AHU Zone B",
+                  "Lighting Zone 3",
+                  "Htg Zone 1"
+                ],
+                "LightingGain": [],
+                "EquipmentGain": [],
+                "PeopleGain": [],
+                "Infiltration": [],
+                "Ventilation": [],
+                "Exhaust": [],
+                "OccupantDensity": {
+                  "_t": "BH.oM.Architecture.Elements.Occupancy",
+                  "BHoM_Guid": "a40bdffe-66c6-475e-acb2-5fc05548dfa8",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "AreaPerPerson": 0.0,
+                  "FemalePercentage": 0.5,
+                  "GenderNeutralPercentage": 0.0,
+                  "MalePercentage": 0.5,
+                  "OccupantCount": 0
+                },
+                "Acoustics": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Acoustics",
+                  "BHoM_Guid": "216bbc97-c794-4796-b784-786a313c97a1",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "DuctVelocity": 0.0,
+                  "NoiseRating": 0.0,
+                  "DecibelA": 0.0
+                },
+                "Plumbing": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.Plumbing",
+                  "BHoM_Guid": "9c0d272a-631c-490e-a410-d22a7606ce73",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "ColdWaterUnits": 0.0,
+                  "HotWaterUnits": 0.0,
+                  "WasteUnits": 0.0,
+                  "NaturalGasRate": 0.0,
+                  "VentRequirement": true,
+                  "FloorDrainRequirement": false,
+                  "HoseBibRequirement": false
+                },
+                "FireProtection": {
+                  "_t": "BH.oM.Environment.SpaceCriteria.FireProtection",
+                  "BHoM_Guid": "5aeeaa95-ecfc-439c-9bd5-4a81193a76f3",
+                  "Name": "",
+                  "Fragments": [],
+                  "Tags": [],
+                  "CustomData": {},
+                  "HazardType": "Undefined",
+                  "SprinklerSystemType": "Undefined",
+                  "CombustibleMaterials": false,
+                  "SlopedCeiling": false,
+                  "MaximumCeilingTemperature": 0.0
+                },
+                "ProjectSpaceType": "",
+                "SpaceType": "Undefined",
+                "Location": {
+                  "_t": "BH.oM.Geometry.Point",
+                  "X": 0.0,
+                  "Y": 0.0,
+                  "Z": 0.0
+                },
+                "Perimeter": {
+                  "_t": "BH.oM.Geometry.Polyline",
+                  "ControlPoints": []
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
