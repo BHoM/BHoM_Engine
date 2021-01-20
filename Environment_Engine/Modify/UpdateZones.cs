@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -34,11 +34,11 @@ namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        [Description("Updates the zones in a space by replacing or adding to the old zones with a new list of zones")]
-        [Input("space", "The space to update with the new zones")]
-        [Input("zones", "A list of zones to add to the space")]
-        [Input("replace", "If set to true the already existing zones will be replaced, if false the new zones will be added to the old")]
-        [Output("spaceWithZones", "Space with the new zones")]
+        [Description("Updates the zones in a space by replacing or adding to the old zones with a new list of zones.")]
+        [Input("space", "The space to update with the new zones.")]
+        [Input("zones", "A list of zones to add to the space.")]
+        [Input("replace", "If set to true the already existing zones will be replaced, if false the new zones will be added to the old.")]
+        [Output("spaceWithZones", "Space with the new zones.")]
         public static Space UpdateZones(this Space space, List<string> zones, bool replace = false)
         {
             if (replace)
