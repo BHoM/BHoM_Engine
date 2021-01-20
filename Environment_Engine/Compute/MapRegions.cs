@@ -106,26 +106,6 @@ namespace BH.Engine.Environment
                 if (regionListAMapped[x].Count == 0)
                     regionNotFound.Add(regionListB[x]);
             }
-
-            // Check if any regionsB are wholly contained by a regionA and add those regionsA to regionListAMapped           
-            List<IRegion> regionListBNotMapped = new List<IRegion>();
-           
-            foreach (IRegion regionB in regionNotFound)
-            {
-                bool wasMatched = false;
-                for (int x = 0; x < regionListA.Count; x++)
-                {
-                    if (regionListA[x].Perimeter.IIsContaining(regionB.Perimeter.ICollapseToPolyline(angleTolerance).IControlPoints()))
-                    {
-                        regionListAMapped[regionListB.IndexOf(regionB)].Add(regionListA[x]);
-                        wasMatched = true;
-                        break; //Delete this line if regionsA can overlap and have multipled regionsB wholly contained within them
-                    }
-                }
-
-                if (!wasMatched)
-                    regionListBNotMapped.Add(regionB);                
-            }        
                         
             // Add area percentage of regionsA intersecting with regionsB
             for (int x = 0; x < regionListB.Count; x++)
@@ -156,10 +136,40 @@ namespace BH.Engine.Environment
                 }
 
                 if (regionListAMapped[x].Count == 0)
-                    regionListBNotMapped.Add(regionListB[x]);
+                    regionNotFound.Add(regionListB[x]);
             }
 
-            foreach(IRegion r in regionListA)
+            regionNotFound = regionNotFound.Distinct().ToList();
+
+            // Check if any regionsB are wholly contained by a regionA and add those regionsA to regionListAMapped           
+            List<IRegion> regionListBNotMapped = new List<IRegion>();
+            foreach (IRegion regionB in regionNotFound)
+            {
+                bool wasMatched = false;
+                for (int x = 0; x < regionListA.Count; x++)
+                {
+                    if (regionListA[x].Perimeter.IIsContaining(regionB.Perimeter.ICollapseToPolyline(angleTolerance).IControlPoints()))
+                    {
+                        regionListAMapped[regionListB.IndexOf(regionB)].Add(regionListA[x]);
+
+                        Polyline originalPerimeter = regionB.Perimeter.ICollapseToPolyline(angleTolerance);
+                        Polyline mappedPerimeter = regionListA[x].Perimeter.ICollapseToPolyline(angleTolerance);
+
+                        List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance);
+                        double areaIntersecting = intersections.Sum(a => a.Area());
+
+                        if (areaIntersecting != 0)
+                            percentageAreaOverlap[regionListB.IndexOf(regionB)].Add(areaIntersecting / mappedPerimeter.Area());
+
+                        wasMatched = true;
+                    }
+                }
+
+                if (!wasMatched)
+                    regionListBNotMapped.Add(regionB);
+            }
+
+            foreach (IRegion r in regionListA)
             {
                 //Find out which ones haven't been mapped anywhere
                 int includedElsewhere = regionListAMapped.Where(x => x.Contains(r)).Count();
