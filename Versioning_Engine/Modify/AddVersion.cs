@@ -45,7 +45,7 @@ namespace BH.Engine.Versioning
 
         public static void AddVersion(this IBsonWriter writer)
         {
-            // TODO: Uncomment this code after producing the next beta
+            // TODO: Uncomment this code after producing the 4.1 beta
             /*if (writer != null)
             {
                 writer.WriteName("_bhomVersion");
@@ -56,4 +56,3 @@ namespace BH.Engine.Versioning
         /***************************************************/
     }
 }
-
