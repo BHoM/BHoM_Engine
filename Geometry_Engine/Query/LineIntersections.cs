@@ -263,7 +263,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Point> LineIntersections(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
+        public static List<Point> LineIntersections(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             List<Point> iPts = new List<Point>();
             List<Line> subparts = curve2.SubParts();
@@ -271,7 +271,7 @@ namespace BH.Engine.Geometry
             {
                 foreach(Line l2 in subparts)
                 {
-                    Point pt = l1.LineIntersection(l2);
+                    Point pt = l1.LineIntersection(l2, false, tolerance, angleTolerance);
                     if (pt != null)
                         iPts.Add(pt);
                 }
