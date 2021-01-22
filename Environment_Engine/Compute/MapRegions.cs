@@ -87,7 +87,7 @@ namespace BH.Engine.Environment
                                                             }).ToList();
 
                 // Match regions by checking both line intersections and if regionsB are containing the perimeter of regionsA
-                List<IRegion> matchingPerimeter = regionsOnLevel.Where(x => x.Perimeter.ICollapseToPolyline(angleTolerance).LineIntersections(perimeter, distanceTolerance).Count > 0).ToList();
+                List<IRegion> matchingPerimeter = regionsOnLevel.Where(x => x.Perimeter.ICollapseToPolyline(angleTolerance).LineIntersections(perimeter, distanceTolerance, angleTolerance).Count > 0).ToList();
 
                 matchingPerimeter.AddRange(regionsOnLevel.Where((x => x.Perimeter.IIsContaining(perimeter, true, distanceTolerance))));
 
@@ -118,7 +118,7 @@ namespace BH.Engine.Environment
                     Polyline originalPerimeter = regionListB[x].Perimeter.ICollapseToPolyline(angleTolerance);
                     Polyline mappedPerimeter = region.Perimeter.ICollapseToPolyline(angleTolerance);
 
-                    List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance);                  
+                    List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance, angleTolerance);                  
                     areaIntersecting = intersections.Sum(a => a.Area());
 
                     if (areaIntersecting != 0)
@@ -155,7 +155,7 @@ namespace BH.Engine.Environment
                         Polyline originalPerimeter = regionB.Perimeter.ICollapseToPolyline(angleTolerance);
                         Polyline mappedPerimeter = regionListA[x].Perimeter.ICollapseToPolyline(angleTolerance);
 
-                        List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance);
+                        List<Polyline> intersections = BH.Engine.Geometry.Compute.BooleanIntersection(originalPerimeter, mappedPerimeter, distanceTolerance, angleTolerance); ;
                         double areaIntersecting = intersections.Sum(a => a.Area());
 
                         if (areaIntersecting != 0)
