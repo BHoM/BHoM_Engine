@@ -92,8 +92,11 @@ namespace BH.Engine.Versioning
                 BsonDocument result = ReadDocument(pipe);
                 if (result != null)
                 {
-                    if (result.Contains("_t") && result["_t"] == "NoUpdate" && result.Contains("Message"))
-                        Engine.Reflection.Compute.RecordError(result["Message"].ToString());
+                    if (result.Contains("_t") && result["_t"] == "NoUpdate")
+                    {
+                        if (result.Contains("Message"))
+                            Engine.Reflection.Compute.RecordError(result["Message"].ToString());
+                    }  
                     else
                         document = result;
                 }   
