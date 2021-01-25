@@ -48,6 +48,7 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panels which represent the closed volume of the region")]
         [PreviousVersion("4.1", "BH.Engine.Environment.Compute.ExtrudeToVolume(BH.oM.Environment.Elements.Space, System.Double)")]
         [PreviousVersion("4.1", "BH.Engine.Environment.Compute.ExtrudeToVolume(BH.oM.Architecture.Elements.Room, System.Double)")]
+        [PreviousInputNames("region", "room, space")]
         public static List<Panel> ExtrudeToVolume(this IRegion region, double height, double tolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             Polyline floor = region.Perimeter.ICollapseToPolyline(tolerance);
@@ -92,4 +93,3 @@ namespace BH.Engine.Environment
         }
     }
 }
-
