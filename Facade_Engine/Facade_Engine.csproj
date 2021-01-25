@@ -97,6 +97,7 @@
     <Compile Include="Compute\ComponentAreas.cs" />
     <Compile Include="Compute\EdgeAdjacencies.cs" />
     <Compile Include="Compute\AdjacentElements.cs" />
+    <Compile Include="Modify\DefineOffset.cs" />
     <Compile Include="Modify\OffsetVariable.cs" />
     <Compile Include="Query\AdjacencyId.cs" />
     <Compile Include="Compute\UniqueAdjacencies.cs" />
