@@ -22,6 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Geometry.SettingOut;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Geometry.SettingOut
 {
@@ -31,21 +32,8 @@ namespace BH.Engine.Geometry.SettingOut
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Grid Grid(ICurve curve)
-        {
-            return Grid(curve, "");
-        }
-
-        /***************************************************/
-
-        public static Grid Grid(Point origin, Vector direction, double length = 20)
-        {
-            return Grid(origin, direction, "", length);
-        }
-
-        /***************************************************/
-
-        public static Grid Grid(ICurve curve, string name)
+        [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.ICurve)")]
+        public static Grid Grid(ICurve curve, string name = "")
         {
             return new Grid
             {
@@ -55,8 +43,8 @@ namespace BH.Engine.Geometry.SettingOut
         }
 
         /***************************************************/
-
-        public static Grid Grid(Point origin, Vector direction, string name, double length = 20)
+        [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Double)")]
+        public static Grid Grid(Point origin, Vector direction, string name = "", double length = 20)
         {
             Point projectedOrigin = origin.Project(Plane.XY);
             Line line = new Line { Start = projectedOrigin, End = projectedOrigin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
