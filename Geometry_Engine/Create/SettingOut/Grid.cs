@@ -32,6 +32,7 @@ namespace BH.Engine.Geometry.SettingOut
         /**** Public Methods                            ****/
         /***************************************************/
 
+
         [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.ICurve)")]
         public static Grid Grid(ICurve curve, string name = "")
         {
@@ -43,6 +44,7 @@ namespace BH.Engine.Geometry.SettingOut
         }
 
         /***************************************************/
+
         [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Double)")]
         public static Grid Grid(Point origin, Vector direction, string name = "", double length = 20)
         {
