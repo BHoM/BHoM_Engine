@@ -33,19 +33,14 @@ namespace BH.Engine.Geometry.SettingOut
 
         public static Grid Grid(ICurve curve)
         {
-            return new Grid
-            {
-                Curve = Geometry.Modify.IProject(curve, BH.oM.Geometry.Plane.XY)
-            };
+            return Grid(curve, "");
         }
 
         /***************************************************/
 
         public static Grid Grid(Point origin, Vector direction, double length = 20)
         {
-            Point projectedOrigin = origin.Project(Plane.XY);
-            Line line = new Line { Start = projectedOrigin, End = projectedOrigin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
-            return new Grid { Curve = line };
+            return Grid(origin, direction, "", length);
         }
 
         /***************************************************/
