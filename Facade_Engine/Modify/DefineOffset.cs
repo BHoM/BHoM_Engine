@@ -22,6 +22,7 @@
 
 using BH.Engine.Base;
 using BH.oM.Geometry;
+using BH.oM.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
@@ -32,6 +33,7 @@ using System.ComponentModel;
 using System.Linq;
 using BH.oM.Facade.Elements;
 using BH.oM.Facade.Fragments;
+using BH.Engine.Physical;
 
 namespace BH.Engine.Facade
 {
@@ -41,12 +43,12 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Copies a Panel into a new object")]
-        [Input("panel", "A panel to calculate offset for")]
-        [Input("opening", "An opening to calculate offset for")]
-        [Input("useroffset", "A user defined offset (face of panel to face of glazing)")]
-        [Output("offset", "The copied Environment Panel")]
-        public static ConstructionOffset DefineOffset(this Panel panel, Opening opening, double useroffset)
+        [Description("Sets an openings offset based on a specified value defining the desired distance between the panel's exterior face and the openings exterior face.")]
+        [Input("panel", "A panel to base opening offset on.")]
+        [Input("opening", "An opening to set the offset on based on the specified value and provided panel.")]
+        [Input("useroffset", "A user defined offset (exterior face of panel to exterior face of glazing).")]
+        [Output("opening", "The opening with the specified offset applied.")]
+        public static Opening SetOffsetPerExteriorOffset(this Opening opening, Panel panel, double useroffset)
         {
             //TODO:
             //Check for null case
@@ -54,12 +56,33 @@ namespace BH.Engine.Facade
                 return null;
 
             //Retrieve panel width and opening glazing width
-            double panelwidth = panel.Construction;
-            double glzwidth = opening.OpeningConstruction.PropertyValue("Layers");
+            double panelwidth = panel.Construction.IThickness();
+            double glzwidth = opening.OpeningConstruction.IThickness();
 
-            //Calculate and return offset defined panel centerline to glazing (opening) centerline
-            double offset = 0.5 * panelwidth - 0.5 * glzwidth - useroffset;
-            return offset;
+            //Check for existing offset on reference panel
+            double panelOffset = 0;
+            ConstructionOffset panelOffsetFragment = BH.Engine.Base.Query.FindFragment<ConstructionOffset>(panel);
+            if (panelOffsetFragment != null)
+            {
+                panelOffset = panelOffsetFragment.OffsetDistance;
+            }
+
+            //Calculate and return offset from defined panel centerline to glazing (opening) centerline
+            double offset = panelOffset + 0.5 * panelwidth - 0.5 * glzwidth - useroffset;
+
+            //Apply offset value to existing fragment (or new if not yet existing)
+            ConstructionOffset offsetFragment = BH.Engine.Base.Query.FindFragment<ConstructionOffset>(opening);
+            if (offsetFragment == null)
+            {
+                ConstructionOffset newOffsetFragment = new ConstructionOffset() { OffsetDistance = offset };
+                opening.AddFragment(newOffsetFragment);
+            }
+            else
+            {
+                offsetFragment.OffsetDistance = offset;
+            }
+           
+            return opening;
         }
     }
 }
