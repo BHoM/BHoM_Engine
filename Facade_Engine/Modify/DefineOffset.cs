@@ -75,7 +75,7 @@ namespace BH.Engine.Facade
             if (offsetFragment == null)
             {
                 ConstructionOffset newOffsetFragment = new ConstructionOffset() { OffsetDistance = offset };
-                opening.AddFragment(newOffsetFragment);
+                opening.Fragments.Add(newOffsetFragment);
             }
             else
             {
