@@ -43,7 +43,8 @@ namespace BH.Engine.Geometry.SettingOut
 
         public static Grid Grid(Point origin, Vector direction, double length = 20)
         {
-            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
+            Point projectedOrigin = origin.Project(Plane.XY);
+            Line line = new Line { Start = projectedOrigin, End = projectedOrigin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
             return new Grid { Curve = line };
         }
 
@@ -62,7 +63,8 @@ namespace BH.Engine.Geometry.SettingOut
 
         public static Grid Grid(Point origin, Vector direction, string name, double length = 20)
         {
-            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
+            Point projectedOrigin = origin.Project(Plane.XY);
+            Line line = new Line { Start = projectedOrigin, End = projectedOrigin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
             return new Grid { Curve = line, Name = name };
         }
 
