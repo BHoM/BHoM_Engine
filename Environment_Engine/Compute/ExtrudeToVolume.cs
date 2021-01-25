@@ -41,11 +41,11 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
-        [Description("Takes a region with a Floor Perimieter and creates a collection of Environment Panels which represent the closed volume of the region. The name of the region becomes the connected space for the panels")]
-        [Input("region", "A region with a floor perimeter to extrude into a collection of panels")]
-        [Input("height", "The height of the region, as a double, to calculate the ceiling level of the region. This will be used as the Z value of the perimeter + the given height")]
-        [Input("tolerance", "The degree of tolerance on the angle calculation for collapsing the regions perimeter to a polyline. Default is equal to BH.oM.Geometry.Tolerance.Angle")]
-        [Output("panels", "A collection of Environment Panels which represent the closed volume of the region")]
+        [Description("Takes a region with a Floor Perimieter and creates a collection of Environment Panels which represent the closed volume of the region. The name of the region becomes the connected space for the panels.")]
+        [Input("region", "A region with a floor perimeter to extrude into a collection of panels.")]
+        [Input("height", "The height of the region, as a double, to calculate the ceiling level of the region. This will be used as the Z value of the perimeter + the given height.")]
+        [Input("tolerance", "The degree of tolerance on the angle calculation for collapsing the regions perimeter to a polyline. Default is equal to BH.oM.Geometry.Tolerance.Angle.")]
+        [Output("panels", "A collection of Environment Panels which represent the closed volume of the region.")]
         [PreviousVersion("4.1", "BH.Engine.Environment.Compute.ExtrudeToVolume(BH.oM.Environment.Elements.Space, System.Double)")]
         [PreviousVersion("4.1", "BH.Engine.Environment.Compute.ExtrudeToVolume(BH.oM.Architecture.Elements.Room, System.Double)")]
         [PreviousInputNames("region", "room, space")]
@@ -55,11 +55,11 @@ namespace BH.Engine.Environment
             return floor.ExtrudeToVolume(region.Name, height);
         }
 
-        [Description("Takes a polyline perimieter and creates a collection of Environment Panels which represent the closed volume of a space")]
-        [Input("pLine", "A polyline perimeter to extrude into a collection of panels")]
-        [Input("connectingSpaceName", "The name of the space the panels will enclose")]
-        [Input("height", "The height of the space, as a double, to calculate the ceiling level of the room. This will be used as the Z value of the perimeter + the given height")]
-        [Output("panels", "A collection of Environment Panels which represent the closed volume of the space")]
+        [Description("Takes a polyline perimieter and creates a collection of Environment Panels which represent the closed volume of a space.")]
+        [Input("pLine", "A polyline perimeter to extrude into a collection of panels.")]
+        [Input("connectingSpaceName", "The name of the space the panels will enclose.")]
+        [Input("height", "The height of the space, as a double, to calculate the ceiling level of the room. This will be used as the Z value of the perimeter + the given height.")]
+        [Output("panels", "A collection of Environment Panels which represent the closed volume of the space.")]
         public static List<Panel> ExtrudeToVolume(this Polyline pLine, string connectingSpaceName, double height)
         {
             List<Panel> panels = new List<Panel>();
