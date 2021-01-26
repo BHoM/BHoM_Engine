@@ -49,7 +49,7 @@ namespace BH.Engine.Reflection
             }
             else if (genericType.ContainsGenericParameters)
             {
-                if (genericType.GetGenericArguments().Any(x => x.GetGenericParameterConstraints().Any(c => c == genericType)))
+                if (genericType.GetGenericArguments().Any(x => x.IsGenericParameter && x.GetGenericParameterConstraints().Any(c => c == genericType)))
                     return genericType.GetGenericTypeDefinition().MakeGenericType(new Type[] { typeof(object) });
 
                 Type[] constrains = genericType.GetGenericArguments().Select(x => MakeFromGeneric(x)).ToArray();

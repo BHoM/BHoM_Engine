@@ -59,7 +59,7 @@ namespace BH.Engine.Versioning
             string declaringType = method.DeclaringType.FullName;
 
             string parametersString = "";
-            List<string> parameterTypes = method.GetParameters().Select(x => x.ParameterType.ToText(true)).ToList();
+            List<string> parameterTypes = method.GetParameters().Select(x => x.ParameterType.MakeFromGeneric().ToText(true)).ToList();
             if (parameterTypes.Count > 0)
                 parametersString = parameterTypes.Aggregate((a, b) => a + ", " + b);
 
