@@ -43,16 +43,16 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Sets an openings offset based on a specified value defining the desired distance between the panel's exterior face and the openings exterior face.")]
-        [Input("panel", "A panel to base opening offset on.")]
-        [Input("opening", "An opening to set the offset on based on the specified value and provided panel.")]
+        [Description("Sets an opening offset based on a specified value defining the desired distance between the panel's exterior face and the openings exterior face.")]
+        [Input("panel", "A panel to base opening offset on. The panel must have a construction thickness.")]
+        [Input("opening", "An opening to set the offset on based on the specified value and provided panel. The opening must have a glazing thickness.")]
         [Input("useroffset", "A user defined offset (exterior face of panel to exterior face of glazing).")]
-        [Output("opening", "The opening with the specified offset applied.")]
-        public static Opening SetOffsetPerExteriorOffset(this Opening opening, Panel panel, double useroffset)
+        [Output("opening", "The opening with the specified offset applied as a fragment.")]
+        public static Opening SetOffsetFromFacetoFaceDist(this Opening opening, Panel panel, double useroffset)
         {
             //TODO:
             //Check for null case
-            if (panel == null || opening == null)
+            if (panel == null || opening == null || useroffset == null)
                 return null;
 
             //Retrieve panel width and opening glazing width
