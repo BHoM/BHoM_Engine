@@ -125,11 +125,15 @@ namespace BH.Engine.Serialiser
 
         public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
         {
-            MethodBase method;
-            if (methodName == ".ctor")
-                method = type.GetConstructor(paramTypes.ToArray());
-            else
-                method = type.GetMethod(methodName, paramTypes.ToArray());
+            MethodBase method = null;
+            try
+            {
+                if (methodName == ".ctor")
+                    method = type.GetConstructor(paramTypes.ToArray());
+                else
+                    method = type.GetMethod(methodName, paramTypes.ToArray());
+            }
+            catch { }
 
             // the above will return null if the type is a generic type
             // that is because we serialise a generic method with its constraints
