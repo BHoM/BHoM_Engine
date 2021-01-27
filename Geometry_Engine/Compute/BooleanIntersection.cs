@@ -131,7 +131,8 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
-        public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion, double tolerance = Tolerance.Distance)
+        [PreviousVersion("4.1", "BH.Engine.Geometry.Compute.BooleanIntersection(BH.oM.Geometry.Polyline, BH.oM.Geometry.Polyline, System.Double)")]
+        public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (!region.IsClosed(tolerance) || !refRegion.IsClosed(tolerance))
             {
@@ -144,7 +145,7 @@ namespace BH.Engine.Geometry
 
             double sqTol = tolerance * tolerance;
             List<Polyline> tmpResult = new List<Polyline>();
-            List<Point> iPts = region.LineIntersections(refRegion, tolerance);
+            List<Point> iPts = region.LineIntersections(refRegion, tolerance, angleTolerance);
 
             List<Polyline> splitRegion1 = region.SplitAtPoints(iPts, tolerance);
             List<Polyline> splitRegion2 = refRegion.SplitAtPoints(iPts, tolerance);
