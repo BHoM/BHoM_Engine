@@ -110,7 +110,7 @@ namespace BH.Engine.Reflection
             if (value is IFragment)
             {
                 obj.Fragments.Add(value as IFragment);
-                Compute.RecordWarning("The objects does not contain any property with the name " + propName + ". The value is being set as a fragment.");
+                Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as a fragment.");
             }
             else
             {
