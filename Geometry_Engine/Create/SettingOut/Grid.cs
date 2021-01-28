@@ -45,7 +45,8 @@ namespace BH.Engine.Geometry.SettingOut
         /***************************************************/
 
         [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Double)")]
-        public static Grid Grid(Point origin, Vector direction, string name = "", double length = 20)
+        [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.String, System.Double)")]
+        public static Grid Grid(Point origin, Vector direction, double length = 20, string name = "")
         {
             Point projectedOrigin = origin.Project(Plane.XY);
             Line line = new Line { Start = projectedOrigin, End = projectedOrigin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
