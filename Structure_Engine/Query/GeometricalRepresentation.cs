@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         [Input("edgeDisplay", "Set to true to visualise the loads along the boundary of the elements.")]
         [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements.")]
         [Output("lines", "A list of lines representing the load.")]
-        public static List<ICurve> Visualize(this AreaUniformTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
+        public static List<ICurve> GeometricalRepresentation(this AreaUniformTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
             List<ICurve> arrows = new List<ICurve>();
             double loadFactor = areaTempLoad.TemperatureChange * 1000 * scaleFactor; //Arrow methods are scaling down force to 1/1000
@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
         [Input("edgeDisplay", "Set to true to visualise the loads along the boundary of the elements.")]
         [Input("gridDisplay", "Set to true to visualise the load as a grid over the elements.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this AreaUniformlyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
+        public static List<ICurve> GeometricalRepresentation(this AreaUniformlyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
             if (!displayForces)
                 return new List<ICurve>();
@@ -146,7 +146,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this BarPointLoad barPointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this BarPointLoad barPointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -177,7 +177,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for Bar prestress loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for Bar prestress loads.")]
         [Output("lines", "A list of lines representing the load.")]
-        public static List<ICurve> Visualize(this BarPrestressLoad barPrestressLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this BarPrestressLoad barPrestressLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -200,7 +200,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for Bar temprature loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Unused for Bar temprature loads.")]
         [Output("lines", "A list of lines representing the load.")]
-        public static List<ICurve> Visualize(this BarUniformTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this BarUniformTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
             double loadFactor = barTempLoad.TemperatureChange * 1000 * scaleFactor; //Arrow methods are scaling down force to 1/1000
@@ -223,7 +223,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -257,7 +257,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -340,7 +340,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Not in use for gravity loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components. Not in use for gravity loads.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this GravityLoad gravityLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this GravityLoad gravityLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -391,7 +391,7 @@ namespace BH.Engine.Structure
         [Input("displayRotations", "Toggles whether rotational acceleration should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -416,7 +416,7 @@ namespace BH.Engine.Structure
         [Input("displayRotations", "Toggles whether rotations should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -441,7 +441,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this PointLoad pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this PointLoad pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -466,7 +466,7 @@ namespace BH.Engine.Structure
         [Input("displayRotations", "Toggles whether rotational velocity should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -491,7 +491,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for contour loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this ContourLoad contourLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this ContourLoad contourLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             if (!displayForces)
                 return new List<ICurve>();
@@ -536,7 +536,7 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not. Unused for contour loads.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this GeometricalLineLoad lineLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<ICurve> GeometricalRepresentation(this GeometricalLineLoad lineLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
 
@@ -550,7 +550,7 @@ namespace BH.Engine.Structure
 
             if (lineLoad.Projected || lineLoad.Axis == LoadAxis.Local)
             {
-                Engine.Reflection.Compute.RecordWarning("Can not currently visualize GeometricalLineLoads that are projected or in local coordinates.");
+                Engine.Reflection.Compute.RecordWarning("Can not currently GeometricalRepresentation GeometricalLineLoads that are projected or in local coordinates.");
                 return arrows;
             }
 
@@ -612,19 +612,130 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments or other rotational loads should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static IEnumerable<IGeometry> IVisualize(this ILoad load, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static IEnumerable<IGeometry> IGeometricalRepresentation(this ILoad load, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            return Visualize(load as dynamic, scaleFactor, displayForces, displayMoments, asResultants);
+            return GeometricalRepresentation(load as dynamic, scaleFactor, displayForces, displayMoments, asResultants);
         }
 
         /***************************************************/
         /**** Private Methods - fall back               ****/
         /***************************************************/
 
-        private static IEnumerable<IGeometry> Visualize(this ILoad load, double scaleFactor, bool displayForces, bool displayMoments, bool asResultants)
+        private static IEnumerable<IGeometry> GeometricalRepresentation(this ILoad load, double scaleFactor, bool displayForces, bool displayMoments, bool asResultants)
         {
             Reflection.Compute.RecordWarning("No load visualisation is yet implemented for load of type " + load.GetType().Name);
             return new List<IGeometry>();
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<List<Point>> ISubElementPointGrids(IAreaElement element)
+        {
+            return SubElementPointGrids(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<List<Point>> SubElementPointGrids(Panel element)
+        {
+            return new List<List<Point>>() { element.PointGrid() };
+        }
+
+        /***************************************************/
+
+        private static List<List<Point>> SubElementPointGrids(FEMesh element)
+        {
+            return element.PointGrid();
+        }
+
+        /***************************************************/
+
+        private static List<Basis> IAllLocalOrientations(IAreaElement element)
+        {
+            return AllLocalOrientations(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<Basis> AllLocalOrientations(Panel element)
+        {
+            return new List<Basis> { element.LocalOrientation() };
+        }
+
+        /***************************************************/
+
+        private static List<Basis> AllLocalOrientations(FEMesh element)
+        {
+            return element.LocalOrientations();
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> ISubElementBoundaries(IAreaElement element)
+        {
+            return SubElementBoundaries(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> SubElementBoundaries(Panel element)
+        {
+            return new List<List<ICurve>> { element.ElementCurves() };
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> SubElementBoundaries(FEMesh element)
+        {
+            List<List<ICurve>> elementCurves = new List<List<ICurve>>();
+
+            foreach (FEMeshFace face in element.Faces)
+            {
+                List<ICurve> faceEdges = new List<ICurve>();
+                for (int i = 0; i < face.NodeListIndices.Count; i++)
+                {
+                    int next = (i + 1) % face.NodeListIndices.Count;
+                    Line edge = new Line { Start = element.Nodes[face.NodeListIndices[i]].Position, End = element.Nodes[face.NodeListIndices[next]].Position };
+                    faceEdges.Add(edge);
+                }
+                elementCurves.Add(faceEdges);
+            }
+            return elementCurves;
+        }
+
+        /***************************************************/
+
+        private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected, out Basis orientation)
+        {
+            if (axis == LoadAxis.Global)
+            {
+                orientation = null;
+                if (isProjected)
+                {
+                    Point startPos = bar.StartNode.Position;
+                    Vector tan = bar.Tangent();
+
+                    Vector tanUnit = tan.Normalise();
+                    Vector forceUnit = globalForce.Normalise();
+                    Vector momentUnit = globalMoment.Normalise();
+
+                    double scaleFactorForce = (tanUnit - tanUnit.DotProduct(forceUnit) * forceUnit).Length();
+                    double scaleFactorMoment = (tanUnit - tanUnit.DotProduct(momentUnit) * momentUnit).Length();
+
+                    return new Vector[] { globalForce * scaleFactorForce, globalMoment * scaleFactorMoment };
+                }
+                else
+                {
+                    return new Vector[] { globalForce, globalMoment };
+                }
+            }
+            else
+            {
+                orientation = (Basis)bar.CoordinateSystem();
+                return new Vector[] { globalForce, globalMoment };
+            }
         }
     }
 }
