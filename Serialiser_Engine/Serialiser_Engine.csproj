@@ -63,6 +63,7 @@
     <Compile Include="Convert\Json.cs" />
     <Compile Include="Modify\ApplyTaggedName.cs" />
     <Compile Include="Objects\BsonSerializers\DeprecatedSerializer.cs" />
+    <Compile Include="Objects\BsonSerializers\BHoMCollectionSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\RegexSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\IntPtrSerializer.cs" />
     <Compile Include="Objects\BsonSerializers\BitmapSerializer.cs" />
