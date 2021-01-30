@@ -56,7 +56,7 @@ namespace BH.Engine.Programming
             List<DataParam> outputs = emiters.Where(x => x.TargetIds.Intersect(receiverIds).Count() == 0)
                                     .Select(x => x.ShallowClone()).ToList();
 
-            return new LoopNode(content, inputs, outputs, Guid.NewGuid(), description);
+            return new LoopNode { InternalNodes = content, Inputs = inputs, Outputs = outputs, Description = description };
         }
 
         /***************************************************/
