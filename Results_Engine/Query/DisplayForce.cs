@@ -54,7 +54,7 @@ namespace BH.Engine.Results
 
             List<List<CompositeGeometry>> results = new List<List<CompositeGeometry>>();
 
-            List<List<BarForce>> mappedBarForces = MapResults(bars, barForces, MapResultsBy.ObjectId, identifier, new List<string>() { loadcase });
+            List<List<BarForce>> mappedBarForces = MapResults(bars, barForces, /*MapResultsBy.ObjectId*/"ObjectId", identifier, new List<string>() { loadcase });
 
             List<Bar> barsL = bars.ToList();
             for (int i = 0; i < barsL.Count; i++)

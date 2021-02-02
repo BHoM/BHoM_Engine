@@ -64,7 +64,7 @@ namespace BH.Engine.Results
             List<FEMesh> meshList = meshes.ToList();
 
             // Order the MeshResults by FEMeshes
-            List<List<MeshResult>> mappedResults = meshList.MapResults(meshResults, MapResultsBy.ObjectId, identifier, caseFilter);
+            List<List<MeshResult>> mappedResults = meshList.MapResults(meshResults, /*MapResultsBy.ObjectId*/"ObjectId", identifier, caseFilter);
 
             gradientOptions = gradientOptions.AutoRange(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(z => z.ResultToValue(meshResultDisplay)))));
             gradientOptions = gradientOptions.DefaultGradient("BlueToRed");
@@ -188,7 +188,7 @@ namespace BH.Engine.Results
                                             MeshResultDisplay meshResultDisplay, Gradient gradient, double from, double to)
         {
             // Order the MeshNodeResults by the FEMesh Nodes
-            List<List<MeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, MapResultsBy.NodeId, identifier);
+            List<List<MeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, /*MapResultsBy.NodeId*/"NodeId", identifier);
             // Get the relevant values into a list
 
             List<Vertex> verts = new List<Vertex>();
