@@ -23,22 +23,19 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Analytical.Results;
 using BH.oM.Base;
 using System.Linq;
 using BH.oM.Geometry;
 using BH.oM.Structure.Results;
 using BH.oM.Structure.Elements;
-using System.Drawing;
 using BH.oM.Graphics;
 using System;
-using System.Reflection;
 using BH.Engine.Graphics;
 using BH.Engine.Geometry;
 using BH.Engine.Base;
 using BH.Engine.Analytical;
 
-namespace BH.Engine.Structure.Results
+namespace BH.Engine.Results
 {
     public static partial class Query
     {
