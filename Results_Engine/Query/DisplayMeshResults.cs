@@ -53,10 +53,12 @@ namespace BH.Engine.Results
         [Output("results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         public static List<List<RenderMesh>> DisplayMeshResults(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
                       Type identifier = null, List<string> caseFilter = null, MeshResultDisplay meshResultDisplay = MeshResultDisplay.SXX,
-                      GradientOptions gradientOptions = null)
+                      /*GradientOptions gradientOptions = null*/ Object gradientOptions = null)
         {
+            /*
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();
+            */
 
             //Check if no identifier has been provided. If this is the case, identifiers i searched for on the obejcts
             identifier = meshes.ElementAt(0).FindIdentifier(identifier);
@@ -66,9 +68,11 @@ namespace BH.Engine.Results
             // Order the MeshResults by FEMeshes
             List<List<MeshResult>> mappedResults = meshList.MapResults(meshResults, /*MapResultsBy.ObjectId*/"ObjectId", identifier, caseFilter);
 
+            /*
             gradientOptions = gradientOptions.AutoRange(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(z => z.ResultToValue(meshResultDisplay)))));
             gradientOptions = gradientOptions.DefaultGradient("BlueToRed");
             gradientOptions = gradientOptions.CenteringOptions();
+            */
 
             List<List<RenderMesh>> result = new List<List<RenderMesh>>();
 
@@ -77,7 +81,7 @@ namespace BH.Engine.Results
                 result.Add(new List<RenderMesh>());
                 for (int j = 0; j < mappedResults[i].Count; j++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, gradientOptions.Gradient, gradientOptions.From, gradientOptions.To));
+                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, /*gradientOptions.Gradient, gradientOptions.From, gradientOptions.To*/new Gradient(), 0, 1000));
                 }
             }
 
