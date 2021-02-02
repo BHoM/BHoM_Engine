@@ -45,7 +45,7 @@ namespace BH.Engine.Results
         [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        public static List<List<T>> MapResults<T>(this IEnumerable<IBHoMObject> objects, IEnumerable<T> results, MapResultsBy whichId = MapResultsBy.ObjectId, Type identifier = null, List<string> caseFilter = null) where T : IResult
+        public static List<List<T>> MapResults<T>(this IEnumerable<IBHoMObject> objects, IEnumerable<T> results, /*MapResultsBy whichId = MapResultsBy.ObjectId*/ string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) where T : IResult
         {
             //Check if no identifier has been provided. If this is the case, identifiers i searched for on the obejcts
             identifier = objects.ElementAt(0).FindIdentifier(identifier);
@@ -64,10 +64,10 @@ namespace BH.Engine.Results
             //Group results by Id and turn to dictionary
             switch (whichId)
             {
-                case MapResultsBy.NodeId:
+                case "NodeId"://MapResultsBy.NodeId:
                     resGroups = filteredRes.GroupBy(x => (x as MeshElementResult).NodeId.ToString()).ToDictionary(x => x.Key);
                     break;
-                case MapResultsBy.MeshFaceId:
+                case "MeshFaceId"://MapResultsBy.MeshFaceId:
                     resGroups = filteredRes.GroupBy(x => (x as MeshElementResult).MeshFaceId.ToString()).ToDictionary(x => x.Key);
                     break;
                 default:
