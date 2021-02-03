@@ -50,7 +50,7 @@ namespace BH.Engine.Results
             /*if (settings == null)
                 settings = new DisplayForceSettings();*/
 
-            double scalefactor = 0.001;//settings.ScaleFactor * 0.001;
+            double scalefactor = 0.000001;//settings.ScaleFactor * 0.001;
 
             List<List<CompositeGeometry>> results = new List<List<CompositeGeometry>>();
 
