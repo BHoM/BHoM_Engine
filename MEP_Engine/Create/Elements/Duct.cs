@@ -39,12 +39,12 @@ namespace BH.Engine.MEP
         [Input("sectionProperty", "Provide a ductSectionProperty to prepare a composite Duct section for accurate capacity and spatial quality.")]
         [Input("orientationAngle", "This is the Duct's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
         [Output("duct", "A duct object is a passageway which conveys material (typically air).")]
-        public static Duct Duct(Line line, double flowRate = 0, DuctSectionProperty sectionProperty = null, double orientationAngle = 0)
+        public static Duct Duct(Line line, double flowRate = 0, SectionProperty sectionProperty = null, double orientationAngle = 0)
         {
             return new Duct
             {
-                StartPoint = (Point)line.Start,
-                EndPoint = (Point)line.End,
+                StartPoint = (Node)line.Start,
+                EndPoint = (Node)line.End,
                 SectionProperty = sectionProperty,
                 OrientationAngle = orientationAngle,
             };

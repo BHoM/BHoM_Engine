@@ -28,6 +28,7 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Physical.Materials;
 using System.Collections.Generic;
+using BH.oM.Spatial.ShapeProfiles;
 
 namespace BH.Engine.MEP
 {
@@ -36,21 +37,19 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Creates a composite Duct sectionProfile including interior lining and exterior insulation.")]
-        [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
-        [Input("ductMaterial", "Material properties for the Duct object.")]
-        [Input("insulationMaterial", "Material properties for the insulation material, or material that wraps the exterior of the Duct object.")]
-        [Input("liningMaterial", "Material properties for the lining material that wraps the inside surface of the Duct object. This is the layer that is in direct contact with interior flowing material.")]
-        [Output("ductSectionProperty", "Duct Section property used to provide accurate duct assembly and capacities.")]
-        public static DuctSectionProperty DuctSectionProperty(
-            SectionProfile sectionProfile,
-            Material ductMaterial = null,
-            Material insulationMaterial = null,
-            Material liningMaterial = null,
+        [Description("Creates a sectionProfile including interior lining and exterior insulation.")]
+        [Input("profile", "A base ShapeProfile upon which to base the composite section.")]
+        [Input("materials", "MaterialFragment containing material properties for the object.")]
+        [Output("sectionProperty", "Section property used to provide accurate element assembly and capacities.")]
+        public static SectionProperty SectionProperty(
+            IProfile Profile,
+            SystemMaterialFragment Materials = null,
             string name = "")
         {
-            double elementSolidArea = sectionProfile.ElementProfile.Area();
-            double elementVoidArea = sectionProfile.ElementProfile.VoidArea();
+
+
+            double elementSolidArea = Profile.Area();
+            double elementVoidArea = Profile.VoidArea();
 
             double liningSolidArea = 0;
             double liningVoidArea = double.NaN;
@@ -58,26 +57,32 @@ namespace BH.Engine.MEP
             double insulationSolidArea = 0;
             double insulationVoidArea = double.NaN;
 
-            if (sectionProfile.LiningProfile != null)
+            if (Profile.Shape == ShapeType.Box)
             {
-                liningSolidArea = sectionProfile.LiningProfile.Area();
-                liningVoidArea = sectionProfile.LiningProfile.VoidArea();
+                double height = ((BoxProfile)Profile).Height;
+                double width = ((BoxProfile)Profile).Width;
+                double thickness = ((BoxProfile)Profile).Thickness;
+                double outerRad = ((BoxProfile)Profile).OuterRadius;
+                double innerRad = ((BoxProfile)Profile).InnerRadius;
             }
 
-            if(sectionProfile.InsulationProfile != null)
-            {
-                insulationSolidArea = sectionProfile.InsulationProfile.Area();
-                insulationVoidArea = sectionProfile.InsulationProfile.VoidArea();
-            }
+            //if (sectionProfile.LiningProfile != null)
+            //{
+            //    liningSolidArea = sectionProfile.LiningProfile.Area();
+            //    liningVoidArea = sectionProfile.LiningProfile.VoidArea();
+            //}
+
+            //if(sectionProfile.InsulationProfile != null)
+            //{
+            //    insulationSolidArea = sectionProfile.InsulationProfile.Area();
+            //    insulationVoidArea = sectionProfile.InsulationProfile.VoidArea();
+            //}
 
             //Duct specific properties
-            double circularEquivalent = sectionProfile.ElementProfile.ICircularEquivalentDiameter();
-            double hydraulicDiameter = sectionProfile.ElementProfile.HydraulicDiameter(liningVoidArea);
+            double circularEquivalent = Profile.ICircularEquivalentDiameter();
+            double hydraulicDiameter = Profile.HydraulicDiameter(liningVoidArea);
 
-            DuctSectionProperty property = new DuctSectionProperty(sectionProfile, elementSolidArea, liningSolidArea, insulationSolidArea, elementVoidArea, liningVoidArea, insulationVoidArea, hydraulicDiameter, circularEquivalent);
-            property.DuctMaterial = ductMaterial;
-            property.InsulationMaterial = insulationMaterial;
-            property.LiningMaterial = liningMaterial;
+            SectionProperty property = new SectionProperty(Profile, elementSolidArea, liningSolidArea, insulationSolidArea, elementVoidArea, liningVoidArea, insulationVoidArea, hydraulicDiameter, circularEquivalent);
             property.Name = name;
 
             if (property == null)

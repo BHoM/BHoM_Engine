@@ -34,13 +34,9 @@ namespace BH.Engine.MEP
         /***************************************************/
         /****              Public Methods               ****/
         /***************************************************/
-        [Description("Returns the centreline of any IFlow object as the line between the StartPoint and EndPoint. No offsets or similar is accounted for.")]
-        [Input("flowObj", "The IFlow object to get the centreline from.")]
-        [Output("centreline", "The centreline of the IFlow object.")]
-        public static Line Centreline(this IFlow flowObj)
-        {
-            return new Line { Start = flowObj.StartPoint.Position, End = flowObj.EndPoint.Position };
-        }
+        
+        // Multi Output? 
+
 
         /***************************************************/
     }

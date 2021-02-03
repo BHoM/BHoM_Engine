@@ -94,7 +94,7 @@
     <Compile Include="Compute\PlumbingFixtureWaterDemandPerDay.cs" />
     <Compile Include="Create\Elements\Duct.cs" />
     <Compile Include="Create\Elements\CableTraySectionProperty.cs" />
-    <Compile Include="Create\Elements\DuctSectionProperty.cs" />
+    <Compile Include="Create\Elements\SectionProperty.cs" />
     <Compile Include="Create\Elements\Pipe.cs" />
     <Compile Include="Create\Elements\PipeSectionProperty.cs" />
     <Compile Include="Create\Elements\SectionProfile.cs" />
@@ -102,6 +102,7 @@
     <Compile Include="Create\Elements\WireSectionProperty.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\ElementSectionProfile.cs" />
     <Compile Include="Query\Centreline.cs" />
     <Compile Include="Query\CircularEquivalentDiameter.cs" />
     <Compile Include="Query\FaceAreaByVelocity.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\CompositeSolidVolumes.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
+    <Compile Include="Query\GetSectionProfiles.cs" />
     <Compile Include="Query\SolidVolume.cs" />
   </ItemGroup>
   <ItemGroup>

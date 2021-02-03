@@ -27,6 +27,7 @@ using BH.oM.MEP.Fixtures;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.Engine.Base;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.MEP
 {
@@ -49,10 +50,23 @@ namespace BH.Engine.MEP
             }
 
             IFlow clone = flowObj.ShallowClone();
-            clone.StartPoint = clone.StartPoint.SetGeometry(curve.IStartPoint());
-            clone.EndPoint = clone.EndPoint.SetGeometry(curve.IEndPoint());
+            clone.StartPoint = clone.StartPoint.ISetGeometry(curve.IStartPoint());
+            clone.EndPoint = clone.EndPoint.ISetGeometry(curve.IEndPoint());
             return clone;
-        }        
+        }
+
+        /***************************************************/
+        /**** Private Interface Methods                 ****/
+        /***************************************************/
+
+        [Description("Modifies the class type of any point to Node for use in creation of IFlow geometric representation.")]
+        [Input("node", "Node to modify.")]
+        [Input("point", "Point to apply spatial properties from to the provided Node.")]
+        [Output("node", "The modified Node.")]
+        private static Node ISetGeometry(this Node node, Point point)
+        {
+            return Reflection.Compute.RunExtensionMethod(node, "SetGeometry", new object[] { point }) as Node;
+        }
 
         /***************************************************/
     }

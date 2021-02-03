@@ -24,6 +24,7 @@ using System.ComponentModel;
 using BH.oM.MEP.System.SectionProperties;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.oM.MEP.System;
 
 namespace BH.Engine.MEP
 {
@@ -38,12 +39,12 @@ namespace BH.Engine.MEP
         [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Pipe section for accurate capacity and spatial quality.")]
         [Output("pipe", "A pipe object is a passageway which conveys material (water, waste, glycol).")]
 
-        public static BH.oM.MEP.System.Pipe Pipe(Line line, double flowRate = 0, PipeSectionProperty sectionProperty = null)
+        public static BH.oM.MEP.System.Pipe Pipe(Line line, double flowRate = 0, SectionProperty sectionProperty = null)
         {
             return new BH.oM.MEP.System.Pipe
             {
-                StartPoint = (Point)line.Start,
-                EndPoint = (Point)line.End,
+                StartPoint = (Node)line.Start,
+                EndPoint = (Node)line.End,
                 SectionProperty = sectionProperty,
             };
         }
