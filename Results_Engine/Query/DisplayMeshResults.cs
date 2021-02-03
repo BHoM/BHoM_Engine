@@ -52,7 +52,7 @@ namespace BH.Engine.Results
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [Output("results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         public static List<List<RenderMesh>> DisplayMeshResults(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
-                      Type identifier = null, List<string> caseFilter = null, MeshResultDisplay meshResultDisplay = MeshResultDisplay.SXX,
+                      Type identifier = null, List<string> caseFilter = null, /*MeshResultDisplay meshResultDisplay = MeshResultDisplay.SXX*/string meshResultDisplay = "SXX",
                       /*GradientOptions gradientOptions = null*/ Object gradientOptions = null)
         {
             /*
@@ -94,27 +94,27 @@ namespace BH.Engine.Results
 
         [Description("Gets the value type specified in MeshResultDisplay from the object r.")]
         [Output("value", "The value of the specified type.")]
-        private static double ResultToValue(this MeshElementResult r, MeshResultDisplay prop)
+        private static double ResultToValue(this MeshElementResult r, /*MeshResultDisplay prop*/string prop)
         {
             if (r is MeshStress)
             {
                 switch (prop)
                 {
-                    case MeshResultDisplay.SXX:
+                    case "SXX"://MeshResultDisplay.SXX:
                         return (r as MeshStress).SXX;
-                    case MeshResultDisplay.SYY:
+                    case "SYY"://MeshResultDisplay.SYY:
                         return (r as MeshStress).SYY;
-                    case MeshResultDisplay.SXY:
+                    case "SXY"://MeshResultDisplay.SXY:
                         return (r as MeshStress).SXY;
-                    case MeshResultDisplay.TXX:
+                    case "TXX"://MeshResultDisplay.TXX:
                         return (r as MeshStress).TXX;
-                    case MeshResultDisplay.TYY:
+                    case "TYY"://MeshResultDisplay.TYY:
                         return (r as MeshStress).TYY;
-                    case MeshResultDisplay.Principal_1:
+                    case "Principal_1"://MeshResultDisplay.Principal_1:
                         return (r as MeshStress).Principal_1;
-                    case MeshResultDisplay.Principal_2:
+                    case "Principal_2"://MeshResultDisplay.Principal_2:
                         return (r as MeshStress).Principal_2;
-                    case MeshResultDisplay.Principal_1_2:
+                    case "Principal_1_2"://MeshResultDisplay.Principal_1_2:
                         return (r as MeshStress).Principal_1_2;
                     default:
                         break;
@@ -124,21 +124,21 @@ namespace BH.Engine.Results
             {
                 switch (prop)
                 {
-                    case MeshResultDisplay.NXX:
+                    case "NXX"://MeshResultDisplay.NXX:
                         return (r as MeshForce).NXX;
-                    case MeshResultDisplay.NYY:
+                    case "NYY"://MeshResultDisplay.NYY:
                         return (r as MeshForce).NYY;
-                    case MeshResultDisplay.NXY:
+                    case "NXY"://MeshResultDisplay.NXY:
                         return (r as MeshForce).NXY;
-                    case MeshResultDisplay.MXX:
+                    case "MXX"://MeshResultDisplay.MXX:
                         return (r as MeshForce).MXX;
-                    case MeshResultDisplay.MYY:
+                    case "MYY"://MeshResultDisplay.MYY:
                         return (r as MeshForce).MYY;
-                    case MeshResultDisplay.MXY:
+                    case "MXY"://MeshResultDisplay.MXY:
                         return (r as MeshForce).MXY;
-                    case MeshResultDisplay.VX:
+                    case "VX"://MeshResultDisplay.VX:
                         return (r as MeshForce).VX;
-                    case MeshResultDisplay.VY:
+                    case "VY"://MeshResultDisplay.VY:
                         return (r as MeshForce).VY;
                     default:
                         break;
@@ -148,17 +148,17 @@ namespace BH.Engine.Results
             {
                 switch (prop)
                 {
-                    case MeshResultDisplay.UXX:
+                    case "UXX"://MeshResultDisplay.UXX:
                         return (r as MeshDisplacement).UXX;
-                    case MeshResultDisplay.UYY:
+                    case "UYY"://MeshResultDisplay.UYY:
                         return (r as MeshDisplacement).UYY;
-                    case MeshResultDisplay.UZZ:
+                    case "UZZ"://MeshResultDisplay.UZZ:
                         return (r as MeshDisplacement).UZZ;
-                    case MeshResultDisplay.RXX:
+                    case "RXX"://MeshResultDisplay.RXX:
                         return (r as MeshDisplacement).RXX;
-                    case MeshResultDisplay.RYY:
+                    case "RYY"://MeshResultDisplay.RYY:
                         return (r as MeshDisplacement).RYY;
-                    case MeshResultDisplay.RZZ:
+                    case "RZZ"://MeshResultDisplay.RZZ:
                         return (r as MeshDisplacement).RZZ;
                     default:
                         break;
@@ -168,11 +168,11 @@ namespace BH.Engine.Results
             {
                 switch (prop)
                 {
-                    case MeshResultDisplay.S:
+                    case "S"://MeshResultDisplay.S:
                         return (r as MeshVonMises).S;
-                    case MeshResultDisplay.N:
+                    case "N":// MeshResultDisplay.N:
                         return (r as MeshVonMises).N;
-                    case MeshResultDisplay.M:
+                    case "M":// MeshResultDisplay.M:
                         return (r as MeshVonMises).M;
                     default:
                         break;
@@ -189,7 +189,7 @@ namespace BH.Engine.Results
         [Description("Applies colour to a single Mesh based on a single MeshResult, i.e stress or force etc, to a FEMesh.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
         private static RenderMesh DisplayMeshResults(this FEMesh mesh, MeshResult meshResult, Type identifier,
-                                            MeshResultDisplay meshResultDisplay, Gradient gradient, double from, double to)
+                                            /*MeshResultDisplay meshResultDisplay*/ string meshResultDisplay, Gradient gradient, double from, double to)
         {
             // Order the MeshNodeResults by the FEMesh Nodes
             List<List<MeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, /*MapResultsBy.NodeId*/"NodeId", identifier);
