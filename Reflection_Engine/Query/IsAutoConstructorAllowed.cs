@@ -36,17 +36,13 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsRequired(this PropertyInfo property) 
+        public static bool IsAutoConstructorAllowed(this Type type)
         {
-            RequiredAttribute attribute = property.GetCustomAttribute<RequiredAttribute>();
-            return attribute != null;
+            NoAutoConstructorAttribute attribute = type.GetCustomAttribute<NoAutoConstructorAttribute>();
+            return attribute == null && !typeof(Attribute).IsAssignableFrom(type);
         }
 
-
         /***************************************************/
-
-
-
     }
 }
 
