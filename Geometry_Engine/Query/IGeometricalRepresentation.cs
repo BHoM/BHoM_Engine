@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
         /****              Interface Methods            ****/
         /***************************************************/
 
-        public static IGeometry IGeometricalRepresentation(this IObject iObj, IGeometricalRepresentationOptions options = null)
+        public static GeometricalRepresentation IGeometricalRepresentation(this IObject iObj, IGeometricalRepresentationOptions options = null)
         {
             return GeometricalRepresentation(iObj as dynamic, options as dynamic);
         }
@@ -43,9 +43,13 @@ namespace BH.Engine.Geometry
         /****         Private methods - fallback        ****/
         /***************************************************/
 
-        private static IGeometry GeometricalRepresentation(IObject iObj, IGeometricalRepresentationOptions options)
+        private static GeometricalRepresentation GeometricalRepresentation(IObject iObj, IGeometricalRepresentationOptions options = null)
         {
-            GeometricalRepresentation geomRepr = Reflection.Compute.RunExtensionMethod(iObj, "GeometricalRepresentation", new object[] { options }) as GeometricalRepresentation;
+            GeometricalRepresentation geomRepr = iObj as GeometricalRepresentation;
+            if (geomRepr != null)
+                return geomRepr;
+
+            geomRepr = Reflection.Compute.RunExtensionMethod(iObj, "Representation", new object[] { options }) as GeometricalRepresentation;
 
             if (geomRepr != null) // object has a GeometricalRepresentation method.
                 return geomRepr;

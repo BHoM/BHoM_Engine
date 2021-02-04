@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Returns the geometrical representation of the point, which is a Sphere.")] // in the future, we might want an option to choose between sphere / box.
-        public static IGeometry GeometricalRepresentation(this Point point, ElementRepresentationOptions options = null)
+        public static GeometricalRepresentation Representation(this Point point, ElementRepresentationOptions options = null)
         {
             options = options ?? new ElementRepresentationOptions();
 

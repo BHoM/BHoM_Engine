@@ -35,14 +35,16 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static GeometricalRepresentation GeometricalRepresentation(Vector v, Point pt, double shift = 0.0)
+        public static GeometricalRepresentation Representation(Vector v, VectorRepresentationOptions vectOpts)
         {
             List<ICurve> arrow = new List<ICurve>();
 
-            pt = pt + v * shift;
+            Point pt = vectOpts.BasePoint;
+
+            pt = pt + v * vectOpts.Shift;
             Point end = pt + v;
 
-            arrow.Add(Engine.Geometry.Create.Line(pt, end));
+            arrow.Add(Create.Line(pt, end));
 
             double length = v.Length();
 

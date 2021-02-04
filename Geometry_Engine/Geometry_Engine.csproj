@@ -150,7 +150,9 @@
     <Compile Include="Query\Cells.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\ClosestPoints.cs" />
-    <Compile Include="Query\GeometricalRepresentation.cs" />
+    <Compile Include="Query\GeometricalRepresentation\Curve.cs" />
+    <Compile Include="Query\GeometricalRepresentation\Point.cs" />
+    <Compile Include="Query\GeometricalRepresentation\Vector.cs" />
     <Compile Include="Query\IGeometricalRepresentation.cs" />
     <Compile Include="Query\PrincipalCurvatureAtParameter.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
@@ -268,6 +270,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
