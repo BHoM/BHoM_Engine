@@ -148,7 +148,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 typeName = typeDocument["Name"].AsString;
                 foreach (Type type in Reflection.Create.AllTypes(typeName, true))
                 {
-                    method = Create.MethodBase(type, methodName, types); // type overload
+                    method = Create.MethodBase(type, methodName, types.Select(x => x.ToText(true)).ToList()); // type overload
                     if (method != null)
                         return method;
                 }
