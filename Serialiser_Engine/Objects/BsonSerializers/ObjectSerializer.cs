@@ -34,6 +34,7 @@ using BH.Engine.Serialiser.Objects;
 using System.Collections.Generic;
 using BH.Engine.Serialiser.Objects.MemberMapConventions;
 using System.Linq;
+using System.Collections;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -235,13 +236,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
                             serializer.Serialize(context, value);
                         else
                         {
-                            var discriminator = _discriminatorConvention.GetDiscriminator(typeof(object), actualType);
-                            bsonWriter.WriteStartDocument();
-                            bsonWriter.WriteName(_discriminatorConvention.ElementName);
-                            BsonValueSerializer.Instance.Serialize(context, discriminator);
-                            bsonWriter.WriteName("_v");
-                            serializer.Serialize(context, value);
-                            bsonWriter.WriteEndDocument();
+                            DictionarySerializer dicSerialiser = new DictionarySerializer();
+                            dicSerialiser.Serialize(context, value);
                         }
                     }
                     else
@@ -303,7 +299,11 @@ namespace BH.Engine.Serialiser.BsonSerializers
                         CreateFallbackSerialiser(actualType);
                     bsonSerializer = m_FallbackSerialisers[actualType];
                 }
-
+                else if (actualType.Name == "Dictionary`2" && context.Reader.CurrentBsonType == BsonType.Document)
+                {
+                    DictionarySerializer dicSerialiser = new DictionarySerializer();
+                    return dicSerialiser.Deserialize(context, args);
+                }
 
                 return bsonSerializer.Deserialize(context, args);
             }
