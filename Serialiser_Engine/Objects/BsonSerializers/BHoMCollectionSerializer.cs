@@ -53,6 +53,11 @@ namespace BH.Engine.Serialiser.BsonSerializers
         {
             var bsonWriter = context.Writer;
 
+            if (value == null)
+            {
+                bsonWriter.WriteNull();
+                return;
+            }
 
             if (bsonWriter.SerializationDepth == 0)
             {
@@ -86,6 +91,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
             var bsonReader = context.Reader;
             BsonType bsonType = bsonReader.GetCurrentBsonType();
 
+            if (bsonType == BsonType.Null)
+            {
+                context.Reader.ReadNull();
+                return default(T);
+            }
+
             // Get type name
             string typeName = "";
             if (bsonType == BsonType.Document)
@@ -102,7 +113,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             List<object> items = new List<object>();
             bsonReader.ReadStartArray();
             while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
-                items.Add(m_ObjectSerializer.Deserialize(context));
+                items.Add(BsonSerializer.Deserialize(bsonReader, typeof(object)));
             bsonReader.ReadEndArray();
 
             // Get version
@@ -122,17 +133,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
             return result;
         }
 
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
 
         /*******************************************/
         /**** Private Fields                    ****/
         /*******************************************/
 
         private IDiscriminatorConvention m_DiscriminatorConvention = BsonSerializer.LookupDiscriminatorConvention(typeof(object));
-        private static readonly IBsonSerializer<object> m_ObjectSerializer = BsonSerializer.LookupSerializer<object>();
 
         /*******************************************/
     }
