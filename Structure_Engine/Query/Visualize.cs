@@ -626,6 +626,343 @@ namespace BH.Engine.Structure
             Reflection.Compute.RecordWarning("No load visualisation is yet implemented for load of type " + load.GetType().Name);
             return new List<IGeometry>();
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<List<Point>> ISubElementPointGrids(IAreaElement element)
+        {
+            return SubElementPointGrids(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<List<Point>> SubElementPointGrids(Panel element)
+        {
+            return new List<List<Point>>() { element.PointGrid() };
+        }
+
+        /***************************************************/
+
+        private static List<List<Point>> SubElementPointGrids(FEMesh element)
+        {
+            return element.PointGrid();
+        }
+
+        /***************************************************/
+
+        private static List<Basis> IAllLocalOrientations(IAreaElement element)
+        {
+            return AllLocalOrientations(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<Basis> AllLocalOrientations(Panel element)
+        {
+            return new List<Basis> { element.LocalOrientation() };
+        }
+
+        /***************************************************/
+
+        private static List<Basis> AllLocalOrientations(FEMesh element)
+        {
+            return element.LocalOrientations();
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> ISubElementBoundaries(IAreaElement element)
+        {
+            return SubElementBoundaries(element as dynamic);
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> SubElementBoundaries(Panel element)
+        {
+            return new List<List<ICurve>> { element.ElementCurves() };
+        }
+
+        /***************************************************/
+
+        private static List<List<ICurve>> SubElementBoundaries(FEMesh element)
+        {
+            List<List<ICurve>> elementCurves = new List<List<ICurve>>();
+
+            foreach (FEMeshFace face in element.Faces)
+            {
+                List<ICurve> faceEdges = new List<ICurve>();
+                for (int i = 0; i < face.NodeListIndices.Count; i++)
+                {
+                    int next = (i + 1) % face.NodeListIndices.Count;
+                    Line edge = new Line { Start = element.Nodes[face.NodeListIndices[i]].Position, End = element.Nodes[face.NodeListIndices[next]].Position };
+                    faceEdges.Add(edge);
+                }
+                elementCurves.Add(faceEdges);
+            }
+            return elementCurves;
+        }
+
+        /***************************************************/
+
+        private static Vector[] BarForceVectors(Bar bar, Vector globalForce, Vector globalMoment, LoadAxis axis, bool isProjected, out Basis orientation)
+        {
+            if (axis == LoadAxis.Global)
+            {
+                orientation = null;
+                if (isProjected)
+                {
+                    Point startPos = bar.StartNode.Position;
+                    Vector tan = bar.Tangent();
+
+                    Vector tanUnit = tan.Normalise();
+                    Vector forceUnit = globalForce.Normalise();
+                    Vector momentUnit = globalMoment.Normalise();
+
+                    double scaleFactorForce = (tanUnit - tanUnit.DotProduct(forceUnit) * forceUnit).Length();
+                    double scaleFactorMoment = (tanUnit - tanUnit.DotProduct(momentUnit) * momentUnit).Length();
+
+                    return new Vector[] { globalForce * scaleFactorForce, globalMoment * scaleFactorMoment };
+                }
+                else
+                {
+                    return new Vector[] { globalForce, globalMoment };
+                }
+            }
+            else
+            {
+                orientation = (Basis)bar.CoordinateSystem();
+                return new Vector[] { globalForce, globalMoment };
+            }
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, Basis orientation = null, int nbArrowHeads = 1)
+        {
+            Point[] basePoints;
+            return Arrows(pt, load, straightArrow, asResultant, out basePoints, orientation, nbArrowHeads);
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> Arrows(Point pt, Vector load, bool straightArrow, bool asResultant, out Point[] basePoints, Basis orientation = null, int nbArrowHeads = 1)
+        {
+            if (asResultant)
+            {
+                Vector vector;
+                if (orientation == null)
+                    vector = load;
+                else
+                    vector = orientation.X * load.X + orientation.Y * load.Y + orientation.Z * load.Z;
+
+                basePoints = new Point[1];
+                if (straightArrow)
+                    return Arrow(pt, vector, out basePoints[0], nbArrowHeads);
+                else
+                    return ArcArrow(pt, vector, out basePoints[0]);
+            }
+            else
+            {
+                List<ICurve> arrows = new List<ICurve>();
+                basePoints = new Point[3];
+                Vector[] vectors;
+
+                if (orientation == null)
+                    vectors = new Vector[] { new Vector { X = load.X }, new Vector { Y = load.Y }, new Vector { Z = load.Z } };
+                else
+                    vectors = new Vector[] { orientation.X * load.X, orientation.Y * load.Y, orientation.Z * load.Z };
+
+                for (int i = 0; i < 3; i++)
+                {
+                    if (straightArrow)
+                        arrows.AddRange(Arrow(pt, vectors[i], out basePoints[i], nbArrowHeads, 0.02));
+                    else
+                        arrows.AddRange(ArcArrow(pt, vectors[i], out basePoints[i]));
+                }
+                return arrows;
+            }
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> Arrow(Point pt, Vector v, int nbArrowHeads = 1, double offsetRatio = 0.0)
+        {
+            Point basePt;
+            return Arrow(pt, v, out basePt, nbArrowHeads, offsetRatio);
+        }
+        /***************************************************/
+
+        private static List<ICurve> Arrow(Point pt, Vector v, out Point basePt, int nbArrowHeads = 1, double offsetRatio = 0.0)
+        {
+            List<ICurve> arrow = new List<ICurve>();
+
+            //scale from N to kN and flip to get correct arrows
+            v /= -1000;
+
+            pt = pt + v * offsetRatio;
+            Point end = pt + v;
+
+            arrow.Add(Engine.Geometry.Create.Line(pt, end));
+
+            double length = v.Length();
+
+            Vector tan = v / length;
+
+            Vector v1 = Vector.XAxis;
+
+            double dot = v1.DotProduct(tan);
+
+            if (Math.Abs(1 - Math.Abs(dot)) < Tolerance.Angle)
+            {
+                v1 = Vector.YAxis;
+                dot = v1.DotProduct(tan);
+            }
+
+            v1 = (v1 - dot * tan).Normalise();
+
+            Vector v2 = v1.CrossProduct(tan).Normalise();
+
+            v1 /= 2;
+            v2 /= 2;
+
+            double factor = length / 10;
+
+            int m = 0;
+
+            while (m < nbArrowHeads)
+            {
+                arrow.Add(Engine.Geometry.Create.Line(pt, (v1 + tan) * factor));
+                arrow.Add(Engine.Geometry.Create.Line(pt, (-v1 + tan) * factor));
+                arrow.Add(Engine.Geometry.Create.Line(pt, (v2 + tan) * factor));
+                arrow.Add(Engine.Geometry.Create.Line(pt, (-v2 + tan) * factor));
+
+                pt = pt + tan * factor;
+                m++;
+            }
+
+            basePt = end;
+
+            return arrow;
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> ArcArrow(Point pt, Vector v)
+        {
+            Point startPt;
+            return ArcArrow(pt, v, out startPt);
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> ArcArrow(Point pt, Vector v, out Point startPt)
+        {
+            List<ICurve> arrow = new List<ICurve>();
+
+            //Scale from Nm to kNm
+            v = v / 1000;
+
+            double length = v.Length();
+
+            Vector cross;
+            if (v.IsParallel(Vector.ZAxis) == 0)
+                cross = Vector.ZAxis;
+            else
+                cross = Vector.YAxis;
+
+            Vector yAxis = v.CrossProduct(cross);
+            Vector xAxis = yAxis.CrossProduct(v);
+
+            double pi4over3 = Math.PI * 4 / 3;
+            Arc arc = Engine.Geometry.Create.Arc(Engine.Geometry.Create.CartesianCoordinateSystem(pt, xAxis, yAxis), length / pi4over3, 0, pi4over3);
+
+            startPt = arc.StartPoint();
+
+            arrow.Add(arc);
+
+            Vector tan = -arc.EndDir();
+
+            Vector v1 = Vector.XAxis;
+
+            double dot = v1.DotProduct(tan);
+
+            if (Math.Abs(1 - dot) < Tolerance.Angle)
+            {
+                v1 = Vector.YAxis;
+                dot = v1.DotProduct(tan);
+            }
+
+            v1 = (v1 - dot * tan).Normalise();
+
+            Vector v2 = v1.CrossProduct(tan).Normalise();
+
+            v1 /= 2;
+            v2 /= 2;
+
+            double factor = length / 10;
+
+            pt = arc.EndPoint();
+
+            arrow.Add(Engine.Geometry.Create.Line(pt, (v1 + tan) * factor));
+            arrow.Add(Engine.Geometry.Create.Line(pt, (-v1 + tan) * factor));
+            arrow.Add(Engine.Geometry.Create.Line(pt, (v2 + tan) * factor));
+            arrow.Add(Engine.Geometry.Create.Line(pt, (-v2 + tan) * factor));
+
+
+            return arrow;
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> ConnectedArrows(IEnumerable<ICurve> curves, Vector vector, bool asResultant, Basis orientation = null, int nbArrowHeads = 1, bool straightArrow = true)
+        {
+            List<ICurve> allCurves = new List<ICurve>();
+            Vector[] baseVec;
+
+            int divisions = straightArrow ? 5 : 7;
+
+            allCurves = MultipleArrows(curves.SelectMany(x => x.SamplePoints((int)divisions)), vector, asResultant, out baseVec, orientation, nbArrowHeads, straightArrow);
+            if (straightArrow) allCurves.AddRange(curves.SelectMany(x => baseVec.Select(v => x.ITranslate(v))));
+
+            return allCurves;
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, Basis orientation = null, int nbArrowHeads = 1, bool straightArrow = true)
+        {
+            Vector[] baseVec;
+            return MultipleArrows(basePoints, vector, asResultant, out baseVec, orientation, nbArrowHeads, straightArrow);
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> MultipleArrows(IEnumerable<Point> basePoints, Vector vector, bool asResultant, out Vector[] baseVec, Basis orientation = null, int nbArrowHeads = 1, bool straightArrow = true)
+        {
+            List<ICurve> allCurves = new List<ICurve>();
+            List<ICurve> arrow = new List<ICurve>();
+            Point[] basePts;
+
+            arrow = Arrows(Point.Origin, vector, straightArrow, asResultant, out basePts, orientation, nbArrowHeads);
+
+            baseVec = basePts.Select(x => x - Point.Origin).ToArray();
+
+            foreach (Point pt in basePoints)
+            {
+                Vector vec = pt - Point.Origin;
+                allCurves.AddRange(arrow.Select(x => x.ITranslate(vec)));
+            }
+
+            return allCurves;
+        }
+
+        /***************************************************/
+
+
+
     }
 }
 
