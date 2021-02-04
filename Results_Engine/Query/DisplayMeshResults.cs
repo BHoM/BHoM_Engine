@@ -34,6 +34,7 @@ using BH.Engine.Graphics;
 using BH.Engine.Geometry;
 using BH.Engine.Base;
 using BH.Engine.Analytical;
+using BH.Engine.Library;
 
 namespace BH.Engine.Results
 {
@@ -81,7 +82,7 @@ namespace BH.Engine.Results
                 result.Add(new List<RenderMesh>());
                 for (int j = 0; j < mappedResults[i].Count; j++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, /*gradientOptions.Gradient, gradientOptions.From, gradientOptions.To*/Graphics.Create.Gradient(), -1000, 1000));
+                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, /*gradientOptions.Gradient, gradientOptions.From, gradientOptions.To*/Library.Query.Match("Gradients", "BlueToRed") as Gradient, -10000, 10000));
                 }
             }
 
