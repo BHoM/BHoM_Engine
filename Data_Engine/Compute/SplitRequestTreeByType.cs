@@ -40,7 +40,7 @@ namespace BH.Engine.Data
         [Input("request", "A tree of nested ILogicalRequests with multiple items of given type to be split into a set of trees with only one item of that type each.")]
         [Input("splittingType", "Type of IRequest that is not allowed to exist more than once within a tree.")]
         [Output("splitRequests", "Collection of trees with max. one item of the splitting type each, which in total represent the same request as the original tree.")]
-        public static List<IRequest> SplitRequestTreeByType(IRequest request, Type splittingType)
+        public static List<IRequest> SplitRequestTreeByType(this IRequest request, Type splittingType)
         {
             if (!typeof(IRequest).IsAssignableFrom(splittingType))
             {
