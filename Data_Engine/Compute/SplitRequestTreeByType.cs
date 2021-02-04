@@ -60,13 +60,15 @@ namespace BH.Engine.Data
                 return null;
             }
 
-            IRequest flattened = request.SimplifyRequestTree();
             List<IRequest> extracted = new List<IRequest>();
-            flattened.ExtractTrees(splittingType, extracted, new List<IRequest>());
+            IRequest flattened = request.SimplifyRequestTree();
+            if (flattened is ILogicalRequest)
+            {
+                flattened.ExtractTrees(splittingType, extracted, new List<IRequest>());
+                extracted = extracted.Select(x => x.SimplifyRequestTree()).ToList();
+            }
 
-            extracted = extracted.Select(x => x.SimplifyRequestTree()).ToList();
             extracted.Add(flattened.SimplifyRequestTree());
-
             return extracted.Where(x => x != null).ToList();
         }
 
