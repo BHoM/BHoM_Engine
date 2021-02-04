@@ -98,6 +98,10 @@
       <Project>{d5c7704d-f59a-4fc6-8d1e-356699a174e0}</Project>
       <Name>Graphics_Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Library_Engine\Library_Engine.csproj">
+      <Project>{fb4ed5c8-e7cc-44b3-95eb-95c304d54e5d}</Project>
+      <Name>Library_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
