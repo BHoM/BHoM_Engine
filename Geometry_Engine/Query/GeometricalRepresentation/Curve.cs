@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,50 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using BH.oM.Geometry.SettingOut;
+using BH.oM.Reflection.Attributes;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
         /***************************************************/
-        /****              Interface Methods            ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IGeometry IGeometricalRepresentation(this IObject iObj, IGeometricalRepresentationOptions options = null)
+        [Description("Returns the geometrical representation of the curve, which is a Pipe.")] // the pipe radius corresponds to how big the Curve is when represented.
+        public static IGeometry GeometricalRepresentation(this ICurve curve, ElementRepresentationOptions options = null)
         {
-            return GeometricalRepresentation(iObj as dynamic, options as dynamic);
-        }
+            options = options ?? new ElementRepresentationOptions();
 
-        /***************************************************/
-        /****         Private methods - fallback        ****/
-        /***************************************************/
+            double radius = 0.01 * options.Scale;
+            bool capped = options.Cap1DElements;
 
-        private static IGeometry GeometricalRepresentation(IObject iObj, IGeometricalRepresentationOptions options)
-        {
-            GeometricalRepresentation geomRepr = Reflection.Compute.RunExtensionMethod(iObj, "GeometricalRepresentation", new object[] { options }) as GeometricalRepresentation;
+            Pipe pipe = BH.Engine.Geometry.Create.Pipe(curve, radius, capped);
 
-            if (geomRepr != null) // object has a GeometricalRepresentation method.
-                return geomRepr;
-
-            geomRepr = new GeometricalRepresentation();
-
-            IGeometry geom = iObj as IGeometry;
-            if (geom != null) // it's a geometrical object that does not have a GeometricalRepresentation method.
-                geomRepr.Geometry = geom;
-            else // it's a generic object that does not have a GeometricalRepresentation method.
-                geom = BH.Engine.Base.Query.IGeometry(iObj as BHoMObject);
-
-            if (options != null)
-                geomRepr.Colour = options.Colour;
-
-            return geomRepr;
+            return new GeometricalRepresentation() { Geometry = pipe, Colour = options.Colour };
         }
     }
 }
-
-
