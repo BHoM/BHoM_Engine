@@ -795,7 +795,7 @@ namespace BH.Engine.Structure
         }
         /***************************************************/
 
-        private static List<ICurve> Arrow(Point pt, Vector v, out Point basePt, int nbArrowHeads = 1, double offsetRatio = 0.0)
+        private static List<ICurve> Arrow(Point pt, Vector v, out Point basePt,int nbArrowHeads = 1, double offsetRatio = 0.0)
         {
             List<ICurve> arrow = new List<ICurve>();
 
@@ -925,7 +925,7 @@ namespace BH.Engine.Structure
             int divisions = straightArrow ? 5 : 7;
 
             allCurves = MultipleArrows(curves.SelectMany(x => x.SamplePoints((int)divisions)), vector, asResultant, out baseVec, orientation, nbArrowHeads, straightArrow);
-            if (straightArrow) allCurves.AddRange(curves.SelectMany(x => baseVec.Select(v => x.ITranslate(v))));
+            if(straightArrow) allCurves.AddRange(curves.SelectMany(x => baseVec.Select(v => x.ITranslate(v))));
 
             return allCurves;
         }
