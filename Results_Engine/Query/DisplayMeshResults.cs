@@ -82,7 +82,7 @@ namespace BH.Engine.Results
                 result.Add(new List<RenderMesh>());
                 for (int j = 0; j < mappedResults[i].Count; j++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, /*gradientOptions.Gradient, gradientOptions.From, gradientOptions.To*/Library.Query.Match("Gradients", "BlueToRed") as Gradient, -10000, 10000));
+                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, /*gradientOptions.Gradient, gradientOptions.From, gradientOptions.To*/Library.Query.Match("Gradients", "BlueToRed") as Gradient, -2.3992e+6, 2.8991e+6));
                 }
             }
 
