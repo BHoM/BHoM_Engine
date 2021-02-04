@@ -21,10 +21,11 @@
  */
 
 using BH.Engine.Base;
-using BH.oM.Base;
 using BH.oM.Data.Requests;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Data
@@ -35,6 +36,10 @@ namespace BH.Engine.Data
         /****              Public methods               ****/
         /***************************************************/
 
+        [Description("Decomposes a tree created by a set of nested ILogicalRequests with multiple items of given type into a set of trees with max. one item of that type each, which in total represents the same request as the original tree.")]
+        [Input("request", "A tree of nested ILogicalRequests with multiple items of given type to be split into a set of trees with only one item of that type each.")]
+        [Input("splittingType", "Type of IRequest that is not allowed to exist more than once within a tree.")]
+        [Output("splitRequests", "Collection of trees with max. one item of the splitting type each, which in total represent the same request as the original tree.")]
         public static List<IRequest> SplitRequestTreeByType(IRequest request, Type splittingType)
         {
             if (!typeof(IRequest).IsAssignableFrom(splittingType))
