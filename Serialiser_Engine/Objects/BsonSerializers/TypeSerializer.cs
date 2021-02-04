@@ -32,6 +32,7 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using BH.Engine.Versioning;
+using System.Collections;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -87,7 +88,14 @@ namespace BH.Engine.Serialiser.BsonSerializers
                         bsonWriter.WriteName("Constraints");
                         bsonWriter.WriteStartArray();
                         foreach (Type constraint in constraints)
-                            BsonSerializer.Serialize(bsonWriter, constraint);
+                        {
+                            // T : IComparable<T> creates an infinite loop. Thankfully, that's the only case where a type constrained by itself even makes sense
+                            if (constraint.Name == "IComparable`1" && constraint.GenericTypeArguments.FirstOrDefault() == value) 
+                                BsonSerializer.Serialize(bsonWriter, typeof(IEnumerable));
+                            else
+                                BsonSerializer.Serialize(bsonWriter, constraint);
+                        }
+                            
                         bsonWriter.WriteEndArray();
                     }
                 }
@@ -130,6 +138,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             string fullName = "";
             string version = "";
             List<Type> genericTypes = new List<Type>();
+            List<Type> constraints = new List<Type>();
 
             while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
             {
@@ -149,7 +158,14 @@ namespace BH.Engine.Serialiser.BsonSerializers
                             genericTypes.Add(BsonSerializer.Deserialize(bsonReader, typeof(Type)) as Type);
                         bsonReader.ReadEndArray();
                         break;
+                    case "Constraints":
+                        bsonReader.ReadStartArray();
+                        while (bsonReader.ReadBsonType() != BsonType.EndOfDocument)
+                            constraints.Add(BsonSerializer.Deserialize(bsonReader, typeof(Type)) as Type);
+                        bsonReader.ReadEndArray();
+                        break;
                     default:
+                        bsonReader.SkipValue();
                         break;
                 }
             }
@@ -160,7 +176,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             {
                 Type type = GetTypeFromName(fullName);
 
-                if (type == null)
+                if (type == null && fullName != "T")
                 {
                     // Try to upgrade through versioning
                     BsonDocument doc = new BsonDocument();
@@ -173,7 +189,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
                 if (type == null)
                 {
-                    if (!string.IsNullOrWhiteSpace(fullName))  // To mirror the structure of the code above (line 59), we need to check if the fullName is empty.
+                    if (!string.IsNullOrWhiteSpace(fullName) && fullName != "T")  // To mirror the structure of the code above (line 59), we need to check if the fullName is empty.
                         Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
                 }
                 else if (type.IsGenericType && type.GetGenericArguments().Length == genericTypes.Where(x => x != null).Count())
@@ -183,7 +199,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             catch
             {
-                if (!string.IsNullOrWhiteSpace(fullName)) // To mirror the structure of the code above (line 59), we need to check if the fullName is empty.
+                if (!string.IsNullOrWhiteSpace(fullName) && fullName != "T") // To mirror the structure of the code above (line 59), we need to check if the fullName is empty.
                     Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
                 return null;
             }

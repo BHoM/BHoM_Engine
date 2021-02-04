@@ -44,14 +44,18 @@ namespace BH.Engine.Reflection
             if (!typeDictionary.TryGetValue(name, out types))
             {
                 Type type = System.Type.GetType(name);
-                if (type != null)
-                    return type;
-                else
+                if (type == null && name.EndsWith("&"))
                 {
-                    if (!silent)
-                        Compute.RecordError($"A type corresponding to {name} cannot be found.");
-                    return null;
+                    type = Type(name.TrimEnd(new char[] { '&' }), true);
+                    if (type != null)
+                        type = type.MakeByRefType();
                 }
+                    
+
+                if (type == null && !silent)
+                    Compute.RecordError($"A type corresponding to {name} cannot be found.");
+
+                return type;
             }
             else if (types.Count == 1)
                 return types[0];

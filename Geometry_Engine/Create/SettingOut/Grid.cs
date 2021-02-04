@@ -22,6 +22,9 @@
 
 using BH.oM.Geometry;
 using BH.oM.Geometry.SettingOut;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry.SettingOut
 {
@@ -31,25 +34,12 @@ namespace BH.Engine.Geometry.SettingOut
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Grid Grid(ICurve curve)
-        {
-            return new Grid
-            {
-                Curve = Geometry.Modify.IProject(curve, BH.oM.Geometry.Plane.XY)
-            };
-        }
-
-        /***************************************************/
-
-        public static Grid Grid(Point origin, Vector direction, double length = 20)
-        {
-            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
-            return new Grid { Curve = line };
-        }
-
-        /***************************************************/
-
-        public static Grid Grid(ICurve curve, string name)
+        [Description("Creates a Grid in the XY Plane from a curve.")]
+        [Input("curve", "Curve to be used as grid curve. Will be projected to the XY Plane.")]
+        [Input("name", "Optional name of the Grid.")]
+        [Output("grid", "A Grid in the XY Plane.")]
+        [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.ICurve)")]
+        public static Grid Grid(ICurve curve, string name = "")
         {
             return new Grid
             {
@@ -60,9 +50,18 @@ namespace BH.Engine.Geometry.SettingOut
 
         /***************************************************/
 
-        public static Grid Grid(Point origin, Vector direction, string name, double length = 20)
+        [Description("Creates a linear Grid in the XY Plane from a point and a vector.")]
+        [Input("origin", "Origin point of the grid line.")]
+        [Input("direction", "Direction of the grid. Will be projected to the XY plane and unitized.")]
+        [Input("length", "Length of the output Grid line.", typeof(Length))]
+        [Input("name", "Optional name of the Grid.")]
+        [Output("grid", "A Grid in the XY Plane.")]
+        [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Double)")]
+        [PreviousVersion("4.1", "BH.Engine.Geometry.SettingOut.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.String, System.Double)")]
+        public static Grid Grid(Point origin, Vector direction, double length = 20, string name = "")
         {
-            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
+            Point projectedOrigin = origin.Project(Plane.XY);
+            Line line = new Line { Start = projectedOrigin, End = projectedOrigin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
             return new Grid { Curve = line, Name = name };
         }
 
