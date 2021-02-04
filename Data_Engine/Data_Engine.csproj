@@ -110,6 +110,7 @@
     <Compile Include="Modify\TransposeRectangularCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\AdjacencyDictionary.cs" />
+    <Compile Include="Query\AllRequestsOfType.cs" />
     <Compile Include="Query\Axes.cs" />
     <Compile Include="Query\AxisExists.cs" />
     <Compile Include="Query\Children.cs" />
