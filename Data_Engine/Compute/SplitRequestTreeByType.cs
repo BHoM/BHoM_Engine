@@ -61,14 +61,18 @@ namespace BH.Engine.Data
             }
 
             List<IRequest> extracted = new List<IRequest>();
-            IRequest flattened = request.SimplifyRequestTree();
-            if (flattened is ILogicalRequest)
+            IRequest simplified = request.SimplifyRequestTree();
+            if (simplified is ILogicalRequest)
             {
-                flattened.ExtractTrees(splittingType, extracted, new List<IRequest>());
+                simplified.ExtractTrees(splittingType, extracted, new List<IRequest>());
                 extracted = extracted.Select(x => x.SimplifyRequestTree()).ToList();
-            }
 
-            extracted.Add(flattened.SimplifyRequestTree());
+                if (simplified.AllRequestsOfType(splittingType).Count == 0)
+                    extracted.Add(simplified.SimplifyRequestTree());
+            }
+            else
+                extracted.Add(simplified);
+
             return extracted.Where(x => x != null).ToList();
         }
 
@@ -86,10 +90,29 @@ namespace BH.Engine.Data
             {
                 extracted.Add(request.Extract(newHistory));
 
-                if (history.Count != 0)
-                    ((ILogicalRequest)history.Last()).IRequests().Remove(request);
-
-                return;
+                IRequest last = request;
+                for (int i = history.Count - 1; i >= 0; i--)
+                {
+                    ILogicalRequest current = (ILogicalRequest)history[i];
+                    if (current is LogicalNotRequest)
+                    {
+                        if (i == 0)
+                        {
+                            ((LogicalNotRequest)current).Request = null;
+                            return;
+                        }
+                        else
+                        {
+                            last = current;
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        current.IRequests().Remove(last);
+                        return;
+                    }
+                }
             }
 
             newHistory.Add(request);
@@ -101,7 +124,27 @@ namespace BH.Engine.Data
                 if (found != null)
                 {
                     extracted.Add(found.Extract(newHistory));
-                    ((ILogicalRequest)history.Last()).IRequests().Remove(request);
+
+                    IRequest last = request;
+                    for (int i = history.Count - 1; i >= 0; i--)
+                    {
+                        ILogicalRequest current = (ILogicalRequest)history[i];
+                        if (current is LogicalNotRequest)
+                        {
+                            if (i == 0)
+                                ((LogicalNotRequest)current).Request = null;
+                            else
+                            {
+                                last = current;
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            current.IRequests().Remove(last);
+                            break;
+                        }
+                    }
                 }
                 else
                 {
@@ -118,7 +161,6 @@ namespace BH.Engine.Data
                 {
                     subRequests[i].ExtractTrees(typeToExtract, extracted, newHistory);
                 }
-
             }
             else if (request is LogicalNotRequest)
                 ((LogicalNotRequest)request).Request.ExtractTrees(typeToExtract, extracted, newHistory);
