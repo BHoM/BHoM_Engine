@@ -35,10 +35,10 @@ namespace BH.Engine.Data
         /****              Public methods               ****/
         /***************************************************/
 
-        [Description("Flattens a tree created by a set of nested ILogicalRequests by merging LogicalAndRequests embedded into LogicalAndRequests of the same type as well as squashing the ones with only one item.")]
-        [Input("request", "A tree created by a set of nested ILogicalRequests to be flattened.")]
-        [Output("flattened", "Flattened tree of ILogicalRequests.")]
-        public static IRequest FlattenRequestTree(this IRequest request)
+        [Description("Simplifies a tree created by a set of nested ILogicalRequests by merging LogicalAndRequests embedded into LogicalAndRequests of the same type as well as squashing the ones with only one item.")]
+        [Input("request", "A tree created by a set of nested ILogicalRequests to be simplified.")]
+        [Output("simplified", "Simplified tree of ILogicalRequests.")]
+        public static IRequest SimplifyRequestTree(this IRequest request)
         {
             IRequest clone = request.DeepClone();
             clone.Flatten();

@@ -73,7 +73,7 @@
     <Compile Include="Compute\FilterData.cs" />
     <Compile Include="Compute\RelatedPairs.cs" />
     <Compile Include="Compute\Path.cs" />
-    <Compile Include="Compute\SplitRequestByType.cs" />
+    <Compile Include="Compute\SplitRequestTreeByType.cs" />
     <Compile Include="Create\DomainTreeLeaf.cs" />
     <Compile Include="Create\DomainTree.cs" />
     <Compile Include="Create\DomainBox.cs" />
@@ -99,7 +99,7 @@
     <Compile Include="Create\GraphLink.cs" />
     <Compile Include="Create\GraphNode.cs" />
     <Compile Include="Modify\Add.cs" />
-    <Compile Include="Modify\FlattenRequestTree.cs" />
+    <Compile Include="Modify\SimplifyRequestTree.cs" />
     <Compile Include="Modify\GroupByName.cs" />
     <Compile Include="Modify\ShortenBranches.cs" />
     <Compile Include="Modify\Pop.cs" />
