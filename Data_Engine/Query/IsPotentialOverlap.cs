@@ -20,12 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Data.Collections;
 using BH.oM.Data.Requests;
-using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Data
@@ -36,6 +34,10 @@ namespace BH.Engine.Data
         /****              Public methods               ****/
         /***************************************************/
 
+        [Description("Checks whether a tree created by a set of nested ILogicalRequests contains two or more IRequests of given type that can conflict (fall into a logical and statement).")]
+        [Input("request", "A tree created by a set of nested ILogicalRequests to be checked for potential conflicts between IRequests of the same type.")]
+        [Input("requestType", "Type of IRequest to be checked for potential conflicts.")]
+        [Output("overlap", "True if the input tree created by a set of nested ILogicalRequests contains two or more IRequests of given type that can conflict (fall into a logical and statement).")]
         public static bool IsPotentialOverlap(this IRequest request, Type requestType)
         {
             if (!typeof(IRequest).IsAssignableFrom(requestType))

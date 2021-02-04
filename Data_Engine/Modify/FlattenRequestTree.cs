@@ -21,11 +21,11 @@
  */
 
 using BH.Engine.Base;
-using BH.oM.Data.Collections;
 using BH.oM.Data.Requests;
-using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Data
 {
@@ -35,6 +35,9 @@ namespace BH.Engine.Data
         /****              Public methods               ****/
         /***************************************************/
 
+        [Description("Flattens a tree created by a set of nested ILogicalRequests by merging LogicalAndRequests embedded into LogicalAndRequests of the same type as well as squashing the ones with only one item.")]
+        [Input("request", "A tree created by a set of nested ILogicalRequests to be flattened.")]
+        [Output("flattened", "Flattened tree of ILogicalRequests.")]
         public static IRequest FlattenRequestTree(this IRequest request)
         {
             IRequest clone = request.DeepClone();
