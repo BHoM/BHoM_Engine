@@ -46,12 +46,6 @@ namespace BH.Engine.Data
                 return null;
             }
 
-            if (typeof(ILogicalRequest).IsAssignableFrom(requestType))
-            {
-                BH.Engine.Reflection.Compute.RecordError($"It is not allowed to query for instances of types that implement {nameof(ILogicalRequest)} interface.");
-                return null;
-            }
-
             List<IRequest> instances = new List<IRequest>();
             request.RequestsOfType(requestType, instances);
             return instances;
@@ -66,11 +60,9 @@ namespace BH.Engine.Data
         {
             Type type = request.GetType();
             if (type == requestType)
-            {
                 instances.Add(request);
-                return;
-            }
-            else if (request is ILogicalRequest)
+
+            if (request is ILogicalRequest)
             {
                 foreach (IRequest subRequest in ((ILogicalRequest)request).IRequests())
                 {
