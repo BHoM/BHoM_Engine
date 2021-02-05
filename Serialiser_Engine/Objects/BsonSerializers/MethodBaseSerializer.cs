@@ -149,6 +149,18 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 foreach (Type type in Reflection.Create.AllTypes(typeName, true))
                 {
                     method = Create.MethodBase(type, methodName, types.Select(x => x.ToText(true)).ToList()); // type overload
+                    if (method == null)
+                    {
+                        try
+                        {
+                            if (methodName == ".ctor")
+                                method = type.GetConstructor(types.ToArray());
+                            else
+                                method = type.GetMethod(methodName, types.ToArray());
+                        }
+                        catch { }
+                    }
+
                     if (method != null)
                         return method;
                 }
