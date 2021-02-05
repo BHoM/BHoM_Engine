@@ -309,6 +309,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             catch (Exception e)
             {
+                if (e.Message.Contains("Could not load file or assembly"))
+                    Engine.Reflection.Compute.RecordError(e.Message);
+
                 context.Reader.ReturnToBookmark(bookmark);
                 DeprecatedSerializer deprecatedSerialiser = new DeprecatedSerializer();
                 return deprecatedSerialiser.Deserialize(context, args);
