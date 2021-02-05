@@ -46,19 +46,23 @@ namespace BH.Engine.Serialiser
 
             foreach (MethodBase method in methods)
             {
-                ParameterInfo[] parameters = method.ParametersWithConstraints();
-                if (parameters.Length == paramTypeNames.Count)
+                try
                 {
-                    bool matching = true;
-                    List<string> names = parameters.Select(x => x.ParameterType.ToText(true)).ToList();
-                    for (int i = 0; i < paramTypeNames.Count; i++)
-                        matching &= names[i] == paramTypeNames[i];
-
-                    if (matching)
+                    ParameterInfo[] parameters = method.ParametersWithConstraints();
+                    if (parameters.Length == paramTypeNames.Count)
                     {
-                        return method;
+                        bool matching = true;
+                        List<string> names = parameters.Select(x => x.ParameterType.ToText(true)).ToList();
+                        for (int i = 0; i < paramTypeNames.Count; i++)
+                            matching &= names[i] == paramTypeNames[i];
+
+                        if (matching)
+                        {
+                            return method;
+                        }
                     }
                 }
+                catch { }
             }
 
             // If failed, look for a generic method that can satisfy the constraints
