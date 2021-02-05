@@ -24,6 +24,7 @@ using BH.Engine.Reflection;
 using BH.Engine.Serialiser;
 using BH.Engine.Test;
 using BH.oM.Reflection.Debugging;
+using BH.oM.Test;
 using BH.oM.Test.Results;
 using System;
 using System.Collections.Generic;
@@ -39,24 +40,31 @@ namespace BH.Test.Serialiser
         /**** Test Methods                ****/
         /*************************************/
 
-        public static TestResult ToFromJson()
+        public static TestResult ObjectsToFromJson()
         {
             // Test all the BHoM types available
-            List<Type> types = Helpers.TypesToTest();
-            List<TestResult> results = types.Select(x => ToFromJson(x)).ToList();
+            List<Type> types = Helpers.ObjectTypesToTest();
+            List<TestResult> results = types.Select(x => ObjectToFromJson(x)).ToList();
+
+            // Generate the result message
+            int errorCount = results.Where(x => x.Status == TestStatus.Error).Count();
+            int warningCount = results.Where(x => x.Status == TestStatus.Warning).Count();
 
             // Returns a summary result 
-            List<TestResult> fails = results.Where(x => x.Status == ResultStatus.Fail).ToList();
-            string description = $"{results.Count} types of objects available in BH.oM.";
-            if (fails.Count == 0)
-                return Engine.Test.Create.PassResult(description);
-            else
-                return new TestResult(ResultStatus.Fail, fails.SelectMany(x => x.Events).ToList(), description);
+            return new TestResult()
+            {
+                ID = "ObjectSerialiserToFromJson",
+                Description = $"Serialisation of Objects via json: {results.Count} types of objects available in BH.oM.",
+                Message = $"{errorCount} errors and {warningCount} warnings reported.",
+                Status = results.MostSevereStatus(),
+                Information = results.Where(x => x.Status != TestStatus.Pass).ToList<ITestInformation>(),
+                UTCTime = DateTime.UtcNow,
+            };
         }
 
         /*************************************/
 
-        public static TestResult ToFromJson(Type type)
+        public static TestResult ObjectToFromJson(Type type)
         {
             string typeDescription = type.IToText(true);
 
@@ -67,12 +75,22 @@ namespace BH.Test.Serialiser
                 object dummy = null;
                 try
                 {
+                    Engine.Reflection.Compute.ClearCurrentEvents();
                     dummy = Engine.Test.Compute.DummyObject(type);
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    Engine.Reflection.Compute.RecordWarning(e.Message);
+                }
 
                 if (dummy == null)
-                    return Engine.Test.Create.FailResult($"Failed to create a dummy object of type {typeDescription}.", typeDescription);
+                    return new TestResult
+                    {
+                        Description = typeDescription,
+                        Status = TestStatus.Warning,
+                        Message = $"Warning: Failed to create a dummy object of type {typeDescription}.",
+                        Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    };
                 else
                     testObjects.Add(dummy);
             }
@@ -84,23 +102,43 @@ namespace BH.Test.Serialiser
                 string json = "";
                 try
                 {
+                    Engine.Reflection.Compute.ClearCurrentEvents();
                     json = testObject.ToJson();
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    Engine.Reflection.Compute.RecordError(e.Message);
+                }
 
                 if (string.IsNullOrWhiteSpace(json))
-                    return Engine.Test.Create.FailResult($"Failed to convert object of type {typeDescription} to json.", typeDescription);
+                    return new TestResult
+                    {
+                        Description = typeDescription,
+                        Status = TestStatus.Error,
+                        Message = $"Error: Failed to convert object of type {typeDescription} to json.",
+                        Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    };
 
                 // From Json
                 object copy = null;
                 try
                 {
+                    Engine.Reflection.Compute.ClearCurrentEvents();
                     copy = Engine.Serialiser.Convert.FromJson(json);
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    Engine.Reflection.Compute.RecordError(e.Message);
+                }
 
-                if (!copy.IsEqual(testObject))
-                    return Engine.Test.Create.FailResult($"Object of type {typeDescription} is not equal to the original after serialisation.", typeDescription);
+                if (!testObject.IsEqual(copy))
+                    return new TestResult
+                    {
+                        Description = typeDescription,
+                        Status = TestStatus.Error,
+                        Message = $"Error: Object of type {typeDescription} is not equal to the original after serialisation.",
+                        Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    };
             }
 
             // All test objects passed the test

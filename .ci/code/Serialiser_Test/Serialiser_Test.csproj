@@ -66,8 +66,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\TestObjects.cs" />
-    <Compile Include="Helpers\TypesToTest.cs" />
-    <Compile Include="Verify\ToFromJson.cs" />
+    <Compile Include="Helpers\ObjectTypesToTest.cs" />
+    <Compile Include="Verify\MethodsToFromJson.cs" />
+    <Compile Include="Verify\TypesToFromJson.cs" />
+    <Compile Include="Verify\ObjectsToFromJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
