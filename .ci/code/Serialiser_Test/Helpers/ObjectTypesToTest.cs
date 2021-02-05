@@ -38,7 +38,7 @@ namespace BH.Test.Serialiser
         /**** Public Methods              ****/
         /*************************************/
 
-        public static List<Type> TypesToTest()
+        public static List<Type> ObjectTypesToTest()
         {
             Engine.Reflection.Compute.LoadAllAssemblies();
 
@@ -46,7 +46,8 @@ namespace BH.Test.Serialiser
             return Engine.Reflection.Query.BHoMTypeList().Where(x => {
                 return typeof(IObject).IsAssignableFrom(x)
                   && !x.IsAbstract
-                  && !x.IsDeprecated();
+                  && !x.IsDeprecated()
+                  && !x.GetProperties().Select(p => p.PropertyType.Namespace).Any(n => !n.StartsWith("BH.") && !n.StartsWith("System"));
             }).ToList();
         }
 
