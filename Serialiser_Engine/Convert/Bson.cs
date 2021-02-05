@@ -242,7 +242,7 @@ namespace BH.Engine.Serialiser
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Debug.WriteLine(e.ToString());
             }
         }
 
