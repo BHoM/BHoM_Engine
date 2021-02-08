@@ -34,36 +34,35 @@ namespace BH.Engine.Geometry
         /****              Interface Methods            ****/
         /***************************************************/
 
-        public static GeometricalRepresentation IGeometricalRepresentation(this IObject iObj, IGeometricalRepresentationOptions options = null)
+        public static IRepresentation IRepresentation(this IObject iObj)
         {
-            return GeometricalRepresentation(iObj as dynamic, options as dynamic);
+            return Representation(iObj as dynamic);
         }
 
         /***************************************************/
         /****         Private methods - fallback        ****/
         /***************************************************/
 
-        private static GeometricalRepresentation GeometricalRepresentation(IObject iObj, IGeometricalRepresentationOptions options = null)
+        private static IRepresentation Representation(IObject iObj)
         {
-            GeometricalRepresentation geomRepr = iObj as GeometricalRepresentation;
-            if (geomRepr != null)
-                return geomRepr;
+            IRepresentation repr = iObj as IRepresentation;
+            if (repr != null)
+                return repr;
 
-            geomRepr = Reflection.Compute.RunExtensionMethod(iObj, "Representation", new object[] { options }) as GeometricalRepresentation;
+            repr = Reflection.Compute.RunExtensionMethod(iObj, "Representation") as IRepresentation;
 
-            if (geomRepr != null) // object has a GeometricalRepresentation method.
-                return geomRepr;
+            if (repr != null) // object has a Representation method.
+                return repr;
 
-            geomRepr = new GeometricalRepresentation();
+            GeometricalRepresentation geomRepr = new GeometricalRepresentation();
 
             IGeometry geom = iObj as IGeometry;
-            if (geom != null) // it's a geometrical object that does not have a GeometricalRepresentation method.
-                geomRepr.Geometry = geom;
-            else // it's a generic object that does not have a GeometricalRepresentation method.
-                geom = BH.Engine.Base.Query.IGeometry(iObj as BHoMObject);
 
-            if (options != null)
-                geomRepr.Colour = options.Colour;
+            if (geom != null) // it's a geometrical object that does not have a Representation method.
+                geomRepr.Geometry = geom;
+
+            else // it's a generic object that does not have a Representation method.
+                geom = BH.Engine.Base.Query.IGeometry(iObj as BHoMObject);
 
             return geomRepr;
         }

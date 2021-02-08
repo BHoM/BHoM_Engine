@@ -35,57 +35,57 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static GeometricalRepresentation Representation(Vector v, VectorRepresentationOptions vectOpts)
-        {
-            List<ICurve> arrow = new List<ICurve>();
+        //public static GeometricalRepresentation Representation(Vector v, VectorRepresentationOptions vectOpts)
+        //{
+        //    List<ICurve> arrow = new List<ICurve>();
 
-            Point pt = vectOpts.BasePoint;
+        //    Point pt = vectOpts.BasePoint;
 
-            pt = pt + v * vectOpts.Shift;
-            Point end = pt + v;
+        //    pt = pt + v * vectOpts.Shift;
+        //    Point end = pt + v;
 
-            arrow.Add(Create.Line(pt, end));
+        //    arrow.Add(Create.Line(pt, end));
 
-            double length = v.Length();
+        //    double length = v.Length();
 
-            Vector norm = v / length;
+        //    Vector norm = v / length;
 
-            Vector v1 = Vector.XAxis;
+        //    Vector v1 = Vector.XAxis;
 
-            double dot = v1.DotProduct(norm);
+        //    double dot = v1.DotProduct(norm);
 
-            if (Math.Abs(1 - Math.Abs(dot)) < Tolerance.Angle)
-            {
-                v1 = Vector.YAxis;
-                dot = v1.DotProduct(norm);
-            }
+        //    if (Math.Abs(1 - Math.Abs(dot)) < Tolerance.Angle)
+        //    {
+        //        v1 = Vector.YAxis;
+        //        dot = v1.DotProduct(norm);
+        //    }
 
-            v1 = (v1 - dot * norm).Normalise();
+        //    v1 = (v1 - dot * norm).Normalise();
 
-            Vector v2 = v1.CrossProduct(norm).Normalise();
+        //    Vector v2 = v1.CrossProduct(norm).Normalise();
 
-            v1 /= 2;
-            v2 /= 2;
+        //    v1 /= 2;
+        //    v2 /= 2;
 
-            double factor = length / 10;
+        //    double factor = length / 10;
 
-            int m = 0;
+        //    int m = 0;
 
-            while (m < 1)
-            {
-                arrow.Add(Engine.Geometry.Create.Line(pt, (v1 + norm) * factor));
-                arrow.Add(Engine.Geometry.Create.Line(pt, (-v1 + norm) * factor));
-                arrow.Add(Engine.Geometry.Create.Line(pt, (v2 + norm) * factor));
-                arrow.Add(Engine.Geometry.Create.Line(pt, (-v2 + norm) * factor));
+        //    while (m < 1)
+        //    {
+        //        arrow.Add(Engine.Geometry.Create.Line(pt, (v1 + norm) * factor));
+        //        arrow.Add(Engine.Geometry.Create.Line(pt, (-v1 + norm) * factor));
+        //        arrow.Add(Engine.Geometry.Create.Line(pt, (v2 + norm) * factor));
+        //        arrow.Add(Engine.Geometry.Create.Line(pt, (-v2 + norm) * factor));
 
-                pt = pt + norm * factor;
-                m++;
-            }
+        //        pt = pt + norm * factor;
+        //        m++;
+        //    }
 
-            CompositeGeometry compositeGeometry = new CompositeGeometry() { Elements = arrow.OfType<IGeometry>().ToList() };
-            GeometricalRepresentation repr = new GeometricalRepresentation() { Geometry = compositeGeometry };
-            return repr;
-        }
+        //    CompositeGeometry compositeGeometry = new CompositeGeometry() { Elements = arrow.OfType<IGeometry>().ToList() };
+        //    GeometricalRepresentation repr = new GeometricalRepresentation() { Geometry = compositeGeometry };
+        //    return repr;
+        //}
 
         /***************************************************/
 
