@@ -20,14 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.Engine.Spatial;
+using BH.oM.MEP.Enums;
 using BH.oM.MEP.System;
 using BH.oM.Physical.Materials;
 using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Spatial.ShapeProfiles;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.MEP
 {
@@ -42,17 +44,28 @@ namespace BH.Engine.MEP
         [Output("materialComposition", "The kind of matter the object is composed of and in which ratios.", typeof(Ratio))]
         public static MaterialComposition MaterialComposition(this IFlow obj)
         {
-            if (obj.SectionProperty == null)
+            if (obj.SectionProfile == null)
             {
-                Engine.Reflection.Compute.RecordError("The object's MaterialComposition could not be calculated as no SectionProperty has been assigned.");
+                Engine.Reflection.Compute.RecordError("The object's MaterialComposition could not be calculated as no SectionProfile has been assigned.");
                 return null;
             }
 
             List<Material> materials = null;
             List<double> ratios = null;
+            List<IProfile> profiles = null;
 
-            materials = new List<Material>() { obj.SectionProperty.Materials.ElementMaterial, obj.SectionProperty.Materials.LiningMaterial, obj.SectionProperty.Materials.InsulationMaterial };
-            ratios = new List<double>() { obj.SectionProperty.ElementSolidArea, obj.SectionProperty.LiningSolidArea, obj.SectionProperty.InsulationSolidArea };
+            materials = new List<Material>() {
+                obj.SectionProfile.Where(x => x.Type == ProfileType.Element).First().Layer.Select(x => x.Material).First(), obj.SectionProfile.Where(x => x.Type == ProfileType.Lining).First().Layer.Select(x => x.Material).First(), obj.SectionProfile.Where(x => x.Type == ProfileType.Insulation).First().Layer.Select(x => x.Material).First() 
+            };
+
+            profiles = GetSectionProfiles(obj);
+            List<double> areas = null;
+            areas = profiles.Select(x => x.Area()).ToList();
+
+            //This will only work with all three areas accounted for
+            ratios = new List<double>() {
+                areas[0], areas[1], areas[2]
+            };
 
             return Matter.Create.MaterialComposition(materials, ratios);
         }

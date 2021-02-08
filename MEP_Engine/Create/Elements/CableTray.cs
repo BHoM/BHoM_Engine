@@ -21,25 +21,37 @@
  */
 
 using System.ComponentModel;
-
+using BH.oM.MEP.System.SectionProperties;
 using BH.oM.Geometry;
-using BH.oM.MEP.System;
-using BH.oM.MEP.Fixtures;
 using BH.oM.Reflection.Attributes;
+using BH.oM.MEP.System;
+using System.Collections.Generic;
+using BH.oM.MEP.System.ConnectionProperties;
 
 namespace BH.Engine.MEP
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
-        /****              Public Methods               ****/
+        /**** Public Methods                            ****/
         /***************************************************/
-        
-        // Multi Output? 
+        [Description("Creates a Pipe object. Material that flows through this Pipe can be established at the system level.")]
+        [Input("line", "A line that determines the Pipe's length and direction.")]
+        [Input("flowRate", "The volume of fluid being conveyed by the Pipe per second (m3/s).")]
+        [Input("sectionProfile", "Provide a sectionProfile to prepare a composite Pipe section for accurate capacity and spatial quality.")]
+        [Output("cableTray", "A Cable Tray object is a passageway which conveys material (typically cables).")]
 
-
+        public static BH.oM.MEP.System.CableTray cableTray(Line line, List<SectionProfile> sectionProfile = null, CableTrayConnectionProperty connectionProperty = null)
+        {
+            return new BH.oM.MEP.System.CableTray
+            {
+                StartPoint = (Node)line.Start,
+                EndPoint = (Node)line.End,
+                ConnectionProperty = connectionProperty,
+                SectionProfile = sectionProfile,
+            };
+        }
         /***************************************************/
     }
 }
-
 

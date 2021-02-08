@@ -20,10 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.MEP.Enums;
+using BH.oM.MEP.System;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Spatial.ShapeProfiles;
 using System;
 using System.ComponentModel;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Reflection.Attributes;
+using System.Linq;
 
 namespace BH.Engine.MEP
 {
@@ -32,6 +35,7 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
         [Input("profile", "Shape profile to query the Circular Equivalent Diameter.")]
         [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
@@ -39,7 +43,29 @@ namespace BH.Engine.MEP
         {
             return CircularEquivalentDiameter(profile as dynamic);
         }
+
         /***************************************************/
+
+        [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
+        [Input("obj", "The Box shaped element to query the Circular Equivalent Diameter.")]
+        [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
+        public static double CircularEquivalentDiameter(this IFlow obj)
+        {
+            ShapeType elementShape = obj.ElementSize.Shape;
+
+            if (elementShape == ShapeType.Box)
+            {
+                double thickness = obj.SectionProfile.Where(x => x.Type == ProfileType.Element).First().Layer.Select(x => x.Thickness).Sum();
+                double a = 1000 * (obj.ElementSize.Height - 2 * thickness);
+                double b = 1000 * (obj.ElementSize.Width - 2 * thickness);
+                return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
+            }
+            BH.Engine.Reflection.Compute.RecordWarning("Circular Equivalent Diameter only applies to Box ShapeProfiles.");
+            return 0;
+        }
+
+        /***************************************************/
+
         [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
         [Input("box", "Box Shape profile to query the Circular Equivalent Diameter.")]
         [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
@@ -49,6 +75,7 @@ namespace BH.Engine.MEP
             double b = 1000 * (box.Width - 2 * box.Thickness);
             return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
         }
+
         /***************************************************/
 
         public static double CircularEquivalentDiameter(this object profile)

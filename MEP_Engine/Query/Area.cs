@@ -20,37 +20,51 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
+using BH.Engine.Geometry;
+using BH.Engine.MEP;
+using BH.Engine.Spatial;
 using BH.oM.MEP.System;
-using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.System.SectionProperties;
+using BH.oM.Spatial.ShapeProfiles;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using BH.oM.MEP.System.SectionProperties;
+using BH.oM.MEP.Enums;
 
 namespace BH.Engine.MEP
 {
-    public static partial class Create
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-        [Description("Creates a Duct object. Material that flows through this Duct can be established at the system level.")]
-        [Input("line", "A line that determines the Duct's length and direction.")]
-        [Input("flowRate", "The volume of fluid being conveyed by the Duct per second (m3/s).")]
-        [Input("sectionProfile", "Provide a sectionProfile to prepare a composite Duct section for accurate capacity and spatial quality.")]
-        [Input("orientationAngle", "This is the Duct's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
-        [Output("duct", "A duct object is a passageway which conveys material (typically air).")]
-        public static Duct Duct(Line line, double flowRate = 0, List<SectionProfile> sectionProfile = null, double orientationAngle = 0)
+        /******************************************/
+        /****            Public Methods        ****/
+        /******************************************/
+
+        [Description("Gets the area of an IProfile. This assumes that the outermost curve(s) are solid. Curves inside a solid region are assumed to be openings, and curves within openings are assumed to be solid, etc. Also, for TaperedProfiles, the average area is returned.")]
+        [Input("obj", "The object to evaluate.")]
+        [Output("area", "The net area of the solid regions in the profile", typeof(Area))]
+        public static double Area(this IFlow obj)
         {
-            return new Duct
+            double area = 0;
+
+            List<IProfile> profiles = GetSectionProfiles(obj);
+
+            if (profiles.Count() <= 0)
             {
-                StartPoint = (Node)line.Start,
-                EndPoint = (Node)line.End,
-                SectionProfile = sectionProfile,
-                OrientationAngle = orientationAngle,
-            };
+                BH.Engine.Reflection.Compute.RecordError("The object must contain at least one section profile to be evaluated.");
+                return double.NaN;
+            }
+
+            for (int i = 0; i < profiles.Count(); i++)
+            {
+                area = profiles.Select(x => x.Area()).Sum();
+            }
+
+            return area;
+
+            /******************************************/
         }
-        /***************************************************/
     }
 }
 
