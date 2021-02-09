@@ -32,6 +32,7 @@ using BH.Engine.Physical;
 using BH.oM.Facade.Elements;
 
 using BH.Engine.Matter;
+using BH.Engine.Spatial;
 
 using BH.Engine.Geometry;
 
@@ -79,7 +80,7 @@ namespace BH.Engine.Facade
         [Output("materialComposition", "The kind of matter the Opening is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this Opening opening)
         {
-            if (opening.OpeningConstruction == null && opening.FrameConstruction == null)
+            if (opening.OpeningConstruction == null && opening.Edges == null)
             {
                 Engine.Reflection.Compute.RecordError("The Opening does not have any constructions assigned");
                 return null;
@@ -93,23 +94,23 @@ namespace BH.Engine.Facade
 
             if (opening.OpeningConstruction != null)
             {
-                if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
+                if (opening.Edges != null && opening.Edges.Count != 0)
                 {
-                    double innerArea = opening.InnerEdges.Polyline().Area();
+                    double innerArea = opening.Area();
                     glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
-                    frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
+                    frameVolume = 0; //ToDo method for frame edge volume
                 }
                 else
                 {
-                    glazedVolume = opening.Polyline().Area() * opening.OpeningConstruction.IThickness();
+                    glazedVolume = opening.Area() * opening.OpeningConstruction.IThickness();
                 }
             }
 
-            if (opening.FrameConstruction != null && opening.FrameConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
-            {
-                comps.Add(opening.FrameConstruction.IMaterialComposition());
-                ratios.Add(frameVolume);
-            }
+            //if (opening.FrameConstruction != null && opening.FrameConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
+            //{
+            //    comps.Add(opening.FrameConstruction.IMaterialComposition());
+            //    ratios.Add(frameVolume);
+            //}
 
             if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
             {

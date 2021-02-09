@@ -65,16 +65,16 @@ namespace BH.Engine.Facade
 
             if (opening.OpeningConstruction != null)
             {
-                if (opening.InnerEdges != null && opening.InnerEdges.Count != 0)
+                if (opening.Edges != null && opening.Edges.Count != 0)
                 {
-                    double innerArea = opening.InnerEdges.Polyline().Area();
+                    double innerArea = opening.Area();
                     glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
                     
-                    if(opening.FrameConstruction != null)
-                        frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
+                    //if(opening.FrameConstruction != null)
+                        //frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
                 }
                 else
-                    glazedVolume = opening.Polyline().Area() * opening.OpeningConstruction.IThickness();
+                    glazedVolume = opening.Area() * opening.OpeningConstruction.IThickness();
             }
 
             return glazedVolume + frameVolume;
