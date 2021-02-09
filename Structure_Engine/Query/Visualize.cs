@@ -34,6 +34,9 @@ using System;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using BH.oM.Graphics;
+using BH.oM.Data.Collections;
+using BH.Engine.Graphics;
 
 namespace BH.Engine.Structure
 {
@@ -257,16 +260,18 @@ namespace BH.Engine.Structure
         [Input("displayMoments", "Toggles whether moments should be displayed or not.")]
         [Input("asResultants", "Toggles whether loads should be displayed as resultant vectors or as components.")]
         [Output("arrows", "A list of arrows representing the load.")]
-        public static List<ICurve> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
+        public static List<GeometricalRepresentation> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, Gradient gradient, Domain scaleDomain,  double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
             List<ICurve> arrows = new List<ICurve>();
+
+            List<GeometricalRepresentation> reps = new List<GeometricalRepresentation>();
 
             Vector forceA = barVaryingDistLoad.ForceAtStart * scaleFactor;
             Vector forceB = barVaryingDistLoad.ForceAtEnd * scaleFactor;
             Vector momentA = barVaryingDistLoad.MomentAtStart * scaleFactor;
             Vector momentB = barVaryingDistLoad.MomentAtEnd * scaleFactor;
 
-            int divisions = 5;
+            int divisions = 25;
             double sqTol = Tolerance.Distance * Tolerance.Distance;
 
             foreach (Bar bar in barVaryingDistLoad.Objects.Elements)
@@ -291,13 +296,18 @@ namespace BH.Engine.Structure
                         double factor = (double)i / (double)divisions;
                         Point[] basePt;
                         Vector v = (1 - factor) * forcesA[0] + factor * forcesB[0];
-                        arrows.AddRange(Arrows(pts[i], v, true, asResultants, out basePt, orientation, 1));
-
+                        double vl = v.Length();
+                        //arrows.AddRange(Arrows(pts[i], v, true, asResultants, out basePt, orientation, 1));
+                        System.Drawing.Color arrowColor = GetColor(gradient, scaleDomain, v.Length());
+                        CompositeGeometry arrow = Engine.Geometry.Create.CompositeGeometry(Arrows(pts[i], v, true, asResultants, out basePt, orientation, 1));
+                        reps.Add(new GeometricalRepresentation() { Geometry = arrow , Colour = arrowColor});
+                        
+                            
                         if (i > 0)
                         {
                             for (int j = 0; j < basePt.Length; j++)
                             {
-                                arrows.Add(new Line { Start = prevPt[j], End = basePt[j] });
+                                reps.Add(new GeometricalRepresentation() { Geometry = new Line { Start = prevPt[j], End = basePt[j] }, Colour = System.Drawing.Color.Black });
                             }
 
                         }
@@ -312,7 +322,9 @@ namespace BH.Engine.Structure
                         double factor = (double)i / (double)divisions;
                         Point[] basePt;
                         Vector v = (1 - factor) * forcesA[1] + factor * forcesB[1];
-                        arrows.AddRange(Arrows(pts[i], v, false, asResultants, out basePt, orientation, 1));
+                        System.Drawing.Color arrowColor = GetColor(gradient, scaleDomain, v.Length());
+                        CompositeGeometry arrow = Engine.Geometry.Create.CompositeGeometry(Arrows(pts[i], v, true, asResultants, out basePt, orientation, 1));
+                        reps.Add(new GeometricalRepresentation() { Geometry = arrow, Colour = arrowColor });
 
                         //if (i > 0)
                         //{
@@ -327,8 +339,8 @@ namespace BH.Engine.Structure
                 }
             }
 
-
-            return arrows;
+            
+            return reps;
         }
 
         /***************************************************/
@@ -961,6 +973,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        private static System.Drawing.Color GetColor(Gradient gradient, Domain domain, double value)
+        {
+            double range = domain.Max - domain.Min;
+            double d = (value - domain.Min) / range;
+            return gradient.Color(d);
+        }
 
 
     }
