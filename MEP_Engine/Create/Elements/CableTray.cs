@@ -35,15 +35,15 @@ namespace BH.Engine.MEP
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Creates a Pipe object. Material that flows through this Pipe can be established at the system level.")]
-        [Input("line", "A line that determines the Pipe's length and direction.")]
-        [Input("flowRate", "The volume of fluid being conveyed by the Pipe per second (m3/s).")]
-        [Input("sectionProfile", "Provide a sectionProfile to prepare a composite Pipe section for accurate capacity and spatial quality.")]
-        [Output("cableTray", "A Cable Tray object is a passageway which conveys material (typically cables).")]
+        [Description("Creates a cableTray object. Material that flows through this cableTray can be established at the system level.")]
+        [Input("line", "A line that determines the cableTray's length and direction.")]
+        [Input("sectionProfile", "Provide a sectionProfile to prepare a composite cableTray section for accurate capacity and spatial quality.")]
+        [Input("connectionProperty", "The connection properties of the element.")]
+        [Output("cableTray", "A CableTray object is a passageway which conveys material (typically cables).")]
 
-        public static BH.oM.MEP.System.CableTray cableTray(Line line, List<SectionProfile> sectionProfile = null, CableTrayConnectionProperty connectionProperty = null)
+        public static CableTray cableTray(Line line, List<SectionProfile> sectionProfile = null, ConnectionProperty connectionProperty = null)
         {
-            return new BH.oM.MEP.System.CableTray
+            return new CableTray
             {
                 StartPoint = (Node)line.Start,
                 EndPoint = (Node)line.End,
