@@ -20,14 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
-using System;
-using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.MEP.System;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Reflection.Attributes;
-using BH.Engine.Geometry;
 
 namespace BH.Engine.MEP
 {
@@ -36,10 +30,27 @@ namespace BH.Engine.MEP
         /***************************************************/
         /****             Public Methods                ****/
         /***************************************************/
-        
-        public static IGeometry Geometry(this IFlow flowObj)
+        public static IGeometry Geometry(this Duct duct)
         {
-            return new Line { Start = flowObj.StartPoint.Position, End = flowObj.EndPoint.Position};
+            return new Line { Start = duct.StartPoint.Position, End = duct.EndPoint.Position};
+        }
+
+        /***************************************************/
+        public static IGeometry Geometry(this BH.oM.MEP.System.Pipe pipe)
+        {
+            return new Line { Start = pipe.StartPoint.Position, End = pipe.EndPoint.Position };
+        }
+
+        /***************************************************/
+        public static IGeometry Geometry(this WireSegment wire)
+        {
+            return new Line { Start = wire.StartPoint.Position, End = wire.EndPoint.Position };
+        }
+
+        /***************************************************/
+        public static IGeometry Geometry(this CableTray cableTray)
+        {
+            return new Line { Start = cableTray.StartPoint.Position, End = cableTray.EndPoint.Position };
         }
 
         /***************************************************/

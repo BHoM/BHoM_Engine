@@ -27,6 +27,7 @@ using BH.oM.Spatial.ShapeProfiles;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Dimensional;
 
 namespace BH.Engine.MEP
 {
@@ -42,7 +43,7 @@ namespace BH.Engine.MEP
 
         public static double SolidVolume(this IFlow obj)
         {
-            double length = obj.Length();
+            double length = (obj as IElement1D).Length();
             double area = 0;
 
             List<IProfile> profiles = GetSectionProfiles(obj);

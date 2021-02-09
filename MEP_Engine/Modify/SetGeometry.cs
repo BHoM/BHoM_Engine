@@ -20,14 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.System;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
 using BH.Engine.Base;
-using BH.Engine.Spatial;
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
+using BH.oM.MEP.System;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.MEP
 {
@@ -37,19 +35,19 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Updates geometry of an IFlow Object by updating the positions of its end Nodes.")]
+        [Description("Updates geometry of a Duct Object by updating the positions of its end Nodes.")]
         [Input("flowObj", "The IFlow Object to update.")]
         [Input("curve", "The new centerline curve of the pipe.")]
         [Output("object", "The IFlow Object with updated geometry.")]
-        public static IFlow SetGeometry(this IFlow flowObj, ICurve curve)
+        public static Duct SetGeometry(this Duct duct, ICurve curve)
         {
             if (curve.IIsLinear() == false)
             {
-                Engine.Reflection.Compute.RecordError("IFlow objects are not linear.");
+                Engine.Reflection.Compute.RecordError("Duct objects are not linear.");
                 return null;
             }
 
-            IFlow clone = flowObj.ShallowClone();
+            Duct clone = duct.ShallowClone();
             clone.StartPoint = clone.StartPoint.ISetGeometry(curve.IStartPoint());
             clone.EndPoint = clone.EndPoint.ISetGeometry(curve.IEndPoint());
             return clone;

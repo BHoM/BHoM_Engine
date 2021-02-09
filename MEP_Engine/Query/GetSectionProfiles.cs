@@ -20,16 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.MEP.Enums;
 using BH.oM.MEP.System;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Spatial.ShapeProfiles;
 using System.Collections.Generic;
-using BH.Engine.Spatial;
-using BH.oM.MEP.System.MaterialFragments;
+using System.ComponentModel;
 using System.Linq;
-using BH.oM.MEP.Enums;
-using BH.oM.MEP.System.SectionProperties;
 
 namespace BH.Engine.MEP
 {
@@ -81,7 +78,13 @@ namespace BH.Engine.MEP
                 }
                 if (elementShape == ShapeType.Channel)
                 {
-                    // add channel support
+                    double height = obj.ElementSize.Height;
+                    double flangeWidth = obj.ElementSize.Width;
+                    double webThickness = obj.SectionProfile.Where(x => x.Type == ProfileType.Element).First().Layer.Select(x => x.Thickness).Sum();
+                    double flangeThickness = webThickness;
+
+                    elementProfile = Spatial.Create.ChannelProfile(height, flangeWidth, webThickness, flangeThickness);
+                    profiles.Add(elementProfile);
                 }
             }
             // Add Lining Profile
@@ -108,10 +111,6 @@ namespace BH.Engine.MEP
 
                     liningProfile = Spatial.Create.TubeProfile((((diameter / 2) - elementThickness) * 2), liningThickness);
                     profiles.Add(liningProfile);
-                }
-                if (elementShape == ShapeType.Channel)
-                {
-                    // add channel support
                 }
             }
             // Add Insulation Profile 
