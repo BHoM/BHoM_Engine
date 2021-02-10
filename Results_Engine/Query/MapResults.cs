@@ -132,7 +132,7 @@ namespace BH.Engine.Results
                     throw new System.Exception("No Identifier found");
                 }
                 else
-                    Engine.Reflection.Compute.RecordWarning("Auto-generated Identifier as " + adapterIdType.Name);
+                    Engine.Reflection.Compute.RecordEvent("Auto-generated Identifier as " + adapterIdType.Name);
             }
             return adapterIdType;
         }
