@@ -25,6 +25,7 @@ using BH.oM.MEP.System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.MEP.System.ConnectionProperties;
 
 namespace BH.Engine.MEP
 {
@@ -38,35 +39,88 @@ namespace BH.Engine.MEP
         [Input("obj", "The object to get the total consumption from.")]
         [Input("type", "The ConsumptionType to query.")]
         [Output("consumption", "The consumption rate of the object based on a prescribed ConsumptionType.")]
-        public static double ElementConsumption(this IElementC obj, ConsumptionType type)
+        public static double ElementConsumption(this IElementF obj, FlowType type)
         {
-            double consumption = 0;
+            double flow = 0;
+            Fitting start = (obj as IFlow).ConnectionProperty.StartFitting;
+            Fitting end = (obj as IFlow).ConnectionProperty.EndFitting; 
 
             switch (type)
-            {          
-                case ConsumptionType.Undefined:
+            {     
+                // These methods need review from an MEP Engineer.
+                case FlowType.Undefined:
                     BH.Engine.Reflection.Compute.RecordError("No ConsumptionType could be determined. Returning Double.NaN.");
                     return double.NaN;
-                case ConsumptionType.Air:
-                    consumption = obj.Consumption.Where(x => x.Type == ConsumptionType.Air).Select(y => y.ConsumptionRate).Sum();
+                case FlowType.Air:
                     BH.Engine.Reflection.Compute.RecordNote("Consumption of Air is returned as VolumetricAirFlow (m3/s).");
-                    return consumption;
-                case ConsumptionType.Fuel:
-                    consumption = obj.Consumption.Where(x => x.Type == ConsumptionType.Fuel).Select(y => y.ConsumptionRate).Sum();
+                    flow = (obj as IFlow).Flow.Where(x => x.Type == FlowType.Air).Select(y => y.FlowRate).Sum();
+                    if(start != null)
+                    {
+                        double flowStart = start.Flow.Where(x => x.Type == FlowType.Air).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowStart;
+                    }
+                    if(end != null)
+                    {
+                        double flowEnd = end.Flow.Where(x => x.Type == FlowType.Air).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowEnd;
+                    }
+                    return flow;
+                case FlowType.Fuel:
                     BH.Engine.Reflection.Compute.RecordNote("Consumption of Fuel is returned as VolumetricAirFlow (m3/s).");
-                    return consumption;
-                case ConsumptionType.Power:
-                    consumption = obj.Consumption.Where(x => x.Type == ConsumptionType.Power).Select(y => y.ConsumptionRate).Sum();
+                    flow = (obj as IFlow).Flow.Where(x => x.Type == FlowType.Fuel).Select(y => y.FlowRate).Sum();
+                    if (start != null)
+                    {
+                        double flowStart = start.Flow.Where(x => x.Type == FlowType.Fuel).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowStart;
+                    }
+                    if (end != null)
+                    {
+                        double flowEnd = end.Flow.Where(x => x.Type == FlowType.Fuel).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowEnd;
+                    }
+                    return flow;
+                case FlowType.Power:
                     BH.Engine.Reflection.Compute.RecordNote("Consumption of Power is returned as Watts.");
-                    return consumption;
-                case ConsumptionType.Refrigerant:
-                    consumption = obj.Consumption.Where(x => x.Type == ConsumptionType.Refrigerant).Select(y => y.ConsumptionRate).Sum();
+                    flow = (obj as IFlow).Flow.Where(x => x.Type == FlowType.Power).Select(y => y.FlowRate).Sum();
+                    if (start != null)
+                    {
+                        double flowStart = start.Flow.Where(x => x.Type == FlowType.Power).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowStart;
+                    }
+                    if (end != null)
+                    {
+                        double flowEnd = end.Flow.Where(x => x.Type == FlowType.Power).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowEnd;
+                    }
+                    return flow;
+                case FlowType.Refrigerant:
                     BH.Engine.Reflection.Compute.RecordNote("Consumption of Refrigerant is returned as VolumetricAirFlow (m3/s).");
-                    return consumption;
-                case ConsumptionType.Water:
-                    consumption = obj.Consumption.Where(x => x.Type == ConsumptionType.Water).Select(y => y.ConsumptionRate).Sum();
+                    flow = (obj as IFlow).Flow.Where(x => x.Type == FlowType.Refrigerant).Select(y => y.FlowRate).Sum();
+                    if (start != null)
+                    {
+                        double flowStart = start.Flow.Where(x => x.Type == FlowType.Refrigerant).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowStart;
+                    }
+                    if (end != null)
+                    {
+                        double flowEnd = end.Flow.Where(x => x.Type == FlowType.Refrigerant).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowEnd;
+                    }
+                    return flow;
+                case FlowType.Water:
                     BH.Engine.Reflection.Compute.RecordNote("Consumption of Water is returned as VolumetricAirFlow (m3/s).");
-                    return consumption;
+                    flow = (obj as IFlow).Flow.Where(x => x.Type == FlowType.Water).Select(y => y.FlowRate).Sum();
+                    if (start != null)
+                    {
+                        double flowStart = start.Flow.Where(x => x.Type == FlowType.Water).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowStart;
+                    }
+                    if (end != null)
+                    {
+                        double flowEnd = end.Flow.Where(x => x.Type == FlowType.Water).Select(y => y.FlowRate).Sum();
+                        flow = flow + flowEnd;
+                    }
+                    return flow;
                 default:
                     return double.NaN;
             }
