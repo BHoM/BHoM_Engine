@@ -60,7 +60,7 @@ namespace BH.Engine.MEP
                 double b = 1000 * (obj.ElementSize.Width - 2 * thickness);
                 return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
             }
-            BH.Engine.Reflection.Compute.RecordWarning("Circular Equivalent Diameter only applies to Box ShapeProfiles.");
+            BH.Engine.Reflection.Compute.RecordError("Circular Equivalent Diameter only applies to Box ShapeProfiles.");
             return 0;
         }
 
