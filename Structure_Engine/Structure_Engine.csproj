@@ -155,6 +155,7 @@
     <Compile Include="Query\Description.cs" />
     <Compile Include="Query\EmbodiedCarbon.cs" />
     <Compile Include="Query\Fixities.cs" />
+    <Compile Include="Query\Geometry3D.cs" />
     <Compile Include="Query\HasAssignedObjectIds.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\HasModifiers.cs" />
