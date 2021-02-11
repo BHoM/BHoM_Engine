@@ -104,7 +104,6 @@
     <Compile Include="Query\FaceAreaByVelocity.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HydraulicDiameter.cs" />
-    <Compile Include="Query\ElementConsumption.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\GetSectionProfiles.cs" />
     <Compile Include="Query\SolidVolume.cs" />
