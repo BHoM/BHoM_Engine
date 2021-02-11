@@ -28,7 +28,6 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Physical.FramingProperties;
-using BH.oM.Spatial.ShapeProfiles;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Physical
@@ -52,53 +51,34 @@ namespace BH.Engine.Physical
             }
 
             Vector extrusionVec = BH.Engine.Geometry.Create.Vector(line.Start, line.End);
-            ICurve profileToExtrude = null;
-
+            Vector normal = line.ElementNormal(0);
             IFramingElementProperty prop = beam.Property;
 
-            BoxProfile bp = prop as BoxProfile;
-            if (bp != null)
+            ConstantFramingProperty constantFramingProperty = prop as ConstantFramingProperty;
+            if (constantFramingProperty == null)
             {
-                bp.Edges
+                BH.Engine.Reflection.Compute.RecordError($"Geometry3D for {nameof(Beam)} currently works only if its {nameof(Beam.Property)} is of type {nameof(ConstantFramingProperty)}.");
+                return null;
             }
 
-            if (profileToExtrude == null)
+            List<ICurve> profileToExtrude = constantFramingProperty.Profile.Edges.ToList();
+
+            if (profileToExtrude == null || !profileToExtrude.Any())
             {
                 BH.Engine.Reflection.Compute.RecordError($"Geometry3D error: could not gather the profile curve to be extruded for this {nameof(Beam)}.");
                 return null;
             }
 
-            Extrusion extr = BH.Engine.Geometry.Create.Extrusion(, extrusionVec);
+            TransformMatrix totalTransform = SectionTranformation(line.Start, extrusionVec.Normalise(), normal);
 
-            return extr;
+            return ExtrudeFullCurves(profileToExtrude, totalTransform, extrusionVec);
         }
-
-       
-        public static List<IGeometry> Extrude(this Bar bar)
-        {
-            if (bar.SectionProperty == null || !(bar.SectionProperty is IGeometricalSection))
-                return new List<IGeometry>();
-
-            IProfile profile = (bar.SectionProperty as IGeometricalSection).SectionProfile;
-
-            List<ICurve> secCurves = profile.Edges.ToList();
-
-            Vector tan = bar.Tangent();
-
-            TransformMatrix totalTransform = bar.BarSectionTranformation();
-            if (simple)
-                return ExtrudeSimple(secCurves, totalTransform, tan);
-            else
-                return ExtrudeFullCurves(secCurves, totalTransform, tan);
-
-        }
-
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<IGeometry> ExtrudeFullCurves(List<ICurve> sectionCurves, TransformMatrix matrix, Vector tangent)
+        private static CompositeGeometry ExtrudeFullCurves(List<ICurve> sectionCurves, TransformMatrix matrix, Vector tangent)
         {
             List<IGeometry> extrusions = new List<IGeometry>();
 
@@ -111,16 +91,14 @@ namespace BH.Engine.Physical
                 extrusions.Add(new Extrusion() { Curve = curve, Direction = tangent });
             }
 
-            return extrusions;
+            return new CompositeGeometry() { Elements = extrusions };
         }
 
 
         /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
 
         [Description("Constructs the transformation matrix needed to move the profile of an element from the default drawing position (around the global origin) to the start of the Element, aligned with its tangent.")]
-        public static TransformMatrix SectionTranformation(Point startPoint, Vector tangent, Vector normal)
+        private static TransformMatrix SectionTranformation(Point startPoint, Vector tangent, Vector normal)
         {
             Vector trans = startPoint - Point.Origin;
 
@@ -148,14 +126,11 @@ namespace BH.Engine.Physical
             localToGlobal.Matrix[3, 3] = 1;
 
             return Engine.Geometry.Create.TranslationMatrix(trans) * localToGlobal * GlobalToSectionAxes;
-
-
         }
 
         /***************************************************/
-        /**** Private Property                          ****/
+        /**** Private Properties                        ****/
         /***************************************************/
-
 
         private static TransformMatrix GlobalToSectionAxes
         {
@@ -191,9 +166,6 @@ namespace BH.Engine.Physical
                 return transform;
             }
         }
-
-        /***************************************************/
-
     }
 }
 
