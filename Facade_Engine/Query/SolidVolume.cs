@@ -27,6 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Facade.Elements;
+using BH.oM.Physical.FramingProperties;
 
 using BH.Engine.Physical;
 using BH.Engine.Spatial;
@@ -67,17 +68,43 @@ namespace BH.Engine.Facade
             {
                 if (opening.Edges != null && opening.Edges.Count != 0)
                 {
-                    double innerArea = opening.Area();
-                    glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
+                    double glazedArea = opening.ComponentAreas().Item1;
+                    glazedVolume = glazedArea * opening.OpeningConstruction.IThickness();
                     
-                    //if(opening.FrameConstruction != null)
-                        //frameVolume = (opening.Polyline().Area() - innerArea) * opening.FrameConstruction.IThickness();
+                    foreach (FrameEdge edge in opening.Edges)
+                    {
+                        frameVolume = frameVolume + edge.SolidVolume();
+                    }
                 }
                 else
                     glazedVolume = opening.Area() * opening.OpeningConstruction.IThickness();
             }
 
             return glazedVolume + frameVolume;
+        }
+
+        [Description("Returns a FrameEdges solid volume based on its length and applied section properties")]
+        [Input("frameEdge", "The FrameEdge to get the volume from")]
+        [Output("volume", "The Opening solid volume", typeof(Volume))]
+        public static double SolidVolume(this FrameEdge frameEdge)
+        {
+            double frameVolume = 0;
+
+            if (frameEdge.FrameEdgeProperty != null)
+            {
+                double totalArea = 0;
+                double frameLength = frameEdge.Length();
+                List<ConstantFramingProperty> props = frameEdge.FrameEdgeProperty.SectionProperties;
+                foreach (ConstantFramingProperty prop in props)
+                {
+                    double profArea = prop.AverageProfileArea();
+                    totalArea = totalArea + profArea;
+                }
+
+                frameVolume = frameLength * totalArea;
+            }
+
+            return frameVolume;
         }
     }
 }
