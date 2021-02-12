@@ -47,7 +47,7 @@ namespace BH.Engine.Results
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
         public static List<List<T>> MapResults<T>(this IEnumerable<IBHoMObject> objects, IEnumerable<T> results, /*MapResultsBy whichId = MapResultsBy.ObjectId*/ string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) where T : IResult
         {
-            //Check if no identifier has been provided. If this is the case, identifiers i searched for on the obejcts
+            //Check if no identifier has been provided. If this is the case, identifiers are searched for on the obejcts
             identifier = objects.ElementAt(0).FindIdentifier(identifier);
 
             //Filter the results based on case

@@ -81,7 +81,7 @@ namespace BH.Engine.Results
                     {
                         end = pos + mappedBarForces[i][j].FX * scalefactor * coordinateSystem.Y;
                         plys[0].ControlPoints.Add(end);                                     // Building the polyline
-                        lines[0].Elements.Add(new Line() { Start = pos, End = end });       // Connecting the ploylines vertecies to the bar
+                        lines[0].Elements.Add(new Line() { Start = pos, End = end });       // Connecting the polyline vertices to the bar
                     }
                     if (true)//settings.FY)
                     {
