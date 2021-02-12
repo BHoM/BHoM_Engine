@@ -71,14 +71,14 @@ namespace BH.Engine.Physical
 
             TransformMatrix totalTransform = SectionTranformation(line.Start, extrusionVec.Normalise(), normal);
 
-            return ExtrudeFullCurves(profileToExtrude, totalTransform, extrusionVec);
+            return Extrude(profileToExtrude, totalTransform, extrusionVec);
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static CompositeGeometry ExtrudeFullCurves(List<ICurve> sectionCurves, TransformMatrix matrix, Vector tangent)
+        private static CompositeGeometry Extrude(List<ICurve> sectionCurves, TransformMatrix matrix, Vector tangent)
         {
             List<IGeometry> extrusions = new List<IGeometry>();
 
@@ -125,46 +125,40 @@ namespace BH.Engine.Physical
             localToGlobal.Matrix[2, 2] = gZ.DotProduct(lZ);
             localToGlobal.Matrix[3, 3] = 1;
 
-            return Engine.Geometry.Create.TranslationMatrix(trans) * localToGlobal * GlobalToSectionAxes;
+            return Engine.Geometry.Create.TranslationMatrix(trans) * localToGlobal * GetGlobalToSectionAxes();
         }
 
         /***************************************************/
-        /**** Private Properties                        ****/
-        /***************************************************/
 
-        private static TransformMatrix GlobalToSectionAxes
+        [Description("Returns the transformation matrix that transforms from Global to the Section Axes (around the global origin).")]
+        private static TransformMatrix GetGlobalToSectionAxes()
         {
-            get
-            {
-                Vector gX = Vector.XAxis;
-                Vector gY = Vector.YAxis;
-                Vector gZ = Vector.ZAxis;
+            Vector gX = Vector.XAxis;
+            Vector gY = Vector.YAxis;
+            Vector gZ = Vector.ZAxis;
 
-                //Global system vectors, Sections are drawn in global XY plane with y relating to the normal
-                Vector lX = Vector.ZAxis;
-                Vector lY = Vector.XAxis;
-                Vector lZ = Vector.YAxis;
+            //Global system vectors, Sections are drawn in global XY plane with y relating to the normal
+            Vector lX = Vector.ZAxis;
+            Vector lY = Vector.XAxis;
+            Vector lZ = Vector.YAxis;
 
-                TransformMatrix transform = new TransformMatrix();
+            TransformMatrix transform = new TransformMatrix();
 
+            transform.Matrix[0, 0] = lX.DotProduct(gX);
+            transform.Matrix[0, 1] = lX.DotProduct(gY);
+            transform.Matrix[0, 2] = lX.DotProduct(gZ);
 
+            transform.Matrix[1, 0] = lY.DotProduct(gX);
+            transform.Matrix[1, 1] = lY.DotProduct(gY);
+            transform.Matrix[1, 2] = lY.DotProduct(gZ);
 
-                transform.Matrix[0, 0] = lX.DotProduct(gX);
-                transform.Matrix[0, 1] = lX.DotProduct(gY);
-                transform.Matrix[0, 2] = lX.DotProduct(gZ);
+            transform.Matrix[2, 0] = lZ.DotProduct(gX);
+            transform.Matrix[2, 1] = lZ.DotProduct(gY);
+            transform.Matrix[2, 2] = lZ.DotProduct(gZ);
 
-                transform.Matrix[1, 0] = lY.DotProduct(gX);
-                transform.Matrix[1, 1] = lY.DotProduct(gY);
-                transform.Matrix[1, 2] = lY.DotProduct(gZ);
+            transform.Matrix[3, 3] = 1;
 
-                transform.Matrix[2, 0] = lZ.DotProduct(gX);
-                transform.Matrix[2, 1] = lZ.DotProduct(gY);
-                transform.Matrix[2, 2] = lZ.DotProduct(gZ);
-
-                transform.Matrix[3, 3] = 1;
-
-                return transform;
-            }
+            return transform;
         }
     }
 }
