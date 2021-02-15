@@ -58,7 +58,7 @@ namespace BH.Engine.Data
 
         private static void RequestsOfType(this IRequest request, Type requestType, List<IRequest> instances)
         {
-            Type type = request.GetType();
+            Type type = request?.GetType();
             if (type == requestType)
                 instances.Add(request);
 
