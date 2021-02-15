@@ -35,6 +35,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Base;
 using BH.Engine.Analytical;
 using BH.Engine.Library;
+using BH.oM.Analytical.Results;
 
 namespace BH.Engine.Results
 {
@@ -95,91 +96,12 @@ namespace BH.Engine.Results
 
         [Description("Gets the value type specified in MeshResultDisplay from the object r.")]
         [Output("value", "The value of the specified type.")]
-        private static double ResultToValue(this MeshElementResult r, /*MeshResultDisplay prop*/string prop)
+        private static double ResultToValue(this IMeshElementResult r, /*MeshResultDisplay prop*/string prop)
         {
-            if (r is MeshStress)
-            {
-                switch (prop)
-                {
-                    case "SXX"://MeshResultDisplay.SXX:
-                        return (r as MeshStress).SXX;
-                    case "SYY"://MeshResultDisplay.SYY:
-                        return (r as MeshStress).SYY;
-                    case "SXY"://MeshResultDisplay.SXY:
-                        return (r as MeshStress).SXY;
-                    case "TXX"://MeshResultDisplay.TXX:
-                        return (r as MeshStress).TXX;
-                    case "TYY"://MeshResultDisplay.TYY:
-                        return (r as MeshStress).TYY;
-                    case "Principal_1"://MeshResultDisplay.Principal_1:
-                        return (r as MeshStress).Principal_1;
-                    case "Principal_2"://MeshResultDisplay.Principal_2:
-                        return (r as MeshStress).Principal_2;
-                    case "Principal_1_2"://MeshResultDisplay.Principal_1_2:
-                        return (r as MeshStress).Principal_1_2;
-                    default:
-                        break;
-                }
-            }
-            else if (r is MeshForce)
-            {
-                switch (prop)
-                {
-                    case "NXX"://MeshResultDisplay.NXX:
-                        return (r as MeshForce).NXX;
-                    case "NYY"://MeshResultDisplay.NYY:
-                        return (r as MeshForce).NYY;
-                    case "NXY"://MeshResultDisplay.NXY:
-                        return (r as MeshForce).NXY;
-                    case "MXX"://MeshResultDisplay.MXX:
-                        return (r as MeshForce).MXX;
-                    case "MYY"://MeshResultDisplay.MYY:
-                        return (r as MeshForce).MYY;
-                    case "MXY"://MeshResultDisplay.MXY:
-                        return (r as MeshForce).MXY;
-                    case "VX"://MeshResultDisplay.VX:
-                        return (r as MeshForce).VX;
-                    case "VY"://MeshResultDisplay.VY:
-                        return (r as MeshForce).VY;
-                    default:
-                        break;
-                }
-            }
-            else if (r is MeshDisplacement)
-            {
-                switch (prop)
-                {
-                    case "UXX"://MeshResultDisplay.UXX:
-                        return (r as MeshDisplacement).UXX;
-                    case "UYY"://MeshResultDisplay.UYY:
-                        return (r as MeshDisplacement).UYY;
-                    case "UZZ"://MeshResultDisplay.UZZ:
-                        return (r as MeshDisplacement).UZZ;
-                    case "RXX"://MeshResultDisplay.RXX:
-                        return (r as MeshDisplacement).RXX;
-                    case "RYY"://MeshResultDisplay.RYY:
-                        return (r as MeshDisplacement).RYY;
-                    case "RZZ"://MeshResultDisplay.RZZ:
-                        return (r as MeshDisplacement).RZZ;
-                    default:
-                        break;
-                }
-            }
-            else if (r is MeshVonMises)
-            {
-                switch (prop)
-                {
-                    case "S"://MeshResultDisplay.S:
-                        return (r as MeshVonMises).S;
-                    case "N":// MeshResultDisplay.N:
-                        return (r as MeshVonMises).N;
-                    case "M":// MeshResultDisplay.M:
-                        return (r as MeshVonMises).M;
-                    default:
-                        break;
-                }
+            Object resultValue = Engine.Reflection.Query.PropertyValue(r, prop);
 
-            }
+            if (resultValue is double)
+                return (double)resultValue;
 
             Engine.Reflection.Compute.RecordError(prop.ToString() + " is not present in the results.");
             return 0;
