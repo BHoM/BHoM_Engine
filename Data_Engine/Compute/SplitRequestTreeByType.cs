@@ -67,8 +67,11 @@ namespace BH.Engine.Data
                 simplified.ExtractTrees(splittingType, extracted, new List<IRequest>());
                 extracted = extracted.Select(x => x.SimplifyRequestTree()).ToList();
 
-                if (simplified.AllRequestsOfType(splittingType).Count == 0)
-                    extracted.Add(simplified.SimplifyRequestTree());
+                if (!(simplified is LogicalNotRequest) || ((LogicalNotRequest)simplified).Request != null)
+                {
+                    if (simplified.AllRequestsOfType(splittingType).Count == 0)
+                        extracted.Add(simplified.SimplifyRequestTree());
+                }
             }
             else
                 extracted.Add(simplified);
