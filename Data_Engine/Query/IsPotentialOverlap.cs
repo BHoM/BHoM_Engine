@@ -52,7 +52,7 @@ namespace BH.Engine.Data
                 return false;
             }
 
-            return request.IsPotentialOverlap(requestType, RequestTypeExistence.ExistsNot) == RequestTypeExistence.Overlaps;
+            return request.IsPotentialOverlap(requestType, 0) == 2;
         }
 
 
@@ -60,39 +60,27 @@ namespace BH.Engine.Data
         /****              Private methods              ****/
         /***************************************************/
 
-        private static RequestTypeExistence IsPotentialOverlap(this IRequest request, Type requestType, RequestTypeExistence rte)
+        private static int IsPotentialOverlap(this IRequest request, Type requestType, int occurences)
         {
             Type type = request.GetType();
             if (type == requestType)
-                return ++rte;
+                return ++occurences;
 
             if (request is LogicalAndRequest)
             {
                 foreach (IRequest subRequest in ((LogicalAndRequest)request).Requests)
                 {
-                    rte = subRequest.IsPotentialOverlap(requestType, rte);
-                    if (rte == RequestTypeExistence.Overlaps)
-                        return rte;
+                    occurences = subRequest.IsPotentialOverlap(requestType, occurences);
+                    if (occurences == 2)
+                        return occurences;
                 }
             }
             else if (request is LogicalOrRequest)
-                return ((LogicalOrRequest)request).Requests.Select(x => x.IsPotentialOverlap(requestType, rte)).Max();
+                return ((LogicalOrRequest)request).Requests.Select(x => x.IsPotentialOverlap(requestType, occurences)).Max();
             else if (request is LogicalNotRequest)
-                return ((LogicalNotRequest)request).Request.IsPotentialOverlap(requestType, rte);
+                return ((LogicalNotRequest)request).Request.IsPotentialOverlap(requestType, occurences);
 
-            return rte;
-        }
-
-
-        /***************************************************/
-        /****               Private enums               ****/
-        /***************************************************/
-
-        private enum RequestTypeExistence : byte
-        {
-            ExistsNot,
-            Exists,
-            Overlaps
+            return occurences;
         }
 
         /***************************************************/
