@@ -106,6 +106,10 @@
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
+      <Name>Spatial_Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
       <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
       <Name>Structure_Engine</Name>
