@@ -152,8 +152,8 @@ namespace BH.Engine.Facade
             {
                 double profVolume = prop.AverageProfileArea()*frameEdge.Length();
                 vols.Add(profVolume);
-                List<Material> mats = new List<Material>() { prop.Material };
-                List<double> profVols = new List<double>() { profVolume };
+                List<Material> mats = new List<Material> { prop.Material };
+                List<double> profVols = new List<double> { 1 };
                 MaterialComposition matComp = new MaterialComposition(mats, profVols);
                 matComps.Add(matComp);           
             }
