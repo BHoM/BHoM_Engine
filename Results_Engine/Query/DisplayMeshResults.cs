@@ -112,20 +112,22 @@ namespace BH.Engine.Results
 
         [Description("Applies colour to a single IMesh based on a single MeshResult, i.e stress or force etc.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
-        private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, MeshResult meshResult, Type identifier,
+        private static RenderMesh DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IMesh<TNode, TFace> mesh, IMeshResult<TMeshElementResult> meshResult, Type identifier,
                                             /*MeshResultDisplay meshResultDisplay*/ string meshResultDisplay, Gradient gradient, double from, double to)
             where TNode : INode
             where TFace : IFace
+            where TMeshElementResult : IMeshElementResult
         {
             // Order the MeshNodeResults by the IMesh Nodes
-            List<List<MeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, "NodeId", identifier);
+            List<List<TMeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, "NodeId", identifier) as List<List<TMeshElementResult>>;
             // Get the relevant values into a list
 
             List<Vertex> verts = new List<Vertex>();
             List<Face> faces;
 
-            switch (meshResult.Smoothing)
+            switch (Reflection.Query.PropertyValue(meshResult, "Smoothing"))
             {
+                case null:
                 case MeshResultSmoothingType.None:
                     //  pair nodeValue as list<Dictionary<FaceId,nodeValue>>
                     //  all nodes are expected to have FaceIds
@@ -179,7 +181,7 @@ namespace BH.Engine.Results
                 case MeshResultSmoothingType.ByFiniteElementCentres:
                 case MeshResultSmoothingType.BySelection:
                 default:
-                    Engine.Reflection.Compute.RecordError("Unsupported SmoothingType: " + meshResult.Smoothing.ToString() +
+                    Engine.Reflection.Compute.RecordError("Unsupported SmoothingType: " + Reflection.Query.PropertyValue(meshResult, "Smoothing").ToString() +
                                                       " detected, meshResult for ObjectId: " + meshResult.ObjectId.ToString() +
                                                       " and ResultCase: " + meshResult.ResultCase.ToString() + "will be returned empty.");
                     return new RenderMesh();
