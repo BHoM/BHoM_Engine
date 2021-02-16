@@ -45,13 +45,15 @@ namespace BH.Engine.Results
         [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        public static List<List<T>> MapResults<T>(this IEnumerable<IBHoMObject> objects, IEnumerable<T> results, string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) where T : IResult
+        public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) 
+            where TResult : IResult
+            where TObject : IBHoMObject
         {
             //Check if no identifier has been provided. If this is the case, identifiers are searched for on the obejcts
             identifier = objects.ElementAt(0).FindIdentifier(identifier);
 
             //Filter the results based on case
-            IEnumerable<T> filteredRes;
+            IEnumerable<TResult> filteredRes;
             if (caseFilter != null && caseFilter.Count > 0)
             {
                 HashSet<string> caseHash = new HashSet<string>(caseFilter); //Turn to hashset for performance boost
@@ -60,23 +62,23 @@ namespace BH.Engine.Results
             else
                 filteredRes = results;
 
-            Dictionary<string, IGrouping<string, T>> resGroups;
+            Dictionary<string, IGrouping<string, TResult>> resGroups;
 
             //Group results by Id and turn to dictionary
             resGroups = filteredRes.GroupBy(x => Reflection.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
 
             // Add null check for when the property of the name in whichId does not exist?
 
-            List<List<T>> result = new List<List<T>>();
+            List<List<TResult>> result = new List<List<TResult>>();
 
             //Run through and put results in List corresponding to objects
             foreach (IBHoMObject o in objects)
             {
-                IGrouping<string, T> outVal;
+                IGrouping<string, TResult> outVal;
                 if (resGroups.TryGetValue(o.IdMatch(identifier), out outVal))
                     result.Add(outVal.ToList());
                 else
-                    result.Add(new List<T>());
+                    result.Add(new List<TResult>());
             }
 
             return result;
