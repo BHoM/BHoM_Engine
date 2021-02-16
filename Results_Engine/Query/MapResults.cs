@@ -41,11 +41,11 @@ namespace BH.Engine.Results
         [Description("Matches results to BHoMObjects. The output consists of a list of items corresponding to the list of BHoMObjects supplied. Each item in the output list is a list of results matching the relevant BHoMObject. The results will be matched by the ID of the object stored in the Fragments and the ObjectId of the result. If no results are found, an empty list will be provided. Note that NO compatibility check between objecttype and result type will be made.")]
         [Input("objects", "The objects to find results for.")]
         [Input("results", "The collection of results to search in.")]
-        [Input("whichId", "A MapResultsBy enum determining wheter to look at the ObjectId, NodeId or MeshFaceId.")]
+        [Input("whichId", "The name of the object identifier to group results by. Defaults to ObjectId.")]
         [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        public static List<List<T>> MapResults<T>(this IEnumerable<IBHoMObject> objects, IEnumerable<T> results, /*MapResultsBy whichId = MapResultsBy.ObjectId*/ string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) where T : IResult
+        public static List<List<T>> MapResults<T>(this IEnumerable<IBHoMObject> objects, IEnumerable<T> results, string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) where T : IResult
         {
             //Check if no identifier has been provided. If this is the case, identifiers are searched for on the obejcts
             identifier = objects.ElementAt(0).FindIdentifier(identifier);
@@ -61,20 +61,11 @@ namespace BH.Engine.Results
                 filteredRes = results;
 
             Dictionary<string, IGrouping<string, T>> resGroups;
+
             //Group results by Id and turn to dictionary
-            switch (whichId)
-            {
-                case "NodeId"://MapResultsBy.NodeId:
-                    resGroups = filteredRes.GroupBy(x => (x as MeshElementResult).NodeId.ToString()).ToDictionary(x => x.Key);
-                    break;
-                case "MeshFaceId"://MapResultsBy.MeshFaceId:
-                    resGroups = filteredRes.GroupBy(x => (x as MeshElementResult).MeshFaceId.ToString()).ToDictionary(x => x.Key);
-                    break;
-                default:
-                    resGroups = filteredRes.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
-                    break;
-            }
-            //var resGroups = filteredRes.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
+            resGroups = filteredRes.GroupBy(x => Reflection.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
+
+            // Add null check for when the property of the name in whichId does not exist?
 
             List<List<T>> result = new List<List<T>>();
 
@@ -86,7 +77,6 @@ namespace BH.Engine.Results
                     result.Add(outVal.ToList());
                 else
                     result.Add(new List<T>());
-
             }
 
             return result;
