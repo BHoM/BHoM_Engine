@@ -75,6 +75,9 @@ namespace BH.Engine.Facade
             return pMat;
         }
 
+
+        /***************************************************/
+
         [Description("Gets all the Materials a Opening is composed of and in which ratios")]
         [Input("opening", "The Opening to get the MaterialComposition from")]
         [Output("materialComposition", "The kind of matter the Opening is composed of and in which ratios")]
@@ -90,35 +93,79 @@ namespace BH.Engine.Facade
             List<double> ratios = new List<double>();
 
             double glazedVolume = 0;
-            double frameVolume = 0;
+            double edgeVolume = 0;
 
-            if (opening.OpeningConstruction != null)
+            if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
             {
                 if (opening.Edges != null && opening.Edges.Count != 0)
                 {
-                    double innerArea = opening.Area();
-                    glazedVolume = innerArea * opening.OpeningConstruction.IThickness();
-                    frameVolume = 0; //ToDo method for frame edge volume
+                    double glazedArea = opening.ComponentAreas().Item1;
+                    glazedVolume = glazedArea * opening.OpeningConstruction.IThickness();
                 }
                 else
                 {
                     glazedVolume = opening.Area() * opening.OpeningConstruction.IThickness();
                 }
-            }
-
-            //if (opening.FrameConstruction != null && opening.FrameConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
-            //{
-            //    comps.Add(opening.FrameConstruction.IMaterialComposition());
-            //    ratios.Add(frameVolume);
-            //}
-
-            if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
-            {
                 comps.Add(opening.OpeningConstruction.IMaterialComposition());
                 ratios.Add(glazedVolume);
             }
 
-            if(comps.Count == 0)
+            foreach (FrameEdge edge in opening.Edges)
+            {
+                comps.Add(edge.MaterialComposition());
+                ratios.Add(edge.SolidVolume());
+            }
+
+            if (comps.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("The Opening does not have any constructions assigned to get an aggregated material composition from");
+                return null;
+            }
+
+            return BH.Engine.Matter.Compute.AggregateMaterialComposition(comps, ratios);
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the Materials a Opening is composed of and in which ratios")]
+        [Input("opening", "The Opening to get the MaterialComposition from")]
+        [Output("materialComposition", "The kind of matter the Opening is composed of and in which ratios")]
+        public static MaterialComposition MaterialComposition(this Opening opening)
+        {
+            if (opening.OpeningConstruction == null && opening.Edges == null)
+            {
+                Engine.Reflection.Compute.RecordError("The Opening does not have any constructions assigned");
+                return null;
+            }
+
+            List<MaterialComposition> comps = new List<MaterialComposition>();
+            List<double> ratios = new List<double>();
+
+            double glazedVolume = 0;
+            double edgeVolume = 0;
+
+            if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() > oM.Geometry.Tolerance.Distance)
+            {
+                if (opening.Edges != null && opening.Edges.Count != 0)
+                {
+                    double glazedArea = opening.ComponentAreas().Item1;
+                    glazedVolume = glazedArea * opening.OpeningConstruction.IThickness();
+                }
+                else
+                {
+                    glazedVolume = opening.Area() * opening.OpeningConstruction.IThickness();
+                }
+                comps.Add(opening.OpeningConstruction.IMaterialComposition());
+                ratios.Add(glazedVolume);
+            }
+
+            foreach (FrameEdge edge in opening.Edges)
+            {
+                comps.Add(edge.MaterialComposition());
+                ratios.Add(edge.SolidVolume());
+            }
+
+            if (comps.Count == 0)
             {
                 BH.Engine.Reflection.Compute.RecordError("The Opening does not have any constructions assigned to get an aggregated material composition from");
                 return null;
