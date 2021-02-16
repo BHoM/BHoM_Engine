@@ -43,6 +43,10 @@ namespace BH.Engine.Facade
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         [Description("Returns an Openings solid volume based on its area, and construction thickness")]
         [Input("panel", "The Panel to get the volume from")]
         [Output("volume", "The Panel solid volume", typeof(Volume))]
@@ -82,6 +86,8 @@ namespace BH.Engine.Facade
 
             return glazedVolume + frameVolume;
         }
+
+        /***************************************************/
 
         [Description("Returns a FrameEdges solid volume based on its length and applied section properties")]
         [Input("frameEdge", "The FrameEdge to get the volume from")]
