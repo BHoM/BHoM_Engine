@@ -23,6 +23,7 @@
 using BH.oM.Reflection.Debugging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -36,7 +37,7 @@ namespace BH.Engine.Reflection
         public static List<Event> AllEvents()
         {
             Log log = Query.DebugLog();
-            return log.AllEvents;
+            return log.AllEvents.ToList();
         }
 
 
@@ -45,7 +46,7 @@ namespace BH.Engine.Reflection
         public static List<Event> CurrentEvents()
         {
             Log log = Query.DebugLog();
-            return log.CurrentEvents;       
+            return log.CurrentEvents.ToList();       
         }
 
 
