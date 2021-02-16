@@ -96,12 +96,12 @@ namespace BH.Engine.Results
 
         [Description("Gets the value type specified in MeshResultDisplay from the object r.")]
         [Output("value", "The value of the specified type.")]
-        private static double ResultToValue(this IMeshElementResult r, /*MeshResultDisplay prop*/string prop)
+        private static double ResultToValue(this IMeshElementResult r, string prop)
         {
             Object resultValue = Engine.Reflection.Query.PropertyValue(r, prop);
 
             if (resultValue is double)
-                return (double)resultValue;
+                return System.Convert.ToDouble(resultValue);
 
             Engine.Reflection.Compute.RecordError(prop.ToString() + " is not present in the results.");
             return 0;
