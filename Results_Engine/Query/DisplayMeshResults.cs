@@ -36,6 +36,7 @@ using BH.Engine.Base;
 using BH.Engine.Analytical;
 using BH.Engine.Library;
 using BH.oM.Analytical.Results;
+using BH.oM.Analytical.Elements;
 
 namespace BH.Engine.Results
 {
@@ -54,7 +55,7 @@ namespace BH.Engine.Results
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [Output("results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         public static List<List<RenderMesh>> DisplayMeshResults(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
-                      Type identifier = null, List<string> caseFilter = null, /*MeshResultDisplay meshResultDisplay = MeshResultDisplay.SXX*/string meshResultDisplay = "SXX",
+                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX",
                       /*GradientOptions gradientOptions = null*/ Object gradientOptions = null)
         {
             /*
@@ -109,13 +110,15 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        [Description("Applies colour to a single Mesh based on a single MeshResult, i.e stress or force etc, to a FEMesh.")]
+        [Description("Applies colour to a single IMesh based on a single MeshResult, i.e stress or force etc.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
-        private static RenderMesh DisplayMeshResults(this FEMesh mesh, MeshResult meshResult, Type identifier,
+        private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, MeshResult meshResult, Type identifier,
                                             /*MeshResultDisplay meshResultDisplay*/ string meshResultDisplay, Gradient gradient, double from, double to)
+            where TNode : INode
+            where TFace : IFace
         {
-            // Order the MeshNodeResults by the FEMesh Nodes
-            List<List<MeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, /*MapResultsBy.NodeId*/"NodeId", identifier);
+            // Order the MeshNodeResults by the IMesh Nodes
+            List<List<MeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, "NodeId", identifier);
             // Get the relevant values into a list
 
             List<Vertex> verts = new List<Vertex>();
