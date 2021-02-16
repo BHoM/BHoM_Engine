@@ -50,7 +50,7 @@ namespace BH.Engine.Results
             where TObject : IBHoMObject
         {
             //Check if no identifier has been provided. If this is the case, identifiers are searched for on the obejcts
-            identifier = objects.ElementAt(0).FindIdentifier(identifier);
+            identifier = objects.First().FindIdentifier(identifier);
 
             //Filter the results based on case
             IEnumerable<TResult> filteredRes;
