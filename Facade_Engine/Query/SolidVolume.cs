@@ -60,6 +60,9 @@ namespace BH.Engine.Facade
             return volume + panel.Openings.Sum(x => x.SolidVolume());
         }
 
+
+        /***************************************************/
+
         [Description("Returns an Openings solid volume based on its area, and construction thickness")]
         [Input("opening", "The Opening to get the volume from")]
         [Output("volume", "The Opening solid volume", typeof(Volume))]
@@ -87,6 +90,7 @@ namespace BH.Engine.Facade
             return glazedVolume + frameVolume;
         }
 
+
         /***************************************************/
 
         [Description("Returns a FrameEdges solid volume based on its length and applied section properties")]
@@ -112,6 +116,8 @@ namespace BH.Engine.Facade
 
             return frameVolume;
         }
+
+        /***************************************************/
     }
 }
 
