@@ -34,8 +34,11 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IGeometry IGeometry3D(this IBHoMObject obj)
+        public static IGeometry IGeometry3D(this IObject obj)
         {
+            if (obj == null)
+                return null;
+
             return Geometry3D(obj as dynamic);
         }
 
@@ -51,6 +54,9 @@ namespace BH.Engine.Base
                 if (geometry != null)
                     geometries.Add(geometry);
             }
+
+            if (geometries.Count == 1)
+                return geometries.FirstOrDefault();
 
             return new CompositeGeometry { Elements = geometries.ToList() };
         }
