@@ -39,7 +39,8 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the centreline geometry from the framing element")]
-        [Output("CL", "The centre line curve of the framing element")]
+        [Description("Gets the 3d geometry from the framing element")]
+        [Output("3d", "The composite geometry representing the framing element")]
         public static IGeometry Geometry3D(this Beam beam)
         {
             Line line = beam.Location as Line;
@@ -162,5 +163,4 @@ namespace BH.Engine.Physical
         }
     }
 }
-
 
