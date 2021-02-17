@@ -47,8 +47,14 @@ namespace BH.Engine.Physical
 
             if (line == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Geometry3D for {nameof(IFramingElement)} currently works only if it has its {nameof(IFramingElement.Location)} defined as a {nameof(Line)}.");
-                return null;
+                Polyline pl = framingElement.Location as Polyline;
+                if (pl != null)
+                {
+                    line = new Line() { Start = pl.ControlPoints.First(), End = pl.ControlPoints.Last() };
+                }
+
+                if (pl == null  || (pl!= null && pl.ControlPoints.Count() > 2))
+                    BH.Engine.Reflection.Compute.RecordWarning($"Geometry3D for {nameof(IFramingElement)} currently works only if it has its {nameof(IFramingElement.Location)} defined as a {nameof(Line)}. Proceeding by taking Start/End point of the provided {framingElement.Location.GetType().Name}.");
             }
 
             Vector extrusionVec = BH.Engine.Geometry.Create.Vector(line.Start, line.End);
