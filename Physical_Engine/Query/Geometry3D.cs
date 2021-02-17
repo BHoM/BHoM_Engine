@@ -38,8 +38,8 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the centreline geometry from the framing element")]
         [Description("Gets the 3d geometry from the framing element")]
+        [Input("Beam", "The input beam to get the Geometry3D out of, i.e. its extrusion with its cross section along its centreline.")]
         [Output("3d", "The composite geometry representing the framing element")]
         public static IGeometry Geometry3D(this Beam beam)
         {
