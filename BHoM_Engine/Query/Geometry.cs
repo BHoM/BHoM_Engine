@@ -34,7 +34,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IGeometry IGeometry(this IBHoMObject obj)
+        public static IGeometry IGeometry(this IObject obj)
         {
             if (obj == null)
                 return null;
