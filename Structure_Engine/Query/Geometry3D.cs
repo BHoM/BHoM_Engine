@@ -54,6 +54,11 @@ namespace BH.Engine.Structure
                 return new CompositeGeometry() { Elements = extrusions.ToList() };
         }
 
+        /***************************************************/
+
+        [Description("Gets a CompositeGeometry made of the boundary surfaces of the Panel, or only its central Surface.")]
+        [Input("panel", "The input panel to get the Geometry3D out of.")]
+        [Input("onlyCentralSurface", "If true, the returned geometry is only the central (middle) surface of the panel. Otherwise, the whole external solid is returned as a CompositeGeometry of many surfaces.")]
         public static IGeometry Geometry3D(this Panel panel, bool onlyCentralSurface = false)
         {
             PlanarSurface centralPlanarSurface = Engine.Geometry.Create.PlanarSurface(
