@@ -40,13 +40,15 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the BH.oM.Geometry.Extrusion out of the Bar as its Geometry3D.")]
-        public static IGeometry Geometry3D(this Bar bar, bool onlyOutermostExtrusion = true)
+        [Input("bar", "The input Bar to get the Geometry3D out of, i.e.its extrusion with its cross section along its centreline.")]
+        [Input("onlyOuterExtrusion", "If true, and if the cross-section of the Bar is composed by multiple edges (e.g. a Circular Hollow Section), only return the extrusion of the outermost edge.")]
+        public static IGeometry Geometry3D(this Bar bar, bool onlyOuterExtrusion = true)
         {
             // . If the profile is made of two curves (e.g. I section), selects only the outermost.
             IEnumerable<IGeometry> extrusions = bar.Extrude(false);
             Extrusion barOutermostExtrusion = extrusions.OfType<Extrusion>().OrderBy(extr => Engine.Geometry.Query.IArea(extr.Curve)).First();
 
-            if (onlyOutermostExtrusion)
+            if (onlyOuterExtrusion)
                 return barOutermostExtrusion;
             else
                 return new CompositeGeometry() { Elements = extrusions.ToList() };
