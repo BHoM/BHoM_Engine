@@ -52,6 +52,9 @@ namespace BH.Engine.Base
                     geometries.Add(geometry);
             }
 
+            if (geometries.Count == 1)
+                return geometries.FirstOrDefault();
+
             return new CompositeGeometry { Elements = geometries.ToList() };
         }
 
