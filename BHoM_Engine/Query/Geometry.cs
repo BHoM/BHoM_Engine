@@ -36,6 +36,9 @@ namespace BH.Engine.Base
 
         public static IGeometry IGeometry(this IBHoMObject obj)
         {
+            if (obj == null)
+                return null;
+
             return Geometry(obj as dynamic);
         }
 
