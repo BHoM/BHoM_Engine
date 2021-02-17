@@ -39,7 +39,14 @@ namespace BH.Engine.Base
             if (obj == null)
                 return null;
 
-            return Geometry3D(obj as dynamic);
+            IGeometry geom = Geometry3D(obj as dynamic);
+
+            CompositeGeometry comp = geom as CompositeGeometry;
+
+            if (comp != null && comp.Elements.Count == 1)
+                geom = comp.Elements.FirstOrDefault();
+
+            return geom;
         }
 
         /***************************************************/
