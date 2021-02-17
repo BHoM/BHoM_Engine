@@ -39,26 +39,26 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the 3d geometry from the framing element")]
-        [Input("Beam", "The input beam to get the Geometry3D out of, i.e. its extrusion with its cross section along its centreline.")]
+        [Input("framingElement", "The input framingElement to get the Geometry3D out of, i.e. its extrusion with its cross section along its centreline.")]
         [Output("3d", "The composite geometry representing the framing element")]
-        public static IGeometry Geometry3D(this Beam beam)
+        public static IGeometry Geometry3D(this IFramingElement framingElement)
         {
-            Line line = beam.Location as Line;
+            Line line = framingElement.Location as Line;
 
             if (line == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Geometry3D for {nameof(Beam)} currently works only if it has its {nameof(Beam.Location)} defined as a {nameof(Line)}.");
+                BH.Engine.Reflection.Compute.RecordError($"Geometry3D for {nameof(IFramingElement)} currently works only if it has its {nameof(IFramingElement.Location)} defined as a {nameof(Line)}.");
                 return null;
             }
 
             Vector extrusionVec = BH.Engine.Geometry.Create.Vector(line.Start, line.End);
             Vector normal = line.ElementNormal(0);
-            IFramingElementProperty prop = beam.Property;
+            IFramingElementProperty prop = framingElement.Property;
 
             ConstantFramingProperty constantFramingProperty = prop as ConstantFramingProperty;
             if (constantFramingProperty == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Geometry3D for {nameof(Beam)} currently works only if its {nameof(Beam.Property)} is of type {nameof(ConstantFramingProperty)}.");
+                BH.Engine.Reflection.Compute.RecordError($"Geometry3D for {nameof(IFramingElement)} currently works only if its {nameof(IFramingElement.Property)} is of type {nameof(ConstantFramingProperty)}.");
                 return null;
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Physical
 
             if (profileToExtrude == null || !profileToExtrude.Any())
             {
-                BH.Engine.Reflection.Compute.RecordError($"Geometry3D error: could not gather the profile curve to be extruded for this {nameof(Beam)}.");
+                BH.Engine.Reflection.Compute.RecordError($"Geometry3D error: could not gather the profile curve to be extruded for this {framingElement.GetType().Name}.");
                 return null;
             }
 
