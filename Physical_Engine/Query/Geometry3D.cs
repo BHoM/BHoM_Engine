@@ -53,7 +53,7 @@ namespace BH.Engine.Physical
                     line = new Line() { Start = pl.ControlPoints.First(), End = pl.ControlPoints.Last() };
                 }
 
-                if (pl == null  || (pl!= null && pl.ControlPoints.Count() > 2))
+                if (pl == null  || (pl != null && pl.ControlPoints.Count() > 2))
                     BH.Engine.Reflection.Compute.RecordWarning($"Geometry3D for {nameof(IFramingElement)} currently works only if it has its {nameof(IFramingElement.Location)} defined as a {nameof(Line)}. Proceeding by taking Start/End point of the provided {framingElement.Location.GetType().Name}.");
             }
 
@@ -169,4 +169,3 @@ namespace BH.Engine.Physical
         }
     }
 }
-
