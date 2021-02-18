@@ -32,13 +32,45 @@ namespace BH.Engine.Spatial
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods - IElements                ****/
+        /**** Interface Methods - IElements             ****/
         /***************************************************/
 
         [Description("Transforms the IElement2Ds geometrical definition by the transform matrix. Only rigid body transformations are supported.")]
         [Input("element2D", "The IElement2D to transform the geometry of.")]
         [Input("transform", "The transform matrix.")]
         [Output("transformed", "The modified IElement2D with unchanged properties and transformed geometrical definition.")]
+        public static IElement2D ITransform(this IElement2D element2D, TransformMatrix transform)
+        {
+            return Reflection.Compute.RunExtensionMethod(element2D, "Transform", new object[] { transform }) as IElement2D;
+        }
+
+        /***************************************************/
+
+        [Description("Transforms the IElement1Ds geometrical definition by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("element1D", "The IElement1D to transform the geometry of.")]
+        [Input("transform", "The transform matrix.")]
+        [Output("transformed", "The modified IElement1D with unchanged properties and transformed geometrical definition.")]
+        public static IElement1D ITransform(this IElement1D element1D, TransformMatrix transform)
+        {
+            return Reflection.Compute.RunExtensionMethod(element1D, "Transform", new object[] { transform }) as IElement1D;
+        }
+
+        /***************************************************/
+
+        [Description("Transforms the IElement0Ds geometrical definition by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("element0D", "The IElement0D to transform the geometry of.")]
+        [Input("transform", "The transform matrix.")]
+        [Output("transformed", "The modified IElement0D with unchanged properties and transformed geometrical definition.")]
+        public static IElement0D ITransform(this IElement0D element0D, TransformMatrix transform)
+        {
+            return Reflection.Compute.RunExtensionMethod(element0D, "Transform", new object[] { transform }) as IElement0D;
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - IElements                ****/
+        /***************************************************/
+
         public static IElement2D Transform(this IElement2D element2D, TransformMatrix transform)
         {
             if (!transform.IsRigidTransformation())
@@ -65,10 +97,6 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [Description("Transforms the IElement1Ds geometrical definition by the transform matrix. Only rigid body transformations are supported.")]
-        [Input("element1D", "The IElement1D to transform the geometry of.")]
-        [Input("transform", "The transform matrix.")]
-        [Output("transformed", "The modified IElement1D with unchanged properties and transformed geometrical definition.")]
         public static IElement1D Transform(this IElement1D element1D, TransformMatrix transform)
         {
             if (!transform.IsRigidTransformation())
@@ -80,12 +108,8 @@ namespace BH.Engine.Spatial
             return element1D.ISetGeometry(Geometry.Modify.ITransform(element1D.IGeometry(), transform));
         }
 
-        /******************************************/
+        /***************************************************/
 
-        [Description("Transforms the IElement0Ds geometrical definition by the transform matrix. Only rigid body transformations are supported.")]
-        [Input("element0D", "The IElement0D to transform the geometry of.")]
-        [Input("transform", "The transform matrix.")]
-        [Output("transformed", "The modified IElement0D with unchanged properties and transformed geometrical definition.")]
         public static IElement0D Transform(this IElement0D element0D, TransformMatrix transform)
         {
             if (!transform.IsRigidTransformation())
@@ -97,8 +121,7 @@ namespace BH.Engine.Spatial
             return element0D.ISetGeometry(Geometry.Modify.Transform(element0D.IGeometry(), transform));
         }
 
-        /******************************************/
-
+        /***************************************************/
     }
 }
 
