@@ -44,7 +44,7 @@ namespace BH.Engine.Base
             CompositeGeometry comp = geom as CompositeGeometry;
 
             if (comp != null && comp.Elements.Count == 1)
-                geom = comp.Elements.FirstOrDefault();
+                geom = comp.Elements[0];
 
             return geom;
         }
@@ -63,9 +63,9 @@ namespace BH.Engine.Base
             }
 
             if (geometries.Count == 1)
-                return geometries.FirstOrDefault();
+                return geometries[0];
 
-            return new CompositeGeometry { Elements = geometries.ToList() };
+            return new CompositeGeometry { Elements = geometries };
         }
 
 
@@ -89,7 +89,7 @@ namespace BH.Engine.Base
                         geometries.Add(geometry);
                 }
                 if (geometries.Count() > 0)
-                    return new CompositeGeometry { Elements = geometries.ToList() };
+                    return new CompositeGeometry { Elements = geometries };
                 else
                     return null;
             }
