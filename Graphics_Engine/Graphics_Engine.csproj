@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Convert\ToRenderMesh.cs" />
     <Compile Include="Create\Marker.cs" />
+    <Compile Include="Modify\ApplyGradientOptions.cs" />
+    <Compile Include="Modify\CenterGradientAsymmetric.cs" />
     <Compile Include="Modify\RepresentationFragment.cs" />
     <Compile Include="Modify\RepresentationFragments\Links.cs" />
     <Compile Include="Modify\RepresentationFragments\Boxes.cs" />
