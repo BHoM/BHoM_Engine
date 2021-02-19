@@ -65,7 +65,7 @@ namespace BH.Engine.Results
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();
             
-            //Check if no identifier has been provided. If this is the case, identifiers i searched for on the obejcts
+            //Check if no identifier has been provided. If this is the case, identifiers are searched for in the objects
             identifier = meshes.First().FindIdentifier(identifier);
 
             List<IMesh<TNode, TFace>> meshList = meshes.ToList();
