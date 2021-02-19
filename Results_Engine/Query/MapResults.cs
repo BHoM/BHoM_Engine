@@ -38,7 +38,7 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Matches results to BHoMObjects. The output consists of a list of items corresponding to the list of BHoMObjects supplied. Each item in the output list is a list of results matching the relevant BHoMObject. The results will be matched by the ID of the object stored in the Fragments and the ObjectId of the result. If no results are found, an empty list will be provided. Note that NO compatibility check between objecttype and result type will be made.")]
+        [Description("Matches results to BHoMObjects. The output consists of a list of items corresponding to the list of BHoMObjects supplied. Each item in the output list is a list of results matching the relevant BHoMObject. The results will be matched by the ID of the object stored in the Fragments and the ObjectId of the result. If no results are found, an empty list will be provided. Note that NO compatibility check between object type and result type will be made.")]
         [Input("objects", "The objects to find results for.")]
         [Input("results", "The collection of results to search in.")]
         [Input("whichId", "The name of the object identifier to group results by. Defaults to ObjectId.")]

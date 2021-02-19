@@ -49,8 +49,8 @@ namespace BH.Engine.Results
 
         [Description("Applies colour to IMesh based on MeshResult.")]
         [Input("meshes", "Meshes to colour.")]
-        [Input("meshResults", "The meshes' results to colour by.")]
-        [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
+        [Input("meshResults", "The MeshResults to colour by.")]
+        [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned for an IAdapterId to be used.")]
         [Input("caseFilter", "Which cases to colour by, default is all.")]
         [Input("meshResultDisplay", "Which kind of results to colour by.")]
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
