@@ -207,6 +207,15 @@ namespace BH.Engine.Results
         }*/
 
         //Delete when generics in list bug is fixed:
+        [Description("Applies colour to IMesh based on MeshResult.")]
+        [Input("meshes", "Meshes to colour.")]
+        [Input("meshResults", "The MeshResults to colour by.")]
+        [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned for an IAdapterId to be used.")]
+        [Input("caseFilter", "Which cases to colour by, default is all.")]
+        [Input("meshResultDisplay", "Which kind of results to colour by.")]
+        [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
+        [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
+        [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
         public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResultsWorkaround(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
                       Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", GradientOptions gradientOptions = null)
         {
