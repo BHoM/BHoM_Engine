@@ -57,7 +57,7 @@ namespace BH.Engine.Results
         [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
         public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<TMeshElementResult>> meshResults,
-                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", GradientOptions gradientOptions = null)
+                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
             where TNode : INode
             where TFace : IFace
             where TMeshElementResult : IMeshElementResult
@@ -217,7 +217,7 @@ namespace BH.Engine.Results
         [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
         public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResultsWorkaround(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
-                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", GradientOptions gradientOptions = null)
+                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
         {
             return DisplayMeshResults(meshes, meshResults, identifier, caseFilter, meshResultDisplay, gradientOptions);
         }
