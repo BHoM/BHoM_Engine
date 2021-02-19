@@ -37,6 +37,7 @@ using BH.Engine.Analytical;
 using BH.oM.Analytical.Results;
 using BH.oM.Analytical.Elements;
 using BH.oM.Graphics.Colours;
+using BH.oM.Reflection;
 
 namespace BH.Engine.Results
 {
@@ -53,8 +54,9 @@ namespace BH.Engine.Results
         [Input("caseFilter", "Which cases to colour by, default is all.")]
         [Input("meshResultDisplay", "Which kind of results to colour by.")]
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
-        [Output("results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
-        public static List<List<RenderMesh>> DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<TMeshElementResult>> meshResults,
+        [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
+        [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
+        public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<TMeshElementResult>> meshResults,
                       Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", GradientOptions gradientOptions = null)
             where TNode : INode
             where TFace : IFace
@@ -84,7 +86,11 @@ namespace BH.Engine.Results
                 }
             }
 
-            return result;
+            return new Output<List<List<RenderMesh>>, GradientOptions>
+            {
+                Item1 = result,
+                Item2 = gradientOptions
+            };
         }
 
         /***************************************************/
@@ -201,7 +207,7 @@ namespace BH.Engine.Results
         }*/
 
         //Delete when generics in list bug is fixed:
-        public static List<List<RenderMesh>> DisplayMeshResultsWorkaround(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
+        public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResultsWorkaround(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
                       Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", GradientOptions gradientOptions = null)
         {
             return DisplayMeshResults(meshes, meshResults, identifier, caseFilter, meshResultDisplay, gradientOptions);
