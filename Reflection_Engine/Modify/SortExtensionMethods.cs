@@ -42,11 +42,7 @@ namespace BH.Engine.Reflection
         [Output("metods", "Sorted methods")]
         public static List<MethodInfo> SortExtensionMethods(this IEnumerable<MethodInfo> methods, Type type)
         {
-            //TODO: Sort methods based on closeness to the type, not just exact vs non exact.
-            //Example A : B and B : C
-            //Then if the type is A and list of methods contain one method with first parameter matching each type, then the list should be
-            //Sorted so that the method with A comes first followed by B and lastly C.
-            return methods.OrderBy(x => x.GetParameters().FirstOrDefault()?.ParameterType == type ? 0 : 1).ToList();
+            return methods.OrderBy(x => methods.Count(y => x.GetParameters()[0].ParameterType.IsAssignableFrom(y.GetParameters()[0].ParameterType))).ToList();
         }
 
         /***************************************************/
