@@ -68,8 +68,6 @@ namespace BH.Engine.Results
 
             List<IMesh<TNode, TFace>> meshList = meshes.ToList();
 
-            //List<IMesh<TNode, TFace>> meshList = meshes.ToList();
-
             // Map the MeshResults to Meshes
             List<List<IMeshResult<TMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", identifier, caseFilter);
 
@@ -202,7 +200,7 @@ namespace BH.Engine.Results
             return Delegate.CreateDelegate(typeof(Func<TMeshElementResult, double>), null, prop.GetGetMethod()) as Func<TMeshElementResult, double>;
         }*/
 
-        //Delete when generics in list bug is fixed
+        //Delete when generics in list bug is fixed:
         public static List<List<RenderMesh>> DisplayMeshResultsWorkaround(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
                       Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", GradientOptions gradientOptions = null)
         {
