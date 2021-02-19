@@ -99,7 +99,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static IGeometry Geometry3D(this IBHoMObject obj)
+        private static IGeometry Geometry3D(this IObject obj)
         {
             return Reflection.Compute.RunExtensionMethod(obj, "Geometry3D") as IGeometry;
         }
