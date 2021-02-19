@@ -42,6 +42,7 @@ namespace BH.Engine.Reflection
         [Output("metods", "Sorted methods")]
         public static List<MethodInfo> SortExtensionMethods(this IEnumerable<MethodInfo> methods, Type type)
         {
+            IEnumerable<MethodInfo> typeMethods = methods.Where(x => x.GetParameters()[0].ParameterType.IsAssignableFrom(type));
             return methods.OrderBy(x => methods.Count(y => x.GetParameters()[0].ParameterType.IsAssignableFrom(y.GetParameters()[0].ParameterType))).ToList();
         }
 
