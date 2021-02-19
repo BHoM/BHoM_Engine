@@ -48,7 +48,7 @@ namespace BH.Engine.Analytical
         [Output("point", "The geometry of the INode.")]
         public static Point Geometry(this INode node)
         {
-            return node.Position;
+            return node?.Position;
         }
 
         /***************************************************/
@@ -60,7 +60,7 @@ namespace BH.Engine.Analytical
         public static Line Geometry<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
-            return new Line { Start = link.StartNode.Position, End = link.EndNode.Position };
+            return new Line { Start = link?.StartNode?.Position, End = link?.EndNode?.Position };
         }
 
         /***************************************************/
@@ -70,7 +70,7 @@ namespace BH.Engine.Analytical
         [Output("curve", "The geometry of the IEdge as its Curve.")]
         public static ICurve Geometry(this IEdge edge)
         {
-            return edge.Curve;
+            return edge?.Curve;
         }
 
         /***************************************************/
@@ -83,8 +83,8 @@ namespace BH.Engine.Analytical
             where TOpening : IOpening<TEdge>
         {
             return new PlanarSurface(
-                    Engine.Geometry.Compute.IJoin(panel.ExternalEdges.Select(x => x.Curve).ToList()).FirstOrDefault(),
-                    panel.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x.Edges.Select(y => y.Curve).ToList())).Cast<ICurve>().ToList());
+                    Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault(),
+                    panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList());
         }
 
         /***************************************************/
@@ -96,7 +96,7 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
 
         {
-            return new PolyCurve { Curves = opening.Edges.Select(x => x.Curve).ToList() };
+            return new PolyCurve { Curves = opening?.Edges?.Select(x => x?.Curve).ToList() };
         }
 
         /***************************************************/
@@ -106,7 +106,7 @@ namespace BH.Engine.Analytical
         [Output("surface", "The underlying surface geometry of the analytical ISurface at its centre.")]
         public static IGeometry Geometry(this BH.oM.Analytical.Elements.ISurface surface)
         {
-            return surface.Extents;
+            return surface?.Extents;
         }
 
         /***************************************************/
@@ -121,9 +121,9 @@ namespace BH.Engine.Analytical
         {
             Mesh geoMesh = new Mesh();
 
-            geoMesh.Vertices = mesh.Nodes.Select(x => x.Position).ToList();
+            geoMesh.Vertices = mesh?.Nodes?.Select(x => x?.Position).ToList();
 
-            geoMesh.Faces.AddRange(mesh.Faces.Geometry());
+            geoMesh.Faces.AddRange(mesh?.Faces?.Geometry());
 
             return geoMesh;
         }
@@ -155,6 +155,8 @@ namespace BH.Engine.Analytical
         [Output("face", "The geometry of the IFace as geometrical Mesh Face.")]
         public static Face Geometry(this IFace face)
         {
+            if (face == null)
+                return null;
 
             if (face.NodeListIndices.Count < 3)
             {
@@ -186,7 +188,7 @@ namespace BH.Engine.Analytical
         [Output("curve", "The geometry of the IRegion as its Perimiter curve.")]
         public static ICurve Geometry(this IRegion region)
         {
-            return region.Perimeter;
+            return region?.Perimeter;
         }
 
         /***************************************************/
@@ -197,9 +199,9 @@ namespace BH.Engine.Analytical
         public static CompositeGeometry Geometry(this Graph graph)
         {
             List<IGeometry> geometries = new List<IGeometry>();
-            Graph geometricGraph = graph.IProjectGraph(new GeometricProjection());
+            Graph geometricGraph = graph?.IProjectGraph(new GeometricProjection());
 
-            if (geometricGraph.Entities.Count == 0 || geometricGraph.Relations.Count == 0)
+            if (geometricGraph?.Entities?.Count == 0 || geometricGraph?.Relations?.Count == 0)
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
 
             return SpatialGraphGeometry(graph);
@@ -214,7 +216,7 @@ namespace BH.Engine.Analytical
         {
             List<IGeometry> geometries = new List<IGeometry>();
 
-            foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in spatialGraph.Entities)
+            foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in spatialGraph?.Entities)
             {
                 if (kvp.Value is IElement0D)
                 {
@@ -222,8 +224,8 @@ namespace BH.Engine.Analytical
                     geometries.Add(entity.IGeometry());
                 }
             }
-            foreach (IRelation relation in spatialGraph.Relations)
-                geometries.Add(relation.RelationArrow());
+            foreach (IRelation relation in spatialGraph?.Relations)
+                geometries.Add(relation?.RelationArrow());
 
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
         }
