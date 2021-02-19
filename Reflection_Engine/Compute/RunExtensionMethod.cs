@@ -20,15 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Reflection
 {
@@ -38,14 +33,15 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Runs an extension method accepting a single argument based on a provided object and method name.\n" + 
+        [Description("Runs an extension method accepting a single argument based on a provided object and method name.\n" +
                      "Finds the method via reflection the first time it is run, thean compiles it to a function and stores it for subsequent calls.")]
         [Input("target", "The object to find and run the extension method for.")]
         [Input("methodName", "The name of the method to be run.")]
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         public static object RunExtensionMethod(object target, string methodName)
         {
-            return RunExtensionMethod(methodName, new object[] { target });
+            Func<object[], object> method = Query.ExtensionMethodToCall(target, methodName);
+            return RunExtensionMethod(target, method);
         }
 
         /***************************************************/
@@ -58,117 +54,59 @@ namespace BH.Engine.Reflection
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         public static object RunExtensionMethod(object target, string methodName, object[] parameters)
         {
-            return RunExtensionMethod(methodName, new object[] { target }.Concat(parameters).ToArray());
+            Func<object[], object> method = Query.ExtensionMethodToCall(target, methodName, parameters);
+            return RunExtensionMethod(target, method, parameters);
         }
+
+        /***************************************************/
+
+        [Description("Runs given extension method (in a form of compiled function) accepting a single argument.")]
+        [Input("target", "The object to run the extension method on.")]
+        [Input("method", "The method to be run, provided in a form of compiled function.")]
+        [Output("result", "The result of the method execution. If no or invalid method was provided, null is returned.")]
+        public static object RunExtensionMethod(object target, Func<object[], object> method)
+        {
+            return RunExtensionMethod(method, new object[] { target });
+        }
+
+        /***************************************************/
+        
+        [Description("Runs given extension method (in a form of compiled function) accepting multiple arguments.")]
+        [Input("target", "The object to run the extension method on.")]
+        [Input("method", "The method to be run, provided in a form of compiled function.")]
+        [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
+        [Output("result", "The result of the method execution. If no or invalid method was provided, null is returned.")]
+        public static object RunExtensionMethod(object target, Func<object[], object> method, object[] parameters)
+        {
+            return RunExtensionMethod(method, new object[] { target }.Concat(parameters).ToArray());
+        }
+
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Helper method doing the heavy lifting of RunExtensionMethod. Finds the matching method via reflection, compiles it to a function, stores if for subsequent calls and finally runs it and returns the result.")]
-        [Input("methodName", "The name of the method to be run.")]
-        [Input("parameters", "All parameters of the method.")]
-        [Output("result", "The result of the method execution. If no method was found, null is returned.")]
-        private static object RunExtensionMethod(string methodName, object[] parameters)
+        [Description("Runs the requested function and returns the result.")]
+        private static object RunExtensionMethod(Func<object[], object> method, object[] parameters)
         {
-            if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
+            // Throw an error and return null if method is null
+            if (method == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Failed to run the extension method because it was null.");
                 return null;
-
-            //Get type of first argument, to be used for first method extraction filtering
-            Type type = parameters[0].GetType();
-
-            //Construct key used to store/extract method
-            string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a, b) => a + b);
-            Tuple<Type, string> key = new Tuple<Type, string>(type, name);
-
-            // If the method has been called before, just use that
-            if (MethodPreviouslyExtracted(key))
-                return GetStoredExtensionMethod(key)?.Invoke(parameters);
-
-            //Loop through all methods with matching name, first argument and number of parameters, sorted by best match to the first argument
-            foreach (MethodInfo method in type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length).SortExtensionMethods(type))
-            {
-                ParameterInfo[] paramInfo = method.GetParameters();
-
-                // Make sure the type of parameters is matching, skipping first as already used to extract parameters
-                bool matchingTypes = true;
-                for (int i = 1; i < parameters.Length; i++)
-                {
-                    if(!paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
-                    {
-                        //Parameter does not match, abort for this method
-                        matchingTypes = false;
-                        break;
-                    }
-                }
-
-                if (!matchingTypes)
-                    continue;
-
-                //If method is generic, make sure the appropriate generic arguments are set
-                MethodInfo finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
-
-                //Turn the MethodInfo to a compiled function, store it and finally call it
-                try
-                {
-                    Func<object[], object> func = finalMethod.ToFunc();
-                    object result = func(parameters);
-                    StoreExtensionMethod(key, func);
-                    return result;
-                }
-                catch (Exception e)
-                {
-                    BH.Engine.Reflection.Compute.RecordError($"Failed to run extension method {methodName}.\nError: {e.Message}");
-                    return null;
-                }
             }
 
-            //If nothing found, store null, to avoid having to search again in vain
-            StoreExtensionMethod(key, null);
-
-            // Return null if nothing found
-            return null;
-        }
-
-        /***************************************************/
-
-        [Description("Checkes if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static bool MethodPreviouslyExtracted(Tuple<Type, string> key)
-        {
-            lock (m_RunExtensionMethodLock)
+            // Try calling the method
+            try
             {
-                return m_PreviousInvokedMethods.ContainsKey(key);
+                return method(parameters);
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Failed to run the extension method.\nError: {e.Message}");
+                return null;
             }
         }
-
-        /***************************************************/
-
-        [Description("Gets a previously extracted method from the stored methods. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static Func<object[], object> GetStoredExtensionMethod(Tuple<Type, string> key)
-        {
-            lock (m_RunExtensionMethodLock)
-            {
-                return m_PreviousInvokedMethods[key];
-            }
-        }
-
-        /***************************************************/
-
-        [Description("Stores an extracted method. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static void StoreExtensionMethod(Tuple<Type, string> key, Func<object[], object> method)
-        {
-            lock (m_RunExtensionMethodLock)
-            {
-                m_PreviousInvokedMethods[key] = method;
-            }
-        }
-
-        /***************************************************/
-        /**** Private fields                            ****/
-        /***************************************************/
-
-        private static ConcurrentDictionary<Tuple<Type, string>, Func<object[], object>> m_PreviousInvokedMethods = new ConcurrentDictionary<Tuple<Type, string>, Func<object[], object>>();
-        private static readonly object m_RunExtensionMethodLock = new object();
 
         /***************************************************/
     }
