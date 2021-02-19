@@ -22,7 +22,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 using System.Linq;
@@ -35,9 +34,9 @@ using BH.Engine.Graphics;
 using BH.Engine.Geometry;
 using BH.Engine.Base;
 using BH.Engine.Analytical;
-using BH.Engine.Library;
 using BH.oM.Analytical.Results;
 using BH.oM.Analytical.Elements;
+using BH.oM.Graphics.Colours;
 
 namespace BH.Engine.Results
 {
@@ -56,16 +55,14 @@ namespace BH.Engine.Results
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [Output("results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         public static List<List<RenderMesh>> DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<TMeshElementResult>> meshResults,
-                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", /*GradientOptions gradientOptions = null*/ object gradientOptions = null)
+                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", GradientOptions gradientOptions = null)
             where TNode : INode
             where TFace : IFace
             where TMeshElementResult : IMeshElementResult
         {
-            /*
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();
-            */
-
+            
             //Check if no identifier has been provided. If this is the case, identifiers i searched for on the obejcts
             identifier = meshes.First().FindIdentifier(identifier);
 
@@ -76,11 +73,7 @@ namespace BH.Engine.Results
             // Map the MeshResults to Meshes
             List<List<IMeshResult<TMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", identifier, caseFilter);
 
-            /*
-            gradientOptions = gradientOptions.AutoRange(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(z => z.ResultToValue(meshResultDisplay)))));
-            gradientOptions = gradientOptions.DefaultGradient("BlueToRed");
-            gradientOptions = gradientOptions.CenteringOptions();
-            */
+            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(z => z.ResultToValue(meshResultDisplay)))));
 
             List<List<RenderMesh>> result = new List<List<RenderMesh>>();
 
@@ -89,7 +82,7 @@ namespace BH.Engine.Results
                 result.Add(new List<RenderMesh>());
                 for (int j = 0; j < mappedResults[i].Count; j++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, /*gradientOptions.Gradient, gradientOptions.From, gradientOptions.To*/Library.Query.Match("Gradients", "BlueToRed") as Gradient, -2.3992e+6, 2.8991e+6));
+                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, gradientOptions.Gradient, gradientOptions.From, gradientOptions.To));
                 }
             }
 
@@ -211,7 +204,7 @@ namespace BH.Engine.Results
 
         //Delete when generics in list bug is fixed
         public static List<List<RenderMesh>> DisplayMeshResultsWorkaround(this IEnumerable<FEMesh> meshes, IEnumerable<MeshResult> meshResults,
-                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", /*GradientOptions gradientOptions = null*/ object gradientOptions = null)
+                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "SXX", GradientOptions gradientOptions = null)
         {
             return DisplayMeshResults(meshes, meshResults, identifier, caseFilter, meshResultDisplay, gradientOptions);
         }
