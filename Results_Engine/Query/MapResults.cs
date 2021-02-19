@@ -65,14 +65,13 @@ namespace BH.Engine.Results
             Dictionary<string, IGrouping<string, TResult>> resGroups;
 
             //Group results by Id and turn to dictionary
-            resGroups = filteredRes.GroupBy(x => Reflection.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
-
             // Add null check for when the property of the name in whichId does not exist?
+            resGroups = filteredRes.GroupBy(x => Reflection.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
 
             List<List<TResult>> result = new List<List<TResult>>();
 
             //Run through and put results in List corresponding to objects
-            foreach (IBHoMObject o in objects)
+            foreach (TObject o in objects)
             {
                 IGrouping<string, TResult> outVal;
                 if (resGroups.TryGetValue(o.IdMatch(identifier), out outVal))
