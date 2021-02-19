@@ -42,8 +42,72 @@ namespace BH.Engine.Reflection
         [Output("metods", "Sorted methods")]
         public static List<MethodInfo> SortExtensionMethods(this IEnumerable<MethodInfo> methods, Type type)
         {
-            IEnumerable<MethodInfo> typeMethods = methods.Where(x => x.GetParameters()[0].ParameterType.IsAssignableFrom(type));
-            return methods.OrderBy(x => methods.Count(y => x.GetParameters()[0].ParameterType.IsAssignableFrom(y.GetParameters()[0].ParameterType))).ToList();
+            List<List<Type>> hierarchy = type.InheritanceHierarchy();
+            IEnumerable<int> levels = methods.Select(x => hierarchy.InheritanceLevel(x.GetParameters()[0].ParameterType));
+            return methods.Zip(levels, (m, l) => new { m, l }).Where(x => x.l != -1).OrderBy(x => x.l).Select(x => x.m).ToList();
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<List<Type>> InheritanceHierarchy(this Type type)
+        {
+            List<Type> typeAncestry = new List<Type>();
+            Type ancestor = type;
+            while (ancestor != null && ancestor != typeof(object))
+            {
+                typeAncestry.Add(ancestor);
+                ancestor = ancestor.BaseType;
+            }
+
+            List<List<Type>> result = new List<List<Type>>();
+
+            for (int i = typeAncestry.Count - 1; i >= 0; i--)
+            {
+                Type child = typeAncestry[i];
+                result.Insert(0, new List<Type> { child });
+
+                IEnumerable<Type> alreadyMapped = result.SelectMany(x => x);
+                List<List<Type>> interfaces = child.InterfaceHierarchy();
+                for (int j = 0; j < interfaces.Count; j++)
+                {
+                    IEnumerable<Type> notMapped = interfaces[j].Except(alreadyMapped);
+                    if (notMapped.Any())
+                    {
+                        if (j + 1 < result.Count)
+                            result[j + 1].AddRange(notMapped);
+                        else
+                            result.Add(notMapped.ToList());
+                    }
+                    else
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        /***************************************************/
+
+        private static List<List<Type>> InterfaceHierarchy(this Type type)
+        {
+            Type[] interfaces = type.GetInterfaces();
+            return interfaces.GroupBy(x => interfaces.Count(y => x.IsAssignableFrom(y))).OrderBy(x => x.Key).Select(x => x.ToList()).ToList();
+        }
+
+        /***************************************************/
+
+        private static int InheritanceLevel(this List<List<Type>> hierarchy, Type type)
+        {
+            for (int i = 0; i < hierarchy.Count; i++)
+            {
+                if (hierarchy[i].Contains(type))
+                    return i;
+            }
+
+            return -1;
         }
 
         /***************************************************/
