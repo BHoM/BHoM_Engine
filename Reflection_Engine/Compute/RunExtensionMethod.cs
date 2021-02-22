@@ -22,8 +22,10 @@
 
 using BH.oM.Reflection.Attributes;
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
@@ -40,7 +42,7 @@ namespace BH.Engine.Reflection
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         public static object RunExtensionMethod(object target, string methodName)
         {
-            Func<object[], object> method = Query.ExtensionMethodToCall(target, methodName);
+            MethodInfo method = Query.ExtensionMethodToCall(target, methodName);
             return RunExtensionMethod(target, method);
         }
 
@@ -54,7 +56,7 @@ namespace BH.Engine.Reflection
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         public static object RunExtensionMethod(object target, string methodName, object[] parameters)
         {
-            Func<object[], object> method = Query.ExtensionMethodToCall(target, methodName, parameters);
+            MethodInfo method = Query.ExtensionMethodToCall(target, methodName, parameters);
             return RunExtensionMethod(target, method, parameters);
         }
 
@@ -64,7 +66,7 @@ namespace BH.Engine.Reflection
         [Input("target", "The object to run the extension method on.")]
         [Input("method", "The method to be run, provided in a form of compiled function.")]
         [Output("result", "The result of the method execution. If no or invalid method was provided, null is returned.")]
-        public static object RunExtensionMethod(object target, Func<object[], object> method)
+        public static object RunExtensionMethod(object target, MethodInfo method)
         {
             return RunExtensionMethod(method, new object[] { target });
         }
@@ -76,7 +78,7 @@ namespace BH.Engine.Reflection
         [Input("method", "The method to be run, provided in a form of compiled function.")]
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
         [Output("result", "The result of the method execution. If no or invalid method was provided, null is returned.")]
-        public static object RunExtensionMethod(object target, Func<object[], object> method, object[] parameters)
+        public static object RunExtensionMethod(object target, MethodInfo method, object[] parameters)
         {
             return RunExtensionMethod(method, new object[] { target }.Concat(parameters).ToArray());
         }
@@ -87,7 +89,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Runs the requested function and returns the result.")]
-        private static object RunExtensionMethod(Func<object[], object> method, object[] parameters)
+        private static object RunExtensionMethod(MethodInfo method, object[] parameters)
         {
             // Throw an error and return null if method is null
             if (method == null)
@@ -96,17 +98,68 @@ namespace BH.Engine.Reflection
                 return null;
             }
 
+            Func<object[], object> func;
+            // If the method has been called before, just use that
+            if (MethodPreviouslyExtracted(method))
+                func = GetStoredExtensionMethod(method);
+            else
+            {
+                func = method.ToFunc();
+                StoreExtensionMethod(method, func);
+            }
+
             // Try calling the method
             try
             {
-                return method(parameters);
+                return func(parameters);
             }
             catch (Exception e)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Failed to run the extension method.\nError: {e.Message}");
+                BH.Engine.Reflection.Compute.RecordError($"Failed to run {method.Name} extension method.\nError: {e.Message}");
                 return null;
             }
         }
+
+        /***************************************************/
+
+        [Description("Checks if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
+        private static bool MethodPreviouslyExtracted(MethodInfo info)
+        {
+            lock (m_RunExtensionMethodLock)
+            {
+                return m_PreviousInvokedMethods.ContainsKey(info);
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Gets a previously extracted method from the stored methods. Put in its own method to simplify the use of locks to provide thread safety.")]
+        private static Func<object[], object> GetStoredExtensionMethod(MethodInfo info)
+        {
+            lock (m_RunExtensionMethodLock)
+            {
+                return m_PreviousInvokedMethods[info];
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Stores an extracted method. Put in its own method to simplify the use of locks to provide thread safety.")]
+        private static void StoreExtensionMethod(MethodInfo info, Func<object[], object> method)
+        {
+            lock (m_RunExtensionMethodLock)
+            {
+                m_PreviousInvokedMethods[info] = method;
+            }
+        }
+
+
+        /***************************************************/
+        /**** Private fields                            ****/
+        /***************************************************/
+
+        private static ConcurrentDictionary<MethodInfo, Func<object[], object>> m_PreviousInvokedMethods = new ConcurrentDictionary<MethodInfo, Func<object[], object>>();
+        private static readonly object m_RunExtensionMethodLock = new object();
 
         /***************************************************/
     }
