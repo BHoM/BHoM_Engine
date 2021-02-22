@@ -23,6 +23,9 @@ namespace BH.Engine.Graphics
         [Input("allValues", "The values to set gradient auto range from. Optional if range is already set.")]
         [Input("defaultGradient", "Sets which gradient to use as default if no gradient is already set. Defaults to BlueToRed.")]
         [Output("gradientOptions", "A GradientOptions object which is ready for usage.")]
+        [PreviousVersion("4.1", "BH.Engine.Graphics.Query.AutoRange(BH.oM.Graphics.GradientOptions, System.Collections.Generic.IEnumerable<System.Double>)")]
+        [PreviousVersion("4.1", "BH.Engine.Graphics.Query.CenteringOptions(BH.oM.Graphics.GradientOptions)")]
+        [PreviousVersion("4.1", "BH.Engine.Graphics.Query.DefaultGradient(BH.oM.Graphics.GradientOptions, System.String)")]
         public static GradientOptions ApplyGradientOptions(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, string defaultGradient = "BlueToRed")
         {
             
