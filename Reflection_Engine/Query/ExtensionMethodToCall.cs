@@ -41,7 +41,7 @@ namespace BH.Engine.Reflection
         [Input("target", "First argument of the method to find.")]
         [Input("methodName", "The name of the method to be sought.")]
         [Output("method", "Most suitable extension method with requested target, name and parameters. If no method was found, null is returned.")]
-        public static Func<object[], object> ExtensionMethodToCall(object target, string methodName)
+        public static MethodInfo ExtensionMethodToCall(object target, string methodName)
         {
             return ExtensionMethodToCall(methodName, new object[] { target });
         }
@@ -54,7 +54,7 @@ namespace BH.Engine.Reflection
         [Input("methodName", "The name of the method to be sought.")]
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
         [Output("method", "Most suitable extension method with requested target, name and parameters. If no method was found, null is returned.")]
-        public static Func<object[], object> ExtensionMethodToCall(object target, string methodName, object[] parameters)
+        public static MethodInfo ExtensionMethodToCall(object target, string methodName, object[] parameters)
         {
             return ExtensionMethodToCall(methodName, new object[] { target }.Concat(parameters).ToArray());
         }
@@ -65,7 +65,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Helper method doing the heavy lifting of ExtensionMethodToCall. Finds the matching method via reflection, compiles it to a function, caches if for subsequent calls.")]
-        private static Func<object[],object> ExtensionMethodToCall(string methodName, object[] parameters)
+        private static MethodInfo ExtensionMethodToCall(string methodName, object[] parameters)
         {
             if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
                 return null;
@@ -103,9 +103,8 @@ namespace BH.Engine.Reflection
 
                 // If method is generic, make sure the appropriate generic arguments are set
                 MethodInfo finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
-                Func<object[], object> func = finalMethod.ToFunc();
-                StoreExtensionMethod(key, func);
-                return func;
+                StoreExtensionMethod(key, finalMethod);
+                return finalMethod;
             }
 
             // If nothing found, store null, to avoid having to search again in vain
@@ -120,31 +119,31 @@ namespace BH.Engine.Reflection
         [Description("Checks if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
         private static bool MethodPreviouslyExtracted(Tuple<Type, string> key)
         {
-            lock (m_RunExtensionMethodLock)
+            lock (m_ExtensionMethodToCallLock)
             {
-                return m_PreviousInvokedMethods.ContainsKey(key);
+                return m_PreviousFoundMethods.ContainsKey(key);
             }
         }
 
         /***************************************************/
 
         [Description("Gets a previously extracted method from the stored methods. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static Func<object[], object> GetStoredExtensionMethod(Tuple<Type, string> key)
+        private static MethodInfo GetStoredExtensionMethod(Tuple<Type, string> key)
         {
-            lock (m_RunExtensionMethodLock)
+            lock (m_ExtensionMethodToCallLock)
             {
-                return m_PreviousInvokedMethods[key];
+                return m_PreviousFoundMethods[key];
             }
         }
 
         /***************************************************/
 
         [Description("Stores an extracted method. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static void StoreExtensionMethod(Tuple<Type, string> key, Func<object[], object> method)
+        private static void StoreExtensionMethod(Tuple<Type, string> key, MethodInfo method)
         {
-            lock (m_RunExtensionMethodLock)
+            lock (m_ExtensionMethodToCallLock)
             {
-                m_PreviousInvokedMethods[key] = method;
+                m_PreviousFoundMethods[key] = method;
             }
         }
 
@@ -153,8 +152,8 @@ namespace BH.Engine.Reflection
         /**** Private fields                            ****/
         /***************************************************/
 
-        private static ConcurrentDictionary<Tuple<Type, string>, Func<object[], object>> m_PreviousInvokedMethods = new ConcurrentDictionary<Tuple<Type, string>, Func<object[], object>>();
-        private static readonly object m_RunExtensionMethodLock = new object();
+        private static ConcurrentDictionary<Tuple<Type, string>, MethodInfo> m_PreviousFoundMethods = new ConcurrentDictionary<Tuple<Type, string>, MethodInfo>();
+        private static readonly object m_ExtensionMethodToCallLock = new object();
 
         /***************************************************/
     }
