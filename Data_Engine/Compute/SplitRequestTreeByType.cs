@@ -69,7 +69,7 @@ namespace BH.Engine.Data
 
                 simplified = simplified.SimplifyRequestTree();
                 if (simplified != null)
-                    extracted.Add(simplified.SimplifyRequestTree());
+                    extracted.Add(simplified);
             }
             else
                 extracted.Add(simplified);
