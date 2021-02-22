@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,13 +22,13 @@
 
 using System.Collections.Generic;
 using BH.oM.Geometry;
-using BH.oM.Architecture.Theatron;
 using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using Accord.Collections;
 using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Humans.BodyParts;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -37,138 +37,128 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [Description("Evaluate Cvalues for a single Audience")]
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "CvalueSettings to configure the evaluation")]
-        [Input("focalPolyline", "Polyline to be used for defining focal points")]
-        public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, Polyline focalPolyline)
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
+        public static List<Cvalue> CvalueAnalysis(Audience audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
-            List<Cvalue> results = EvaluateCvalue(audience, settings, focalPolyline);
+            List<Cvalue> results = EvaluateCvalue(audience, settings, playingArea, focalPoint);
             return results;
         }
+
         /***************************************************/
-        [Description("Evaluate Cvalues for a List of Audience")]
-        [Input("audience", "Audience to evaluate")]
-        [Input("settings", "CvalueSettings to configure the evaluation")]
-        [Input("focalPolyline", "Polyline to be used for defining focal points")]
-        public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, Polyline focalPolyline)
+
+        [Description("Evaluate Cvalues for a List of Audience.")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("settings", "CvalueSettings to configure the evaluation.")]
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area.")]
+        [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
+        public static List<List<Cvalue>> CvalueAnalysis(List<Audience> audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
             List<List<Cvalue>> results = new List<List<Cvalue>>();
-            foreach(Audience a in audience)
+            foreach (Audience a in audience)
             {
-                results.Add(EvaluateCvalue(a, settings, focalPolyline));
+                results.Add(EvaluateCvalue(a, settings, playingArea, focalPoint));
             }
             return results;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static List<Cvalue> EvaluateCvalue(Audience audience, CvalueSettings settings, Polyline focalPolyline)
+
+        private static List<Cvalue> EvaluateCvalue(Audience audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
             List<Cvalue> results = new List<Cvalue>();
+            if (audience.Spectators.Count == 0)
+                return results;
+
             KDTree<Spectator> spectatorTree = SetKDTree(audience);
+            m_CvalueSettings = settings;
+
+            if (focalPoint == null)
+                focalPoint = new Point();
+
             foreach (Spectator s in audience.Spectators)
             {
-                bool cvalueExists = true;
-                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
 
-                Spectator infront = GetSpecInfront(s, spectatorTree);
-                double riserHeight = 0;
-                double rowWidth = 0;
-                Point focal = new Point();
-                if (infront == null)
+                m_CvalueExists = true;
+                if (s.BHoM_Guid.ToString().Equals("bfa0390e-a416-4869-9e52-677df9b7c6ea"))
                 {
-                    //no spectator infront
-                    cvalueExists = false;
+                    int b = 0;
                 }
-                else
-                {
-                    //check the infront and current are on parallel rows
-                    if (infront.Head.PairOfEyes.ViewDirection != s.Head.PairOfEyes.ViewDirection)
-                    {
-                        cvalueExists = false;
-                    }
-                }
-                if (cvalueExists)
-                {
-                    riserHeight = s.Head.PairOfEyes.ReferenceLocation.Z - infront.Head.PairOfEyes.ReferenceLocation.Z;
-                    rowWidth = GetRowWidth(s, infront, rowVector);
-                    focal = GetFocalPoint(rowVector, s, settings.FocalMethod, focalPolyline);
-                }
+                    
+                Point focal = GetFocalPoint(s, playingArea, focalPoint);
+                double cvalue = GetCValue(s, spectatorTree, focal);
 
-                results.Add(CvalueResult(s, focal, riserHeight, rowWidth, cvalueExists, rowVector, settings));
+                results.Add(CvalueResult(s, focal, cvalue));
             }
             return results;
         }
-        /***************************************************/
-        private static double GetRowWidth(Spectator current, Spectator nearest, Vector rowV)
-        {
-        double width = 0;
-        Vector row = nearest.Head.PairOfEyes.ReferenceLocation - current.Head.PairOfEyes.ReferenceLocation;
 
-        Vector row2d = Geometry.Create.Vector(row.X, row.Y, 0);//horiz vector to spectator row in front
-        Vector projected = row2d.Project(rowV);
-            
-        Vector rowWidth = row2d - projected;
-        width = rowWidth.Length();
-        return width;
-        }
         /***************************************************/
-        private static Point GetFocalPoint(Vector rowV, Spectator spectator,CvalueFocalMethodEnum focalMethod,Polyline focalPolyline)
+
+        private static Point GetFocalPoint(Spectator spectator, Polyline playingArea, Point focalPoint)
         {
             Point focal = new Point();
-            switch (focalMethod)
+            switch (m_CvalueSettings.FocalMethod)
             {
                 case CvalueFocalMethodEnum.OffsetThroughCorners:
-                    focal = FindFocalOffset(rowV, spectator,focalPolyline);
-
+                    focal = FindFocalOffset(spectator, playingArea);
                     break;
+
                 case CvalueFocalMethodEnum.Closest:
-                    focal = FindFocalClosest(spectator, focalPolyline);
-
+                    focal = FindFocalClosest(spectator, playingArea);
                     break;
-                case CvalueFocalMethodEnum.Perpendicular:
-                    focal = FindFocalPerp(rowV, spectator, focalPolyline);
 
+                case CvalueFocalMethodEnum.Perpendicular:
+                    focal = FindFocalPerp(spectator, playingArea);
+                    break;
+
+                case CvalueFocalMethodEnum.SinglePoint:
+                    focal = focalPoint;
                     break;
             }
             return focal;
         }
+
         /***************************************************/
-        private static Cvalue CvalueResult(Spectator s, Point focal, double riser, double rowWidth, bool cvalueExists, Vector rowV,CvalueSettings settings)
+
+        private static Cvalue CvalueResult(Spectator current, Point focal, double cvalue)
         {
             Cvalue result = new Cvalue();
-            Vector d = s.Head.PairOfEyes.ReferenceLocation - focal;
+            result.ObjectId = current.BHoM_Guid;
+            Vector d = current.Head.PairOfEyes.ReferenceLocation - focal;
+            
             result.AbsoluteDist = d.Length();
             result.Focalpoint = focal;
             result.HorizDist = Geometry.Create.Vector(d.X, d.Y, 0).Length();
-            result.HeightAbovePitch = s.Head.PairOfEyes.ReferenceLocation.Z - focal.Z;
-            
-            if (!cvalueExists|| riser > settings.RowTolerance)//
-            {
-                result.CValue = settings.DefaultCValue;
-            }
+            result.HeightAbovePitch = current.Head.PairOfEyes.ReferenceLocation.Z - focal.Z;
+
+            if (!m_CvalueExists)//
+                result.CValue = m_CvalueSettings.DefaultCValue;
             else
-            {
-                result.CValue = (result.HorizDist - rowWidth) * (result.HeightAbovePitch / result.HorizDist) - (result.HeightAbovePitch - riser);
-            }
+                result.CValue = cvalue;
+
             return result;
 
         }
         /***************************************************/
-        private static Point FindFocalPerp(Vector rowV, Spectator spect, Polyline focalPolyline)
-        {
 
+        private static Point FindFocalPerp(Spectator spect, Polyline focalPolyline)
+        {
+            Vector rowV = Geometry.Query.CrossProduct(Vector.ZAxis, spect.Head.PairOfEyes.ViewDirection);
             Point focal = new Point();
             //plane is perpendicular to row
             Plane interPlane = Geometry.Create.Plane(spect.Head.PairOfEyes.ReferenceLocation, rowV);
             double dist = Double.MaxValue;
-            Point ipt = new Point();
             //loop the segments in the focalPolyline find the closest perpendicular point
-            foreach(var seg in focalPolyline.SubParts())
+            List<Point> interpts = focalPolyline.IPlaneIntersections(interPlane);
+            foreach (Point ipt in interpts)
             {
-                seg.Infinite = true;
-                ipt = Geometry.Query.PlaneIntersection(seg, interPlane);
                 if (Geometry.Query.Distance(ipt, interPlane.Origin) < dist)
                 {
                     focal = ipt;
@@ -177,12 +167,19 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return focal;
         }
+
+        /***************************************************/
+
         private static Point FindFocalClosest(Spectator spect, Polyline focalPolyline)
         {
             return Geometry.Query.ClosestPoint(focalPolyline, spect.Head.PairOfEyes.ReferenceLocation);
         }
-        private static Point FindFocalOffset(Vector rowVector, Spectator spect, Polyline focalPolyline)
+
+        /***************************************************/
+
+        private static Point FindFocalOffset(Spectator spect, Polyline focalPolyline)
         {
+            Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, spect.Head.PairOfEyes.ViewDirection);
             Point focal = new Point();
             //plane is perpendicular to row
             Plane interPlane = Geometry.Create.Plane(spect.Head.PairOfEyes.ReferenceLocation, rowVector);
@@ -203,34 +200,80 @@ namespace BH.Engine.Humans.ViewQuality
                 }
             }
             return focal;
-            
+
         }
+
         /***************************************************/
-        private static Spectator GetSpecInfront(Spectator current, KDTree<Spectator> tree)
+
+        private static double GetCValue(Spectator current, KDTree<Spectator> tree, Point focalPoint)
         {
-            
-            double[] query = { current.Head.PairOfEyes.ReferenceLocation.X, current.Head.PairOfEyes.ReferenceLocation.Y, current.Head.PairOfEyes.ReferenceLocation.Z };
-            //first get the neighbourhood around the current spec
-            var neighbours = tree.Nearest(query, neighbors: 8);
-            
-            NodeDistance<KDTreeNode<Spectator>> closestInFront = new NodeDistance<KDTreeNode<Spectator>>();
-            double dist = Double.MaxValue;
-            foreach (var n in neighbours)
+            //get spectators in front
+            List<Spectator> infront = GetSpectatorsInfront(current, tree, focalPoint);
+            if (infront.Count == 0)
             {
-                //only those infront
-                if (n.Node.Value.Head.PairOfEyes.ReferenceLocation.Z < current.Head.PairOfEyes.ReferenceLocation.Z)
+                m_CvalueExists = false;
+                return 0;
+            }
+
+            Vector rowV = current.Head.PairOfEyes.ViewDirection.CrossProduct(Vector.ZAxis);
+            //plane parallel to view direction perpendicular to row
+            Plane viewVert = Geometry.Create.Plane(current.Head.PairOfEyes.ReferenceLocation, rowV);
+            double minDist = double.MaxValue;
+            Point closest = null;
+            foreach (Spectator s in infront)
+            {
+                Point proj = viewVert.ClosestPoint(s.Head.PairOfEyes.ReferenceLocation);
+                double dist = proj.SquareDistance(current.Head.PairOfEyes.ReferenceLocation);
+                if (dist < minDist)
                 {
-                    if (n.Distance < dist)
-                    {
-                        closestInFront = n;
-                        dist = n.Distance;
-                    }
+                    minDist = dist;
+                    closest = proj;
                 }
             }
-            if (closestInFront.Node == null) return null;
-            else return closestInFront.Node.Value;
+
+            Vector sightVect = Geometry.Create.Vector(current.Head.PairOfEyes.ReferenceLocation, focalPoint);
+            Vector viewUp = sightVect.CrossProduct(rowV);
+            Plane viewHoriz = Geometry.Create.Plane(current.Head.PairOfEyes.ReferenceLocation, viewUp);
+            Line up = Geometry.Create.Line(closest, Vector.ZAxis);
+
+
+            return closest.Distance(up.PlaneIntersection(viewHoriz, true));
         }
+
+        /***************************************************/
+
+        private static List<Spectator> GetSpectatorsInfront(Spectator current, KDTree<Spectator> tree, Point focalPoint)
+        {
+            PairOfEyes viewer = current.Head.PairOfEyes;
+
+            double[] query = { viewer.ReferenceLocation.X, viewer.ReferenceLocation.Y, viewer.ReferenceLocation.Z };
+            //first get the neighbourhood around the current spec
+            var neighbours = tree.Nearest(query, neighbors:16);
+
+            List<Spectator> infront = new List<Spectator>();
+
+            foreach (var n in neighbours)
+            {
+                PairOfEyes viewed = n.Node.Value.Head.PairOfEyes;
+                Vector toNeighbour = viewed.ReferenceLocation - viewer.ReferenceLocation;
+                toNeighbour.Z = 0;
+                if (toNeighbour.Length() == 0)
+                    continue;
+
+                //point in plane within +-coneAngle in direction viewer is looking
+                double testAngle = Geometry.Query.Angle(toNeighbour, viewer.ViewDirection);
+                if (testAngle < m_CvalueSettings.ViewConeAngle / 2)
+                    infront.Add(n.Node.Value);
+            }
+            return infront;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool m_CvalueExists = true;
+        private static CvalueSettings m_CvalueSettings;
     }
 }
-
 
