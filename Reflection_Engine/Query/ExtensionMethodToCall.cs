@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
         
         [Description("Finds an extension method accepting a multiple argument based on a provided main object and method name.\n" +
-                     "The method is found via reflection at the first time it is queried, then it gets compiled into a function and stored for subsequent calls.")]
+                     "The method is found via reflection at the first time it is queried, then it is stored for subsequent calls.")]
         [Input("target", "First argument of the method to find.")]
         [Input("methodName", "The name of the method to be sought.")]
         [Output("method", "Most suitable extension method with requested target, name and parameters. If no method was found, null is returned.")]
@@ -49,7 +49,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Finds an extension method accepting a multiple argument based on a provided main object and method name and additional arguments.\n" +
-                     "The method is found via reflection at the first time it is queried, then it gets compiled into a function and stored for subsequent calls.")]
+                     "The method is found via reflection at the first time it is queried, then it is stored for subsequent calls.")]
         [Input("target", "First argument of the method to find.")]
         [Input("methodName", "The name of the method to be sought.")]
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
@@ -64,7 +64,7 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Helper method doing the heavy lifting of ExtensionMethodToCall. Finds the matching method via reflection, compiles it to a function, caches if for subsequent calls.")]
+        [Description("Helper method doing the heavy lifting of ExtensionMethodToCall. Finds the matching method via reflection and caches if for subsequent calls.")]
         private static MethodInfo ExtensionMethodToCall(string methodName, object[] parameters)
         {
             if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
@@ -103,6 +103,8 @@ namespace BH.Engine.Reflection
 
                 // If method is generic, make sure the appropriate generic arguments are set
                 MethodInfo finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
+
+                // Cache and return the method
                 StoreExtensionMethod(key, finalMethod);
                 return finalMethod;
             }

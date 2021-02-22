@@ -36,7 +36,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Runs an extension method accepting a single argument based on a provided object and method name.\n" +
-                     "Finds the method via reflection the first time it is run, thean compiles it to a function and stores it for subsequent calls.")]
+                     "Finds the method via reflection the first time it is run, then compiles it to a function and stores it for subsequent calls.")]
         [Input("target", "The object to find and run the extension method for.")]
         [Input("methodName", "The name of the method to be run.")]
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
@@ -49,7 +49,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Runs an extension method accepting a multiple argument based on a provided main object and method name and additional arguments.\n" +
-                     "Finds the method via reflection the first time it is run, thean compiles it to a function and stores it for subsequent calls.")]
+                     "Finds the method via reflection the first time it is run, then compiles it to a function and stores it for subsequent calls.")]
         [Input("target", "The first of the argument of the method to find and run the extention method for.")]
         [Input("methodName", "The name of the method to be run.")]
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
@@ -62,9 +62,10 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Runs given extension method (in a form of compiled function) accepting a single argument.")]
+        [Description("Runs given extension method accepting a single argument.\n" +
+                     "Compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         [Input("target", "The object to run the extension method on.")]
-        [Input("method", "The method to be run, provided in a form of compiled function.")]
+        [Input("method", "The method to be run.")]
         [Output("result", "The result of the method execution. If no or invalid method was provided, null is returned.")]
         public static object RunExtensionMethod(object target, MethodInfo method)
         {
@@ -73,9 +74,10 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
         
-        [Description("Runs given extension method (in a form of compiled function) accepting multiple arguments.")]
+        [Description("Runs given extension method accepting multiple arguments.\n" +
+                     "Compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         [Input("target", "The object to run the extension method on.")]
-        [Input("method", "The method to be run, provided in a form of compiled function.")]
+        [Input("method", "The method to be run.")]
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
         [Output("result", "The result of the method execution. If no or invalid method was provided, null is returned.")]
         public static object RunExtensionMethod(object target, MethodInfo method, object[] parameters)
@@ -88,7 +90,7 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Runs the requested function and returns the result.")]
+        [Description("Runs the requested method and returns the result. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         private static object RunExtensionMethod(MethodInfo method, object[] parameters)
         {
             // Throw an error and return null if method is null
@@ -98,14 +100,14 @@ namespace BH.Engine.Reflection
                 return null;
             }
 
+            // If the method has been called before, use the previously compiled function
             Func<object[], object> func;
-            // If the method has been called before, just use that
-            if (MethodPreviouslyExtracted(method))
-                func = GetStoredExtensionMethod(method);
+            if (FunctionPreviouslyCompiled(method))
+                func = GetStoredCompiledFunction(method);
             else
             {
                 func = method.ToFunc();
-                StoreExtensionMethod(method, func);
+                StoreCompiledFunction(method, func);
             }
 
             // Try calling the method
@@ -123,33 +125,33 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Checks if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static bool MethodPreviouslyExtracted(MethodInfo info)
+        private static bool FunctionPreviouslyCompiled(MethodInfo info)
         {
             lock (m_RunExtensionMethodLock)
             {
-                return m_PreviousInvokedMethods.ContainsKey(info);
+                return m_PreviousCompiledFunctions.ContainsKey(info);
             }
         }
 
         /***************************************************/
 
-        [Description("Gets a previously extracted method from the stored methods. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static Func<object[], object> GetStoredExtensionMethod(MethodInfo info)
+        [Description("Gets a previously compiled function from the stored functions. Put in its own method to simplify the use of locks to provide thread safety.")]
+        private static Func<object[], object> GetStoredCompiledFunction(MethodInfo info)
         {
             lock (m_RunExtensionMethodLock)
             {
-                return m_PreviousInvokedMethods[info];
+                return m_PreviousCompiledFunctions[info];
             }
         }
 
         /***************************************************/
 
-        [Description("Stores an extracted method. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static void StoreExtensionMethod(MethodInfo info, Func<object[], object> method)
+        [Description("Stores a compiled function. Put in its own method to simplify the use of locks to provide thread safety.")]
+        private static void StoreCompiledFunction(MethodInfo info, Func<object[], object> method)
         {
             lock (m_RunExtensionMethodLock)
             {
-                m_PreviousInvokedMethods[info] = method;
+                m_PreviousCompiledFunctions[info] = method;
             }
         }
 
@@ -158,7 +160,7 @@ namespace BH.Engine.Reflection
         /**** Private fields                            ****/
         /***************************************************/
 
-        private static ConcurrentDictionary<MethodInfo, Func<object[], object>> m_PreviousInvokedMethods = new ConcurrentDictionary<MethodInfo, Func<object[], object>>();
+        private static ConcurrentDictionary<MethodInfo, Func<object[], object>> m_PreviousCompiledFunctions = new ConcurrentDictionary<MethodInfo, Func<object[], object>>();
         private static readonly object m_RunExtensionMethodLock = new object();
 
         /***************************************************/
