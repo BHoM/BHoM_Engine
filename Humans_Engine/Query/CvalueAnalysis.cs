@@ -86,10 +86,6 @@ namespace BH.Engine.Humans.ViewQuality
             {
 
                 m_CvalueExists = true;
-                if (s.BHoM_Guid.ToString().Equals("bfa0390e-a416-4869-9e52-677df9b7c6ea"))
-                {
-                    int b = 0;
-                }
                     
                 Point focal = GetFocalPoint(s, playingArea, focalPoint);
                 double cvalue = GetCValue(s, spectatorTree, focal);
