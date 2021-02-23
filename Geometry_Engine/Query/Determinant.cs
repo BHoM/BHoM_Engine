@@ -38,16 +38,16 @@ namespace BH.Engine.Geometry
             return Determinant(matrix.Matrix, 0);
         }
 
-
-        /***************************************************/
-        /****             Private methods               ****/
         /***************************************************/
 
-        private static double Determinant(this double[,] mat)
+        public static double Determinant(this double[,] mat)
         {
             return Determinant(mat, 0);
         }
 
+
+        /***************************************************/
+        /****             Private methods               ****/
         /***************************************************/
 
         private static double Determinant(double[,] mat, int n)
