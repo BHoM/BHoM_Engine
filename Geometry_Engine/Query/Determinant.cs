@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
             for (int f = 0; f < n; f++)
             {
                 // Getting Cofactor of mat[0][f]
-                getCofactor(mat, temp, 0, f, n);
+                GetCofactor(mat, temp, 0, f, n);
                 D += sign * mat[0, f] * Determinant(temp, n - 1);
 
                 // terms are to be added with 
@@ -90,7 +90,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static void getCofactor(double[,] mat, double[,] temp, int p, int q, int n)
+        private static void GetCofactor(double[,] mat, double[,] temp, int p, int q, int n)
         {
             int i = 0, j = 0;
 
