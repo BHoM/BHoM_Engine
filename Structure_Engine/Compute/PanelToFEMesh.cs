@@ -36,9 +36,8 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Description("Converting panel with 3 or 4 edges to FEmesh ")]
-        [Input("panel", "BH.oM.Structure.Elements.Panel with 3 or 4 edges")]
+        [Description("Converting panel with 3 or 4 control points to FEmesh ")]
+        [Input("panel", "Panel to be converted to an FEMesh.")]
         [Output("FEMesh", "FEMesh converted from a Panel.")]
 
         public static FEMesh PanelToFEMesh(Panel panel)
@@ -46,8 +45,21 @@ namespace BH.Engine.Structure
             List<Point> points = new List<Point>();
             List<Edge> edges = panel.ExternalEdges;
             List<Face> faces = new List<Face>();
-
-
+            if (panel.Openings != null)
+            {
+                Engine.Reflection.Compute.RecordWarning("PanelToFEMesh does not support panel with opening");
+                return null;
+            }
+            if (panel.ExternalEdges == null)
+                {
+                Engine.Reflection.Compute.RecordWarning("Checks identify no External edges");
+                return null;
+            }
+            if (panel == null)
+            {
+                Engine.Reflection.Compute.RecordWarning("Checks identify null panel");
+                return null;
+            }
             foreach (Edge edge in edges)
             {
                 Face face = new Face();
@@ -63,15 +75,25 @@ namespace BH.Engine.Structure
                 }
                 else
                 {
+                    Engine.Reflection.Compute.RecordWarning("PanelToFEMesh does not support panel more than 4 edges");
                     return null;
                 }  
                 faces.Add(face);
                 points.AddRange(BH.Engine.Geometry.Convert.IToPolyline(curve).ControlPoints);
             }
             Mesh mesh = BH.Engine.Geometry.Create.Mesh(points.Distinct(), faces);
-            FEMesh fEMesh = BH.Engine.Structure.Create.FEMesh(mesh, panel.Property, null, panel.Name);
-
-            return fEMesh;
+            FEMesh fEMesh = new FEMesh();
+            if (panel.Property != null)
+            {
+                fEMesh = BH.Engine.Structure.Create.FEMesh(mesh, panel.Property, null, panel.Name);
+                return fEMesh;
+            }
+            else
+            {
+                fEMesh = BH.Engine.Structure.Create.FEMesh(mesh, null, null, panel.Name);
+                Engine.Reflection.Compute.RecordWarning("Panels don't have any Section Property input");
+                return fEMesh;
+            }
         }
 
         /***************************************************/
