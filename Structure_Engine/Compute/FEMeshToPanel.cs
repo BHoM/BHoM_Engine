@@ -25,6 +25,8 @@ using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
@@ -33,10 +35,18 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Converting FEmesh to a panel")]
+        [Input("FEMesh", "FEMesh to be converted to an Panel")]
+        [Output("Panel", "Panel converted from a FEMesh.")]
 
         public static Panel FEMeshToPanel(FEMesh mesh)
         {
-            List<Polyline> polylines = new List<Polyline>();
+            if (mesh.Nodes == null)
+            {
+                Engine.Reflection.Compute.RecordWarning("Checks identify null nodes");
+                return null;
+            }
+                List<Polyline> polylines = new List<Polyline>();
 
             List<Point> points = new List<Point>();
 
@@ -48,10 +58,18 @@ namespace BH.Engine.Structure
             points.Add(mesh.Nodes.First().Position);
             polylines.Add(BH.Engine.Geometry.Create.Polyline(points));
 
-            List<Panel> panels = BH.Engine.Structure.Create.Panel(polylines.Cast<ICurve>().ToList(),mesh.Property);
+            List<Panel> panels = new List<Panel>();
+            if (mesh.Property != null)
+            {
+                panels = BH.Engine.Structure.Create.Panel(polylines.Cast<ICurve>().ToList(), mesh.Property);
+                return panels[0];
+            }
+            else
+            {
+                panels = BH.Engine.Structure.Create.Panel(polylines.Cast<ICurve>().ToList());
+                return panels[0];
+            }
 
-
-            return panels[0];
         }
 
         /***************************************************/
