@@ -29,6 +29,15 @@ namespace BH.Engine.Geometry
     public static partial class Modify
     {
         /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        public static T IReverse<T>(this T geom)
+        {
+            return Reverse(geom as dynamic);
+        }
+
+        /***************************************************/
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
@@ -45,6 +54,30 @@ namespace BH.Engine.Geometry
         public static Line Reverse(this Line line)
         {
             return new Line { Start = line.End, End = line.Start, Infinite = line.Infinite };
+        }
+
+        /***************************************************/
+
+        public static Polyline Reverse(this Polyline polyLine)
+        {
+            return new Polyline() { ControlPoints = polyLine.ControlPoints.Reverse<Point>().ToList() };
+        }
+
+
+        /***************************************************/
+        /**** Public Methods - Surfaces                 ****/
+        /***************************************************/
+
+        public static PlanarSurface Reverse(this PlanarSurface surf)
+        {
+
+            if (!(surf.ExternalBoundary is Polyline) || !(surf.InternalBoundaries.Where(c => c is Polyline || c is Line).Count() != 0))
+            {
+                BH.Engine.Reflection.Compute.RecordError("Not implemented.");
+                return null;
+            }
+
+            return new PlanarSurface(surf.ExternalBoundary.IReverse(), surf.InternalBoundaries.Select(b => b.IReverse()).ToList());
         }
 
         /***************************************************/
