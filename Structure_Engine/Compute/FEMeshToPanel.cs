@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
             points.Add(mesh.Nodes.First().Position);
             polylines.Add(BH.Engine.Geometry.Create.Polyline(points));
 
-            List<Panel> panels = BH.Engine.Structure.Create.Panel(polylines.Cast<ICurve>().ToList());
+            List<Panel> panels = BH.Engine.Structure.Create.Panel(polylines.Cast<ICurve>().ToList(),mesh.Property);
 
 
             return panels[0];
