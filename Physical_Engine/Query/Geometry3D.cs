@@ -83,6 +83,11 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        public static IGeometry Geometry3D(this Floor floor)
+        {
+            return Geometry3D(floor, false);
+        }
+
         [Description("Gets the 3d geometry from the floor.")]
         [Input("floor", "The input floor to get the Geometry3D out of. The layers are considered so that the first layer is always the closest to the Floor surface, while the last is the furthest from the surface.")]
         [Input("aboveSurface", "(Optional, defaults to false) If true, the Floor surface is considered to be the bottom surface, and all layers are stacked on top of it ('upwards'). Otherwise, the layers are stacked 'downwards'.")]
