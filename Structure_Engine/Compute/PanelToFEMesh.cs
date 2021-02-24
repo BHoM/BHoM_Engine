@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
             List<Point> points = new List<Point>();
             List<Edge> edges = panel.ExternalEdges;
             List<Face> faces = new List<Face>();
-            if (panel.Openings != null)
+            if (panel.Openings.Count()>0)
             {
                 Engine.Reflection.Compute.RecordWarning("PanelToFEMesh does not support panel with opening");
                 return null;
@@ -62,25 +62,27 @@ namespace BH.Engine.Structure
             }
             foreach (Edge edge in edges)
             {
-                Face face = new Face();
                 ICurve curve = BH.Engine.Analytical.Query.Geometry(edge);
-                int Count = BH.Engine.Geometry.Convert.IToPolyline(curve).ControlPoints.Count();
-                if (Count == 4)
-                {
-                    face = Geometry.Create.Face(0,1,2,3);
-                }
-                else if (Count == 3)
-                {
-                    face = Geometry.Create.Face(0,1,2);
-                }
-                else
-                {
-                    Engine.Reflection.Compute.RecordWarning("PanelToFEMesh does not support panel more than 4 edges");
-                    return null;
-                }  
-                faces.Add(face);
+
+
                 points.AddRange(BH.Engine.Geometry.Convert.IToPolyline(curve).ControlPoints);
             }
+            int Count = points.Distinct().Count();
+            Face face = new Face();
+            if (Count == 4)
+            {
+                face = Geometry.Create.Face(0, 1, 2, 3);
+            }
+            else if (Count == 3)
+            {
+                face = Geometry.Create.Face(0, 1, 2);
+            }
+            else
+            {
+                Engine.Reflection.Compute.RecordWarning("PanelToFEMesh does not support panel more than 4 edges");
+                return null;
+            }
+            faces.Add(face);
             Mesh mesh = BH.Engine.Geometry.Create.Mesh(points.Distinct(), faces);
             FEMesh fEMesh = new FEMesh();
             if (panel.Property != null)
