@@ -32,16 +32,24 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix Transpose(this TransformMatrix transform)
         {
-            double[,] matrix = transform.Matrix;
-            double[,] transpose = new double[4,4];
+            return new TransformMatrix { Matrix = transform.Matrix.Transpose() };
+        }
 
-            for (int i = 0; i < 4; i++)
+        /***************************************************/
+
+        public static double[,] Transpose(this double[,] matrix)
+        {
+            int h = matrix.GetLength(0);
+            int w = matrix.GetLength(1);
+            double[,] transpose = new double[w, h];
+
+            for (int m = 0; m < h; m++)
             {
-                for (int j = 0; j < 4; j++)
-                    transpose[i,j] = matrix[j,i];
+                for (int n = 0; n < w; n++)
+                    transpose[m, n] = matrix[n, m];
             }
 
-            return new TransformMatrix { Matrix = transpose };
+            return transpose;
         }
 
         /***************************************************/

@@ -202,6 +202,34 @@ namespace BH.Engine.Geometry
         /**** public Methods - Others                   ****/
         /***************************************************/
 
+        public static bool IsEqual(this TransformMatrix transform, TransformMatrix other, double tolerance = Tolerance.Distance)
+        {
+            return (transform.Matrix.IsEqual(other.Matrix));
+        }
+
+        /***************************************************/
+
+        public static bool IsEqual(this double[,] matrix, double[,] other, double tolerance = Tolerance.Distance)
+        {
+            int h = matrix.GetLength(0);
+            int w = matrix.GetLength(1);
+            if (h != other.GetLength(0) || w != other.GetLength(1))
+                return false;
+
+            for (int m = 0; m < h; m++)
+            {
+                for (int n = 0; n < w; n++)
+                {
+                    if (Math.Abs(matrix[m, n] - other[m, n]) > tolerance)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
         public static bool IsEqual(this BoundingBox box, BoundingBox other, double tolerance = Tolerance.Distance)
         {
             return box.Min.IsEqual(other.Min, tolerance)
