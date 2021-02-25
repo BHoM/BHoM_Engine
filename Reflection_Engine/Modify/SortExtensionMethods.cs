@@ -103,7 +103,12 @@ namespace BH.Engine.Reflection
         {
             for (int i = 0; i < hierarchy.Count; i++)
             {
-                if (hierarchy[i].Contains(type))
+                if (!type.IsGenericType)
+                {
+                    if (hierarchy[i].Contains(type))
+                        return i;
+                }
+                else if (hierarchy[i].Any(x => x.IsAssignableFromIncludeGenerics(type)))
                     return i;
             }
 
