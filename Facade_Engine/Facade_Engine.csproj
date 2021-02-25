@@ -60,6 +60,11 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Matter_Engine">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Matter_Engine.dll</HintPath>
+	  <Private>False</Private>
+	  <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Physical_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_Engine.dll</HintPath>
       <Private>False</Private>
@@ -111,7 +116,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Depth.cs" />
     <Compile Include="Query\FrameGeometry2D.cs" />
+    <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\SimpleGeometry.cs" />
+    <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\Width.cs" />
     <Compile Include="Query\WidthIntoOpening.cs" />
     <Compile Include="Query\IsAdjacent.cs" />
