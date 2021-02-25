@@ -50,6 +50,11 @@ namespace BH.Engine.Structure
                 Engine.Reflection.Compute.RecordWarning("PanelToFEMesh does not support panel with opening");
                 return null;
             }
+            if (panel.ExternalEdges.Count>4)
+            {
+                Engine.Reflection.Compute.RecordWarning("Panel contains more than 4 control points");
+                return null;
+            }
             if (panel.ExternalEdges == null)
                 {
                 Engine.Reflection.Compute.RecordWarning("Checks identify no External edges");
@@ -76,11 +81,6 @@ namespace BH.Engine.Structure
             else if (Count == 3)
             {
                 face = Geometry.Create.Face(0, 1, 2);
-            }
-            else
-            {
-                Engine.Reflection.Compute.RecordWarning("PanelToFEMesh does not support panel more than 4 edges");
-                return null;
             }
             faces.Add(face);
             Mesh mesh = BH.Engine.Geometry.Create.Mesh(points.Distinct(), faces);

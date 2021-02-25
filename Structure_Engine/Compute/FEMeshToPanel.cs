@@ -67,6 +67,7 @@ namespace BH.Engine.Structure
             else
             {
                 panels = BH.Engine.Structure.Create.Panel(polylines.Cast<ICurve>().ToList());
+                Engine.Reflection.Compute.RecordWarning("Meshs don't have any Section Property input");
                 return panels[0];
             }
 
