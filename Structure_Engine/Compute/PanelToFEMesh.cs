@@ -23,6 +23,7 @@
 
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,21 +48,34 @@ namespace BH.Engine.Structure
             List<Face> faces = new List<Face>();
             if (NullCheck(panel) == false)
             {
-                Engine.Reflection.Compute.RecordWarning("Checks identify null panel");
                 return null;
             }
-            if (panel?.Openings != null || panel?.Openings.Count > 0)
+            if(!panel.Geometry().IsPlanar(Tolerance.MacroDistance))
             {
-                Engine.Reflection.Compute.RecordWarning("This method does not support Panels with Openings");
+                Reflection.Compute.RecordError("Panel is not planar and therefore cannot be converted to an FEMesh.");
+            }
+            if (panel.Openings.Count > 0)
+            {
+                Reflection.Compute.RecordError("This method does not support Panels with Openings");
+                return null;
+            }
+            if (edges.Count > 4)
+            {
+                Reflection.Compute.RecordError("Panel contains more than 4 Edges");
                 return null;
             }
             foreach (Edge edge in edges)
             {
-                ICurve curve = BH.Engine.Analytical.Query.Geometry(edge);
-                points.AddRange(BH.Engine.Geometry.Convert.IToPolyline(curve).ControlPoints);
+                ICurve curve = Analytical.Query.Geometry(edge);
+                points.AddRange(Geometry.Convert.IToPolyline(curve).ControlPoints);
             }
             int Count = points.Distinct().Count();
             Face face = new Face();
+            if (Count>4)
+            {
+                Reflection.Compute.RecordError("Panel contains more than 4 Control Points");
+                return null;
+            }
             if (Count == 4)
             {
                 face = Geometry.Create.Face(0, 1, 2, 3);
@@ -71,21 +85,20 @@ namespace BH.Engine.Structure
                 face = Geometry.Create.Face(0, 1, 2);
             }
             faces.Add(face);
-            Mesh mesh = BH.Engine.Geometry.Create.Mesh(points.Distinct(), faces);
+            Mesh mesh = Geometry.Create.Mesh(points.Distinct(), faces);
             FEMesh fEMesh = new FEMesh();
             if (panel.Property != null)
             {
-                fEMesh = BH.Engine.Structure.Create.FEMesh(mesh, panel.Property, null, panel.Name);
+                fEMesh = Create.FEMesh(mesh, panel.Property, null, panel.Name);
                 return fEMesh;
             }
             else
             {
-                fEMesh = BH.Engine.Structure.Create.FEMesh(mesh, null, null, panel.Name);
-                Engine.Reflection.Compute.RecordWarning("Panels don't have any Section Property input");
+                fEMesh = Create.FEMesh(mesh, null, null, panel.Name);
+                Reflection.Compute.RecordWarning("Panels don't have any Section Property input");
                 return fEMesh;
             }
         }
-
         /***************************************************/
 
     }
