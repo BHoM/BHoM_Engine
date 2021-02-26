@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Input("feMesh", "FEMesh to be converted to a Panel.")]
         [Output("panel", "Panel converted from a FEMesh.")]
 
-        public static Panel FEMeshToPanel(FEMesh mesh)
+        public static Panel FEMeshToPanel(FEMesh feMesh)
         {
             if (mesh.Nodes == null)
             {
