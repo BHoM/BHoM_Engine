@@ -1,0 +1,82 @@
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using System.Collections.Generic;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
+using BH.oM.Physical.Elements;
+using System.Linq;
+using BH.oM.Physical.FramingProperties;
+using BH.Engine.Spatial;
+
+namespace BH.Engine.Physical
+{
+    public static partial class Modify
+    {
+        /***************************************************/
+        /**** Interface Methods - IElements             ****/
+        /***************************************************/
+
+        [Description("Transforms the IFramingElement's location and orientation angle by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("framingElement", "IFramingElement to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Output("transformed", "Modified IFramingElement with unchanged properties, but transformed location and orientation angle.")]
+        public static IFramingElement Transform(this IFramingElement framingElement, TransformMatrix transform)
+        {
+            if (!transform.IsRigidTransformation())
+            {
+                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            IFramingElement result = framingElement.GetShallowClone() as IFramingElement;
+            result.Location = result.Location.ITransform(transform);
+
+            ConstantFramingProperty property = result.Property as ConstantFramingProperty;
+            if (property == null)
+                BH.Engine.Reflection.Compute.RecordWarning($"Orientation angle of the IFramingElement has not been transformed because its property is not ConstantFramingProperty. BHoM_Guid: {framingElement.BHoM_Guid}");
+            else
+            {
+                Line locationBefore = framingElement.Location as Line;
+                if (locationBefore == null)
+                    BH.Engine.Reflection.Compute.RecordWarning($"Orientation angle of the IFramingElement has not been transformed because the element is not linear. BHoM_Guid: {framingElement.BHoM_Guid}");
+                else
+                {
+                    ConstantFramingProperty newProperty = property.GetShallowClone() as ConstantFramingProperty;
+                    Vector normalBefore = locationBefore.ElementNormal(property.OrientationAngle);
+                    Vector normalAfter = normalBefore.Transform(transform);
+                    newProperty.OrientationAngle = normalAfter.OrientationAngleLinear((Line)result.Location);
+                    result.Property = newProperty;
+                }
+            }
+
+            return result;
+        }
+
+        /***************************************************/
+    }
+}
+
+
