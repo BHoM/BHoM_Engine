@@ -35,9 +35,9 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Converting FEmesh to a panel")]
-        [Input("FEMesh", "FEMesh to be converted to an Panel")]
-        [Output("Panel", "Panel converted from a FEMesh.")]
+        [Description("Converts an FEMesh to a Panel, each MeshFace is converted to a  Panel with identical properties and fragments.")]
+        [Input("feMesh", "FEMesh to be converted to a Panel.")]
+        [Output("panel", "Panel converted from a FEMesh.")]
 
         public static Panel FEMeshToPanel(FEMesh mesh)
         {
@@ -77,4 +77,3 @@ namespace BH.Engine.Structure
 
     }
 }
-
