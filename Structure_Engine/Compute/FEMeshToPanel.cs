@@ -35,44 +35,68 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Converts an FEMesh to a Panel, each MeshFace is converted to a  Panel with identical properties and fragments.")]
+        [Description("Converts an FEMesh to a Panel, each MeshFace is converted to a Panel with identical properties and fragments.")]
         [Input("feMesh", "FEMesh to be converted to a Panel.")]
         [Output("panel", "Panel converted from a FEMesh.")]
 
-        public static Panel FEMeshToPanel(FEMesh feMesh)
+        public static List<Panel> FEMeshToPanel(FEMesh feMesh)
         {
-            if (mesh.Nodes == null)
+            if (feMesh == null)
+            {
+                Engine.Reflection.Compute.RecordWarning("Checks identify null FEMesh");
+                return null;
+            }
+            if (feMesh.Nodes == null)
             {
                 Engine.Reflection.Compute.RecordWarning("Checks identify null nodes");
                 return null;
             }
-                List<Polyline> polylines = new List<Polyline>();
-
+            if (feMesh.Faces == null)
+            {
+                Engine.Reflection.Compute.RecordWarning("Checks identify null faces");
+                return null;
+            }
+            foreach (Node node in feMesh.Nodes)
+            {
+                if (node == null)
+                {
+                    Engine.Reflection.Compute.RecordWarning("Checks identify null node");
+                    return null;
+                }
+            }
+            foreach (FEMeshFace face in feMesh.Faces)
+            {
+                if (face == null)
+                {
+                    Engine.Reflection.Compute.RecordWarning("Checks identify null face");
+                    return null;
+                }
+            }
+            List<Polyline> polylines = new List<Polyline>();
             List<Point> points = new List<Point>();
 
-            foreach(FEMeshFace feMeshFace in feMesh.Faces)
+            foreach (FEMeshFace feMeshFace in feMesh.Faces)
             {
-                List<Point> points = new List<Point>();
                 foreach (int nodeIndex in feMeshFace.NodeListIndices)
-                    points.Add(mesh.Nodes[nodeIndex].Position);
+                    points.Add(feMesh.Nodes[nodeIndex].Position);
                 polylines.Add(BH.Engine.Geometry.Create.Polyline(points));
             }
 
-            points.Add(mesh.Nodes.First().Position);
+            points.Add(feMesh.Nodes.First().Position);
             polylines.Add(BH.Engine.Geometry.Create.Polyline(points));
 
             List<Panel> panels = new List<Panel>();
-            if (mesh.Property != null)
+            foreach (Polyline polyline in polylines)
             {
-                panels = BH.Engine.Structure.Create.Panel(polylines.Cast<ICurve>().ToList(), mesh.Property);
-                return panels[0];
+                Panel panel = Create.Panel(polyline, null, null, feMesh.Name);
+                if (feMesh.Property != null)
+                    panel.Property = feMesh.Property;
+                if (feMesh.Fragments != null)
+                    panel.Fragments = feMesh.Fragments;
+                panel.CustomData = feMesh.CustomData;
+                panels.Add(panel);
             }
-            else
-            {
-                panels = BH.Engine.Structure.Create.Panel(polylines.Cast<ICurve>().ToList());
-                Engine.Reflection.Compute.RecordWarning("Meshs don't have any Section Property input");
-                return panels[0];
-            }
+            return panels;
 
         }
 
