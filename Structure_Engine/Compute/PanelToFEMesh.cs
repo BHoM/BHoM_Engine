@@ -36,8 +36,8 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Converting panel with 3 or 4 control points to FEmesh ")]
-        [Input("panel", "Panel to be converted to an FEMesh.")]
+        [Description("Converts a Panel with three or four control points to a FEmesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical FEMesh.")]
+        [Input("panel", "Panel to be converted to a FEMesh.")]
         [Output("FEMesh", "FEMesh converted from a Panel.")]
 
         public static FEMesh PanelToFEMesh(Panel panel)
@@ -45,31 +45,19 @@ namespace BH.Engine.Structure
             List<Point> points = new List<Point>();
             List<Edge> edges = panel.ExternalEdges;
             List<Face> faces = new List<Face>();
-            if (panel.Openings.Count()>0)
-            {
-                Engine.Reflection.Compute.RecordWarning("PanelToFEMesh does not support panel with opening");
-                return null;
-            }
-            if (panel.ExternalEdges.Count>4)
-            {
-                Engine.Reflection.Compute.RecordWarning("Panel contains more than 4 control points");
-                return null;
-            }
-            if (panel.ExternalEdges == null)
-                {
-                Engine.Reflection.Compute.RecordWarning("Checks identify no External edges");
-                return null;
-            }
-            if (panel == null)
+            if (NullCheck(panel) == false)
             {
                 Engine.Reflection.Compute.RecordWarning("Checks identify null panel");
+                return null;
+            }
+            if (panel?.Openings != null || panel?.Openings.Count > 0)
+            {
+                Engine.Reflection.Compute.RecordWarning("This method does not support Panels with Openings");
                 return null;
             }
             foreach (Edge edge in edges)
             {
                 ICurve curve = BH.Engine.Analytical.Query.Geometry(edge);
-
-
                 points.AddRange(BH.Engine.Geometry.Convert.IToPolyline(curve).ControlPoints);
             }
             int Count = points.Distinct().Count();
