@@ -43,24 +43,24 @@ namespace BH.Engine.Structure
         {
             if (feMesh == null)
             {
-                Engine.Reflection.Compute.RecordWarning("Checks identify null FEMesh");
+                Engine.Reflection.Compute.RecordError("Checks identify null FEMesh");
                 return null;
             }
             if (feMesh.Nodes == null)
             {
-                Engine.Reflection.Compute.RecordWarning("Checks identify null nodes");
+                Engine.Reflection.Compute.RecordError("Checks identify null Nodes");
                 return null;
             }
             if (feMesh.Faces == null)
             {
-                Engine.Reflection.Compute.RecordWarning("Checks identify null faces");
+                Engine.Reflection.Compute.RecordError("Checks identify null Faces");
                 return null;
             }
             foreach (Node node in feMesh.Nodes)
             {
                 if (node == null)
                 {
-                    Engine.Reflection.Compute.RecordWarning("Checks identify null node");
+                    Reflection.Compute.RecordError("Checks identify null Node");
                     return null;
                 }
             }
@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
             {
                 if (face == null)
                 {
-                    Engine.Reflection.Compute.RecordWarning("Checks identify null face");
+                    Reflection.Compute.RecordError("Checks identify null Face");
                     return null;
                 }
             }
@@ -78,26 +78,32 @@ namespace BH.Engine.Structure
             foreach (FEMeshFace feMeshFace in feMesh.Faces)
             {
                 foreach (int nodeIndex in feMeshFace.NodeListIndices)
+                {
                     points.Add(feMesh.Nodes[nodeIndex].Position);
-                polylines.Add(BH.Engine.Geometry.Create.Polyline(points));
+                    points.Add(feMesh.Nodes.First().Position);
+                }
+                polylines.Add(Geometry.Create.Polyline(points));
             }
-
-            points.Add(feMesh.Nodes.First().Position);
-            polylines.Add(BH.Engine.Geometry.Create.Polyline(points));
-
             List<Panel> panels = new List<Panel>();
+            Panel panel = new Panel();
             foreach (Polyline polyline in polylines)
             {
-                Panel panel = Create.Panel(polyline, null, null, feMesh.Name);
                 if (feMesh.Property != null)
-                    panel.Property = feMesh.Property;
-                if (feMesh.Fragments != null)
+                {
+                    panel = Create.Panel(polyline, null, feMesh.Property, feMesh.Name);
+                }
+                else
+                {
+                    panel = Create.Panel(polyline, null, null, feMesh.Name);
+                    Reflection.Compute.RecordWarning("FEMeshes don't have any Section Property input");
+                }
+                if (feMesh.Fragments.Count > 0)
+                {
                     panel.Fragments = feMesh.Fragments;
-                panel.CustomData = feMesh.CustomData;
+                }
                 panels.Add(panel);
             }
             return panels;
-
         }
 
         /***************************************************/
