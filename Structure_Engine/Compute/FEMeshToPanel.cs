@@ -50,9 +50,12 @@ namespace BH.Engine.Structure
 
             List<Point> points = new List<Point>();
 
-            foreach (Node node in mesh.Nodes)
+            foreach(FEMeshFace feMeshFace in feMesh.Faces)
             {
-                points.Add(node.Position);
+                List<Point> points = new List<Point>();
+                foreach (int nodeIndex in feMeshFace.NodeListIndices)
+                    points.Add(mesh.Nodes[nodeIndex].Position);
+                polylines.Add(BH.Engine.Geometry.Create.Polyline(points));
             }
 
             points.Add(mesh.Nodes.First().Position);
