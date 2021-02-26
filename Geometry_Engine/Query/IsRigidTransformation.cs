@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,50 +20,56 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Data.Collections;
-using BH.oM.Data.Requests;
 using System;
-using System.Collections.Generic;
+using BH.oM.Geometry;
 
-namespace BH.Engine.Data
+namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
-        /****            Interface methods              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<IRequest> IRequests(this ILogicalRequest request)
+        public static bool IsRigidTransformation(this TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            return Requests(request as dynamic);
-        }
+            if (!transform.IsValid())
+            {
+                BH.Engine.Reflection.Compute.RecordError("The given TransformMatrix is not valid.");
+                return false;
+            }
 
+            double[,] rotation = new double[3, 3];
+            for (int m = 0; m < 3; m++)
+            {
+                for (int n = 0; n < 3; n++)
+                {
+                    rotation[m, n] = transform.Matrix[m, n];
+                }
+            }
 
-        /***************************************************/
-        /****              Public methods               ****/
-        /***************************************************/
+            double[,] transposed = rotation.Transpose();
 
-        public static List<IRequest> Requests(this LogicalAndRequest request)
-        {
-            return request.Requests;
-        }
+            double[,] multiplied = new double[3, 3];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    for (int k = 0; k < 3; k++)
+                    {
+                        multiplied[i, j] += rotation[i, k] * transposed[k, j];
+                    }
+                }
+            }
 
-        /***************************************************/
+            double[,] identity = new double[,]
+            {
+                { 1, 0, 0 },
+                { 0, 1, 0 },
+                { 0, 0, 1 }
+            };
 
-        public static List<IRequest> Requests(this LogicalOrRequest request)
-        {
-            return request.Requests;
-        }
-
-        /***************************************************/
-
-        public static List<IRequest> Requests(this LogicalNotRequest request)
-        {
-            List<IRequest> result = new List<IRequest>();
-            if (request.Request != null)
-                result.Add(request.Request);
-
-            return result;
+            return multiplied.IsEqual(identity, tolerance) && Math.Abs(1 - rotation.Determinant()) <= tolerance;
         }
 
         /***************************************************/

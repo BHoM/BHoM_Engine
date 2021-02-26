@@ -42,12 +42,22 @@ namespace BH.Engine.Geometry
             return !(double.IsNaN(v.X) || double.IsNaN(v.Y) || double.IsNaN(v.Z));
         }
 
-        
+
+        /***************************************************/
+        /**** Public Methods - Abstract                 ****/
+        /***************************************************/
+
+        public static bool IsValid(this TransformMatrix transform)
+        {
+            return transform?.Matrix != null && transform.Matrix.GetLength(0) == 4 && transform.Matrix.GetLength(1) == 4;
+        }
+
+
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsValid(IGeometry geometry)
+        public static bool IsValid(this IGeometry geometry)
         {
             return true;
         }
@@ -65,7 +75,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        public static bool IIsValid(IGeometry geometry)
+        public static bool IIsValid(this IGeometry geometry)
         {
             return IsValid(geometry as dynamic);
         }
