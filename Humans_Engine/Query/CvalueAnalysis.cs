@@ -213,18 +213,26 @@ namespace BH.Engine.Humans.ViewQuality
 
             Vector rowV = current.Head.PairOfEyes.ViewDirection.CrossProduct(Vector.ZAxis);
             //plane parallel to view direction perpendicular to row
-            Plane viewVert = Geometry.Create.Plane(current.Head.PairOfEyes.ReferenceLocation, rowV);
+            
+            Plane viewVert = Geometry.Create.Plane(current.Head.PairOfEyes.ReferenceLocation, rowV.Normalise());
             double minDist = double.MaxValue;
             Point closest = null;
             foreach (Spectator s in infront)
             {
                 Point proj = viewVert.ClosestPoint(s.Head.PairOfEyes.ReferenceLocation);
-                double dist = proj.SquareDistance(current.Head.PairOfEyes.ReferenceLocation);
+                double dist = proj.Distance(current.Head.PairOfEyes.ReferenceLocation);
+                double d2 = s.Head.PairOfEyes.ReferenceLocation.Distance(current.Head.PairOfEyes.ReferenceLocation);
                 if (dist < minDist)
                 {
                     minDist = dist;
                     closest = proj;
                 }
+            }
+            //check if closest in front is within clipping range
+            if(minDist > m_CvalueSettings.FarClippingPlaneDistance)
+            {
+                m_CvalueExists = false;
+                return 0;
             }
 
             Vector sightVect = Geometry.Create.Vector(current.Head.PairOfEyes.ReferenceLocation, focalPoint);
