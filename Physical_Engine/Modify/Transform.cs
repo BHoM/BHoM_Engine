@@ -42,10 +42,11 @@ namespace BH.Engine.Physical
         [Description("Transforms the IFramingElement's location and orientation angle by the transform matrix. Only rigid body transformations are supported.")]
         [Input("framingElement", "IFramingElement to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified IFramingElement with unchanged properties, but transformed location and orientation angle.")]
-        public static IFramingElement Transform(this IFramingElement framingElement, TransformMatrix transform)
+        public static IFramingElement Transform(this IFramingElement framingElement, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
