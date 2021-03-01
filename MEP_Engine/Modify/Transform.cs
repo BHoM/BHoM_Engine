@@ -38,10 +38,11 @@ namespace BH.Engine.MEP
         [Description("Transforms the CableTray's end points and orientation angle by the transform matrix. Only rigid body transformations are supported.")]
         [Input("cableTray", "CableTray to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified CableTray with unchanged properties, but transformed end points and orientation angle.")]
-        public static CableTray Transform(this CableTray cableTray, TransformMatrix transform)
+        public static CableTray Transform(this CableTray cableTray, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -63,10 +64,11 @@ namespace BH.Engine.MEP
         [Description("Transforms the Duct's end points and orientation angle by the transform matrix. Only rigid body transformations are supported.")]
         [Input("duct", "Duct to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Duct with unchanged properties, but transformed end points and orientation angle.")]
-        public static Duct Transform(this Duct duct, TransformMatrix transform)
+        public static Duct Transform(this Duct duct, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
