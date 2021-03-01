@@ -46,7 +46,7 @@ namespace BH.Engine.Reflection
             "If no method is found, this returns `false`, and the `result` is null.")]
         [Input("obj", "Object whose extension method is to be found, and to which the method will be applied in order to obtain the result.")]
         [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
-        [Input("result", "Result of the method invokation, if any. If no method is found this is null.")]
+        [Input("result", "Result of the method invocation, if the method had been invoked. If no method is found this is null.")]
         [Output("True if a method was found and successfully invoked. False otherwise.")]
         public static bool TryRunExtensionMethod(this object obj, string methodName, out object result)
         {
@@ -63,5 +63,4 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
-
 
