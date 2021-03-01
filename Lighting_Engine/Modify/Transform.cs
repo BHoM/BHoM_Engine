@@ -37,10 +37,11 @@ namespace BH.Engine.Lighting
         [Description("Transforms the Luminaire's position and direction by the transform matrix. Only rigid body transformations are supported.")]
         [Input("luminaire", "Luminaire to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Luminaire with unchanged properties, but transformed position and direction.")]
-        public static Luminaire Transform(this Luminaire luminaire, TransformMatrix transform)
+        public static Luminaire Transform(this Luminaire luminaire, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
