@@ -59,3 +59,4 @@ bld/
 *.suo
 *.user
 .vs/
+/.ci/Datasets/Geometry_Engine/Compute/FitPlane.json
