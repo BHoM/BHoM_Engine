@@ -39,10 +39,11 @@ namespace BH.Engine.Architecture
         [Description("Transforms the Ceiling's surface and tiles by the transform matrix. Only rigid body transformations are supported.")]
         [Input("ceiling", "Ceiling to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Ceiling with unchanged properties, but transformed surface and tiles.")]
-        public static Ceiling Transform(this Ceiling ceiling, TransformMatrix transform)
+        public static Ceiling Transform(this Ceiling ceiling, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -59,10 +60,11 @@ namespace BH.Engine.Architecture
         [Description("Transforms the CeilingTile's perimeter by the transform matrix. Only rigid body transformations are supported.")]
         [Input("tile", "CeilingTile to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified CeilingTile with unchanged properties, but transformed perimeter.")]
-        public static CeilingTile Transform(this CeilingTile tile, TransformMatrix transform)
+        public static CeilingTile Transform(this CeilingTile tile, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -78,10 +80,11 @@ namespace BH.Engine.Architecture
         [Description("Transforms the Opening's coordinate system by the transform matrix. Only rigid body transformations are supported.")]
         [Input("opening", "Opening to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Opening with unchanged properties, but transformed coordinate system.")]
-        public static Opening Transform(this Opening opening, TransformMatrix transform)
+        public static Opening Transform(this Opening opening, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
