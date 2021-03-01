@@ -40,10 +40,11 @@ namespace BH.Engine.Structure
         [Description("Transforms the Node's position and orientation by the transform matrix. Only rigid body transformations are supported.")]
         [Input("node", "Node to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Node with unchanged properties, but transformed position and orientation.")]
-        public static Node Transform(this Node node, TransformMatrix transform)
+        public static Node Transform(this Node node, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -60,10 +61,11 @@ namespace BH.Engine.Structure
         [Description("Transforms the Bar's nodes and rotation by the transform matrix. Only rigid body transformations are supported.")]
         [Input("bar", "Bar to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Bar with unchanged properties, but transformed nodes and rotation.")]
-        public static Bar Transform(this Bar bar, TransformMatrix transform)
+        public static Bar Transform(this Bar bar, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -85,10 +87,11 @@ namespace BH.Engine.Structure
         [Description("Transforms the RigidLink's primary and secondary nodes by the transform matrix. Only rigid body transformations are supported.")]
         [Input("link", "RigidLink to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified RigidLink with unchanged properties, but transformed primary and secondary nodes.")]
-        public static RigidLink Transform(this RigidLink link, TransformMatrix transform)
+        public static RigidLink Transform(this RigidLink link, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -105,10 +108,11 @@ namespace BH.Engine.Structure
         [Description("Transforms the Edge's location by the transform matrix. Only rigid body transformations are supported.")]
         [Input("edge", "Edge to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Edge with unchanged properties, but transformed location.")]
-        public static Edge Transform(this Edge edge, TransformMatrix transform)
+        public static Edge Transform(this Edge edge, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -124,10 +128,11 @@ namespace BH.Engine.Structure
         [Description("Transforms the Opening's edges by the transform matrix. Only rigid body transformations are supported.")]
         [Input("opening", "Opening to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Opening with unchanged properties, but transformed edges.")]
-        public static Opening Transform(this Opening opening, TransformMatrix transform)
+        public static Opening Transform(this Opening opening, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -143,10 +148,11 @@ namespace BH.Engine.Structure
         [Description("Transforms the Panel's edges, openings and orientation angle by the transform matrix. Only rigid body transformations are supported.")]
         [Input("panel", "Panel to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Panel with unchanged properties, but transformed edges, openings and orientation angle.")]
-        public static Panel Transform(this Panel panel, TransformMatrix transform)
+        public static Panel Transform(this Panel panel, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
@@ -167,10 +173,11 @@ namespace BH.Engine.Structure
         [Description("Transforms the FEMesh's nodes by the transform matrix. Only rigid body transformations are supported.")]
         [Input("mesh", "FEMesh to transform.")]
         [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified FEMesh with unchanged properties, but transformed nodes.")]
-        public static FEMesh Transform(this FEMesh mesh, TransformMatrix transform)
+        public static FEMesh Transform(this FEMesh mesh, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation())
+            if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
