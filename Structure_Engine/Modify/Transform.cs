@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
 
             Node result = node.GetShallowClone() as Node;
             result.Position = result.Position.Transform(transform);
-            result.Orientation = result.Orientation.Transform(transform);
+            result.Orientation = result.Orientation?.Transform(transform);
             return result;
         }
 
