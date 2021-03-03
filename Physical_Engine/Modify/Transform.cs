@@ -60,17 +60,16 @@ namespace BH.Engine.Physical
                 BH.Engine.Reflection.Compute.RecordWarning($"Orientation angle of the IFramingElement has not been transformed because its property is not ConstantFramingProperty. BHoM_Guid: {framingElement.BHoM_Guid}");
             else
             {
-                Line locationBefore = framingElement.Location as Line;
-                if (locationBefore == null)
-                    BH.Engine.Reflection.Compute.RecordWarning($"Orientation angle of the IFramingElement has not been transformed because the element is not linear. BHoM_Guid: {framingElement.BHoM_Guid}");
-                else
+                if (framingElement.Location is Line)
                 {
                     ConstantFramingProperty newProperty = property.GetShallowClone() as ConstantFramingProperty;
-                    Vector normalBefore = locationBefore.ElementNormal(property.OrientationAngle);
+                    Vector normalBefore = ((Line)framingElement.Location).ElementNormal(property.OrientationAngle);
                     Vector normalAfter = normalBefore.Transform(transform);
                     newProperty.OrientationAngle = normalAfter.OrientationAngleLinear((Line)result.Location);
                     result.Property = newProperty;
                 }
+                else if (!framingElement.Location.IIsPlanar(tolerance))
+                    BH.Engine.Reflection.Compute.RecordWarning($"The element's location is a nonlinear, nonplanar curve. Correctness of orientation angle after transform could not be ensured in 100%. BHoM_Guid: {framingElement.BHoM_Guid}");
             }
 
             return result;
