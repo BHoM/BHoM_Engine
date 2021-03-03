@@ -72,8 +72,8 @@ namespace BH.Engine.Structure
             }
 
             Bar result = bar.GetShallowClone() as Bar;
-            result.StartNode = result.StartNode.Transform(transform);
-            result.EndNode = result.EndNode.Transform(transform);
+            result.StartNode = result.StartNode.Transform(transform, tolerance);
+            result.EndNode = result.EndNode.Transform(transform, tolerance);
             
             Vector normalBefore = new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position }.ElementNormal(bar.OrientationAngle);
             Vector normalAfter = normalBefore.Transform(transform);
@@ -98,8 +98,8 @@ namespace BH.Engine.Structure
             }
 
             RigidLink result = link.GetShallowClone() as RigidLink;
-            result.PrimaryNode = result.PrimaryNode.Transform(transform);
-            result.SecondaryNodes = result.SecondaryNodes.Select(x => x.Transform(transform)).ToList();
+            result.PrimaryNode = result.PrimaryNode.Transform(transform, tolerance);
+            result.SecondaryNodes = result.SecondaryNodes.Select(x => x.Transform(transform, tolerance)).ToList();
             return result;
         }
 
@@ -139,7 +139,7 @@ namespace BH.Engine.Structure
             }
 
             Opening result = opening.GetShallowClone() as Opening;
-            result.Edges = result.Edges.Select(x => x.Transform(transform)).ToList();
+            result.Edges = result.Edges.Select(x => x.Transform(transform, tolerance)).ToList();
             return result;
         }
 
@@ -159,8 +159,8 @@ namespace BH.Engine.Structure
             }
 
             Panel result = panel.GetShallowClone() as Panel;
-            result.ExternalEdges = result.ExternalEdges.Select(x => x.Transform(transform)).ToList();
-            result.Openings = result.Openings.Select(x => x.Transform(transform)).ToList();
+            result.ExternalEdges = result.ExternalEdges.Select(x => x.Transform(transform, tolerance)).ToList();
+            result.Openings = result.Openings.Select(x => x.Transform(transform, tolerance)).ToList();
 
             Basis orientation = panel.LocalOrientation().Transform(transform);
             result.OrientationAngle = orientation.Z.OrientationAngleAreaElement(orientation.X);
@@ -184,7 +184,7 @@ namespace BH.Engine.Structure
             }
 
             FEMesh result = mesh.GetShallowClone() as FEMesh;
-            result.Nodes = result.Nodes.Select(x => x.Transform(transform)).ToList();
+            result.Nodes = result.Nodes.Select(x => x.Transform(transform, tolerance)).ToList();
 
             List<Basis> orientationsBefore = mesh.LocalOrientations();
             result.Faces = new List<FEMeshFace>(mesh.Faces);
@@ -199,5 +199,4 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
-
 
