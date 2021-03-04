@@ -58,11 +58,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
         
-        [Description("Transforms the Bar's nodes and rotation by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Bar's nodes and orientation by the transform matrix. Only rigid body transformations are supported.")]
         [Input("bar", "Bar to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
-        [Output("transformed", "Modified Bar with unchanged properties, but transformed nodes and rotation.")]
+        [Output("transformed", "Modified Bar with unchanged properties, but transformed nodes and orientation.")]
         public static Bar Transform(this Bar bar, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
             if (!transform.IsRigidTransformation(tolerance))
