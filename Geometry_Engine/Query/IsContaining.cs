@@ -466,12 +466,12 @@ namespace BH.Engine.Geometry
             }
             else
             {
-                return ( Math.Abs(min1.X) < cuboid.Length / 2 + tolerance &&
-                         Math.Abs(max1.X) < cuboid.Length / 2 + tolerance &&
-                         Math.Abs(min1.Y) < cuboid.Depth / 2 + tolerance &&
-                         Math.Abs(max1.Y) < cuboid.Depth / 2 + tolerance &&
-                         Math.Abs(min1.Z) < cuboid.Height / 2 + tolerance &&
-                         Math.Abs(max1.Z) < cuboid.Height / 2 + tolerance);
+                return ( Math.Abs(min1.X) < cuboid.Length / 2 - tolerance &&
+                         Math.Abs(max1.X) < cuboid.Length / 2 - tolerance &&
+                         Math.Abs(min1.Y) < cuboid.Depth / 2 - tolerance &&
+                         Math.Abs(max1.Y) < cuboid.Depth / 2 - tolerance &&
+                         Math.Abs(min1.Z) < cuboid.Height / 2 - tolerance &&
+                         Math.Abs(max1.Z) < cuboid.Height / 2 - tolerance);
             }
             return contains;
         }
