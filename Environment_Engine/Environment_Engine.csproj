@@ -93,6 +93,11 @@
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Modify\Transform.cs" />
+    <Compile Include="Compute\Operations\Multiply.cs" />
+    <Compile Include="Compute\Operations\Divide.cs" />
+    <Compile Include="Compute\Operations\Sum.cs" />
+    <Compile Include="Compute\Operations\Subtract.cs" />
+    <Compile Include="Compute\Operations\Add.cs" />
     <Compile Include="Modify\UpdateZones.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
     <Compile Include="Compute\ExportEPW.cs" />
@@ -135,6 +140,7 @@
     <Compile Include="Modify\SplitPanelByGeometry.cs" />
     <Compile Include="Modify\SplitPanelsByPoints.cs" />
     <Compile Include="Query\Absorptance.cs" />
+    <Compile Include="Query\AnalysisResultLength.cs" />
     <Compile Include="Query\BottomLeft.cs" />
     <Compile Include="Query\BottomRight.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
