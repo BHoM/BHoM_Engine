@@ -44,6 +44,24 @@ namespace BH.Engine.Lighting
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Create a collection of luminaires along a curve based on a maximum spacing and a target point.")]
+        [Input("crv", "The line to place the luminaires on.")]
+        [Input("maxSpacing", "Maximum spacing between luminaries along the curve.")]
+        [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
+        [InputFromProperty("type")]
+        [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
+        [Output("luminaires", "A collection of Luminaires created along the input line.")]
+        public static List<Luminaire> Luminaires(this ICurve crv, double maxSpacing, Point target, LuminaireType type = null, string name = "")
+        {
+            List<Luminaire> luminaires = new List<Luminaire>();
+            double crvLen = crv.Length();
+            if (maxSpacing == 0) return null;
+            int count = (int)Math.Ceiling(crvLen / maxSpacing) + 1;
+            return Luminaires(crv, count, target, type, name);
+        }
+
+        /***************************************************/
+        
         [Description("Create a collection of luminaires along a curve based on a count and a target point.")]
         [Input("crv", "The line to place the luminaires on.")]
         [Input("count", "Number of luminaires to place along the curve.")]
@@ -58,6 +76,45 @@ namespace BH.Engine.Lighting
             {
                 Point pt = (crv.IPointAtLength(i * (crv.Length() / (count - 1))));
                 Vector dir = BH.Engine.Geometry.Create.Vector(pt, target);
+                Luminaire lum = Create.Luminaire(pt, dir, type, name + "_" + i.ToString());
+                luminaires.Add(lum);
+            }
+            return luminaires;
+        }
+
+        /***************************************************/
+
+        [Description("Create a collection of luminaires along a curve based on a maximum spacing and an orientation direction.")]
+        [Input("crv", "The line to place the luminaires on.")]
+        [Input("maxSpacing", "Maximum spacing between luminaries along the curve.")]
+        [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
+        [InputFromProperty("type")]
+        [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
+        [Output("luminaires", "A collection of Luminaires created along the input line.")]
+        public static List<Luminaire> Luminaires(this ICurve crv, double maxSpacing, Vector dir, LuminaireType type = null, string name = "")
+        {
+            List<Luminaire> luminaires = new List<Luminaire>();
+            double crvLen = crv.Length();
+            if (maxSpacing == 0) return null;
+            int count = (int)Math.Ceiling(crvLen / maxSpacing) + 1;
+            return Luminaires(crv, count, dir, type, name);
+        }
+
+        /***************************************************/
+
+        [Description("Create a collection of luminaires along a curve based on a count and an orientation direction.")]
+        [Input("crv", "The line to place the luminaires on.")]
+        [Input("count", "Number of luminaires to place along the curve.")]
+        [Input("dir", "The direction to orient created luminaires.")]
+        [InputFromProperty("type")]
+        [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
+        [Output("luminaires", "A collection of Luminaires created along the input line.")]
+        public static List<Luminaire> Luminaires(this ICurve crv, int count, Vector dir, LuminaireType type = null, string name = "")
+        {
+            List<Luminaire> luminaires = new List<Luminaire>();
+            for (int i = 0; i < count; i++)
+            {
+                Point pt = (crv.IPointAtLength(i * (crv.Length() / (count - 1))));
                 Luminaire lum = Create.Luminaire(pt, dir, type, name + "_" + i.ToString());
                 luminaires.Add(lum);
             }
