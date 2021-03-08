@@ -20,10 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
-using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
