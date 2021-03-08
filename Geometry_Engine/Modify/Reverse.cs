@@ -31,16 +31,6 @@ namespace BH.Engine.Geometry
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods - Interface                ****/
-        /***************************************************/
-
-        [Description("Reverses the provided geometry.")]
-        public static T IReverse<T>(this T geom)
-        {
-            return Reverse(geom as dynamic);
-        }
-
-        /***************************************************/
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
