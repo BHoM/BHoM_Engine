@@ -35,8 +35,20 @@ namespace BH.Engine.Spatial
         /**** Interface Methods - IElements             ****/
         /***************************************************/
 
+        [Description("Transforms the geometrical definition and location-dependent properties of an IElement by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("element", "IElement to transform.")]
+        [Input("transform", "Transformation matrix to apply.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified IElement with unchanged general properties, but transformed geometrical definition and location-dependent properties.")]
+        public static IElement ITransform(this IElement element, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            return ITransform(element as dynamic, transform, tolerance);
+        }
+
+        /***************************************************/
+
         [Description("Transforms the geometrical definition and location-dependent properties of an IElement2D by the transform matrix. Only rigid body transformations are supported.")]
-        [Input("element2D", "The IElement2D to transform.")]
+        [Input("element2D", "IElement2D to transform.")]
         [Input("transform", "Transformation matrix to apply.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified IElement2D with unchanged general properties, but transformed geometrical definition and location-dependent properties.")]
@@ -52,7 +64,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Transforms the geometrical definition and location-dependent properties of an IElement1D by the transform matrix. Only rigid body transformations are supported.")]
-        [Input("element1D", "The IElement1D to transform.")]
+        [Input("element1D", "IElement1D to transform.")]
         [Input("transform", "Transformation matrix to apply.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified IElement1D with unchanged general properties, but transformed geometrical definition and location-dependent properties.")]
@@ -68,7 +80,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Transforms the geometrical definition and location-dependent properties of an IElement0D by the transform matrix. Only rigid body transformations are supported.")]
-        [Input("element0D", "The IElement0D to transform.")]
+        [Input("element0D", "IElement0D to transform.")]
         [Input("transform", "Transformation matrix to apply.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified IElement0D with unchanged general properties, but transformed geometrical definition and location-dependent properties.")]
