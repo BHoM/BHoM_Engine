@@ -20,14 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
-using BH.Engine.Base;
-using BH.oM.Environment.Results;
 using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -37,29 +34,41 @@ namespace BH.Engine.Environment
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Perform an element-wise sum for all IAnalysisResult objects in a list")]
-        [Input("analysisResults", "A list of IAnalysisResult objects containing results")]
-        [Output("analysisResult", "A modified IAnalysisResult")]
-        public static IAnalysisResult Sum(this List<IAnalysisResult> analysisResults)
+        [Description("Sum all values in the given axis in a rectangular 2D array")]
+        [Input("array2D", "A rectangular 2D array of values")]
+        [Input("axis", "The axis over which summation should be calculated. 0 is column-wise, and 1 is row-wise")]
+        [Output("values", "A list of values summed about the given axis")]
+        public static List<double> Sum(this List<List<double>> array2D, int axis = 0)
         {
-            int resultCount = analysisResults[0].AnalysisResultLength();
-            
-            foreach (IAnalysisResult ar in analysisResults)
+            if (array2D.IsJagged())
             {
-                if (ar.AnalysisResultLength() != resultCount)
+                BH.Engine.Reflection.Compute.RecordError("The input array is not rectangular and row/column summation cannot be completed.");
+            }
+
+            if (axis == 0)
+            {
+                List<double> ret = new List<double>();
+                foreach (List<double> item in array2D)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Analysis result lengths do not match");
-                    return null;
+                    ret.Add(item.Sum());
                 }
+                return ret;
             }
-
-            IAnalysisResult modifiedAnalysisResult = analysisResults[0].DeepClone();
-            foreach (IAnalysisResult ar in analysisResults.Skip(1))
+            else if (axis == 1)
             {
-                modifiedAnalysisResult = modifiedAnalysisResult.Add(ar);
+                List<int> shape = (List<int>)array2D.GetShape();
+                List<double> ret = new List<double>();
+                for (int i = 0; i < shape[1]; i++)
+                {
+                    ret.Add(array2D.GetRow(i).Sum());
+                }
+                return ret;
             }
-
-            return modifiedAnalysisResult;
+            else
+            {
+                BH.Engine.Reflection.Compute.RecordError("The axis specified is not present in a 2D array.");
+                return null;
+            }
         }
     }
 }

@@ -20,14 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
-using BH.Engine.Base;
-using BH.oM.Environment.Results;
 using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
 
 namespace BH.Engine.Environment
 {
@@ -37,43 +34,39 @@ namespace BH.Engine.Environment
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Adds a number to each element in an IAnalysisResult")]
-        [Input("analysisResult", "An IAnalysisResult object containing results")]
-        [Input("number", "A number to subtract from each of the elements in the IAnalysisResult.Result")]
-        [Output("analysisResult", "A modified IAnalysisResult")]
-        public static IAnalysisResult Subtract(this IAnalysisResult analysisResult, double number)
+        [Description("Subtracts a number from each element in an enumerable")]
+        [Input("enumerable", "An enumerable")]
+        [Input("number", "A number to subtract from each of the elements in the enumerable")]
+        [Output("enumerable", "A modified enumerable")]
+        public static List<double> Subtract(this List<double> enumerable, double number)
         {
-            IAnalysisResult modifiedAnalysisResult = analysisResult.DeepClone();
             List<double> modifiedValues = new List<double>();
-            foreach (double x in analysisResult.Result)
+            foreach (var x in enumerable)
             {
                 modifiedValues.Add(x - number);
             }
-            modifiedAnalysisResult.Result = modifiedValues;
-            return modifiedAnalysisResult;
+            return modifiedValues;
         }
 
-        [Description("Subtract on IAnalysisResult object from another")]
-        [Input("analysisResult1", "An IAnalysisResult object containing results")]
-        [Input("analysisResult2", "An IAnalysisResult object containing results")]
-        [Output("analysisResult", "A modified IAnalysisResult")]
-        public static IAnalysisResult Subtract(this IAnalysisResult analysisResult1, IAnalysisResult analysisResult2)
+        [Description("Perform an element-wise subtraction between two enumerables")]
+        [Input("enumerable1", "An enumerable containing values")]
+        [Input("enumerable2", "An enumerable containing values")]
+        [Output("enumerable", "An enumerable containing values")]
+        public static List<double> Subtract(this List<double> enumerable1, List<double> enumerable2)
         {
-            IAnalysisResult modifiedAnalysisResult = analysisResult1.DeepClone();
-            int resultCount = modifiedAnalysisResult.AnalysisResultLength();
-
-            if (analysisResult1.AnalysisResultLength() != analysisResult2.AnalysisResultLength())
+            if (enumerable1.Count() != enumerable2.Count())
             {
-                BH.Engine.Reflection.Compute.RecordError("Analysis result lengths do not match");
+                BH.Engine.Reflection.Compute.RecordError("Enumerable lengths do not match");
                 return null;
             }
 
-            for (int i = 0; i < resultCount; i++)
+            List<double> modifiedValues = new List<double>();
+            for (int i = 0; i < enumerable1.Count(); i++)
             {
-                modifiedAnalysisResult.Result[i] -= analysisResult2.Result[i];
+                modifiedValues.Add(enumerable1[i] - enumerable2[i]);
             }
 
-            return modifiedAnalysisResult;
+            return modifiedValues;
         }
     }
 }

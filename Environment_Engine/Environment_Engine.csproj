@@ -93,11 +93,20 @@
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Modify\Transform.cs" />
+    <Compile Include="Compute\Operations\Quantile.cs" />
+    <Compile Include="Compute\Operations\Min.cs" />
+    <Compile Include="Compute\Operations\Max.cs" />
+    <Compile Include="Compute\Operations\Median.cs" />
     <Compile Include="Compute\Operations\Multiply.cs" />
     <Compile Include="Compute\Operations\Divide.cs" />
+    <Compile Include="Compute\Operations\Mean.cs" />
     <Compile Include="Compute\Operations\Sum.cs" />
     <Compile Include="Compute\Operations\Subtract.cs" />
     <Compile Include="Compute\Operations\Add.cs" />
+    <Compile Include="Convert\ToMatrix.cs" />
+    <Compile Include="Convert\ToArray2D.cs" />
+    <Compile Include="Create\RandomArray2D.cs" />
+    <Compile Include="Modify\Transpose.cs" />
     <Compile Include="Modify\UpdateZones.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
     <Compile Include="Compute\ExportEPW.cs" />
@@ -139,8 +148,11 @@
     <Compile Include="Modify\SplitOpeningByGeometry.cs" />
     <Compile Include="Modify\SplitPanelByGeometry.cs" />
     <Compile Include="Modify\SplitPanelsByPoints.cs" />
+    <Compile Include="Query\GetRow.cs" />
+    <Compile Include="Query\IsJagged.cs" />
+    <Compile Include="Query\GetShape.cs" />
+    <Compile Include="Query\GetColumn.cs" />
     <Compile Include="Query\Absorptance.cs" />
-    <Compile Include="Query\AnalysisResultLength.cs" />
     <Compile Include="Query\BottomLeft.cs" />
     <Compile Include="Query\BottomRight.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
@@ -299,7 +311,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
