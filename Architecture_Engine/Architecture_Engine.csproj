@@ -92,6 +92,7 @@
     <Compile Include="Modify\CleanRoom.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\SetOutlineElements1D.cs" />
+    <Compile Include="Modify\Transform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
