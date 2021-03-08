@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Linq;
@@ -41,9 +42,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static Vector Reverse(this Vector vector)
+        public static void Reverse(this Vector vector)
         {
-            return new Vector { X = -vector.X, Y = -vector.Y, Z = -vector.Z };
+            vector.X = -vector.X;
+            vector.Y = -vector.Y;
+            vector.Z = -vector.Z;
         }
 
 
@@ -51,16 +54,18 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Line Reverse(this Line line)
+        public static void Reverse(this Line line)
         {
-            return new Line { Start = line.End, End = line.Start, Infinite = line.Infinite };
+            var startCopy = line.Start;
+            line.Start = line.End;
+            line.End = startCopy;
         }
 
         /***************************************************/
 
-        public static Polyline Reverse(this Polyline polyLine)
+        public static void Reverse(this Polyline polyLine)
         {
-            return new Polyline() { ControlPoints = polyLine.ControlPoints.Reverse<Point>().ToList() };
+            polyLine.ControlPoints = polyLine.ControlPoints.Reverse<Point>().ToList();
         }
 
 

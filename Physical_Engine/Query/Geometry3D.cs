@@ -43,6 +43,12 @@ namespace BH.Engine.Physical
         [Output("3d", "The composite geometry representing the framing element")]
         public static IGeometry Geometry3D(this IFramingElement framingElement)
         {
+            if (framingElement.Location == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Cannot compute the Geometry3D for this {nameof(IFramingElement)} because its `{nameof(IFramingElement.Location)}` is null.");
+                return null;
+            }
+
             Line line = framingElement.Location as Line;
 
             if (line == null)
@@ -90,7 +96,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the 3d geometry from the floor.")]
         [Input("floor", "The input floor to get the Geometry3D out of. The layers are considered so that the first layer is always the closest to the Floor surface, while the last is the furthest from the surface.")]
-        [Input("aboveSurface", "(Optional, defaults to false) If true, the Floor surface is considered to be the bottom surface, and all layers are stacked on top of it ('upwards'). Otherwise, the layers are stacked 'downwards'.")]
+        [Input("upwardLayers", "(Optional, defaults to false) If true, the Floor surface is considered to be the bottom surface, and all layers are stacked on top of it ('upwards'). Otherwise, the layers are stacked 'downwards'.")]
         [Output("3d", "The composite geometry representing the framing element")]
         public static IGeometry Geometry3D(this Floor floor, bool upwardLayers = false)
         {
