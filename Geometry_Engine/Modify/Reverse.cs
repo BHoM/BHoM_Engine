@@ -46,6 +46,8 @@ namespace BH.Engine.Geometry
         {
             return new Line { Start = line.End, End = line.Start, Infinite = line.Infinite };
         }
+
+        /***************************************************/
     }
 }
 
