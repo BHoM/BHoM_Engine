@@ -44,12 +44,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        [Description("Reverses the input vector by inverting the signs of its components.")]
-        public static void Reverse(this Vector vector)
+        public static Vector Reverse(this Vector vector)
         {
-            vector.X = -vector.X;
-            vector.Y = -vector.Y;
-            vector.Z = -vector.Z;
+            return new Vector { X = -vector.X, Y = -vector.Y, Z = -vector.Z };
         }
 
 
@@ -57,41 +54,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [Description("Reverses the input line by swapping its start and end points.")]
-        public static void Reverse(this Line line)
+        public static Line Reverse(this Line line)
         {
-            var startCopy = line.Start;
-            line.Start = line.End;
-            line.End = startCopy;
+            return new Line { Start = line.End, End = line.Start, Infinite = line.Infinite };
         }
-
-        /***************************************************/
-
-        [Description("Reverses the input polyline by reversing the order of its control points.")]
-        public static void Reverse(this Polyline polyLine)
-        {
-            polyLine.ControlPoints = polyLine.ControlPoints.Reverse<Point>().ToList();
-        }
-
-
-        /***************************************************/
-        /**** Public Methods - Surfaces                 ****/
-        /***************************************************/
-
-        [Description("Reverses the input Planarsurface by reversing its boundary.")]
-        public static PlanarSurface Reverse(this PlanarSurface surf)
-        {
-
-            if (!(surf.ExternalBoundary is Polyline) || !(surf.InternalBoundaries.Where(c => c is Polyline || c is Line).Count() != 0))
-            {
-                BH.Engine.Reflection.Compute.RecordError("The reverse for PlanarSurface currently works only for Planarsurfaces defined by Polylines and with no internal boundaries.");
-                return null;
-            }
-
-            return new PlanarSurface(surf.ExternalBoundary.IReverse(), surf.InternalBoundaries.Select(b => b.IReverse()).ToList());
-        }
-
-        /***************************************************/
     }
 }
 
