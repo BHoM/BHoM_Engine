@@ -38,11 +38,17 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the 3d geometry from the framing element")]
+        [Description("Gets the 3d geometry from the framing element.")]
         [Input("framingElement", "The input framingElement to get the Geometry3D out of, i.e. its extrusion with its cross section along its centreline.")]
-        [Output("3d", "The composite geometry representing the framing element")]
+        [Output("3d", "The composite geometry representing the framing element.")]
         public static IGeometry Geometry3D(this IFramingElement framingElement)
         {
+            if (framingElement.Location == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Cannot compute the Geometry3D for this {nameof(IFramingElement)} because its `{nameof(IFramingElement.Location)}` is null.");
+                return null;
+            }
+
             Line line = framingElement.Location as Line;
 
             if (line == null)
@@ -53,7 +59,7 @@ namespace BH.Engine.Physical
                     line = new Line() { Start = pl.ControlPoints.First(), End = pl.ControlPoints.Last() };
                 }
 
-                if (pl == null  || (pl != null && pl.ControlPoints.Count() > 2))
+                if (pl == null || (pl != null && pl.ControlPoints.Count() > 2))
                     BH.Engine.Reflection.Compute.RecordWarning($"Geometry3D for {nameof(IFramingElement)} currently works only if it has its {nameof(IFramingElement.Location)} defined as a {nameof(Line)}. Proceeding by taking Start/End point of the provided {framingElement.Location.GetType().Name}.");
             }
 
@@ -80,6 +86,75 @@ namespace BH.Engine.Physical
 
             return Extrude(profileToExtrude, totalTransform, extrusionVec);
         }
+
+        /***************************************************/
+
+        [Description("Gets the 3d geometry from the floor.")]
+        [Input("floor", "The input floor to get the Geometry3D out of. The layers are considered so that the first layer is always the closest to the Floor surface, while the last is the furthest from the surface.")]
+        public static IGeometry Geometry3D(this Floor floor)
+        {
+            return Geometry3D(floor, false);
+        }
+
+        /***************************************************/
+
+        [Description("Gets the 3d geometry from the floor.")]
+        [Input("floor", "The input floor to get the Geometry3D out of. The layers are considered so that the first layer is always the closest to the Floor surface, while the last is the furthest from the surface.")]
+        [Input("upwardLayers", "(Optional, defaults to false) If true, the Floor surface is considered to be the bottom surface, and all layers are stacked on top of it ('upwards'). Otherwise, the layers are stacked 'downwards'.")]
+        [Output("3d", "The composite geometry representing the framing element")]
+        public static IGeometry Geometry3D(this Floor floor, bool upwardLayers = false)
+        {
+            CompositeGeometry compositeGeometry = new CompositeGeometry();
+
+            var layers = (floor.Construction as BH.oM.Physical.Constructions.Construction).Layers;
+
+            List<IGeometry> geometries = new List<IGeometry>();
+
+            double previousCumulativeThickness = 0;
+            foreach (var layer in layers)
+            {
+                IEnumerable<ICurve> externalEdgesBot = floor.Location.Edges();
+
+                Vector bottomVec = new Vector() { Z = previousCumulativeThickness };
+                Vector extrudeVect = new Vector() { Z = layer.Thickness };
+
+                List<Extrusion> edgeExtrusions = new List<Extrusion>();
+                foreach (var edge in externalEdgesBot)
+                    edgeExtrusions.Add(BH.Engine.Geometry.Create.Extrusion(edge.ITranslate(bottomVec), extrudeVect));
+
+                if (edgeExtrusions.Count() == 1)
+                {
+                    // To avoid surface duplication, only append the extrusion.
+                    geometries.Add(edgeExtrusions[0]);
+                }
+                else
+                {
+                    geometries.Add(floor.Location.ITranslate(bottomVec));
+                    geometries.AddRange(edgeExtrusions);
+                    geometries.Add(floor.Location.ITranslate(extrudeVect));
+                }
+                previousCumulativeThickness += layer.Thickness;
+            }
+
+            if (upwardLayers)
+                return new CompositeGeometry() { Elements = geometries };
+
+            Vector translationVec = new Vector() { Z = -previousCumulativeThickness };
+
+            // Reverse the order: Floor suface is top surface, layers grow "downwards"; layer[0] is the top one (closest to the surface).
+            List<IGeometry> translated = new List<IGeometry>();
+
+            foreach (var elem in geometries)
+                translated.Add(elem.ITranslate(translationVec));
+
+            translated.Reverse();
+
+            return new CompositeGeometry() { Elements = translated };
+        }
+
+
+
+
 
         /***************************************************/
         /**** Private Methods                           ****/
