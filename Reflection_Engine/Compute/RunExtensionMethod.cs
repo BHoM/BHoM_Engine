@@ -96,7 +96,7 @@ namespace BH.Engine.Reflection
             // Throw an error and return null if method is null
             if (method == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Failed to run the extension method because it was null.");
+                //BH.Engine.Reflection.Compute.RecordError($"Failed to run the extension method because it was null.");
                 return null;
             }
 
