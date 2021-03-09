@@ -37,51 +37,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the orientation angle of a Bar based on a normal vector and a centreline.")]
-        [Input("normal", "Vector to be used as normal of the Bar. This vector should generally be orthogonal to the Bar, if it is not, it will be made orthogonal by projecting it to the section plane of the Bar (a plane that has that Bar tangent as its normal). This means that the Normal cannot be paralell to the Tangent of the Bar. \n" +
-                         "Vector will be used to determine the orientation angle of the Bar. This is done by measuring the counter clockwise angle in the section plane of the Bar between a reference Vector and the provided Vector. For a non-vertical Bar, the reference vector will be the global Z-axis. For a vertical bar the reference vector will be a vector that is orthogonal to the tangent vector of the Bar and the global Y-axis.")]
-        [Input("centreline", "Geometrical Line, centreline of the Bar.")]
-        [Output("orientationAngle", "The calculated orientation angle of the bar based on the provided geometry and normal. Will return NaN if the orientation can not be calculated.")]
-        public static double OrientationAngleBar(this Vector normal, Line centreline)
-        {
-            double orientationAngle;
-
-            if (normal == null)
-                orientationAngle = 0;
-            else
-            {
-                normal = normal.Normalise();
-                Vector tan = (centreline.End - centreline.Start).Normalise();
-
-                double dot = normal.DotProduct(tan);
-
-                if (Math.Abs(1 - dot) < Tolerance.Angle)
-                {
-                    Reflection.Compute.RecordError("The normal is parallel to the centreline of the Bar. OrientationAngle could not be calcualted.");
-                    return double.NaN;
-                }
-                else if (Math.Abs(dot) > Tolerance.Angle)
-                {
-                    Reflection.Compute.RecordWarning("Normal is not othogonal to the centreline and will get projected.");
-                }
-
-                Vector reference;
-
-                if (!centreline.IsVertical())
-                    reference = Vector.ZAxis;
-                else
-                {
-                    reference = tan.CrossProduct(Vector.YAxis);
-                }
-
-                orientationAngle = reference.Angle(normal, new Plane { Normal = tan });
-            }
-
-            return orientationAngle;
-        }
-
-        /***************************************************/
-
         [Description("Calculates the orientation angle of an area element based on the normal of the element and a provided local X direction.\n" +
                      "The orientation angle is calculated as the angle between local x and a reference vector in the plane of the element, defined by the normal.\n" +
                      "This reference vector is the global X-vector projected to the plane of the element, except for the case were the normal is parallel to the global X-axis." +
