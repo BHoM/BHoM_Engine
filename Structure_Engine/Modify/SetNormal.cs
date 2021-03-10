@@ -28,6 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Base;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -44,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("bar", "Bar with updated orientation angle. If the orientation angle could not be calculated, the unchanged bar is returned.")]
         public static Bar SetNormal(this Bar bar, Vector normal)
         {
-            double orientationAngle = Compute.OrientationAngleBar(normal, bar.Centreline());
+            double orientationAngle = normal.OrientationAngleLinear(bar.Centreline());
 
             //Could not calculate the orientation angle. Return the original bar
             if (double.IsNaN(orientationAngle))

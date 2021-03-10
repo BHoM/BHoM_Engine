@@ -100,6 +100,7 @@
     <Compile Include="Compute\DeepDependencies.cs" />
     <Compile Include="Compute\OpenHelpPage.cs" />
     <Compile Include="Compute\RecordError.cs" />
+    <Compile Include="Compute\TryRunExtensionMethod.cs" />
     <Compile Include="Compute\RemoveEvent.cs" />
     <Compile Include="Compute\RecordEvent.cs" />
     <Compile Include="Compute\LoadAllAssemblies.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Query\CurrentAssemblyFolder.cs" />
     <Compile Include="Query\BHoMFolder.cs" />
     <Compile Include="Query\EnumValues.cs" />
+    <Compile Include="Query\ExtensionMethodToCall.cs" />
     <Compile Include="Query\GenericTypeConstraint.cs" />
     <Compile Include="Query\ImplementingTypes.cs" />
     <Compile Include="Query\Count.cs" />

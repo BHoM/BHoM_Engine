@@ -36,6 +36,9 @@ namespace BH.Engine.Base
 
         public static IGeometry IGeometry(this IBHoMObject obj)
         {
+            if (obj == null)
+                return null;
+
             return Geometry(obj as dynamic);
         }
 
@@ -52,7 +55,10 @@ namespace BH.Engine.Base
                     geometries.Add(geometry);
             }
 
-            return new CompositeGeometry { Elements = geometries.ToList() };
+            if (geometries.Count == 1)
+                return geometries[0];
+
+            return new CompositeGeometry { Elements = geometries };
         }
 
 
@@ -76,7 +82,7 @@ namespace BH.Engine.Base
                         geometries.Add(geometry);
                 }
                 if (geometries.Count() > 0)
-                    return new CompositeGeometry { Elements = geometries.ToList() };
+                    return new CompositeGeometry { Elements = geometries };
                 else
                     return null;
             }
@@ -88,7 +94,11 @@ namespace BH.Engine.Base
 
         private static IGeometry Geometry(this IBHoMObject obj)
         {
-            return Reflection.Compute.RunExtensionMethod(obj, "Geometry") as IGeometry;
+            System.Reflection.MethodInfo mi = Reflection.Query.ExtensionMethodToCall(obj, "Geometry");
+            if (mi != null)
+                return Reflection.Compute.RunExtensionMethod(obj, "Geometry") as IGeometry;
+            else
+                return null;
         }
 
         /***************************************************/
