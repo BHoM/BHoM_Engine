@@ -450,19 +450,8 @@ namespace BH.Engine.Geometry
             TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(cuboid.CoordinateSystem);
             IGeometry globalGeo = geometry.ITransform(transform);
             BoundingBox geoBox = globalGeo.IBounds();
-            BoundingBox cuboidBox = cuboid.BoundingBoxFromProperties();
+            BoundingBox cuboidBox = cuboid.BoundingBox();
             return cuboidBox.IsContaining(geoBox, acceptOnEdge, tolerance);
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static BoundingBox BoundingBoxFromProperties(this Cuboid cuboid)
-        {
-            Point max = Create.Point(cuboid.Length / 2, cuboid.Depth / 2, cuboid.Height / 2);
-            Point min = Create.Point(-cuboid.Length / 2, -cuboid.Depth / 2, -cuboid.Height / 2);
-            return Create.BoundingBox(min, max);
         }
 
         /***************************************************/
