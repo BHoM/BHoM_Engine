@@ -449,31 +449,20 @@ namespace BH.Engine.Geometry
         {
             TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(cuboid.CoordinateSystem);
             IGeometry globalGeo = geometry.ITransform(transform);
-            BoundingBox boundingBox = globalGeo.IBounds();
+            BoundingBox geoBox = globalGeo.IBounds();
+            BoundingBox cuboidBox = cuboid.BoundingBoxFromProperties();
+            return cuboidBox.IsContaining(geoBox, acceptOnEdge, tolerance);
+        }
 
-            Point max1 = boundingBox.Max;
-            Point min1 = boundingBox.Min;
-            bool contains = true;
-            if (acceptOnEdge)
-            {
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-                return ( Math.Abs(min1.X) <= cuboid.Length / 2 + tolerance &&
-                         Math.Abs(max1.X) <= cuboid.Length / 2 + tolerance &&
-                         Math.Abs(min1.Y) <= cuboid.Depth / 2 + tolerance &&
-                         Math.Abs(max1.Y) <= cuboid.Depth / 2 + tolerance &&
-                         Math.Abs(min1.Z) <= cuboid.Height / 2 + tolerance &&
-                         Math.Abs(max1.Z) <= cuboid.Height / 2 + tolerance);
-            }
-            else
-            {
-                return ( Math.Abs(min1.X) < cuboid.Length / 2 - tolerance &&
-                         Math.Abs(max1.X) < cuboid.Length / 2 - tolerance &&
-                         Math.Abs(min1.Y) < cuboid.Depth / 2 - tolerance &&
-                         Math.Abs(max1.Y) < cuboid.Depth / 2 - tolerance &&
-                         Math.Abs(min1.Z) < cuboid.Height / 2 - tolerance &&
-                         Math.Abs(max1.Z) < cuboid.Height / 2 - tolerance);
-            }
-            return contains;
+        private static BoundingBox BoundingBoxFromProperties(this Cuboid cuboid)
+        {
+            Point max = Create.Point(cuboid.Length / 2, cuboid.Depth / 2, cuboid.Height / 2);
+            Point min = Create.Point(-cuboid.Length / 2, -cuboid.Depth / 2, -cuboid.Height / 2);
+            return Create.BoundingBox(min, max);
         }
 
         /***************************************************/
