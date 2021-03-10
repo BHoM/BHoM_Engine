@@ -88,6 +88,7 @@ namespace BH.Engine.Environment
             {
                 Edges = curve.ToEdges(),
                 Name = configurationOption.Name,
+                Type = configurationOption.Type,
             };
         }
     }
