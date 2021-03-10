@@ -26,6 +26,8 @@ using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Spatial.ShapeProfiles;
+using BH.Engine.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Architecture
 {
@@ -37,23 +39,35 @@ namespace BH.Engine.Architecture
 
         public static double Distance(this Opening opening1, Opening opening2)
         {
+
+            double minDistance = double.MaxValue;
+
             if (opening1 == null || opening2 == null)
             {
+                BH.Engine.Reflection.Compute.RecordError("Opening is null");
                 return double.NaN;
             }
-            
 
-            if (opening1.Profile is CircleProfile && opening2.Profile is CircleProfile)
-            {
-                return -1;
-            }
             else
-            {
-                BH.Engine.Reflection.Compute.RecordError("Error");
-                return double.NaN;
+            {               
+                foreach (ICurve edge1 in opening1.Profile.Edges)
+                {
+                    foreach (ICurve edge2 in opening2.Profile.Edges)
+                    {
+                        Cartesian global = new Cartesian();
+                        ICurve edge1O = edge1.Orient(global, opening1.CoordinateSystem);
+                        ICurve edge2O = edge2.Orient(global, opening2.CoordinateSystem);
+
+                        double dist = edge1O.Distance(edge2O);
+                        if (dist < minDistance)
+                        {
+                            minDistance = dist;
+                        }
+                    }
+                }
             }
 
-            
+            return minDistance;
             
         }
 
