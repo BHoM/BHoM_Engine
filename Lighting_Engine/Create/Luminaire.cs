@@ -46,10 +46,10 @@ namespace BH.Engine.Lighting
 
         [Description("Create a collection of luminaires along a curve based on a maximum spacing and a target point.")]
         [Input("crv", "The line to place the luminaires on.")]
-        [Input("maxSpacing", "Maximum spacing between luminaries along the curve.")]
+        [Input("maxSpacing", "Maximum spacing between luminaires along the curve.")]
         [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
         [InputFromProperty("type")]
-        [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
+        [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaires in the sequence).")]
         [Output("luminaires", "A collection of Luminaires created along the input line.")]
         public static List<Luminaire> Luminaires(this ICurve crv, double maxSpacing, Point target, LuminaireType type = null, string name = "")
         {
@@ -67,7 +67,7 @@ namespace BH.Engine.Lighting
         [Input("count", "Number of luminaires to place along the curve.")]
         [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
         [InputFromProperty("type")]
-        [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
+        [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaires in the sequence).")]
         [Output("luminaires", "A collection of Luminaires created along the input line.")]
         public static List<Luminaire> Luminaires(this ICurve crv, int count, Point target, LuminaireType type = null, string name = "")
         {
@@ -86,7 +86,7 @@ namespace BH.Engine.Lighting
 
         [Description("Create a collection of luminaires along a curve based on a maximum spacing and an orientation direction.")]
         [Input("crv", "The line to place the luminaires on.")]
-        [Input("maxSpacing", "Maximum spacing between luminaries along the curve.")]
+        [Input("maxSpacing", "Maximum spacing between luminaires along the curve.")]
         [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
