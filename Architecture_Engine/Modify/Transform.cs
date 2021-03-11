@@ -101,7 +101,7 @@ namespace BH.Engine.Architecture
         [Input("room", "Room to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
-        [Output("transformed", "Modified Room with unchanged properties, but transformed perimeter and location point.")]
+        [Output("room", "Modified Room with unchanged properties, but transformed perimeter and location point.")]
         public static Room Transform(this Room room, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
             if (!transform.IsRigidTransformation(tolerance))
@@ -119,5 +119,4 @@ namespace BH.Engine.Architecture
         /***************************************************/
     }
 }
-
 
