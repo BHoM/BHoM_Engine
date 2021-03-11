@@ -44,16 +44,42 @@ namespace BH.Engine.Lighting
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Create a collection of luminaires along a curve based on an exact and a target point.")]
+        [Input("crv", "The line to place the luminaires on.")]
+        [Input("exactSpacing", "Exact spacing between luminaires along the curve.")]
+        [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
+        [Input("centered", "Center points on curve (if false, the first point will be at the start of the curve).")]
+        [InputFromProperty("type")]
+        [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaires in the sequence).")]
+        [Output("luminaires", "A collection of Luminaires created along the input curve.")]
+        public static List<Luminaire> Luminaires(this ICurve crv, double exactSpacing, Point target, bool centered = true, LuminaireType type = null, string name = "")
+        {
+            ICurve trimmedCrv;
+
+            double crvLen = crv.Length();
+            if (exactSpacing == 0) return null;
+            if (centered)
+            {
+                trimmedCrv = crv.IExtend(-0.5*(crvLen % exactSpacing), -0.5*(crvLen % exactSpacing));
+            }
+            else
+            {
+                trimmedCrv = crv.IExtend(0, -(crvLen % exactSpacing));
+            }
+            return Luminaires(trimmedCrv, exactSpacing, target, type, name);
+        }
+
+        /***************************************************/       
+        
         [Description("Create a collection of luminaires along a curve based on a maximum spacing and a target point.")]
         [Input("crv", "The line to place the luminaires on.")]
-        [Input("maxSpacing", "Maximum spacing between luminaires along the curve.")]
+        [Input("maxSpacing", "Exact spacing between luminaires along the curve.")]
         [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaires in the sequence).")]
-        [Output("luminaires", "A collection of Luminaires created along the input line.")]
+        [Output("luminaires", "A collection of Luminaires created along the input curve.")]
         public static List<Luminaire> Luminaires(this ICurve crv, double maxSpacing, Point target, LuminaireType type = null, string name = "")
         {
-            List<Luminaire> luminaires = new List<Luminaire>();
             double crvLen = crv.Length();
             if (maxSpacing == 0) return null;
             int count = (int)Math.Ceiling(crvLen / maxSpacing) + 1;
@@ -61,22 +87,22 @@ namespace BH.Engine.Lighting
         }
 
         /***************************************************/
-        
+
         [Description("Create a collection of luminaires along a curve based on a count and a target point.")]
         [Input("crv", "The line to place the luminaires on.")]
         [Input("count", "Number of luminaires to place along the curve.")]
         [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaires in the sequence).")]
-        [Output("luminaires", "A collection of Luminaires created along the input line.")]
+        [Output("luminaires", "A collection of Luminaires created along the input curve.")]
         public static List<Luminaire> Luminaires(this ICurve crv, int count, Point target, LuminaireType type = null, string name = "")
         {
             List<Luminaire> luminaires = new List<Luminaire>();
-            for (int i = 0; i < count; i++)
+            List<Point> pts = crv.SamplePoints(count);
+            for (int i = 0; i < pts.Count; i++)
             {
-                Point pt = (crv.IPointAtLength(i * (crv.Length() / (count - 1))));
-                Vector dir = BH.Engine.Geometry.Create.Vector(pt, target);
-                Luminaire lum = Create.Luminaire(pt, dir, type, name + "_" + i.ToString());
+                Vector dir = BH.Engine.Geometry.Create.Vector(pts[i], target);
+                Luminaire lum = Create.Luminaire(pts[i], dir, type, name + "_" + i.ToString());
                 luminaires.Add(lum);
             }
             return luminaires;
@@ -90,10 +116,9 @@ namespace BH.Engine.Lighting
         [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
-        [Output("luminaires", "A collection of Luminaires created along the input line.")]
+        [Output("luminaires", "A collection of Luminaires created along the input curve.")]
         public static List<Luminaire> Luminaires(this ICurve crv, double maxSpacing, Vector dir, LuminaireType type = null, string name = "")
         {
-            List<Luminaire> luminaires = new List<Luminaire>();
             double crvLen = crv.Length();
             if (maxSpacing == 0) return null;
             int count = (int)Math.Ceiling(crvLen / maxSpacing) + 1;
@@ -108,7 +133,7 @@ namespace BH.Engine.Lighting
         [Input("dir", "The direction to orient created luminaires.")]
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
-        [Output("luminaires", "A collection of Luminaires created along the input line.")]
+        [Output("luminaires", "A collection of Luminaires created along the input curve.")]
         public static List<Luminaire> Luminaires(this ICurve crv, int count, Vector dir, LuminaireType type = null, string name = "")
         {
             List<Luminaire> luminaires = new List<Luminaire>();
