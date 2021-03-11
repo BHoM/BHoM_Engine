@@ -73,7 +73,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Convert\ToRadianceString.cs" />
     <Compile Include="Create\Luminaire.cs" />
     <Compile Include="Modify\Transform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compute\" />
+    <Folder Include="Convert\" />
     <Folder Include="Query\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
