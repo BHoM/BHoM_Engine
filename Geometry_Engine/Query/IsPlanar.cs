@@ -112,7 +112,8 @@ namespace BH.Engine.Geometry
 
         public static bool IsPlanar(this PlanarSurface surface, double tolerance = Tolerance.Distance)
         {
-            // This is not a bug: PlanarSurface is IImmutable, therefore it is assumed that it is planar within the default tolerance.
+            // This is not a bug: PlanarSurface is IImmutable with all necessary planarity checks being made by the Create method.
+            // It is recommended to use Create method instead of the constructor to ensure planarity within the default tolerance.
             if (tolerance == Tolerance.Distance)
                 return true;
             else
