@@ -48,8 +48,17 @@ namespace BH.Engine.Lighting
         {
             string pointsString = "";
             Point pt = luminaire.Position;
+            Vector dir = luminaire.Direction.Normalise();
+            Vector lumTypeDir = -1*Vector.ZAxis;
+            Vector cross = lumTypeDir.CrossProduct(dir).Normalise();
+            double angle = Math.Sqrt((dir.Length() * dir.Length()) * (lumTypeDir.Length() * lumTypeDir.Length())) + dir.DotProduct(lumTypeDir);
+            Quaternion q = BH.Engine.Geometry.Create.Quaternion(cross.X, cross.Y, cross.Z, angle).Normalise;
+            double rx = Math.Atan2(2.0 * (q.Y * q.Z + q.W * q.X), q.W * q.W - q.X * q.X - q.Y * q.Y + q.Z * q.Z) * (180 / Math.PI);
+            double ry = Math.Asin(-2.0 * (q.X * q.Z - q.W * q.Y)) * (180 / Math.PI);
+            double rz = Math.Atan2(2.0 * (q.X * q.Y + q.W * q.Z), q.W * q.W + q.X * q.X - q.Y * q.Y - q.Z * q.Z) * (180 / Math.PI);
             pointsString += String.Format("{0} {1} {2} ", Math.Round(pt.X, digits), Math.Round(pt.Y, digits), Math.Round(pt.Z, digits));
-            return String.Format("!xform {2} {3} -t {0} {1}", pointsString, luminaire.LuminaireType.Model, addlRot, finalMvmt);
+            return String.Format("!xform {0} -rx {1} -ry {2} -rz {3} {4} -t {5} {6}", addlRot, Math.Round(rx, digits).ToString(), Math.Round(ry, digits).ToString(), Math.Round(rz, digits).ToString(), 
+                finalMvmt, pointsString, "ies/" + luminaire.LuminaireType.Model + ".rad");
         }
 
     }
