@@ -62,8 +62,8 @@
     </Reference>
     <Reference Include="Matter_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Matter_Engine.dll</HintPath>
-	  <Private>False</Private>
-	  <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Physical_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_Engine.dll</HintPath>
@@ -109,6 +109,7 @@
     <Compile Include="Compute\AdjacentElements.cs" />
     <Compile Include="Modify\SetOffsetFromFacetoFaceDist.cs" />
     <Compile Include="Modify\OffsetVariable.cs" />
+    <Compile Include="Modify\Transform.cs" />
     <Compile Include="Query\AdjacencyId.cs" />
     <Compile Include="Compute\UniqueAdjacencies.cs" />
     <Compile Include="Create\Elements\Opening.cs" />
