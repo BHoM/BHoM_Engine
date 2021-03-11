@@ -22,17 +22,19 @@
 
 using BH.oM.Data.Collections;
 using BH.oM.Data.Requests;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 
 namespace BH.Engine.Data
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /****            Interface methods              ****/
         /***************************************************/
 
+        [PreviousVersion("4.1", "BH.Engine.Data.Modify.IRequests(BH.oM.Data.Requests.ILogicalRequest)")]
         public static List<IRequest> IRequests(this ILogicalRequest request)
         {
             return Requests(request as dynamic);
@@ -43,6 +45,7 @@ namespace BH.Engine.Data
         /****              Public methods               ****/
         /***************************************************/
 
+        [PreviousVersion("4.1", "BH.Engine.Data.Modify.Requests(BH.oM.Data.Requests.LogicalAndRequest)")]
         public static List<IRequest> Requests(this LogicalAndRequest request)
         {
             return request.Requests;
@@ -50,6 +53,7 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
+        [PreviousVersion("4.1", "BH.Engine.Data.Modify.Requests(BH.oM.Data.Requests.LogicalOrRequest)")]
         public static List<IRequest> Requests(this LogicalOrRequest request)
         {
             return request.Requests;
@@ -57,6 +61,7 @@ namespace BH.Engine.Data
 
         /***************************************************/
 
+        [PreviousVersion("4.1", "BH.Engine.Data.Modify.Requests(BH.oM.Data.Requests.LogicalNotRequest)")]
         public static List<IRequest> Requests(this LogicalNotRequest request)
         {
             List<IRequest> result = new List<IRequest>();
