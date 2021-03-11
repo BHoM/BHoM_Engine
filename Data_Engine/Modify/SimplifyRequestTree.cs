@@ -93,12 +93,17 @@ namespace BH.Engine.Data
                                 subRequests.RemoveAt(i);
                             else if (subSub.Count == 1 && !(logical is LogicalNotRequest))
                             {
-                                subRequests.RemoveAt(i);
-
-                                if (subSub[0].GetType() == request.GetType())
-                                    subRequests.InsertRange(i, ((ILogicalRequest)subSub[0]).IRequests());
+                                if (request is LogicalNotRequest)
+                                    ((LogicalNotRequest)request).Request = subSub[0];
                                 else
-                                    subRequests.Insert(i, subSub[0]);
+                                {
+                                    subRequests.RemoveAt(i);
+
+                                    if (subSub[0].GetType() == request.GetType())
+                                        subRequests.InsertRange(i, ((ILogicalRequest)subSub[0]).IRequests());
+                                    else
+                                        subRequests.Insert(i, subSub[0]);
+                                }
                             }
                         }
                     }

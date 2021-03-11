@@ -101,7 +101,11 @@ namespace BH.Engine.Base
 
         private static IGeometry Geometry3D(this IObject obj)
         {
-            return Reflection.Compute.RunExtensionMethod(obj, "Geometry3D") as IGeometry;
+            System.Reflection.MethodInfo mi = Reflection.Query.ExtensionMethodToCall(obj, "Geometry3D");
+            if (mi != null)
+                return Reflection.Compute.RunExtensionMethod(obj, "Geometry3D") as IGeometry;
+            else
+                return null;
         }
 
         /***************************************************/

@@ -94,7 +94,11 @@ namespace BH.Engine.Base
 
         private static IGeometry Geometry(this IBHoMObject obj)
         {
-            return Reflection.Compute.RunExtensionMethod(obj, "Geometry") as IGeometry;
+            System.Reflection.MethodInfo mi = Reflection.Query.ExtensionMethodToCall(obj, "Geometry");
+            if (mi != null)
+                return Reflection.Compute.RunExtensionMethod(obj, "Geometry") as IGeometry;
+            else
+                return null;
         }
 
         /***************************************************/

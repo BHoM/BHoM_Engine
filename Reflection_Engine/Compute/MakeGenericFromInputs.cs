@@ -42,79 +42,62 @@ namespace BH.Engine.Reflection
             if (!method.IsGenericMethod)
                 return method;
 
-            Type[] genericArguments = method.GetGenericArguments();
             List<Type> paramTypes = method.GetParameters().Select(x => x.ParameterType).ToList();
 
             // Get where the generic arguments are actually used
-            Dictionary<string, List<int>> dic = new Dictionary<string, List<int>>(); 
+            Dictionary<string, Type> dic = new Dictionary<string, Type>();
             for (int i = 0; i < paramTypes.Count; i++)
             {
-                Type type = paramTypes[i];
-                if (type.IsGenericParameter)
-                    dic[type.Name] = new List<int> { i };
-                else if (type.ContainsGenericParameters)
-                {
-                    Type[] types = type.GetGenericArguments();
-                    for (int j = 0; j < types.Length; j++)
-                    {
-                        if (!dic.ContainsKey(types[j].Name))
-                            dic[types[j].Name] = new List<int> { i, j };
-                    }
-                }
-            }
-
-            // Now look at the same positions inside the inputTypes to find the matching generic types
-            List<Type> actualTypes = new List<Type>();
-            foreach (Type argument in genericArguments)
-            {
-                if (!dic.ContainsKey(argument.Name))
-                {
-                    actualTypes.Add(null);
-                    continue;
-                }
-
-                List<int> indices = dic[argument.Name];
-                if (indices == null || indices.Count == 0)
-                    continue;
-
-                int index = indices[0];
-                Type paramType = paramTypes[index];
-                Type type = inputTypes[index];
-
-                if (paramType.IsGenericParameter)
-                    paramType = paramType.GenericTypeConstraint();
-
-                if (type.Name != paramType.Name)
-                {
-                    foreach (Type inter in type.GetInterfaces())
-                    {
-                        if (inter.Name == paramType.Name)
-                        {
-                            type = inter;
-                            break;
-                        }
-                    }
-                }
-
-                if (type.Name != paramType.Name && paramType.Name != "Object")
-                {
-                    actualTypes.Add(null);
-                    continue;
-                }
-
-                for (int i = 1; i < indices.Count; i++)
-                {
-                    index = indices[i];
-                    Type[] types = type.GetGenericArguments();
-                    if (types.Length > index)
-                        type = types[index];
-                }
-
-                actualTypes.Add(type);
+                Type paramType = paramTypes[i];
+                if (paramType.IsGenericType || paramType.IsGenericParameter)
+                    MatchGenericParameters(paramTypes[i], inputTypes[i], ref dic);
             }
 
             // Actually make the generic method
+            List<Type> actualTypes = method.GetGenericArguments().Select(x => dic.ContainsKey(x.Name) ? dic[x.Name] : typeof(object)).ToList();
             return method.MakeGenericMethod(actualTypes.ToArray());
+        }
+
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        private static void MatchGenericParameters(Type genericType, Type targetType, ref Dictionary<string, Type> dic)
+        {
+            if (genericType.IsGenericParameter)
+            {
+                if (!dic.ContainsKey(genericType.Name))
+                    dic[genericType.Name] = targetType;
+            }
+            else if (targetType.IsGenericType)
+            {
+                Type[] targetArguments = targetType.GetGenericArguments();
+                Type[] genericArguments = genericType.GetGenericArguments();
+                if (targetArguments.Length == genericArguments.Length)
+                {
+                    for (int i = 0; i < targetArguments.Length; i++)
+                        MatchGenericParameters(genericArguments[i], targetArguments[i], ref dic);
+                }
+            }
+            else
+            {
+                Type[] interfaces = targetType.GetInterfaces();
+                foreach (Type inter in targetType.GetInterfaces())
+                {
+                    if (inter.Name == genericType.Name)
+                    {
+                        MatchGenericParameters(genericType, inter, ref dic);
+                    }
+                }
+
+                Type baseType = targetType.BaseType;
+                while (baseType != null && baseType != typeof(object))
+                {
+                    if (baseType.IsGenericType)
+                        MatchGenericParameters(genericType, baseType, ref dic);
+                    baseType = baseType.BaseType;
+                }
+            }
         }
 
         /***************************************************/

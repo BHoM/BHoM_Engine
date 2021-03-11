@@ -72,6 +72,7 @@
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Compute\InterpolateProfile.cs" />
     <Compile Include="Compute\MapDomain.cs" />
+    <Compile Include="Compute\OrientationAngleLinear.cs" />
     <Compile Include="Create\DomainTree.cs" />
     <Compile Include="Create\ExplicitCurveLayout.cs" />
     <Compile Include="Create\OffsetCurveLayout.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Create\ShapeProfiles\ZSectionProfile.cs" />
     <Compile Include="Modify\MapPositionDomain.cs" />
     <Compile Include="Modify\RoundCoordinates.cs" />
+    <Compile Include="Modify\Transform.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\InternalOutlineCurves.cs" />
     <Compile Include="Create\NewElement0D.cs" />
