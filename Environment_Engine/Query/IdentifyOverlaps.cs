@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
             foreach(Panel p in panelsToCompare)
             {
                 if(panel.BHoM_Guid != p.BHoM_Guid && panel.BooleanIntersect(p))
-                        overlappingElements.Add(p);
+                    overlappingElements.Add(p);
             }
 
             return overlappingElements;

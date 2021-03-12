@@ -145,6 +145,7 @@
     <Compile Include="Modify\SetMaterial.cs" />
     <Compile Include="Modify\SetNormal.cs" />
     <Compile Include="Modify\SetStructuralFragment.cs" />
+    <Compile Include="Modify\Transform.cs" />
     <Compile Include="Objects\EqualityComparers\CaseNumberComaprer.cs" />
     <Compile Include="Objects\EqualityComparers\Constraint4DOFComparer.cs" />
     <Compile Include="Objects\EqualityComparers\Constraint6DOFComparer.cs" />

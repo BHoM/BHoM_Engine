@@ -21,7 +21,9 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -51,6 +53,20 @@ namespace BH.Engine.Geometry
             };
         }
 
+        /***************************************************/
+
+        [Description("Create a BoundingBox using the properties of a cuboid. The resulting BoundingBox will be centred on the global origin, and have the same length, depth and height as the cuboid.")]
+        [Input("globallyAlignedCuboid", "A Cuboid that will be treated as if it is globally aligned, local Cuboid orientation will be ignored." +
+            " The cuboid's Length, Depth and Height parameters are used to define the maximum and minimum points of the resulting BoundingBox.")]
+        [Output("boundingBox", "BoundingBox based on the properties of the cuboid.")]
+        public static BoundingBox BoundingBox(this Cuboid globallyAlignedCuboid)
+        {
+            return new BoundingBox
+            {
+                Min = new Point { X = -globallyAlignedCuboid.Length / 2, Y = -globallyAlignedCuboid.Depth / 2, Z = -globallyAlignedCuboid.Height / 2 },
+                Max = new Point { X =  globallyAlignedCuboid.Length / 2, Y =  globallyAlignedCuboid.Depth / 2, Z =  globallyAlignedCuboid.Height / 2 }
+            };
+        }
 
         /***************************************************/
         /**** Random Geometry                           ****/
