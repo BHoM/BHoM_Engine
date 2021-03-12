@@ -52,7 +52,7 @@ namespace BH.Engine.Lighting
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaires in the sequence).")]
         [Output("luminaires", "A collection of Luminaires created along the input curve.")]
-        public static List<Luminaire> Luminaires(this ICurve crv, double exactSpacing, Point target, bool centered = true, LuminaireType type = null, string name = "")
+        public static List<Luminaire> Luminaire(this ICurve crv, double exactSpacing, Point target, bool centered = true, LuminaireType type = null, string name = "")
         {
             ICurve trimmedCrv;
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Lighting
             {
                 trimmedCrv = crv.IExtend(0, -(crvLen % exactSpacing));
             }
-            return Luminaires(trimmedCrv, exactSpacing, target, type, name);
+            return Luminaire(trimmedCrv, exactSpacing, target, type, name);
         }
 
         /***************************************************/       
@@ -78,12 +78,12 @@ namespace BH.Engine.Lighting
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaires in the sequence).")]
         [Output("luminaires", "A collection of Luminaires created along the input curve.")]
-        public static List<Luminaire> Luminaires(this ICurve crv, double maxSpacing, Point target, LuminaireType type = null, string name = "")
+        public static List<Luminaire> Luminaire(this ICurve crv, double maxSpacing, Point target, LuminaireType type = null, string name = "")
         {
             double crvLen = crv.Length();
             if (maxSpacing == 0) return null;
             int count = (int)Math.Ceiling(crvLen / maxSpacing) + 1;
-            return Luminaires(crv, count, target, type, name);
+            return Luminaire(crv, count, target, type, name);
         }
 
         /***************************************************/
@@ -95,7 +95,7 @@ namespace BH.Engine.Lighting
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaires in the sequence).")]
         [Output("luminaires", "A collection of Luminaires created along the input curve.")]
-        public static List<Luminaire> Luminaires(this ICurve crv, int count, Point target, LuminaireType type = null, string name = "")
+        public static List<Luminaire> Luminaire(this ICurve crv, int count, Point target, LuminaireType type = null, string name = "")
         {
             List<Luminaire> luminaires = new List<Luminaire>();
             List<Point> pts = crv.SamplePoints(count);
@@ -117,12 +117,12 @@ namespace BH.Engine.Lighting
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
         [Output("luminaires", "A collection of Luminaires created along the input curve.")]
-        public static List<Luminaire> Luminaires(this ICurve crv, double maxSpacing, Vector dir, LuminaireType type = null, string name = "")
+        public static List<Luminaire> Luminaire(this ICurve crv, double maxSpacing, Vector dir, LuminaireType type = null, string name = "")
         {
             double crvLen = crv.Length();
             if (maxSpacing == 0) return null;
             int count = (int)Math.Ceiling(crvLen / maxSpacing) + 1;
-            return Luminaires(crv, count, dir, type, name);
+            return Luminaire(crv, count, dir, type, name);
         }
 
         /***************************************************/
@@ -134,7 +134,7 @@ namespace BH.Engine.Lighting
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
         [Output("luminaires", "A collection of Luminaires created along the input curve.")]
-        public static List<Luminaire> Luminaires(this ICurve crv, int count, Vector dir, LuminaireType type = null, string name = "")
+        public static List<Luminaire> Luminaire(this ICurve crv, int count, Vector dir, LuminaireType type = null, string name = "")
         {
             List<Luminaire> luminaires = new List<Luminaire>();
             List<Point> pts = crv.SamplePoints(count);
