@@ -137,10 +137,10 @@ namespace BH.Engine.Lighting
         public static List<Luminaire> Luminaires(this ICurve crv, int count, Vector dir, LuminaireType type = null, string name = "")
         {
             List<Luminaire> luminaires = new List<Luminaire>();
-            for (int i = 0; i < count; i++)
+            List<Point> pts = crv.SamplePoints(count);
+            for (int i = 0; i < pts.Count; i++)
             {
-                Point pt = (crv.IPointAtLength(i * (crv.Length() / (count - 1))));
-                Luminaire lum = Create.Luminaire(pt, dir, type, name + "_" + i.ToString());
+                Luminaire lum = Create.Luminaire(pts[i], dir, type, name + "_" + i.ToString());
                 luminaires.Add(lum);
             }
             return luminaires;
