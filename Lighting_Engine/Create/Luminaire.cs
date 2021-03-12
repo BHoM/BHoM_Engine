@@ -113,7 +113,7 @@ namespace BH.Engine.Lighting
         [Description("Create a collection of luminaires along a curve based on a maximum spacing and an orientation direction.")]
         [Input("crv", "The line to place the luminaires on.")]
         [Input("maxSpacing", "Maximum spacing between luminaires along the curve.")]
-        [Input("target", "The target point (all created luminaires will be oriented towards this point).")]
+        [Input("dir", "The direction to orient created luminaires.")]
         [InputFromProperty("type")]
         [Input("name", "The name to apply to the luminaires (each name will include this plus the number of luminaire in the sequence).")]
         [Output("luminaires", "A collection of Luminaires created along the input curve.")]
