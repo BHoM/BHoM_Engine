@@ -52,7 +52,7 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.Humans.ViewQuality.Query.CvalueAnalysis(List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQuality.CvalueSettings, BH.oM.Geometry.Polyline)")]
+        [PreviousVersion("4.1", "BH.Engine.Humans.ViewQuality.Query.CvalueAnalysis(Sytstem.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQuality.CvalueSettings, BH.oM.Geometry.Polyline)")]
         [Description("Evaluate Cvalues for a List of Audience.")]
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "CvalueSettings to configure the evaluation.")]
@@ -282,4 +282,3 @@ namespace BH.Engine.Humans.ViewQuality
         private static CvalueSettings m_CvalueSettings;
     }
 }
-
