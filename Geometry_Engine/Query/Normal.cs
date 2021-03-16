@@ -157,6 +157,13 @@ namespace BH.Engine.Geometry
         [Output("normal", "Vector normal to the plane of a curve.")]
         public static Vector Normal(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
+            List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
+            if (crvs.Any(x => !(x is Line || x is Arc)))
+            {
+                Reflection.Compute.RecordError("Normal is implemented only for PolyCurves consisting of Lines or Arcs.");
+                return null;
+            }
+
             if (!curve.IsPlanar(tolerance))
             {
                 Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
@@ -169,9 +176,7 @@ namespace BH.Engine.Geometry
             }
             else if (curve.IsSelfIntersecting(tolerance))
                 Reflection.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
-
-            List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
-
+            
             if (crvs.Count() == 0)
                 return null;
             else if (crvs.Count() == 1)
@@ -190,11 +195,6 @@ namespace BH.Engine.Geometry
                         {
                             points.Add((crv as Arc).PointAtParameter(j * 0.25));
                         }
-                    }
-                    else
-                    {
-                        Reflection.Compute.RecordError("Normal is implemented only for PolyCurves consisting of Lines or Arcs.");
-                        return null;
                     }
                 }
 
