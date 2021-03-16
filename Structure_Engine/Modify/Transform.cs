@@ -162,8 +162,11 @@ namespace BH.Engine.Structure
             result.ExternalEdges = result.ExternalEdges.Select(x => x.Transform(transform, tolerance)).ToList();
             result.Openings = result.Openings.Select(x => x.Transform(transform, tolerance)).ToList();
 
-            Basis orientation = panel.LocalOrientation().Transform(transform);
-            result.OrientationAngle = orientation.Z.OrientationAngleAreaElement(orientation.X);
+            Basis orientation = panel.LocalOrientation()?.Transform(transform);
+            if (orientation != null)
+                result.OrientationAngle = orientation.Z.OrientationAngleAreaElement(orientation.X);
+            else
+                BH.Engine.Reflection.Compute.RecordWarning("Local orientation of the panel could not be transformed. Please note that the orientation of the resultant panel may be incorrect.");
 
             return result;
         }
