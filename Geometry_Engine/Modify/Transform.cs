@@ -105,7 +105,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. May occur change in shape");
+                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. May occur change in shape");
+                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -143,7 +143,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. May occur change in shape");
+                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -342,4 +342,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-
