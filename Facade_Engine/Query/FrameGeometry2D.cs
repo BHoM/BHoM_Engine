@@ -51,13 +51,12 @@ namespace BH.Engine.Facade
 
         public static IGeometry FrameGeometry2D(this Opening opening)
         {
-            List<ICurve> extCrvs = new List<ICurve>();
             PolyCurve extCrv = opening.Geometry();
             List<double> widths = new List<double>();
 
             if (!extCrv.IsPlanar(Tolerance.Distance))
             {
-                BH.Engine.Reflection.Compute.RecordWarning("This method only works on planar curves. Openings with non-planar curves will be ignored.");
+                BH.Engine.Reflection.Compute.RecordWarning("This method only works on planar curves. Opening " + opening.BHoM_Guid + " has non-planar curves and will be ignored.");
                 return null;
             }
 
@@ -68,10 +67,10 @@ namespace BH.Engine.Facade
                 widths.Add(width*-1);
             }
 
-            if (widths.Max() == 0)
+            if (widths.Min() == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("All frame edges have widths of zero. Returning opening outline.");
-                return extCrv;
+                BH.Engine.Reflection.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " has no 2D frame geometry because frame edges all have widths of zero.");
+                return null;
             }
 
             PolyCurve intCrv = Modify.OffsetVariable(extCrv, widths);
