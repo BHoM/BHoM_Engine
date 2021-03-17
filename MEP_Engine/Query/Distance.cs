@@ -35,17 +35,27 @@ namespace BH.Engine.MEP
                 return 0;
             }
 
-            // Duct curves
-            ICurve curve1 = duct1 as ICurve;
-            ICurve curve2 = duct2 as ICurve;
+            // Duct 1 as a line
+            Line line1 = BH.Engine.Geometry.Create.Line(duct1.StartPoint, duct1.EndPoint);
 
+            // Duct 2 as a line
+            Line line2 = BH.Engine.Geometry.Create.Line(duct2.StartPoint, duct2.EndPoint);
+
+            // Vectors
+            //Vector vector1 = BH.Engine.Geometry.Create.
+
+
+            //// Duct curves
+            //ICurve curve1 = duct1 as ICurve;
+            //ICurve curve2 = duct2 as ICurve;
+            
             // Get the distance between the centres of the ducts represented by curves of linear ducts
-            double distanceBetweenDuctCentres = BH.Engine.Geometry.Query.Distance(curve1, curve2);
+            double distanceBetweenDuctCentres = BH.Engine.Geometry.Query.Distance(line1, line2);
 
             // If both ducts are circular
             ShapeType ductShape1 = duct1.SectionProperty.SectionProfile.ElementProfile.Shape;
             ShapeType ductShape2 = duct2.SectionProperty.SectionProfile.ElementProfile.Shape;
-            if (ductShape1 == ShapeType.Circle && ductShape1 == ShapeType.Circle)
+            if (ductShape1 == ShapeType.Tube && ductShape1 == ShapeType.Tube)
             {
                 // Radius of duct 1
                 double ductRadius1 = (duct1.SectionProperty.SectionProfile.ElementProfile as TubeProfile).Diameter / 2;
