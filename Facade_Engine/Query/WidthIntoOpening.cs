@@ -48,6 +48,8 @@ namespace BH.Engine.Facade
 
         public static double WidthIntoOpening(this FrameEdgeProperty frameEdgeProp)
         {
+            if (frameEdgeProp == null)
+                return 0;
             Polyline rectGeo = frameEdgeProp.SimpleGeometry();
             BoundingBox bounds = rectGeo.Bounds();
             if (bounds == null)
