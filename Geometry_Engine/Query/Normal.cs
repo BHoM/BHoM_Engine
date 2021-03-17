@@ -158,7 +158,7 @@ namespace BH.Engine.Geometry
         public static Vector Normal(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
-            if (crvs.Any(x => !(x is Line || x is Arc)))
+            if (crvs.Any(x => !(x is Line || x is Arc || x is Circle)))
             {
                 Reflection.Compute.RecordError("Normal is implemented only for PolyCurves consisting of Lines or Arcs.");
                 return null;
@@ -317,4 +317,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-
