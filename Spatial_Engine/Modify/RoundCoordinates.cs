@@ -85,7 +85,7 @@ namespace BH.Engine.Spatial
                 
                 newElement2d.ISetInternalElements2D(newElement2d.IInternalElements2D().Select(y => y.ISetOutlineElements1D(y.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry(), decimalPlaces))).ToList())).ToList());
 
-                if (newElement2d.IElementCurves().IClusterCoplanar().Count == 1)
+                if (newElement2d.IsPlanar())
                     return newElement2d;
             }
 
