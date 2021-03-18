@@ -158,9 +158,9 @@ namespace BH.Engine.Geometry
         public static Vector Normal(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
-            if (crvs.Any(x => !(x is Line || x is Arc || x is Circle)))
+            if (crvs.Any(x => x is NurbsCurve))
             {
-                Reflection.Compute.RecordError("Normal is implemented only for PolyCurves consisting of Lines or Arcs.");
+                Reflection.Compute.RecordError("Querying normal from PolyCurves with segments of type NurbsCurve is not supported.");
                 return null;
             }
 
