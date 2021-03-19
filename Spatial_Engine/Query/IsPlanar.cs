@@ -106,7 +106,7 @@ namespace BH.Engine.Spatial
 
         private static bool IsPlanar(this IElement1D element1D, bool externalOnly = false, double tolerance = Tolerance.Distance)
         {
-            return element1D.IGeometry().IIsPlanar(tolerance);
+            return element1D.IsPlanar(tolerance);
         }
 
         /******************************************/
