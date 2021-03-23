@@ -64,12 +64,13 @@ namespace BH.Engine.Geometry
 
         public static bool IsSelfIntersecting(this Polyline curve, double tolerance = Tolerance.Distance)
         {
-            List<Line> curves = curve.SubParts();
+            double sqTolerance = tolerance * tolerance;
+
+            List<Line> curves = curve.SubParts().Where(x => x.SquareLength() > sqTolerance).ToList();
             if (curves.Count < 2)
                 return false;
 
             bool closed = curve.IsClosed();
-            double sqTolerance = tolerance * tolerance;
             for (int i = 0; i < curves.Count - 1; i++)
             {
                 for (int j = i + 1; j < curves.Count; j++)
