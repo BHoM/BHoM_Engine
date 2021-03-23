@@ -76,6 +76,47 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+
+        [Description("Transforms the IOpening's location by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("opening", "IOpening to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified IOpening with unchanged properties, but transformed location.")]
+        public static IOpening Transform(this IOpening opening, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            if (!transform.IsRigidTransformation(tolerance))
+            {
+                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            IOpening result = opening.GetShallowClone() as IOpening;
+            result.Location = result.Location?.ITransform(transform);
+            return result;
+        }
+
+        /***************************************************/
+
+        [Description("Transforms the ISurface's location and openings by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("panel", "ISurface to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified ISurface with unchanged properties, but transformed location and openings.")]
+        public static oM.Physical.Elements.ISurface Transform(this oM.Physical.Elements.ISurface panel, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            if (!transform.IsRigidTransformation(tolerance))
+            {
+                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            oM.Physical.Elements.ISurface result = panel.GetShallowClone() as oM.Physical.Elements.ISurface;
+            result.Location = result.Location?.ITransform(transform);
+            result.Openings = result.Openings?.Select(x => x?.Transform(transform, tolerance)).ToList();
+            return result;
+        }
+
+        /***************************************************/
     }
 }
 
