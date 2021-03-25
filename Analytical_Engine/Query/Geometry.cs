@@ -155,7 +155,7 @@ namespace BH.Engine.Analytical
         [Output("face", "The geometry of the IFace as geometrical Mesh Face.")]
         public static Face Geometry(this IFace face)
         {
-            if (face == null)
+            if (face == null || face.NodeListIndices == null)
                 return null;
 
             if (face.NodeListIndices.Count < 3)

@@ -40,7 +40,7 @@ namespace BH.Engine.Physical
         [Output("CL", "The centre line curve of the framing element")]
         public static ICurve Geometry(this IFramingElement framingElement)
         {
-            return framingElement.Location;
+            return framingElement?.Location;
         }
 
         /***************************************************/
@@ -49,8 +49,12 @@ namespace BH.Engine.Physical
         [Output("surface", "The defining location surface geometry of the ISurface with its openings represented")]
         public static oM.Geometry.ISurface Geometry(this oM.Physical.Elements.ISurface surface)
         {
-            ICurve exBound = (surface.Location as PlanarSurface).ExternalBoundary;
-            List<ICurve> inBound = surface.Openings.Select(o => (o.Location as PlanarSurface).ExternalBoundary).ToList();
+            PlanarSurface planarSurface = surface?.Location as PlanarSurface;
+            if (planarSurface == null)
+                return null;
+
+            ICurve exBound = planarSurface.ExternalBoundary;
+            List<ICurve> inBound = surface?.Openings?.Select(o => (o?.Location as PlanarSurface)?.ExternalBoundary).ToList();
             return Engine.Geometry.Create.PlanarSurface(exBound, inBound);
         }
 
