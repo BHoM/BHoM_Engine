@@ -49,7 +49,7 @@ namespace BH.Engine.Serialiser
             if (obj is string)
                 return "{ \"_t\": \"System.String\", \"_v\": " + BsonExtensionMethods.ToJson<string>(obj as string) + "}";
 
-            if (obj is IEnumerable && !(obj is IObject))
+            if (obj is IEnumerable && !(obj is IObject) && !(obj is IDictionary))
                 return ToJsonArray((obj as IEnumerable).OfType<object>());
 
             var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
