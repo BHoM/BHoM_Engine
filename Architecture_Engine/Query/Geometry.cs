@@ -35,7 +35,7 @@ namespace BH.Engine.Architecture
 
         public static ICurve Geometry(this Grid grid)
         {
-            return grid.Curve;
+            return grid?.Curve;
         }
 
         /***************************************************/

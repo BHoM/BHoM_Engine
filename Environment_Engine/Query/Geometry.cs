@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         [Output("point", "The geometry of the Node")]
         public static Point Geometry(this Node node)
         {
-            return node.Position;
+            return node?.Position;
         }
 
         /***************************************************/
@@ -51,7 +51,7 @@ namespace BH.Engine.Environment
         [Output("curve", "The geometry of the curve")]
         public static ICurve Geometry(this Edge edge)
         {
-            return edge.Curve;
+            return edge?.Curve;
         }
     }
 }

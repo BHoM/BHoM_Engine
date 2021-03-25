@@ -89,7 +89,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Geometry(this Grid grid)
         {
-            return grid.Curve;
+            return grid?.Curve;
         }
 
 
