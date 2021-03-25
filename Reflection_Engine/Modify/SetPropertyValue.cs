@@ -115,7 +115,8 @@ namespace BH.Engine.Reflection
             else
             {
                 obj.CustomData[propName] = value;
-                Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as custom data.");
+                if (!(obj is CustomObject))
+                    Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as custom data.");
             }
 
             return true;
