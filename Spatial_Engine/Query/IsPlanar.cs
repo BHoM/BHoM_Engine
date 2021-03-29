@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -35,7 +35,6 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.ModelLaundry.Query.IsPlanar(BH.oM.Dimensional.IElement0D, System.Double)")]
         [Description("Checks whether all control points of an element lie in a single plane.")]
         [Input("element0D", "Element to evaluate.")]
         [Input("tolerance", "Tolerance used in numerical processing of planarity.")]
@@ -50,7 +49,6 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.ModelLaundry.Query.IsPlanar(BH.oM.Dimensional.IElement1D, System.Double)")]
         [Description("Checks whether all control points of an element lie in a single plane.")]
         [Input("element1D", "Element to evaluate.")]
         [Input("tolerance", "Tolerance used in numerical processing of planarity.")]
@@ -65,7 +63,6 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.ModelLaundry.Query.IsPlanar(BH.oM.Dimensional.IElement2D, System.Boolean, System.Double)")]
         [Description("Checks whether all control points of an element lie in a single plane.")]
         [Input("element2D", "Element to evaluate.")]
         [Input("externalOnly", "If true, only the external outline of an element is evaluated.")]
@@ -81,7 +78,6 @@ namespace BH.Engine.Spatial
         /****            Interfaces            ****/
         /******************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.ModelLaundry.Query.IIsPlanar(BH.oM.Dimensional.IElement, System.Boolean, System.Double)")]
         [Description("Checks whether all control points of an element lie in a single plane.")]
         [Input("element", "Element to evaluate.")]
         [Input("externalOnly", "If true, only the external outline of an element is evaluated.")]
