@@ -48,7 +48,6 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.ModelLaundry.Modify.RoundElementCoordinates(BH.oM.Dimensional.IElement1D, System.Int32)")]
         [Description("Modifies a IElement1D defining curves to be rounded to the number of provided decimal places.")]
         [Input("element1d", "The IElement1D to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
@@ -60,7 +59,6 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.ModelLaundry.Modify.RoundElementCoordinates(BH.oM.Dimensional.IElement2D, System.Int32)")]
         [Description("Modifies a IElement2D's defining curves to be rounded to the number of provided decimal places.")]
         [Input("element2d", "The IElement2D to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]

@@ -263,7 +263,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.Geometry.Query.LineIntersections(BH.oM.Geometry.Polyline, BH.oM.Geometry.Polyline, System.Double)")]
         public static List<Point> LineIntersections(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             List<Point> iPts = new List<Point>();

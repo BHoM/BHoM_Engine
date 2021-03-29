@@ -46,8 +46,6 @@ namespace BH.Engine.Environment
         [Input("height", "The height of the region, as a double, to calculate the ceiling level of the region. This will be used as the Z value of the perimeter + the given height.")]
         [Input("tolerance", "The degree of tolerance on the angle calculation for collapsing the regions perimeter to a polyline. Default is equal to BH.oM.Geometry.Tolerance.Angle.")]
         [Output("panels", "A collection of Environment Panels which represent the closed volume of the region.")]
-        [PreviousVersion("4.1", "BH.Engine.Environment.Compute.ExtrudeToVolume(BH.oM.Environment.Elements.Space, System.Double)")]
-        [PreviousVersion("4.1", "BH.Engine.Environment.Compute.ExtrudeToVolume(BH.oM.Architecture.Elements.Room, System.Double)")]
         [PreviousInputNames("region", "room, space")]
         public static List<Panel> ExtrudeToVolume(this IRegion region, double height, double tolerance = BH.oM.Geometry.Tolerance.Angle)
         {
