@@ -100,6 +100,7 @@
     <Compile Include="Query\Distance.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
+    <Compile Include="Query\IsValidForDistanceCheck.cs" />
     <Compile Include="Query\NewElement1D.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
