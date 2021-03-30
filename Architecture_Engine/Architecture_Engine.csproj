@@ -49,7 +49,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Humans_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -113,7 +112,6 @@
     <ProjectReference Include="..\Humans_Engine\Humans_Engine.csproj">
       <Project>{f17df4d6-d155-4ffa-9917-ef1487faa978}</Project>
       <Name>Humans_Engine</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>

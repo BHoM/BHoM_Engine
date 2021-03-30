@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -80,7 +81,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             List<Point> points = OrientatePoints(up, horiz, head.PairOfEyes.ReferenceLocation, scaledX, scaledY, 0);
 
-            return Geometry.Create.Polyline(points);
+            return Geometry.Create.Polyline(points.GetRange(0, points.Count -1));
         }
     }
 }

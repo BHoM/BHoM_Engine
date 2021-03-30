@@ -74,13 +74,15 @@ namespace BH.Engine.Humans.ViewQuality
         {
             List<Avalue> results = new List<Avalue>();
             KDTree<Spectator> spectatorTree = null;
+            m_AvalueSettings = settings;
+
             if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
 
             foreach (Spectator s in audience.Spectators)
             {
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
                 Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
-                results.Add(ClipView(s, rowVector, viewVect, settings, playingArea, spectatorTree));
+                results.Add(ClipView(s, rowVector, viewVect, playingArea, spectatorTree));
             }
             return results;
         }
@@ -104,15 +106,17 @@ namespace BH.Engine.Humans.ViewQuality
         
         /***************************************************/
 
-        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, AvalueSettings settings, Polyline activityArea, KDTree<Spectator> tree)
+        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, Polyline activityArea, KDTree<Spectator> tree)
         {
             Avalue result = new Avalue();
             
             Vector viewY = Geometry.Query.CrossProduct(viewVect, rowV);
             Vector viewX = Geometry.Query.CrossProduct(viewVect, viewY);
-            
+            viewX = viewX.Normalise();
+            viewY = viewY.Normalise();
+
             viewVect = viewVect.Normalise();
-            Vector shift = viewVect * settings.EyeFrameDist;
+            Vector shift = viewVect * m_AvalueSettings.EyeFrameDist;
 
             Point shiftOrigin = spectator.Head.PairOfEyes.ReferenceLocation + shift;
             Point viewClipOrigin = spectator.Head.PairOfEyes.ReferenceLocation + 2 * shift;
@@ -120,29 +124,34 @@ namespace BH.Engine.Humans.ViewQuality
             //planes need orientation
             Plane viewPlane = Geometry.Create.Plane(shiftOrigin, viewVect);
             Plane viewClip = Geometry.Create.Plane(viewClipOrigin, viewVect);
+
             //get the view cone
-            result.ViewCone = Create.ViewCone(viewY, viewX, shiftOrigin, 1, settings.ConeType);
+            result.ViewCone = Create.ViewCone(viewY, viewX, shiftOrigin, 1, m_AvalueSettings.ConeType).ConeBoundary[0];
+
             //find part of activity area to project
-            Polyline clippedArea = ClipActivityArea(viewClip, activityArea);
+            Polyline clippedArea = ReduceActivityArea(viewClip, activityArea);
+
             //project the pitch
             result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
-            //clip the pitch against the viewcone
-            
-            result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ViewCone, spectator, viewPlane);
+
+            //clip the projected pitch against the view cone
+            result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ViewCone);
+
             //calculate the avalue
-            result.AValue = result.ClippedActivityArea.Sum(x=>x.Area())/result.ViewCone.ConeArea*100;
-            //clip heads infront
-            if (settings.CalculateOcclusion)
+            result.AValue = result.ClippedActivityArea.Area() / result.ViewCone.Area() * 100;
+
+            //clip heads in front
+            if (m_AvalueSettings.CalculateOcclusion)
             {
-                List<Spectator> occludingSpectators = GetPotentialOcclusion(spectator, tree, 3);
-                if (occludingSpectators.Count > 0)
+                List<Spectator> infront = GetSpectatorsInfront(spectator, tree, m_AvalueSettings.ViewConeAngle);
+                if (infront.Count > 0)
                 {
                     
-                    List <Polyline> occludingClippedHeads = ClipHeads(occludingSpectators, spectator, viewPlane, result.ClippedActivityArea);
+                    List <Polyline> occludingClippedHeads = ClipHeads(infront, spectator, viewPlane, result.ClippedActivityArea);
                     if (occludingClippedHeads.Count > 0)
                     {
                         result.Heads = occludingClippedHeads;
-                        result.Occulsion = occludingClippedHeads.Sum(x => x.Area()) / result.ViewCone.ConeArea * 100;
+                        result.Occulsion = occludingClippedHeads.Sum(x => x.Area()) / result.ViewCone.Area() * 100;
                     }
                     
                 }
@@ -154,52 +163,37 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static List<Spectator> GetPotentialOcclusion(Spectator spectator,KDTree<Spectator> tree,double neighborhoodRadius)
+        private static List<Polyline> ClipHeads(List<Spectator> nearSpecs, Spectator current, Plane viewPlane, Polyline clippedArea)
         {
-            double[] query = new double[] { spectator.Head.PairOfEyes.ReferenceLocation.X, spectator.Head.PairOfEyes.ReferenceLocation.Y, spectator.Head.PairOfEyes.ReferenceLocation.Z };
-            var neighbours = tree.Nearest(query, radius: neighborhoodRadius);
-            List<Spectator> infront = new List<Spectator>();
-            foreach(var n in neighbours)
-            {
-                var nodeZ = n.Node.Position[2];
-                if (nodeZ < spectator.Head.PairOfEyes.ReferenceLocation.Z)
-                {
-                    infront.Add(n.Node.Value);
-                }
-            }
-            infront.ForEach(x => x.HeadOutline = Create.GetHeadOutline(x.Head,3));
-
-            return infront;
-        }
-
-        /***************************************************/
-        private static List<Polyline> ClipHeads(List<Spectator> nearSpecs, Spectator current, Plane viewPlane, List<Polyline> clippedArea)
-        {
-            //using the project activity area to clip heads infront that over lap
+            //using the project activity area to clip heads in front that over lap
             List<Polyline> clippedHeads = new List<Polyline>();
             foreach (Spectator s in nearSpecs)
             {
-                foreach (Polyline pl in clippedArea)
+                Point p = viewPlane.ClosestPoint(s.Head.PairOfEyes.ReferenceLocation);
+                //if distance to view plane is in range
+                if (s.Head.PairOfEyes.ReferenceLocation.Distance(p) <= m_AvalueSettings.FarClippingPlaneDistance)
                 {
+                    if (s.HeadOutline.ControlPoints.Count == 0)
+                        s.HeadOutline = Create.GetHeadOutline(s.Head);
+
                     Polyline projectedHead = ProjectPolylineToPlane(viewPlane, s.HeadOutline, current.Head.PairOfEyes.ReferenceLocation);
 
-                    Polyline subject = projectedHead.DeepClone();
-                    int np = subject.ControlPoints.Count;
-                    List<Polyline> clippedHead = Geometry.Compute.BooleanIntersection(pl,subject);
-                    if (clippedHead[0].Area() > 0)
+                    List<Polyline> clippedHead = Geometry.Compute.BooleanIntersection(clippedArea, projectedHead);
+                    if (clippedHead.Count > 0)
                     {
                         clippedHeads.Add(clippedHead[0]);
                     }
-                    
                 }
+                
             }
             return clippedHeads;
         }
 
         /***************************************************/
 
-        private static Polyline ClipActivityArea(Plane clipping, Polyline activityArea)
+        private static Polyline ReduceActivityArea(Plane clipping, Polyline activityArea)
         {
+            //just the part in front of the spectator
             List<Point> control = new List<Point>();
             foreach(Line seg in activityArea.SubParts())
             {
@@ -223,7 +217,7 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static Polyline ProjectPolylineToPlane(Plane plane,Polyline polyline,Point viewPoint)
+        private static Polyline ProjectPolylineToPlane(Plane plane, Polyline polyline, Point viewPoint)
         {
             List<Point> control = new List<Point>();
             foreach (Point p in polyline.ControlPoints)
@@ -241,21 +235,21 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static List<Polyline> ClipActivityArea(Polyline projected, ViewCone viewCone, Spectator origin, Plane viewPlane)
+        private static Polyline ClipActivityArea(Polyline projected, Polyline viewCone)
         {
-            List<Polyline> clippedArea = new List<Polyline>();
-            for (int i = 0; i < viewCone.ConeBoundary.Count; i++)
-            {
-                var subject = projected.DeepClone();
-                List<Polyline> temp = Geometry.Compute.BooleanIntersection(viewCone.ConeBoundary[i], subject);
-
-                if(temp.Count>0)clippedArea.Add(temp[0]);
-            }
-            return clippedArea;
+            List<Polyline> temp = Geometry.Compute.BooleanIntersection(viewCone, projected);
+            if (temp.Count > 0)
+                return temp[0];
+            else
+                return null;
         }
-        
+
         /***************************************************/
-        
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static AvalueSettings m_AvalueSettings;
+
     }
 }
 

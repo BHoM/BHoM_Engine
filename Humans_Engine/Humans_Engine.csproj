@@ -60,9 +60,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Humans_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
