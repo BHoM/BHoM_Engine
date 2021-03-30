@@ -22,13 +22,9 @@
 
 using System.Collections.Generic;
 using BH.oM.Geometry;
-using BH.oM.Architecture.Theatron;
 using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using System.Linq;
-
-using Accord.MachineLearning;
-using Accord.Math.Distances;
 using Accord.Collections;
 using System.IO;
 using BH.Engine.Base;
