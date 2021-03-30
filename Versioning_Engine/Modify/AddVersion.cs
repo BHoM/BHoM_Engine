@@ -37,8 +37,8 @@ namespace BH.Engine.Versioning
         public static void AddVersion(this BsonDocument document)
         {
             // TODO: Uncomment this code after producing the 4.1 beta
-            /*if (document != null)
-                document["_bhomVersion"] = Reflection.Query.BHoMVersion();*/
+            if (document != null)
+                document["_bhomVersion"] = Reflection.Query.BHoMVersion();
         }
 
         /***************************************************/
@@ -46,11 +46,11 @@ namespace BH.Engine.Versioning
         public static void AddVersion(this IBsonWriter writer)
         {
             // TODO: Uncomment this code after producing the 4.1 beta
-            /*if (writer != null)
+            if (writer != null)
             {
                 writer.WriteName("_bhomVersion");
                 writer.WriteString(Reflection.Query.BHoMVersion());
-            }*/
+            }
         }
 
         /***************************************************/
