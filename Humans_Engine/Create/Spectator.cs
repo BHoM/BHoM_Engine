@@ -49,7 +49,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             if (createHeadOutline)
             {
-                GetHeadOutline(head, scale);
+                outline = GetHeadOutline(head, scale);
             }
 
             return new Spectator
@@ -66,9 +66,9 @@ namespace BH.Engine.Humans.ViewQuality
         public static Polyline GetHeadOutline(Head head,double scale = 1)
         {
             //data should be in datasets
-            double[] xcoords = { 0.025198, 0.025841, 0.040367, 0.065967, 0.097698, 0.129429, 0.15503, 0.169555, 0.170198, 0.152041, 0.141581, 0.122141, 0.097698, 0.073255, 0.053815, 0.043355, 0.025198 };
+            double[] xcoords = {-0.0725,-0.071857,-0.057331,-0.031731,0,0.031731,0.057332,0.071857,0.0725,0.054343,0.043883,0.024443,0,-0.024443,-0.043883,-0.054343,-0.0725};
 
-            double[] ycoords = { 0.004467, 0.036987, 0.066089, 0.086153, 0.093301, 0.086153, 0.066089, 0.036987, 0.004467, -0.084287, -0.107096, -0.122963, -0.128638, -0.122963, -0.107096, -0.084287, 0.004467 };
+            double[] ycoords = {0.004467,0.036987,0.066089,0.086153,0.093301,0.086153,0.066089,0.036987,0.004467,-0.084287,-0.107096,-0.122963,-0.128638,-0.122963,-0.107096,-0.084287,0.004467 };
 
             var scaledX = Array.ConvertAll(xcoords, x => x* scale);
 
