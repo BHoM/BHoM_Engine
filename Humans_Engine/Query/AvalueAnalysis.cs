@@ -66,6 +66,7 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return results;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
@@ -83,7 +84,9 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return results;
         }
+
         /***************************************************/
+
         private static KDTree<Spectator> SetKDTree(Audience audience)
         {
             List<double[]> points = new List<double[]>();
@@ -140,7 +143,6 @@ namespace BH.Engine.Humans.ViewQuality
                     {
                         result.Heads = occludingClippedHeads;
                         result.Occulsion = occludingClippedHeads.Sum(x => x.Area()) / result.ViewCone.ConeArea * 100;
-                        CheckPolylineGeo(occludingClippedHeads);
                     }
                     
                 }
@@ -149,21 +151,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             return result;
         }
-        /***************************************************/
-        private static void CheckPolylineGeo(List<Polyline> tests)
-        {
-            StreamWriter sw = new StreamWriter("geodump.txt");
-            foreach(Polyline pl in tests)
-            {
-                foreach(Point p in pl.ControlPoints)
-                {
-                    sw.Write(string.Format("{0},{1},{2},",p.X,p.Y,p.Z));
-                }
-                sw.WriteLine("");
-            }
-            sw.WriteLine("");
-            sw.Close();
-        }
+
         /***************************************************/
 
         private static List<Spectator> GetPotentialOcclusion(Spectator spectator,KDTree<Spectator> tree,double neighborhoodRadius)
@@ -207,6 +195,7 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return clippedHeads;
         }
+
         /***************************************************/
 
         private static Polyline ClipActivityArea(Plane clipping, Polyline activityArea)
