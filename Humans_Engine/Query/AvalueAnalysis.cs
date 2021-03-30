@@ -42,33 +42,38 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Evaulate Avalues for a single Audience")]
-        [Input("audience", "Audience to evalaute")]
+        
+        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(BH.oM.Humans.ViewQuality.Audience, BH.oM.Humans.ViewQualityAvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
+        [Description("Evaluate Avalues for a single Audience")]
+        [Input("audience", "Audience to evaluate")]
         [Input("settings", "AvalueSettings to configure the evaluation")]
         [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, ActivityArea activityArea)
+        public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
-            List<Avalue> results = EvaluateAvalue(audience, settings, activityArea);
+            List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, focalPoint);
             return results;
         }
+
         /***************************************************/
-        [Description("Evaulate Avalues for a List of Audience")]
-        [Input("audience", "Audience to evalaute")]
+
+        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(System.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQualityAvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
+        [Description("Evaluate Avalues for a List of Audience")]
+        [Input("audience", "Audience to evaluate")]
         [Input("settings", "AvalueSettings to configure the evaluation")]
         [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, ActivityArea activityArea)
+        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
             foreach(Audience a in audience)
             {
-                results.Add(EvaluateAvalue(a, settings, activityArea));
+                results.Add(EvaluateAvalue(a, settings, playingArea, focalPoint));
             }
             return results;
         }
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, ActivityArea activityArea)
+        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<Avalue> results = new List<Avalue>();
             KDTree<Spectator> spectatorTree = null;
@@ -77,8 +82,8 @@ namespace BH.Engine.Humans.ViewQuality
             foreach (Spectator s in audience.Spectators)
             {
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
-                Vector viewVect = activityArea.ActivityFocalPoint - s.Head.PairOfEyes.ReferenceLocation;
-                results.Add(ClipView(s, rowVector, viewVect, settings, activityArea, spectatorTree));
+                Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
+                results.Add(ClipView(s, rowVector, viewVect, settings, playingArea, spectatorTree));
             }
             return results;
         }
@@ -100,7 +105,7 @@ namespace BH.Engine.Humans.ViewQuality
         
         /***************************************************/
 
-        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, AvalueSettings settings, ActivityArea activityArea, KDTree<Spectator> tree)
+        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, AvalueSettings settings, Polyline activityArea, KDTree<Spectator> tree)
         {
             Avalue result = new Avalue();
             
@@ -143,7 +148,6 @@ namespace BH.Engine.Humans.ViewQuality
                     }
                     
                 }
-                
                 
             }
 
@@ -209,10 +213,10 @@ namespace BH.Engine.Humans.ViewQuality
         }
         /***************************************************/
 
-        private static Polyline ClipActivityArea(Plane clipping, ActivityArea activityArea)
+        private static Polyline ClipActivityArea(Plane clipping, Polyline activityArea)
         {
             List<Point> control = new List<Point>();
-            foreach(Line seg in activityArea.PlayingArea.SubParts())
+            foreach(Line seg in activityArea.SubParts())
             {
                 //is start infront or behind plane?
                 Point s = seg.StartPoint();
