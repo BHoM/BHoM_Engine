@@ -23,7 +23,6 @@
 using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,7 +95,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Arc curve, TransformMatrix transform)
         {
-            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
+            if (transform.IsRigidTransformation() || transform.IsUniformScaling())
                 return new Arc
                 {
                     Radius = (curve.StartPoint() - curve.CoordinateSystem.Origin).Transform(transform).Length(),
@@ -106,7 +105,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -115,7 +114,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Circle curve, TransformMatrix transform)
         {
-            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
+            if (transform.IsRigidTransformation() || transform.IsUniformScaling())
                 return new Circle
                 {
                     Centre = curve.Centre.Transform(transform),
@@ -124,7 +123,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -133,7 +132,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Ellipse curve, TransformMatrix transform)
         {
-            if (Math.Abs(transform.Determinant() - 1) <= 1e-6 || transform.IsUniformScaling())
+            if (transform.IsRigidTransformation() || transform.IsUniformScaling())
                 return new Ellipse
                 {
                     Centre = curve.Centre.Transform(transform),
@@ -144,7 +143,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid. Converting into NurbsCurve. May occure change in shape");
+                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -257,12 +256,12 @@ namespace BH.Engine.Geometry
         public static BoundaryRepresentation Transform(this BoundaryRepresentation solid, TransformMatrix transform)
         {
             double volume = solid.Volume;
-            if (!(Math.Abs(transform.Determinant() - 1) <= 1e-6))
+            if (transform.IsRigidTransformation())
             {
                 Reflection.Compute.RecordWarning("Transformation is not rigid. Therefore stored BoundaryRepresentation Volume will be invalidated and reset to NaN (not a number)");
                 volume = double.NaN;
             }
-                
+
             return new BoundaryRepresentation(solid.Surfaces.Select(x => x.ITransform(transform)), volume);
         }
 
@@ -309,7 +308,7 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Private Fallback Methods                  ****/
         /***************************************************/
 
         private static IGeometry Transform(this IGeometry geometry, TransformMatrix transform)
@@ -318,6 +317,9 @@ namespace BH.Engine.Geometry
             return null;
         }
 
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static bool IsUniformScaling(this TransformMatrix transform)
@@ -340,4 +342,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-

@@ -80,7 +80,7 @@ namespace BH.Engine.Facade
                     
                     foreach (FrameEdge edge in opening.Edges)
                     {
-                        frameVolume = frameVolume + edge.SolidVolume();
+                        frameVolume += edge.SolidVolume();
                     }
                 }
                 else
@@ -108,7 +108,7 @@ namespace BH.Engine.Facade
                 foreach (ConstantFramingProperty prop in props)
                 {
                     double profArea = prop.AverageProfileArea();
-                    totalArea = totalArea + profArea;
+                    totalArea += profArea;
                 }
 
                 frameVolume = frameLength * totalArea;

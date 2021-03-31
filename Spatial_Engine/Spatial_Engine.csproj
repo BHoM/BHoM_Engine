@@ -98,6 +98,7 @@
     <Compile Include="Create\ShapeProfiles\ZSectionProfile.cs" />
     <Compile Include="Modify\MapPositionDomain.cs" />
     <Compile Include="Modify\RoundCoordinates.cs" />
+    <Compile Include="Modify\Transform.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\InternalOutlineCurves.cs" />
     <Compile Include="Create\NewElement0D.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Query\IsNearGrid.cs" />
     <Compile Include="Query\IsFullyOnLevel.cs" />
     <Compile Include="Query\IsNearLevel.cs" />
+    <Compile Include="Query\IsPlanar.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
     <Compile Include="Query\Length.cs" />
     <Compile Include="Query\Normal.cs" />

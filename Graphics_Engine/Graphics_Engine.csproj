@@ -76,6 +76,7 @@
     <Compile Include="Create\SVGObject.cs" />
     <Compile Include="Create\SVGDocument.cs" />
     <Compile Include="Convert\ColourFromObject.cs" />
+    <Compile Include="Modify\Transform.cs" />
     <Compile Include="Modify\View\View.cs" />
     <Compile Include="Query\Color.cs" />
     <Compile Include="Query\Bounds.cs" />

@@ -96,7 +96,27 @@ namespace BH.Engine.Architecture
         }
 
         /***************************************************/
+
+        [Description("Transforms the Room's perimeter and location point by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("room", "Room to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("room", "Modified Room with unchanged properties, but transformed perimeter and location point.")]
+        public static Room Transform(this Room room, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            if (!transform.IsRigidTransformation(tolerance))
+            {
+                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            Room result = room.GetShallowClone() as Room;
+            result.Perimeter = result.Perimeter.ITransform(transform);
+            result.Location = result.Location.Transform(transform);
+            return result;
+        }
+
+        /***************************************************/
     }
 }
-
 

@@ -20,17 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
-using BH.oM.Reflection;
-using BH.Engine.Base;
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
 using BH.Engine.Geometry;
+using BH.oM.Base;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
+using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -51,6 +48,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
+        [PreviousVersion("4.1", "BH.Engine.ModelLaundry.Modify.RoundElementCoordinates(BH.oM.Dimensional.IElement1D, System.Int32)")]
         [Description("Modifies a IElement1D defining curves to be rounded to the number of provided decimal places.")]
         [Input("element1d", "The IElement1D to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
@@ -62,6 +60,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
+        [PreviousVersion("4.1", "BH.Engine.ModelLaundry.Modify.RoundElementCoordinates(BH.oM.Dimensional.IElement2D, System.Int32)")]
         [Description("Modifies a IElement2D's defining curves to be rounded to the number of provided decimal places.")]
         [Input("element2d", "The IElement2D to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
@@ -80,10 +79,20 @@ namespace BH.Engine.Spatial
 
                 return element2d.ISetInternalElements2D(element2d.IInternalElements2D().Select(y => y.ISetOutlineElements1D(y.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry().IProject(plane), decimalPlaces))).ToList())).ToList());
             }
+            else
+            {
+                IElement2D newElement2d = element2d.ISetOutlineElements1D(element2d.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry(), decimalPlaces))).ToList());
+                
+                newElement2d.ISetInternalElements2D(newElement2d.IInternalElements2D().Select(y => y.ISetOutlineElements1D(y.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry(), decimalPlaces))).ToList())).ToList());
 
-            Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface that is not aligned with the global coordinate system cannot be achieved without risk of losing planarity. No action has been taken.");
+                if (newElement2d.IsPlanar())
+                    return newElement2d;
+            }
+
+            Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface couldn't be achieved without losing planarity. No action has been taken.");
             return element2d;
         }
+
 
         /***************************************************/
         /**** Interface Methods                         ****/
@@ -98,10 +107,11 @@ namespace BH.Engine.Spatial
             return RoundCoordinates(element as dynamic, decimalPlaces);
         }
 
+
         /***************************************************/
-        /**** Fallback Methods                          ****/
+        /**** Private Fallback Methods                  ****/
         /***************************************************/
-        
+
         private static IElement RoundCoordinates(this IElement element, int decimalPlaces = 6)
         {
             Engine.Reflection.Compute.RecordError("No RoundCoordinates method has been implemented for: " + element.GetType().Name + ". The object has not been modified.");

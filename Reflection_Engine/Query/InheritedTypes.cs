@@ -39,7 +39,7 @@ namespace BH.Engine.Reflection
         {
             List<Type> types = type.GetInterfaces().ToList();
 
-            if (type.BaseType != typeof(object))
+            if (type.BaseType != null && type.BaseType != typeof(object))
                 types.Add(type.BaseType);
 
             if (onlyBHoM)
