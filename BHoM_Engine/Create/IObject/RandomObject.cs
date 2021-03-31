@@ -195,6 +195,9 @@ namespace BH.Engine.Base
                     return new Point { X = rnd.NextDouble(), Y = rnd.NextDouble(), Z = rnd.NextDouble() };
                 case "Type":
                     return typeof(BHoMObject);
+                case "DateTime":
+                    DateTime startDate = new DateTime(1970, 1, 1);
+                    return startDate.AddDays(rnd.Next((DateTime.Today - startDate).Days)).AddSeconds(rnd.Next(86400));
             }
 
             if (type.IsPrimitive)
