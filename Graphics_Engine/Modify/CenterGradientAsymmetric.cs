@@ -39,7 +39,7 @@ namespace BH.Engine.Graphics
         [Input("from", "The lower bound that the gradient will be used with.")]
         [Input("to", "The higher bound that the gradient will be used with.")]
         [Output("gradient", "A gradient with its middle colour set to 0 relative to the pair of boundary values.")]
-        [PreviousVersion("4.1", "BH.Engine.Graphics.Query.CenterGradientAsymmetric(BH.oM.Graphics.Gradient, System.Double, System.Double)")]
+        [PreviousVersion("4.2", "BH.Engine.Graphics.Query.CenterGradientAsymmetric(BH.oM.Graphics.Gradient, System.Double, System.Double)")]
         public static Gradient CenterGradientAsymmetric(this Gradient gradient, double from, double to)
         {
             Gradient result = gradient.ShallowClone();
