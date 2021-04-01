@@ -39,7 +39,10 @@ namespace BH.Engine.MEP
         
         public static IGeometry Geometry(this IFlow flowObj)
         {
-            return new Line { Start = flowObj?.StartPoint, End = flowObj?.EndPoint};
+            if (flowObj?.StartPoint == null || flowObj?.EndPoint == null)
+                return null;
+            else
+                return new Line { Start = flowObj.StartPoint, End = flowObj.EndPoint};
         }
 
         /***************************************************/
