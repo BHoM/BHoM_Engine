@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
         {
             List<IGeometry> lines = new List<IGeometry>();
 
-            if (link?.SecondaryNodes != null && link?.PrimaryNode != null)
+            if (link?.SecondaryNodes != null && link?.PrimaryNode?.Position != null)
             {
                 foreach (Node sn in link.SecondaryNodes)
                 {
@@ -130,5 +130,4 @@ namespace BH.Engine.Structure
     }
 
 }
-
 
