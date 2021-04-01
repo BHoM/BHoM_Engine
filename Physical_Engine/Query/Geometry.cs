@@ -49,12 +49,11 @@ namespace BH.Engine.Physical
         [Output("surface", "The defining location surface geometry of the ISurface with its openings represented")]
         public static oM.Geometry.ISurface Geometry(this oM.Physical.Elements.ISurface surface)
         {
-            PlanarSurface planarSurface = surface?.Location as PlanarSurface;
-            if (planarSurface == null)
+            ICurve exBound = (surface?.Location as PlanarSurface)?.ExternalBoundary;
+            if (exBound == null)
                 return null;
 
-            ICurve exBound = planarSurface.ExternalBoundary;
-            List<ICurve> inBound = surface?.Openings?.Select(o => (o?.Location as PlanarSurface)?.ExternalBoundary).ToList();
+            List<ICurve> inBound = surface?.Openings?.Select(o => (o?.Location as PlanarSurface)?.ExternalBoundary).Where(x => x != null).ToList();
             return Engine.Geometry.Create.PlanarSurface(exBound, inBound);
         }
 
@@ -63,5 +62,4 @@ namespace BH.Engine.Physical
 
     }
 }
-
 
