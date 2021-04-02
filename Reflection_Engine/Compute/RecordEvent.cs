@@ -45,10 +45,8 @@ namespace BH.Engine.Reflection
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
 
-        private static bool RecordEvent(Event newEvent)
+        public static bool RecordEvent(Event newEvent)
         {
             string trace = System.Environment.StackTrace;
             newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());

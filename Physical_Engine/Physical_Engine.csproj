@@ -97,11 +97,13 @@
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Modify\AddMaterialProperties.cs" />
+    <Compile Include="Modify\Transform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\AverageProfileArea.cs" />
     <Compile Include="Query\ConstructionByName.cs" />
     <Compile Include="Query\BottomCentreline.cs" />
     <Compile Include="Query\BoundingBoxCentreline.cs" />
+    <Compile Include="Query\Geometry3D.cs" />
     <Compile Include="Query\Mass.cs" />
     <Compile Include="Query\TopCentreline.cs" />
     <Compile Include="Query\ExternalPolyline.cs" />

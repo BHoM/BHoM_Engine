@@ -22,12 +22,13 @@
 
 using BH.oM.Data.Collections;
 using BH.oM.Data.Requests;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 
 namespace BH.Engine.Data
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /****            Interface methods              ****/
@@ -59,7 +60,11 @@ namespace BH.Engine.Data
 
         public static List<IRequest> Requests(this LogicalNotRequest request)
         {
-            return new List<IRequest> { request.Request };
+            List<IRequest> result = new List<IRequest>();
+            if (request.Request != null)
+                result.Add(request.Request);
+
+            return result;
         }
 
         /***************************************************/

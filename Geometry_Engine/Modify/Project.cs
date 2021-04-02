@@ -37,7 +37,8 @@ namespace BH.Engine.Geometry
 
         public static Point Project(this Point pt, Plane p)
         {
-            return pt - p.Normal.DotProduct(pt - p.Origin) * p.Normal;
+            Vector normal = p.Normal.Normalise();
+            return pt - normal.DotProduct(pt - p.Origin) * normal;
         }
 
         /***************************************************/

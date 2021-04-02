@@ -441,6 +441,18 @@ namespace BH.Engine.Geometry
             return curve1.IsContaining(iPts, acceptOnEdge, tolerance);
         }
 
+        /***************************************************/
+        /**** Public Methods - Cuboid                   ****/
+        /***************************************************/
+
+        public static bool IsContaining(this Cuboid cuboid, IGeometry geometry, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(cuboid.CoordinateSystem);
+            IGeometry globalGeo = geometry.ITransform(transform);
+            BoundingBox geoBox = globalGeo.IBounds();
+            BoundingBox cuboidBox = cuboid.BoundingBox();
+            return cuboidBox.IsContaining(geoBox, acceptOnEdge, tolerance);
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/

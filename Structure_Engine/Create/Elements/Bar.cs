@@ -28,6 +28,7 @@ using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.Constraints;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
+using BH.Engine.Spatial;
 
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
@@ -77,7 +78,7 @@ namespace BH.Engine.Structure
         [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
         public static Bar Bar(Line line, ISectionProperty sectionProperty = null, Vector normal = null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {
-            double orientationAngle = Compute.OrientationAngleBar(normal, line);
+            double orientationAngle = normal.OrientationAngleLinear(line);
 
             if (double.IsNaN(orientationAngle))
                 return null;
