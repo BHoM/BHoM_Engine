@@ -20,9 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.Engine.Spatial;
 using BH.oM.MEP.System;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Spatial.ShapeProfiles;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using BH.oM.Dimensional;
 
 namespace BH.Engine.MEP
 {
@@ -32,188 +37,35 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Queries the solid volume of a Duct by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
-        [Input("duct", "The Duct to query solid volume.")]
+        [Description("Queries the solid volume of an object by multiplying the section profile's solid area by the element's length. Note this element may contain a composite section of multiple areas, but this query method returns a single summed value. For section specific volumes, please use GetSectionProfile and Query the Areas manually.")]
+        [Input("obj", "The object to query solid volume.")]
         [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
 
-        public static double SolidVolume(this Duct duct)
+        public static double SolidVolume(this IFlow obj)
         {
-            double length = duct.Length();
-            double elementSolidArea = duct.SectionProperty.ElementSolidArea;
-            double insulationSolidArea = duct.SectionProperty.InsulationSolidArea;
-            double liningSolidArea = duct.SectionProperty.LiningSolidArea;
+            double length = (obj as IElement1D).Length();
+            double area = 0;
 
-            if(length <= 0)
+            List<IProfile> profiles = GetSectionProfiles(obj);
+
+            if (profiles.Count() <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
+                BH.Engine.Reflection.Compute.RecordError("The object must contain at least one section profile to be evaluated.");
                 return double.NaN;
             }
 
-            if(duct.SectionProperty.SectionProfile.ElementProfile == null)
+            for (int i = 0; i < profiles.Count(); i++)
             {
-                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + duct.BHoM_Guid);
+                area = profiles.Select(x => x.Area()).Sum();
             }
-
-            if (duct.SectionProperty.SectionProfile.InsulationProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No InsulationProfile detected for object " + duct.BHoM_Guid);
-            }
-
-            if (duct.SectionProperty.SectionProfile.LiningProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No LiningProfile detected for object " + duct.BHoM_Guid);
-            }
-
-            if (elementSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
-            }
-
-            if (insulationSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
-            }
-
-            if (liningSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
-            }
-
-            return ((length * elementSolidArea) + (length * insulationSolidArea) + (length * liningSolidArea));
-        }
-
-        /***************************************************/
-
-        [Description("Queries the solid volume of a Pipe by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
-        [Input("pipe", "The Pipe to query solid volume.")]
-        [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
-
-        public static double SolidVolume(this Pipe pipe)
-        {
-            double length = pipe.Length();
-            double elementSolidArea = pipe.SectionProperty.ElementSolidArea;
-            double insulationSolidArea = pipe.SectionProperty.InsulationSolidArea;
-            double liningSolidArea = pipe.SectionProperty.LiningSolidArea;
 
             if (length <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
+                BH.Engine.Reflection.Compute.RecordError("The object has no length. Returning Double NaN.");
                 return double.NaN;
             }
 
-            if (pipe.SectionProperty.SectionProfile.ElementProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + pipe.BHoM_Guid);
-            }
-
-            if (pipe.SectionProperty.SectionProfile.InsulationProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No InsulationProfile detected for object " + pipe.BHoM_Guid);
-            }
-
-            if (pipe.SectionProperty.SectionProfile.LiningProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No LiningProfile detected for object " + pipe.BHoM_Guid);
-            }
-
-            if (elementSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
-            }
-
-            if (insulationSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
-            }
-
-            if (liningSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
-            }
-
-            return ((length * elementSolidArea) + (length * insulationSolidArea) + (length * liningSolidArea));
-        }
-
-        /***************************************************/
-
-        [Description("Queries the solid volume of a WireSegment by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
-        [Input("wireSegment", "The WireSegment to query solid volume.")]
-        [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
-
-        public static double SolidVolume(this WireSegment wireSegment)
-        {
-            double length = wireSegment.Length();
-            double elementSolidArea = wireSegment.SectionProperty.ElementSolidArea;
-            double insulationSolidArea = wireSegment.SectionProperty.InsulationSolidArea;
-            double liningSolidArea = wireSegment.SectionProperty.LiningSolidArea;
-
-            if (length <= 0)
-            {
-                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
-                return double.NaN;
-            }
-
-            if (wireSegment.SectionProperty.SectionProfile.ElementProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + wireSegment.BHoM_Guid);
-            }
-
-            if (wireSegment.SectionProperty.SectionProfile.InsulationProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No InsulationProfile detected for object " + wireSegment.BHoM_Guid);
-            }
-
-            if (wireSegment.SectionProperty.SectionProfile.LiningProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No LiningProfile detected for object " + wireSegment.BHoM_Guid);
-            }
-
-            if (elementSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
-            }
-
-            if (insulationSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
-            }
-
-            if (liningSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
-            }
-
-            return ((length * elementSolidArea) + (length * insulationSolidArea) + (length * liningSolidArea));
-        }
-
-        /***************************************************/
-
-        [Description("Queries the solid volume of a WireSegment by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
-        [Input("wireSegment", "The WireSegment to query solid volume.")]
-        [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
-
-        public static double SolidVolume(this CableTray cableTray)
-        {
-            double length = cableTray.Length();
-            double elementSolidArea = cableTray.SectionProperty.ElementSolidArea;
-
-            if (length <= 0)
-            {
-                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
-                return double.NaN;
-            }
-
-            if (cableTray.SectionProperty.SectionProfile.ElementProfile == null)
-            {
-                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + cableTray.BHoM_Guid);
-            }
-
-            if (elementSolidArea <= 0)
-            {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
-            }
-
-            return length * elementSolidArea;
+            return (length * area);
         }
 
         /***************************************************/

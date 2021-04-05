@@ -25,6 +25,7 @@ using BH.oM.MEP.System;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.MEP.System.SectionProperties;
+using System.Collections.Generic;
 
 namespace BH.Engine.MEP
 {
@@ -36,16 +37,16 @@ namespace BH.Engine.MEP
         [Description("Creates a Duct object. Material that flows through this Duct can be established at the system level.")]
         [Input("line", "A line that determines the Duct's length and direction.")]
         [Input("flowRate", "The volume of fluid being conveyed by the Duct per second (m3/s).")]
-        [Input("sectionProperty", "Provide a ductSectionProperty to prepare a composite Duct section for accurate capacity and spatial quality.")]
+        [Input("sectionProfile", "Provide a sectionProfile to prepare a composite Duct section for accurate capacity and spatial quality.")]
         [Input("orientationAngle", "This is the Duct's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
         [Output("duct", "A duct object is a passageway which conveys material (typically air).")]
-        public static Duct Duct(Line line, double flowRate = 0, DuctSectionProperty sectionProperty = null, double orientationAngle = 0)
+        public static Duct Duct(Line line, double flowRate = 0, List<SectionProfile> sectionProfile = null, double orientationAngle = 0)
         {
             return new Duct
             {
-                StartPoint = (Point)line.Start,
-                EndPoint = (Point)line.End,
-                SectionProperty = sectionProperty,
+                StartPoint = (Node)line.Start,
+                EndPoint = (Node)line.End,
+                SectionProfile = sectionProfile,
                 OrientationAngle = orientationAngle,
             };
         }

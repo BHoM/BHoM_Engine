@@ -25,6 +25,7 @@ using BH.oM.MEP.System;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.MEP.System.SectionProperties;
+using System.Collections.Generic;
 
 namespace BH.Engine.MEP
 {
@@ -36,15 +37,15 @@ namespace BH.Engine.MEP
         [Description("Creates a Wire object. Material that flows through this Pipe can be established at the system level.")]
         [Input("line", "A line that determines the Wire's length and direction.")]
         [Input("flowRate", "The volume of fluid being conveyed by the Wire per second (m3/s).")]
-        [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Wire section for accurate capacity and spatial quality.")]
+        [Input("sectionProfile", "Provide a sectionProfile to prepare a composite Wire section for accurate capacity and spatial quality.")]
         [Output("wireSegment", "Wire object to work within an MEP systems.")]
-        public static WireSegment WireSegment(Line line, double flowRate = 0, WireSectionProperty sectionProperty = null)
+        public static WireSegment WireSegment(Line line, double flowRate = 0, List<SectionProfile> sectionProfile = null)
         {
             return new WireSegment
             {
-                StartPoint = (Point)line.Start,
-                EndPoint = (Point)line.End,
-                SectionProperty = sectionProperty,
+                StartPoint = (Node)line.Start,
+                EndPoint = (Node)line.End,
+                SectionProfile = sectionProfile,
             };
         }
         /***************************************************/

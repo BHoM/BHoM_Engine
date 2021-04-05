@@ -21,40 +21,35 @@
  */
 
 using System.ComponentModel;
-using BH.oM.MEP.System.MaterialFragments;
 using BH.oM.MEP.System.SectionProperties;
-using BH.Engine.Spatial;
-using BH.Engine.Geometry;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Physical.Materials;
+using BH.oM.MEP.System;
+using System.Collections.Generic;
+using BH.oM.MEP.System.ConnectionProperties;
 
 namespace BH.Engine.MEP
 {
     public static partial class Create
     {
         /***************************************************/
-        /****               Public Methods              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Creates a composite Cable Tray sectionProfile.")]
-        [Input("material", "A base ShapeProfile upon which to base the composite section.")]
-        [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
-        [Output("cableTraySectionProperty", "Cable Tray Section property used to provide accurate Cable Tray assembly and capacities.")]
-        public static CableTraySectionProperty CableTraySectionProperty(Material material, SectionProfile sectionProfile = null, string name = "")
+        [Description("Creates a cableTray object. Material that flows through this cableTray can be established at the system level.")]
+        [Input("line", "A line that determines the cableTray's length and direction.")]
+        [Input("sectionProfile", "Provide a sectionProfile to prepare a composite cableTray section for accurate capacity and spatial quality.")]
+        [Input("connectionProperty", "The connection properties of the element.")]
+        [Output("cableTray", "A CableTray object is a passageway which conveys material (typically cables).")]
+
+        public static CableTray cableTray(Line line, List<SectionProfile> sectionProfile = null, ConnectionProperty connectionProperty = null)
         {
-            double elementSolidArea = sectionProfile.ElementProfile.Area();
-            double elementVoidArea = sectionProfile.ElementProfile.VoidArea();          
-
-            CableTraySectionProperty property = new CableTraySectionProperty(material, sectionProfile, elementSolidArea, elementVoidArea);
-
-            if (property == null)
+            return new CableTray
             {
-                BH.Engine.Reflection.Compute.RecordError("Insufficient information to create a CableTraySectionProperty. Please ensure you have all required inputs.");
-                return null;
-            }
-
-            property.Name = name;
-            
-            return property;
+                StartPoint = (Node)line.Start,
+                EndPoint = (Node)line.End,
+                ConnectionProperty = connectionProperty,
+                SectionProfile = sectionProfile,
+            };
         }
         /***************************************************/
     }
