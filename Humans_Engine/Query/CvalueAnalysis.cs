@@ -38,7 +38,6 @@ namespace BH.Engine.Humans.ViewQuality
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.Humans.ViewQuality.Query.CvalueAnalysis(BH.oM.Humans.ViewQuality.Audience, BH.oM.Humans.ViewQuality.CvalueSettings, BH.oM.Geometry.Polyline)")]
         [Description("Evaluate Cvalues for a single Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions")]
         [Input("audience", "Audience to evaluate")]
         [Input("settings", "CvalueSettings to configure the evaluation")]
@@ -52,7 +51,6 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.Humans.ViewQuality.Query.CvalueAnalysis(System.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQuality.CvalueSettings, BH.oM.Geometry.Polyline)")]
         [Description("Evaluate Cvalues for a List of Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions")]
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "CvalueSettings to configure the evaluation.")]

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -37,7 +37,6 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.Structure.Compute.OrientationAngleBar(BH.oM.Geometry.Vector, BH.oM.Geometry.Line)")]
         [Description("Calculates the orientation angle of a linear element based on a normal vector and a centreline.")]
         [Input("normal", "Vector to be used as normal of the linear element. This vector should generally be orthogonal to the element, if it is not, it will be made orthogonal by projecting it to the section plane of the element (a plane that has that element tangent as its normal). This means that the Normal cannot be paralell to the Tangent of the element. \n" +
                          "Vector will be used to determine the orientation angle of the element. This is done by measuring the counter clockwise angle in the section plane of the element between a reference Vector and the provided Vector. For a non-vertical element, the reference vector will be the global Z-axis. For a vertical element the reference vector will be a vector that is orthogonal to the tangent vector of the element and the global Y-axis.")]
