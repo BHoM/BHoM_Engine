@@ -48,6 +48,12 @@ namespace BH.Engine.Environment
         [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Opening opening)
         {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null opening.");
+                return null;
+            }
+
             return opening.Polyline().ISubParts().Cast<IElement1D>().ToList();
         }
 
@@ -56,6 +62,12 @@ namespace BH.Engine.Environment
         [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Panel panel)
         {
+            if (panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null panel.");
+                return null;
+            }
+
             return panel.Polyline().ISubParts().Cast<IElement1D>().ToList();
         }
 
@@ -64,6 +76,12 @@ namespace BH.Engine.Environment
         [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Space space)
         {
+            if (space == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null space.");
+                return null;
+            }
+
             return space.Perimeter.ISubParts().Cast<IElement1D>().ToList();
         }
     }

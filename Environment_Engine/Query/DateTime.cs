@@ -47,6 +47,12 @@ namespace BH.Engine.Environment
         [Output("dateTime", "A C# DateTime object with the values from the SpaceTime object")]
         public static DateTime DateTime(this SpaceTime spaceTime)
         {
+            if(spaceTime == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the date/time of a null space time object.");
+                return System.DateTime.Now;
+            }
+
             return spaceTime.Time.DateTime();
         }
 
@@ -55,6 +61,12 @@ namespace BH.Engine.Environment
         [Output("dateTime", "A C# DateTime object with the values from the Time object")]
         public static DateTime DateTime(this Time time)
         {
+            if(time == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the date/time of a null time object.");
+                return System.DateTime.Now;
+            }
+
             return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second, time.Millisecond);
         }
     }

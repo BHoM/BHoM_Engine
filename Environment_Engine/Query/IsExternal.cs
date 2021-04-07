@@ -44,6 +44,12 @@ namespace BH.Engine.Environment
         [Output("isExternal", "True if the panel is externally facing, false otherwise")]
         public static bool IsExternal(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a panel is external or not if it is null.");
+                return false;
+            }
+
             return panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal; //TODO: Put a more robust check of whether the element is external or not in...
         }
     }

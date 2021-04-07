@@ -44,6 +44,12 @@ namespace BH.Engine.Environment
         [Output("points", "A collection of BHoM Geometry Points which are the vertices of the panel")]
         public static List<Point> Vertices(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the vertices of a null panel.");
+                return null;
+            }
+
             return panel.Polyline().IControlPoints();
         }
 
@@ -52,6 +58,12 @@ namespace BH.Engine.Environment
         [Output("points", "A collection of BHoM Geometry Points which are the vertices of the space")]
         public static List<Point> Vertices(this List<Panel> panelsAsSpace)
         {
+            if(panelsAsSpace == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the verticies of panels that are null.");
+                return null;
+            }
+
             List<Point> vertexPts = new List<Point>();
 
             foreach (Panel be in panelsAsSpace)

@@ -108,6 +108,9 @@ namespace BH.Engine.Environment
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
         public static bool HasMergeablePropertiesWith(Node element, Node other)
         {
+            if(element == null || other == null)
+                return false; //If either node is null, then it can probably can't have its properties merged
+
             return element.ID == other.ID; //If the IDs match, then they can be merged assuming their geometrical placement is the same
         }
 

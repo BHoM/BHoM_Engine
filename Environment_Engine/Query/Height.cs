@@ -47,6 +47,12 @@ namespace BH.Engine.Environment
         [Output("height", "The height of the environment object")]
         public static double Height(this IEnvironmentObject environmentObject)
         {
+            if(environmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null environment object.");
+                return -1;
+            }
+
             return Height(environmentObject as dynamic);
         }
 
@@ -55,6 +61,12 @@ namespace BH.Engine.Environment
         [Output("height", "The height of the panel")]
         public static double Height(this Panel panel)
         {
+            if (panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null panel.");
+                return -1;
+            }
+
             return panel.Polyline().Height();
         }
 
@@ -63,6 +75,12 @@ namespace BH.Engine.Environment
         [Output("height", "The height of the opening")]
         public static double Height(this Opening opening)
         {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null opening.");
+                return -1;
+            }
+
             return opening.Polyline().Height();
         }
 
@@ -71,6 +89,12 @@ namespace BH.Engine.Environment
         [Output("height", "The height of the curve based on the difference in z values for its bounding box")]
         public static double Height(this ICurve curve)
         {
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null curve.");
+                return -1;
+            }
+
             BoundingBox bBox = curve.IBounds();
             return (bBox.Max.Z - bBox.Min.Z);
         }
