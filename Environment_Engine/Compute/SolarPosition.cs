@@ -47,6 +47,9 @@ namespace BH.Engine.Environment
         [Output("sun", "The sun with calculated position")]
         public static Sun SolarPosition(this SpaceTime spaceTime)
         {
+            if (spaceTime == null)
+                return null;
+
             double latitude = spaceTime.Location.Latitude;
             double longitude = spaceTime.Location.Longitude;
             double utcOffset = spaceTime.Location.UtcOffset;

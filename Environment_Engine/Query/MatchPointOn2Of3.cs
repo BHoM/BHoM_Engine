@@ -42,6 +42,12 @@ namespace BH.Engine.Environment
         [Output("doPointsMatch", "True if the two points match on 2 out of 3 axes, false otherwise")]
         public static bool MatchPointOn2Of3(this Point point, Point comparePoint)
         {
+            if(point == null || comparePoint == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query whether two points match on 2 out of 3 axes if either point is null.");
+                return false;
+            }
+
             bool match2 = false;
             if (point.X == comparePoint.X)
             {
