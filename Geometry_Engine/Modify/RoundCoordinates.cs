@@ -291,20 +291,31 @@ namespace BH.Engine.Geometry
         [Output("surface", "The modified BHoM Geometry PlanarSurface.")]
         public static PlanarSurface RoundCoordinates(this PlanarSurface planarSurface, int decimalPlaces = 6)
         {
-            Vector normal = planarSurface.Normal().Normalise();
+            Vector normal = planarSurface.FitPlane().Normal;
 
-            if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
-                Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
-                Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
+            if (planarSurface.IsPlanar())
             {
-                Plane plane = new Plane() { Origin = planarSurface.ExternalBoundary.IStartPoint().RoundCoordinates(decimalPlaces), Normal = normal.RoundCoordinates(0) };
-                ICurve externalBoundary = planarSurface.ExternalBoundary.IProject(plane).IRoundCoordinates(decimalPlaces);
-                List<ICurve> internalBoundaries = planarSurface.InternalBoundaries.Select(x => x.IProject(plane).IRoundCoordinates(decimalPlaces)).ToList();
+                if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
+                    Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
+                    Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
+                {
+                    Plane plane = new Plane() { Origin = planarSurface.ExternalBoundary.IStartPoint().RoundCoordinates(decimalPlaces), Normal = normal.RoundCoordinates(0) };
+                    ICurve externalBoundary = planarSurface.ExternalBoundary.IProject(plane).IRoundCoordinates(decimalPlaces);
+                    List<ICurve> internalBoundaries = planarSurface.InternalBoundaries.Select(x => x.IProject(plane).IRoundCoordinates(decimalPlaces)).ToList();
 
-                return Create.PlanarSurface(externalBoundary, internalBoundaries);
+                    return Create.PlanarSurface(externalBoundary, internalBoundaries);
+                }
+            }
+            else
+            {
+                ICurve externalBoundary = planarSurface.ExternalBoundary.IRoundCoordinates(decimalPlaces);
+                List<ICurve> internalBoundaries = planarSurface.InternalBoundaries.Select(x => x.IRoundCoordinates(decimalPlaces)).ToList();
+                PlanarSurface newSurface = Create.PlanarSurface(externalBoundary, internalBoundaries);
+
+                return newSurface ?? newSurface;
             }
 
-            Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface that is not aligned with the global coordinate system cannot be achieved without risk of losing planarity. No action has been taken.");
+            Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface couldn't be achieved without losing planarity. No action has been taken.");
             return planarSurface;
         }
 
