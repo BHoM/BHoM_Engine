@@ -126,7 +126,7 @@ namespace BH.Engine.Humans.ViewQuality
             Plane viewClip = Geometry.Create.Plane(viewClipOrigin, viewVect);
 
             //get the view cone
-            result.ViewCone = Create.ViewCone(viewY, viewX, shiftOrigin, 1, m_AvalueSettings.ConeType).ConeBoundary[0];
+            result.ViewCone = m_AvalueSettings.EffectiveConeOfVision;
 
             //find part of activity area to project
             Polyline clippedArea = ReduceActivityArea(viewClip, activityArea);
