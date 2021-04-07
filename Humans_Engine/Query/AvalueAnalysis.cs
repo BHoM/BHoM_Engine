@@ -76,7 +76,8 @@ namespace BH.Engine.Humans.ViewQuality
 
             List<Avalue> results = new List<Avalue>();
             KDTree<Spectator> spectatorTree = null;
-            
+            if (!SetGlobals(settings))
+                return results;
 
             if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
 
@@ -114,19 +115,23 @@ namespace BH.Engine.Humans.ViewQuality
             
             Vector viewY = Geometry.Query.CrossProduct(viewVect, rowV);
             Vector viewX = Geometry.Query.CrossProduct(viewVect, viewY);
+            //viewX reversed to ensure cartesian Z matches the view direction
+            viewX = viewX.Reverse();
             viewX = viewX.Normalise();
             viewY = viewY.Normalise();
-            //local cartesian
-            Cartesian local = Geometry.Create.CartesianCoordinateSystem(spectator.Head.PairOfEyes.ReferenceLocation,viewX,viewY);
-
             viewVect = viewVect.Normalise();
 
-            //planes need orientation
-            Plane viewPlane = m_AvalueSettings.EffectiveConeOfVision.FitPlane();
+            //local cartesian
+            Cartesian local = Geometry.Create.CartesianCoordinateSystem(spectator.Head.PairOfEyes.ReferenceLocation,viewX,viewY);
 
             //get the view cone
             TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
             result.ViewCone = m_AvalueSettings.EffectiveConeOfVision.Transform(transform);
+
+            //planes where the calculation takes place
+            Plane viewPlane = result.ViewCone.FitPlane();
+            //make sure normal is viewvect
+            viewPlane.Normal = viewVect;
 
             //find part of activity area to project
             Polyline clippedArea = ReduceActivityArea(viewPlane, activityArea);
@@ -173,8 +178,6 @@ namespace BH.Engine.Humans.ViewQuality
                 //if distance to view plane is in range
                 if (s.Head.PairOfEyes.ReferenceLocation.Distance(p) <= m_AvalueSettings.FarClippingPlaneDistance)
                 {
-                    if (s.HeadOutline.ControlPoints.Count == 0)
-                        s.HeadOutline = Create.GetHeadOutline(s.Head);
 
                     Polyline projectedHead = ProjectPolylineToPlane(viewPlane, s.HeadOutline, current.Head.PairOfEyes.ReferenceLocation);
 
