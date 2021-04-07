@@ -62,6 +62,11 @@
     <Reference Include="Humans_oM">
       <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
     </Reference>
+    <Reference Include="Reflection_Engine, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>

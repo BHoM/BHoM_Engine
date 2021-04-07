@@ -30,6 +30,7 @@ using System.IO;
 using BH.Engine.Base;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -72,9 +73,10 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
+
             List<Avalue> results = new List<Avalue>();
             KDTree<Spectator> spectatorTree = null;
-            m_AvalueSettings = settings;
+            
 
             if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
 
@@ -114,22 +116,20 @@ namespace BH.Engine.Humans.ViewQuality
             Vector viewX = Geometry.Query.CrossProduct(viewVect, viewY);
             viewX = viewX.Normalise();
             viewY = viewY.Normalise();
+            //local cartesian
+            Cartesian local = Geometry.Create.CartesianCoordinateSystem(spectator.Head.PairOfEyes.ReferenceLocation,viewX,viewY);
 
             viewVect = viewVect.Normalise();
-            Vector shift = viewVect * m_AvalueSettings.EyeFrameDist;
-
-            Point shiftOrigin = spectator.Head.PairOfEyes.ReferenceLocation + shift;
-            Point viewClipOrigin = spectator.Head.PairOfEyes.ReferenceLocation + 2 * shift;
 
             //planes need orientation
-            Plane viewPlane = Geometry.Create.Plane(shiftOrigin, viewVect);
-            Plane viewClip = Geometry.Create.Plane(viewClipOrigin, viewVect);
+            Plane viewPlane = m_AvalueSettings.EffectiveConeOfVision.FitPlane();
 
             //get the view cone
-            result.ViewCone = m_AvalueSettings.EffectiveConeOfVision;
+            TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
+            result.ViewCone = m_AvalueSettings.EffectiveConeOfVision.Transform(transform);
 
             //find part of activity area to project
-            Polyline clippedArea = ReduceActivityArea(viewClip, activityArea);
+            Polyline clippedArea = ReduceActivityArea(viewPlane, activityArea);
 
             //project the pitch
             result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
@@ -143,7 +143,7 @@ namespace BH.Engine.Humans.ViewQuality
             //clip heads in front
             if (m_AvalueSettings.CalculateOcclusion)
             {
-                List<Spectator> infront = GetSpectatorsInfront(spectator, tree, m_AvalueSettings.ViewConeAngle);
+                List<Spectator> infront = GetSpectatorsInfront(spectator, tree, m_ViewConeAngle);
                 if (infront.Count > 0)
                 {
                     
@@ -245,10 +245,52 @@ namespace BH.Engine.Humans.ViewQuality
         }
 
         /***************************************************/
+
+        private static bool SetGlobals(AvalueSettings settings)
+        {
+            m_AvalueSettings = settings;
+            
+            if (m_AvalueSettings.EffectiveConeOfVision.ControlPoints.Count == 0)
+            {
+                List<Point> points = new List<Point>()
+                {
+                    Geometry.Create.Point(-0.0575,-0.0575,0.1),
+                    Geometry.Create.Point( 0.0575,-0.0575,0.1),
+                    Geometry.Create.Point( 0.0575, 0.0575,0.1),
+                    Geometry.Create.Point(-0.0575, 0.0575,0.1),
+                    Geometry.Create.Point(-0.0575,-0.0575,0.1)
+                };
+
+                m_AvalueSettings.EffectiveConeOfVision = Geometry.Create.Polyline(points);
+                Reflection.Compute.RecordNote("Default Cone Of Vision is in use as no Cone Of Vision was provided");
+            }
+
+            if(!m_AvalueSettings.EffectiveConeOfVision.IsPlanar() || !m_AvalueSettings.EffectiveConeOfVision.IsPlanar())
+            {
+                Reflection.Compute.RecordError("Cone Of Vision should be planar and closed.");
+                return false;
+            }
+            //get the view angle from the cone
+            double halfAngle = double.MinValue;
+            foreach(Point p in m_AvalueSettings.EffectiveConeOfVision.ControlPoints)
+            {
+                //project to XZ and make vector
+
+                Vector v = Geometry.Create.Vector(new Point(), p.Project(Plane.XZ));
+                double a = Geometry.Query.Angle(Vector.ZAxis, v);
+                if (a > halfAngle)
+                    halfAngle = a;
+            }
+            m_ViewConeAngle = halfAngle * 2;
+            return true;
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
         private static AvalueSettings m_AvalueSettings;
+        private static double m_ViewConeAngle;
 
     }
 }
