@@ -67,29 +67,20 @@ namespace BH.Engine.Humans.ViewQuality
                 Reflection.Compute.RecordError("The reference headOutline must be closed and planar.");
                 return null;
             }
-            //set local orientation
-            Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, viewDirection);
-            Vector viewY = Geometry.Query.CrossProduct(viewDirection, rowVector);
-            Vector viewX = Geometry.Query.CrossProduct(viewDirection, viewY);
-            //viewX reversed to ensure cartesian Z matches the view direction
-            viewX = viewX.Reverse();
-            viewX = viewX.Normalise();
-            viewY = viewY.Normalise();
-            //local cartesian
-            Cartesian local = Geometry.Create.CartesianCoordinateSystem(location, viewX, viewY);
-
-            //transform the reference head outline
-            TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
-            headOutline = headOutline.Transform(transform);
 
             //create the head
             Head head = Humans.Create.Head(location, viewDirection);
 
-            return new Spectator
-            {
-                Head = head,
-                HeadOutline = headOutline
-            };
+            Spectator spectator = new Spectator() { Head = head };
+
+            //local cartesian
+            Cartesian local = spectator.Cartesian();
+
+            //transform the reference head outline
+            TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
+            spectator.HeadOutline = headOutline.Transform(transform);
+
+            return spectator;
         }
 
         
