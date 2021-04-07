@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -19,34 +19,36 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Humans.ViewQuality;
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Humans.ViewQuality
+namespace BH.Engine.Humans
 {
-    public static partial class Create
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-        [Description("Define the settings for an AvalueAnalysis")]
-        [Input("conetype", "Type of view cone")]
-        [Input("calcOcclusion", "Evalaute occulsion of the playing area by the spectators in front")]
-        
-        public static AvalueSettings AvalueSettings(ViewConeEnum conetype, bool calcOcclusion)
+
+        public static Cartesian Cartesian(this Spectator spectator)
         {
-            return new AvalueSettings
-            {
+            //set local orientation
+            Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, spectator.Head.PairOfEyes.ViewDirection);
+            Vector viewY = Geometry.Query.CrossProduct(spectator.Head.PairOfEyes.ViewDirection, rowVector);
+            Vector viewX = Geometry.Query.CrossProduct(spectator.Head.PairOfEyes.ViewDirection, viewY);
+            //viewX reversed to ensure cartesian Z matches the view direction
+            viewX = viewX.Reverse();
+            viewX = viewX.Normalise();
+            viewY = viewY.Normalise();
+            //local cartesian
+            Cartesian local = Geometry.Create.CartesianCoordinateSystem(spectator.Head.PairOfEyes.ReferenceLocation, viewX, viewY);
 
-                ConeType = conetype,
-
-                CalculateOcclusion = calcOcclusion,
-
-            };
+            return local;
         }
-        /***************************************************/
     }
 }
-
-

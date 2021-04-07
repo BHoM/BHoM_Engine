@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,69 +20,58 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Humans.ViewQuality;
-using BH.oM.Humans.BodyParts;
-using BH.Engine.Humans;
-using System.Collections.Generic;
-using System;
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-using BH.oM.Geometry.CoordinateSystem;
 using BH.Engine.Geometry;
+using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Humans.ViewQuality;
+using BH.oM.Reflection.Attributes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Humans.ViewQuality
+namespace BH.Engine.Humans.Modify
 {
-    public static partial class Create
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Create.Spectator(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
-        [Description("Create a Spectator.")]
-        [Input("location", "Point defining the Eye location.")]
-        [Input("viewDirection", "Vector defining the Eye view directions.")]
-        [Input("headOutline", "2d, closed, planar reference Polyline that represents the outline of the head. " +
+
+        [Description("Update the HeadOutline of a Spectator.")]
+        [Input("spectator", "Spectator to update.")]
+        [Input("newHeadOutline", "2d, closed, planar reference Polyline that represents the outline of the head. " +
             "The headOutline should be created in the XY plane where the origin represents the reference eye location of the spectator." +
             "If none provided the default is a simple Polyline based on an ellipse with major radius of 0.11 and minor radius of 0.078.")]
-        [Output("spectator", "Simple Spectator with location and view direction defined.")]
-        public static Spectator Spectator(Point location, Vector viewDirection, Polyline headOutline = null)
+        public static void HeadOutline(this Spectator spectator, Polyline newHeadOutline)
         {
-
-            if (headOutline == null)
-            {
-                List<Point> points = new List<Point>();
-                double theta = 2 * Math.PI / 16;
-                for (int i = 0; i <= 16; i++)
-                {
-                    double x = 0.078 * Math.Cos(theta * i);
-                    double y = 0.110 * Math.Sin(theta * i);
-                    points.Add(Geometry.Create.Point(x, y, 0));
-                }
-                headOutline = Geometry.Create.Polyline(points);
-            }
-
-            if (!headOutline.IsPlanar() || !headOutline.IsClosed())
+            if (!newHeadOutline.IsPlanar() || !newHeadOutline.IsClosed())
             {
                 Reflection.Compute.RecordError("The reference headOutline must be closed and planar.");
-                return null;
+                return;
             }
-
-            //create the head
-            Head head = Humans.Create.Head(location, viewDirection);
-
-            Spectator spectator = new Spectator() { Head = head };
-
             //local cartesian
             Cartesian local = spectator.Cartesian();
 
             //transform the reference head outline
             TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
-            spectator.HeadOutline = headOutline.Transform(transform);
+            spectator.HeadOutline = newHeadOutline.Transform(transform);
 
-            return spectator;
         }
 
+        /***************************************************/
 
+        [Description("Update the HeadOutlines of all Spectators in an Audience.")]
+        [Input("audience", "Audience to update.")]
+        [Input("newHeadOutline", "2d, closed, planar reference Polyline that represents the outline of the head. " +
+        "The headOutline should be created in the XY plane where the origin represents the reference eye location of the spectator." +
+        "If none provided the default is a simple Polyline based on an ellipse with major radius of 0.11 and minor radius of 0.078.")]
+        public static void HeadOutline(this Audience audience, Polyline newHeadOutline)
+        {
+            foreach (Spectator spectator in audience.Spectators)
+                spectator.HeadOutline(newHeadOutline);
+        }
     }
 }

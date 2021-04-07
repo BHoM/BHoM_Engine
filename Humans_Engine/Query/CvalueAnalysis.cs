@@ -204,7 +204,7 @@ namespace BH.Engine.Humans.ViewQuality
         private static double GetCValue(Spectator current, KDTree<Spectator> tree, Point focalPoint)
         {
             //get spectators in front
-            List<Spectator> infront = GetSpectatorsInfront(current, tree, focalPoint);
+            List<Spectator> infront = GetSpectatorsInfront(current, tree, m_CvalueSettings.ViewConeAngle);
             if (infront.Count == 0)
             {
                 m_CvalueExists = false;
@@ -246,13 +246,13 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static List<Spectator> GetSpectatorsInfront(Spectator current, KDTree<Spectator> tree, Point focalPoint)
+        private static List<Spectator> GetSpectatorsInfront(Spectator current, KDTree<Spectator> tree, double viewConeAngle)
         {
             PairOfEyes viewer = current.Head.PairOfEyes;
 
             double[] query = { viewer.ReferenceLocation.X, viewer.ReferenceLocation.Y, viewer.ReferenceLocation.Z };
             //first get the neighbourhood around the current spec
-            var neighbours = tree.Nearest(query, neighbors:16);
+            var neighbours = tree.Nearest(query, neighbors: 16);
 
             List<Spectator> infront = new List<Spectator>();
 
@@ -266,7 +266,7 @@ namespace BH.Engine.Humans.ViewQuality
 
                 //point in plane within +-coneAngle in direction viewer is looking
                 double testAngle = Geometry.Query.Angle(toNeighbour, viewer.ViewDirection);
-                if (testAngle < m_CvalueSettings.ViewConeAngle / 2)
+                if (testAngle < viewConeAngle / 2)
                     infront.Add(n.Node.Value);
             }
             return infront;
