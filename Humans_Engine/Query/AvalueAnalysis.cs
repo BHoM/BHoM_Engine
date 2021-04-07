@@ -31,6 +31,7 @@ using BH.Engine.Base;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Geometry.CoordinateSystem;
+using System.Threading.Tasks;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -41,10 +42,10 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         
         [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(BH.oM.Humans.ViewQuality.Audience, BH.oM.Humans.ViewQualityAvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
-        [Description("Evaluate Avalues for a single Audience")]
-        [Input("audience", "Audience to evaluate")]
-        [Input("settings", "AvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
+        [Description("Evaluate Avalues for a single Audience.")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("settings", "AvalueSettings to configure the evaluation.")]
+        [Input("activityArea", "ActivityArea to use in the evaluation.")]
         public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, focalPoint);
@@ -54,10 +55,10 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
 
         [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(System.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQualityAvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
-        [Description("Evaluate Avalues for a List of Audience")]
-        [Input("audience", "Audience to evaluate")]
-        [Input("settings", "AvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
+        [Description("Evaluate Avalues for a List of Audience.")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("settings", "AvalueSettings to configure the evaluation.")]
+        [Input("activityArea", "ActivityArea to use in the evaluation.")]
         public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
@@ -81,12 +82,13 @@ namespace BH.Engine.Humans.ViewQuality
 
             if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
 
-            foreach (Spectator s in audience.Spectators)
+            Parallel.ForEach(audience.Spectators, s =>
             {
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
                 Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
                 results.Add(ClipView(s, rowVector, viewVect, playingArea, spectatorTree));
-            }
+            });
+
             return results;
         }
 
@@ -101,7 +103,7 @@ namespace BH.Engine.Humans.ViewQuality
                 double[] pt = new double[] { s.Head.PairOfEyes.ReferenceLocation.X, s.Head.PairOfEyes.ReferenceLocation.Y, s.Head.PairOfEyes.ReferenceLocation.Z };
                 points.Add(pt);
             }
-            // To create a tree from a set of points, we use
+
             KDTree<Spectator> tree = KDTree.FromData<Spectator>(points.ToArray(),audience.Spectators.ToArray(),true);
 
             return tree;
@@ -265,7 +267,7 @@ namespace BH.Engine.Humans.ViewQuality
                 };
 
                 m_AvalueSettings.EffectiveConeOfVision = Geometry.Create.Polyline(points);
-                Reflection.Compute.RecordNote("Default Cone Of Vision is in use as no Cone Of Vision was provided");
+                Reflection.Compute.RecordNote("No Cone Of Vision was provided by the user the default Cone Of Vision has been created.");
             }
 
             if(!m_AvalueSettings.EffectiveConeOfVision.IsPlanar() || !m_AvalueSettings.EffectiveConeOfVision.IsPlanar())

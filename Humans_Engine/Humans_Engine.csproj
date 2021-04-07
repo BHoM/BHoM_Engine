@@ -96,7 +96,6 @@
     <Compile Include="Create\EyePositionParameters.cs" />
     <Compile Include="Query\Cartesian.cs" />
     <Compile Include="Query\CvalueAnalysis.cs" />
-    <Compile Include="Create\CvalueSettings.cs" />
     <Compile Include="Create\CvalueFocalMethodEnum\CvalueFocalMethod.cs" />
     <Compile Include="Query\EvalueAnalysis.cs" />
     <Compile Include="Create\EvalueSettings.cs" />
