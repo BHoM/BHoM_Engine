@@ -37,9 +37,9 @@ namespace BH.Engine.Environment
     public static partial class Modify
     {
         [Description("Assign generic constructions to a collection of Environment Panels based on their panel type. This will load a dataset of Generic Constructions and attempt to assign each generic construction to the panel based on the panel type. For example, panel type wall will be assigned the 'generic_wall' construction. WARNING: This will overwrite constructions hosted on objects passed.")]
-        [Input("panels", "A collection of Environment Panels to assign constructions to")]
+        [Input("panel", "A collection of Environment Panels to assign constructions to")]
         [Input("assignOpenings", "Flag to determine whether to assign generic constructions to openings hosted by the panels at the same time. Default is false, meaning openings will not be updated. If set to true then openings will receive generic constructions as well")]
-        [Output("panels", "A collection of Environment Panels with the generic constructions assigned")]
+        [Output("panel", "A collection of Environment Panels with the generic constructions assigned")]
         public static Panel AssignGenericConstructions(this Panel panel, bool assignOpenings = false)
         {
             if(panel == null)
@@ -95,8 +95,8 @@ namespace BH.Engine.Environment
         }
 
         [Description("Assign generic constructions to a collection of Environment Openings based on their opening type. This will load a dataset of Generic Constructions and attempt to assign each generic construction to the opening based on the opening type. For example, opening type Window will be assigned the 'generic_window' construction. WARNING: This will overwrite constructions hosted on objects passed.")]
-        [Input("openings", "A collection of Environment Openings to assign constructions to")]
-        [Output("openings", "A collection of Environment Openings with the generic constructions assigned")]
+        [Input("opening", "A collection of Environment Openings to assign constructions to")]
+        [Output("opening", "A collection of Environment Openings with the generic constructions assigned")]
         public static Opening AssignGenericConstructions(this Opening opening)
         {
             if (opening == null)
