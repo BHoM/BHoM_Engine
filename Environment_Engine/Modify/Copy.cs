@@ -43,6 +43,12 @@ namespace BH.Engine.Environment
         [Output("panel", "The copied Environment Panel")]
         public static Panel Copy(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot copy a null panel.");
+                return null;
+            }
+
             Panel aPanel = panel.ShallowClone(true);
             aPanel.ExternalEdges = new List<Edge>(panel.ExternalEdges);
             aPanel.Openings = new List<Opening>(panel.Openings);

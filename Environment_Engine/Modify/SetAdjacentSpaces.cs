@@ -43,6 +43,12 @@ namespace BH.Engine.Environment
         [Output("panel", "A modified Environment Panel with the provided space names listed as the connecting spaces")]
         public static Panel SetAdjancentSpaces(this Panel panel, List<string> spaceNames)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the adjacent spaces of a null panel.");
+                return panel;
+            }
+
             Panel clonedPanel = panel.DeepClone<Panel>();
             clonedPanel.ConnectedSpaces = spaceNames;
             return clonedPanel;

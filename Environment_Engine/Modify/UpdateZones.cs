@@ -41,6 +41,12 @@ namespace BH.Engine.Environment
         [Output("space", "Space with the updated zones.")]
         public static Space UpdateZones(this Space space, List<string> zones, bool replace = false)
         {
+            if(space == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot update the zones of a null space.");
+                return space;
+            }
+
             if (replace)
                 space.Zones = zones;
             else

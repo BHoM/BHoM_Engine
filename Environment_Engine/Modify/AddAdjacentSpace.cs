@@ -43,6 +43,12 @@ namespace BH.Engine.Environment
         [Output("panelsAsSpace", "A collection of modified Environment Panels with the provided space name listed as a connecting space")]
         public static List<Panel> AddAdjacentSpace(this List<Panel> panels, string spaceName)
         {
+            if(panels == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot add adjacent spaces to a null collection of panels.");
+                return panels;
+            }
+
             List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
             foreach(Panel p in clonedPanels)
             {
@@ -61,6 +67,12 @@ namespace BH.Engine.Environment
         [Output("panel", "A modified Environment Panel with the provided space name listed as a connecting space")]
         public static Panel AddAdjacentSpace(this Panel panel, string spaceName)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot add an adjacent space to a null panel.");
+                return panel;
+            }
+
             Panel clonedPanel = panel.DeepClone<Panel>();
             return AddAdjacentSpace(new List<Panel> { clonedPanel }, spaceName)[0];
         }

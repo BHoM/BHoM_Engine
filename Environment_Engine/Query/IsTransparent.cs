@@ -45,6 +45,12 @@ namespace BH.Engine.Environment
         [Output("isTransparent", "True if the material is transparent, false otherwise")]
         public static bool IsTransparent(this Material material)
         {
+            if(material == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the transparency of a null material.");
+                return false;
+            }
+
             if (material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() == null)
                 return false; //No Environment Material Fragment on this material
 
@@ -62,7 +68,7 @@ namespace BH.Engine.Environment
         [Output("isTransparent", "True if the material on the layer is transparent, false otherwise")]
         public static bool IsTransparent(this Layer layer)
         {
-            if (layer.Material == null)
+            if (layer == null || layer.Material == null)
                 return false;
 
             return layer.Material.IsTransparent();

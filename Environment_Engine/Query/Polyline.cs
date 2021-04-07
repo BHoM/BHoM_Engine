@@ -45,6 +45,12 @@ namespace BH.Engine.Environment
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline Polyline(this Edge edge)
         {
+            if(edge == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the polyline of a null edge.");
+                return null;
+            }
+
             return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
         }
 
@@ -71,6 +77,12 @@ namespace BH.Engine.Environment
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline Polyline(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the polyline of a null panel.");
+                return null;
+            }
+
             return panel.ExternalEdges.Polyline();
         }
 
@@ -79,6 +91,12 @@ namespace BH.Engine.Environment
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline Polyline(this Opening opening)
         {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the polyline of a null opening.");
+                return null;
+            }
+
             return opening.Edges.Polyline();
         }
 
@@ -87,6 +105,12 @@ namespace BH.Engine.Environment
         [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline Polyline(this IEnvironmentObject environmentObject)
         {
+            if(environmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the polyline of a null environment object.");
+                return null;
+            }
+
             return Polyline(environmentObject as dynamic);
         }
     }

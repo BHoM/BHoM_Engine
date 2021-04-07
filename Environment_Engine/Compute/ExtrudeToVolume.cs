@@ -49,6 +49,9 @@ namespace BH.Engine.Environment
         [PreviousInputNames("region", "room, space")]
         public static List<Panel> ExtrudeToVolume(this IRegion region, double height, double tolerance = BH.oM.Geometry.Tolerance.Angle)
         {
+            if (region == null)
+                return new List<Panel>();
+
             Polyline floor = region.Perimeter.ICollapseToPolyline(tolerance);
             return floor.ExtrudeToVolume(region.Name, height);
         }
@@ -60,6 +63,9 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panels which represent the closed volume of the space.")]
         public static List<Panel> ExtrudeToVolume(this Polyline pLine, string connectingSpaceName, double height)
         {
+            if (pLine == null)
+                return new List<Panel>();
+
             List<Panel> panels = new List<Panel>();
 
             Panel floorPanel = new Panel { ExternalEdges = pLine.ToEdges(), Type = PanelType.Floor };

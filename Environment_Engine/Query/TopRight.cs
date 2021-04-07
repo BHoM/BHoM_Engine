@@ -48,6 +48,18 @@ namespace BH.Engine.Environment
         [Output("TopRightPoint", "The top right most point of the panel")]
         public static Point TopRight(this Panel panel, List<Panel> panelsAsSpace)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the top right corner of a null panel.");
+                return null;
+            }
+
+            if(panelsAsSpace == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the top right corner of a panel without knowing the space it belongs to.");
+                return null;
+            }
+
             return panel.Polyline().TopRight(panelsAsSpace);
         }
 
@@ -57,6 +69,18 @@ namespace BH.Engine.Environment
         [Output("topRightPoint", "The top right most point of the panel")]
         public static Point TopRight(this Polyline polyline, List<Panel> panelsAsSpace)
         {
+            if(polyline == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the top right corner of a null polyline.");
+                return null;
+            }
+
+            if(panelsAsSpace == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the top right corner of a polyline without knowing the space it belongs to.");
+                return null;
+            }
+
             Vector normal = polyline.Normal();
             if (!polyline.NormalAwayFromSpace(panelsAsSpace))
                 normal = polyline.Flip().Normal();
