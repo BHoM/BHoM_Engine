@@ -86,7 +86,6 @@
     <Compile Include="Create\PairOfEyes.cs" />
     <Compile Include="Create\Audience.cs" />
     <Compile Include="Query\AvalueAnalysis.cs" />
-    <Compile Include="Create\AvalueSettings.cs" />
     <Compile Include="Create\EyePositionParameters.cs" />
     <Compile Include="Create\ViewConeEnum\ViewConeType.cs" />
     <Compile Include="Query\CvalueAnalysis.cs" />
