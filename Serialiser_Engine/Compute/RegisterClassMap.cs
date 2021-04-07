@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,6 +57,20 @@ namespace BH.Engine.Serialiser
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
+            }
+        }
+
+        /*******************************************/
+
+        public static void RegisterClassMaps(Assembly assembly)
+        {
+            if (assembly != null)
+            {
+                foreach (Type t in assembly.GetTypes())
+                {
+                    if (!t.IsInterface && !t.IsAbstract)
+                        RegisterClassMap(t);
+                }
             }
         }
 
