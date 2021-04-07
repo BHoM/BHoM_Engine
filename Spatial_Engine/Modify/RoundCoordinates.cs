@@ -21,7 +21,6 @@
  */
 
 using BH.Engine.Geometry;
-using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -66,17 +65,20 @@ namespace BH.Engine.Spatial
         [Output("element", "The modified IElement2D.")]
         public static IElement2D RoundCoordinates(this IElement2D element2d, int decimalPlaces = 6)
         {
-            Vector normal = element2d.Normal().Normalise();
-
-            if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
-                Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
-                Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
+            if (element2d.IIsPlanar())
             {
-                Plane plane = new Plane() { Origin = Geometry.Modify.RoundCoordinates(element2d.OutlineCurve().StartPoint(), decimalPlaces), Normal = normal.RoundCoordinates(0) };
+                Vector normal = element2d.FitPlane().Normal.Normalise();
 
-                element2d = element2d.ISetOutlineElements1D(element2d.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry().IProject(plane), decimalPlaces))).ToList());
+                if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
+                    Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
+                    Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
+                {
+                    Plane plane = new Plane() { Origin = Geometry.Modify.RoundCoordinates(element2d.OutlineCurve().StartPoint(), decimalPlaces), Normal = normal.RoundCoordinates(0) };
 
-                return element2d.ISetInternalElements2D(element2d.IInternalElements2D().Select(y => y.ISetOutlineElements1D(y.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry().IProject(plane), decimalPlaces))).ToList())).ToList());
+                    element2d = element2d.ISetOutlineElements1D(element2d.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry().IProject(plane), decimalPlaces))).ToList());
+
+                    return element2d.ISetInternalElements2D(element2d.IInternalElements2D().Select(y => y.ISetOutlineElements1D(y.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry().IProject(plane), decimalPlaces))).ToList())).ToList());
+                }
             }
             else
             {
@@ -88,7 +90,7 @@ namespace BH.Engine.Spatial
                     return newElement2d;
             }
 
-            Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface couldn't be achieved without losing planarity. No action has been taken.");
+            Reflection.Compute.RecordWarning("Rounding the coordinates of an IElement2D couldn't be achieved without losing planarity. No action has been taken.");
             return element2d;
         }
 
