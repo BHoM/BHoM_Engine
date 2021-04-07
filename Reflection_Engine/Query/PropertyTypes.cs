@@ -34,6 +34,12 @@ namespace BH.Engine.Reflection
 
         public static List<Type> PropertyTypes(this object obj, bool goDeep = false)
         {
+            if(obj == null)
+            {
+                Compute.RecordError("Cannot query the property types of a null object.");
+                return null;
+            }
+
             return obj.GetType().PropertyTypes(goDeep);
         }
 
@@ -41,6 +47,12 @@ namespace BH.Engine.Reflection
 
         public static List<Type> PropertyTypes(this Type type, bool goDeep = false)
         {
+            if(type == null)
+            {
+                Compute.RecordError("Cannot query the property types of a null type.");
+                return null;
+            }
+
             HashSet<Type> properties = new HashSet<Type>();
             foreach (var prop in type.GetProperties())
             {

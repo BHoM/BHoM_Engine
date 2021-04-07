@@ -43,6 +43,18 @@ namespace BH.Engine.Reflection
         [Output("result", "New object with its property changed to the new value")]
         public static object SetPropertyValue(this object obj, string propName, object value = null)
         {
+            if(obj == null)
+            {
+                Compute.RecordError("Cannot set the property value of a null object.");
+                return obj;
+            }
+
+            if(propName == null)
+            {
+                Compute.RecordError("Cannot set the property value where the property name is null.");
+                return obj;
+            }
+
             object toChange = obj;
             if (propName.Contains("."))
             {

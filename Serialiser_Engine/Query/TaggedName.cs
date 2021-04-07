@@ -32,6 +32,12 @@ namespace BH.Engine.Serialiser
 
         public static string TaggedName(this IBHoMObject obj)
         {
+            if(obj == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the tagged name of a null object.");
+                return "";
+            }
+
             string str = string.IsNullOrWhiteSpace(obj.Name) ? "" : obj.Name;
 
             if (obj.Tags.Count > 0)

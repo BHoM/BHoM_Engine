@@ -36,6 +36,24 @@ namespace BH.Engine.Serialiser
 
         public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypeNames)
         {
+            if(type == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null type.");
+                return null;
+            }
+            
+            if(methodName == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null method name.");
+                return null;
+            }
+
+            if(paramTypeNames == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null set of parameter type names.");
+                return null;
+            }
+
             List<MethodBase> methods;
             if (methodName == ".ctor")
                 methods = type.GetConstructors().ToList<MethodBase>();
@@ -129,6 +147,24 @@ namespace BH.Engine.Serialiser
 
         public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
         {
+            if (type == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null type.");
+                return null;
+            }
+
+            if (methodName == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null method name.");
+                return null;
+            }
+
+            if (paramTypes == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null set of parameter types.");
+                return null;
+            }
+
             MethodBase method = null;
             try
             {

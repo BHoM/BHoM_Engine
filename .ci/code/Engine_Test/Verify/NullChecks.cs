@@ -62,10 +62,10 @@ namespace BH.Test.Engine
 
             // Uncomment if you want the results written in a file for convenience
             //List<string> failingMethods = results.Where(x => x.Status == TestStatus.Error).Select(x => x.Description).ToList();
-            //File.WriteAllLines(@"C:\ProgramData\BHoM\MethodsFaillingNullChecks.txt", failingMethods);
+            //File.WriteAllLines(@"C:\Temp\MethodsFaillingNullChecks.txt", failingMethods);
 
             // Returns a summary result 
-            return new TestResult()
+            TestResult tr =  new TestResult()
             {
                 ID = "NullChecks",
                 Description = $"All methods are running the necessary null checks: {results.Count} methods available.",
@@ -74,6 +74,10 @@ namespace BH.Test.Engine
                 Information = results.Where(x => x.Status != TestStatus.Pass).ToList<ITestInformation>(),
                 UTCTime = DateTime.UtcNow,
             };
+
+            //File.WriteAllText(@"C:\ProgramData\BHoM\MethodsFaillingNullChecks.txt", tr.FullMessage());
+
+            return tr;
         }
 
         /*************************************/
