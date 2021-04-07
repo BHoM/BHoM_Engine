@@ -36,7 +36,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Description("Define the settings for an CvalueAnalysis")]
         [Input("ctype", "Method type for finding focal points")]
         [Input("defaultC", "Default Cvalue assigned to points with no spectators in front")]
-        
+        [Output("settings", "CvalueSettings")]
         public static CvalueSettings CvalueSettings(CvalueFocalMethodEnum ctype, double defaultC = 0.09)
         {
             return new CvalueSettings

@@ -38,7 +38,7 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.Spectator(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Create.Spectator(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Create a Spectator.")]
         [Input("location", "Point defining the Eye location.")]
         [Input("viewDirection", "Vector defining the Eye view directions.")]
