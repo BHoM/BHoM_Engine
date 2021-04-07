@@ -50,6 +50,12 @@ namespace BH.Engine.Environment
         [Output("level", "The Setting Out Level of the panel")]
         public static Level Level(this Panel panel, IEnumerable<Level> levels)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the level of a null panel.");
+                return null;
+            }
+
             double min = panel.MinimumLevel();
             double max = panel.MaximumLevel();
 

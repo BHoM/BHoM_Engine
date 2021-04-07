@@ -63,6 +63,12 @@ namespace BH.Engine.Environment
         [Output("minimumLevel", "The minimum level of the z axis of the panel")]
         public static double MinimumLevel(this Panel panel)
         {
+            if (panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the minimum level of a null panel.");
+                return -1;
+            }
+
             return panel.Polyline().MinimumLevel();
         }
 
@@ -71,6 +77,12 @@ namespace BH.Engine.Environment
         [Output("minimumLevel", "The minimum level of the z axis of the opening")]
         public static double MinimumLevel(this Opening opening)
         {
+            if (opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the minimum level of a null opening.");
+                return -1;
+            }
+
             return opening.Polyline().MinimumLevel();
         }
     }

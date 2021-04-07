@@ -50,6 +50,12 @@ namespace BH.Engine.Environment
         [Output("normalAwayFromSpace", "True if the normal of the panel is facing away from the space, false otherwise")]
         public static bool NormalAwayFromSpace(this Panel panel, List<Panel> panelsAsSpace, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query whether the normal of a panel is pointing away from its containing space if the panel itself is null.");
+                return false;
+            }
+
             return NormalAwayFromSpace(panel.Polyline(), panelsAsSpace, tolerance);
         }
 

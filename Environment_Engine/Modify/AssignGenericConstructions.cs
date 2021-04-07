@@ -42,6 +42,12 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of Environment Panels with the generic constructions assigned")]
         public static Panel AssignGenericConstructions(this Panel panel, bool assignOpenings = false)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot assign the generic constructions to a null panel.");
+                return null;
+            }
+
             Panel cloned = panel.DeepClone<Panel>();
 
             List<Construction> constructions = BH.Engine.Library.Query.Library("GenericConstructions").Select(x => x as Construction).ToList();
@@ -55,7 +61,6 @@ namespace BH.Engine.Environment
                 BH.Engine.Reflection.Compute.RecordWarning(string.Format("The construction for the panel with GUID {0} was not null and will be replaced with a generic construction", cloned.BHoM_Guid));
             else
                 BH.Engine.Reflection.Compute.RecordNote(string.Format("The construction for the panel with GUID {0} was automatically assigned a generic construction", cloned.BHoM_Guid));
-
 
             switch (cloned.Type)
             {
@@ -94,6 +99,12 @@ namespace BH.Engine.Environment
         [Output("openings", "A collection of Environment Openings with the generic constructions assigned")]
         public static Opening AssignGenericConstructions(this Opening opening)
         {
+            if (opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot assign the generic constructions to a null opening.");
+                return null;
+            }
+
             Opening cloned = opening.DeepClone<Opening>();
 
             List<Construction> constructions = BH.Engine.Library.Query.Library("GenericConstructions").Select(x => x as Construction).ToList();

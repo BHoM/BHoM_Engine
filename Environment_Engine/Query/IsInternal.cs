@@ -44,6 +44,12 @@ namespace BH.Engine.Environment
         [Output("isInternal", "True if the panel is internally facing, false otherwise")]
         public static bool IsInternal(this Panel panel)
         {
+            if (panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a panel is internal or not if it is null.");
+                return false;
+            }
+
             return panel.Type != PanelType.Roof && panel.Type != PanelType.WallExternal; //TODO: Put a more robust check of whether the element is internal or not in...
         }
     }

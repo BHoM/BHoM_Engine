@@ -46,6 +46,12 @@ namespace BH.Engine.Environment
         [Output("absorptance", "The total absorptance of all materials on the construction")]
         public static double Absorptance(this Construction construction)
         {
+            if(construction == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the absorptance of a null construction.");
+                return 0;
+            }
+
             double absorptance = 0.0;
             foreach (Layer l in construction.Layers)
                 absorptance += l.Absorptance();
@@ -58,7 +64,12 @@ namespace BH.Engine.Environment
         [Output("absorptance", "The absorptance of the material on the layer")]
         public static double Absorptance(this Layer layer)
         {
-            if (layer.Material == null) return 0.0;
+            if (layer == null || layer.Material == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the absorptance of a null layer or where the layer has a null material.");
+                return 0;
+            }
+
             return layer.Material.Absorptance();
         }
 
@@ -67,6 +78,12 @@ namespace BH.Engine.Environment
         [Output("absorptance", "The absorptance of the material")]
         public static double Absorptance(this Material material)
         {
+            if (material == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the absorptance of a null material.");
+                return 0;
+            }
+
             SolidMaterial materialProperties = material.Properties.Where(x => x is SolidMaterial).FirstOrDefault() as SolidMaterial;
             if (materialProperties == null) return 0.0;
 
