@@ -60,6 +60,20 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
+
+        public static void RegisterClassMaps(this Assembly assembly)
+        {
+            if (assembly != null)
+            {
+                foreach (Type t in assembly.GetTypes())
+                {
+                    if (!t.IsInterface && !t.IsAbstract)
+                        RegisterClassMap(t);
+                }
+            }
+        }
+
+        /*******************************************/
     }
 }
 
