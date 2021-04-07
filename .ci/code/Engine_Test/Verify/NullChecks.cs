@@ -61,8 +61,8 @@ namespace BH.Test.Engine
             int warningCount = results.Where(x => x.Status == TestStatus.Warning).Count();
 
             // Uncomment if you want the results written in a file for convenience
-            List<string> failingMethods = results.Where(x => x.Status == TestStatus.Error).Select(x => x.Description).ToList();
-            File.WriteAllLines(@"C:\ProgramData\BHoM\MethodsFaillingNullChecks.txt", failingMethods);
+            //List<string> failingMethods = results.Where(x => x.Status == TestStatus.Error).Select(x => x.Description).ToList();
+            //File.WriteAllLines(@"C:\ProgramData\BHoM\MethodsFaillingNullChecks.txt", failingMethods);
 
             // Returns a summary result 
             return new TestResult()
