@@ -39,6 +39,18 @@ namespace BH.Engine.Reflection
         [Output("abbreviation", "Abbreviated property name")]
         public static string PropertyAbbreviation(this object obj, string propName)
         {
+            if(obj == null)
+            {
+                Compute.RecordError("Cannot query the property abbreviation of a null object.");
+                return "";
+            }
+
+            if(propName == null)
+            {
+                Compute.RecordError("Cannot query the property abbreviation where the property name is null.");
+                return "";
+            }
+
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
 
             if (prop != null)

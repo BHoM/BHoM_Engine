@@ -33,6 +33,12 @@ namespace BH.Engine.Serialiser
 
         public static Type GenericTypeConstraint(this Type type)
         {
+            if(type == null)
+            {
+                Reflection.Compute.RecordError("Cannot query the generic type constraints when the type is null.");
+                return null;
+            }
+
             Type constraint = type.GetGenericParameterConstraints().FirstOrDefault();
 
             if (constraint == null)

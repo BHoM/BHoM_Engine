@@ -39,6 +39,12 @@ namespace BH.Engine.Reflection
         [Output("Dictionary where the keys are the names of the inputs, and the values their descriptions")]
         public static Dictionary<string,string> InputDescriptions(this MethodBase method)
         {
+            if(method == null)
+            {
+                Compute.RecordError("Cannot query the input descriptions of a null method.");
+                return null;
+            }
+
             Dictionary<string, string> descriptions = new Dictionary<string, string>();
             foreach (ParameterInfo info in method.GetParameters())
                 descriptions[info.Name] = info.Description();

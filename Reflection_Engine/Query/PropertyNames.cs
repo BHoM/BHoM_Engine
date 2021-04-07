@@ -35,6 +35,12 @@ namespace BH.Engine.Reflection
 
         public static List<string> PropertyNames(this object obj)
         {
+            if(obj == null)
+            {
+                Compute.RecordError("Cannot query the property names of a null object.");
+                return null;
+            }
+
             if (obj is CustomObject)
                 return PropertyNames(obj as CustomObject);
             else
@@ -45,6 +51,12 @@ namespace BH.Engine.Reflection
 
         public static List<string> PropertyNames(this Type type)
         {
+            if(type == null)
+            {
+                Compute.RecordError("Cannot query the property names of a null type.");
+                return null;
+            }
+
             List<string> names = new List<string>();
             foreach (var prop in type.GetProperties())
             {

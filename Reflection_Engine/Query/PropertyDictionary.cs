@@ -34,6 +34,12 @@ namespace BH.Engine.Reflection
 
         public static Dictionary<string, object> PropertyDictionary(this object obj)
         {
+            if(obj == null)
+            {
+                Compute.RecordError("Cannot query the property dictionary of a null object.");
+                return null;
+            }
+
             if (obj is CustomObject)
                 return PropertyDictionary(obj as CustomObject);
 
@@ -52,6 +58,12 @@ namespace BH.Engine.Reflection
 
         public static Dictionary<string, object> PropertyDictionary(this CustomObject obj)
         {
+            if(obj == null)
+            {
+                Compute.RecordError("Cannot query the property dictionary of a null custom object.");
+                return null;
+            }
+
             Dictionary<string, object> dic = new Dictionary<string, object>(obj.CustomData);
 
             if (!dic.ContainsKey("Name"))

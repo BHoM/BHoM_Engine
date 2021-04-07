@@ -44,6 +44,12 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "List of assemblies referenced by the input assembly.")]
         public static List<Assembly> UsedAssemblies(this Assembly assembly, bool onlyBHoM = false, bool goDeep = false)
         {
+            if(assembly == null)
+            {
+                Compute.RecordError("Cannot query the used assemblies from a null assembly.");
+                return null;
+            }
+
             try
             {
                 lock (m_GetAssembliesLock)
