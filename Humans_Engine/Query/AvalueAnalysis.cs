@@ -41,7 +41,7 @@ namespace BH.Engine.Humans.ViewQuality
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(BH.oM.Humans.ViewQuality.Audience, BH.oM.Humans.ViewQualityAvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
+        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(BH.oM.Humans.ViewQuality.Audience, BH.oM.Humans.ViewQuality.AvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
         [Description("Evaluate Avalues for a single Audience.")]
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "AvalueSettings to configure the evaluation.")]
@@ -54,7 +54,7 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(System.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQualityAvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
+        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(System.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQuality.AvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
         [Description("Evaluate Avalues for a List of Audience.")]
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "AvalueSettings to configure the evaluation.")]
