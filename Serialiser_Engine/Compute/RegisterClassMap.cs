@@ -22,6 +22,7 @@
 
 using BH.Engine.Serialiser.Objects;
 using BH.Engine.Serialiser.Objects.MemberMapConventions;
+using BH.oM.Base;
 using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
@@ -41,22 +42,35 @@ namespace BH.Engine.Serialiser
 
         public static void RegisterClassMap(Type type)
         {
-            try
+            if (!BsonClassMap.IsClassMapRegistered(type))
             {
-                BsonClassMap cm = new BsonClassMap(type);
-                cm.AutoMap();
-                cm.SetDiscriminator(type.FullName);
-                cm.SetDiscriminatorIsRequired(true);
-                cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
-                cm.SetIdMember(null);
+                if (type.IsEnum)
+                {
+                    MethodInfo generic = m_CreateEnumSerialiser.MakeGenericMethod(type);
+                    generic.Invoke(null, null);
+                }
+                else if (!type.IsGenericType)
+                {
+                    try
+                    {
+                        BsonClassMap cm = new BsonClassMap(type);
+                        cm.AutoMap();
+                        cm.SetDiscriminator(type.FullName);
+                        cm.SetDiscriminatorIsRequired(true);
+                        cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+                        cm.SetIdMember(null);
 
-                BsonClassMap.RegisterClassMap(cm);
+                        BsonClassMap.RegisterClassMap(cm);
 
-                BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.ToString());
+                        BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.ToString());
+                    }
+                }
+                else
+                    BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
             }
         }
 
@@ -66,13 +80,20 @@ namespace BH.Engine.Serialiser
         {
             if (assembly != null)
             {
-                foreach (Type t in assembly.GetTypes())
+                foreach (Type type in assembly.GetTypes())
                 {
-                    if (!t.IsInterface && !t.IsAbstract)
-                        RegisterClassMap(t);
+                    if (!(type.IsAbstract && type.IsSealed) && (type.IsEnum || typeof(IObject).IsAssignableFrom(type)))
+                        RegisterClassMap(type);
                 }
             }
         }
+
+
+        /*******************************************/
+        /**** Private Fields                    ****/
+        /*******************************************/
+
+        private static MethodInfo m_CreateEnumSerialiser = typeof(BH.Engine.Serialiser.Convert).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
 
         /*******************************************/
     }
