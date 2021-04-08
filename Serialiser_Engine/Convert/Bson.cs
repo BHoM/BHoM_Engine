@@ -206,24 +206,7 @@ namespace BH.Engine.Serialiser
 
         private static void RegisterClassMaps()
         {
-            MethodInfo method = typeof(BH.Engine.Serialiser.Convert).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
-            foreach (Type type in BH.Engine.Reflection.Query.BHoMTypeList())
-            {
-                if (!BsonClassMap.IsClassMapRegistered(type))
-                {
-                    if (type.IsEnum)
-                    {
-                        MethodInfo generic = method.MakeGenericMethod(type);
-                        generic.Invoke(null, null);
-                    }
-                    else if (!type.IsGenericType)
-                        Compute.RegisterClassMap(type);
-                    else
-                        BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
-                }
-
-            }
-
+            BH.Engine.Reflection.Query.BHoMTypeList().ForEach(x => Compute.RegisterClassMap(x));
             Compute.RegisterClassMap(typeof(System.Drawing.Color));
             Compute.RegisterClassMap(typeof(MethodInfo));
             Compute.RegisterClassMap(typeof(ConstructorInfo));
