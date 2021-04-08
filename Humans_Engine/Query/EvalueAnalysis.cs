@@ -66,7 +66,7 @@ namespace BH.Engine.Humans.ViewQuality
         private static List<Evalue> EvaluateEvalue(Audience audience, EvalueSettings settings, ActivityArea activityArea)
         {
             List<Evalue> results = new List<Evalue>();
-            KDTree<Spectator> spectatorTree = SetKDTree(audience);
+            SetKDTree(audience);
             foreach (Spectator s in audience.Spectators)
             {
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
@@ -75,7 +75,7 @@ namespace BH.Engine.Humans.ViewQuality
                 {
                     viewVector = activityArea.ActivityFocalPoint - s.Head.PairOfEyes.ReferenceLocation;
                 }
-                results.Add(EvalueResult(s, rowVector, viewVector,activityArea.PlayingArea,settings));
+                results.Add(EvalueResult(s, rowVector, viewVector, activityArea.PlayingArea, settings));
             }
             return results;
         }

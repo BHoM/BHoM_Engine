@@ -76,7 +76,8 @@ namespace BH.Engine.Humans.ViewQuality
             if (audience.Spectators.Count == 0)
                 return results;
 
-            KDTree<Spectator> spectatorTree = SetKDTree(audience);
+            SetKDTree(audience);
+
             m_CvalueSettings = settings;
 
             if (focalPoint == null)
@@ -88,7 +89,7 @@ namespace BH.Engine.Humans.ViewQuality
                 m_CvalueExists = true;
                     
                 Point focal = GetFocalPoint(s, playingArea, focalPoint);
-                double cvalue = GetCValue(s, spectatorTree, focal);
+                double cvalue = GetCValue(s, focal);
 
                 results.Add(CvalueResult(s, focal, cvalue));
             }
@@ -201,10 +202,10 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static double GetCValue(Spectator current, KDTree<Spectator> tree, Point focalPoint)
+        private static double GetCValue(Spectator current, Point focalPoint)
         {
             //get spectators in front
-            List<Spectator> infront = GetSpectatorsInfront(current, tree, m_CvalueSettings.ViewConeAngle);
+            List<Spectator> infront = GetSpectatorsInfront(current, m_CvalueSettings.ViewConeAngle);
             if (infront.Count == 0)
             {
                 m_CvalueExists = false;
@@ -246,13 +247,13 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static List<Spectator> GetSpectatorsInfront(Spectator current, KDTree<Spectator> tree, double viewConeAngle)
+        private static List<Spectator> GetSpectatorsInfront(Spectator current, double viewConeAngle)
         {
             PairOfEyes viewer = current.Head.PairOfEyes;
 
             double[] query = { viewer.ReferenceLocation.X, viewer.ReferenceLocation.Y, viewer.ReferenceLocation.Z };
             //first get the neighbourhood around the current spec
-            var neighbours = tree.Nearest(query, neighbors: 16);
+            var neighbours = m_KDTree.Nearest(query, neighbors: 16);
 
             List<Spectator> infront = new List<Spectator>();
 

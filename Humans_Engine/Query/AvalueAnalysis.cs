@@ -32,6 +32,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Geometry.CoordinateSystem;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -76,25 +77,27 @@ namespace BH.Engine.Humans.ViewQuality
         {
 
             List<Avalue> results = new List<Avalue>();
-            KDTree<Spectator> spectatorTree = null;
+
             if (!SetGlobals(settings))
                 return results;
 
-            if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
+            if (settings.CalculateOcclusion) SetKDTree(audience);
+
+            ConcurrentBag<Avalue> resultCollection = new ConcurrentBag<Avalue>();
 
             Parallel.ForEach(audience.Spectators, s =>
             {
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
                 Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
-                results.Add(ClipView(s, rowVector, viewVect, playingArea, spectatorTree));
+                resultCollection.Add(ClipView(s, rowVector, viewVect, playingArea));
             });
 
-            return results;
+            return resultCollection.ToList();
         }
 
         /***************************************************/
 
-        private static KDTree<Spectator> SetKDTree(Audience audience)
+        private static void SetKDTree(Audience audience)
         {
             List<double[]> points = new List<double[]>();
 
@@ -103,17 +106,20 @@ namespace BH.Engine.Humans.ViewQuality
                 double[] pt = new double[] { s.Head.PairOfEyes.ReferenceLocation.X, s.Head.PairOfEyes.ReferenceLocation.Y, s.Head.PairOfEyes.ReferenceLocation.Z };
                 points.Add(pt);
             }
+            Audience clone = audience.DeepClone(); 
 
-            KDTree<Spectator> tree = KDTree.FromData<Spectator>(points.ToArray(), audience.Spectators.ToArray(), true);
+            m_KDTree = KDTree.FromData<Spectator>(points.ToArray(), clone.Spectators.ToArray(), true);
 
-            return tree;
         }
 
         /***************************************************/
 
-        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, Polyline activityArea, KDTree<Spectator> tree)
+        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, Polyline activityArea)
         {
             Avalue result = new Avalue();
+
+            result.ObjectId = spectator.BHoM_Guid;
+            result.ReferencePoint = spectator.Head.PairOfEyes.ReferenceLocation;
 
             Vector viewY = Geometry.Query.CrossProduct(viewVect, rowV);
             Vector viewX = Geometry.Query.CrossProduct(viewVect, viewY);
@@ -150,7 +156,7 @@ namespace BH.Engine.Humans.ViewQuality
             //clip heads in front
             if (m_AvalueSettings.CalculateOcclusion)
             {
-                List<Spectator> infront = GetSpectatorsInfront(spectator, tree, m_ViewConeAngle);
+                List<Spectator> infront = GetSpectatorsInfront(spectator, m_ViewConeAngle);
                 if (infront.Count > 0)
                 {
 
@@ -291,11 +297,11 @@ namespace BH.Engine.Humans.ViewQuality
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Private Fields                            ****/
         /***************************************************/
 
         private static AvalueSettings m_AvalueSettings;
         private static double m_ViewConeAngle;
-
+        private static KDTree<Spectator> m_KDTree;
     }
 }
