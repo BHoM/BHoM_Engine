@@ -215,20 +215,6 @@ namespace BH.Engine.Serialiser
             Compute.RegisterClassMap(typeof(Regex));
         }
 
-        /*******************************************/
-
-        private static void CreateEnumSerializer<T>() where T : struct
-        {
-            try
-            {
-                BsonSerializer.RegisterSerializer(typeof(T), new EnumSerializer<T>(BsonType.String));
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.ToString());
-            }
-        }
-
 
         /*******************************************/
         /**** Private Fields                    ****/

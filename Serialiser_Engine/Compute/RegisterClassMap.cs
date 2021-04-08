@@ -20,17 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Serialiser.Objects;
 using BH.Engine.Serialiser.Objects.MemberMapConventions;
 using BH.oM.Base;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BH.Engine.Serialiser
 {
@@ -46,7 +43,7 @@ namespace BH.Engine.Serialiser
             {
                 if (type.IsEnum)
                 {
-                    MethodInfo generic = m_CreateEnumSerialiser.MakeGenericMethod(type);
+                    MethodInfo generic = m_CreateEnumSerializer.MakeGenericMethod(type);
                     generic.Invoke(null, null);
                 }
                 else if (!type.IsGenericType)
@@ -87,13 +84,30 @@ namespace BH.Engine.Serialiser
                 }
             }
         }
+        
+
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+
+        private static void CreateEnumSerializer<T>() where T : struct
+        {
+            try
+            {
+                BsonSerializer.RegisterSerializer(typeof(T), new EnumSerializer<T>(BsonType.String));
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
+        }
 
 
         /*******************************************/
         /**** Private Fields                    ****/
         /*******************************************/
 
-        private static MethodInfo m_CreateEnumSerialiser = typeof(BH.Engine.Serialiser.Convert).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
+        private static MethodInfo m_CreateEnumSerializer = typeof(Compute).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
 
         /*******************************************/
     }
