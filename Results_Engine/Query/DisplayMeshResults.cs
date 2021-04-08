@@ -131,9 +131,13 @@ namespace BH.Engine.Results
             //An attempt to optimise:
             //Func<TMeshElementResult, double> propFunction = GetPropertyDelegate(meshResult.Results.First(), meshResultDisplay);
 
-            switch (Reflection.Query.PropertyValue(meshResult, "Smoothing"))
+            object smoothing = Reflection.Query.PropertyValue(meshResult, "Smoothing");
+            MeshResultSmoothingType smoothingType = MeshResultSmoothingType.None;
+            if (smoothing is MeshResultSmoothingType)
+                smoothingType = (MeshResultSmoothingType)smoothing;
+
+            switch (smoothingType)
             {
-                case null:
                 case MeshResultSmoothingType.None:
                     //  pair nodeValue as list<Dictionary<FaceId,nodeValue>>
                     //  all nodes are expected to have FaceIds
