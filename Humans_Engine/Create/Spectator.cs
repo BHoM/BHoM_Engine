@@ -45,7 +45,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("headOutline", "2d, closed, planar reference Polyline that represents the outline of the head. " +
             "The headOutline should be created in the XY plane where the origin represents the reference eye location of the spectator." +
             "If none provided the default is a simple Polyline based on an ellipse with major radius of 0.11 and minor radius of 0.078.")]
-        [Output("spectator", "Simple Spectator with location and view direction defined.")]
+        [Output("spectator", "Spectator with location, view direction and head outline defined.")]
         public static Spectator Spectator(Point location, Vector viewDirection, Polyline headOutline = null)
         {
 
