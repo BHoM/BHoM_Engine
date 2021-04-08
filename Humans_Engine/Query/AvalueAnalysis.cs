@@ -47,6 +47,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "AvalueSettings to configure the evaluation.")]
         [Input("activityArea", "ActivityArea to use in the evaluation.")]
+        [Output("results", "Collection of Avalue results.")]
         public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, focalPoint);
@@ -60,6 +61,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "AvalueSettings to configure the evaluation.")]
         [Input("activityArea", "ActivityArea to use in the evaluation.")]
+        [Output("results", "Collection of Avalue results.")]
         public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
@@ -132,12 +134,12 @@ namespace BH.Engine.Humans.ViewQuality
             //local cartesian
             Cartesian local = Geometry.Create.CartesianCoordinateSystem(spectator.Head.PairOfEyes.ReferenceLocation, viewX, viewY);
 
-            //get the view cone
+            //get the ConeOfVision
             TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
-            result.ViewCone = m_AvalueSettings.EffectiveConeOfVision.Transform(transform);
+            result.ConeOfVision = m_AvalueSettings.EffectiveConeOfVision.Transform(transform);
 
             //planes where the calculation takes place
-            Plane viewPlane = result.ViewCone.FitPlane();
+            Plane viewPlane = result.ConeOfVision.FitPlane();
             //make sure normal is viewvect
             viewPlane.Normal = viewVect;
 
@@ -148,23 +150,23 @@ namespace BH.Engine.Humans.ViewQuality
             result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
 
             //clip the projected pitch against the view cone
-            result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ViewCone);
+            result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ConeOfVision);
 
             //calculate the avalue
-            result.AValue = result.ClippedActivityArea.Area() / result.ViewCone.Area() * 100;
+            result.AValue = result.ClippedActivityArea.Area() / result.ConeOfVision.Area() * 100;
 
             //clip heads in front
             if (m_AvalueSettings.CalculateOcclusion)
             {
-                List<Spectator> infront = GetSpectatorsInfront(spectator, m_ViewConeAngle);
+                List<Spectator> infront = GetSpectatorsInfront(spectator, m_ConeOfVisionAngle);
                 if (infront.Count > 0)
                 {
 
                     List<Polyline> occludingClippedHeads = ClipHeads(infront, spectator, viewPlane, result.ClippedActivityArea);
                     if (occludingClippedHeads.Count > 0)
                     {
-                        result.Heads = occludingClippedHeads;
-                        result.Occulsion = occludingClippedHeads.Sum(x => x.Area()) / result.ViewCone.Area() * 100;
+                        result.OccludingHeads = occludingClippedHeads;
+                        result.Occulsion = occludingClippedHeads.Sum(x => x.Area()) / result.ConeOfVision.Area() * 100;
                     }
 
                 }
@@ -204,16 +206,16 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static Polyline ReduceActivityArea(Plane clipping, Polyline activityArea)
         {
-            //just the part in front of the spectator
+            //just the part in front of the spectator's view plane
             List<Point> control = new List<Point>();
             foreach (Line seg in activityArea.SubParts())
             {
-                //is start infront or behind plane?
+                //is start in front or behind plane?
                 Point s = seg.StartPoint();
                 Point e = clipping.Origin;
                 Vector v = Geometry.Create.Vector(e) - Geometry.Create.Vector(s);
                 double d = Geometry.Query.DotProduct(clipping.Normal, v);
-                if (d < 0)//infront
+                if (d < 0)//in front
                 {
                     control.Add(s);
                 }
@@ -230,6 +232,7 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static Polyline ProjectPolylineToPlane(Plane plane, Polyline polyline, Point viewPoint)
         {
+            //perspective projection to plane of polyline
             List<Point> control = new List<Point>();
             foreach (Point p in polyline.ControlPoints)
             {
@@ -263,13 +266,15 @@ namespace BH.Engine.Humans.ViewQuality
 
             if (m_AvalueSettings.EffectiveConeOfVision.ControlPoints.Count == 0)
             {
+                double halfWidth = m_AvalueSettings.EffectiveConeOfVisionWidth / 2;
+                double halfHeight = m_AvalueSettings.EffectiveConeOfVisionHeight / 2;
                 List<Point> points = new List<Point>()
                 {
-                    Geometry.Create.Point(-0.0575,-0.0575,0.1),
-                    Geometry.Create.Point( 0.0575,-0.0575,0.1),
-                    Geometry.Create.Point( 0.0575, 0.0575,0.1),
-                    Geometry.Create.Point(-0.0575, 0.0575,0.1),
-                    Geometry.Create.Point(-0.0575,-0.0575,0.1)
+                    Geometry.Create.Point(-halfWidth, -halfHeight, m_AvalueSettings.NearClippingPlaneDistance),
+                    Geometry.Create.Point( halfWidth, -halfHeight, m_AvalueSettings.NearClippingPlaneDistance),
+                    Geometry.Create.Point( halfWidth,  halfHeight, m_AvalueSettings.NearClippingPlaneDistance),
+                    Geometry.Create.Point(-halfWidth,  halfHeight, m_AvalueSettings.NearClippingPlaneDistance),
+                    Geometry.Create.Point(-halfWidth, -halfHeight, m_AvalueSettings.NearClippingPlaneDistance)
                 };
 
                 m_AvalueSettings.EffectiveConeOfVision = Geometry.Create.Polyline(points);
@@ -292,7 +297,7 @@ namespace BH.Engine.Humans.ViewQuality
                 if (a > halfAngle)
                     halfAngle = a;
             }
-            m_ViewConeAngle = halfAngle * 2;
+            m_ConeOfVisionAngle = halfAngle * 2;
             return true;
         }
 
@@ -301,7 +306,7 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
 
         private static AvalueSettings m_AvalueSettings;
-        private static double m_ViewConeAngle;
+        private static double m_ConeOfVisionAngle;
         private static KDTree<Spectator> m_KDTree;
     }
 }

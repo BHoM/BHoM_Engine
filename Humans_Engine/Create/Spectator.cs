@@ -44,19 +44,22 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("viewDirection", "Vector defining the Eye view directions.")]
         [Input("headOutline", "2d, closed, planar reference Polyline that represents the outline of the head. " +
             "The headOutline should be created in the XY plane where the origin represents the reference eye location of the spectator." +
-            "If none provided the default is a simple Polyline based on an ellipse with major radius of 0.11 and minor radius of 0.078.")]
+            "If none provided the default is a simple Polyline based on an ellipse with the defined majorRadius and minorRadius.")]
+        [Input("majorRadius", "Major radius of the ellipse used as a headOutline if no head outline was provided. Default value is 0.11.")]
+        [Input("minorRadius", "Minor radius of the ellipse used as a headOutline if no head outline was provided. Default value is 0.078.")]
         [Output("spectator", "Spectator with location, view direction and head outline defined.")]
-        public static Spectator Spectator(Point location, Vector viewDirection, Polyline headOutline = null)
+        public static Spectator Spectator(Point location, Vector viewDirection, Polyline headOutline = null, double majorRadius = 0.11, double minorRadius = 0.078)
         {
 
             if (headOutline == null)
             {
+                //create basic elliptical head form
                 List<Point> points = new List<Point>();
                 double theta = 2 * Math.PI / 16;
                 for (int i = 0; i <= 16; i++)
                 {
-                    double x = 0.078 * Math.Cos(theta * i);
-                    double y = 0.110 * Math.Sin(theta * i);
+                    double x = minorRadius * Math.Cos(theta * i);
+                    double y = majorRadius * Math.Sin(theta * i);
                     points.Add(Geometry.Create.Point(x, y, 0));
                 }
                 headOutline = Geometry.Create.Polyline(points);
