@@ -39,6 +39,12 @@ namespace BH.Engine.Reflection
 
         public static List<List<MethodBase>> DeepDependencies(List<MethodBase> methods, int maxDepth = 10)
         {
+            if (methods == null)
+            {
+                methods = new List<MethodBase>();
+                RecordWarning("The input 'methods' is null and was replaced with an empty list.");
+            }
+
             List<MethodBase> current = methods;
             IEnumerable<MethodBase> union = methods;
             List<List<MethodBase>> dependencies = new List<List<MethodBase>>();

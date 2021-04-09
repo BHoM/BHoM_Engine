@@ -37,6 +37,12 @@ namespace BH.Engine.Reflection
 
         public static IEnumerable<T> EnumValues<T>(this T enumValue)
         {
+            if (enumValue == null)
+            {
+                Compute.RecordWarning("Cannot get the enum values of null. Returning an empty list instead.");
+                return new List<T>();
+            }
+
             return Enum.GetValues(enumValue.GetType()).Cast<T>();
         }
 
@@ -44,6 +50,12 @@ namespace BH.Engine.Reflection
 
         public static IEnumerable<T> EnumValues<T>(this Type enumType)
         {
+            if (enumType == null)
+            {
+                Compute.RecordWarning("Cannot get the enum values of a null type. Returning an empty list instead.");
+                return new List<T>();
+            }
+
             return Enum.GetValues(enumType).Cast<T>();
         }
 

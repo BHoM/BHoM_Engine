@@ -51,8 +51,8 @@ namespace BH.Engine.Reflection
 
             if (paramTypes == null)
             {
-                Compute.RecordError("Cannot create a method info from a null set of parameter types.");
-                return null;
+                Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
+                paramTypes = new List<Type>();
             }
 
             MethodInfo foundMethod = null;

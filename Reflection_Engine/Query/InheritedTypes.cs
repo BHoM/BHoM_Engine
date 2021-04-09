@@ -39,8 +39,8 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordError("Cannot query the inheritied types of a null type.");
-                return null;
+                Compute.RecordWarning("Cannot query the inherited types of a null type. Returning an empty list instead.");
+                return new List<Type>();
             }
 
             List<Type> types = type.GetInterfaces().ToList();

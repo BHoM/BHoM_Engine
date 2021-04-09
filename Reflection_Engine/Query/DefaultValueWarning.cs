@@ -38,6 +38,9 @@ namespace BH.Engine.Reflection
 
         public static string DefaultValueWarning(this PropertyInfo property) 
         {
+            if (property == null)
+                return "";
+
             DefaultValueWarningAttribute attribute = property.GetCustomAttribute<DefaultValueWarningAttribute>();
             if (attribute == null)
                 return "";

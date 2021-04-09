@@ -36,8 +36,8 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordError("Cannot query the property dictionary of a null object.");
-                return null;
+                Compute.RecordWarning("Cannot query the property dictionary of a null object. An empty dictionary will be returned.");
+                return new Dictionary<string, object>();
             }
 
             if (obj is CustomObject)
@@ -60,8 +60,8 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordError("Cannot query the property dictionary of a null custom object.");
-                return null;
+                Compute.RecordWarning("Cannot query the property dictionary of a null custom object.  An empty dictionary will be returned.");
+                return new Dictionary<string, object>();
             }
 
             Dictionary<string, object> dic = new Dictionary<string, object>(obj.CustomData);

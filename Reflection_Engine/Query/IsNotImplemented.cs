@@ -38,6 +38,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsNotImplemented(this MethodBase method)
         {
+            if (method == null)
+                return true;
+
             NotImplementedAttribute attribute = method.GetCustomAttribute<NotImplementedAttribute>();
             return (attribute != null);
         }
@@ -47,6 +50,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsNotImplemented(this Type type) 
         {
+            if (type == null)
+                return true;
+
             NotImplementedAttribute attribute = type.GetCustomAttribute<NotImplementedAttribute>();
             return (attribute != null);
         }

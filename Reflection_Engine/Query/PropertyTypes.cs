@@ -36,8 +36,8 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordError("Cannot query the property types of a null object.");
-                return null;
+                Compute.RecordWarning("Cannot query the property types of a null object. An empty list of types will be returned.");
+                return new List<Type>();
             }
 
             return obj.GetType().PropertyTypes(goDeep);
@@ -49,8 +49,8 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordError("Cannot query the property types of a null type.");
-                return null;
+                Compute.RecordWarning("Cannot query the property types of a null type. An empty list of types will be returned.");
+                return new List<Type>();
             }
 
             HashSet<Type> properties = new HashSet<Type>();

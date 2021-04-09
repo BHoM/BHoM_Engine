@@ -39,8 +39,8 @@ namespace BH.Engine.Reflection
         {
             if(method == null)
             {
-                Compute.RecordError("Cannot query the used types of a null method.");
-                return null;
+                Compute.RecordWarning("Cannot query the used types of a null method. An empty list will be returned as the list of used types.");
+                return new List<Type>();
             }
 
             try
@@ -72,8 +72,8 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordError("Cannot query the used types of a null type.");
-                return null;
+                Compute.RecordWarning("Cannot query the used types of a null type. An empty list will be returned as the list of used types.");
+                return new List<Type>();
             }
 
             BindingFlags bindingAll = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Instance;

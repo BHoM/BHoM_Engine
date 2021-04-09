@@ -42,6 +42,15 @@ namespace BH.Engine.Reflection
         [Output("metods", "Sorted methods")]
         public static List<MethodInfo> SortExtensionMethods(this IEnumerable<MethodInfo> methods, Type type)
         {
+            if (methods == null || methods.Count() == 0)
+                return new List<MethodInfo>();
+
+            if (type == null)
+            {
+                Compute.RecordWarning("Cannot sort methods based on a null type. The original list will be returned.");
+                return methods.ToList();
+            }
+
             List<List<Type>> hierarchy = type.InheritanceHierarchy();
             IEnumerable<int> levels = methods.Select(x => hierarchy.InheritanceLevel(x.GetParameters()[0].ParameterType));
             return methods.Zip(levels, (m, l) => new { m, l }).Where(x => x.l != -1).OrderBy(x => x.l).Select(x => x.m).ToList();

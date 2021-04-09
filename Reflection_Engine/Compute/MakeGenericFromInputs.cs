@@ -47,7 +47,7 @@ namespace BH.Engine.Reflection
 
             if(inputTypes == null)
             {
-                Compute.RecordError("Cannot make generic from inputs of a method if the input types are not set correctly.");
+                Compute.RecordWarning("The 'inputTypes' input is null and was replaced by an empty list");
                 return null;
             }
 

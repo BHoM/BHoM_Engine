@@ -34,6 +34,9 @@ namespace BH.Engine.Reflection
 
         public static Dictionary<Type, List<object>> ObjectsByType(this IEnumerable<object> objects, bool goDeep = false)
         {
+            if (objects == null)
+                return new Dictionary<Type, List<object>>();
+
             if (!goDeep)
                 return objects.GroupBy(x => x.GetType()).ToDictionary(x => x.Key, x => x.ToList());
             else

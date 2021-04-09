@@ -39,8 +39,8 @@ namespace BH.Engine.Reflection
         {
             if(method == null)
             {
-                Compute.RecordError("Cannot query the used methods of a null method.");
-                return null;
+                Compute.RecordWarning("Cannot query the used methods of a null method. An empty list will be returned as the list of used methods.");
+                return new List<MethodBase>();
             }
 
             try
