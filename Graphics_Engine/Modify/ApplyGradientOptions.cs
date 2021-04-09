@@ -32,17 +32,17 @@ namespace BH.Engine.Graphics
             GradientOptions result = gradientOptions.ShallowClone();
 
             // Checks if bounds exist or can be automatically set
-            if ((double.IsNaN(result.To) || double.IsNaN(result.From)) && (allValues == null || allValues.Count() < 1))
+            if ((double.IsNaN(result.UpperBound) || double.IsNaN(result.LowerBound)) && (allValues == null || allValues.Count() < 1))
             {
                 BH.Engine.Reflection.Compute.RecordError("No bounds have been manually set for Gradient, and no values are provided by which to set them.");
                 return result;
             }
 
             // Optional auto-domain
-            if (double.IsNaN(result.From))
-                result.From = allValues.Min();
-            if (double.IsNaN(result.To))
-                result.To = allValues.Max();
+            if (double.IsNaN(result.LowerBound))
+                result.LowerBound = allValues.Min();
+            if (double.IsNaN(result.UpperBound))
+                result.UpperBound = allValues.Max();
             
             // Sets a default gradient if none is already set
             if (result.Gradient == null)
@@ -59,11 +59,11 @@ namespace BH.Engine.Graphics
             switch (result.GradientCenteringOptions)
             {
                 case GradientCenteringOptions.Symmetric:
-                    result.To = Math.Max(Math.Abs(result.To), Math.Abs(result.From));
-                    result.From = -result.To;
+                    result.UpperBound = Math.Max(Math.Abs(result.UpperBound), Math.Abs(result.LowerBound));
+                    result.LowerBound = -result.UpperBound;
                     break;
                 case GradientCenteringOptions.Asymmetric:
-                    result.Gradient = result.Gradient.CenterGradientAsymmetric(result.From, result.To);
+                    result.Gradient = result.Gradient.CenterGradientAsymmetric(result.LowerBound, result.UpperBound);
                     break;
                 case GradientCenteringOptions.None:
                 default:
