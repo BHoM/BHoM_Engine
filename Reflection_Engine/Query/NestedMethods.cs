@@ -37,8 +37,8 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordError("Cannot query the nested methods of a null type.");
-                return null;
+                Compute.RecordWarning("Cannot query the nested methods of a null type. An empty list of methods will be returned.");
+                return new List<MethodInfo>();
             }
 
             List<MethodInfo> methods = type.GetMethods().ToList();

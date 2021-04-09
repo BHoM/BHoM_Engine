@@ -37,8 +37,8 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordError("Cannot query the property objects of a null object.");
-                return null;
+                Compute.RecordWarning("Cannot query the property objects of a null object. An empty list of objects will be returned.");
+                return new List<object>();
             }
 
             List<object> properties = new List<object>();
@@ -70,14 +70,14 @@ namespace BH.Engine.Reflection
         {
             if(objects == null)
             {
-                Compute.RecordError("Cannot query the property objects of a null collection of objects.");
-                return null;
+                Compute.RecordWarning("Cannot query the property objects of a null collection of objects. An empty dictionary will be returned.");
+                return new Dictionary<Type, List<object>>();
             }
 
             if(type == null)
             {
-                Compute.RecordError("Cannot query the property objects of a collection of objects if the type is null.");
-                return null;
+                Compute.RecordWarning("Cannot query the property objects of a collection of objects if the type is null. An empty dictionary will be returned.");
+                return new Dictionary<Type, List<object>>();
             }
 
             Dictionary<Type, List<object>> propByType = new Dictionary<Type, List<object>>();

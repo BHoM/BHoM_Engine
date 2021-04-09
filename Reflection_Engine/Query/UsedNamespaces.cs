@@ -39,8 +39,8 @@ namespace BH.Engine.Reflection
         {
             if(method == null)
             {
-                Compute.RecordError("Cannot query the used namespaces of a null method.");
-                return null;
+                Compute.RecordWarning("Cannot query the used namespaces of a null method. An empty list will be returned as the list of used namespaces.");
+                return new List<string>();
             }
 
             return method.UsedTypes(onlyBHoM).Select(x => ClipNamespace(x.Namespace, maxDepth)).Distinct().ToList();
@@ -52,8 +52,8 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordError("Cannot query the used namespaces of a null type.");
-                return null;
+                Compute.RecordWarning("Cannot query the used namespaces of a null type. An empty list will be returned as the list of used namespaces.");
+                return new List<string>();
             }
 
             return type.UsedTypes(onlyBHoM).Select(x => ClipNamespace(x.Namespace, maxDepth)).Distinct().ToList();

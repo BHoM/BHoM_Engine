@@ -56,6 +56,9 @@ namespace BH.Engine.Reflection
         [Description("Extract all the distinct objects of a specific type P from the properties of a list of objects")]
         public static IEnumerable<P> DistinctProperties<T, P>(this IEnumerable<T> objects) where T : IBHoMObject where P : IBHoMObject
         {
+            if (objects == null)
+                return new List<P>();
+
             // Get the list of properties corresponding to type P
             Dictionary<Type, List<PropertyInfo>> propertyDictionary = typeof(T).GetProperties().GroupBy(x => x.PropertyType).ToDictionary(x => x.Key, x => x.ToList());
             List<PropertyInfo> propertiesSingle, propertiesList, propertiesGroups;

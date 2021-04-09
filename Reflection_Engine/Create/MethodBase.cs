@@ -50,8 +50,8 @@ namespace BH.Engine.Serialiser
 
             if(paramTypeNames == null)
             {
-                Compute.RecordError("Cannot create a method base from a null set of parameter type names.");
-                return null;
+                Compute.RecordWarning("The 'paramTypeNames' input is null and was replaced by an empty list");
+                paramTypeNames = new List<string>();
             }
 
             List<MethodBase> methods;
@@ -161,8 +161,8 @@ namespace BH.Engine.Serialiser
 
             if (paramTypes == null)
             {
-                Compute.RecordError("Cannot create a method base from a null set of parameter types.");
-                return null;
+                Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
+                paramTypes = new List<Type>();
             }
 
             MethodBase method = null;

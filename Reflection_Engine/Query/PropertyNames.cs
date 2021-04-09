@@ -37,8 +37,8 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordError("Cannot query the property names of a null object.");
-                return null;
+                Compute.RecordWarning("Cannot query the property names of a null object. An empty list of names will be returned.");
+                return new List<string>();
             }
 
             if (obj is CustomObject)
@@ -53,8 +53,8 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordError("Cannot query the property names of a null type.");
-                return null;
+                Compute.RecordWarning("Cannot query the property names of a null type. An empty list of names will be returned.");
+                return new List<string>();
             }
 
             List<string> names = new List<string>();

@@ -37,6 +37,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsLegal(this MethodInfo method)
         {
+            if (method == null)
+                return false;
+
             try
             {
                 method.GetParameters();
@@ -53,6 +56,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsLegal(this Type type) //TODO: Check if there is a better way to do this, instead of using a try-catch
         {
+            if (type == null)
+                return false;
+
             try
             {
                 //Checking that all the constructors have loaded parameter types

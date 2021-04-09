@@ -46,8 +46,8 @@ namespace BH.Engine.Reflection
         {
             if(assembly == null)
             {
-                Compute.RecordError("Cannot query the used assemblies from a null assembly.");
-                return null;
+                Compute.RecordWarning("Cannot query the used assemblies from a null assembly. An empty list will be returned.");
+                return new List<Assembly>();
             }
 
             try
@@ -83,6 +83,12 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "List of assemblies referenced by the input assemblies.")]
         public static List<string> UsedAssemblies(List<string> assemblyNames, bool onlyBHoM = false, bool goDeep = false)
         {
+            if (assemblyNames == null)
+            {
+                Compute.RecordWarning("The list of assmeblyNames is null. An empty list will be returned as the list of used assemblies.");
+                return new List<string>();
+            }
+
             AllAssemblyList();
             Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
             List<Assembly> assemblies = assemblyNames.Where(x => dic.ContainsKey(x)).Select(x => dic[x]).ToList();

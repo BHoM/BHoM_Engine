@@ -38,6 +38,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsRequired(this PropertyInfo property)
         {
+            if (property == null)
+                return false;
+
             RequiredAttribute attribute = property.GetCustomAttribute<RequiredAttribute>();
             return attribute != null;
         }

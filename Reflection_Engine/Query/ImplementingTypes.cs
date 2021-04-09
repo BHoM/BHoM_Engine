@@ -40,7 +40,7 @@ namespace BH.Engine.Reflection
         {
             if(@interface == null)
             {
-                Compute.RecordError("Cannot query the implementing types of a null type.");
+                Compute.RecordWarning("Cannot query the implementing types of a null type.");
                 return new List<Type>();
             }
 

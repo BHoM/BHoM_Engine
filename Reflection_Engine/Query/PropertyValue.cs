@@ -73,6 +73,9 @@ namespace BH.Engine.Reflection
         private static object GetValue(this IBHoMObject obj, string propName)
         {
             IBHoMObject bhom = obj as IBHoMObject;
+            if (obj == null || propName == null)
+                return null;
+
             if (bhom.CustomData.ContainsKey(propName))
             {
                 if (!(bhom is CustomObject))

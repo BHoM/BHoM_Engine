@@ -43,7 +43,7 @@ namespace BH.Engine.Reflection
         {
             if(member == null)
             {
-                Compute.RecordError("Cannot query the description of a null member info object.");
+                Compute.RecordWarning("Cannot query the description of a null member info object. An empty string will be returned instead.");
                 return "";
             }
 
@@ -69,7 +69,7 @@ namespace BH.Engine.Reflection
         {
             if(parameter == null)
             {
-                Compute.RecordError("Cannot query the description of a null parameter object.");
+                Compute.RecordWarning("Cannot query the description of a null parameter object. An empty string will be returned instead.");
                 return "";
             }
 
@@ -124,6 +124,7 @@ namespace BH.Engine.Reflection
         {
             if (type == null)
             {
+                Compute.RecordWarning("Cannot query the description of a null type. An empty string will be returned instead.");
                 return "";
             }
 
@@ -212,7 +213,7 @@ namespace BH.Engine.Reflection
         {
             if(quantity == null)
             {
-                Compute.RecordError("Cannot query the description of a null quantity attribute.");
+                Compute.RecordWarning("Cannot query the description of a null quantity attribute. An empty string will be returned isntead.");
                 return "";
             }
 

@@ -37,6 +37,12 @@ namespace BH.Engine.Reflection
 
         public static string UnqualifiedName(string qualifiedName)
         {
+            if (qualifiedName == null)
+            {
+                Compute.RecordError("Cannot extract the unqualified name from a null string.");
+                return "";
+            }
+
             int openIndex = qualifiedName.IndexOf('[');
             int closeIndex = qualifiedName.LastIndexOf(']');
 
