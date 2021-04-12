@@ -47,6 +47,9 @@ namespace BH.Engine.Environment
         [Output("edges", "A collection of Environment Edges")]
         public static List<Edge> ToEdges(this Polyline polyline)
         {
+            if (polyline == null)
+                return null;
+
             List<Edge> edges = new List<Edge>();
 
             List<Polyline> polylines = polyline.SplitAtPoints(polyline.DiscontinuityPoints());
@@ -65,6 +68,9 @@ namespace BH.Engine.Environment
         [Output("edges", "A collection of Environment Edges")]
         public static List<Edge> ToEdges(this List<Polyline> polylines)
         {
+            if (polylines == null)
+                return null;
+
             List<Edge> edges = new List<Edge>();
 
             foreach (Polyline p in polylines)

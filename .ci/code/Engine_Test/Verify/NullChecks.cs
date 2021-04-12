@@ -117,7 +117,7 @@ namespace BH.Test.Engine
             {
                 method.Invoke(null, inputs);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (e is TargetInvocationException && e.InnerException != null)
                     e = e.InnerException;

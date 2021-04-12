@@ -42,6 +42,12 @@ namespace BH.Engine.Environment
         [Output("frameFactor", "The Frame Factor of the opening represented as a decimal")]
         public static double FrameFactor(this Opening opening)
         {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the frame factor of a null opening.");
+                return 0;
+            }
+
             if(opening.InnerEdges == null || opening.InnerEdges.Count == 0)
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"This opening with ID {opening.BHoM_Guid} does not contain any inner edges for the calculation. Assuming a 0% frame factor");

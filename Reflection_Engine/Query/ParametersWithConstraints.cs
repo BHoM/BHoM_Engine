@@ -35,6 +35,12 @@ namespace BH.Engine.Serialiser
 
         public static ParameterInfo[] ParametersWithConstraints(this MethodBase method)
         {
+            if(method == null)
+            {
+                Reflection.Compute.RecordWarning("Cannot query the parameter information from a null method. An empty array of parameters will be returned instead.");
+                return new ParameterInfo[0];
+            }
+
             ParameterInfo[] parameters = method.GetParameters();
 
             if (method.ContainsGenericParameters)

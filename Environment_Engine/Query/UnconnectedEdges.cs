@@ -46,6 +46,18 @@ namespace BH.Engine.Environment
         [Output("unconnectedEdges", "A collection of Environment Edges that are not properly connected with the rest of the space")]
         public static List<Edge> UnconnectedEdges(this Panel panel, List<Panel> panelsAsSpace)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the unconnected edges of a null panel.");
+                return null;
+            }
+
+            if(panelsAsSpace == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the unconnected edges of a panel if the panels comprising the space are null.");
+                return null;
+            }
+
             List<Edge> edges = panel.ExternalEdges;
             List<Line> allEdges = new List<Line>();
             foreach (Panel p in panelsAsSpace)

@@ -46,6 +46,18 @@ namespace BH.Engine.Environment
         [Output("azimuth", "The azimuth of the Environment Object")]
         public static double Azimuth(this IEnvironmentObject environmentObject, Vector refVector)
         {
+            if(environmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the azimuth for a null environmental object.");
+                return -1;
+            }
+
+            if(refVector == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the azimuth from a null vector.");
+                return -1;
+            }
+
             return environmentObject.Polyline().Azimuth(refVector);
         }
 
@@ -55,6 +67,18 @@ namespace BH.Engine.Environment
         [Output("azimuth", "The azimuth of the polyline")]
         public static double Azimuth(this Polyline polyline, Vector refVector)
         {
+            if (polyline == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the azimuth for a null polyline.");
+                return -1;
+            }
+
+            if (refVector == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the azimuth from a null vector.");
+                return -1;
+            }
+
             List<Point> pts = polyline.DiscontinuityPoints();
 
             if (pts.Count < 3 || !polyline.IsClosed())

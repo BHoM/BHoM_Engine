@@ -49,6 +49,12 @@ namespace BH.Engine.Environment
         [Output("analysisGrid", "An analysis grid object containing nodes with positions")]
         public static AnalysisGrid AnalysisGrid(this Polyline externalBoundary, List<Polyline> innerBoundaries = null, int id = -1, string name = "", double gridSpacing = 0.2, double edgeOffset = 0.1, double pointOffset = 0.765)
         {
+            if (externalBoundary == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("ExternalBoundary must be set in order to calculate the analysis grid.");
+                return null;
+            }
+
             innerBoundaries = innerBoundaries ?? new List<Polyline>();
 
             if(id == -1)

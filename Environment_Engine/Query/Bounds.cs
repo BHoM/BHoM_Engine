@@ -45,6 +45,12 @@ namespace BH.Engine.Environment
         [Output("boundingBox", "The bounding box of the panel")]
         public static BoundingBox Bounds(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot calculate the bounds of a null panel.");
+                return null;
+            }
+
             return BH.Engine.Geometry.Query.Bounds(panel.Polyline());
         }
 

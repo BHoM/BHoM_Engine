@@ -37,6 +37,12 @@ namespace BH.Engine.Reflection
 
         public static List<Type> InheritedTypes(this Type type, bool onlyBHoM = false)
         {
+            if(type == null)
+            {
+                Compute.RecordWarning("Cannot query the inherited types of a null type. Returning an empty list instead.");
+                return new List<Type>();
+            }
+
             List<Type> types = type.GetInterfaces().ToList();
 
             if (type.BaseType != null && type.BaseType != typeof(object))

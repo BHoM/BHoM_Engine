@@ -36,6 +36,12 @@ namespace BH.Engine.Reflection
 
         public static string Path(this Type type)
         {
+            if(type == null)
+            {
+                Compute.RecordError("Cannot query the path of a null type.");
+                return null;
+            }
+
             return type.Namespace;
         }
 
@@ -43,6 +49,12 @@ namespace BH.Engine.Reflection
 
         public static string Path(this MethodBase method, bool userReturnTypeForCreate = true, bool useExtentionType = false) 
         {
+            if(method == null)
+            {
+                Compute.RecordError("Cannot query the path of a null method base.");
+                return null;
+            }
+
             Type type = method.DeclaringType;
 
             if (userReturnTypeForCreate && type.Name == "Create" && method is MethodInfo)

@@ -37,6 +37,12 @@ namespace BH.Engine.Reflection
 
         public static List<string> UsedNamespaces(this MethodBase method, bool onlyBHoM = false, int maxDepth = 10)
         {
+            if(method == null)
+            {
+                Compute.RecordWarning("Cannot query the used namespaces of a null method. An empty list will be returned as the list of used namespaces.");
+                return new List<string>();
+            }
+
             return method.UsedTypes(onlyBHoM).Select(x => ClipNamespace(x.Namespace, maxDepth)).Distinct().ToList();
         }
 
@@ -44,6 +50,12 @@ namespace BH.Engine.Reflection
 
         public static List<string> UsedNamespaces(this Type type, bool onlyBHoM = false, int maxDepth = 10)
         {
+            if(type == null)
+            {
+                Compute.RecordWarning("Cannot query the used namespaces of a null type. An empty list will be returned as the list of used namespaces.");
+                return new List<string>();
+            }
+
             return type.UsedTypes(onlyBHoM).Select(x => ClipNamespace(x.Namespace, maxDepth)).Distinct().ToList();
         }
 

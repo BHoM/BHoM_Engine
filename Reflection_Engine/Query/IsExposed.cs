@@ -46,6 +46,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsExposed(this MethodBase method)
         {
+            if (method == null)
+                return false;
+
             return !method.IsNotImplemented() && !method.IsDeprecated();
         }
 
@@ -53,6 +56,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsExposed(this Type type)
         {
+            if (type == null)
+                return false;
+
             return !type.IsNotImplemented() && !type.IsDeprecated();
         }
 

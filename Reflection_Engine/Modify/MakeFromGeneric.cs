@@ -39,6 +39,12 @@ namespace BH.Engine.Reflection
         [Output("type", "The specific type constructed from the generic one")]
         public static Type MakeFromGeneric(this Type genericType)
         {
+            if(genericType == null)
+            {
+                Compute.RecordError("Cannot make generic from null type.");
+                return null;
+            }
+
             if (genericType.IsGenericParameter)
             {
                 Type[] constrains = genericType.GetGenericParameterConstraints();
@@ -66,6 +72,12 @@ namespace BH.Engine.Reflection
         [Output("method", "The specific method constructed from the generic one")]
         public static MethodInfo MakeFromGeneric(this MethodInfo genericMethod)
         {
+            if(genericMethod == null)
+            {
+                Compute.RecordError("Cannot make generic from a null method.");
+                return null;
+            }
+
             if (genericMethod.ContainsGenericParameters)
             {
                 Type[] types = genericMethod.GetGenericArguments().Select(x => x.MakeFromGeneric()).ToArray();

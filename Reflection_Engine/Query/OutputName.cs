@@ -38,6 +38,9 @@ namespace BH.Engine.Reflection
         [Description("Return the custom name of the output of a C# method")]
         public static string OutputName(this MethodBase method)
         {
+            if (method == null)
+                return "";
+
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
             if (attribute != null)
                 return attribute.Name;

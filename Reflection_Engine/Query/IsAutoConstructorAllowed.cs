@@ -38,6 +38,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsAutoConstructorAllowed(this Type type)
         {
+            if (type == null)
+                return false;
+
             NoAutoConstructorAttribute attribute = type.GetCustomAttribute<NoAutoConstructorAttribute>();
             return attribute == null && !typeof(Attribute).IsAssignableFrom(type);
         }

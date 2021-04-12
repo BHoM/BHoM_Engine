@@ -45,6 +45,12 @@ namespace BH.Engine.Environment
         [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this Edge edge)
         {
+            if(edge == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of a null edge.");
+                return null;
+            }
+
             return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle).SubParts();
         }
 
@@ -53,6 +59,12 @@ namespace BH.Engine.Environment
         [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this List<Edge> edges)
         {
+            if(edges == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of null edges.");
+                return null;
+            }
+
             List<Line> lines = new List<Line>();
             foreach (Edge e in edges)
                 lines.AddRange(e.ToLines());
@@ -65,6 +77,12 @@ namespace BH.Engine.Environment
         [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of a null panel.");
+                return null;
+            }
+
             return panel.ExternalEdges.ToLines();
         }
 
@@ -73,6 +91,12 @@ namespace BH.Engine.Environment
         [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this Opening opening)
         {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of a null opening.");
+                return null;
+            }
+
             return opening.Edges.ToLines();
         }
 
@@ -81,6 +105,12 @@ namespace BH.Engine.Environment
         [Output("lines", "A collection of BHoM Geometry Line")]
         public static List<Line> ToLines(this IEnvironmentObject environmentObject)
         {
+            if(environmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of a null environment object.");
+                return null;
+            }
+
             return ToLines(environmentObject as dynamic);
         }
     }

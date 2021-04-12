@@ -45,6 +45,18 @@ namespace BH.Engine.Environment
         [Output("panel", "The updated Environment Panel")]
         public static Panel SetInternalElements2D(this Panel panel, List<IElement2D> internalElements2D)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the internal 2D elements of a null panel.");
+                return panel;
+            }
+            
+            if(internalElements2D == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set null internal 2D elements to a panel.");
+                return panel;
+            }
+
             Panel pp = panel.ShallowClone();
             pp.Openings = new List<Opening>(internalElements2D.Cast<Opening>().ToList());
             return pp;

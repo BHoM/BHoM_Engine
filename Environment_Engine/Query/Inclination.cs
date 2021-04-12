@@ -47,6 +47,12 @@ namespace BH.Engine.Environment
         [Output("inclination", "The inclination of the environment object")]
         public static double Inclination(this IEnvironmentObject environmentObject)
         {
+            if (environmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the inclination of a null environment object.");
+                return -1;
+            }
+
             Polyline pLine = environmentObject.Polyline();
 
             List<Point> pts = pLine.DiscontinuityPoints();

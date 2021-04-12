@@ -47,6 +47,12 @@ namespace BH.Engine.Environment
         [Output("width", "The width of the environment object")]
         public static double Width(this IEnvironmentObject environmentObject)
         {
+            if(environmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null environment object.");
+                return -1;
+            }
+
             return Width(environmentObject as dynamic);
         }
 
@@ -55,6 +61,12 @@ namespace BH.Engine.Environment
         [Output("width", "The width of the panel")]
         public static double Width(this Panel panel)
         {
+            if (panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null panel.");
+                return -1;
+            }
+
             return panel.Polyline().Width();
         }
 
@@ -63,6 +75,12 @@ namespace BH.Engine.Environment
         [Output("width", "The width of the opening")]
         public static double Width(this Opening opening)
         {
+            if (opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null opening.");
+                return -1;
+            }
+
             return opening.Polyline().Width();
         }
 
@@ -71,6 +89,12 @@ namespace BH.Engine.Environment
         [Output("width", "The width of the curve based on the difference in XY values for its bounding box")]
         public static double Width(this ICurve panelCurve)
         {
+            if (panelCurve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null curve.");
+                return -1;
+            }
+
             BoundingBox bBox = panelCurve.IBounds();
 
             double diffX = Math.Abs(bBox.Max.X - bBox.Min.X);

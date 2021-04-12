@@ -110,10 +110,8 @@
     <Compile Include="Compute\ThirdOrderPolynomial.cs" />
     <Compile Include="Convert\Edge.cs" />
     <Compile Include="Create\AnalysisGrid.cs" />
-    <Compile Include="Modify\AddOpenings.cs" />
     <Compile Include="Modify\AssignGenericConstructions.cs" />
     <Compile Include="Modify\ChangeAdjacentSpace.cs" />
-    <Compile Include="Modify\ChangeAdjacentSpaces.cs" />
     <Compile Include="Modify\CleanPanel.cs" />
     <Compile Include="Modify\FixNormal.cs" />
     <Compile Include="Modify\OffsetOpenings.cs" />

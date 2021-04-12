@@ -41,6 +41,12 @@ namespace BH.Engine.Reflection
         [Description("Return the custom description of a C# class member (e.g. property, method, field)")]
         public static string Description(this MemberInfo member, bool addTypeDescription = true)
         {
+            if(member == null)
+            {
+                Compute.RecordWarning("Cannot query the description of a null member info object. An empty string will be returned instead.");
+                return "";
+            }
+
             DescriptionAttribute descriptionAttribute = member.GetCustomAttribute<DescriptionAttribute>();
             InputClassificationAttribute classification = member.GetCustomAttribute<InputClassificationAttribute>();
 
@@ -61,6 +67,12 @@ namespace BH.Engine.Reflection
         [Description("Return the custom description of a C# method argument")]
         public static string Description(this ParameterInfo parameter, bool addTypeDescription = true)
         {
+            if(parameter == null)
+            {
+                Compute.RecordWarning("Cannot query the description of a null parameter object. An empty string will be returned instead.");
+                return "";
+            }
+
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
             InputClassificationAttribute classification = null;
             string desc = "";
@@ -112,6 +124,7 @@ namespace BH.Engine.Reflection
         {
             if (type == null)
             {
+                Compute.RecordWarning("Cannot query the description of a null type. An empty string will be returned instead.");
                 return "";
             }
 
@@ -198,6 +211,12 @@ namespace BH.Engine.Reflection
         [Input("quantity", "Quantity attribute to be queried for description.")]
         public static string Description(this QuantityAttribute quantity)
         {
+            if(quantity == null)
+            {
+                Compute.RecordWarning("Cannot query the description of a null quantity attribute. An empty string will be returned isntead.");
+                return "";
+            }
+
             return "This is a " + quantity.GetType().Name + " [" + quantity.SIUnit + "]";
         }
 
