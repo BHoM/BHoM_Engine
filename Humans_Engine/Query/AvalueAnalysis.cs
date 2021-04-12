@@ -47,10 +47,12 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "AvalueSettings to configure the evaluation.")]
         [Input("activityArea", "ActivityArea to use in the evaluation.")]
+        [Input("parallelProcess", "Option to run analysis on multiple processors for +- 30% faster processing. When run in parallel the ordered of the list of results will not match the order of spectator's in the audience. " +
+            "Results can be matched to input objects where the result ObjectId matches the BHoM_Guid of the spectator. Default value is false.")]
         [Output("results", "Collection of Avalue results.")]
-        public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
+        public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint, bool parallelProcess = false)
         {
-            List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, focalPoint);
+            List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, focalPoint, parallelProcess);
             return results;
         }
 
@@ -61,13 +63,15 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "AvalueSettings to configure the evaluation.")]
         [Input("activityArea", "ActivityArea to use in the evaluation.")]
+        [Input("parallelProcess", "Option to run analysis on multiple processors for +- 30% faster processing. When run in parallel the ordered of the list of results will not match the order of spectator's in the audience. " +
+            "Results can be matched to input objects where the result ObjectId matches the BHoM_Guid of the spectator. Default value is false.")]
         [Output("results", "Collection of Avalue results.")]
-        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
+        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, Polyline playingArea, Point focalPoint, bool parallelProcess = false)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
             foreach (Audience a in audience)
             {
-                results.Add(EvaluateAvalue(a, settings, playingArea, focalPoint));
+                results.Add(EvaluateAvalue(a, settings, playingArea, focalPoint, parallelProcess));
             }
             return results;
         }
@@ -75,26 +79,36 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint)
+        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint, bool parallelProcess)
         {
 
-            List<Avalue> results = new List<Avalue>();
-
             if (!SetGlobals(settings))
-                return results;
+                return new List<Avalue>();
 
             if (settings.CalculateOcclusion) SetKDTree(audience);
 
-            ConcurrentBag<Avalue> resultCollection = new ConcurrentBag<Avalue>();
-
-            Parallel.ForEach(audience.Spectators, s =>
+            if(parallelProcess)
             {
-                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
-                Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
-                resultCollection.Add(ClipView(s, rowVector, viewVect, playingArea));
-            });
+                ConcurrentBag<Avalue> resultCollection = new ConcurrentBag<Avalue>();
 
-            return resultCollection.ToList();
+                Parallel.ForEach(audience.Spectators, s =>
+                {
+                    Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
+                    resultCollection.Add(ClipView(s, viewVect, playingArea));
+                });
+
+                return resultCollection.ToList();
+            }
+            else
+            {
+                List<Avalue> results = new List<Avalue>();
+                foreach (Spectator s in audience.Spectators)
+                {
+                    Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
+                    results.Add(ClipView(s, viewVect, playingArea));
+                }
+                return results;
+            }
         }
 
         /***************************************************/
@@ -116,13 +130,14 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, Polyline activityArea)
+        private static Avalue ClipView(Spectator spectator, Vector viewVect, Polyline activityArea)
         {
             Avalue result = new Avalue();
 
             result.ObjectId = spectator.BHoM_Guid;
             result.ReferencePoint = spectator.Head.PairOfEyes.ReferenceLocation;
 
+            Vector rowV = Geometry.Query.CrossProduct(Vector.ZAxis, spectator.Head.PairOfEyes.ViewDirection);
             Vector viewY = Geometry.Query.CrossProduct(viewVect, rowV);
             Vector viewX = Geometry.Query.CrossProduct(viewVect, viewY);
             //viewX reversed to ensure cartesian Z matches the view direction
