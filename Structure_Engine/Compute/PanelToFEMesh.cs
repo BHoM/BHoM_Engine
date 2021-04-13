@@ -30,6 +30,7 @@ using System.Linq;
 using System.ComponentModel;
 using BH.Engine.Analytical;
 
+
 namespace BH.Engine.Structure
 {
     public static partial class Compute
@@ -37,9 +38,9 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Converts a Panel with three or four control points to a FEmesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical FEMesh.")]
-        [Input("panel", "Panel to be converted to a FEMesh.")]
-        [Output("FEMesh", "FEMesh converted from a Panel.")]
+        [Description("Converts a Panel with three or four control points to a femesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical feMesh.")]
+        [Input("panel", "Panel to be converted to a feMesh.")]
+        [Output("feMesh", "feMesh converted from a Panel.")]
 
         public static FEMesh PanelToFEMesh(Panel panel)
         {
@@ -86,17 +87,17 @@ namespace BH.Engine.Structure
             }
             faces.Add(face);
             Mesh mesh = Geometry.Create.Mesh(points.Distinct(), faces);
-            FEMesh fEMesh = new FEMesh();
+            FEMesh feMesh = new FEMesh();
             if (panel.Property != null)
             {
-                fEMesh = Create.FEMesh(mesh, panel.Property, null, panel.Name);
-                return fEMesh;
+                feMesh = Create.FEMesh(mesh, panel.Property, null, panel.Name);
+                return feMesh;
             }
             else
             {
-                fEMesh = Create.FEMesh(mesh, null, null, panel.Name);
+                feMesh = Create.FEMesh(mesh, null, null, panel.Name);
                 Reflection.Compute.RecordWarning("Panels don't have any Section Property input");
-                return fEMesh;
+                return feMesh;
             }
         }
         /***************************************************/

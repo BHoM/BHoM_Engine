@@ -30,7 +30,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Compute
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -43,24 +43,24 @@ namespace BH.Engine.Structure
         {
             if (feMesh == null)
             {
-                Engine.Reflection.Compute.RecordError("Checks identify null FEMesh");
+                Engine.Reflection.Compute.RecordError("FEMesh is null, please check inputs.");
                 return null;
             }
             if (feMesh.Nodes == null)
             {
-                Engine.Reflection.Compute.RecordError("Checks identify null Nodes");
+                Engine.Reflection.Compute.RecordError("FEMesh Nodes are null, please check inputs");
                 return null;
             }
             if (feMesh.Faces == null)
             {
-                Engine.Reflection.Compute.RecordError("Checks identify null Faces");
+                Engine.Reflection.Compute.RecordError("FEMesh Faces are null, please check inputs.");
                 return null;
             }
             foreach (Node node in feMesh.Nodes)
             {
                 if (node == null)
                 {
-                    Reflection.Compute.RecordError("Checks identify null Node");
+                    Reflection.Compute.RecordError("At least one Node in the FEMesh is null, please check inputs.");
                     return null;
                 }
             }
@@ -68,15 +68,14 @@ namespace BH.Engine.Structure
             {
                 if (face == null)
                 {
-                    Reflection.Compute.RecordError("Checks identify null Face");
+                    Reflection.Compute.RecordError("At least one Face in the FEMesh is null, please check inputs.");
                     return null;
                 }
             }
             List<Polyline> polylines = new List<Polyline>();
-            List<Point> points = new List<Point>();
-
             foreach (FEMeshFace feMeshFace in feMesh.Faces)
             {
+                List<Point> points = new List<Point>();
                 foreach (int nodeIndex in feMeshFace.NodeListIndices)
                 {
                     points.Add(feMesh.Nodes[nodeIndex].Position);
@@ -100,6 +99,10 @@ namespace BH.Engine.Structure
                 if (feMesh.Fragments.Count > 0)
                 {
                     panel.Fragments = feMesh.Fragments;
+                }
+                if (feMesh.Tags.Count>0)
+                {
+                    panel.Tags = feMesh.Tags;
                 }
                 panels.Add(panel);
             }
