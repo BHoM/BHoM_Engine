@@ -74,19 +74,22 @@ namespace BH.Engine.Serialiser
         {
             var methodString = new StringWriter();
 
+            string methodFullName = method.Path();
+
             string methodName = method.Name;
             string methodDescription = method.Description();
 
             methodString.WriteLine("### {0}", methodName);
             methodString.WriteLine("<details>");
             methodString.WriteLine("<summary>");
+            methodString.WriteLine("<i>{0}</i>\n", methodFullName);
             methodString.WriteLine("{0}", methodDescription);
             methodString.WriteLine("</summary>");
             methodString.WriteLine();
 
             Dictionary<string, string> inputParameters = method.InputDescriptions();
             methodString.WriteLine("#### Inputs");
-            methodString.WriteLine("___");
+            methodString.WriteLine("____");
             foreach (var input in inputParameters)
             {
                 string inputName = input.Key;
@@ -102,7 +105,7 @@ namespace BH.Engine.Serialiser
 
             methodString.WriteLine();
             methodString.WriteLine("#### Outputs");
-            methodString.WriteLine("___");
+            methodString.WriteLine("____");
             string outputName = method.OutputName();
             string outputDescription = method.OutputDescription();
             
