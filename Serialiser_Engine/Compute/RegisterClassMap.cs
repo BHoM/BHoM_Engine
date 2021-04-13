@@ -41,15 +41,15 @@ namespace BH.Engine.Serialiser
         {
             if (!BsonClassMap.IsClassMapRegistered(type))
             {
-                if (type.IsEnum)
+                try
                 {
-                    MethodInfo generic = m_CreateEnumSerializer.MakeGenericMethod(type);
-                    generic.Invoke(null, null);
-                }
-                else if (!type.IsGenericType)
-                {
-                    try
+                    if (type.IsEnum)
                     {
+                        MethodInfo generic = m_CreateEnumSerializer.MakeGenericMethod(type);
+                        generic.Invoke(null, null);
+                    }
+                    else if (!type.IsGenericTypeDefinition)
+                    { 
                         BsonClassMap cm = new BsonClassMap(type);
                         cm.AutoMap();
                         cm.SetDiscriminator(type.FullName);
@@ -59,15 +59,15 @@ namespace BH.Engine.Serialiser
 
                         BsonClassMap.RegisterClassMap(cm);
 
+                        BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention()); 
+                    }
+                    else
                         BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e.ToString());
-                    }
                 }
-                else
-                    BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                }
             }
         }
 
