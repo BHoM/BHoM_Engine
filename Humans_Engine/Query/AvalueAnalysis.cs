@@ -45,14 +45,14 @@ namespace BH.Engine.Humans.ViewQuality
         [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(BH.oM.Humans.ViewQuality.Audience, BH.oM.Humans.ViewQuality.AvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
         [Description("Evaluate Avalues for a single Audience.")]
         [Input("audience", "Audience to evaluate.")]
-        [Input("settings", "AvalueSettings to configure the evaluation.")]
-        [Input("activityArea", "ActivityArea to use in the evaluation.")]
+        [Input("playingArea", "Polyline defining the playing area to use in the evaluation. For football stadia this would be the boundary of the pitch but could also be a stage or screen for alternative venue types.")]
+        [Input("settings", "AvalueSettings to configure the evaluation. If none provided default settings are applied.")]
         [Input("parallelProcess", "Option to run analysis on multiple processors for +- 30% faster processing. When run in parallel the ordered of the list of results will not match the order of spectator's in the audience. " +
             "Results can be matched to input objects where the result ObjectId matches the BHoM_Guid of the spectator. Default value is false.")]
         [Output("results", "Collection of Avalue results.")]
-        public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint, bool parallelProcess = false)
+        public static List<Avalue> AvalueAnalysis(Audience audience, Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
         {
-            List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, focalPoint, parallelProcess);
+            List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, parallelProcess);
             return results;
         }
 
@@ -61,17 +61,17 @@ namespace BH.Engine.Humans.ViewQuality
         [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(System.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQuality.AvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
         [Description("Evaluate Avalues for a List of Audience.")]
         [Input("audience", "Audience to evaluate.")]
-        [Input("settings", "AvalueSettings to configure the evaluation.")]
-        [Input("activityArea", "ActivityArea to use in the evaluation.")]
+        [Input("playingArea", "Polyline defining the playing area to use in the evaluation. For football stadia this would be the boundary of the pitch but could also be a stage or screen for alternative venue types.")]
+        [Input("settings", "AvalueSettings to configure the evaluation. If none provided default settings are applied.")]
         [Input("parallelProcess", "Option to run analysis on multiple processors for +- 30% faster processing. When run in parallel the ordered of the list of results will not match the order of spectator's in the audience. " +
             "Results can be matched to input objects where the result ObjectId matches the BHoM_Guid of the spectator. Default value is false.")]
         [Output("results", "Collection of Avalue results.")]
-        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, Polyline playingArea, Point focalPoint, bool parallelProcess = false)
+        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience,  Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
             foreach (Audience a in audience)
             {
-                results.Add(EvaluateAvalue(a, settings, playingArea, focalPoint, parallelProcess));
+                results.Add(EvaluateAvalue(a, settings, playingArea, parallelProcess));
             }
             return results;
         }
@@ -79,13 +79,13 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, Polyline playingArea, Point focalPoint, bool parallelProcess)
+        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, Polyline playingArea, bool parallelProcess)
         {
 
             if (!SetGlobals(settings))
                 return new List<Avalue>();
 
-            if (settings.CalculateOcclusion) SetKDTree(audience);
+            if (m_AvalueSettings.CalculateOcclusion) SetKDTree(audience);
 
             if(parallelProcess)
             {
@@ -93,8 +93,7 @@ namespace BH.Engine.Humans.ViewQuality
 
                 Parallel.ForEach(audience.Spectators, s =>
                 {
-                    Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
-                    resultCollection.Add(ClipView(s, viewVect, playingArea));
+                    resultCollection.Add(ClipView(s, s.SetViewVector(), playingArea));
                 });
 
                 return resultCollection.ToList();
@@ -103,12 +102,21 @@ namespace BH.Engine.Humans.ViewQuality
             {
                 List<Avalue> results = new List<Avalue>();
                 foreach (Spectator s in audience.Spectators)
-                {
-                    Vector viewVect = focalPoint - s.Head.PairOfEyes.ReferenceLocation;
-                    results.Add(ClipView(s, viewVect, playingArea));
+                {   
+                    results.Add(ClipView(s, s.SetViewVector(), playingArea));
                 }
                 return results;
             }
+        }
+
+        /***************************************************/
+
+        private static Vector SetViewVector(this Spectator spectator)
+        {
+            if (m_AvalueSettings.FocalPoint == null)
+                return spectator.Head.PairOfEyes.ViewDirection;
+            else 
+                return m_AvalueSettings.FocalPoint - spectator.Head.PairOfEyes.ReferenceLocation;
         }
 
         /***************************************************/
@@ -205,7 +213,8 @@ namespace BH.Engine.Humans.ViewQuality
                 {
 
                     Polyline projectedHead = ProjectPolylineToPlane(viewPlane, s.HeadOutline, current.Head.PairOfEyes.ReferenceLocation);
-
+                    if (projectedHead.ControlPoints.Count == 0)
+                        continue;
                     List<Polyline> clippedHead = Geometry.Compute.BooleanIntersection(clippedArea, projectedHead);
                     if (clippedHead.Count > 0)
                     {
@@ -277,7 +286,8 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static bool SetGlobals(AvalueSettings settings)
         {
-            m_AvalueSettings = settings;
+
+            m_AvalueSettings = settings == null ? new AvalueSettings() : settings;
 
             if (m_AvalueSettings.EffectiveConeOfVision.ControlPoints.Count == 0)
             {
