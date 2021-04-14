@@ -97,7 +97,7 @@ namespace BH.Engine.Serialiser
                 
                 
                 methodString.WriteLine("- **{0}**", inputName);
-                string parsedInputDescription = parseInputs(inputDescription);
+                string parsedInputDescription = parseDescription(inputDescription);
                 methodString.Write(parsedInputDescription);
 
 
@@ -106,21 +106,42 @@ namespace BH.Engine.Serialiser
             methodString.WriteLine();
             methodString.WriteLine("#### Outputs");
             methodString.WriteLine("____");
-            string outputName = method.OutputName();
-            string outputDescription = method.OutputDescription();
-            
-            methodString.WriteLine("- **{0}**", outputName);
-            string[] subOutputDescriptions = Regex.Split(outputDescription, @"(?<!:)\r\n");
-            foreach (var subOutputDescription in subOutputDescriptions)
+            //  check if component has multiple outputs
+            if (method.IsMultipleOutputs() == false)
             {
-                string parsedOutputDescription = parseInputs(subOutputDescription);
-                methodString.Write(parsedOutputDescription);
+                string outputName = method.OutputName();
+                string outputDescription = method.OutputDescription();
+
+                methodString.WriteLine("- **{0}**", outputName);
+                string[] subOutputDescriptions = Regex.Split(outputDescription, @"(?<!:)\r\n");
+                foreach (var subOutputDescription in subOutputDescriptions)
+                {
+                    string parsedOutputDescription = parseDescription(subOutputDescription);
+                    methodString.Write(parsedOutputDescription);
+                }
+            }
+            else
+            {
+                List<OutputAttribute> multipleOutputs = method.OutputAttributes();
+                foreach (var output in multipleOutputs)
+                {
+                    string outputName = output.Name;
+                    string outputDescription = output.Description;
+
+                    methodString.WriteLine("- **{0}**", outputName);
+                    string[] subOutputDescriptions = Regex.Split(outputDescription, @"(?<!:)\r\n");
+                    foreach (var subOutputDescription in subOutputDescriptions)
+                    {
+                        string parsedOutputDescription = parseDescription(subOutputDescription);
+                        methodString.Write(parsedOutputDescription);
+                    }
+                }
             }
             methodString.WriteLine("</details>");
             return methodString.ToString();
         }
 
-        private static string parseInputs (string inputToParse)
+        private static string parseDescription (string inputToParse)
         {
             StringWriter sw = new StringWriter();
             string enumString = null;
