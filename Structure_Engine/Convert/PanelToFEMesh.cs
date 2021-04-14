@@ -29,11 +29,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.Engine.Analytical;
-
+using BH.Engine.Structure;
 
 namespace BH.Engine.Structure
 {
-    public static partial class Compute
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
             List<Point> points = new List<Point>();
             List<Edge> edges = panel.ExternalEdges;
             List<Face> faces = new List<Face>();
-            if (NullCheck(panel) == false)
+            if (BH.Engine.Structure.Compute.NullCheck(panel) == false)
             {
                 return null;
             }
@@ -70,35 +70,35 @@ namespace BH.Engine.Structure
                 ICurve curve = Analytical.Query.Geometry(edge);
                 points.AddRange(Geometry.Convert.IToPolyline(curve).ControlPoints);
             }
-            int Count = points.Distinct().Count();
+            int count = points.Distinct().Count();
             Face face = new Face();
-            if (Count>4)
+            if (count>4)
             {
-                Reflection.Compute.RecordError("Panel contains more than 4 Control Points");
+                Reflection.Compute.RecordError("Panel contains more than four control points.");
                 return null;
             }
-            if (Count == 4)
+            if (count == 4)
             {
                 face = Geometry.Create.Face(0, 1, 2, 3);
             }
-            else if (Count == 3)
+            else if (count == 3)
             {
                 face = Geometry.Create.Face(0, 1, 2);
             }
             faces.Add(face);
             Mesh mesh = Geometry.Create.Mesh(points.Distinct(), faces);
             FEMesh feMesh = new FEMesh();
+            feMesh = Create.FEMesh(mesh, null, null, panel.Name);
             if (panel.Property != null)
             {
-                feMesh = Create.FEMesh(mesh, panel.Property, null, panel.Name);
-                return feMesh;
+                feMesh.Property= panel.Property;
             }
-            else
+            if (panel.Tags.Count > 0)
             {
-                feMesh = Create.FEMesh(mesh, null, null, panel.Name);
-                Reflection.Compute.RecordWarning("Panels don't have any Section Property input");
-                return feMesh;
+                feMesh.Tags = panel.Tags;
             }
+            return feMesh;
+            
         }
         /***************************************************/
 
