@@ -25,7 +25,6 @@ using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -65,10 +64,13 @@ namespace BH.Engine.Spatial
         [Output("element", "The modified IElement2D.")]
         public static IElement2D RoundCoordinates(this IElement2D element2d, int decimalPlaces = 6)
         {
-            if (element2d.IIsPlanar())
+            bool planar = element2d.IIsPlanar();
+
+            if (planar)
             {
                 Vector normal = element2d.FitPlane().Normal.Normalise();
 
+                //If the element is planar AND aligned with one of the main coordinate system's planes then rounded element will get projected on this plane to keep it's planarity.
                 if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
                     Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
                     Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
@@ -80,18 +82,20 @@ namespace BH.Engine.Spatial
                     return element2d.ISetInternalElements2D(element2d.IInternalElements2D().Select(y => y.ISetOutlineElements1D(y.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry().IProject(plane), decimalPlaces))).ToList())).ToList());
                 }
             }
-            else
+
+            //Here is the part with the default way of rounding element's coordinates:
+
+            IElement2D newElement2d = element2d.ISetOutlineElements1D(element2d.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry(), decimalPlaces))).ToList());
+
+            newElement2d = newElement2d.ISetInternalElements2D(newElement2d.IInternalElements2D().Select(y => y.ISetOutlineElements1D(y.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry(), decimalPlaces))).ToList())).ToList());
+
+            if (planar && !newElement2d.IsPlanar()) //If the original element was planar we need to ensure that result is planar as well.
             {
-                IElement2D newElement2d = element2d.ISetOutlineElements1D(element2d.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry(), decimalPlaces))).ToList());
-
-                newElement2d = newElement2d.ISetInternalElements2D(newElement2d.IInternalElements2D().Select(y => y.ISetOutlineElements1D(y.IOutlineElements1D().Select(x => x.ISetGeometry(Geometry.Modify.IRoundCoordinates(x.IGeometry(), decimalPlaces))).ToList())).ToList());
-
-                if (newElement2d.IsPlanar())
-                    return newElement2d;
+                Reflection.Compute.RecordWarning("Rounding the coordinates of an IElement2D couldn't be achieved without losing planarity. No action has been taken.");
+                return element2d;
             }
 
-            Reflection.Compute.RecordWarning("Rounding the coordinates of an IElement2D couldn't be achieved without losing planarity. No action has been taken.");
-            return element2d;
+            return newElement2d;
         }
 
 

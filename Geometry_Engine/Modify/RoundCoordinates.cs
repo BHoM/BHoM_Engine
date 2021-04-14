@@ -20,13 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
-using BH.oM.Geometry;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -293,18 +292,16 @@ namespace BH.Engine.Geometry
         {
             Vector normal = planarSurface.FitPlane().Normal;
 
-            if (planarSurface.IsPlanar())
+            //If the PlanarSurface is aligned with one of the main coordinate system's planes then rounded element will get projected on this plane to keep it's planarity.
+            if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
+                Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
+                Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
             {
-                if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
-                    Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
-                    Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
-                {
-                    Plane plane = new Plane() { Origin = planarSurface.ExternalBoundary.IStartPoint().RoundCoordinates(decimalPlaces), Normal = normal.RoundCoordinates(0) };
-                    ICurve externalBoundary = planarSurface.ExternalBoundary.IProject(plane).IRoundCoordinates(decimalPlaces);
-                    List<ICurve> internalBoundaries = planarSurface.InternalBoundaries.Select(x => x.IProject(plane).IRoundCoordinates(decimalPlaces)).ToList();
+                Plane plane = new Plane() { Origin = planarSurface.ExternalBoundary.IStartPoint().RoundCoordinates(decimalPlaces), Normal = normal.RoundCoordinates(0) };
+                ICurve externalBoundary = planarSurface.ExternalBoundary.IProject(plane).IRoundCoordinates(decimalPlaces);
+                List<ICurve> internalBoundaries = planarSurface.InternalBoundaries.Select(x => x.IProject(plane).IRoundCoordinates(decimalPlaces)).ToList();
 
-                    return Create.PlanarSurface(externalBoundary, internalBoundaries);
-                }
+                return Create.PlanarSurface(externalBoundary, internalBoundaries);
             }
             else
             {
@@ -312,7 +309,8 @@ namespace BH.Engine.Geometry
                 List<ICurve> internalBoundaries = planarSurface.InternalBoundaries.Select(x => x.IRoundCoordinates(decimalPlaces)).ToList();
                 PlanarSurface newSurface = Create.PlanarSurface(externalBoundary, internalBoundaries);
 
-                return newSurface ?? newSurface;
+                if (newSurface != null)
+                    return newSurface;
             }
 
             Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface couldn't be achieved without losing planarity. No action has been taken.");
