@@ -87,20 +87,16 @@ namespace BH.Engine.Structure
             Panel panel = new Panel();
             foreach (Polyline polyline in polylines)
             {
+                panel = Create.Panel(polyline, null, null, feMesh.Name);
                 if (feMesh.Property != null)
                 {
-                    panel = Create.Panel(polyline, null, feMesh.Property, feMesh.Name);
-                }
-                else
-                {
-                    panel = Create.Panel(polyline, null, null, feMesh.Name);
-                    Reflection.Compute.RecordWarning("FEMeshes don't have any Section Property input");
+                    panel.Property = feMesh.Property;
                 }
                 if (feMesh.Fragments.Count > 0)
                 {
                     panel.Fragments = feMesh.Fragments;
                 }
-                if (feMesh.Tags.Count>0)
+                if (feMesh.Tags.Count > 0)
                 {
                     panel.Tags = feMesh.Tags;
                 }
