@@ -39,6 +39,12 @@ namespace BH.Engine.Security
         [Output("centreline", "The centreline of the CameraDevice object.")]
         public static Line Centreline(this CameraDevice cameraDevice)
         {
+            if(cameraDevice == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the centreline of a null camera device.");
+                return null;
+            }
+
             return new Line { Start = cameraDevice.EyePosition, End = cameraDevice.TargetPosition };
         }
 
