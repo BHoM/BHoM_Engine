@@ -40,12 +40,14 @@ namespace BH.Engine.MEP
         [Input("conductiveMaterial", "Material properties for the Wire object.")]
         [Input("insulationMaterial", "Material properties for the insulation material, or material that wraps the exterior of the Wire object.")]
         [Output("wireSectionProperty", "Wire Section property used to provide accurate wire assembly and capacities.")]
-        public static WireSectionProperty WireSectionProperty(
-            SectionProfile sectionProfile,
-            Material conductiveMaterial = null,
-            Material insulationMaterial = null,
-            string name = "")
+        public static WireSectionProperty WireSectionProperty(SectionProfile sectionProfile, Material conductiveMaterial = null, Material insulationMaterial = null, string name = "")
         {
+            if (sectionProfile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a wire section property with a null section profile.");
+                return null;
+            }
+
             double elementSolidArea = sectionProfile.ElementProfile.Area();
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();
 
