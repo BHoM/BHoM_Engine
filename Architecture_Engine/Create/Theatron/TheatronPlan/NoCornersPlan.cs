@@ -35,6 +35,12 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         public static TheatronPlan NoCornersPlan(StadiaParameters parameters)
         {
+            if (parameters == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a no corners plan from a null set of stadia parameters.");
+                return null;
+            }
+
             TheatronPlan plan = new TheatronPlan();
             NoCornerPlanSetUp(ref plan, parameters.PitchLength,parameters.PitchWidth, parameters.EndBound, parameters.StructBayWidth, parameters.SideBound);
             return plan;

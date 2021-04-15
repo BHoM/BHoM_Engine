@@ -42,22 +42,40 @@ namespace BH.Engine.Architecture.Theatron
         [Input("focalPolyline", "The polyline used to define focal points for Cvalue profile generation")]
         public static TheatronPlan PlanGeometry(List<ProfileOrigin> structuralSections, Polyline focalPolyline)
         {
+            if(structuralSections == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron plan from a null collection of structural sections.");
+                return null;
+            }
+
+            if(focalPolyline == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron plan from a null focal polyline.");
+                return null;
+            }
+
             var planGeometry = new TheatronPlan
             {
                 SectionOrigins = structuralSections,
-
                 FocalCurve = focalPolyline,
             };
             planGeometry.SectionOrigins.ForEach(x => planGeometry.StructBayType.Add(BayType.Undefined));
             SetPlanes(ref planGeometry);
             return planGeometry;
-
         }
+
         /***************************************************/
+
         [Description("Create a full TheatronPlan from StadiaParameters")]
         [Input("parameters", "StadiaParameters to define the TheatronPlan")]
         public static TheatronPlan PlanGeometry(StadiaParameters parameters)
         {
+            if(parameters == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron plan from a null set of stadia parameters.");
+                return null;
+            }
+
             //assuming its a full stadium
             TheatronPlan planGeometry = new TheatronPlan();
             
