@@ -40,7 +40,7 @@ namespace BH.Engine.Architecture.Theatron
         [Input("source", "Origin point for the transform")]
         [Input("target", "Target point for the transform")]
         [Input("angle", "Rotation angle")]
-        [PreviousVersion("4.2", "BH.Engine.Architecture.Theatron.Create.TransformProfile(BH.oM.Architecture.Theatron.TierProfile, BH.oM.Geometry.Vector, BH.oM.Geomtry.Point, BH.oM.Geometry.Point, System.Double")]
+        [PreviousVersion("4.2", "BH.Engine.Architecture.Theatron.Create.TransformProfile(BH.oM.Architecture.Theatron.TierProfile, BH.oM.Geometry.Vector, BH.oM.Geometry.Point, BH.oM.Geometry.Point, System.Double")]
         public static TierProfile TransformProfile(TierProfile originalSection, Vector scale, Point source, Point target, double angle)
         {
             if (originalSection == null)
