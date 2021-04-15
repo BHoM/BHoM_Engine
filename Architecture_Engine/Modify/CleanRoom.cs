@@ -42,6 +42,12 @@ namespace BH.Engine.Architecture
         [Output("cleanedRoom", "A room that has been cleaned")]
         public static Room CleanRoom(this Room room, double angleTolerance = Tolerance.Angle, double minimumSegmentLength = Tolerance.Distance)
         {
+            if(room == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot clean the geometry of a null room.");
+                return room;
+            }
+
             Room clonedRoom = room.DeepClone();
             clonedRoom.Perimeter = clonedRoom.Perimeter.ICollapseToPolyline(Tolerance.Angle).CleanPolyline(angleTolerance, minimumSegmentLength);
             return clonedRoom;

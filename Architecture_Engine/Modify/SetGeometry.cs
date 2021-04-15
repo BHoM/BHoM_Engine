@@ -34,16 +34,6 @@ namespace BH.Engine.Architecture
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-   
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid SetGeometry(this Grid grid, ICurve curve)
-        {
-            Grid clone = grid.ShallowClone() as Grid;
-            clone.Curve = curve.DeepClone();
-            return clone;
-        }
-
-        /***************************************************/
 
         [Description("Assign new geometry to an Architecture Room. If either geometry is null then original geometry is used")]
         [Input("room", "An Architecture Room to set the geometry of")]
@@ -52,6 +42,12 @@ namespace BH.Engine.Architecture
         [Output("room", "An Architecture Room with an updated geometry")]
         public static Room SetGeometry(this Room room, Point locationPoint = null, ICurve perimeterCurve = null)
         {
+            if(room == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null room.");
+                return room;
+            }
+
             Room clone = room.DeepClone();
             clone.Location = locationPoint == null ? room.Location.DeepClone() : locationPoint;
             clone.Perimeter = perimeterCurve == null ? room.Perimeter.DeepClone() : perimeterCurve; 

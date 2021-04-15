@@ -44,6 +44,12 @@ namespace BH.Engine.Architecture
         [Output("room", "The updated Architecture Room")]
         public static Room SetOutlineElements1D(this Room room, List<IElement1D> outlineElements1D)
         {
+            if(room == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline elements of a null room.");
+                return room;
+            }
+
             Room r = room.ShallowClone() as Room;
             r.Perimeter = BH.Engine.Geometry.Compute.IJoin(outlineElements1D.Cast<ICurve>().ToList())[0];
             return r;
@@ -57,6 +63,12 @@ namespace BH.Engine.Architecture
         [Output("ceiling", "The updated Architecture Ceiling")]
         public static Ceiling SetOutlineElements1D(this Ceiling ceiling, List<IElement1D> outlineElements1D)
         {
+            if(ceiling == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline elements of a null ceiling.");
+                return ceiling;
+            }
+
             ceiling.Surface = BH.Engine.Geometry.Create.PlanarSurface(BH.Engine.Geometry.Compute.IJoin(outlineElements1D.Cast<ICurve>().ToList())[0]);
             return ceiling;
         }
