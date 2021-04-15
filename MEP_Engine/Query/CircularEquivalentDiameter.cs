@@ -37,21 +37,36 @@ namespace BH.Engine.MEP
         [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
         public static double ICircularEquivalentDiameter(this IProfile profile)
         {
+            if(profile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the circular equivalent diameter of a null profile.");
+                return -1;
+            }
+
             return CircularEquivalentDiameter(profile as dynamic);
         }
+
         /***************************************************/
+
         [Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
         [Input("box", "Box Shape profile to query the Circular Equivalent Diameter.")]
         [Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.")]
         public static double CircularEquivalentDiameter(this BoxProfile box)
         {
+            if(box == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the circular equivalent diameter of a null box profile.");
+                return - 1;
+            }
+
             double a = 1000 * (box.Height - 2 * box.Thickness);
             double b = 1000 * (box.Width - 2 * box.Thickness);
             return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
         }
+
         /***************************************************/
 
-        public static double CircularEquivalentDiameter(this object profile)
+        private static double CircularEquivalentDiameter(this object profile)
         {
             return 0; //To catch things that are not box profile.
         }
