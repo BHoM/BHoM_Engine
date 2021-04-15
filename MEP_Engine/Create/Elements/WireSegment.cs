@@ -40,10 +40,16 @@ namespace BH.Engine.MEP
         [Output("wireSegment", "Wire object to work within an MEP systems.")]
         public static WireSegment WireSegment(Line line, double flowRate = 0, WireSectionProperty sectionProperty = null)
         {
+            if (line == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a wire segment from an empty line.");
+                return null;
+            }
+
             return new WireSegment
             {
-                StartPoint = (Point)line.Start,
-                EndPoint = (Point)line.End,
+                StartPoint = line.Start,
+                EndPoint = line.End,
                 SectionProperty = sectionProperty,
             };
         }
