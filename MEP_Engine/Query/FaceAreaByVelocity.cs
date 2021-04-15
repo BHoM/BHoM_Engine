@@ -38,6 +38,12 @@ namespace BH.Engine.MEP
         [Output("widthlength", "This is the width OR the length (they are the same value), since the method is taking the square root of the airflow divided by the velocity.")]
         public static double FaceAreaByVelocity(this AirHandlingUnit mepEquipmentObject)
         {
+            if(mepEquipmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the face area by velocity of a null air handling unit object.");
+                return -1;
+            }
+
             return Math.Sqrt(mepEquipmentObject.TotalAirFlow / mepEquipmentObject.AirVelocityAcrossCoil);
         }
     }

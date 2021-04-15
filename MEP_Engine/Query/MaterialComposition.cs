@@ -42,6 +42,12 @@ namespace BH.Engine.MEP
         [Output("materialComposition", "The kind of matter the Duct is composed of and in which ratios", typeof(Ratio))]
         public static MaterialComposition MaterialComposition(this Duct duct)
         {
+            if(duct == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null duct.");
+                return null;
+            }
+
             if (duct.SectionProperty == null)
             {
                 Engine.Reflection.Compute.RecordError("The Duct MaterialComposition could not be calculated as no SectionProperty has been assigned.");
@@ -64,6 +70,12 @@ namespace BH.Engine.MEP
         [Output("materialComposition", "The kind of matter the Duct is composed of and in which ratios", typeof(Ratio))]
         public static MaterialComposition MaterialComposition(this Pipe pipe)
         {
+            if(pipe == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null pipe.");
+                return null;
+            }
+
             if (pipe.SectionProperty == null)
             {
                 Engine.Reflection.Compute.RecordError("The Duct MaterialComposition could not be calculated as no SectionProperty has been assigned.");
@@ -86,6 +98,12 @@ namespace BH.Engine.MEP
         [Output("materialComposition", "The kind of matter the Duct is composed of and in which ratios", typeof(Ratio))]
         public static MaterialComposition MaterialComposition(this WireSegment wire)
         {
+            if(wire == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null wire segment.");
+                return null;
+            }
+
             if (wire.SectionProperty == null)
             {
                 Engine.Reflection.Compute.RecordError("The Duct MaterialComposition could not be calculated as no SectionProperty has been assigned.");
@@ -108,6 +126,12 @@ namespace BH.Engine.MEP
         [Output("materialComposition", "The kind of matter the Duct is composed of and in which ratios", typeof(Ratio))]
         public static MaterialComposition MaterialComposition(this CableTray cableTray)
         {
+            if(cableTray == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null cable tray.");
+                return null;
+            }
+
             if (cableTray.SectionProperty == null)
             {
                 Engine.Reflection.Compute.RecordError("The Duct MaterialComposition could not be calculated as no SectionProperty has been assigned.");

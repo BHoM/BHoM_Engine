@@ -39,6 +39,12 @@ namespace BH.Engine.MEP
         [Output("centreline", "The centreline of the IFlow object.")]
         public static Line Centreline(this IFlow flowObj)
         {
+            if(flowObj == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the centre line of a null flow object.");
+                return null;
+            }
+
             return new Line { Start = flowObj.StartPoint, End = flowObj.EndPoint };
         }
 
