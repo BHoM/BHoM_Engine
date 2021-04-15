@@ -35,6 +35,12 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         public static TheatronPlan CircularPlan(StadiaParameters parameters)
         {
+            if(parameters == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron plan from a null set of stadia parameters.");
+                return null;
+            }
+
             TheatronPlan plan = new TheatronPlan();
             CircularPlaneSetUp(ref plan, parameters.TheatronRadius, parameters.StructBayWidth);
             return plan;

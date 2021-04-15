@@ -40,6 +40,12 @@ namespace BH.Engine.Architecture.Theatron
         [Input("parameters", "List of ProfileParameters")]
         public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters)
         {
+            if(parameters == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
+                return null;
+            }
+
             //this assumes no relation with the plan geometry setting out is from the origin
             TheatronFullProfile fullProfile = new TheatronFullProfile();
             double minDist = parameters[0].StartX - parameters[0].EyePositionParameters.EyePositionX;
@@ -51,23 +57,55 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
+
         [Description("Create a full profile from one or more ProfileParameters and a TheatronPlan geometry. The worst case section will be found and used to define the profile geometry")]
         [Input("parameters", "List of ProfileParameters")]
         [Input("planGeometry", "A TheatronPlan")]
         public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters, TheatronPlan planGeometry)
         {
-            
+            if (parameters == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
+                return null;
+            }
+
+            if(planGeometry == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null theatron plan.");
+                return null;
+            }
+
             TheatronFullProfile fullProfile = new TheatronFullProfile();
             
             GenerateMapProfiles(ref fullProfile, parameters.DeepClone(), planGeometry.MinDistToFocalCurve, planGeometry.SectionClosestToFocalCurve);
             
             return fullProfile;
         }
+
         /***************************************************/
+
         [Description("Create a full profile from one or more ProfileParameters and a focal point and ProfileOrigin")]
         [Input("parameters", "List of ProfileParameters")]
         public static TheatronFullProfile TheatronFullProfile(List<ProfileParameters> parameters, Point focalPoint, ProfileOrigin sectionOrigin)
         {
+            if (parameters == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
+                return null;
+            }
+
+            if (focalPoint == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null focal point.");
+                return null;
+            }
+
+            if (sectionOrigin == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null profile origin.");
+                return null;
+            }
+
             //this assumes no relation with the plan geometry setting out is from the origin
             TheatronFullProfile fullProfile = new TheatronFullProfile();
             Point lastpoint = new Point();
@@ -105,7 +143,7 @@ namespace BH.Engine.Architecture.Theatron
                 Point target = sectionOrigin.Origin;
                 double angle = Math.Atan2(sectionOrigin.Direction.Y, sectionOrigin.Direction.X);
                 Vector scaleVector = SetScaleVector(tierSection.SectionOrigin.Direction, tierSection.SectionOrigin, tierSection.SectionOrigin);
-                fullProfile.MappedProfiles.Add(TransformProfile(tierSection, scaleVector,source, target, angle));
+                fullProfile.MappedProfiles.Add(Modify.TransformProfile(tierSection, scaleVector,source, target, angle));
                 lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
 
             }

@@ -48,22 +48,27 @@ namespace BH.Engine.Architecture.Theatron
         [Input("aisleWidth", "Width of asile at vomitory")]
         public static SeatingBlock SeatingBlock(ProfileOrigin start, ProfileOrigin vom, ProfileOrigin end, SeatingBlockType t, double seatWidth, double aisleWidth)
         {
+            if(start == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a seating block with a null starting profile origin.");
+                return null;
+            }
+
+            if(end == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a seating block with a null ending profile origin.");
+                return null;
+            }
+
             return new SeatingBlock
             {
                 Start = start,
-
                 Vomitory = vom,
-
                 End = end,
-
                 SeatWidth = seatWidth,
-
                 TypeOfSeatingBlock = t,
-
                 AisleWidth = aisleWidth,
-
-                FrontRow = Geometry.Create.Line(start.Origin,end.Origin),
-
+                FrontRow = Geometry.Create.Line(start.Origin, end.Origin),
             };
         }
 
@@ -77,19 +82,19 @@ namespace BH.Engine.Architecture.Theatron
             Point source = origin.Origin;
             Vector scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Start, block.Vomitory);
             double angle = Geometry.Query.Angle(origin.Direction, block.Start.Direction, Plane.XY);
-            var start = TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
+            var start = Modify.TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
             block.Sections.Add(start);
 
             //vomitory section no need for scalefactor
             scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Vomitory, block.Vomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.Vomitory.Direction, Plane.XY);
-            var vom = TransformProfile(sectionToMap, scaleVector, source, block.Vomitory.Origin, angle);
+            var vom = Modify.TransformProfile(sectionToMap, scaleVector, source, block.Vomitory.Origin, angle);
             block.Sections.Add(vom);
 
             //end section
             scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.End, block.Vomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.End.Direction, Plane.XY);
-            var end = TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
+            var end = Modify.TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
             block.Sections.Add(end);
             
         }
@@ -102,19 +107,19 @@ namespace BH.Engine.Architecture.Theatron
             Point source = origin.Origin;
             Vector scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Start, prevVomitory);
             double angle = Geometry.Query.Angle(origin.Direction, block.Start.Direction, Plane.XY);
-            var start = TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
+            var start = Modify.TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
             block.Sections.Add(start);
 
             //end section
             scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.End, nextVomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.End.Direction, Plane.XY);
-            var end = TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
+            var end = Modify.TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
             block.Sections.Add(end);
         }
 
         /***************************************************/
 
-            private static void SetEyesBasic(ref SeatingBlock block)
+        private static void SetEyesBasic(ref SeatingBlock block)
         {
             block.Audience = new Audience();
             int rows = block.Sections[0].EyePoints.Count;

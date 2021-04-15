@@ -35,6 +35,12 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         public static TheatronPlan EightArcPlan(StadiaParameters parameters)
         {
+            if (parameters == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create an eight arc plan from a null set of stadia parameters.");
+                return null;
+            }
+
             TheatronPlan plan = new TheatronPlan();
             RadialPlanSetUp(ref plan,parameters.PitchLength,parameters.PitchWidth, parameters.SideBound, parameters.SideRadius,
                 parameters.EndBound, parameters.EndRadius, parameters.CornerRadius, parameters.NumCornerBays, parameters.StructBayWidth,
