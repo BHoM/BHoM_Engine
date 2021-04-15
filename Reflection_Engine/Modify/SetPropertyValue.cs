@@ -86,6 +86,22 @@ namespace BH.Engine.Reflection
                         value = Activator.CreateInstance(propType);
                 }
 
+                if (propType.IsEnum && value is string)
+                {
+                    string fullName = value as string;
+                    int index = fullName.LastIndexOf('.');
+                    if (index > 0)
+                    {
+                        Type enumType = Create.Type(fullName.Substring(0, index));
+                        if (enumType != null)
+                        {
+                            object enumValue = Enum.Parse(enumType, fullName.Substring(index + 1));
+                            if (enumValue != null)
+                                value = enumValue;
+                        }
+                    }
+                }
+
                 if (value != null)
                 {
                     if (value.GetType() != propType && value.GetType().GenericTypeArguments.Length > 0 && propType.GenericTypeArguments.Length > 0)
