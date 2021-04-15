@@ -40,12 +40,14 @@ namespace BH.Engine.MEP
         [Input("pipeMaterial", "Material properties for the Pipe object.")]
         [Input("insulationMaterial", "Material properties for the insulation material, or material that wraps the exterior of the Pipe object.")]
         [Output("pipeSectionProperty", "Pipe Section property used to provide accurate pipe assembly and capacities.")]
-        public static PipeSectionProperty PipeSectionProperty(
-            SectionProfile sectionProfile,
-            Material pipeMaterial = null,
-            Material insulationMaterial = null,
-            string name = "")
+        public static PipeSectionProperty PipeSectionProperty(SectionProfile sectionProfile, Material pipeMaterial = null, Material insulationMaterial = null, string name = "")
         {
+            if (sectionProfile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a pipe section property with a null section profile.");
+                return null;
+            }
+
             double elementSolidArea = sectionProfile.ElementProfile.Area();
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();
 
