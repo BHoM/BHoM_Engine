@@ -41,10 +41,16 @@ namespace BH.Engine.MEP
         [Output("duct", "A duct object is a passageway which conveys material (typically air).")]
         public static Duct Duct(Line line, double flowRate = 0, DuctSectionProperty sectionProperty = null, double orientationAngle = 0)
         {
+            if(line == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a duct from an empty line.");
+                return null;
+            }
+            
             return new Duct
             {
-                StartPoint = (Point)line.Start,
-                EndPoint = (Point)line.End,
+                StartPoint = line.Start,
+                EndPoint = line.End,
                 SectionProperty = sectionProperty,
                 OrientationAngle = orientationAngle,
             };
