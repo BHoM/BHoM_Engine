@@ -108,6 +108,24 @@ namespace BH.Engine.Architecture.Theatron
         [Input("pParams", "List of the ProfileParameters")]
         public static TheatronGeometry TheatronGeometry(TheatronPlan planPart, TheatronFullProfile profile, List<ProfileParameters> pParams)
         {
+            if (planPart == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null theatron plan.");
+                return null;
+            }
+
+            if (profile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null profile.");
+                return null;
+            }
+
+            if (pParams == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null collection of profile parameters.");
+                return null;
+            }
+
             var theatron = CreateGeometry(planPart, profile, pParams, StadiaType.Undefined);
             theatron.Tiers3d.ForEach(t => t.Generatorblocks.ForEach(g => { t.TierBlocks.Add(g); theatron.Audience.Add(g.Audience); }));
             return theatron;
