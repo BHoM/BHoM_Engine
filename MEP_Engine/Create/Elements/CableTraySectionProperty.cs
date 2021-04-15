@@ -39,8 +39,14 @@ namespace BH.Engine.MEP
         [Input("material", "A base ShapeProfile upon which to base the composite section.")]
         [Input("sectionProfile", "A base ShapeProfile upon which to base the composite section.")]
         [Output("cableTraySectionProperty", "Cable Tray Section property used to provide accurate Cable Tray assembly and capacities.")]
-        public static CableTraySectionProperty CableTraySectionProperty(Material material, SectionProfile sectionProfile = null, string name = "")
+        public static CableTraySectionProperty CableTraySectionProperty(Material material, SectionProfile sectionProfile, string name = "")
         {
+            if(sectionProfile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a cable tray section property with a null section profile.");
+                return null;
+            }
+
             double elementSolidArea = sectionProfile.ElementProfile.Area();
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();          
 
