@@ -49,6 +49,12 @@ namespace BH.Engine.Architecture
         [Output("ceilingTiles", "Closed Ceiling Tile regions contained within the Ceiling.")]
         public static List<CeilingTile> CeilingTiles(Ceiling ceiling, List<Line> ceilingTileLines, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, int decimalPlaces = 6)
         {
+            if(ceiling == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ceiling tiles for a null ceiling.");
+                return null;
+            }
+
             List<Line> openingLines = ceiling.Surface.IInternalEdges().SelectMany(x => x.ISubParts()).Cast<Line>().ToList();
 
             ceilingTileLines.AddRange(openingLines);
