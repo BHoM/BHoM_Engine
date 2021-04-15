@@ -89,6 +89,18 @@ namespace BH.Engine.Architecture.Theatron
 
         public static void TransformTier(ref TierProfile profile, TransformMatrix xTrans)
         {
+            if(profile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot modify a null tier profile.");
+                return;
+            }
+
+            if(xTrans == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot modify a tier profile with a null transformation matrix.");
+                return;
+            }
+
             profile.FloorPoints = profile.FloorPoints.Select(p => p.Transform(xTrans)).ToList();
             profile.EyePoints = profile.EyePoints.Select(p => p.Transform(xTrans)).ToList();
             profile.Profile.ControlPoints = profile.FloorPoints;
