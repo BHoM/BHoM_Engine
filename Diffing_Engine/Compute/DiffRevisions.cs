@@ -48,6 +48,18 @@ namespace BH.Engine.Diffing
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         public static Diff DiffRevisions(Revision pastRevision, Revision followingRevision, DiffingConfig diffingConfig = null)
         {
+            if(pastRevision == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the diff between revisions when the past revision is null.");
+                return null;
+            }
+
+            if(followingRevision == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the diff between revisions when the following revision is null.");
+                return null;
+            }
+
             return DiffRevisionObjects(pastRevision.Objects, followingRevision.Objects, diffingConfig);
         }
 
