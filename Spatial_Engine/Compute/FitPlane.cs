@@ -41,7 +41,7 @@ namespace BH.Engine.Spatial
         [Description("Computes plane that fits best in the IElements control points using least square fitting. Always returns null for IElement0Ds.")]
         [Input("element0D", "Element to fit the plane to. Impossible with IElement0D.")]
         [Input("tolerance", "Tolerance used to evaluate planarity (and linearity for special cases), as explained in Compute.FitPlane method in Geometry_Engine.", typeof(Length))]
-        [Output("plane", "Plane that fits best into the element's geometry. Null if no singular solution exists.")]
+        [Output("plane", "Plane that fits best into the element's geometry. Always null for IElement0Ds.")]
         public static Plane FitPlane(this IElement0D element0D, double tolerance = Tolerance.Distance)
         {
             return null;
