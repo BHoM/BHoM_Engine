@@ -45,9 +45,14 @@ namespace BH.Engine.Facade
         [Description("Returns total depth of a frame edge property")]
         [Input("frameEdgeProp", "FrameEdgeProperty to get total profile width of")]
         [Output("depth", "Total depth of FrameEdgeProperty")]
-
         public static double Depth(this FrameEdgeProperty frameEdgeProp)
         {
+            if(frameEdgeProp == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the depth of a null frame edge property.");
+                return 0;
+            }
+
             Polyline rectGeo = frameEdgeProp.SimpleGeometry();
             BoundingBox bounds = rectGeo.Bounds();
             if (bounds == null)

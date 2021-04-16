@@ -52,6 +52,12 @@ namespace BH.Engine.Facade
         [Output("volume", "The Panel solid volume", typeof(Volume))]
         public static double SolidVolume(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null panel.");
+                return 0;
+            }
+
             double constructionThickness = 0;
             if (panel.Construction != null)
                 constructionThickness = panel.Construction.IThickness();
@@ -68,6 +74,12 @@ namespace BH.Engine.Facade
         [Output("volume", "The Opening solid volume", typeof(Volume))]
         public static double SolidVolume(this Opening opening)
         {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null opening.");
+                return 0;
+            }
+
             double glazedVolume = 0;
             double frameVolume = 0;
 
@@ -98,6 +110,12 @@ namespace BH.Engine.Facade
         [Output("volume", "The Opening solid volume", typeof(Volume))]
         public static double SolidVolume(this FrameEdge frameEdge)
         {
+            if(frameEdge == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null frame edge.");
+                return 0;
+            }
+
             double frameVolume = 0;
 
             if (frameEdge.FrameEdgeProperty != null)
