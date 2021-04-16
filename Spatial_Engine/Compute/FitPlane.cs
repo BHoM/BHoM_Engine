@@ -70,10 +70,11 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [PreviousVersion("4.2", "BH.Engine.ModelLaundry.Compute.FitPlane(BH.oM.Dimensional.IElement2D, System.Boolean, System.Double)")]
-        [Description("Computes plane that fits best in the IElements control points using least square fitting.")]
+        [Description("Computes plane that fits best in the IElements control points using least square fitting. Returns null if no singular solution exists.")]
         [Input("element2D", "Element to fit the plane to.")]
+        [Input("externalOnly", "If true, only the external outline of an element is taken into account.")]
         [Input("tolerance", "Tolerance used to evaluate planarity (and linearity for special cases), as explained in Compute.FitPlane method in Geometry_Engine.", typeof(Length))]
-        [Output("plane", "Plane that fits best into the element's geometry. null if no singular solution exists.")]
+        [Output("plane", "Plane that fits best into the element's geometry. Null if no singular solution exists.")]
         public static Plane FitPlane(this IElement2D element2D, bool externalOnly = false, double tolerance = Tolerance.Distance)
         {
             List<Point> controlPoints = element2D.OutlineCurve().ControlPoints();
@@ -97,6 +98,7 @@ namespace BH.Engine.Spatial
         [PreviousVersion("4.2", "BH.Engine.ModelLaundry.Compute.IFitPlane(BH.oM.Dimensional.IElement, System.Boolean, System.Double)")]
         [Description("Computes plane that fits best in the IElements control points using least square fitting.")]
         [Input("element", "Element to fit the plane to. Returns null for elements whose geometry can't return a singular Plane.")]
+        [Input("externalOnly", "If true, only the external outline of an element is taken into account.")]
         [Input("tolerance", "Tolerance used to evaluate planarity (and linearity for special cases), as explained in Compute.FitPlane method in Geometry_Engine.", typeof(Length))]
         [Output("plane", "Plane that fits best into the element's geometry. Null if no singular solution exists.")]
         public static Plane IFitPlane(this IElement element, bool externalOnly = false, double tolerance = Tolerance.Distance)
