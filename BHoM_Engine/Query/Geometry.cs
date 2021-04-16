@@ -46,6 +46,12 @@ namespace BH.Engine.Base
 
         public static IGeometry Geometry(this CustomObject obj)
         {
+            if(obj == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null custom object.");
+                return null;
+            }
+
             List<IGeometry> geometries = new List<IGeometry>();
 
             foreach (object item in obj.CustomData.Values)

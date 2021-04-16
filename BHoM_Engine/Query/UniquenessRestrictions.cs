@@ -41,6 +41,9 @@ namespace BH.Engine.Base
         [Input("type", "The type of object you want to apply the fragment to.")]
         public static List<Type> UniquenessRestrictions(this Type type)
         {
+            if (type == null)
+                return new List<Type>();
+
             // Do not cover value types
             if (type.IsValueType)
                 return new List<Type>();

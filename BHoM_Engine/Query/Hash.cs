@@ -51,6 +51,12 @@ namespace BH.Engine.Base
         [Input("hashFromFragment", "If true, if the object is a BHoMObject storing a HashFragment, retrieve the hash from it instead of computing the hash.")]
         public static string Hash(this IObject iObj, ComparisonConfig comparisonConfig = null, bool hashFromFragment = false)
         {
+            if(iObj == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the hash of a null object.");
+                return "";
+            }
+
             if (hashFromFragment && iObj is IBHoMObject)
             {
                 // Instead of computing the Hash, first tryGet the hash in HashFragment
