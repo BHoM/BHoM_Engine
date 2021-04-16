@@ -44,6 +44,12 @@ namespace BH.Engine.Analytical
         [Output("entities", "The collection of guids of the destination entities.")]
         public static List<Guid> Destinations(this Graph graph, Guid entity)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the destinations of a null graph.");
+                return new List<Guid>();
+            }
+
             return graph.Relations.Where(r => r.Source.Equals(entity)).Select(r => r.Target).ToList();
         }
 
@@ -55,6 +61,18 @@ namespace BH.Engine.Analytical
         [Output("entities", "The collection of IBHoMObjects of the destination entities.")]
         public static List<IBHoMObject> Destinations(this Graph graph, IBHoMObject entity)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the destinations of a null graph.");
+                return new List<IBHoMObject>();
+            }
+
+            if(entity == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the destinations of a graph when the entity is null.");
+                return new List<IBHoMObject>();
+            }
+
             List<IBHoMObject> destinations = new List<IBHoMObject>();
             foreach (Guid g in graph.Destinations(entity.BHoM_Guid))
                 destinations.Add(graph.Entities[g]);

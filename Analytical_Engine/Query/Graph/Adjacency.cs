@@ -44,6 +44,12 @@ namespace BH.Engine.Analytical
         [Output("adjacency", "The Dictionary where the keys are entities and the values are the collection of adjacent entities.")]
         public static Dictionary<Guid, List<Guid>> Adjacency(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of a null graph.");
+                return null;
+            }
+
             Dictionary<Guid, List<Guid>> adjacency = new Dictionary<Guid, List<Guid>>();
             graph.Entities.ToList().ForEach(n => adjacency.Add(n.Key, new List<Guid>()));
             foreach(Guid entity in graph.Entities.Keys.ToList())

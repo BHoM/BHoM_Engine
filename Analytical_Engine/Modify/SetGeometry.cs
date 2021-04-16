@@ -44,6 +44,12 @@ namespace BH.Engine.Analytical
         [Output("node", "The INode with updated geometry.")]
         public static INode SetGeometry(this INode node, Point point)
         {
+            if(node == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null node.");
+                return node;
+            }
+
             INode clone = node.ShallowClone();
             clone.Position = point.Clone();
             return clone;
@@ -80,6 +86,12 @@ namespace BH.Engine.Analytical
         [Output("edge", "The IEdge with updated geometry.")]
         public static IEdge SetGeometry(this IEdge edge, ICurve curve)
         {
+            if(edge == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null edge.");
+                return edge;
+            }
+
             IEdge clone = edge.ShallowClone();
             clone.Curve = curve.IClone();
             return clone;
@@ -94,6 +106,12 @@ namespace BH.Engine.Analytical
         [Output("strSurface", "The analytical Surface with updated geometry.")]
         public static BH.oM.Analytical.Elements.ISurface SetGeometry(this BH.oM.Analytical.Elements.ISurface anaSurface, BH.oM.Geometry.ISurface geoSurface)
         {
+            if(anaSurface == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null surface.");
+                return anaSurface;
+            }
+
             anaSurface.Extents = geoSurface;
             return anaSurface;
         }

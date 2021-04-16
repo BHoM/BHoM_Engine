@@ -40,6 +40,12 @@ namespace BH.Engine.Analytical
         [Output("graph", "The modified graph.")]
         public static Graph UniqueEntityNames(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot modify a null graph.");
+                return graph;
+            }
+
             List<IBHoMObject> entities = graph.Entities.Values.ToList();
             List<string> distinctNames = entities.Select(x => x.Name).Distinct().ToList();
 

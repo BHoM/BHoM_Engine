@@ -44,6 +44,12 @@ namespace BH.Engine.Analytical
         [Output("custom objects", "CUstom objects representing the Graph.")]
         public static List<CustomObject> ToDataVizObjects(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null graph to DataViz objects.");
+                return new List<CustomObject>();
+            }
+
             List<CustomObject> objects = new List<CustomObject>();
             foreach (IBHoMObject entity in graph.Entities.Values.ToList())
             {

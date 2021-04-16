@@ -53,6 +53,12 @@ namespace BH.Engine.Analytical
         [Output("curve", "Optional Curve that represents the link between the source and target entities Default is null.")]
         public static Relation Relation(IBHoMObject source, IBHoMObject target, Graph subgraph = null, double weight = 1, ICurve curve = null)
         {
+            if(source == null || target == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a relation from a null source or a null target.");
+                return null;
+            }
+
             if (subgraph == null)
                 subgraph = new Graph();
 

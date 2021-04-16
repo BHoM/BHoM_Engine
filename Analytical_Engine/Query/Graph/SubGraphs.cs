@@ -43,6 +43,12 @@ namespace BH.Engine.Analytical
         [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
         public static List<Graph> SubGraphs(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the sub graphs of a null graph.");
+                return new List<Graph>();
+            }
+
             List<Graph> subGraphs = new List<Graph>();
             m_Adjacency = graph.Adjacency(relationDirection);
             m_MarkedEntity = new Dictionary<Guid, int>();

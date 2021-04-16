@@ -47,8 +47,25 @@ namespace BH.Engine.Analytical
         [Output("shortest path result", "The ShortestPathResult.")]
         public static ShortestPathResult DijkstraShortestPath(this Graph graph, IBHoMObject start, IBHoMObject end)
         {
-            ShortestPathResult result = DijkstraShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
-            return result;
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path from a null graph.");
+                return null;
+            }
+
+            if (start == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path between two points when the start is null.");
+                return null;
+            }
+
+            if (end == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path between two points when the end is null.");
+                return null;
+            }
+
+            return DijkstraShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
         }
 
         /***************************************************/
@@ -60,6 +77,12 @@ namespace BH.Engine.Analytical
         [Output("shortest path result", "The ShortestPathResult.")]
         public static ShortestPathResult DijkstraShortestPath(this Graph graph, Guid start, Guid end)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path from a null graph.");
+                return null;
+            }
+
             m_NonSpatialGraph = graph;
 
             SetFragments(graph);
