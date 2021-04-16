@@ -42,6 +42,12 @@ namespace BH.Engine.Data
         [Output("axes", "The table axes names")]
         public static List<string> Axes(this Table table)
         {
+            if(table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the axes of a null table.");
+                return new List<string>();
+            }
+
             var columnNames = new List<string>();
 
             foreach (DataColumn col in table.Data.Columns)

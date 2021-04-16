@@ -44,6 +44,12 @@ namespace BH.Engine.Data
         [Output("exists", "Returns true if the axis is in the table")]
         public static bool AxisExists(this Table table, string axis)
         {
+            if(table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query if an axis exists on a null table.");
+                return false;
+            }
+
             return table.Axes().Contains(axis);
         }
 
@@ -55,6 +61,12 @@ namespace BH.Engine.Data
         [Output("exists", "Returns true if the axis is in the table")]
         public static bool AxisExists(this Table table, List<string> axes)
         {
+            if(table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query if axes exist on a null table.");
+                return false;
+            }
+
             bool success = true;
 
             List<string> tableAxes = table.Axes();

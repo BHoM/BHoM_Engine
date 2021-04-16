@@ -51,6 +51,12 @@ namespace BH.Engine.Data
         [Output("sqDist", "Square distance between the two DomainBoxes.")]
         public static double SquareDistance(this DomainBox box1, DomainBox box2)
         {
+            if(box1 == null || box2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the square distance if either domain box is null.");
+                return 0;
+            }
+
             return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(Distance(a, b), 2)).Sum();
         }
 

@@ -44,6 +44,12 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static CustomObject FirstValueAt(this Table table, string expression, string sortOrder)
         {
+            if (table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot get the first value at from a null table.");
+                return new CustomObject();
+            }
+
             return AsCustomObject(table.Data.Select(expression, sortOrder).First(), table.Data.Columns);
         }
     }

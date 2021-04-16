@@ -41,6 +41,12 @@ namespace BH.Engine.Data
         [Output("sqDist", "The furthest possible square distance between two vectors confined in the respective DomainBoxes.")]
         public static double FurthestSquareDistance(this DomainBox box1, DomainBox box2)
         {
+            if(box1 == null || box2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the furthest square distance if either domain box is null.");
+                return 0;
+            }
+
             return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(FurthestEdgeDistance(a, b), 2)).Sum();
         }
 
@@ -51,6 +57,12 @@ namespace BH.Engine.Data
         [Output("sqDist", "The furthest possible square distance between two vectors confined in the respective tight DomainBoxes.")]
         public static double FurthestTightSquareDistance(this DomainBox box1, DomainBox box2)
         {
+            if (box1 == null || box2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the furthest square distance if either domain box is null.");
+                return 0;
+            }
+
             // Find in which axis the distance between the outer bounderies of the boxes is the least
             int index = 0;
             double min = double.MaxValue;
