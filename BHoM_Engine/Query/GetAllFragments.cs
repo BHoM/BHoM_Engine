@@ -43,6 +43,9 @@ namespace BH.Engine.Base
         [Output("fragmentList", "A deep copy of the fragments is returned for immutability.")]
         public static List<IFragment> GetAllFragments(this IBHoMObject iBHoMObject, Type parentType = null)
         {
+            if (iBHoMObject == null)
+                return new List<IFragment>();
+
             List<IFragment> fragments = new List<IFragment>();
 
             if (parentType == null)
