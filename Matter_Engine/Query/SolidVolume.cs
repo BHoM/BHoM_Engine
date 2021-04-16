@@ -39,6 +39,12 @@ namespace BH.Engine.Matter
         [Output("volume", "The element's solid material volume.", typeof(Volume))]
         public static double ISolidVolume(this IElementM elementM)
         {
+            if(elementM == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null element.");
+                return 0;
+            }
+
             return (double)Reflection.Compute.RunExtensionMethod(elementM, "SolidVolume");
         }
 

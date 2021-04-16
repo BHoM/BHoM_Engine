@@ -41,6 +41,12 @@ namespace BH.Engine.Matter
         [Output("mass", "The physical mass of the element", typeof(Mass))]
         public static double Mass(this IElementM elementM)
         {
+            if(elementM == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the mass of a null element.");
+                return 0;
+            }
+
             MaterialComposition mat = elementM.IMaterialComposition();
             return elementM.ISolidVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density()).Sum();
         }

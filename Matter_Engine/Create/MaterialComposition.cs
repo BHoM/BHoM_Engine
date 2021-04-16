@@ -79,6 +79,12 @@ namespace BH.Engine.Matter
         [Output("materialComposition", "A single Material MaterialComposition with a ratio of one.")]
         public static MaterialComposition MaterialComposition(IMaterialProperties materialProperty)
         {
+            if(materialProperty == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a material composition from a null set of material properties.");
+                return null;
+            }
+
             Material material = new Material
             {
                 Name = materialProperty.Name,
