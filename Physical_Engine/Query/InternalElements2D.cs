@@ -43,6 +43,12 @@ namespace BH.Engine.Physical
         [Output("openings", "The IOpenings of the ISurface.")]
         public static List<IElement2D> InternalElements2D(this oM.Physical.Elements.ISurface surface)
         {
+            if(surface == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the internal 2D elements of a null surface.");
+                return new List<IElement2D>();
+            }
+
             return new List<IElement2D>(surface.Openings);
         }
 

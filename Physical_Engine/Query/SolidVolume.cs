@@ -49,6 +49,12 @@ namespace BH.Engine.Physical
         [Output("volume", "The IFramingElement's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IFramingElement framingElement)
         {
+            if(framingElement == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null framing element.");
+                return 0;
+            }
+
             if (framingElement.Property == null)
             {
                 Engine.Reflection.Compute.RecordError("The IFramingElement Solid Volume could not be calculated as no property has been assigned. Returning zero volume.");
@@ -65,6 +71,12 @@ namespace BH.Engine.Physical
         [Output("volume", "The ISurface's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this oM.Physical.Elements.ISurface surface)
         {
+            if(surface == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null surface.");
+                return 0;
+            }
+
             if (surface.Construction == null)
             {
                 Engine.Reflection.Compute.RecordError("The ISurface Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
