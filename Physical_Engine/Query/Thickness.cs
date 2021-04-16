@@ -51,11 +51,22 @@ namespace BH.Engine.Physical
         [Output("thickness", "The total thickness of the construction as a sum of all its layers")]
         public static double Thickness(this Construction construction)
         {
+            if(construction == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the thickness of a null construction.");
+                return 0;
+            }
+
             double thickness = 0;
             foreach (Layer l in construction.Layers)
                 thickness += l.Thickness;
 
             return thickness;
+        }
+
+        private static double Thickness(this object construction)
+        {
+            return 0; //Fallback method
         }
     }
 }

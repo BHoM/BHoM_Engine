@@ -47,6 +47,12 @@ namespace BH.Engine.Physical
         [Output("curve", "The top centreline of the IFramingElement.")]
         public static ICurve TopCentreline(this IFramingElement element)
         {   
+            if(element == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the top centreline of a null framing element.");
+                return null;
+            }
+
             ICurve location = element.Location;
 
             Vector normal = null;

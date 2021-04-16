@@ -46,6 +46,12 @@ namespace BH.Engine.Physical
         [Output("materialComposition", "The kind of matter the IFramingElement is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this IFramingElement framingElement)
         {
+            if(framingElement == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null framing element.");
+                return null;
+            }
+
             if (framingElement.Property == null)
             {
                 Engine.Reflection.Compute.RecordError("The MaterialComposition could not be queried as no Property has been assigned to the IFramingElement.");
@@ -61,6 +67,12 @@ namespace BH.Engine.Physical
         [Output("materialComposition", "The kind of matter the ISurface is composed of and in which ratios")]
         public static MaterialComposition MaterialComposition(this ISurface surface)
         {
+            if(surface == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null surface.");
+                return null;
+            }
+
             if (surface.Construction == null)
             {
                 Engine.Reflection.Compute.RecordError("The MaterialComposition could not be queried as no IConstruction has been assigned to the ISurface.");
@@ -104,6 +116,7 @@ namespace BH.Engine.Physical
                 Engine.Reflection.Compute.RecordError("Void's do not support constructions and therefore, contain no material composition. Returning null.");
                 return null;
             }
+
             return materialComposition;
         }
 
