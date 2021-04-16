@@ -45,6 +45,12 @@ namespace BH.Engine.Analytical
         [Output("dotFormat", "The DotFormat string that can be copied and pasted in on line viewers like https://visjs.github.io/vis-network/examples/network/data/dotLanguage/dotPlayground.html for quick visualisation.")]
         public static string ToDotFormat(this Graph graph, string shape = "box", int fontsize = 12)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null graph to a Dot Format.");
+                return "";
+            }
+
             string pattern = "[\\~#%&*{}()/:<>?|\"-]";
             string replacement = "_";
 

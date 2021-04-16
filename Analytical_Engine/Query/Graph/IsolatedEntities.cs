@@ -43,6 +43,12 @@ namespace BH.Engine.Analytical
         [Output("isolated entities", "The collection of entity Guids that are isolated.")]
         public static List<Guid> IsolatedEntities(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the isolated entities of a null graph.");
+                return null;
+            }
+
             List<Guid> unused = new List<Guid>();
             foreach(Guid n in graph.Entities.Keys.ToList())
             {

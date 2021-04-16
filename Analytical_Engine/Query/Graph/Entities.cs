@@ -42,6 +42,12 @@ namespace BH.Engine.Analytical
         [Output("entities", "The Graph entities.")]
         public static List<IBHoMObject> Entities(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the entities of a null graph.");
+                return new List<IBHoMObject>();
+            }
+
             return graph.Entities.Values.ToList();
         }
     }

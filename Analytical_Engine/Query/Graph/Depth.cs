@@ -93,6 +93,12 @@ namespace BH.Engine.Analytical
         [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]
         public static Dictionary<Guid, int> Depth(this Graph graph, Guid startEntity)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the depth of a null graph.");
+                return null;
+            }
+
             Dictionary<Guid, List<Guid>> adjacency = graph.Adjacency();
             return Depth(adjacency, startEntity);
         }

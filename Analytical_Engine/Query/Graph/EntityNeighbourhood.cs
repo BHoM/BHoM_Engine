@@ -46,6 +46,12 @@ namespace BH.Engine.Analytical
         [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
         public static List<Graph> EntityNeighbourhood(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the entity neighbourhood of a null graph.");
+                return null;
+            }
+
             List<Graph> subGraphs = new List<Graph>();
             m_Adjacency = graph.Adjacency(relationDirection);
 
@@ -65,6 +71,18 @@ namespace BH.Engine.Analytical
         [Output("graph", "The sub Graph found in the input Graph.")]
         public static Graph EntityNeighbourhood(this Graph graph, IBHoMObject entity, int maximumDepth, RelationDirection relationDirection = RelationDirection.Forwards)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the entity neighbourhood of a null graph.");
+                return null;
+            }
+
+            if(entity == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot search from a null entity.");
+                return null;
+            }
+
             List<Graph> subGraphs = new List<Graph>();
             m_Adjacency = graph.Adjacency(relationDirection);
             m_AccessibleEntities = new List<Guid>();

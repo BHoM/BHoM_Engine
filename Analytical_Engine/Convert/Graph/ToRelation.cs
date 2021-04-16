@@ -55,6 +55,12 @@ namespace BH.Engine.Analytical
         [Output("relations", "Collection of the converted relations.")]
         public static List<IRelation> ToRelation(this SourcesDependencyFragment dependency, Guid owningEntity)
         {
+            if(dependency == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null dependency to a collection of relations.");
+                return new List<IRelation>();
+            }
+
             List<IRelation> relations = new List<IRelation>();
             for(int i = 0; i < dependency.Sources.Count; i++)
             {
@@ -67,7 +73,6 @@ namespace BH.Engine.Analytical
                     Source = dependency.Sources[i],
                     Target = owningEntity,
                     Curve = curve,
-
                 });
             }
             
@@ -82,6 +87,12 @@ namespace BH.Engine.Analytical
         [Output("relations", "Collection of the converted relations.")]
         public static List<IRelation> ToRelation(this TargetsDependencyFragment dependency, Guid owningEntity)
         {
+            if (dependency == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null dependency to a collection of relations.");
+                return new List<IRelation>();
+            }
+
             List<IRelation> relations = new List<IRelation>();
             for (int i = 0; i < dependency.Targets.Count; i++)
             {
@@ -110,6 +121,12 @@ namespace BH.Engine.Analytical
         [Output("relations", "Collection of the converted relations.")]
         public static List<IRelation> ToRelation(this IBHoMObject obj)
         {
+            if(obj == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null BHoM object to a relation.");
+                return new List<IRelation>();
+            }
+
             List<IRelation> relations = new List<IRelation>();
 
             List<IFragment> dependencyFragments = obj.GetAllFragments(typeof(IDependencyFragment));

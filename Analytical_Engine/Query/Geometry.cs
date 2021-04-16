@@ -198,6 +198,12 @@ namespace BH.Engine.Analytical
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
         public static CompositeGeometry Geometry(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null graph.");
+                return null;
+            }
+
             List<IGeometry> geometries = new List<IGeometry>();
             Graph geometricGraph = graph?.IProjectGraph(new GeometricProjection());
 
@@ -205,7 +211,6 @@ namespace BH.Engine.Analytical
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
 
             return SpatialGraphGeometry(graph);
-
         }
 
         /***************************************************/

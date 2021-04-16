@@ -55,6 +55,12 @@ namespace BH.Engine.Analytical
         [Output("relation", "The reversed Relation.")]
         public static Relation Reverse(this Relation relation)
         {
+            if(relation == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot reverse a null relation.");
+                return relation;
+            }
+
             relation.FlipSourceTarget<Relation>();
             relation.Curve = relation.Curve.IFlip();
             return relation;
@@ -67,6 +73,12 @@ namespace BH.Engine.Analytical
         [Output("graph", "The reversed Graph.")]
         public static Graph Reverse(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot reverse a null graph.");
+                return graph;
+            }
+
             List<IRelation> reversed = new List<IRelation>();
             foreach (IRelation relation in graph.Relations)
                 reversed.Add(relation.Reverse());

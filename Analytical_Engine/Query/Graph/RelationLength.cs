@@ -46,6 +46,18 @@ namespace BH.Engine.Analytical
         [Output("length", "The length of the IRelation.")]
         public static double RelationLength(this Graph graph, IRelation relation)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the relation length of a null graph.");
+                return 0;
+            }
+
+            if(relation == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the relation length for a graph if the relation to query is null.");
+                return 0;
+            }
+
             double length = 0;
             if (relation.Curve != null)
                 length = relation.Curve.ILength();
