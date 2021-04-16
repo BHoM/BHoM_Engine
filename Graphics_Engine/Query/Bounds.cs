@@ -34,6 +34,12 @@ namespace BH.Engine.Graphics
 
         public static BoundingBox Bounds(this SVGObject svg)
         {
+            if(svg == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the bounding box of a null SVG object.");
+                return null;
+            }
+
             BoundingBox bb = new BoundingBox();
             List<IGeometry> geometry = svg.Shapes;
 
@@ -47,6 +53,12 @@ namespace BH.Engine.Graphics
 
         public static BoundingBox Bounds(this List<SVGObject> svg)
         {
+            if (svg == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the bounding box of a null SVG object.");
+                return null;
+            }
+
             BoundingBox bb = new BoundingBox();
 
             for (int i = 0; i < svg.Count; i++)
@@ -59,6 +71,12 @@ namespace BH.Engine.Graphics
 
         public static BoundingBox Bounds(this SVGDocument svg)
         {
+            if (svg == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the bounding box of a null SVG document.");
+                return null;
+            }
+
             return svg.Canvas;
         }
 
@@ -66,6 +84,12 @@ namespace BH.Engine.Graphics
 
         public static BoundingBox Bounds(this List<SVGDocument> svg)
         {
+            if (svg == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the bounding box of a null SVG document.");
+                return null;
+            }
+
             BoundingBox bb = new BoundingBox();
 
             for (int i = 0; i < svg.Count; i++)

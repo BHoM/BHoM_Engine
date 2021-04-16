@@ -49,10 +49,15 @@ namespace BH.Engine.Graphics
         [Input("component", "The configuration properties for the box representation.")]
         [Input("dataset", "Dataset of a BH.oM.Analytical.Elements.Graph where Graph.Entities are one element of type BHoMGroup in Dataset.Data.")]
         [Input("viewConfig", "The configuration properties for the view.")]
-
         public static void RepresentationFragment(this Boxes component, Dataset dataset, ViewConfig viewConfig)
         {
-            SetScales(component,dataset, viewConfig);
+            if(component == null || dataset == null || viewConfig == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot add box representation fragments if the components, datasets, or view configurations are null.");
+                return;
+            }
+
+            SetScales(component, dataset, viewConfig);
 
             BHoMGroup<IBHoMObject> entityGroup = (BHoMGroup<IBHoMObject>)dataset.Data.Find(x => x.Name == "Entities");
             List<IBHoMObject> entities = entityGroup.Elements;

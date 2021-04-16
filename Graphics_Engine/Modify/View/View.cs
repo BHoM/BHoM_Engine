@@ -44,6 +44,12 @@ namespace BH.Engine.Graphics
         [Input("dataset", "Dataset to generate a view of.")]
         public static void IView(IView view, Dataset dataset)
         {
+            if(view == null || dataset == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot modify a view if the view or dataset are null.");
+                return;
+            }
+
             View(view as dynamic, dataset);
         }
         

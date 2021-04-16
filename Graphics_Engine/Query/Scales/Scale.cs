@@ -56,6 +56,12 @@ namespace BH.Engine.Graphics.Scales
         [Output("output", "The value from output range.")]
         public static object Scale(this ScaleLinear scale, object value)
         {
+            if(scale == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the scale of a null linear scale object.");
+                return null;
+            }
+
             return Map(scale.Domain, scale.Range, System.Convert.ToDouble(value));
         }
 
@@ -67,6 +73,12 @@ namespace BH.Engine.Graphics.Scales
         [Output("output", "The value from output range.")]
         public static object Scale(this ScaleOrdinal scale, object value)
         {
+            if (scale == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the scale of a null ordinal scale object.");
+                return null;
+            }
+
             int i = scale.Domain.IndexOf(value.ToString());
             if (i == -1)
                 return null;

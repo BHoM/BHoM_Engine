@@ -48,6 +48,11 @@ namespace BH.Engine.Graphics
         [Input("dataset", "Dataset of a BH.oM.Analytical.Elements.Graph where Graph.Entities are one element of type BHoMGroup in Dataset.Data and Graph.Relations are another element of type BHoMGroup in Dataset.Data.")]
         public static void View(this DependencyChart view, Dataset dataset)
         {
+            if (view == null || dataset == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot modify a view if the view or dataset are null.");
+                return;
+            }
 
             view.Boxes.IRepresentationFragment(dataset, view.ViewConfig);
 
