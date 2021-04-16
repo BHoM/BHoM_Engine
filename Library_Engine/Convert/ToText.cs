@@ -42,6 +42,12 @@ namespace BH.Engine.Library
         [Output("sourceText", "Text representation of the source.")]
         public static string ToText(this Source source)
         {
+            if(source == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null source object to a string.");
+                return "";
+            }
+
             string sourceDesc = "";
             IEnumerable<PropertyInfo> properties = source.GetType().GetProperties().Where(x => x.PropertyType == typeof(string));
 
