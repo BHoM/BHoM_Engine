@@ -45,6 +45,13 @@ namespace BH.Engine.Diffing
 
         public static bool TryParseObjectToGuid(this object obj, out Guid guid)
         {
+            if (obj == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot parse a null object to a GUID.");
+                guid = Guid.Empty;
+                return false;
+            }
+
             guid = Guid.Empty;
 
             // If it's a Guid, extract the Id from there. 

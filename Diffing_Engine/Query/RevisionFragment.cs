@@ -35,6 +35,12 @@ namespace BH.Engine.Diffing
     {
         public static RevisionFragment RevisionFragment(this IBHoMObject obj)
         {
+            if(obj == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the revision fragment from a null object.");
+                return null;
+            }
+
             return obj.FindFragment<RevisionFragment>(); 
         }
     }
