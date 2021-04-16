@@ -48,10 +48,18 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, ActivityArea activityArea)
         {
+            if(audience == null || settings == null || activityArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AValueAnalysis if the audience, settings, or activity area are null.");
+                return new List<Avalue>();
+            }
+
             List<Avalue> results = EvaluateAvalue(audience, settings, activityArea);
             return results;
         }
+
         /***************************************************/
+
         [Description("Evaulate Avalues for a List of Audience")]
         [Input("audience", "Audience to evalaute")]
         [Input("settings", "AvalueSettings to configure the evaluation")]
@@ -65,9 +73,11 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return results;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
         private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, ActivityArea activityArea)
         {
             List<Avalue> results = new List<Avalue>();
@@ -82,7 +92,9 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return results;
         }
+
         /***************************************************/
+
         private static KDTree<Spectator> SetKDTree(Audience audience)
         {
             List<double[]> points = new List<double[]>();
@@ -149,7 +161,9 @@ namespace BH.Engine.Humans.ViewQuality
 
             return result;
         }
+
         /***************************************************/
+
         private static void CheckPolylineGeo(List<Polyline> tests)
         {
             StreamWriter sw = new StreamWriter("geodump.txt");
@@ -164,6 +178,7 @@ namespace BH.Engine.Humans.ViewQuality
             sw.WriteLine("");
             sw.Close();
         }
+
         /***************************************************/
 
         private static List<Spectator> GetPotentialOcclusion(Spectator spectator,KDTree<Spectator> tree,double neighborhoodRadius)
@@ -207,6 +222,7 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return clippedHeads;
         }
+
         /***************************************************/
 
         private static Polyline ClipActivityArea(Plane clipping, ActivityArea activityArea)

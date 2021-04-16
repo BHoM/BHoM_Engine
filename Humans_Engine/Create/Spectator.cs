@@ -63,8 +63,14 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        public static Polyline GetHeadOutline(Head head,double scale = 1)
+        public static Polyline GetHeadOutline(Head head, double scale = 1)
         {
+            if(head == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot get the head outline from a null head object.");
+                return null;
+            }
+
             //data should be in datasets
             double[] xcoords = { 0.025198, 0.025841, 0.040367, 0.065967, 0.097698, 0.129429, 0.15503, 0.169555, 0.170198, 0.152041, 0.141581, 0.122141, 0.097698, 0.073255, 0.053815, 0.043355, 0.025198 };
 
@@ -74,7 +80,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             var scaledY= Array.ConvertAll(ycoords, x => x * scale);
 
-            Vector horiz = Geometry.Query.CrossProduct(Vector.ZAxis,head.PairOfEyes.ViewDirection);
+            Vector horiz = Geometry.Query.CrossProduct(Vector.ZAxis, head.PairOfEyes.ViewDirection);
 
             Vector up = Geometry.Query.CrossProduct(horiz, head.PairOfEyes.ViewDirection * -1);
 
