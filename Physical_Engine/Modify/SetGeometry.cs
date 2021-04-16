@@ -39,6 +39,12 @@ namespace BH.Engine.Physical
         [Output("element1D", "The IFramingElement with modified location curve.")]
         public static IFramingElement SetGeometry(this IFramingElement framingElement, ICurve curve)
         {
+            if(framingElement == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null framing element.");
+                return null;
+            }
+
             IFramingElement clone = framingElement.ShallowClone();
             clone.Location = curve.DeepClone();
             return clone;
