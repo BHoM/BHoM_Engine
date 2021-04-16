@@ -51,6 +51,12 @@ namespace BH.Engine.Matter
         [Output("density", "The density of the material. Additional info on how the value has been acquired is recorded in the warning", typeof(Density))]
         public static double Density(this Material material, Type type = null, double tolerance = 0.001)
         {
+            if(material == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the density of a null material.");
+                return 0;
+            }
+
             if (type == null)
                 type = typeof(IMaterialProperties);
 
