@@ -102,6 +102,9 @@ namespace BH.Engine.Reflection
                     }
                 }
 
+                if (propType == typeof(Type) && value is string)
+                    value = Create.Type(value as string);
+
                 if (value != null)
                 {
                     if (value.GetType() != propType && value.GetType().GenericTypeArguments.Length > 0 && propType.GenericTypeArguments.Length > 0)
