@@ -34,6 +34,12 @@ namespace BH.Engine.Acoustic
 
         public static Plane Plane(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the plane of a null panel.");
+                return null;
+            }
+
             List<Point> Ver = panel.Surface.Vertices;
             return BH.Engine.Geometry.Create.Plane(Ver[0], Ver[1], Ver[2]);
         }

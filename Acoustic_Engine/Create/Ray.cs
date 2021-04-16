@@ -47,6 +47,12 @@ namespace BH.Engine.Acoustic
 
         public static Ray Ray(Speaker speaker, Receiver receiver)
         {
+            if(speaker == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a Ray from a null Speaker.");
+                return null;
+            }
+
             return Create.Ray(new Polyline { ControlPoints = new List<Point> { speaker.Location, receiver.Location } }, speaker.SpeakerID, receiver.ReceiverID);
         }
 

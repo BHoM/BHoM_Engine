@@ -32,6 +32,12 @@ namespace BH.Engine.Acoustic
 
         public static double GainFactor(this Speaker speaker, double angle, Frequency frequency)
         {
+            if(speaker == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the gain factor from a null speaker.");
+                return 0;
+            }
+
             double gains = speaker.Gains[frequency];
             switch (frequency)
             {

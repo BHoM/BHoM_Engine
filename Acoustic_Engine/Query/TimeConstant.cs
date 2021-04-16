@@ -39,6 +39,12 @@ namespace BH.Engine.Acoustic
 
         public static double TimeConstant(this RT60 revTime)
         {
+            if(revTime == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the time constant for a null rev time.");
+                return 0;
+            }
+
             return revTime.Value / Constants.SabineConstant;
         }
 

@@ -32,6 +32,12 @@ namespace BH.Engine.Acoustic
 
         public static double SabineTime(this Room room, double roomAbsorbtion)
         {
+            if(room == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the sabine time for a null room.");
+                return 0;
+            }
+
             return Constants.SabineTimeCoefficient * room.Volume  / roomAbsorbtion;
         }
 
