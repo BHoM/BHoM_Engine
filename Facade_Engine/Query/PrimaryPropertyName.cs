@@ -71,7 +71,7 @@ namespace BH.Engine.Facade
         [Output("propName", "The name of the element's construction property")]
         public static string PrimaryPropertyName(this FrameEdge frameEdge)
         {
-            if (frameEdge.FrameEdgeProperty == null)
+            if (frameEdge == null || frameEdge.FrameEdgeProperty == null)
                 return "";
 
             return frameEdge.FrameEdgeProperty.Name;
@@ -82,6 +82,9 @@ namespace BH.Engine.Facade
         [Output("propName", "The name of the element's construction property")]
         public static string PrimaryPropertyName(this IEdge edge)
         {
+            if (edge == null)
+                return "";
+
             return edge.Name;
         }
 
@@ -90,7 +93,7 @@ namespace BH.Engine.Facade
         [Output("propName", "The name of the element's construction property")]
         public static string PrimaryPropertyName(this Panel panel)
         {
-            if (panel.Construction == null)
+            if (panel == null || panel.Construction == null)
                 return "";
 
             return panel.Construction.Name;
@@ -101,7 +104,7 @@ namespace BH.Engine.Facade
         [Output("propName", "The name of the element's construction property")]
         public static string PrimaryPropertyName(this Opening opening)
         {
-            if (opening.OpeningConstruction == null)
+            if (opening == null || opening.OpeningConstruction == null)
                 return "";
 
             return opening.OpeningConstruction.Name;

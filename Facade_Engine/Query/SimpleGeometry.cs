@@ -46,9 +46,14 @@ namespace BH.Engine.Facade
         [Description("Returns a simple rectangular geometric representation a frame edge property")]
         [Input("frameEdgeProp", "FrameEdgeProperty to get total profile width of")]
         [Output("geo", "Simplified geometric representation of the FrameEdgeProperty")]
-
         public static Polyline SimpleGeometry(this FrameEdgeProperty frameEdgeProp)
         {
+            if(frameEdgeProp == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the simple geometry of a null frame edge property.");
+                return null;
+            }
+
             List<BoundingBox> propProfileBounds = new List<BoundingBox>();
             List<ICurve> profileOutlines = new List<ICurve>();
 

@@ -48,6 +48,12 @@ namespace BH.Engine.Facade
         [Output("opening", "Created Opening.")]
         public static Opening Opening(IEnumerable<ICurve> edges, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
         {
+            if(edges == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create an opening from a null collection of edges.");
+                return null;
+            }
+
             List<ICurve> externalEdges = new List<ICurve>();
             foreach (ICurve edge in edges)
             {

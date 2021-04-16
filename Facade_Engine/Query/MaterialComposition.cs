@@ -51,6 +51,12 @@ namespace BH.Engine.Facade
         [Output("materialComposition", "The kind of matter the Panel is composed of and in which ratios.")]
         public static MaterialComposition MaterialComposition(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null panel.");
+                return null;
+            }
+
             if (panel.Construction == null || panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
             {
                 BH.Engine.Reflection.Compute.RecordError("The Panel does not have a construction assigned");
@@ -86,6 +92,12 @@ namespace BH.Engine.Facade
         [Output("materialComposition", "The kind of matter the Opening is composed of and in which ratios.")]
         public static MaterialComposition MaterialComposition(this Opening opening)
         {
+            if (opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null opening.");
+                return null;
+            }
+
             if (opening.OpeningConstruction == null && opening.Edges == null)
             {
                 Engine.Reflection.Compute.RecordError("The Opening does not have any constructions assigned");
@@ -138,6 +150,12 @@ namespace BH.Engine.Facade
         [Output("materialComposition", "The kind of matter the Opening is composed of and in which ratios.")]
         public static MaterialComposition MaterialComposition(this FrameEdge frameEdge)
         {
+            if (frameEdge == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null frame edge.");
+                return null;
+            }
+
             List<MaterialComposition> matComps = new List<MaterialComposition>();
             List<double> vols = new List<double>();
 
