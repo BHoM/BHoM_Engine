@@ -32,6 +32,12 @@ namespace BH.Engine.Acoustic
 
         public static int Order(this Ray ray)
         {
+            if(ray == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the order of a null ray.");
+                return 0;
+            }
+
             return ray.PanelsID.Count;
         }
 

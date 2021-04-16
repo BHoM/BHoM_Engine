@@ -32,6 +32,12 @@ namespace BH.Engine.Acoustic
 
         public static double TravelTime(this Ray ray)
         {
+            if(ray == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannoy query the travel time of a null ray.");
+                return 0;
+            }
+
             return ray.Length() / Constants.SpeedOfSound;
         }
 
