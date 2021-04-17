@@ -88,18 +88,10 @@ namespace BH.Engine.Reflection
 
                 if (propType.IsEnum && value is string)
                 {
-                    string fullName = value as string;
-                    int index = fullName.LastIndexOf('.');
-                    if (index > 0)
-                    {
-                        Type enumType = Create.Type(fullName.Substring(0, index));
-                        if (enumType != null)
-                        {
-                            object enumValue = Enum.Parse(enumType, fullName.Substring(index + 1));
-                            if (enumValue != null)
-                                value = enumValue;
-                        }
-                    }
+                    string enumName= (value as string).Split('.').Last();
+                    object enumValue = Enum.Parse(propType, enumName);
+                    if (enumValue != null)
+                        value = enumValue;
                 }
 
                 if (propType == typeof(Type) && value is string)
