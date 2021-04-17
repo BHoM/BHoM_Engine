@@ -26,6 +26,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -88,7 +89,7 @@ namespace BH.Engine.Reflection
 
                 if (propType.IsEnum && value is string)
                 {
-                    string enumName= (value as string).Split('.').Last();
+                    string enumName = (value as string).Split('.').Last();
                     object enumValue = Enum.Parse(propType, enumName);
                     if (enumValue != null)
                         value = enumValue;
