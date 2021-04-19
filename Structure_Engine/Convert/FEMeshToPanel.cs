@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
                 {
                     points.Add(feMesh.Nodes[nodeIndex].Position);    
                 }
-                points.Add(feMesh.Nodes.First().Position);
+                points.Add(feMesh.Nodes[feMeshFace.NodeListIndices.First()].Position);
                 polylines.Add(Geometry.Create.Polyline(points));
             }
             List<Panel> panels = new List<Panel>();
