@@ -46,12 +46,12 @@ namespace BH.Engine.Structure
                 Engine.Reflection.Compute.RecordError("FEMesh is null, please check inputs.");
                 return null;
             }
-            if (feMesh.Nodes == null)
+            if (feMesh.Nodes == null || feMesh.Nodes.Count < 3)
             {
                 Engine.Reflection.Compute.RecordError("FEMesh Nodes are null, please check inputs");
                 return null;
             }
-            if (feMesh.Faces == null)
+            if (feMesh.Faces == null || feMesh.Faces.Count < 1)
             {
                 Engine.Reflection.Compute.RecordError("FEMesh Faces are null, please check inputs.");
                 return null;

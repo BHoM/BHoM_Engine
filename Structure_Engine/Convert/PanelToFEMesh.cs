@@ -54,6 +54,7 @@ namespace BH.Engine.Structure
             if(!panel.Geometry().IsPlanar(Tolerance.MacroDistance))
             {
                 Reflection.Compute.RecordError("Panel is not planar and therefore cannot be converted to an FEMesh.");
+                return null;
             }
             if (panel.Openings.Count > 0)
             {
