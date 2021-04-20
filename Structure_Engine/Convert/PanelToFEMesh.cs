@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
         [Input("panel", "Panel to be converted to a feMesh.")]
         [Output("feMesh", "feMesh converted from a Panel.")]
 
-        public static FEMesh PanelToFEMesh(Panel panel)
+        public static FEMesh PanelToFEMesh(this Panel panel)
         {
             List<Point> points = new List<Point>();
             List<Edge> edges = panel.ExternalEdges;
