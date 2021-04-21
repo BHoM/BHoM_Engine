@@ -90,9 +90,16 @@ namespace BH.Engine.Reflection
                 if (propType.IsEnum && value is string)
                 {
                     string enumName = (value as string).Split('.').Last();
-                    object enumValue = Enum.Parse(propType, enumName);
-                    if (enumValue != null)
-                        value = enumValue;
+                    try
+                    {
+                        object enumValue = Enum.Parse(propType, enumName);
+                        if (enumValue != null)
+                            value = enumValue;
+                    }
+                    catch
+                    {
+                        Engine.Reflection.Compute.RecordError($"An enum of type {propType.ToText(true)} does not have a value of {enumName}");
+                    }   
                 }
 
                 if (propType == typeof(Type) && value is string)
