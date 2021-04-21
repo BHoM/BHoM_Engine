@@ -44,14 +44,14 @@ namespace BH.Engine.Structure
 
         public static FEMesh PanelToFEMesh(this Panel panel)
         {
-            List<Point> points = new List<Point>();
-            List<Edge> edges = panel.ExternalEdges;
-            List<Face> faces = new List<Face>();
             if (BH.Engine.Structure.Compute.NullCheck(panel) == false)
             {
                 return null;
             }
-            if(!panel.Geometry().IsPlanar(Tolerance.MacroDistance))
+            List<Point> points = new List<Point>();
+            List<Edge> edges = panel.ExternalEdges;
+            List<Face> faces = new List<Face>();
+            if (!panel.Geometry().IsPlanar(Tolerance.MacroDistance))
             {
                 Reflection.Compute.RecordError("Panel is not planar and therefore cannot be converted to an FEMesh.");
                 return null;
