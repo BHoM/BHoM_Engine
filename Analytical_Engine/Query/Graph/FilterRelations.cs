@@ -48,11 +48,10 @@ namespace BH.Engine.Analytical
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot filter the relations of a null graph.");
-                return null;
+                return new List<IRelation>();
             }
 
             return graph.Relations.Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList(); 
         }
     }
 }
-
