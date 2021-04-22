@@ -61,7 +61,7 @@ namespace BH.Engine.Analytical
             if (target == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a graph when the target is null.");
-                return null;
+                return new List<IRelation>();
             }
 
             List<IRelation> relations = new List<IRelation>();
