@@ -96,7 +96,7 @@ namespace BH.Engine.Analytical
             if(graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the depth of a null graph.");
-                return null;
+                return new Dictionary<Guid, int>();
             }
 
             Dictionary<Guid, List<Guid>> adjacency = graph.Adjacency();
