@@ -47,13 +47,13 @@ namespace BH.Engine.Analytical
             if(graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot remove an entity from a null graph.");
-                return graph;
+                return null;
             }
 
             if(entityToRemove == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot remove a null entity from a graph.");
-                return graph;
+                return null;
             }
 
             graph.RemoveEntity(entityToRemove.BHoM_Guid);
@@ -70,7 +70,7 @@ namespace BH.Engine.Analytical
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot remove an entity from a null graph.");
-                return graph;
+                return null;
             }
 
             if (graph.Entities.ContainsKey(entityToRemove))

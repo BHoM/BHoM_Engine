@@ -82,7 +82,7 @@ namespace BH.Engine.Analytical
             if(region == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null region.");
-                return region;
+                return null;
             }
 
             IRegion r = region.ShallowClone();
