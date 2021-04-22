@@ -49,7 +49,7 @@ namespace BH.Engine.Analytical
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot filter the entities of a null graph.");
-                return null;
+                return new Dictionary<Guid, IBHoMObject>();
             }
 
             Dictionary<Guid, IBHoMObject> entityDict = new Dictionary<Guid, IBHoMObject>();
@@ -63,4 +63,3 @@ namespace BH.Engine.Analytical
         /***************************************************/
     }
 }
-
