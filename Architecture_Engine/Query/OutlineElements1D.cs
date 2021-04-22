@@ -50,7 +50,7 @@ namespace BH.Engine.Architecture
             if(room == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null room.");
-                return null;
+                return new List<IElement1D>();
             }
 
             return room.Perimeter.ISubParts().Cast<IElement1D>().ToList();
@@ -73,4 +73,3 @@ namespace BH.Engine.Architecture
         }
     }
 }
-
