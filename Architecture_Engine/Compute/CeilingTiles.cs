@@ -52,7 +52,7 @@ namespace BH.Engine.Architecture
             if(ceiling == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot compute the ceiling tiles for a null ceiling.");
-                return null;
+                return new List<CeilingTile>();
             }
 
             List<Line> openingLines = ceiling.Surface.IInternalEdges().SelectMany(x => x.ISubParts()).Cast<Line>().ToList();
@@ -72,4 +72,3 @@ namespace BH.Engine.Architecture
         }
     }
 }
-
