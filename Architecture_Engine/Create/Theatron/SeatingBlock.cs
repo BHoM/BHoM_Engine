@@ -82,19 +82,19 @@ namespace BH.Engine.Architecture.Theatron
             Point source = origin.Origin;
             Vector scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Start, block.Vomitory);
             double angle = Geometry.Query.Angle(origin.Direction, block.Start.Direction, Plane.XY);
-            var start = Modify.TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
+            var start = TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
             block.Sections.Add(start);
 
             //vomitory section no need for scalefactor
             scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Vomitory, block.Vomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.Vomitory.Direction, Plane.XY);
-            var vom = Modify.TransformProfile(sectionToMap, scaleVector, source, block.Vomitory.Origin, angle);
+            var vom = TransformProfile(sectionToMap, scaleVector, source, block.Vomitory.Origin, angle);
             block.Sections.Add(vom);
 
             //end section
             scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.End, block.Vomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.End.Direction, Plane.XY);
-            var end = Modify.TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
+            var end = TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
             block.Sections.Add(end);
             
         }
@@ -107,13 +107,13 @@ namespace BH.Engine.Architecture.Theatron
             Point source = origin.Origin;
             Vector scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.Start, prevVomitory);
             double angle = Geometry.Query.Angle(origin.Direction, block.Start.Direction, Plane.XY);
-            var start = Modify.TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
+            var start = TransformProfile(sectionToMap, scaleVector, source, block.Start.Origin, angle);
             block.Sections.Add(start);
 
             //end section
             scaleVector = SetScaleVector(sectionToMap.SectionOrigin.Direction, block.End, nextVomitory);
             angle = Geometry.Query.Angle(origin.Direction, block.End.Direction, Plane.XY);
-            var end = Modify.TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
+            var end = TransformProfile(sectionToMap, scaleVector, source, block.End.Origin, angle);
             block.Sections.Add(end);
         }
 
