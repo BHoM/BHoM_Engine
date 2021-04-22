@@ -50,7 +50,7 @@ namespace BH.Engine.Physical
             if(surface == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null surface.");
-                return surface;
+                return null;
             }
 
             oM.Physical.Elements.ISurface clone = surface.ShallowClone();
