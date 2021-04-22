@@ -43,7 +43,7 @@ namespace BH.Engine.Analytical
             if(graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot modify a null graph.");
-                return graph;
+                return null;
             }
 
             List<IBHoMObject> entities = graph.Entities.Values.ToList();

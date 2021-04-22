@@ -47,7 +47,7 @@ namespace BH.Engine.Analytical
             if(node == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null node.");
-                return node;
+                return null;
             }
 
             INode clone = node.ShallowClone();
@@ -89,7 +89,7 @@ namespace BH.Engine.Analytical
             if(edge == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null edge.");
-                return edge;
+                return null;
             }
 
             IEdge clone = edge.ShallowClone();
@@ -109,7 +109,7 @@ namespace BH.Engine.Analytical
             if(anaSurface == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null surface.");
-                return anaSurface;
+                return null;
             }
 
             anaSurface.Extents = geoSurface;
