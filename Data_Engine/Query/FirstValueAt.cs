@@ -47,12 +47,11 @@ namespace BH.Engine.Data
             if (table == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot get the first value at from a null table.");
-                return new CustomObject();
+                return null;
             }
 
             return AsCustomObject(table.Data.Select(expression, sortOrder).First(), table.Data.Columns);
         }
     }
 }
-
 
