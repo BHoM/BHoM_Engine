@@ -90,8 +90,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modify\AssignSpaceTypeByPoint.cs" />
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Create\Opening.cs" />
+    <Compile Include="Modify\AssignUniqueSpaceName.cs" />
+    <Compile Include="Modify\FlipPanels.cs" />
+    <Compile Include="Modify\SetPanelTypeByDwelling.cs" />
+    <Compile Include="Modify\SetPanelTypeByIntersectingLines.cs" />
+    <Compile Include="Modify\TidyPanels.cs" />
     <Compile Include="Modify\Transform.cs" />
     <Compile Include="Modify\UpdateZones.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
@@ -137,6 +143,7 @@
     <Compile Include="Query\BottomRight.cs" />
     <Compile Include="Query\ClosedSpaces.cs" />
     <Compile Include="Query\ConnectedSpaceName.cs" />
+    <Compile Include="Query\ExplodeToParts.cs" />
     <Compile Include="Query\FilterByAdjacencies.cs" />
     <Compile Include="Query\FilterOpenings.cs" />
     <Compile Include="Query\FilterPanels.cs" />
@@ -147,6 +154,7 @@
     <Compile Include="Query\Group.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\IsLeft.cs" />
+    <Compile Include="Query\IsOnLevel.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\NewElement1D.cs" />
     <Compile Include="Query\NewInternalElement2D.cs" />
@@ -166,6 +174,8 @@
     <Compile Include="Query\PanelByGuid.cs" />
     <Compile Include="Query\PanelsContainingPoint.cs" />
     <Compile Include="Query\PanelsFromPhysical.cs" />
+    <Compile Include="Query\RegionLevel.cs" />
+    <Compile Include="Query\Sides.cs" />
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\SpaceByName.cs" />
     <Compile Include="Query\SpacesByElementID.cs" />
@@ -174,6 +184,7 @@
     <Compile Include="Query\IsTransparent.cs" />
     <Compile Include="Query\ToLines.cs" />
     <Compile Include="Query\Polyline.cs" />
+    <Compile Include="Query\Top.cs" />
     <Compile Include="Query\TopRight.cs" />
     <Compile Include="Query\ToSpace.cs" />
     <Compile Include="Create\Panel.cs" />

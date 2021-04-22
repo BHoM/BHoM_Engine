@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -22,14 +22,11 @@
 
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
 using BH.oM.Environment;
 using BH.oM.Environment.Elements;
-
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
-
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
@@ -41,16 +38,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the bottom of a given environment object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical bottom")]
-        [Output("curve", "An ICurve representation of the bottom of the object")]
-        public static ICurve Bottom(this IEnvironmentObject environmentObject)
+        [Description("Returns the top of a given environment object")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical top")]
+        [Output("curve", "An ICurve representation of the top of the object")]
+        public static ICurve Top(this IEnvironmentObject environmentObject)
         {
             if (environmentObject == null) return null;
 
             if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Can not find the bottom of a horisontal panel"); 
+                BH.Engine.Reflection.Compute.RecordWarning("This IEnvironemntObject is a floor or ceiling"); //Better error message needed
             }
 
             Polyline workingCurves = null;
@@ -63,17 +60,17 @@ namespace BH.Engine.Environment
             if (workingCurves == null)
                 return null;
 
-
-            double aZ = double.MaxValue;
+            double aZ = double.MinValue;
             ICurve aResult = null;
+
             foreach (ICurve aCurve in workingCurves.SplitAtPoints(workingCurves.DiscontinuityPoints()))
             {
                 Point aPoint_Start = aCurve.IStartPoint();
                 Point aPoint_End = aCurve.IEndPoint();
 
-                if (aPoint_End.Z <= aZ && aPoint_Start.Z <= aZ)
+                if (aPoint_End.Z >= aZ && aPoint_Start.Z >= aZ)
                 {
-                    aZ = Math.Max(aPoint_End.Z, aPoint_Start.Z);
+                    aZ = Math.Min(aPoint_End.Z, aPoint_Start.Z);
                     aResult = aCurve;
                 }
             }
@@ -82,5 +79,3 @@ namespace BH.Engine.Environment
         }
     }
 }
-
-
