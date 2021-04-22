@@ -55,7 +55,7 @@ namespace BH.Engine.Analytical
             if (source == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a graph when the source is null.");
-                return null;
+                return new List<IRelation>();
             }
 
             if (target == null)
@@ -107,4 +107,3 @@ namespace BH.Engine.Analytical
         }
     }
 }
-
