@@ -48,7 +48,7 @@ namespace BH.Engine.Data
             if(table == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot get the first value above from a null table.");
-                return new CustomObject();
+                return null;
             }
 
             if (!table.AxisExists(axes.Concat(new string[] { sortAxis }).ToList()))
@@ -58,5 +58,4 @@ namespace BH.Engine.Data
         }
     }
 }
-
 
