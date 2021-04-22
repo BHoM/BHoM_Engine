@@ -47,7 +47,7 @@ namespace BH.Engine.Physical
             if(surface == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot set the internal 2D elements of a null surface.");
-                return surface;
+                return null;
             }
 
             ISurface pp = surface.ShallowClone();
