@@ -66,12 +66,11 @@ namespace BH.Engine.Architecture
             if(ceiling == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null ceiling.");
-                return null;
+                return new List<IElement1D>();
             }
 
             return ceiling.Surface.ISubParts().Cast<IElement1D>().ToList();
         }
     }
 }
-
 
