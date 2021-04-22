@@ -49,7 +49,7 @@ namespace BH.Engine.Analytical
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the entity neighbourhood of a null graph.");
-                return null;
+                return new List<Graph>();
             }
 
             List<Graph> subGraphs = new List<Graph>();
@@ -149,4 +149,3 @@ namespace BH.Engine.Analytical
 
     }
 }
-
