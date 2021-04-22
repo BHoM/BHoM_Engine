@@ -143,7 +143,7 @@ namespace BH.Engine.Architecture.Theatron
                 Point target = sectionOrigin.Origin;
                 double angle = Math.Atan2(sectionOrigin.Direction.Y, sectionOrigin.Direction.X);
                 Vector scaleVector = SetScaleVector(tierSection.SectionOrigin.Direction, tierSection.SectionOrigin, tierSection.SectionOrigin);
-                fullProfile.MappedProfiles.Add(Modify.TransformProfile(tierSection, scaleVector,source, target, angle));
+                fullProfile.MappedProfiles.Add(TransformProfile(tierSection, scaleVector,source, target, angle));
                 lastpoint = tierSection.FloorPoints[tierSection.FloorPoints.Count - 1];
 
             }

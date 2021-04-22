@@ -60,11 +60,54 @@ namespace BH.Engine.Architecture.Theatron
 
             SectionSurfPoints(ref tierProfile, parameters);
 
-            tierProfile.SectionOrigin = Modify.DefineTierOrigin(tierProfile.FloorPoints);
+            tierProfile.SectionOrigin = DefineTierOrigin(tierProfile.FloorPoints);
 
             tierProfile.Profile = Geometry.Create.Polyline(tierProfile.FloorPoints);
 
             return tierProfile;
+        }
+
+        [Description("Scale, rotate and translate a TierProfile")]
+        [Input("originalSection", "TierProfile to transform")]
+        [Input("scale", "Scaling amount")]
+        [Input("source", "Origin point for the transform")]
+        [Input("target", "Target point for the transform")]
+        [Input("angle", "Rotation angle")]
+        [PreviousVersion("4.2", "BH.Engine.Architecture.Theatron.Create.TransformProfile(BH.oM.Architecture.Theatron.TierProfile, BH.oM.Geometry.Vector, BH.oM.Geometry.Point, BH.oM.Geometry.Point, System.Double)")]
+        public static TierProfile TransformProfile(TierProfile originalSection, Vector scale, Point source, Point target, double angle)
+        {
+            if (originalSection == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot modify a null tier profile.");
+                return originalSection;
+            }
+
+            if (scale == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot transform a tier profile using a null scale vector.");
+                return originalSection;
+            }
+
+            if (source == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot transform a tier profile from a null source point.");
+                return originalSection;
+            }
+
+            if (target == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot transform a tier profile from a null target point.");
+                return originalSection;
+            }
+
+            TierProfile transformedTier = (TierProfile)originalSection.DeepClone();
+            var xScale = Geometry.Create.ScaleMatrix(source, scale);
+            var xRotate = Geometry.Create.RotationMatrix(source, Vector.ZAxis, angle);
+            var xTrans = Geometry.Create.TranslationMatrix(target - source);
+            TransformTier(ref transformedTier, xScale);
+            TransformTier(ref transformedTier, xRotate);
+            TransformTier(ref transformedTier, xTrans);
+            return transformedTier;
         }
 
         /***************************************************/
@@ -95,7 +138,7 @@ namespace BH.Engine.Architecture.Theatron
 
             }
             theMappedTier.Profile.ControlPoints = theMappedTier.FloorPoints;
-            theMappedTier.SectionOrigin = Modify.DefineTierOrigin(theMappedTier.FloorPoints);
+            theMappedTier.SectionOrigin = DefineTierOrigin(theMappedTier.FloorPoints);
             
             return theMappedTier;
 
@@ -242,9 +285,34 @@ namespace BH.Engine.Architecture.Theatron
 
         /***************************************************/
 
-        
+        private static ProfileOrigin DefineTierOrigin(List<Point> flrPoints)
+        {
+            ProfileOrigin profOrigin = Create.ProfileOrigin(flrPoints[0], flrPoints[1] - flrPoints[0]);
+            return profOrigin;
+        }
 
-        
+        /***************************************************/
+
+        private static void TransformTier(ref TierProfile profile, TransformMatrix xTrans)
+        {
+            if (profile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot modify a null tier profile.");
+                return;
+            }
+
+            if (xTrans == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot modify a tier profile with a null transformation matrix.");
+                return;
+            }
+
+            profile.FloorPoints = profile.FloorPoints.Select(p => p.Transform(xTrans)).ToList();
+            profile.EyePoints = profile.EyePoints.Select(p => p.Transform(xTrans)).ToList();
+            profile.Profile.ControlPoints = profile.FloorPoints;
+            profile.FocalPoint = profile.FocalPoint.Transform(xTrans);
+            profile.SectionOrigin = DefineTierOrigin(profile.FloorPoints);
+        }
     }
 }
 
