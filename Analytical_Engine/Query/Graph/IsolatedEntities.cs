@@ -46,7 +46,7 @@ namespace BH.Engine.Analytical
             if(graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the isolated entities of a null graph.");
-                return null;
+                return new List<Guid>();
             }
 
             List<Guid> unused = new List<Guid>();
@@ -60,4 +60,3 @@ namespace BH.Engine.Analytical
     }
 
 }
-
