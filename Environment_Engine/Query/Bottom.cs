@@ -50,7 +50,8 @@ namespace BH.Engine.Environment
 
             if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Can not find the bottom of a horisontal panel"); 
+                BH.Engine.Reflection.Compute.RecordWarning("Cannot find the bottom of a horizontal IEnvironmentObject");
+                return null;
             }
 
             Polyline workingCurves = null;
@@ -62,7 +63,6 @@ namespace BH.Engine.Environment
 
             if (workingCurves == null)
                 return null;
-
 
             double aZ = double.MaxValue;
             ICurve aResult = null;

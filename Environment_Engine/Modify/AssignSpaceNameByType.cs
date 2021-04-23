@@ -27,31 +27,39 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-using BH.oM.Geometry.SettingOut;
-using BH.Engine.Geometry;
-using BH.oM.Geometry;
 using BH.oM.Environment.Elements;
-using BH.oM.Analytical.Elements;
 using BH.oM.Reflection.Attributes;
+
 
 namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the level of an IRegion")]
-        [Input("region", "An IRegion to return the level of")]
-        [Input("searchLevels", "A list of levels to test for")]
-        [Input("distanceTolerance", "The tolerance of the distance calculation for determening the elevation of the IRegion. Default is equal to BH.oM.Geometry.Tolerance.Distance.")]
-        [Input("angleTolerance", "The degree of tolerance on the angle calculation for collapsing the regions perimeter to a polyline. Default is equal to BH.oM.Geometry.Tolerance.Angle.")]
-        [Output("panelsAsSpace", "The level that the IRegion is on")]
-        public static Level RegionLevel(this IRegion region, List<Level> searchLevels, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
+        [Description("Returns a list of Environment Spaces with the provided name from original name and space type. Sets a unique name by numbers if multiple spaces are of the same type")]
+        [Input("spaces", "A collection of Environment Spaces to set the name for")]
+        [Output("modifiedSpaces", "A collection of modified Environment Spaces with asssigned name")]
+        public static List<Space> AssignSpaceNameByType(List<Space> spaces)
         {
-            double elevation = region.Perimeter.ICollapseToPolyline(angleTolerance).MinimumLevel();
-            return searchLevels.Where(x => x.Elevation >= (elevation - distanceTolerance) && x.Elevation <= (elevation + distanceTolerance)).FirstOrDefault();
+            
+            List<Space> spacesWithNames = new List<Space>();
+            foreach (Space s in spaces)
+            {
+                string name = s.Name + "_" + s.SpaceType.ToString();
+                if (spaces.Where(x => x.SpaceType == s.SpaceType).Count() > 1)
+                {
+                    int current = spacesWithNames.Where(x => x.Name.StartsWith(name)).Count();
+                    name += (current + 1).ToString();
+                }
+
+                s.Name = name;
+                spacesWithNames.Add(s);
+            }
+
+            return spacesWithNames;
         }
     }
 }

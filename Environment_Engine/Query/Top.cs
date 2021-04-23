@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
 
             if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("This IEnvironemntObject is a floor or ceiling"); //Better error message needed
+                BH.Engine.Reflection.Compute.RecordWarning("Cannot find the top of a horizontal IEnvironemntObject");
             }
 
             Polyline workingCurves = null;
