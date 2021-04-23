@@ -1,19 +1,47 @@
-﻿using System;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.oM.Geometry;
+using System.ComponentModel;
+
 using BH.oM.Environment.Elements;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        public static List<List<Panel>> TidyPanels(List<Panel> panels)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns a list of Environment Panels with overlapping panels split and merged")] 
+        [Input("panels", "A collection of Environment Panels to tidy")]
+        [Output("panels", "A collection of modified Environment Panels with with overlapping panels split and merged")]
+        public static List<Panel> TidyPanels(List<Panel> panels)
         {
             List<Panel> fixedPanels = new List<Panel>();
-
             List<Panel> splitPanels = panels.SplitPanelsByOverlap();
             List<List<Panel>> overlappingPanels = splitPanels.Select(x => x.IdentifyOverlaps(splitPanels)).ToList();
             List<Guid> handledPanels = new List<Guid>();
@@ -22,13 +50,7 @@ namespace BH.Engine.Environment
             {
                 if (handledPanels.Contains(splitPanels[x].BHoM_Guid))
                     continue; //This panel has already been handled
-                if (splitPanels[x].Type == PanelType.Floor || splitPanels[x].Type == PanelType.Ceiling)
-                {
-                    fixedPanels.Add(splitPanels[x]);
-                    handledPanels.Add(splitPanels[x].BHoM_Guid);
-                    continue;
-                }
-
+                
                 if (overlappingPanels[x].Count == 0)
                 {
                     fixedPanels.Add(splitPanels[x]);
@@ -47,22 +69,7 @@ namespace BH.Engine.Environment
                 handledPanels.Add(p.BHoM_Guid);
             }
             
-            //List<List<Panel>> panelsAsSpaces = fixedPanels.ToSpaces();
-            //foreach (List<Panel> l in panelsAsSpaces)
-            //{
-            //    List<List<Panel>> overlappingPanels = splitPanels.Select(x => x.IdentifyOverlaps(splitPanels)).ToList();
-            //    // if tow panels have the same two connecte spaces and not the same bottom controlpoints, merge them
-            //    // What does the merge panels part of the code do?
-
-            //    string spaceName = l.ConnectedSpaceName();
-            //    BH.oM.Environment.SAP.Space space = spaces.Where(x => x.BHoM_Guid.ToString() == spaceName).FirstOrDefault();
-            //    if (space != null)
-            //        space.Panels = l;
-            //}
-
-
-
-            return fixedPanels.ToSpaces();
+            return fixedPanels;
         }
 
     }

@@ -35,15 +35,15 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         [Description("Returns the sides, top and bottom of a given environment object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have geometrical sides, top and bottom")]
         [MultiOutput(0, "bottom", "An ICurve representation of the bottom of the object")]
         [MultiOutput(1, "sides", "ICurve representations of the sides of the object")]
         [MultiOutput(2, "top", "An ICurve representation of the top of the object")]
-
-
-
         public static Output<List<ICurve>, List<ICurve>, List<ICurve>> ExplodeToParts(this IEnvironmentObject environmentObject)
         {
             Output<List<ICurve>, List<ICurve>, List<ICurve>> finalParts = new Output<List<ICurve>, List<ICurve>, List<ICurve>>()
@@ -53,16 +53,12 @@ namespace BH.Engine.Environment
                 Item3 = new List<ICurve>(),
             };
 
-
             if (environmentObject == null) return null;
 
-           
             finalParts.Item1.Add(environmentObject.Bottom());
             finalParts.Item2.AddRange(environmentObject.Sides());
             finalParts.Item3.Add(environmentObject.Top());
-
             return finalParts;
         }
-
     }
 }

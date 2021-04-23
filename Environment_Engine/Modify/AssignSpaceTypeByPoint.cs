@@ -1,4 +1,26 @@
-﻿using System;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,13 +37,17 @@ namespace BH.Engine.Environment
 {
     public static partial class Modify
     {
-        [Description("Assign space type to a SAP space. ")]
-        [Input("spaces", "A space object is an analytical depiction of a room defined by its environmental conditions(internal gains)")]
-        [Input("searchPoints", "A set of points inside the spaces")]
-        [Input("type", "The list of roomtypes to assign")]
-        [Input("ignoreCase", "")] // Whether or not the parse will be casesensitive?
-        [Output("spaces", "")]
-    
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns a list of Environment Spaces with the provided spacetype assigned by a string and a point in the space")]
+        [Input("spaces", "A collection of Environment Spaces to set the type for")]
+        [Input("searchPoints", "A collection of points to search")]
+        [Input("type", "The type of space to assign")]
+        [Input("ignoreCase", "Whether or not the parse will be casesensitive")]
+        [Output("modifiedSpaces", "A collection of modified Environment Spaces with asssigned space types")]
+
         public static List<Space> AssignSpaceType(this List<Space> spaces, List<Point> searchPoints, string type, bool ignoreCase = true)
         {
             List<Space> updateSpaces = new List<Space>();
@@ -41,7 +67,6 @@ namespace BH.Engine.Environment
                     continue;
 
                 update.SpaceType = spaceType;
-
                 returnSpaces.Add(update);
             }
 

@@ -47,11 +47,10 @@ namespace BH.Engine.Environment
 
             if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("This IEnvironemntObject is a floor or ceiling"); //Better error message needed
+                BH.Engine.Reflection.Compute.RecordWarning("Cannot find the sides of a horizontal IEnvironmentObject"); 
             }
 
             Polyline workingCurves = null;
-
             if (environmentObject is Panel)
                 workingCurves = (environmentObject as Panel).ExternalEdges.Polyline();
             else if (environmentObject is Opening)
