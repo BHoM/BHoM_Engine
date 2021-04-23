@@ -47,7 +47,6 @@ namespace BH.Engine.Environment
         [Input("type", "The type of space to assign")]
         [Input("ignoreCase", "Whether or not the parse will be casesensitive")]
         [Output("modifiedSpaces", "A collection of modified Environment Spaces with asssigned space types")]
-
         public static List<Space> AssignSpaceType(this List<Space> spaces, List<Point> searchPoints, string type, bool ignoreCase = true)
         {
             List<Space> updateSpaces = new List<Space>();
