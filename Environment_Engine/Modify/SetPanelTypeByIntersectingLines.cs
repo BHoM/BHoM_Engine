@@ -46,8 +46,7 @@ namespace BH.Engine.Environment
         [Input("panelType", "The panel type to set")]
         [Input("minTilt", "The minimum tilt to filter the collection of panels by")]
         [Input("maxTilt", "The maximum tilt to filter the collection of panels by")]
-        [Output("panelsAsSpace", "A collection of modified Environment Panels with the type set by intsersecting")]
-
+        [Output("panels", "A collection of modified Environment Panels with the type set by intsersecting lines")]
         public static List<Panel> SetPanelTypeByIntersectingLines(List<Panel> panels, List<Line> intersectingLines, PanelType panelType, double maxTilt = 92, double minTilt = 88)
         {
             foreach (Line l in intersectingLines)

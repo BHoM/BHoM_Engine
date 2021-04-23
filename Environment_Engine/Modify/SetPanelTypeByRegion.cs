@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         [Description("Returns a list of Environment Panels with panel type set by an IRegion perimeter")] // Not an accurate description
         [Input("panels", "A collection of Environment Panels to set the type for")]
         [Input("regions", "A collection of IRegions to set the type by")]
-        [Output("panelsAsSpace", "A collection of modified Environment Panels with the with panel type set by an IRegion perimeter")]
+        [Output("panels", "A collection of modified Environment Panels with the with panel type set by an IRegion perimeter")]
         public static List<Panel> SetPanelTypeByRegion(List<Panel> panels, List<IRegion> regions)
         {
             List<Panel> fixedPanels = new List<Panel>();
