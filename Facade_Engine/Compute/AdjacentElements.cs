@@ -64,12 +64,13 @@ namespace BH.Engine.Facade
             return adjElems;
         }
 
+
         /***************************************************/
 
-        [Description("Returns elements adjacent to a provided Element1D from a collection of elements")]
-        [Input("elem", "Element to find adjacencies at")]
-        [Input("refElems", "Elements to use to find element adjacencies")]
-        [Output("adjElems", "Adjacents elements to the provided element")]
+        [Description("Returns elements adjacent to a provided Element1D from a collection of elements.")]
+        [Input("elem", "Element to find adjacencies at.")]
+        [Input("refElems", "Elements to use to find element adjacencies.")]
+        [Output("adjElems", "Adjacents elements to the provided element.")]
         public static List<IElement2D> AdjacentElements(this IElement1D elem, List<IElement2D> refElems)
         {
             List<IElement2D> adjElems = new List<IElement2D>();
@@ -87,6 +88,10 @@ namespace BH.Engine.Facade
 
             return adjElems;
         }
+
+
+        /***************************************************/
+
     }
 }
 
