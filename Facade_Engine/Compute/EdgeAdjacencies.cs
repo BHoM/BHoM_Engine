@@ -80,6 +80,35 @@ namespace BH.Engine.Facade
             };
         }
 
+
+        /***************************************************/
+
+        [Description("Returns adjacent edges at a provided frame edge for a collection of frame edges.")]
+        [Input("edge", "Edge to find adjacencies at.")]
+        [Input("edges", "Frame edges to use to find edge adjacencies.")]
+        [Input("tolerance", "Tolerance is the minimum overlap amount required to consider adjacent.")]
+        [Output("adjEdges", "Edges adjacent to the provided edge.")]
+        public static List<IElement1D> EdgeAdjacencies(this IElement1D edge, List<IElement1D> edges, double tolerance = Tolerance.Distance)
+        {
+            List<IElement1D> adjEdges = new List<IElement1D>();
+            List<IElement2D> adjElems = new List<IElement2D>();
+
+            //List<IElement2D> adjFullElems = AdjacentElements(edge, elems);
+            PolyCurve edgeGeo = edge.ElementCurves().IJoin()[0];
+            Vector edgeDir = edge.IGeometry().IEndDir();
+
+            foreach (IElement1D refEdge in edges)
+            {
+                if (Query.IIsAdjacent(refEdge, edge))
+                {
+                    adjEdges.Add(refEdge);
+                }
+            }
+
+            // Return the adjacencies
+            return adjEdges;
+        }
+
     }
 }
 
