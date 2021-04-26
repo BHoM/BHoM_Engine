@@ -38,8 +38,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
-	  <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
-	</Reference>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Geometry_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
     </Reference>
@@ -98,21 +98,9 @@
       <Project>{d5c7704d-f59a-4fc6-8d1e-356699a174e0}</Project>
       <Name>Graphics_Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Library_Engine\Library_Engine.csproj">
-      <Project>{fb4ed5c8-e7cc-44b3-95eb-95c304d54e5d}</Project>
-      <Name>Library_Engine</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
-      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
-      <Name>Spatial_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Structure_Engine\Structure_Engine.csproj">
-      <Project>{52a31a0a-e340-4909-aad6-228045b07bf3}</Project>
-      <Name>Structure_Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
