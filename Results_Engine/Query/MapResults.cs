@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using BH.oM.Structure.Results;
 using BH.Engine.Base;
 
 namespace BH.Engine.Results

@@ -27,7 +27,6 @@ using BH.oM.Base;
 using System.Linq;
 using BH.oM.Geometry;
 using BH.oM.Structure.Results;
-using BH.oM.Structure.Elements;
 using BH.oM.Graphics;
 using System;
 using BH.Engine.Graphics;
