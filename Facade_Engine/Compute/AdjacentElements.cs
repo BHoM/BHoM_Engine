@@ -92,6 +92,26 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
+        [Description("Returns elements adjacent to a provided Element1D from a collection of elements.")]
+        [Input("elem", "Element to find adjacencies at.")]
+        [Input("refElems", "Elements to use to find element adjacencies.")]
+        [Output("adjElems", "Adjacent elements to the provided element.")]
+        public static List<IElement1D> AdjacentElements(this IElement1D elem, List<IElement1D> refElems)
+
+        {
+            List<IElement1D> adjElems = new List<IElement1D>();
+
+            foreach (IElement1D refElem in refElems)
+            {
+                if (Query.IIsAdjacent(refElem, elem))
+                {
+                    adjElems.Add(refElem);
+                }
+            }
+
+            // Return the adjacencies
+            return adjElems;
+        }
     }
 }
 
