@@ -20,14 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Architecture.BuildersWork;
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
-using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Spatial.ShapeProfiles;
 using BH.Engine.Geometry;
-using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Architecture.BuildersWork;
+using BH.oM.Geometry;
+using BH.oM.Spatial.ShapeProfiles;
+using System;
 
 namespace BH.Engine.Architecture
 {
@@ -37,53 +34,63 @@ namespace BH.Engine.Architecture
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Distance(this Opening opening1, Opening opening2, double maxExpectedDistance = double.NaN, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
+        public static bool IsValidForDistanceInPlaneCheck(this Opening opening1, Opening opening2, double maxDistance = double.NaN, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-
-            if (opening1 == null || opening2 == null)
+            // Check if the openings are parallel
+            if (opening1.CoordinateSystem.Z.IsParallel(opening2.CoordinateSystem.Z, angleTolerance) == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Opening is null");
-                return double.NaN;
+                return false;
             }
 
-            double minDistance = double.MaxValue;
-
+            // Check if the openigns are on the same plane/wall
+            Point centerPoint1 = opening1.CoordinateSystem.Origin;
             Point centerPoint2 = opening2.CoordinateSystem.Origin;
             Plane plane2 = new Plane { Origin = centerPoint2, Normal = opening2.CoordinateSystem.Z };
-
-            if (!opening1.IsValidForDistanceCheck(opening2, maxExpectedDistance, distanceTolerance, angleTolerance)) 
+            double distancePoint1Plane2 = centerPoint1.Distance(plane2);
+            double distanceDepths = opening1.Depth/2 + opening2.Depth/2;
+            if (distancePoint1Plane2 > distanceDepths + distanceTolerance)
             {
-                BH.Engine.Reflection.Compute.RecordError("Distance can't be calculated");
-                return double.NaN;
+                return false;
             }
 
-            else
-            {               
-                foreach (ICurve edge1 in opening1.Profile.Edges)
+            // Check if the openings are closer than maxDistance
+            if (!double.IsNaN(maxDistance))
+            {
+                double diag1 = opening1.MaxDiagonal();
+                double diag2 = opening2.MaxDiagonal();
+                if (double.IsNaN(diag1) || double.IsNaN(diag2))
                 {
-                    foreach (ICurve edge2 in opening2.Profile.Edges)
-                    {
-                        Cartesian global = new Cartesian();
-                        ICurve edge1O = edge1.Orient(global, opening1.CoordinateSystem);
-                        ICurve edge1Onew = edge1O.IProject(plane2);
-                        ICurve edge2O = edge2.Orient(global, opening2.CoordinateSystem);
-
-                        double dist = edge1Onew.Distance(edge2O);
-                        if (dist < minDistance)
-                        {
-                            minDistance = dist;
-                        }
-                    }
+                    return true;
+                }
+                Point point1onPlane2 = centerPoint1.Project(plane2);
+                if (maxDistance + (diag1/2 + diag2/2) + distanceTolerance < centerPoint2.Distance(point1onPlane2)) 
+                {
+                    return false;
                 }
             }
 
-            return minDistance;
-            
+            return true;
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
+        private static double MaxDiagonal(this Opening opening)
+        {
+            if (opening.Profile is CircleProfile)
+            {
+                return ((CircleProfile)opening.Profile).Diameter;
+            }
+            else if (opening.Profile is RectangleProfile)
+            {
+                return Math.Sqrt(Math.Pow(((RectangleProfile)opening.Profile).Height, 2) + Math.Pow(((RectangleProfile)opening.Profile).Width, 2));
+            }
+            else
+                return double.NaN;
+        }
 
+        /***************************************************/
     }
 }
 
