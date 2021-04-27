@@ -52,7 +52,7 @@ namespace BH.Engine.Facade
         {
             //TODO:
             //Check for null case
-            if (panel == null || opening == null || useroffset == null)
+            if (panel == null || opening == null || useroffset == double.NaN)
                 return null;
 
             //Retrieve panel width and opening glazing width
