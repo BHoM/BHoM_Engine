@@ -36,6 +36,12 @@ namespace BH.Engine.Architecture
 
         public static bool IsValidForInPlaneDistanceCheck(this Opening opening1, Opening opening2, double maxDistance = double.NaN, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            // Check if openings aren't nulls
+            if (opening1 == null || opening2 == null)
+            {
+                return true;
+            }
+
             // Check if the openings are parallel
             if (opening1.CoordinateSystem.Z.IsParallel(opening2.CoordinateSystem.Z, angleTolerance) == 0)
             {
