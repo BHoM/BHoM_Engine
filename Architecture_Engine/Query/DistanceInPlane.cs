@@ -44,7 +44,7 @@ namespace BH.Engine.Architecture
         [Input("maxExpectedDistance", "Maximum expected distance between openings. If no value is provided, maximum distance will not be checked.")]
         [Input("distanceTolerance", "Tolerance for distance between openings.")]
         [Input("angleTolerance", "Tolerance for openings parallelism calculations.")]
-        [Output("DistanceInPlane", "Distance between two openings.")]
+        [Output("distanceInPlane", "Distance between two openings.")]
         public static double DistanceInPlane(this Opening opening1, Opening opening2, double maxExpectedDistance = double.NaN, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (opening1 == null || opening2 == null)
@@ -53,7 +53,7 @@ namespace BH.Engine.Architecture
                 return double.NaN;
             }
 
-            if (!opening1.IsValidForDistanceInPlaneCheck(opening2, maxExpectedDistance, distanceTolerance, angleTolerance)) 
+            if (!opening1.IsValidForInPlaneDistanceCheck(opening2, maxExpectedDistance, distanceTolerance, angleTolerance)) 
             {
                 BH.Engine.Reflection.Compute.RecordWarning("Openings do not fulfil preliminary requirements for distance check.");
                 return double.NaN;
