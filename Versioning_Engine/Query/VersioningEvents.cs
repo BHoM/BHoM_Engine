@@ -22,6 +22,8 @@
 
 using BH.Engine.Reflection;
 using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Versioning;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,29 +34,20 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Versioning
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
-        [Input("declaringType", "Type in which the method is declared. You can use just the name of the type or include a (part of the) namespace in front of it.")]
-        [Input("methodName", "Name of the method. It has to be the exact string. If the method is a constructor, you can leave this input blank.")]
-        [Output("keys", "String representation for each method that matches the input filters.")]
-        public static List<string> VersioningKey(string declaringType, string methodName = "")
+        [Description("Provide a list of all the versioning upgrades that occured this session.")]
+        [Output("events", "List of all exiting events describing a versioning upgrade.")]
+        public static List<VersioningEvent> VersioningEvents()
         {
-            if (methodName == "")
-                methodName = ".ctor";
-
-            return Engine.Reflection.Query.AllMethodList()
-                .Where(x => x.Name == methodName && x.DeclaringType.FullName.EndsWith(declaringType))
-                .Select(x => x.VersioningKey())
-                .ToList();
+            return BH.Engine.Reflection.Query.AllEvents().OfType<VersioningEvent>().ToList();
         }
 
         /***************************************************/

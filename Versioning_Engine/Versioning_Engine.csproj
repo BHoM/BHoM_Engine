@@ -51,9 +51,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Versioning_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Versioning_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\VersionKey.cs" />
+    <Compile Include="Compute\VersioningKey.cs" />
     <Compile Include="Convert\ToNewVersion.cs" />
     <Compile Include="Modify\AddVersion.cs" />
     <Compile Include="Modify\RemoveVersion.cs" />
@@ -61,7 +65,8 @@
     <Compile Include="Query\UpgradersToCall.cs" />
     <Compile Include="Query\UpgraderVersions.cs" />
     <Compile Include="Query\Version.cs" />
-    <Compile Include="Query\VersionKey.cs" />
+    <Compile Include="Query\VersioningEvents.cs" />
+    <Compile Include="Query\VersioningKey.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Create\" />
