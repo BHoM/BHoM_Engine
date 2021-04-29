@@ -39,7 +39,8 @@ namespace BH.Engine.Architecture
             // Check if openings aren't nulls
             if (opening1 == null || opening2 == null)
             {
-                return true;
+                BH.Engine.Reflection.Compute.RecordError("One of the openings is null, the query cannot be verified.");
+                return false;
             }
 
             // Check if the openings are parallel
