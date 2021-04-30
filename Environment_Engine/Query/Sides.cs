@@ -43,18 +43,16 @@ namespace BH.Engine.Environment
         [Output("curves", "ICurve representations of the sides of the object")]
         public static List<ICurve> Sides(this IEnvironmentObject environmentObject)
         {
-            if (environmentObject == null) return null;
+            if (environmentObject == null) 
+                return null;
 
             if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Cannot find the sides of a horizontal IEnvironmentObject"); 
+                BH.Engine.Reflection.Compute.RecordWarning("Cannot find the sides of a horizontal IEnvironmentObject");
+                return null;
             }
 
-            Polyline workingCurves = null;
-            if (environmentObject is Panel)
-                workingCurves = (environmentObject as Panel).ExternalEdges.Polyline();
-            else if (environmentObject is Opening)
-                workingCurves = (environmentObject as Opening).Edges.Polyline();
+            Polyline workingCurves = environmentObject.Polyline();
 
             if (workingCurves == null)
                 return null;
@@ -65,7 +63,7 @@ namespace BH.Engine.Environment
 
             foreach (ICurve aCurve in workingCurves.SplitAtPoints(workingCurves.DiscontinuityPoints()))
             {
-                if (aCurve.IControlPoints().Where(x=> x.Z == aZMax).Count() ==1 && aCurve.IControlPoints().Where(x => x.Z == aZMin).Count() == 1)
+                if (aCurve.IControlPoints().Where(x => x.Z == aZMax).Count() ==1 && aCurve.IControlPoints().Where(x => x.Z == aZMin).Count() == 1)
                 {
                     aResult.Add(aCurve);
                 }

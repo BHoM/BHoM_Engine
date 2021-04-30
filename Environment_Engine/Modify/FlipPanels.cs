@@ -40,27 +40,26 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Panels with normal away from the space they create")] // Fix
-        [Input("panels", "A collection of Environment Panels to check normal direction for")] 
-        [Output("panels", "A collection of modified Environment Panels with normal away from space")]
-        public static List<Panel> FlipPanels(List<Panel> panels)
+        [Description("Modifies a collection of panels to ensure that their normal is pointing away from the space that they enclose. \n Any openings on the panels will also be tested to ensure the normal is pointing away from the space. This is for a single space's worth of panels. \n If wishing to use this on multiple spaces, use the ToSpaces component to split the panels per space, plug that into here and flatten the output.")]
+        [Input("panelsAsSpace", "A collection of Environment Panels to check normal direction for")] 
+        [Output("panelsAsSpace", "A collection of modified Environment Panels with normal away from space")]
+        public static List<Panel> FlipPanels(List<Panel> panelsAsSpace)
         {
             List<Panel> modifiedPanels = new List<Panel>();
-            foreach (Panel p in panels)
+            foreach (Panel p in panelsAsSpace)
             {
-                Panel p2 = p.DeepClone();
-                if (!p2.NormalAwayFromSpace(panels))
-                    p2.ExternalEdges = p2.Polyline().Flip().ToEdges();
+                if (!p.NormalAwayFromSpace(panelsAsSpace))
+                    p.ExternalEdges = p.Polyline().Flip().ToEdges();
 
-                List<Opening> openings = p2.Openings.Select(x => x.DeepClone()).ToList();
+                List<Opening> openings = p.Openings.ToList();
                 for (int x = 0; x < openings.Count; x++)
                 {
-                    if (!openings[x].Polyline().NormalAwayFromSpace(panels))
+                    if (!openings[x].Polyline().NormalAwayFromSpace(panelsAsSpace))
                         openings[x].Edges = openings[x].Polyline().Flip().ToEdges();
                 }
 
-                p2.Openings = openings;
-                modifiedPanels.Add(p2);
+                p.Openings = openings;
+                modifiedPanels.Add(p);
             }
 
             return modifiedPanels;

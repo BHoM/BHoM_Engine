@@ -46,14 +46,16 @@ namespace BH.Engine.Environment
         [Input("panelType", "The panel type to set")]
         [Input("minTilt", "The minimum tilt to filter the collection of panels by")]
         [Input("maxTilt", "The maximum tilt to filter the collection of panels by")]
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("panels", "A collection of modified Environment Panels with the type set by intsersecting lines")]
-        public static List<Panel> SetPanelTypeByIntersectingLines(List<Panel> panels, List<Line> intersectingLines, PanelType panelType, double maxTilt = 92, double minTilt = 88)
+        public static List<Panel> SetPanelTypeByIntersectingLines(List<Panel> panels, List<Line> intersectingLines, PanelType panelType, double minTilt = 88, double maxTilt = 92, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             foreach (Line l in intersectingLines)
             {
                 for (int i = 0; i < panels.Count; i++)
                 {
-                    if (panels[i].Tilt() >= minTilt && panels[i].Tilt() <= maxTilt && panels[i].Polyline().LineIntersections(l).Count>0)
+                    if (panels[i].Tilt(distanceTolerance, angleTolerance) >= minTilt && panels[i].Tilt(distanceTolerance, angleTolerance) <= maxTilt && panels[i].Polyline().LineIntersections(l).Count > 0)
                     {
                         panels[i].Type = panelType;
                     }

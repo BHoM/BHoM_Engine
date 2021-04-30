@@ -46,7 +46,8 @@ namespace BH.Engine.Environment
         [Output("curve", "An ICurve representation of the bottom of the object")]
         public static ICurve Bottom(this IEnvironmentObject environmentObject)
         {
-            if (environmentObject == null) return null;
+            if (environmentObject == null) 
+                return null;
 
             if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
             {
@@ -54,12 +55,7 @@ namespace BH.Engine.Environment
                 return null;
             }
 
-            Polyline workingCurves = null;
-
-            if (environmentObject is Panel)
-                workingCurves = (environmentObject as Panel).ExternalEdges.Polyline();
-            else if (environmentObject is Opening)
-                workingCurves = (environmentObject as Opening).Edges.Polyline();
+            Polyline workingCurves = environmentObject.Polyline();
 
             if (workingCurves == null)
                 return null;

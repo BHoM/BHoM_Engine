@@ -53,7 +53,8 @@ namespace BH.Engine.Environment
                 Item3 = new List<ICurve>(),
             };
 
-            if (environmentObject == null) return null;
+            if (environmentObject == null) 
+                return null;
 
             finalParts.Item1.Add(environmentObject.Bottom());
             finalParts.Item2.AddRange(environmentObject.Sides());

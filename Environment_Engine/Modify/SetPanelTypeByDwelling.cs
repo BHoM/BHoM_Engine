@@ -41,23 +41,23 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Panels with panel type set by an IRegion perimeter")] // Not an accurate description
+        [Description("Returns a list of Environment Panels with panel type set by a dwelling perimeter.\n Walls with Bottom ControlPoints on the dwelling perimeter are set as WallExternal, the rest as WallInternal")]
         [Input("panels", "A collection of Environment Panels to set the type for")]
         [Input("regions", "A collection of IRegions to set the type by")]
-        [Output("panels", "A collection of modified Environment Panels with the with panel type set by an IRegion perimeter")]
-        public static List<Panel> SetPanelTypeByRegion(List<Panel> panels, List<IRegion> regions)
+        [Output("panels", "A collection of modified Environment Panels with the with panel type set by a dwelling perimeter")]
+        public static List<Panel> SetPanelTypeByDwelling(List<Panel> panels, List<Dwelling> dwellings)
         {
             List<Panel> fixedPanels = new List<Panel>();
             List<Guid> handledPanels = new List<Guid>();
-            for (int i = 0; i < regions.Count; i++)
+            for (int i = 0; i < dwellings.Count; i++)
             {
                 List<Panel> wallPanels = panels.Where(x => x.Type == PanelType.Wall).ToList();
                 List<Panel> floors = panels.Where(x => x.Type == PanelType.Floor).ToList();
                 List<Panel> ceilings = panels.Where(x => x.Type == PanelType.Ceiling).ToList();
-                List < Panel > exteriorWalls = wallPanels.Where(x => (x.Bottom() as Polyline).ControlPoints.Where(y => y.IIsOnCurve(regions[i].Perimeter as Polyline)).Count() == 2).ToList();
+                List<Panel> exteriorWalls = wallPanels.Where(x => (x.Bottom() as Polyline).ControlPoints.Where(y => y.IIsOnCurve(dwellings[i].Perimeter as Polyline)).Count() == 2).ToList();
                 foreach (Panel p in exteriorWalls)
                 {
-                    if (p != null && (handledPanels.Contains(p.BHoM_Guid) == false))
+                    if (p != null && !handledPanels.Contains(p.BHoM_Guid))
                     {
                         p.Type = PanelType.WallExternal;
                         fixedPanels.Add(p);
@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
 
                 foreach (Panel p in floors)
                 {
-                    if (p != null && (handledPanels.Contains(p.BHoM_Guid) == false))
+                    if (p != null && !handledPanels.Contains(p.BHoM_Guid))
                     {
                         p.Type = PanelType.Floor;
                         fixedPanels.Add(p);
@@ -77,7 +77,7 @@ namespace BH.Engine.Environment
 
                 foreach (Panel p in ceilings)
                 {
-                    if (p != null && (handledPanels.Contains(p.BHoM_Guid) == false))
+                    if (p != null && !handledPanels.Contains(p.BHoM_Guid))
                     {
                         p.Type = PanelType.Ceiling;
                         fixedPanels.Add(p);
@@ -89,7 +89,7 @@ namespace BH.Engine.Environment
 
             foreach (Panel p in panels)
             {
-                if (handledPanels.Contains(p.BHoM_Guid) == false && p.Type == PanelType.Wall)
+                if (!handledPanels.Contains(p.BHoM_Guid) && p.Type == PanelType.Wall)
                 {
                     p.Type = PanelType.WallInternal;
                     handledPanels.Add(p.BHoM_Guid);
@@ -100,5 +100,5 @@ namespace BH.Engine.Environment
             return fixedPanels;
         }
     }
-    
+
 }

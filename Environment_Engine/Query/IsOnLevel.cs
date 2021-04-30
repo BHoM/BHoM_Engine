@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
         [Description("Returns a boolean stating whether a polyline is on a certain level")]
         [Input("polyline", "A polyline to test if it is on a certain level")]
         [Input("level", "The level to test for")]
-        [Input("tolerance", "The tolerance of the distance calculation for determening the elevation of the IRegion. Default is equal to BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("tolerance", "The tolerance of the distance calculation for determining whether a polyline is on the level. Default is equal to BH.oM.Geometry.Tolerance.Distance.")]
         [Output("bool", "A boolean stating whether the polyline is on that level")]
         public static bool IsOnLevel(this Polyline polyline, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
