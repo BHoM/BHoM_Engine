@@ -43,19 +43,16 @@ namespace BH.Engine.Environment
         [Output("curve", "An ICurve representation of the top of the object")]
         public static ICurve Top(this IEnvironmentObject environmentObject)
         {
-            if (environmentObject == null) return null;
+            if (environmentObject == null) 
+                return null;
 
             if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
             {
                 BH.Engine.Reflection.Compute.RecordWarning("Cannot find the top of a horizontal IEnvironemntObject");
+                return null;
             }
 
-            Polyline workingCurves = null;
-
-            if (environmentObject is Panel)
-                workingCurves = (environmentObject as Panel).ExternalEdges.Polyline();
-            else if (environmentObject is Opening)
-                workingCurves = (environmentObject as Opening).Edges.Polyline();
+            Polyline workingCurves = environmentObject.Polyline();
 
             if (workingCurves == null)
                 return null;

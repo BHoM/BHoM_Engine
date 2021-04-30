@@ -30,7 +30,6 @@ using System.ComponentModel;
 using BH.oM.Environment.Elements;
 using BH.oM.Reflection.Attributes;
 
-
 namespace BH.Engine.Environment
 {
     public static partial class Modify
@@ -39,12 +38,11 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Spaces with the provided name from original name and space type. Sets a unique name by numbers if multiple spaces are of the same type")]
+        [Description("Returns a list of Environment Spaces with the provided name being existing space name + '_spaceType', for example 1A_Bedroom. \n Sets a unique name by numbers if multiple spaces are of the same type, i.e. 1A_Bedroom1")]
         [Input("spaces", "A collection of Environment Spaces to set the name for")]
-        [Output("modifiedSpaces", "A collection of modified Environment Spaces with asssigned name")]
-        public static List<Space> AssignSpaceNameByType(List<Space> spaces)
+        [Output("spaces", "A collection of modified Environment Spaces with assigned name")]
+        public static List<Space> UpdateSpaceNameByType(List<Space> spaces)
         {
-            
             List<Space> spacesWithNames = new List<Space>();
             foreach (Space s in spaces)
             {
