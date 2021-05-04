@@ -94,8 +94,11 @@ namespace BH.Engine.Environment
             if (connectedSpaceName == null)
                 connectedSpaceName = Guid.NewGuid().ToString();
 
-            List<Polyline> openingLines = surface.IInternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList();
-            List<Opening> openings = new List<Opening>();
+            List<Polyline> openingLines = new List<Polyline>();
+            if (surface.IInternalEdges() != null)
+                openingLines = surface.IInternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList();
+
+            List <Opening> openings = new List<Opening>();
 
             foreach(Polyline p in openingLines)
             {
