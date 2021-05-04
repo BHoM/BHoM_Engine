@@ -107,6 +107,7 @@
     <Compile Include="Compute\ComponentAreas.cs" />
     <Compile Include="Compute\EdgeAdjacencies.cs" />
     <Compile Include="Compute\AdjacentElements.cs" />
+    <Compile Include="Create\Elements\CurtainWall.cs" />
     <Compile Include="Modify\SetOffsetFromFacetoFaceDist.cs" />
     <Compile Include="Modify\OffsetVariable.cs" />
     <Compile Include="Modify\Transform.cs" />
