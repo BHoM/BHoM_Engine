@@ -45,7 +45,7 @@ namespace BH.Engine.Facade
         /***************************************************/
 
         [Description("Returns edge type (Sill, Head, or Jamb) from a FrameEdge and the Opening it belongs to.")]
-        [Input("edge", "FrameEdge to get edge type from.")]
+        [Input("frameEdge", "FrameEdge to get edge type from.")]
         [Input("opening", "Opening the FrameEdge belongs to.")]
         [Output("type", "FrameEdge type (Sill, Head, or Jamb).")]
         public static string FrameEdgeType(this FrameEdge frameEdge, Opening opening)

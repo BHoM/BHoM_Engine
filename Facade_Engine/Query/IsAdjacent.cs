@@ -38,11 +38,11 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns if lines are adjacent")]
-        [Input("curve1", "First crv to check adjacency for")]
-        [Input("curve2", "Second crv to check adjacency for")]
-        [Input("tolerance", "Tolerance to apply to adjacency check")]
-        [Output("bool", "True if provided lines are adjacent")]
+        [Description("Returns if lines are adjacent.")]
+        [Input("curve1", "First crv to check adjacency for.")]
+        [Input("curve2", "Second crv to check adjacency for.")]
+        [Input("tolerance", "Tolerance to apply to adjacency check.")]
+        [Output("bool", "True if provided lines are adjacent.")]
         public static bool IsAdjacent(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             if(curve1 == null || curve2 == null)
@@ -96,11 +96,11 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
-        [Description("Returns if lines are adjacent")]
-        [Input("curve1", "First crv to check adjacency for")]
-        [Input("curve2", "Second crv to check adjacency for")]
-        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
-        [Output("bool", "True if provided lines are adjacent")]
+        [Description("Returns if lines are adjacent.")]
+        [Input("curve1", "First crv to check adjacency for.")]
+        [Input("curve2", "Second crv to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided lines are adjacent.")]
 
         public static bool IsAdjacentApprox(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
@@ -146,22 +146,22 @@ namespace BH.Engine.Facade
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Returns if curves are adjacent")]
-        [Input("curve1", "First curve to check adjacency for")]
-        [Input("curve2", "Second curve to check adjacency for")]
-        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
-        [Output("bool", "True if provided curves are adjacent")]
+        [Description("Returns if curves are adjacent.")]
+        [Input("curve1", "First curve to check adjacency for.")]
+        [Input("curve2", "Second curve to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided curves are adjacent.")]
 
         public static bool IIsAdjacent (this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
             return IsAdjacent(curve1 as dynamic, curve2 as dynamic);
         }
 
-        [Description("Returns if curves are adjacent")]
-        [Input("elem1", "First element to check adjacency for")]
-        [Input("elem2", "Second element to check adjacency for")]
-        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
-        [Output("bool", "True if provided elements are adjacent")]
+        [Description("Returns if curves are adjacent.")]
+        [Input("elem1", "First element to check adjacency for.")]
+        [Input("elem2", "Second element to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided elements are adjacent.")]
 
         public static bool IIsAdjacent(this IElement1D elem1, IElement1D elem2, double tolerance = Tolerance.Distance)
         {
@@ -191,11 +191,11 @@ namespace BH.Engine.Facade
         /**** Private Helper Methods                  ****/
         /***************************************************/
 
-        [Description("Returns if elements are adjacent")]
-        [Input("edge1", "First element to check adjacency for")]
-        [Input("edge2", "Second element to check adjacency for")]
-        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
-        [Output("bool", "True if provided lines are adjacent")]
+        [Description("Returns if elements are adjacent.")]
+        [Input("edge1", "First element to check adjacency for.")]
+        [Input("edge2", "Second element to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided lines are adjacent.")]
         private static bool IsAdjacent(this IEdge edge1, IEdge edge2, double tolerance = Tolerance.Distance)
         {
             ICurve crv1 = edge1.Curve;
@@ -209,11 +209,11 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
-        [Description("Returns if elements are adjacent")]
-        [Input("edge1", "First element to check adjacency for")]
-        [Input("crv2", "Second element to check adjacency for")]
-        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
-        [Output("bool", "True if provided lines are adjacent")]
+        [Description("Returns if elements are adjacent.")]
+        [Input("edge1", "First element to check adjacency for.")]
+        [Input("crv2", "Second element to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided lines are adjacent.")]
         private static bool IsAdjacent(this IEdge edge1, ICurve crv2, double tolerance = Tolerance.Distance)
         {
             ICurve crv1 = edge1.Curve;
@@ -226,11 +226,11 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
-        [Description("Returns if elements are adjacent")]
-        [Input("crv1", "Second element to check adjacency for")]
-        [Input("edge2", "First element to check adjacency for")]
-        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
-        [Output("bool", "True if provided lines are adjacent")]
+        [Description("Returns if elements are adjacent.")]
+        [Input("crv1", "Second element to check adjacency for.")]
+        [Input("edge2", "First element to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided lines are adjacent.")]
         private static bool IsAdjacent(this ICurve crv1, IEdge edge2, double tolerance = Tolerance.Distance)
         {
             ICurve crv2 = edge2.Curve;
