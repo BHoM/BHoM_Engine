@@ -124,6 +124,46 @@ namespace BH.Engine.Facade
         }
 
         /***************************************************/
+
+        [Description("Creates a facade CurtainWall from a collection of curves forming closed loops and a Construction and FrameEdgeProperty to apply to all openings and edges in the CurtainWall.")]
+        [Input("outlines", "Closed curves defining the outlines of the Openings of the CurtainWall.")]
+        [Input("construction", "Construction to apply to the CurtainWall Openings.")]
+        [Input("frameEdgeProperty", "A FrameEdgeProperty to apply to the edges of all openings in the CurtainWall.")]
+        [Input("name", "Name of the CurtainWall to be created.")]
+        [Output("curtainWall", "Created CurtainWall.")]
+        public static CurtainWall CurtainWall(IEnumerable<ICurve> outlines, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, string name = "")
+        {
+            if (outlines == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a CurtainWall from a null collection of outlines.");
+                return null;
+            }
+
+            List<Opening> openings = new List<Opening>();
+            for (int i = 0; i < outlines.Count(); i++)
+            {
+                ICurve outline = outlines.ElementAt(i);
+                if (outline.IIsClosed() != true)
+                {
+                    BH.Engine.Reflection.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlineswhich each represent one opening in the CurtainWall.");
+                }
+                else
+                {
+                    Opening opening = Create.Opening(new List<ICurve> { outline }, construction, frameEdgeProperty,  name + "_" + i);
+                    openings.Add(opening);
+                }
+            }
+
+            List<IElement1D> externalEdges = Query.ExternalEdges(openings);
+            List<FrameEdge> extFrameEdges = externalEdges.OfType<ICurve>().Select(x => new FrameEdge { Curve = x }).ToList();
+
+            CurtainWall curtainWall = new CurtainWall { ExternalEdges = extFrameEdges, Openings = openings, Name = name };
+
+            return curtainWall;
+
+        }
+
+        /***************************************************/
     }
 }
 
