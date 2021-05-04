@@ -47,8 +47,8 @@ namespace BH.Engine.Facade
         [Input("edge", "Edge to find adjacencies at.")]
         [Input("elems", "2D elements to use to find edge adjacencies (These should be panels and/or openings).")]
         [Input("tolerance", "Tolerance is the minimum overlap amount required to consider adjacent.")]
-        [MultiOutput(0, "adjEdges", "Adjacent edges")]
-        [MultiOutput(1, "adjElems", "Adjacent Elements per adjacent edge")]
+        [MultiOutput(0, "adjEdges", "Adjacent edges.")]
+        [MultiOutput(1, "adjElems", "Adjacent Elements per adjacent edge.")]
         public static Output<List<IElement1D>, List<IElement2D>> EdgeAdjacencies(this IElement1D edge, List<IElement2D> elems, double tolerance = Tolerance.Distance)
         {
             List<IElement1D> adjEdges = new List<IElement1D>();

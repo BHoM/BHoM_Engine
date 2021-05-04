@@ -53,7 +53,7 @@ namespace BH.Engine.Facade
         [Input("externalSillProperty", "A FrameEdgeProperty to apply to the sill edge(s) of openings at the edge of the CurtainWall.")]
         [Input("name", "Name of the CurtainWall to be created.")]
         [Output("curtainWall", "Created CurtainWall.")]
-        public static CurtainWall curtainWall(IEnumerable<ICurve> outlines, IEnumerable<IConstruction> constructions = null, FrameEdgeProperty headProperty = null, FrameEdgeProperty jambProperty = null, FrameEdgeProperty sillProperty = null,
+        public static CurtainWall CurtainWall(IEnumerable<ICurve> outlines, IEnumerable<IConstruction> constructions = null, FrameEdgeProperty headProperty = null, FrameEdgeProperty jambProperty = null, FrameEdgeProperty sillProperty = null,
                                               FrameEdgeProperty externalHeadProperty = null, FrameEdgeProperty externalJambProperty = null, FrameEdgeProperty externalSillProperty = null, string name = "")
         {
             if(outlines == null)
