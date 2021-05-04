@@ -223,5 +223,24 @@ namespace BH.Engine.Facade
             else
                 return false;
         }
+
+        /***************************************************/
+
+        [Description("Returns if elements are adjacent")]
+        [Input("crv1", "Second element to check adjacency for")]
+        [Input("edge2", "First element to check adjacency for")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included)")]
+        [Output("bool", "True if provided lines are adjacent")]
+        private static bool IsAdjacent(this ICurve crv1, IEdge edge2, double tolerance = Tolerance.Distance)
+        {
+            ICurve crv2 = edge2.Curve;
+
+            if (crv1 != null && crv2 != null)
+                return Query.IIsAdjacent(crv1, crv2);
+            else
+                return false;
+        }
+
+        /***************************************************/
     }
 }
