@@ -65,7 +65,7 @@ namespace BH.Engine.Facade
             bool useConstructions = true;
             if (outlines.Count() != constructions.Count() )
             {
-                BH.Engine.Reflection.Compute.RecordError("Outline and Construction list lengths do not match. CurtainWall will be created with no Opening Constructions applied.");
+                BH.Engine.Reflection.Compute.RecordWarning("Outline and Construction list lengths do not match. CurtainWall will be created with no Opening Constructions applied.");
                 useConstructions = false;
             }
 
@@ -95,7 +95,7 @@ namespace BH.Engine.Facade
             {
                 foreach (FrameEdge edge in opening.Edges)
                 {
-                    if (edge.AdjacentElements(externalEdges).Count > 0);
+                    if (edge.AdjacentElements(externalEdges).Count > 0)
                     {
                         string edgeType = edge.FrameEdgeType(opening);
                         switch (edgeType)
