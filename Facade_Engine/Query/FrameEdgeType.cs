@@ -47,17 +47,17 @@ namespace BH.Engine.Facade
         [Description("Returns edge type (Sill, Head, or Jamb) from a FrameEdge and the Opening it belongs to.")]
         [Input("frameEdge", "FrameEdge to get edge type from.")]
         [Input("opening", "Opening the FrameEdge belongs to.")]
+        [Input("jambMinAngle", "Minimum angle from horizontal (in radians) at which edges are considered jambs.")]
         [Output("type", "FrameEdge type (Sill, Head, or Jamb).")]
-        public static string FrameEdgeType(this FrameEdge frameEdge, Opening opening)
+        public static string FrameEdgeType(this FrameEdge frameEdge, Opening opening, double jambMinimumAngle = 0.7854)
         {
             if (frameEdge == null || opening == null || frameEdge.Curve == null)
                 return null;
-
             else
             {
                 ICurve crv = frameEdge.Curve;
                 double zVal = Math.Abs(crv.IEndDir().Z);
-                if (zVal > 0.7071)  //Check if curve is more than 45 degrees from horizontal plane
+                if (zVal > Math.Sin(jambMinimumAngle))
                     return "Jamb";
                 else if (crv.IPointAtParameter(0.5).Z > opening.IElementVertices().Average().Z)
                     return "Head";

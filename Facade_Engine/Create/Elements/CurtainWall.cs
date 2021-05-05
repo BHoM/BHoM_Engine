@@ -53,8 +53,7 @@ namespace BH.Engine.Facade
         [Input("externalSillProperty", "A FrameEdgeProperty to apply to the sill edge(s) of openings at the edge of the CurtainWall.")]
         [Input("name", "Name of the CurtainWall to be created.")]
         [Output("curtainWall", "Created CurtainWall.")]
-        public static CurtainWall CurtainWall(IEnumerable<ICurve> outlines, IEnumerable<IConstruction> constructions = null, FrameEdgeProperty headProperty = null, FrameEdgeProperty jambProperty = null, FrameEdgeProperty sillProperty = null,
-                                              FrameEdgeProperty externalHeadProperty = null, FrameEdgeProperty externalJambProperty = null, FrameEdgeProperty externalSillProperty = null, string name = "")
+        public static CurtainWall CurtainWall(IEnumerable<ICurve> outlines, IEnumerable<IConstruction> constructions = null, FrameEdgeProperty headProperty = null, FrameEdgeProperty jambProperty = null, FrameEdgeProperty sillProperty = null, FrameEdgeProperty externalHeadProperty = null, FrameEdgeProperty externalJambProperty = null, FrameEdgeProperty externalSillProperty = null, string name = "")
         {
             if(outlines == null)
             {
@@ -63,7 +62,7 @@ namespace BH.Engine.Facade
             }
 
             bool useConstructions = true;
-            if (outlines.Count() != constructions.Count() )
+            if (outlines.Count() != constructions.Count())
             {
                 BH.Engine.Reflection.Compute.RecordWarning("Outline and Construction list lengths do not match. CurtainWall will be created with no Opening Constructions applied.");
                 useConstructions = false;
@@ -77,9 +76,9 @@ namespace BH.Engine.Facade
             for (int i = 0; i < outlines.Count(); i++)
             {
                 ICurve outline = outlines.ElementAt(i);
-                if (outline.IIsClosed() != true)
+                if (!outline.IIsClosed())
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlineswhich each represent one opening in the CurtainWall.");
+                    BH.Engine.Reflection.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlines which each represent one opening in the CurtainWall.");
                 }
                 else
                 {
@@ -117,9 +116,7 @@ namespace BH.Engine.Facade
             }
 
             List<FrameEdge> extFrameEdges = externalEdges.OfType<ICurve>().Select(x => new FrameEdge { Curve = x }).ToList();
-            CurtainWall curtainWall = new CurtainWall { ExternalEdges = extFrameEdges, Openings = openings, Name = name };
-
-            return curtainWall;
+            return new CurtainWall { ExternalEdges = extFrameEdges, Openings = openings, Name = name };
             
         }
 
@@ -145,7 +142,7 @@ namespace BH.Engine.Facade
                 ICurve outline = outlines.ElementAt(i);
                 if (outline.IIsClosed() != true)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlineswhich each represent one opening in the CurtainWall.");
+                    BH.Engine.Reflection.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlines which each represent one opening in the CurtainWall.");
                 }
                 else
                 {
@@ -157,9 +154,7 @@ namespace BH.Engine.Facade
             List<IElement1D> externalEdges = Query.ExternalEdges(openings);
             List<FrameEdge> extFrameEdges = externalEdges.OfType<ICurve>().Select(x => new FrameEdge { Curve = x }).ToList();
 
-            CurtainWall curtainWall = new CurtainWall { ExternalEdges = extFrameEdges, Openings = openings, Name = name };
-
-            return curtainWall;
+            return new CurtainWall { ExternalEdges = extFrameEdges, Openings = openings, Name = name };
 
         }
 

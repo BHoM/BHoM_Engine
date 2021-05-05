@@ -51,7 +51,7 @@ namespace BH.Engine.Facade
         public static void SetOffsetFromFacetoFaceDist(this Opening opening, Panel panel, double useroffset)
         {
             //Check for null case
-            if (panel == null || opening == null || useroffset == double.NaN)
+            if (panel == null || opening == null || useroffset == double.NaN || useroffset < 0)
             {
                 BH.Engine.Reflection.Compute.RecordError("Invalid inputs, offset was not applied.");
                 return;
