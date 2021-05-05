@@ -45,19 +45,20 @@ namespace BH.Engine.Facade
         /***************************************************/
 
         [Description("Returns external edges from a collection of 2D elements.")]
-        [Input("elems", "Elements to get external edges from.")]
-        [Output("extEdges", "External edges of elements.")]
-        public static List<IElement1D> ExternalEdges(this IEnumerable<IElement2D> elems)
+        [Input("elements", "Elements to get external edges from.")]
+        [Output("externalEdges", "External edges of elements.")]
+        public static List<IElement1D> ExternalEdges(this IEnumerable<IElement2D> elements)
         {
-            if (elems == null)
+            if (elements == null)
                 return null;
 
             List<IElement1D> allEdges = new List<IElement1D>();
-            List<IElement1D> result = new List<IElement1D>();
-            foreach (IElement2D elem in elems)
+            foreach (IElement2D elem in elements)
             {
                 allEdges.AddRange(elem.ExternalElementCurves());
             }
+
+            List<IElement1D> result = new List<IElement1D>();
 
             //Get only external curves from all element specific outline curves
             foreach (ICurve crv in allEdges)

@@ -102,17 +102,13 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            List<ICurve> externalEdges = new List<ICurve>();
-            foreach (ICurve edge in edges)
-            {
-                externalEdges.AddRange(edge.ISubParts());
-            }
+            List<ICurve> externalEdges = edges.SelectMany(x => x.ISubParts()).ToList();
 
             List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
 
             if (joined.Count == 0)
             {
-                Reflection.Compute.RecordError("Could not join Curves. Opening not Created.");
+                Reflection.Compute.RecordError("Could not join Curves. Opening not created.");
                 return null;
             }
             else if (joined.Count > 1)
