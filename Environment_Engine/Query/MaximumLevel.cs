@@ -46,8 +46,9 @@ namespace BH.Engine.Environment
 
         [Description("Returns the maximum level of the given polyline based on the z axis")]
         [Input("polyline", "An Environment polyline to find the maximum level from")]
+        [Input("decimals", "Provide decimal location for the maximum levels")]
         [Output("maximumLevel", "The maximum level of the z axis of the polyline")]
-        public static double MaximumLevel(this Polyline polyline)
+        public static double MaximumLevel(this Polyline polyline, int decimals = 3)
         {
             List<Point> crvPts = polyline.IControlPoints();
 
@@ -55,13 +56,14 @@ namespace BH.Engine.Environment
             foreach (Point p in crvPts)
                 max = Math.Max(max, p.Z);
 
-            return Math.Round(max, 3);
+            return Math.Round(max, decimals);
         }
 
         [Description("Returns the maximum level of the given panel based on the z axis")]
         [Input("panel", "An Environment Panel to find the maximum level from")]
+        [Input("decimals", "Provide decimal location for the maximum levels")]
         [Output("maximumLevel", "The maximum level of the z axis of the panel")]
-        public static double MaximumLevel(this Panel panel)
+        public static double MaximumLevel(this Panel panel, int decimals = 3)
         {
             if(panel == null)
             {
@@ -69,13 +71,14 @@ namespace BH.Engine.Environment
                 return -1;
             }
 
-            return panel.Polyline().MaximumLevel();
+            return panel.Polyline().MaximumLevel(decimals);
         }
 
         [Description("Returns the maximum level of the given opening based on the z axis")]
         [Input("opening", "An Environment Opening to find the maximum level from")]
+        [Input("decimals", "Provide decimal location for the maximum levels")]
         [Output("maximumLevel", "The maximum level of the z axis of the opening")]
-        public static double MaximumLevel(this Opening opening)
+        public static double MaximumLevel(this Opening opening, int decimals = 3)
         {
             if (opening == null)
             {
@@ -83,7 +86,7 @@ namespace BH.Engine.Environment
                 return -1;
             }
 
-            return opening.Polyline().MaximumLevel();
+            return opening.Polyline().MaximumLevel(decimals);
         }
     }
 }
