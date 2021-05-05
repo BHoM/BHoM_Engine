@@ -39,9 +39,7 @@ using BH.Engine.Spatial;
 using BH.oM.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
-
 using System.ComponentModel;
-
 
 namespace BH.Engine.Environment
 {
@@ -51,7 +49,7 @@ namespace BH.Engine.Environment
         [Input("regions", "A collection of BHoM Regions to get the level from.")]
         [Input("decimals", "Provide decimal location to define the degree of tolerance for data matching.")]
         [Input("angleTolerance", "The tolerance used for angle calculations.")]
-        [Output("levels", "A collection of BHoM Levels belonging to the provided regions")]
+        [Output("levels", "A collection of BHoM Levels based on the provided regions. If region has several z-values both the minimum and the maximum levels are created")]
         public static List<Level> Levels(List<IRegion> regions, int decimals = 6, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {          
             List<Level> levels = new List<Level>();
