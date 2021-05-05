@@ -91,9 +91,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BooleanIntersect.cs" />
+    <Compile Include="Compute\RegionsByLevel.cs" />
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Modify\Transform.cs" />
-    <Compile Include="Compute\LevelsByRegion.cs" />
+    <Compile Include="Create\Levels.cs" />
     <Compile Include="Modify\UpdateZones.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
     <Compile Include="Compute\ExportEPW.cs" />
