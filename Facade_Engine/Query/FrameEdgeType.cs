@@ -47,7 +47,7 @@ namespace BH.Engine.Facade
         [Description("Returns edge type (Sill, Head, or Jamb) from a FrameEdge and the Opening it belongs to.")]
         [Input("frameEdge", "FrameEdge to get edge type from.")]
         [Input("opening", "Opening the FrameEdge belongs to.")]
-        [Input("jambMinAngle", "Minimum angle from horizontal (in radians) at which edges are considered jambs.")]
+        [Input("jambMinimumAngle", "Minimum angle from horizontal (in radians) at which edges are considered jambs.")]
         [Output("type", "FrameEdge type (Sill, Head, or Jamb).")]
         public static string FrameEdgeType(this FrameEdge frameEdge, Opening opening, double jambMinimumAngle = 0.7854)
         {
