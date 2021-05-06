@@ -75,7 +75,7 @@ namespace BH.Engine.Environment
         [Output("isContaining", "True if the point is contained within the panel, false if it is not")]
         public static bool IsContaining(this Panel panel, Point pt, bool acceptOnEdges = false)
         {
-            if (pt == null)
+            if (panel == null || pt == null)
                 return false;
 
             return new List<Panel> { panel }.IsContaining(pt, acceptOnEdges);
@@ -88,6 +88,18 @@ namespace BH.Engine.Environment
         [Output("isContaining", "True if the point is contained within at least one of the panels, false if it is not")]
         public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false)
         {
+            if(panels == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
+                return false;
+            }
+
+            if(point == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query is a collection of panels contains a point if the point is null.");
+                return false;
+            }
+
             List<Plane> planes = new List<Plane>();
             foreach (Panel be in panels)
                 planes.Add(be.Polyline().IControlPoints().FitPlane());
@@ -95,7 +107,8 @@ namespace BH.Engine.Environment
             List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point)) return false;
+            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point))
+                return false;
 
             //We need to check one line that starts in the point and end outside the bounding box
             Vector vector = new Vector() { X = 1, Y = 0, Z = 0 };

@@ -47,6 +47,12 @@ namespace BH.Engine.Reflection
 
         public static Func<object[], object> ToFunc(this MethodInfo method)
         {
+            if(method == null)
+            {
+                Compute.RecordError("Cannot convert method info to func if method is null.");
+                return null;
+            }
+
             ParameterExpression lambdaInput = Expression.Parameter(typeof(object[]), "x");
             Expression[] inputs = method.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType.GetTypeIfRef())).ToArray();
 
@@ -86,6 +92,12 @@ namespace BH.Engine.Reflection
 
         public static Func<object[], object> ToFunc(this ConstructorInfo ctor)
         {
+            if(ctor == null)
+            {
+                Compute.RecordError("Cannot convert constructor info to func if the constructor is null.");
+                return null;
+            }
+
             ParameterExpression lambdaInput = Expression.Parameter(typeof(object[]), "x");
             Expression[] inputs = ctor.GetParameters().Select((x, i) => Expression.Convert(Expression.ArrayIndex(lambdaInput, Expression.Constant(i)), x.ParameterType)).ToArray();
             NewExpression constructorExpression = Expression.New(ctor as ConstructorInfo, inputs);

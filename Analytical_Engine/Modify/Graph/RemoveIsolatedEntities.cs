@@ -41,6 +41,12 @@ namespace BH.Engine.Analytical
         [Output("graph", "The modified Graph without isolated entities.")]
         public static Graph RemoveIsolatedEntities(this Graph graph)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot remove isolated entities from a null graph.");
+                return null;
+            }
+
             foreach (Guid n in graph.IsolatedEntities())
                 graph.Entities.Remove(n);
 

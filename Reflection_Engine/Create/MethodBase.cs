@@ -36,6 +36,24 @@ namespace BH.Engine.Serialiser
 
         public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypeNames)
         {
+            if(type == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null type.");
+                return null;
+            }
+            
+            if(methodName == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null method name.");
+                return null;
+            }
+
+            if(paramTypeNames == null)
+            {
+                Compute.RecordWarning("The 'paramTypeNames' input is null and was replaced by an empty list");
+                paramTypeNames = new List<string>();
+            }
+
             List<MethodBase> methods;
             if (methodName == ".ctor")
                 methods = type.GetConstructors().ToList<MethodBase>();
@@ -129,6 +147,24 @@ namespace BH.Engine.Serialiser
 
         public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
         {
+            if (type == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null type.");
+                return null;
+            }
+
+            if (methodName == null)
+            {
+                Compute.RecordError("Cannot create a method base from a null method name.");
+                return null;
+            }
+
+            if (paramTypes == null)
+            {
+                Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
+                paramTypes = new List<Type>();
+            }
+
             MethodBase method = null;
             try
             {

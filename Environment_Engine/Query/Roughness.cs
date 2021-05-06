@@ -49,7 +49,9 @@ namespace BH.Engine.Environment
         [Output("roughness", "The average roughness of the construction")]
         public static BHM.Roughness Roughness(this Construction construction)
         {
-            if (construction.Layers.Count == 0) return BHM.Roughness.Undefined;
+            if (construction == null || construction.Layers.Count == 0)
+                return BHM.Roughness.Undefined;
+
             BHM.IEnvironmentMaterial firstSide = construction.Layers.First().Material.Properties.Where(x => x is BHM.IEnvironmentMaterial).FirstOrDefault() as BHM.IEnvironmentMaterial;
             BHM.IEnvironmentMaterial finalSide = construction.Layers.Last().Material.Properties.Where(x => x is BHM.IEnvironmentMaterial).FirstOrDefault() as BHM.IEnvironmentMaterial;
 
@@ -65,6 +67,9 @@ namespace BH.Engine.Environment
         [Output("roughness", "The numerical roughness of the material")]
         public static double Roughness(this Material material)
         {
+            if (material == null)
+                return 0.0;
+
             IEnvironmentMaterial materialProperties = material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;
 
             if (materialProperties == null)

@@ -79,6 +79,12 @@ namespace BH.Engine.Analytical
         [Output("region", "The region with updated perimiter.")]
         public static IRegion SetOutlineElements1D(this IRegion region, IEnumerable<IElement1D> outlineElements)
         {
+            if(region == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null region.");
+                return null;
+            }
+
             IRegion r = region.ShallowClone();
 
             IEnumerable<ICurve> joinedCurves = outlineElements.Cast<ICurve>();

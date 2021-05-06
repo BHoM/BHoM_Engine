@@ -35,6 +35,12 @@ namespace BH.Engine.Humans
 
         public static Dictionary<string, Line> TrackingLines(this Skeleton skeleton)
         {
+            if(skeleton == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the tracking lines of a null skeleton.");
+                return null;
+            }
+
             Dictionary<string, Line> lines = new Dictionary<string, Line>
             {
                 { "Neck", skeleton.Neck.TrackingLine },

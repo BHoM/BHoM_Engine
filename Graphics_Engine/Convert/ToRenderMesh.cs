@@ -34,6 +34,12 @@ namespace BH.Engine.Graphics
 
         public static RenderMesh ToRenderMesh(this Mesh mesh)
         {
+            if(mesh == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null mesh to a render mesh.");
+                return null;
+            }
+
             return new RenderMesh { Vertices = mesh.Vertices.Select(x => (Vertex)x).ToList(), Faces = mesh.Faces };
         }
 

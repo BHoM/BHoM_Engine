@@ -43,10 +43,18 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("activityArea", "ActivityArea to use in the evaluation")]
         public static List<Evalue> EvalueAnalysis(Audience audience, EvalueSettings settings, ActivityArea activityArea)
         {
+            if (audience == null || settings == null || activityArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the EValueAnalysis if the audience, settings, or activity area are null.");
+                return new List<Evalue>();
+            }
+
             List<Evalue> results = EvaluateEvalue(audience, settings, activityArea);
             return results;
         }
+
         /***************************************************/
+
         [Description("Evaulate Evalues for a List of Audience")]
         [Input("audience", "Audience to evalaute")]
         [Input("settings", "EvalueSettings to configure the evaluation")]
@@ -60,9 +68,11 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return results;
         }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
         private static List<Evalue> EvaluateEvalue(Audience audience, EvalueSettings settings, ActivityArea activityArea)
         {
             List<Evalue> results = new List<Evalue>();
@@ -79,6 +89,7 @@ namespace BH.Engine.Humans.ViewQuality
             }
             return results;
         }
+
         private static Evalue EvalueResult(Spectator s, Vector rowVector, Vector viewVect, Polyline playingArea,EvalueSettings settings)
         {
             Evalue result = new Evalue();
@@ -143,6 +154,7 @@ namespace BH.Engine.Humans.ViewQuality
             
             return result;
         }
+
         /***************************************************/
         
     }

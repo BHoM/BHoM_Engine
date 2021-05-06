@@ -38,10 +38,18 @@ namespace BH.Engine.Architecture.Theatron
         [Description("Create a ProfileOrigin for a structural section, comprised of origin and section direction")]
         [Input("origin", "Origin point for the section")]
         [Input("direction", "Horizontal Vector defining the direction of the section")]
-        public static ProfileOrigin ProfileOrigin(Point origin,Vector direction)
+        public static ProfileOrigin ProfileOrigin(Point origin, Vector direction)
         {
+            if(direction == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a profile origin from a null direction.");
+                return null;
+            }
+
             //enforce a horizontal vector
-            if (direction.Z != 0) direction.Z = 0;
+            if (direction.Z != 0)
+                direction.Z = 0;
+
             return new ProfileOrigin {
 
                 Origin = origin.ShallowClone(),

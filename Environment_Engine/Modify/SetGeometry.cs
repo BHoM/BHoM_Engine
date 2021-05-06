@@ -44,6 +44,18 @@ namespace BH.Engine.Environment
         [Output("node", "The Node with updated geometry")]
         public static Node SetGeometry(this Node node, Point point)
         {
+            if(node == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null node.");
+                return node;
+            }
+
+            if(point == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to a node.");
+                return node;
+            }
+
             Node clone = node.ShallowClone();
             clone.Position = point.DeepClone();
             return clone;
@@ -54,7 +66,7 @@ namespace BH.Engine.Environment
         [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
         [Output("environmentObject", "The environment object with an updated external boundary")]
         public static IEnvironmentObject ISetGeometry(this IEnvironmentObject environmentObject, ICurve curve)
-        { 
+        {
             return SetGeometry(environmentObject as dynamic, curve as dynamic);
         }
 
@@ -64,6 +76,18 @@ namespace BH.Engine.Environment
         [Output("panel", "An Environment Panel with an updated external boundary")]
         public static Panel SetGeometry(this Panel panel, ICurve curve)
         {
+            if (panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null panel.");
+                return panel;
+            }
+
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to a panel.");
+                return panel;
+            }
+
             Panel aPanel = panel.ShallowClone();
             aPanel.ExternalEdges = curve.DeepClone().ToEdges();
             return aPanel;
@@ -75,6 +99,18 @@ namespace BH.Engine.Environment
         [Output("opening", "An Environment Opening with an updated external boundary")]
         public static Opening SetGeometry(this Opening opening, ICurve curve)
         {
+            if (opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null opening.");
+                return opening;
+            }
+
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to an opening.");
+                return opening;
+            }
+
             Opening aOpening = opening.ShallowClone();
             aOpening.Edges = curve.DeepClone().ToEdges();
             return aOpening;
@@ -86,6 +122,18 @@ namespace BH.Engine.Environment
         [Output("edge", "An Environment Edge with an updated geometry")]
         public static Edge SetGeometry(this Edge edge, ICurve curve)
         {
+            if (edge == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null edge.");
+                return edge;
+            }
+
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to an edge.");
+                return edge;
+            }
+
             Edge clone = edge.ShallowClone();
             clone.Curve = curve.DeepClone();
             return clone;
@@ -97,9 +145,30 @@ namespace BH.Engine.Environment
         [Output("space", "An Environment Space with an updated geometry")]
         public static Space SetGeometry(this Space space, Point locationPoint)
         {
+            if (space == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null space.");
+                return space;
+            }
+
+            if (locationPoint == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to a space.");
+                return space;
+            }
+
             Space clone = space.DeepClone<Space>();
             clone.Location = locationPoint;
             return clone;
+        }
+
+        /***************************************************/
+        /**** Private methods                           ****/
+        /***************************************************/
+
+        private static IEnvironmentObject SetGeometry(IEnvironmentObject obj, ICurve curve)
+        {
+            return null;
         }
     }
 }

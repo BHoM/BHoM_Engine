@@ -60,7 +60,7 @@ namespace BH.Engine.Facade
                 Name = name
             };
 
-                return panel;
+            return panel;
         }
 
         /***************************************************/
@@ -98,6 +98,12 @@ namespace BH.Engine.Facade
         [Output("panel", "The created Panel.")]
         public static Panel Panel(PlanarSurface surface, Construction construction = null, FrameEdgeProperty frameEdgeProperty = null, PanelType panelType = PanelType.Undefined, IConstruction openingConstruction = null, FrameEdgeProperty openingFrameEdgeProperty = null, string name = "")
         {
+            if(surface == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a panel from a null surface.");
+                return null;
+            }
+
             return Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), construction, frameEdgeProperty, panelType, openingConstruction, openingFrameEdgeProperty, name);
         }
 

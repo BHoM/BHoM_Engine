@@ -39,6 +39,9 @@ namespace BH.Engine.Reflection
         [Description("Return the custom description of the output of a C# method")]
         public static string OutputDescription(this MethodBase method)
         {
+            if (method == null)
+                return "";
+
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
             InputClassificationAttribute classificationAttribute = null;
 

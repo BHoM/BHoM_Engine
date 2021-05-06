@@ -42,6 +42,12 @@ namespace BH.Engine.Analytical
         [Output("sources", "The collection of entity Guids that are sources.")]
         public static List<Guid> Sources(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the sources of a null graph.");
+                return new List<Guid>();
+            }
+
             //entity is a source if it never appears as target
             List<Guid> targets = graph.Relations.Select(x => x.Target).Distinct().ToList();
             List<Guid> sources = graph.Entities.Keys.ToList().Except(targets).ToList();

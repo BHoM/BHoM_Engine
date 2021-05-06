@@ -37,6 +37,12 @@ namespace BH.Engine.Reflection
 
         public static List<MethodBase> UsedMethods(this MethodBase method, bool onlyBHoM = false)
         {
+            if(method == null)
+            {
+                Compute.RecordWarning("Cannot query the used methods of a null method. An empty list will be returned as the list of used methods.");
+                return new List<MethodBase>();
+            }
+
             try
             {
                 if (method.GetMethodBody() == null)

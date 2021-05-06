@@ -50,6 +50,12 @@ namespace BH.Engine.Environment
         [Output("panelsAsSpace", "A collection of Environment Panels representing a closed space generated from the provided Brep geometry")]
         public static List<Panel> Panels(this BoundaryRepresentation brep, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
+            if(brep == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Could not create panels from a null brep.");
+                return null;
+            }
+
             return brep.Surfaces.ToList().Panels(connectedSpaceName, angleTolerance);
         }
 
@@ -60,6 +66,12 @@ namespace BH.Engine.Environment
         [Output("panel", "An Environment Panels representing a closed space generated from the provided surfaces")]
         public static List<Panel> Panels(this List<ISurface> surfaces, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
+            if(surfaces == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Could not create panels from null surfaces.");
+                return null;
+            }
+
             if (connectedSpaceName == null)
                 connectedSpaceName = Guid.NewGuid().ToString();
 
@@ -82,8 +94,11 @@ namespace BH.Engine.Environment
             if (connectedSpaceName == null)
                 connectedSpaceName = Guid.NewGuid().ToString();
 
-            List<Polyline> openingLines = surface.IInternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList();
-            List<Opening> openings = new List<Opening>();
+            List<Polyline> openingLines = new List<Polyline>();
+            if (surface.IInternalEdges() != null)
+                openingLines = surface.IInternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList();
+
+            List <Opening> openings = new List<Opening>();
 
             foreach(Polyline p in openingLines)
             {

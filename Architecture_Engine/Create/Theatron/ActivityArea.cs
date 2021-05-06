@@ -51,6 +51,7 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
+
         [Description("Create an activityArea rectangle, focal point is at 0,0,0")]
         [Input("width", "Optional, width default is 60")]
         [Input("length", "Optional, length default is 90")]
@@ -67,15 +68,24 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
+
         [Description("Create an ActivityArea from any closed polyline and a focal point")]
         [Input("activityArea", "Closed polyline defining the activity area")]
         [Input("activityFocalPoint", "Point defining the centre of attention for the activity area")]
         public static ActivityArea ActivityArea(Polyline activityArea, Point activityFocalPoint)
         {
+            if(activityArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create an activty area from a null polyline.");
+                return null;
+            }
+
             if (!activityArea.IsClosed())
             {
-                throw new ArgumentException("activityArea must be closed"); ;
+                BH.Engine.Reflection.Compute.RecordError("activityArea must be closed");
+                return null;
             }
+
             return new ActivityArea
             {
                 PlayingArea = activityArea,

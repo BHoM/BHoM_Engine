@@ -32,6 +32,12 @@ namespace BH.Engine.Acoustic
 
         public static double Length(this Ray ray)
         {
+            if(ray == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the length of a null ray.");
+                return 0;
+            }
+
             return Engine.Geometry.Query.Length(ray.Path);
         }
 

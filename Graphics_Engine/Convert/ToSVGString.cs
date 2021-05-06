@@ -38,6 +38,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this SVGStyle svgStyle)
         {
+            if(svgStyle == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null SVG Style.");
+                return "";
+            }
+
             string styleString = "stroke-width=\"" + svgStyle.StrokeWidth.ToString()
                                  + "\" stroke=\"__stroke-color__\" fill=\"__fill-color__\" stroke-opacity=\""
                                  + svgStyle.StrokeOpacity.ToString() + "\" fill-opacity=\""
@@ -93,6 +99,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this SVGObject svgObject)
         {
+            if(svgObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null SVG object.");
+                return "";
+            }
+
             string geometryString = "<g " + ToSVGString(svgObject.Style) + ">\n";
 
             for (int i = 0; i < svgObject.Shapes.Count; i++)
@@ -119,6 +131,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this SVGDocument svgDocument)
         {
+            if(svgDocument == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null SVG Document.");
+                return "";
+            }
+
             BoundingBox box = Query.Bounds(svgDocument);
 
             string Width = (box.Max.X - box.Min.X).ToString();
@@ -157,6 +175,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Point point)
         {
+            if(point == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null point to SVG string.");
+                return "";
+            }
+
             // Creates a one pixle wide circle for the point in order for it to be displayable
 
             double Rad = 0.5;
@@ -171,6 +195,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Line line)
         {
+            if(line == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null line to SVG string.");
+                return "";
+            }
+
             Point startPt = line.Start;
             Point endPt = line.End;
 
@@ -186,6 +216,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Circle circle)
         {
+            if(circle == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null circle to SVG string.");
+                return "";
+            }
+
             Point centerPt = circle.Centre;
 
             string circleString = "<circle cx=\"" + centerPt.X.ToString()
@@ -200,6 +236,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Arc arc)
         {
+            if(arc == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null arc to SVG string.");
+                return "";
+            }
+
             int largeArcFlag = System.Convert.ToInt32((arc.Angle() > Math.PI));
             int sweepFlag = System.Convert.ToInt32(!arc.IsClockwise(Vector.ZAxis));
             Point start = arc.StartPoint();
@@ -220,6 +262,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Ellipse ellipse)
         {
+            if(ellipse == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null ellipse to SVG string.");
+                return "";
+            }
+
             Point centerPt = ellipse.Centre;
 
             string ellipseString = "<ellipse cx=\"" + centerPt.X.ToString()
@@ -237,6 +285,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Polyline polyline)
         {
+            if(polyline == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert null polyline to SVG string.");
+                return "";
+            }
+
             List<Point> controlPts = polyline.ControlPoints;
 
             string polylineString = "<polyline points=\"";
@@ -262,6 +316,12 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this NurbsCurve nurbCurve)
         {
+            if(nurbCurve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot convert null nurb curve to SVG string.");
+                return "";
+            }
+
             // TODO : SVG_Engine - Further developing of the method for converting NurbsCurves to SVG 
 
             List<Point> controlPts = nurbCurve.ControlPoints;

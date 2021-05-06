@@ -39,6 +39,18 @@ namespace BH.Engine.Reflection
 
         public static MethodInfo MakeGenericFromInputs(this MethodInfo method, List<Type> inputTypes)
         {
+            if(method == null)
+            {
+                Compute.RecordError("Cannot make generic from inputs of a null method.");
+                return null;
+            }
+
+            if(inputTypes == null)
+            {
+                Compute.RecordWarning("The 'inputTypes' input is null and was replaced by an empty list");
+                return null;
+            }
+
             if (!method.IsGenericMethod)
                 return method;
 

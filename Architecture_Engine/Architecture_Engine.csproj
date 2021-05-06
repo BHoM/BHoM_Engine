@@ -58,6 +58,11 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Spatial_oM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -94,8 +99,10 @@
     <Compile Include="Modify\SetOutlineElements1D.cs" />
     <Compile Include="Modify\Transform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\DistanceInPlane.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
+    <Compile Include="Query\IsValidForInPlaneDistanceCheck.cs" />
     <Compile Include="Query\NewElement1D.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>

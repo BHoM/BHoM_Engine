@@ -42,6 +42,12 @@ namespace BH.Engine.Analytical
         [Output("sinks", "The collection of entity Guids that are sinks.")]
         public static List<Guid> Sinks(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the sinks of a null graph.");
+                return new List<Guid>();
+            }
+
             List<Guid> notSinks = graph.NotSinks();
             List<Guid> sinks = graph.Entities.Keys.ToList().Except(notSinks).ToList();
             return sinks;

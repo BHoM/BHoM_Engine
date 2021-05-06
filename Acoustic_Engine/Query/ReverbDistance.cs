@@ -33,6 +33,12 @@ namespace BH.Engine.Acoustic
 
         public static double ReverbDistance(this Room room, double revTime)
         {
+            if(room == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the reverb distance for a null room.");
+                return 0;
+            }
+
             double q = 0.0032; // directivity factor of the source
             return Math.Sqrt(q * room.Volume / revTime); // using approximated Sabine's reverberation formula
         }

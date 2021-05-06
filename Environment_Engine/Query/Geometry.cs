@@ -41,7 +41,13 @@ namespace BH.Engine.Environment
         [Output("point", "The geometry of the Node")]
         public static Point Geometry(this Node node)
         {
-            return node?.Position;
+            if(node == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null node.");
+                return null;
+            }
+
+            return node.Position;
         }
 
         /***************************************************/
@@ -51,7 +57,13 @@ namespace BH.Engine.Environment
         [Output("curve", "The geometry of the curve")]
         public static ICurve Geometry(this Edge edge)
         {
-            return edge?.Curve;
+            if(edge == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null edge.");
+                return null;
+            }
+
+            return edge.Curve;
         }
     }
 }

@@ -47,6 +47,12 @@ namespace BH.Engine.Physical
         [Output("averageArea", "The average cross-section area of a IFramingElementProperty", typeof(Area))]
         public static double IAverageProfileArea(this IFramingElementProperty framingProperty)
         {
+            if(framingProperty == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the average profile area of a null framing property.");
+                return 0;
+            }
+
             return AverageProfileArea(framingProperty as dynamic);
         }
 
@@ -57,6 +63,12 @@ namespace BH.Engine.Physical
         [Output("averageArea", "The average cross-section area of a ConstantFramingProperty", typeof(Area))]
         public static double AverageProfileArea(this ConstantFramingProperty framingProperty)
         {
+            if (framingProperty == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the average profile area of a null constant framing property.");
+                return 0;
+            }
+
             if (framingProperty.Profile == null)
             {
                 Engine.Reflection.Compute.RecordError("The framingProperty Average Profile Area could not be calculated as no Profile has been assigned. Returning zero Area.");

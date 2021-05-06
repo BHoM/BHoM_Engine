@@ -54,6 +54,12 @@ namespace BH.Engine.Physical
         [Output("Column", "The created physical column")]
         public static Column Column(Point basePoint, double height, IFramingElementProperty property, string name = "")
         {
+            if(basePoint == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a Physical.Column from a null base point.");
+                return null;
+            }
+
             return Create.Column(Geometry.Create.Line(basePoint, basePoint + Vector.ZAxis * height), property, name);
         }
 

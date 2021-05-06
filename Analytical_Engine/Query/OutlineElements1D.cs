@@ -67,6 +67,12 @@ namespace BH.Engine.Analytical
         [Output("elements", "Outline elements of the IRegion, i.e. the subparts of the Perimiter curve.")]
         public static List<IElement1D> OutlineElements1D(this IRegion region)
         {
+            if(region == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null region.");
+                return new List<IElement1D>();
+            }
+
             return region.Perimeter.ISubParts().Cast<IElement1D>().ToList();
         }
 

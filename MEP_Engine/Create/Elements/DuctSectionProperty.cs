@@ -42,13 +42,14 @@ namespace BH.Engine.MEP
         [Input("insulationMaterial", "Material properties for the insulation material, or material that wraps the exterior of the Duct object.")]
         [Input("liningMaterial", "Material properties for the lining material that wraps the inside surface of the Duct object. This is the layer that is in direct contact with interior flowing material.")]
         [Output("ductSectionProperty", "Duct Section property used to provide accurate duct assembly and capacities.")]
-        public static DuctSectionProperty DuctSectionProperty(
-            SectionProfile sectionProfile,
-            Material ductMaterial = null,
-            Material insulationMaterial = null,
-            Material liningMaterial = null,
-            string name = "")
+        public static DuctSectionProperty DuctSectionProperty(SectionProfile sectionProfile, Material ductMaterial = null, Material insulationMaterial = null, Material liningMaterial = null, string name = "")
         {
+            if (sectionProfile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a duct section property with a null section profile.");
+                return null;
+            }
+
             double elementSolidArea = sectionProfile.ElementProfile.Area();
             double elementVoidArea = sectionProfile.ElementProfile.VoidArea();
 

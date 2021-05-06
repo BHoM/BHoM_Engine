@@ -48,6 +48,12 @@ namespace BH.Engine.Reflection
 
         public static bool RecordEvent(Event newEvent)
         {
+            if(newEvent == null)
+            {
+                Compute.RecordError("Cannot record a null event.");
+                return false;
+            }
+
             string trace = System.Environment.StackTrace;
             newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
 

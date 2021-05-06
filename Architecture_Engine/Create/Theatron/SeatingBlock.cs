@@ -48,22 +48,27 @@ namespace BH.Engine.Architecture.Theatron
         [Input("aisleWidth", "Width of asile at vomitory")]
         public static SeatingBlock SeatingBlock(ProfileOrigin start, ProfileOrigin vom, ProfileOrigin end, SeatingBlockType t, double seatWidth, double aisleWidth)
         {
+            if(start == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a seating block with a null starting profile origin.");
+                return null;
+            }
+
+            if(end == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a seating block with a null ending profile origin.");
+                return null;
+            }
+
             return new SeatingBlock
             {
                 Start = start,
-
                 Vomitory = vom,
-
                 End = end,
-
                 SeatWidth = seatWidth,
-
                 TypeOfSeatingBlock = t,
-
                 AisleWidth = aisleWidth,
-
-                FrontRow = Geometry.Create.Line(start.Origin,end.Origin),
-
+                FrontRow = Geometry.Create.Line(start.Origin, end.Origin),
             };
         }
 
@@ -114,7 +119,7 @@ namespace BH.Engine.Architecture.Theatron
 
         /***************************************************/
 
-            private static void SetEyesBasic(ref SeatingBlock block)
+        private static void SetEyesBasic(ref SeatingBlock block)
         {
             block.Audience = new Audience();
             int rows = block.Sections[0].EyePoints.Count;

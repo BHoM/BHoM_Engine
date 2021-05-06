@@ -37,6 +37,24 @@ namespace BH.Engine.Reflection
 
         public static MethodInfo MethodInfo(this Type declaringType, string methodName, List<Type> paramTypes)
         {
+            if (declaringType == null)
+            {
+                Compute.RecordError("Cannot create a method info from a null type.");
+                return null;
+            }
+
+            if (methodName == null)
+            {
+                Compute.RecordError("Cannot create a method info from a null method name.");
+                return null;
+            }
+
+            if (paramTypes == null)
+            {
+                Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
+                paramTypes = new List<Type>();
+            }
+
             MethodInfo foundMethod = null;
             List<MethodInfo> methods = declaringType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).ToList();
 

@@ -35,6 +35,12 @@ namespace BH.Engine.Reflection
 
         public static Type Type(string name, bool silent = false)
         {
+            if (name == null)
+            {
+                Compute.RecordError("Cannot create a type from a null string.");
+                return null;
+            }
+
             Dictionary<string, List<Type>> typeDictionary = Query.BHoMTypeDictionary();
 
             if (name.Contains('<'))
@@ -75,6 +81,12 @@ namespace BH.Engine.Reflection
 
         public static Type GenericType(string name, bool silent = false)
         {
+            if (name == null)
+            {
+                Compute.RecordError("Cannot create a type from a null string.");
+                return null;
+            }
+
             string[] parts = name.Split('<', '>', ',').Select(x => x.Trim()).ToArray();
             string[] arguments = parts.Skip(1).Where(x => x.Length > 0).ToArray();
 
@@ -96,6 +108,12 @@ namespace BH.Engine.Reflection
 
         public static Type EngineType(string name, bool silent = false)
         {
+            if (name == null)
+            {
+                Compute.RecordError("Cannot create a type from a null string.");
+                return null;
+            }
+
             List<Type> methodTypeList = Query.EngineTypeList();
 
             List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
@@ -130,6 +148,12 @@ namespace BH.Engine.Reflection
 
         public static List<Type> AllTypes(string name, bool silent = false)
         {
+            if (name == null)
+            {
+                Compute.RecordError("Cannot create types from a null string.");
+                return new List<Type>();
+            }
+
             List<Type> typeList = new List<Type>();
             if (name.StartsWith("BH.Engine"))
                 typeList = Query.EngineTypeList();

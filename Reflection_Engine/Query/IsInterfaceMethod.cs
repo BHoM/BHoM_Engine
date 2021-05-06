@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
 
         public static bool IsInterfaceMethod(this MethodBase method)
         {
-            if (method is ConstructorInfo)
+            if (method == null || method is ConstructorInfo)
                 return false;
 
             string name = method.Name;

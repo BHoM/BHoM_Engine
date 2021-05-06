@@ -48,6 +48,12 @@ namespace BH.Engine.Environment
         [Output("element2D", "A collection of internal 2D elements")]
         public static List<IElement2D> InternalElements2D(this Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the internal 2D elements of a null panel.");
+                return null;
+            }
+
             return panel.Openings.Cast<IElement2D>().ToList();
         }
 

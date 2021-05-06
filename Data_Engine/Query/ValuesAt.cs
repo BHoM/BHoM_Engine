@@ -44,6 +44,12 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAt(this Table table, List<string> axes, List<object> values)
         {
+            if (table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the values at from a null table.");
+                return new List<CustomObject>();
+            }
+
             if (!table.AxisExists(axes))
                 return new List<CustomObject>();
 
@@ -68,6 +74,12 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAt(this Table table, string expression)
         {
+            if (table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the values at from a null table.");
+                return new List<CustomObject>();
+            }
+
             return AsCustomObjects(table.Data.Select(expression), table.Data.Columns);
         }
 
@@ -80,6 +92,12 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAt(this Table table, string expression, string sortOrder)
         {
+            if (table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the values at from a null table.");
+                return new List<CustomObject>();
+            }
+
             return AsCustomObjects(table.Data.Select(expression, sortOrder), table.Data.Columns);
         }
 

@@ -44,6 +44,12 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<object> values, bool allowEqual = true)
         {
+            if(table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the values above from a null table.");
+                return new List<CustomObject>();
+            }
+
             if (!table.AxisExists(axes))
                 return new List<CustomObject>();
 
@@ -61,6 +67,12 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static List<CustomObject> ValuesAbove(this Table table, List<string> axes, List<object> values, string sortAxis, bool allowEqual = true)
         {
+            if (table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the values above from a null table.");
+                return new List<CustomObject>();
+            }
+
             if (!table.AxisExists(axes.Concat(new string[] { sortAxis }).ToList()))
                 return new List<CustomObject>();
 

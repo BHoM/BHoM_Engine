@@ -48,6 +48,18 @@ namespace BH.Engine.Diffing
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the DiffingConfig property of the Revision. This input can be used to override it.")]
         public static Delta Delta(Revision pastRevision, Revision currentRevision, DiffingConfig diffingConfig = null, string comment = null)
         {
+            if(pastRevision == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a Delta from a null past revision.");
+                return null;
+            }
+
+            if(currentRevision == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a Delta from a null current revision.");
+                return null;
+            }
+
             Diff diff = Compute.DiffRevisions(pastRevision, currentRevision, diffingConfig);
 
             return new Delta(pastRevision.StreamId, diff, pastRevision.RevisionId, currentRevision.RevisionId, DateTime.UtcNow.Ticks, m_Author, comment);
@@ -62,6 +74,12 @@ namespace BH.Engine.Diffing
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the DiffingConfig property of the Revision. This input can be used to override it.")]
         public static Delta Delta(Revision revision, DiffingConfig diffingConfig = null, string comment = null)
         {
+            if(revision == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a Delta from a null revision.");
+                return null;
+            }
+
             Diff diff = Compute.DiffRevisions(null, revision, diffingConfig);
 
             return new Delta(revision.StreamId, diff, revision.RevisionId, new Guid(), DateTime.UtcNow.Ticks, m_Author, comment);

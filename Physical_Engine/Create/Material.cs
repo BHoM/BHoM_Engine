@@ -60,6 +60,12 @@ namespace BH.Engine.Physical
         [Output("A Material object")]
         public static Material Material(IMaterialProperties property)
         {
+            if(property == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a Physical.Material from a null set of material properties.");
+                return null;
+            }
+
             return new Material
             {
                 Name = property.Name,

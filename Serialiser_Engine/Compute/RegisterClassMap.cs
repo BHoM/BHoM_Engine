@@ -20,15 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Serialiser.Objects;
 using BH.Engine.Serialiser.Objects.MemberMapConventions;
+using BH.oM.Base;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace BH.Engine.Serialiser
 {
@@ -40,24 +39,75 @@ namespace BH.Engine.Serialiser
 
         public static void RegisterClassMap(Type type)
         {
+            if (!BsonClassMap.IsClassMapRegistered(type))
+            {
+                try
+                {
+                    if (type.IsEnum)
+                    {
+                        MethodInfo generic = m_CreateEnumSerializer.MakeGenericMethod(type);
+                        generic.Invoke(null, null);
+                    }
+                    else if (!type.IsGenericTypeDefinition)
+                    { 
+                        BsonClassMap cm = new BsonClassMap(type);
+                        cm.AutoMap();
+                        cm.SetDiscriminator(type.FullName);
+                        cm.SetDiscriminatorIsRequired(true);
+                        cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
+                        cm.SetIdMember(null);
+
+                        BsonClassMap.RegisterClassMap(cm);
+
+                        BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention()); 
+                    }
+                    else
+                        BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                }
+            }
+        }
+
+        /*******************************************/
+
+        public static void RegisterClassMaps(this Assembly assembly)
+        {
+            if (assembly != null)
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    if (!(type.IsAbstract && type.IsSealed) && (type.IsEnum || typeof(IObject).IsAssignableFrom(type)))
+                        RegisterClassMap(type);
+                }
+            }
+        }
+        
+
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+
+        private static void CreateEnumSerializer<T>() where T : struct
+        {
             try
             {
-                BsonClassMap cm = new BsonClassMap(type);
-                cm.AutoMap();
-                cm.SetDiscriminator(type.FullName);
-                cm.SetDiscriminatorIsRequired(true);
-                cm.SetIgnoreExtraElements(false);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
-                cm.SetIdMember(null);
-
-                BsonClassMap.RegisterClassMap(cm);
-
-                BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+                BsonSerializer.RegisterSerializer(typeof(T), new EnumSerializer<T>(BsonType.String));
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
             }
         }
+
+
+        /*******************************************/
+        /**** Private Fields                    ****/
+        /*******************************************/
+
+        private static MethodInfo m_CreateEnumSerializer = typeof(Compute).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
 
         /*******************************************/
     }

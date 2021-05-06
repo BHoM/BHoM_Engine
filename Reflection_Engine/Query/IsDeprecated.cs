@@ -51,6 +51,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsDeprecated(this MethodBase method)
         {
+            if (method == null)
+                return false;
+
             // Keep this one line for now but should be removed once the DepreacatedAttribute is deleted
             DeprecatedAttribute attribute = method.GetCustomAttribute<DeprecatedAttribute>();
 
@@ -72,6 +75,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsDeprecated(this Type type)
         {
+            if (type == null)
+                return false;
+
             // Keep this one line for now but should be removed once the DepreacatedAttribute is deleted
             DeprecatedAttribute attribute = type.GetCustomAttribute<DeprecatedAttribute>();
 

@@ -41,6 +41,12 @@ namespace BH.Engine.Data
 
         public static DiscretePoint DiscretePoint(Point point, double step = 1.0)
         {
+            if(point == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a discrete point from a null geometry point.");
+                return null;
+            }
+
             return new DiscretePoint
             {
                 X = (int)Math.Floor(point.X / step),

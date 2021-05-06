@@ -38,6 +38,12 @@ namespace BH.Engine.Reflection
         [Description("Returns all the loaded types that implement the specified interface.")]
         public static List<Type> ImplementingTypes(this Type @interface)
         {
+            if(@interface == null)
+            {
+                Compute.RecordWarning("Cannot query the implementing types of a null type.");
+                return new List<Type>();
+            }
+
             if (!@interface.IsInterface)
                 return new List<Type>();
 
