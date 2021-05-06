@@ -79,6 +79,7 @@ namespace BH.Engine.Humans.ViewQuality
             SetKDTree(audience);
 
             m_CvalueSettings = settings;
+            m_FarClippingPlaneDistance = settings.FarClippingPlaneDistance;
 
             if (focalPoint == null)
                 focalPoint = new Point();
@@ -253,7 +254,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             double[] query = { viewer.ReferenceLocation.X, viewer.ReferenceLocation.Y, viewer.ReferenceLocation.Z };
             //first get the neighbourhood around the current spec
-            var neighbours = m_KDTree.Nearest(query, neighbors: 16);
+            var neighbours = m_KDTree.Nearest(query, radius: m_FarClippingPlaneDistance);
 
             List<Spectator> infront = new List<Spectator>();
 
@@ -279,5 +280,6 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static bool m_CvalueExists = true;
         private static CvalueSettings m_CvalueSettings;
+        private static double m_FarClippingPlaneDistance;
     }
 }

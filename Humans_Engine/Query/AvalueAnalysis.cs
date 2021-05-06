@@ -288,6 +288,7 @@ namespace BH.Engine.Humans.ViewQuality
         {
 
             m_AvalueSettings = settings == null ? new AvalueSettings() : settings;
+            m_FarClippingPlaneDistance = settings.FarClippingPlaneDistance;
 
             if (m_AvalueSettings.EffectiveConeOfVision.ControlPoints.Count == 0)
             {
