@@ -61,6 +61,9 @@ namespace BH.Engine.Facade
                 return null;
             }
 
+            if (constructions == null)
+                constructions = new List<IConstruction>();
+
             bool useConstructions = true;
             if (outlines.Count() != constructions.Count())
             {
@@ -76,6 +79,8 @@ namespace BH.Engine.Facade
             for (int i = 0; i < outlines.Count(); i++)
             {
                 ICurve outline = outlines.ElementAt(i);
+                if (outline == null)
+                    continue;
                 if (!outline.IIsClosed())
                 {
                     BH.Engine.Reflection.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlines which each represent one opening in the CurtainWall.");

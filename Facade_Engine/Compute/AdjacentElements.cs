@@ -47,8 +47,11 @@ namespace BH.Engine.Facade
         [Input("referenceElements", "Elements to use to find element adjacencies.")]
         [Output("adjacentElements", "Adjacents elements to the provided element.")]
         public static List<IElement2D> AdjacentElements(this IElement2D element, List<IElement2D> referenceElements)
-        {
+        {          
             List<IElement2D> adjacentElements = new List<IElement2D>();
+
+            if (element == null || referenceElements == null)
+                return adjacentElements;
 
             PolyCurve outline = element.OutlineCurve();
 
@@ -75,6 +78,9 @@ namespace BH.Engine.Facade
         {
             List<IElement2D> adjacentElements = new List<IElement2D>();
 
+            if (element == null || referenceElements == null)
+                return adjacentElements;
+
             PolyCurve outline = element.ElementCurves().IJoin()[0];
 
             foreach (IElement2D refElem in referenceElements)
@@ -99,6 +105,9 @@ namespace BH.Engine.Facade
         public static List<IElement1D> AdjacentElements(this IElement1D element, List<IElement1D> referenceElements)
 
         {
+            if (element == null || referenceElements == null)
+                return new List<IElement1D>(); 
+
             return referenceElements.Where(x => x.IIsAdjacent(element)).ToList();
         }
     }
