@@ -94,7 +94,7 @@ namespace BH.Engine.Facade
         [Input("construction", "Construction applied to the Opening.")]
         [Input("name", "Name of the opening to be created.")]
         [Output("opening", "Created Opening.")]
-        public static Opening Opening(IEnumerable<ICurve> edges, FrameEdgeProperty headProperty, FrameEdgeProperty jambProperty, FrameEdgeProperty sillProperty, IConstruction construction = null, string name = "")
+        public static Opening Opening(IEnumerable<ICurve> edges, FrameEdgeProperty headProperty = null, FrameEdgeProperty jambProperty = null, FrameEdgeProperty sillProperty = null, IConstruction construction = null, string name = "")
         {
             if (edges == null)
             {
