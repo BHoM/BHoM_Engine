@@ -127,9 +127,6 @@ namespace BH.Engine.Results
             List<Vertex> verts = new List<Vertex>();
             List<Face> faces;
 
-            //An attempt to optimise:
-            //Func<TMeshElementResult, double> propFunction = GetPropertyDelegate(meshResult.Results.First(), meshResultDisplay);
-
             object smoothing = Reflection.Query.PropertyValue(meshResult, "Smoothing");
             MeshResultSmoothingType smoothingType = MeshResultSmoothingType.None;
             if (smoothing is MeshResultSmoothingType)
@@ -198,18 +195,6 @@ namespace BH.Engine.Results
 
             return new RenderMesh() { Vertices = verts, Faces = faces };
         }
-
-        /***************************************************/
-
-        /*
-        private static Func<TMeshElementResult, double> GetPropertyDelegate<TMeshElementResult>(TMeshElementResult meshResult, string meshResultDisplay) where TMeshElementResult : IMeshElementResult
-        {
-            PropertyInfo prop = meshResult.GetType().GetProperty(meshResultDisplay);
-
-            if (prop == null)
-                return null;
-            return Delegate.CreateDelegate(typeof(Func<TMeshElementResult, double>), null, prop.GetGetMethod()) as Func<TMeshElementResult, double>;
-        }*/
 
         /***************************************************/
 
