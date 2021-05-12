@@ -23,6 +23,7 @@
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using System;
 using System.Drawing;
 
 namespace BH.Engine.Serialiser.BsonSerializers
@@ -36,6 +37,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Color value)
         {
             context.Writer.WriteStartDocument();
+
+            context.Writer.WriteName("_t");
+            context.Writer.WriteString("System.Drawing.Color");
 
             context.Writer.WriteName("A");
             context.Writer.WriteInt32(value.A);
@@ -60,16 +64,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             context.Reader.ReadStartDocument();
 
-            context.Reader.ReadName(decoder);
+            if (context.Reader.ReadName() == "_t")
+                context.Reader.ReadString();
+
             int a = context.Reader.ReadInt32();
-
-            context.Reader.ReadName(decoder);
             int r = context.Reader.ReadInt32();
-
-            context.Reader.ReadName(decoder);
             int g = context.Reader.ReadInt32();
-
-            context.Reader.ReadName(decoder);
             int b = context.Reader.ReadInt32();
 
             context.Reader.ReadEndDocument();
