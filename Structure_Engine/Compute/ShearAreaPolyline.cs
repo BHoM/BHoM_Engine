@@ -49,11 +49,17 @@ namespace BH.Engine.Structure
         [Output("shearArea", "The shear area of the section.")]
         public static double ShearAreaPolyline(this Polyline pLine, double momentOfInertia, double tol = Tolerance.Distance)
         {
-            double sy = 0;
-            double shearArea = 0;
+            if (pLine == null)
+            {
+                Reflection.Compute.RecordError("The polyline provided is null, the ShearArea cannot be calculated.");
+                return 0;
+            }
 
             Polyline clone = pLine.Clone();
             List<Point> controllPoints = new List<Point>(clone.ControlPoints);
+
+            double sy = 0;
+            double shearArea = 0;
 
             // Calculate Sy for the linesegment (by IntSurfLine()) and add to Sy +=
             for (int i = 0; i < controllPoints.Count - 2; i++)
@@ -69,6 +75,12 @@ namespace BH.Engine.Structure
 
         private static double ShearAreaLine(Point ptA, Point ptB, double s, double tol = Tolerance.Distance)
         {
+            if (ptA == null || ptB == null)
+            {
+                Reflection.Compute.RecordError("One or both of the points provided is null, the ShearArea cannot be calculated.");
+                return 0;
+            }
+
             //TODO Should do some checks if these are good Tolerances
             Point a = ptA.Clone();
             Point b = ptB.Clone();

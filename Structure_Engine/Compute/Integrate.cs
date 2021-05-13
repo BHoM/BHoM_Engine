@@ -51,9 +51,10 @@ namespace BH.Engine.Structure
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
-            if (curves.Count == 0)
+            if (curves.Count == 0 || curves.Any(x => x == null))
             {
-                #region assing zero to everything
+                Reflection.Compute.RecordError("One or more of the curves provided are null or the number of curves is equal to 0.");
+                #region assign zero to everything
                 results["Area"] = 0;
 
                 results["CentreZ"] = 0;
