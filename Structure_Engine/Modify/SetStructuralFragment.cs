@@ -44,6 +44,12 @@ namespace BH.Engine.Structure
         [Output("material", "Physical Material with structural MaterialFragment set.")]
         public static Material SetStructuralFragment(this Material material, IMaterialFragment structuralFragment)
         {
+            if (material == null)
+            {
+                Reflection.Compute.RecordError("Physical Material provided is null and therefore SetStructuralFragment cannot be evaluated.");
+                return null;
+            }
+
             //Clone the object
             Material clone = material.ShallowClone();
 
@@ -60,7 +66,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        
+
     }
 }
 

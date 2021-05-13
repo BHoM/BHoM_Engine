@@ -24,6 +24,7 @@ using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
+using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
@@ -162,13 +163,19 @@ namespace BH.Engine.Structure
                 return false;
             }
 
-            foreach (Edge edge in panel.ExternalEdges)
+            return panel.ExternalEdges.All(x => x.NullCheck("NullCheck")) ? true : false;
+        }
+
+        [Description("Checks if a Edge is null and outputs relevant error message.")]
+        [Input("panel", "The Edge to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the Edge passes the null check.")]
+        public static bool NullCheck(this Edge edge, string methodName = "Method")
+        {
+            if (edge?.Curve == null)
             {
-                if (edge?.Curve == null)
-                {
-                    ErrorMessage(methodName, "Edge");
-                    return false;
-                }
+                ErrorMessage(methodName, "Edge");
+                return false;
             }
 
             return true;
@@ -184,6 +191,22 @@ namespace BH.Engine.Structure
             if (sectionProperty == null)
             {
                 ErrorMessage(methodName, "sectionProperty");
+                return false;
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a SurfaceProperty is null and outputs relevant error message.")]
+        [Input("panel", "The SurfaceProperty to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the SurfaceProperty passes the null check.")]
+        public static bool NullCheck(this ISurfaceProperty surfaceProperty, string methodName = "Method")
+        {
+            // Check Panel
+            if (surfaceProperty == null)
+            {
+                ErrorMessage(methodName, "surfaceProperty");
                 return false;
             }
 

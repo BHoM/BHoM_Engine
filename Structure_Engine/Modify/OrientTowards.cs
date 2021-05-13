@@ -46,6 +46,9 @@ namespace BH.Engine.Structure
         [Output("bar", "Bar with updated orientation. If the calcualtion of the orientation angle fails, the unmodified bar is returned.")]
         public static Bar OrientTowards(this Bar bar, Point orientationPoint)
         {
+            if (!bar.NullCheck("OrientTowards") || orientationPoint.IsNull())
+                return null;
+
             Point centre = bar.Centreline().ClosestPoint(orientationPoint);
             Vector normal = (orientationPoint - centre).Normalise();
 
@@ -60,6 +63,9 @@ namespace BH.Engine.Structure
         [Output("panel", "Panel with updated local orientation. If the calcualtion of the orientation angle fails, the unmodified Panel is returned.")]
         public static Panel OrientTowards(this Panel panel, Point orientationPoint)
         {
+            if (!panel.NullCheck("OrientTowards") || orientationPoint.IsNull())
+                return null;
+
             Point centre = panel.Centroid();
             Vector localX = (orientationPoint - centre).Normalise();
 
@@ -74,6 +80,9 @@ namespace BH.Engine.Structure
         [Output("mesh", "FEMesh with updated local orientations. If the calcualtion of the orientation angle fails for an FEMeshFace, it remains unchanged.")]
         public static FEMesh OrientTowards(this FEMesh mesh, Point orientationPoint)
         {
+            if (!mesh.NullCheck("OrientTowards") || orientationPoint.IsNull())
+                return null;
+
             FEMesh clone = mesh.ShallowClone();
             clone.Faces = clone.Faces.Select(x => x.OrientTowards(mesh, orientationPoint)).ToList();
             return clone;
@@ -88,6 +97,9 @@ namespace BH.Engine.Structure
         [Output("meshFace", "FEMeshFace with updated local orientation. If the calcualtion of the orientation angle fails, the unmodified FEMeshFace is returned.")]
         public static FEMeshFace OrientTowards(this FEMeshFace face, FEMesh mesh, Point orientationPoint)
         {
+            if (!face.NullCheck("OrientTowards") || !mesh.NullCheck("OrientTowards") || orientationPoint.IsNull())
+                return null;
+
             Point centre = face.NodeListIndices.Select(i => mesh.Nodes[i].Position).Average();
             Vector localX = (orientationPoint - centre).Normalise();
             return face.SetLocalOrientation(mesh, localX);

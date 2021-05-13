@@ -42,6 +42,9 @@ namespace BH.Engine.Structure
         [Output("bar", "The Bar with flipped end Nodes.")]
         public static Bar Flip(this Bar bar)
         {
+            if (bar.NullCheck("Flip"))
+                return null;
+
             Bar flipped = bar.ShallowClone();
 
             Node tempNode = flipped.StartNode;
@@ -58,6 +61,9 @@ namespace BH.Engine.Structure
         [Output("edge", "The Edge with a flipped location curve.")]
         public static Edge Flip(this Edge edge)
         {
+            if (edge.NullCheck("Flip"))
+                return null;
+
             Edge flipped = edge.ShallowClone();
             flipped.Curve = flipped.Curve.IFlip();
 

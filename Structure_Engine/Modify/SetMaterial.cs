@@ -41,8 +41,11 @@ namespace BH.Engine.Structure
         [Input("bar", "The Bar to set the material to, i.e. the Bar to have the material of its SectionProperty updated.")]
         [Input("material", "The material to set to the Bar.")]
         [Output("bar", "The Bar with updated material.")]
-        public static Bar SetMaterial(this Bar bar, IMaterialFragment material)
+        public static Bar SetMaterial(this Bar bar, IMaterialFragment material = null)
         {
+            if (bar.NullCheck("SetMaterial"))
+                return null;
+
             Bar clone = bar.ShallowClone();
             if (bar.SectionProperty == null)
             {
