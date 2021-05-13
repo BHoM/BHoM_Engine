@@ -61,7 +61,7 @@ namespace BH.Engine.Environment
                 Panel p = splitPanels[x];
                 for (int y = 0; y < overlappingPanels[x].Count; y++)
                 {
-                    p = p.MergePanels(overlappingPanels[x][y]);
+                    p = p.MergePanels(overlappingPanels[x][y], false);
                     handledPanels.Add(overlappingPanels[x][y].BHoM_Guid);
                 }
 

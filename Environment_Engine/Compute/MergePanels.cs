@@ -41,15 +41,27 @@ namespace BH.Engine.Environment
         [Description("Merges the properties two Environment Panels together and returns a copied panel with the smallest area")]
         [Input("panel1", "An Environment Panel to merge from")]
         [Input("panel2", "A second Environment Panel to merge from")]
-        [Output("mergedPanel", "The Environment Panel with the smallest area of the two provided but with the combined properties of both")]
-        public static Panel MergePanels(this Panel panel1, Panel panel2)
+        [Input("takeSmallestArea", "Defines whether to take the panel geometry with the smallest area, or the panel geometry with the largest geometry.")]
+        [Output("mergedPanel", "The Environment Panel with the chosen area of the two provided but with the combined properties of both")]
+        [PreviousVersion("4.2", "BH.Engine.Environment.Compute.MergePanels(BH.oM.Environment.Elements.Panel, BH.oM.Environment.Elements.Panel)")]
+        public static Panel MergePanels(this Panel panel1, Panel panel2, bool takeSmallestArea = true)
         {
             Panel rtnPanel = null;
 
-            if(panel1.Area() > panel2.Area())
-                rtnPanel = panel2.Copy();
+            if (takeSmallestArea)
+            {
+                if (panel1.Area() > panel2.Area())
+                    rtnPanel = panel2.Copy();
+                else
+                    rtnPanel = panel1.Copy();
+            }
             else
-                rtnPanel = panel1.Copy();
+            {
+                if (panel1.Area() > panel2.Area())
+                    rtnPanel = panel1.Copy();
+                else
+                    rtnPanel = panel2.Copy();
+            }
 
             List<string> connectedSpaces = panel1.ConnectedSpaces;
             connectedSpaces.AddRange(panel2.ConnectedSpaces);
