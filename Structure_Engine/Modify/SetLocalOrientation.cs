@@ -44,12 +44,15 @@ namespace BH.Engine.Structure
         [Output("panel", "The Panel with updated orientation.")]
         public static Panel SetLocalOrientation(this Panel panel, Vector localX)
         {
+            if (!panel.NullCheck("SetLocalOrientation") || localX.IsNull())
+                return null;
+
             Panel clone = panel.ShallowClone();
-            Vector normal = Engine.Spatial.Query.Normal(panel);
+            Vector normal = Spatial.Query.Normal(panel);
 
             double orientationAngle = Compute.OrientationAngleAreaElement(normal, localX);
 
-            if(!double.IsNaN(orientationAngle))
+            if (!double.IsNaN(orientationAngle))
                 clone.OrientationAngle = orientationAngle;
 
             return clone;
@@ -63,6 +66,9 @@ namespace BH.Engine.Structure
         [Output("mesh", "The FEMesh with updated face orientations.")]
         public static FEMesh SetLocalOrientations(this FEMesh mesh, Vector localX)
         {
+            if (!mesh.NullCheck("SetLocalOrientation") || localX.IsNull())
+                return null;
+
             FEMesh clone = mesh.ShallowClone();
             clone.Faces = clone.Faces.Select(x => x.SetLocalOrientation(mesh, localX)).ToList();
             return clone;
@@ -77,6 +83,9 @@ namespace BH.Engine.Structure
         [Output("face", "The FEMeshFace with updated face orientation.")]
         public static FEMeshFace SetLocalOrientation(this FEMeshFace face, FEMesh mesh, Vector localX)
         {
+            if (!face.NullCheck("SetLocalOrientation") || !mesh.NullCheck("SetLocalOrientation") || localX.IsNull())
+                return null;
+
             FEMeshFace clone = face.ShallowClone();
             Vector normal = face.Normal(mesh);
 

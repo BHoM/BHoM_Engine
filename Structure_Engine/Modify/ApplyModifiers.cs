@@ -57,6 +57,9 @@ namespace BH.Engine.Structure
         [Output("prop", "SurfaceProperty with applied modifiers.")]
         public static ISurfaceProperty ApplyModifiers(this ISurfaceProperty prop, double fxx = 1, double fxy = 1, double fyy = 1, double mxx = 1, double mxy = 1, double myy = 1, double vxz = 1, double vyz = 1, double mass = 1, double weight = 1)
         {
+            if (prop.NullCheck("ApplyModifiers"))
+                return null;
+
             ISurfaceProperty clone = prop.ShallowClone();
 
             SurfacePropertyModifier modifier = new SurfacePropertyModifier
@@ -91,6 +94,8 @@ namespace BH.Engine.Structure
         [Output("prop", "SectionProperty with applied modifiers.")]
         public static ISectionProperty ApplyModifiers(this ISectionProperty prop, double area = 1, double iy = 1, double iz = 1, double j = 1, double asy = 1, double asz = 1)
         {
+            if (prop.NullCheck("ApplyModifiers"))
+                return null;
             ISectionProperty clone = prop.ShallowClone();
 
             double[] modifiers = new double[] { area, iy, iz, j, asy, asz };
