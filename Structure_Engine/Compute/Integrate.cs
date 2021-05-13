@@ -51,9 +51,8 @@ namespace BH.Engine.Structure
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
-            if (curves.Count == 0 || curves.Any(x => x == null))
+            if (curves.Any(x => x.IsNull()))
             {
-                Reflection.Compute.RecordError("One or more of the curves provided are null or the number of curves is equal to 0.");
                 #region assign zero to everything
                 results["Area"] = 0;
 
@@ -83,7 +82,42 @@ namespace BH.Engine.Structure
                 results["Asy"] = 0;
                 results["Asz"] = 0;
 
-                #endregion 
+                #endregion
+                return results;
+            }
+            else if (curves.Count == 0)
+            {
+                Reflection.Compute.RecordError("The number of curves is equal to 0 and the method cannot be evaluated.");
+                #region assign zero to everything
+                results["Area"] = 0;
+
+                results["CentreZ"] = 0;
+                results["CentreY"] = 0;
+
+                results["TotalWidth"] = 0;
+                results["TotalDepth"] = 0;
+
+                results["Iy"] = 0;
+                results["Iz"] = 0;
+
+                results["Wply"] = 0;
+                results["Wplz"] = 0;
+
+                results["Rgy"] = 0;
+                results["Rgz"] = 0;
+
+                results["Vy"] = 0;
+                results["Vpy"] = 0;
+                results["Vz"] = 0;
+                results["Vpz"] = 0;
+
+                results["Welz"] = 0;
+                results["Wely"] = 0;
+
+                results["Asy"] = 0;
+                results["Asz"] = 0;
+
+                #endregion
                 return results;
             }
 

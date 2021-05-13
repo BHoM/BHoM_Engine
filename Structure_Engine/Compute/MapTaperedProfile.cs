@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
         public static List<Bar> MapTaperedProfile(List<Bar> bars, IGeometricalSection section)
         {
-            if(bars.Any(x => !x.NullCheck()))
+            if (bars.Any(x => !x.NullCheck()))
             {
                 return null;
             }

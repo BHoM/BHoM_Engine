@@ -44,15 +44,18 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a Bar element from a Line, to be used as centre line of the Bar, and properties.")]
-        [Input("line","Geometrical Line used as centreline of the Bar. The StartNode and EndNode of the bar will be extracted from the Line.")]
+        [Input("line", "Geometrical Line used as centreline of the Bar. The StartNode and EndNode of the bar will be extracted from the Line.")]
         [InputFromProperty("sectionProperty")]
         [InputFromProperty("orientationAngle")]
         [InputFromProperty("release")]
         [InputFromProperty("feaType", "FEAType")]
-        [Input("name","The name of the created Bar.")]
-        [Output("bar","The created Bar with a centreline matching the provided geometrical Line.")]
+        [Input("name", "The name of the created Bar.")]
+        [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
         public static Bar Bar(Line line, ISectionProperty sectionProperty = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
-        {          
+        {
+            if (line.IsNull())
+                return null;
+
             return new Bar
             {
                 Name = name,
@@ -82,7 +85,7 @@ namespace BH.Engine.Structure
 
             if (double.IsNaN(orientationAngle))
                 return null;
-                
+
             return Bar(line, sectionProperty, orientationAngle, release, feaType, name);
         }
 

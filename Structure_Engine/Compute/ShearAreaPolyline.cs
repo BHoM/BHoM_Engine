@@ -49,9 +49,8 @@ namespace BH.Engine.Structure
         [Output("shearArea", "The shear area of the section.")]
         public static double ShearAreaPolyline(this Polyline pLine, double momentOfInertia, double tol = Tolerance.Distance)
         {
-            if (pLine == null)
+            if (pLine.IsNull())
             {
-                Reflection.Compute.RecordError("The polyline provided is null, the ShearArea cannot be calculated.");
                 return 0;
             }
 
@@ -65,7 +64,7 @@ namespace BH.Engine.Structure
             for (int i = 0; i < controllPoints.Count - 2; i++)
             {
                 shearArea += ShearAreaLine(controllPoints[i], controllPoints[i + 1], sy, tol);
-                sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1] , 1, tol);
+                sy += Geometry.Compute.IntSurfLine(controllPoints[i], controllPoints[i + 1], 1, tol);
             }
 
             return Math.Pow(momentOfInertia, 2) / shearArea;
@@ -75,16 +74,15 @@ namespace BH.Engine.Structure
 
         private static double ShearAreaLine(Point ptA, Point ptB, double s, double tol = Tolerance.Distance)
         {
-            if (ptA == null || ptB == null)
+            if (ptA.IsNull() || ptB.IsNull())
             {
-                Reflection.Compute.RecordError("One or both of the points provided is null, the ShearArea cannot be calculated.");
                 return 0;
             }
 
             //TODO Should do some checks if these are good Tolerances
             Point a = ptA.Clone();
             Point b = ptB.Clone();
-            
+
             double axbx = a.X - b.X;
             if (Math.Abs(axbx) < tol)  // The solution is zero
                 return 0;
@@ -136,10 +134,10 @@ namespace BH.Engine.Structure
             // Formula derivation outlined in https://github.com/BHoM/documentation/wiki/Shear-Area-Derivation
             double A =
                     -(
-                        20 * Math.Pow(axbx, 2) * 
-                            (24 * s * byay2 + a.Y * 
+                        20 * Math.Pow(axbx, 2) *
+                            (24 * s * byay2 + a.Y *
                                 (
-                                    -39 * by2 * ax2 + 6 * b.Y * a.X * a.Y * (14 * a.X - b.X) + 
+                                    -39 * by2 * ax2 + 6 * b.Y * a.X * a.Y * (14 * a.X - b.X) +
                                     ay2 * (-44 * ax2 + 4 * a.X * b.X + bx2)
                                 )
                             )
@@ -147,12 +145,12 @@ namespace BH.Engine.Structure
                     / (byay2);
             double B =
                     -(
-                        30 * axbx * 
-                            (a.Y * 
+                        30 * axbx *
+                            (a.Y *
                                 (
-                                    18 * by3 * ax3 
-                                    + 3 * by2 * ax2 * a.Y * (5 * b.X - 23 * a.X) 
-                                    + 6 * b.Y * a.X * ay2 * (13 * ax2 - 3 * a.X * b.X - bx2) 
+                                    18 * by3 * ax3
+                                    + 3 * by2 * ax2 * a.Y * (5 * b.X - 23 * a.X)
+                                    + 6 * b.Y * a.X * ay2 * (13 * ax2 - 3 * a.X * b.X - bx2)
                                     + ay3 * (-28 * ax3 + 6 * ax2 * b.X + 3 * a.X * bx2 + bx3)
                                 )
                                 - 12 * s * byay2 * (3 * b.Y * a.X + a.Y * (b.X - 4 * a.X))
@@ -161,35 +159,35 @@ namespace BH.Engine.Structure
                     / (Math.Pow(byay, 3));
             double C =
                     (
-                    60 * a.Y * axbx * 
-                        (a.Y * (2 * a.X + b.X) - 3 * b.Y * a.X) 
-                        * (a.Y * 
+                    60 * a.Y * axbx *
+                        (a.Y * (2 * a.X + b.X) - 3 * b.Y * a.X)
+                        * (a.Y *
                             (
-                                6 * by2 * ax2 
-                                - 3 * b.Y * a.X * a.Y * (3 * a.X + b.X) 
+                                6 * by2 * ax2
+                                - 3 * b.Y * a.X * a.Y * (3 * a.X + b.X)
                                 + ay2 * (4 * ax2 + a.X * b.X + bx2)
-                            ) 
+                            )
                           - 12 * s * byay2
                           )
                     )
                     / (Math.Pow(byay, 4));
             double D =
                     (
-                    60 * Math.Log(b.Y / a.Y) 
+                    60 * Math.Log(b.Y / a.Y)
                     * Math.Pow(
-                            a.Y * (3 * by2 * ax2 - 3 * b.Y * a.X * a.Y * (a.X + b.X) 
-                            + ay2 * (ax2 + a.X * b.X + bx2)) 
+                            a.Y * (3 * by2 * ax2 - 3 * b.Y * a.X * a.Y * (a.X + b.X)
+                            + ay2 * (ax2 + a.X * b.X + bx2))
                             - 6 * s * byay2
                             , 2)
                     )
                     / (Math.Pow(byay, 5));
             double E =
-                    40 * byay * Math.Pow(axbx, 4) 
+                    40 * byay * Math.Pow(axbx, 4)
                     - 48 * Math.Pow(axbx, 3) * (3 * b.Y * a.X - 5 * a.X * a.Y + 2 * a.Y * b.X)
-                    + (15 * Math.Pow(axbx, 2) 
+                    + (15 * Math.Pow(axbx, 2)
                       * (
-                            9 * by2 * ax2 
-                            - 6 * b.Y * a.X * a.Y * (8 * a.X - 5 * b.X) 
+                            9 * by2 * ax2
+                            - 6 * b.Y * a.X * a.Y * (8 * a.X - 5 * b.X)
                             + ay2 * (40 * ax2 - 32 * a.X * b.X + bx2))
                         ) / (byay);
 
