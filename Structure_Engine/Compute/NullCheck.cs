@@ -23,6 +23,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.SectionProperties;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
@@ -41,7 +42,7 @@ namespace BH.Engine.Structure
         [Description("Checks if a Node is null and outputs relevant error message.")]
         [Input("node", "The Node to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("pass", "A boolean which is true if the bar passes the null check.")]
+        [Output("pass", "A boolean which is true if the Node passes the null check.")]
         public static bool NullCheck(this Node node, string methodName = "Method")
         {
             // Check Node and Position
@@ -59,7 +60,7 @@ namespace BH.Engine.Structure
         [Description("Checks if a Bar or one of its Nodes are null and outputs relevant error message.")]
         [Input("bar", "The Bar to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("pass", "A boolean which is true if the bar passes the null check.")]
+        [Output("pass", "A boolean which is true if the Bar passes the null check.")]
         public static bool NullCheck(this Bar bar, string methodName = "Method")
         {
             // Check bar
@@ -79,7 +80,7 @@ namespace BH.Engine.Structure
         [Input("checkFaces", "Optional bool to tell the method whether to check FEMeshFaces or not.")]
         [Input("checkNodes", "Optional bool to tell the method whether to check mesh Nodes or not.")]
         [Input("nodeListIndices", "Optional list of nodes to limit check to")]
-        [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
+        [Output("pass", "A boolean which is true if the FEMesh passes the null check.")]
         public static bool NullCheck(this FEMesh mesh, string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = null)
         {
             // Check FEMesh
@@ -125,7 +126,7 @@ namespace BH.Engine.Structure
         [Input("face", "The FEMeshFace to test for null.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
+        [Output("pass", "A boolean which is true if the FEMesh and FEMeshFace passes the null check.")]
         public static bool NullCheck(this FEMeshFace face, FEMesh mesh, string methodName = "Method")
         {
             // Check FEMeshFace and relevant nodes in FEMesh
@@ -151,7 +152,7 @@ namespace BH.Engine.Structure
         [Description("Checks if a Panel or its ExternalEdges are null and outputs relevant error message.")]
         [Input("panel", "The Panel to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("pass", "A boolean which is true if the FEMeshFace passes the null check.")]
+        [Output("pass", "A boolean which is true if the Panel passes the null check.")]
         public static bool NullCheck(this Panel panel, string methodName = "Method")
         {
             // Check Panel
@@ -168,6 +169,22 @@ namespace BH.Engine.Structure
                     ErrorMessage(methodName, "Edge");
                     return false;
                 }
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a SectionProperty is null and outputs relevant error message.")]
+        [Input("panel", "The SectionProperty to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the SectionProperty passes the null check.")]
+        public static bool NullCheck(this ISectionProperty sectionProperty, string methodName = "Method")
+        {
+            // Check Panel
+            if (sectionProperty == null)
+            {
+                ErrorMessage(methodName, "sectionProperty");
+                return false;
             }
 
             return true;
