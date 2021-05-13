@@ -106,7 +106,7 @@ namespace BH.Engine.Structure
             // Check Nodes, but only if checkNodes is set to true
             // When called from methods that run on the list of mesh FEMeshFaces, we only want a basic check as null checks will be performed individually for each face
             bool passes = true;
-            for (int i = 0; checkNodes && passes && i < nodeListIndices.Count ; i++)
+            for (int i = 0; checkNodes && passes && i < nodeListIndices.Count; i++)
             {
                 passes = mesh.Nodes[nodeListIndices[i]].NullCheck(methodName);
             }
@@ -161,7 +161,7 @@ namespace BH.Engine.Structure
                 return false;
             }
 
-            foreach (Edge edge in panel.ExternalEdges) 
+            foreach (Edge edge in panel.ExternalEdges)
             {
                 if (edge?.Curve == null)
                 {

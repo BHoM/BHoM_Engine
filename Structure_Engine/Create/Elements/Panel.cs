@@ -134,7 +134,7 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel.")]
         public static Panel Panel(PlanarSurface surface, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
-            return surface.IsNull()? null: Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, localX, name);
+            return surface.IsNull() ? null : Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, localX, name);
         }
 
         /***************************************************/
