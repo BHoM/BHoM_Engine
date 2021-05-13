@@ -47,11 +47,16 @@ namespace BH.Engine.Structure
         [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
         public static List<Bar> MapTaperedProfile(List<Bar> bars, IGeometricalSection section)
         {
+            if(bars.Any(x => !x.NullCheck()))
+            {
+                return null;
+            }
+
             List<Bar> newBars = bars.ShallowClone();
 
             if (!(section.SectionProfile is TaperedProfile))
             {
-                Reflection.Compute.RecordError("Section provided does not contain a TaperedProfile");
+                Reflection.Compute.RecordError("Section provided does not contain a TaperedProfile.");
                 foreach (Bar newBar in newBars)
                 {
                     newBar.SectionProperty = section;
