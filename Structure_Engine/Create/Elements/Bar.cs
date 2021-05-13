@@ -53,10 +53,7 @@ namespace BH.Engine.Structure
         [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
         public static Bar Bar(Line line, ISectionProperty sectionProperty = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
         {
-            if (line.IsNull())
-                return null;
-
-            return new Bar
+            return line.IsNull() ? null : new Bar
             {
                 Name = name,
                 StartNode = (Node)line.Start,

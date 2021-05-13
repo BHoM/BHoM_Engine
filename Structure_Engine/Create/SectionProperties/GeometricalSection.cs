@@ -101,7 +101,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("PostProcess needed for all section creates. Null checks the material and sets to empty if nothing provided and tries to grab material from Library.")]
-        private static T PostProcessSectionCreate<T>(T section, string name, IMaterialFragment material, MaterialType materialType) where T: ISectionProperty
+        private static T PostProcessSectionCreate<T>(T section, string name, IMaterialFragment material, MaterialType materialType) where T : ISectionProperty
         {
             name = name ?? "";
             section.Name = name;
