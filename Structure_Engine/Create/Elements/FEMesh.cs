@@ -48,6 +48,9 @@ namespace BH.Engine.Structure
         [Output("feMesh", "The created FEMesh with same geometry and topology as the geometrical Mesh.")]
         public static FEMesh FEMesh(Mesh mesh, ISurfaceProperty property = null, Vector localX = null, string name = null)
         {
+            if (mesh.IsNull())
+                return null;
+
             FEMesh feMesh = new FEMesh();
             feMesh.Nodes = mesh.Vertices.Select(x => Node(x)).ToList();
 

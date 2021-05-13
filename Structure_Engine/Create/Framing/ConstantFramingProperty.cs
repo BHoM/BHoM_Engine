@@ -43,10 +43,8 @@ namespace BH.Engine.Structure
         [Input("orientationAngle", "Defines the sections rotation around its own axis.", typeof(Angle))]
         [Input("name", "Name of the property. If null/empty the name of the section property will be used. ")]
         [Output("FramingProperty", "The constructed physical Constant Framing Property to be used with IFramingElements such as Beams/Columns/Bracing.")]
-        public static ConstantFramingProperty ConstantFramingProperty(ISectionProperty sectionProperty, double orientationAngle, string name = "")
+        public static ConstantFramingProperty ConstantFramingProperty(ISectionProperty sectionProperty, double orientationAngle = 0, string name = "")
         {
-
-
             IProfile profile = null;
             if (sectionProperty is IGeometricalSection)
                 profile = (sectionProperty as IGeometricalSection).SectionProfile;
@@ -54,7 +52,7 @@ namespace BH.Engine.Structure
                 Reflection.Compute.RecordWarning("Was not able to extract any section profile.");
 
 
-            BH.oM.Physical.Materials.Material material = null;
+            oM.Physical.Materials.Material material = null;
 
             if (sectionProperty.Material != null)
             {
@@ -63,7 +61,7 @@ namespace BH.Engine.Structure
             }
             else
             {
-                Engine.Reflection.Compute.RecordWarning("Material from sectiion property of the bar is null.");
+                Reflection.Compute.RecordWarning("Material from sectiion property of the bar is null.");
             }
 
             name = string.IsNullOrEmpty(name) ? sectionProperty.Name : name;
