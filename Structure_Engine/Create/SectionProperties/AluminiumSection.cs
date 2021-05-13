@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
                 constants["Welz"], constants["Wply"], constants["Wplz"], constants["CentreZ"], constants["CentreY"], constants["Vz"],
                 constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
 
-            return section == null ? null : PostProcessSectionCreate(section, name, material, MaterialType.Aluminium);
+            return section.NullCheck("AluminiumSectionFromProfile") ? PostProcessSectionCreate(section, name, material, MaterialType.Aluminium) : null;
 
         }
 
