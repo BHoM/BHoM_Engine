@@ -79,6 +79,7 @@
     <Compile Include="Compute\CollapseToScaledPolyline.cs" />
     <Compile Include="Compute\DistributeOutlines.cs" />
     <Compile Include="Compute\MarchingCubes.cs" />
+    <Compile Include="Query\IsNull.cs" />
     <Compile Include="Compute\Split.cs" />
     <Compile Include="Compute\SubMesh.cs" />
     <Compile Include="Compute\MarchingSquares.cs" />
