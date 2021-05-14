@@ -26,11 +26,9 @@ using BH.oM.Structure.Elements;
 using BH.oM.Structure.Loads;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
-
 using System.Collections.Generic;
 using System.Linq;
 using System;
-
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
@@ -54,6 +52,9 @@ namespace BH.Engine.Structure
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this AreaUniformTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
+            if (areaTempLoad.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
             double loadFactor = areaTempLoad.TemperatureChange * 1000 * scaleFactor; //Arrow methods are scaling down force to 1/1000
 
@@ -90,6 +91,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this AreaUniformlyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
+            if (areaUDL.NullCheck("Visualize"))
+                return null;
+
             if (!displayForces)
                 return new List<ICurve>();
 
@@ -148,6 +152,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarPointLoad barPointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (barPointForce.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = barPointForce.Force * scaleFactor;
@@ -179,13 +186,16 @@ namespace BH.Engine.Structure
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this BarPrestressLoad barPrestressLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (barPrestressLoad.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             double scaledForce = barPrestressLoad.Prestress * scaleFactor;
 
             foreach (Bar bar in barPrestressLoad.Objects.Elements)
             {
-                if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal()* scaledForce, true, null, 0, true));
+                if (displayForces) arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, bar.Normal() * scaledForce, true, null, 0, true));
             }
 
             return arrows;
@@ -202,9 +212,11 @@ namespace BH.Engine.Structure
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this BarUniformTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (barTempLoad.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
             double loadFactor = barTempLoad.TemperatureChange * 1000 * scaleFactor; //Arrow methods are scaling down force to 1/1000
-
 
             foreach (Bar bar in barTempLoad.Objects.Elements)
             {
@@ -225,6 +237,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (barUDL.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = barUDL.Force * scaleFactor;
@@ -243,7 +258,7 @@ namespace BH.Engine.Structure
                 if (displayMoments && forceVectors[1].SquareLength() > sqTol)
                     arrows.AddRange(ConnectedArrows(new List<ICurve> { bar.Centreline() }, forceVectors[1], asResultants, orientation, 1, false));
             }
-            
+
 
             return arrows;
         }
@@ -259,6 +274,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (barVaryingDistLoad.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector forceA = barVaryingDistLoad.ForceAtStart * scaleFactor;
@@ -342,6 +360,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this GravityLoad gravityLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (gravityLoad.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector gravityDir = gravityLoad.GravityDirection * scaleFactor * 9.80665;
@@ -393,6 +414,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
+            if (pointAcceleration.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = pointAcceleration.TranslationalAcceleration * scaleFactor * 1000;
@@ -418,6 +442,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
+            if (pointDisplacement.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = pointDisplacement.Translation * scaleFactor * 1000;
@@ -443,6 +470,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointLoad pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (pointForce.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = pointForce.Force * scaleFactor;
@@ -468,6 +498,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
+            if (pointVelocity.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector forceVec = pointVelocity.TranslationalVelocity * scaleFactor * 1000;
@@ -493,6 +526,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this ContourLoad contourLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (contourLoad.NullCheck("Visualize"))
+                return null;
+
             if (!displayForces)
                 return new List<ICurve>();
 
@@ -538,6 +574,9 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this GeometricalLineLoad lineLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
+            if (lineLoad.NullCheck("Visualize"))
+                return null;
+
             List<ICurve> arrows = new List<ICurve>();
 
             Vector forceA = lineLoad.ForceA * scaleFactor;
@@ -614,7 +653,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static IEnumerable<IGeometry> IVisualize(this ILoad load, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            return Visualize(load as dynamic, scaleFactor, displayForces, displayMoments, asResultants);
+            return load.NullCheck("Visualize") ? Visualize(load as dynamic, scaleFactor, displayForces, displayMoments, asResultants) : null;
         }
 
         /***************************************************/
@@ -795,7 +834,7 @@ namespace BH.Engine.Structure
         }
         /***************************************************/
 
-        private static List<ICurve> Arrow(Point pt, Vector v, out Point basePt,int nbArrowHeads = 1, double offsetRatio = 0.0)
+        private static List<ICurve> Arrow(Point pt, Vector v, out Point basePt, int nbArrowHeads = 1, double offsetRatio = 0.0)
         {
             List<ICurve> arrow = new List<ICurve>();
 
@@ -925,7 +964,7 @@ namespace BH.Engine.Structure
             int divisions = straightArrow ? 5 : 7;
 
             allCurves = MultipleArrows(curves.SelectMany(x => x.SamplePoints((int)divisions)), vector, asResultant, out baseVec, orientation, nbArrowHeads, straightArrow);
-            if(straightArrow) allCurves.AddRange(curves.SelectMany(x => baseVec.Select(v => x.ITranslate(v))));
+            if (straightArrow) allCurves.AddRange(curves.SelectMany(x => baseVec.Select(v => x.ITranslate(v))));
 
             return allCurves;
         }
