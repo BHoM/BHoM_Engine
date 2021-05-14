@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The Bar solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Bar bar)
         {
-            if (bar.NullCheck("SolidVolume"))
+            if (!bar.NullCheck("SolidVolume"))
                 return 0;
 
             if (bar.SectionProperty == null)

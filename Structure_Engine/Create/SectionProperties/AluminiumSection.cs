@@ -28,6 +28,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Spatial;
 using System.Linq;
 using System.ComponentModel;
 
@@ -46,6 +47,9 @@ namespace BH.Engine.Structure
         [Output("section", "The created aluminium section.")]
         public static AluminiumSection AluminiumSectionFromProfile(IProfile profile, Aluminium material = null, string name = "")
         {
+            if (profile.IsNull())
+                return null;
+
             //Run pre-process for section create. Calculates all section constants and checks name of profile
             var preProcessValues = PreProcessSectionCreate(name, profile);
             name = preProcessValues.Item1;

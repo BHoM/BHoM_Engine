@@ -29,6 +29,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Spatial;
 using System.Linq;
 using BH.oM.Quantities.Attributes;
 
@@ -201,6 +202,9 @@ namespace BH.Engine.Structure
         [Output("section", "The created steel section.")]
         public static SteelSection SteelSectionFromProfile(IProfile profile, Steel material = null, string name = "")
         {
+            if (profile.IsNull())
+                return null;
+
             //Run pre-process for section create. Calculates all section constants and checks name of profile
             var preProcessValues = PreProcessSectionCreate(name, profile);
             name = preProcessValues.Item1;
