@@ -33,12 +33,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the spring values from a constraint as a double array. Values returned in the following order: TransX, TranxY, TransZ, RotX, RotY, RotZ.")]
-        [Input("constraint", "The constraint to spring values from.")]
+        [Description("Gets the spring values from a Constraint6DOF as a double array. Values returned in the following order: TransX, TranxY, TransZ, RotX, RotY, RotZ.")]
+        [Input("constraint", "The Constraint6DOF to spring values from.")]
         [Output("springValues", "The elastic values, or spring values, from a constraint as a double array in the following order: TransX, TransY, TransZ, RotX, RotY, RotZ.")]
         public static double[] ElasticValues(this Constraint6DOF constraint)
         {
-            return new double[] 
+            return constraint.NullCheck("ElasticValues") ? new double[]
             {
                 constraint.TranslationalStiffnessX,
                 constraint.TranslationalStiffnessY,
@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
                 constraint.RotationalStiffnessX,
                 constraint.RotationalStiffnessY,
                 constraint.RotationalStiffnessZ
-            };
+            } : null;
         }
 
         /***************************************************/
