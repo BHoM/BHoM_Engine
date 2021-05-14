@@ -23,7 +23,10 @@
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.Loads;
+using BH.oM.Structure.MaterialFragments;
 using BH.oM.Structure.SectionProperties;
+using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
@@ -73,6 +76,28 @@ namespace BH.Engine.Structure
 
             // Check bar Nodes
             return bar.StartNode.NullCheck(methodName) && bar.EndNode.NullCheck(methodName);
+        }
+
+        [Description("Checks if an IAreaElement is null and outputs relevant error message.")]
+        [Input("areaElement", "The IAreaElement to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the IAreaElement passes the null check.")]
+        public static bool NullCheck(this IAreaElement element, string methodName = "Method")
+        {
+            if (element is Panel)
+                return NullCheck(element as Panel);
+            else if (element is FEMesh)
+                return NullCheck(element as FEMesh);
+            else
+            {
+                if (element == null)
+                {
+                    ErrorMessage(methodName, "IAreaElement");
+                    return false;
+                }
+                else
+                    return true;
+            }
         }
 
         [Description("Checks if an FEMesh or one of its Nodes are null and outputs relevant error message.")]
@@ -187,10 +212,9 @@ namespace BH.Engine.Structure
         [Output("pass", "A boolean which is true if the SectionProperty passes the null check.")]
         public static bool NullCheck(this ISectionProperty sectionProperty, string methodName = "Method")
         {
-            // Check Panel
             if (sectionProperty == null)
             {
-                ErrorMessage(methodName, "sectionProperty");
+                ErrorMessage(methodName, "ISectionProperty");
                 return false;
             }
 
@@ -203,10 +227,54 @@ namespace BH.Engine.Structure
         [Output("pass", "A boolean which is true if the SurfaceProperty passes the null check.")]
         public static bool NullCheck(this ISurfaceProperty surfaceProperty, string methodName = "Method")
         {
-            // Check Panel
             if (surfaceProperty == null)
             {
-                ErrorMessage(methodName, "surfaceProperty");
+                ErrorMessage(methodName, "ISurfaceProperty");
+                return false;
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a IMaterialFragment is null and outputs relevant error message.")]
+        [Input("panel", "The IMaterialFragment to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the IMaterialFragment passes the null check.")]
+        public static bool NullCheck(this IMaterialFragment material, string methodName = "Method")
+        {
+            if (material == null)
+            {
+                ErrorMessage(methodName, "IMaterialFragment");
+                return false;
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a BarReinforcement is null and outputs relevant error message.")]
+        [Input("panel", "The BarReinforcement to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the BarReinforcement passes the null check.")]
+        public static bool NullCheck(this IBarReinforcement reinforcement, string methodName = "Method")
+        {
+            if (reinforcement == null)
+            {
+                ErrorMessage(methodName, "BarReinforcement");
+                return false;
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a BarLoad is null and outputs relevant error message.")]
+        [Input("panel", "The BarLoad to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the BarLoad passes the null check.")]
+        public static bool NullCheck(this ILoad load, string methodName = "Method")
+        {
+            if (load == null)
+            {
+                ErrorMessage(methodName, "BarLoad");
                 return false;
             }
 
@@ -223,4 +291,3 @@ namespace BH.Engine.Structure
         }
     }
 }
-

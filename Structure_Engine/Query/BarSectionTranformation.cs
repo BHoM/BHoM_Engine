@@ -42,6 +42,9 @@ namespace BH.Engine.Structure
         [Output("transform", "The generated transformation matrix.")]
         public static TransformMatrix BarSectionTranformation(this Bar bar)
         {
+            if (!bar.NullCheck(""))
+                return null;
+
             Vector trans = bar.StartNode.Position - Point.Origin;
 
             Vector gX = Vector.XAxis;
@@ -67,9 +70,9 @@ namespace BH.Engine.Structure
             localToGlobal.Matrix[2, 2] = gZ.DotProduct(lZ);
             localToGlobal.Matrix[3, 3] = 1;
 
-            return  Engine.Geometry.Create.TranslationMatrix(trans) * localToGlobal * GlobalToSectionAxes;
+            return Engine.Geometry.Create.TranslationMatrix(trans) * localToGlobal * GlobalToSectionAxes;
 
-            
+
         }
 
         /***************************************************/

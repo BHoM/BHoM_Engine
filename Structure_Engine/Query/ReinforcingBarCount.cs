@@ -45,12 +45,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the number of rebars in one particular Reinforcement object.")]
-        [Input("reinforcement", "The reinforcement object to extract the count from.")]
+        [Description("Return the number of reinforcing bars in one a LongtudinalReinforcement object.")]
+        [Input("reinforcement", "The LongitudinalReinforcement object to extract the count from.")]
         [Output("count", "Number of bars in the provided LongitudinalReinforcement.")]
         public static int ReinforcingBarCount(this LongitudinalReinforcement reinforcement)
         {
-            return LayoutCount(reinforcement.RebarLayout as dynamic);
+            return reinforcement.NullCheck("ReinforcingBarcount") ? LayoutCount(reinforcement.RebarLayout as dynamic) : null;
         }
 
         /***************************************************/

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,15 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Structure.MaterialFragments;
-using BH.oM.Physical.Materials;
+using BH.oM.Spatial.ShapeProfiles;
+using System.ComponentModel;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
-namespace BH.Engine.Structure
+namespace BH.Engine.Spatial
 {
     public static partial class Query
     {
@@ -36,23 +36,29 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if the physical Material contains a single structural MaterialFragment, and if it does returns this fragment, containing all relevant structural material data. Returns null if not exactly one structural MaterialFragment is found.")]
-        [Input("material", "The physical Material to extract a structural MaterialFragment from.")]
-        [Output("strMat", "The structural MaterialFragment.")]
-        public static IMaterialFragment StructuralMaterialFragment(this Material material)
+        [Description("Checks if an IProfile is null and outputs relevant error message.")]
+        [Input("profile", "The IProfile to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the bar passes the null check.")]
+        public static bool IsNull(this IProfile profile, string methodName = "")
         {
-            if (!material.IsValidStructural())
+            if (profile == null)
             {
-                Reflection.Compute.RecordWarning("Material with name " + material.Name + " does not contain a structural material fragment.");
-                return null;
+                //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
+                if (string.IsNullOrEmpty(methodName))
+                {
+                    StackTrace st = new StackTrace();
+                    methodName = st.FrameCount > 0 ? st.GetFrame(1).GetMethod().Name : "Method";
+                }
+                else
+                    methodName = "Method";
+
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because geometry failed a null check.");
+                return true;
             }
 
-            return material.Properties.Where(x => x is IMaterialFragment).Cast<IMaterialFragment>().FirstOrDefault();
+            return false;
         }
-
-        /***************************************************/
 
     }
 }
-
-

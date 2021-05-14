@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Output("G", "Shear modulus of the material fragment.", typeof(ShearModulus))]
         public static double ShearModulus(this IIsotropic materialFragment)
         {
-            return materialFragment.YoungsModulus / (2 * (1 + materialFragment.PoissonsRatio));
+            return materialFragment.NullCheck("ShearModulus") ? materialFragment.YoungsModulus / (2 * (1 + materialFragment.PoissonsRatio)) : 0;
         }
 
         /***************************************************/
