@@ -30,6 +30,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.MaterialFragments;
+using BH.Engine.Spatial;
 using System.Linq;
 using BH.oM.Quantities.Attributes;
 
@@ -50,6 +51,9 @@ namespace BH.Engine.Structure
         [Output("section", "The created concrete section.")]
         public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
+            if (profile.IsNull())
+                return null;
+
             //Run pre-process for section create. Calculates all section constants and checks name of profile
             var preProcessValues = PreProcessSectionCreate(name, profile);
             name = preProcessValues.Item1;

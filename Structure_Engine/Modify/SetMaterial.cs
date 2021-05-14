@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Output("bar", "The Bar with updated material.")]
         public static Bar SetMaterial(this Bar bar, IMaterialFragment material = null)
         {
-            if (bar.NullCheck("SetMaterial"))
+            if (!bar.NullCheck("SetMaterial"))
                 return null;
 
             Bar clone = bar.ShallowClone();

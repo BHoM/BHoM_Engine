@@ -45,7 +45,9 @@ namespace BH.Engine.Structure
         [Output("framing", "The created physical FramingElement based on the Bar element provided.")]
         public static BHPE.IFramingElement FramingElement(Bar bar, StructuralUsage1D structuralUsage = StructuralUsage1D.Beam)
         {
-            bar.NullCheck("FramingElement");
+            if (!bar.NullCheck("FramingElement"))
+                return null;
+
             ISectionProperty prop = bar.SectionProperty;
             BHPP.ConstantFramingProperty framingProp = null;
             if (prop == null)

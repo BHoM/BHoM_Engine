@@ -47,10 +47,8 @@ namespace BH.Engine.Structure
         [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
         public static List<Bar> MapTaperedProfile(List<Bar> bars, IGeometricalSection section)
         {
-            if (bars.Any(x => !x.NullCheck("MapTaperedProfile")))
-            {
+            if (bars.Any(x => !x.NullCheck("MapTaperedProfile")) || !section.NullCheck("MapTaperedProfile"))
                 return null;
-            }
 
             List<Bar> newBars = bars.ShallowClone();
 
@@ -248,4 +246,3 @@ namespace BH.Engine.Structure
 
     }
 }
-

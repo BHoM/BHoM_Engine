@@ -65,10 +65,8 @@ namespace BH.Engine.Structure
         [Output("barVarLoad", "The created BarVaryingDistributedLoads with bars grouped by length.")]
         public static List<BarVaryingDistributedLoad> BarVaryingDistributedLoadDistanceBothEnds(Loadcase loadcase, BHoMGroup<Bar> group, bool relativePositions, double startToStartDistance = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endToEndDistance = 0, Vector forceAtEnd = null, Vector momentAtEnd = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "", double groupingTolerance = Tolerance.Distance)
         {
-            if (group.Elements.Any(x => x.NullCheck("BarVaryingDistributedLoadDistanceBothEnds")))
-            {
+            if (group.Elements.Any(x => !x.NullCheck("BarVaryingDistributedLoadDistanceBothEnds")))
                 return null;
-            }
 
             Dictionary<double, List<Bar>> barGroups = GroupBarsByLength(group.Elements, groupingTolerance);
 

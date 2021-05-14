@@ -30,6 +30,7 @@ using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Geometry;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -46,6 +47,9 @@ namespace BH.Engine.Structure
         [Output("section", "The created section property of a type matching the material provided.")]
         public static IGeometricalSection SectionPropertyFromProfile(IProfile profile, IMaterialFragment material = null, string name = "")
         {
+            if (profile.IsNull())
+                return null;
+
             MaterialType materialType = material == null ? MaterialType.Undefined : material.IMaterialType();
 
             switch (materialType)
