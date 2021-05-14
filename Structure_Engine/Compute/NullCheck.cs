@@ -327,6 +327,21 @@ namespace BH.Engine.Structure
             return true;
         }
 
+        [Description("Checks if a ICase is null and outputs relevant error message.")]
+        [Input("panel", "The ICase to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the ICase passes the null check.")]
+        public static bool NullCheck(this ICase iCase, string methodName = "Method")
+        {
+            if (iCase == null)
+            {
+                ErrorMessage(methodName, "ICase");
+                return false;
+            }
+
+            return true;
+        }
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
