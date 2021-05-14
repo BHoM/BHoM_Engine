@@ -20,9 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Geometry;
-using BH.oM.Structure.Elements;
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
@@ -44,7 +41,7 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double AverageThickness(ConstantThickness property)
         {
-            return property.Thickness;
+            return property.NullCheck("AverageThickness") ? property.Thickness : 0;
         }
 
         /***************************************************/
@@ -54,6 +51,9 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double AverageThickness(Ribbed property)
         {
+            if (!property.NullCheck("AverageThickness"))
+                return 0;
+
             if (property.StemWidth == 0 || property.Spacing < property.StemWidth ||
                 property.TotalDepth < property.Thickness)
             {
@@ -71,6 +71,9 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double AverageThickness(Waffle property)
         {
+            if (!property.NullCheck("AverageThickness"))
+                return 0;
+
             if (property.StemWidthX == 0 || property.SpacingX < property.StemWidthX ||
                 property.StemWidthY == 0 || property.SpacingY < property.StemWidthY ||
                 property.TotalDepthX < property.Thickness || property.TotalDepthY < property.Thickness)
@@ -98,18 +101,18 @@ namespace BH.Engine.Structure
             Reflection.Compute.RecordWarning("Structural IAreaElements are defined without volume.");
             return 0;
         }
-        
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
-        
+
         [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
         [Input("property", "The property to evaluate the average thickness of.")]
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double IAverageThickness(this ISurfaceProperty property)
         {
-            return AverageThickness(property as dynamic);
+            return property.NullCheck("IAverageThickness") ? AverageThickness(property as dynamic) : 0;
         }
 
 

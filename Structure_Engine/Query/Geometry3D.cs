@@ -44,6 +44,9 @@ namespace BH.Engine.Structure
         [Input("onlyOuterExtrusion", "If true, and if the cross-section of the Bar is composed by multiple edges (e.g. a Circular Hollow Section), only return the extrusion of the outermost edge.")]
         public static IGeometry Geometry3D(this Bar bar, bool onlyOuterExtrusion = true)
         {
+            if (!bar.NullCheck("Geometry3D"))
+                return null;
+
             // . If the profile is made of two curves (e.g. I section), selects only the outermost.
             IEnumerable<IGeometry> extrusions = bar.Extrude(false);
             Extrusion barOutermostExtrusion = extrusions.OfType<Extrusion>().OrderBy(extr => Engine.Geometry.Query.IArea(extr.Curve)).First();
@@ -61,6 +64,9 @@ namespace BH.Engine.Structure
         [Input("onlyCentralSurface", "If true, the returned geometry is only the central (middle) surface of the panel. Otherwise, the whole external solid is returned as a CompositeGeometry of many surfaces.")]
         public static IGeometry Geometry3D(this Panel panel, bool onlyCentralSurface = false)
         {
+            if (!panel.NullCheck("Geometry3D"))
+                return null;
+
             PlanarSurface centralPlanarSurface = Engine.Geometry.Create.PlanarSurface(
                     Engine.Geometry.Compute.IJoin(panel.ExternalEdges.Select(x => x.Curve).ToList()).FirstOrDefault(),
                     panel.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x.Edges.Select(y => y.Curve).ToList())).Cast<ICurve>().ToList());

@@ -45,8 +45,9 @@ namespace BH.Engine.Structure
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
         public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
         {
-            return new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
-                   new Constraint6DOFComparer().Equals(element.Support, other.Support);
+            return element.NullCheck("HasMergeablePropertiesWith") && other.NullCheck("HasMergeablePropertiesWith") ?
+                new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
+                   new Constraint6DOFComparer().Equals(element.Support, other.Support) : false;
         }
 
         /***************************************************/

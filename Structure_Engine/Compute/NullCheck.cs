@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
+using BH.oM.Structure.Constraints;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Loads;
 using BH.oM.Structure.MaterialFragments;
@@ -275,6 +276,51 @@ namespace BH.Engine.Structure
             if (load == null)
             {
                 ErrorMessage(methodName, "BarLoad");
+                return false;
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a Constraint6DOF is null and outputs relevant error message.")]
+        [Input("panel", "The Constraint6DOF to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the Constraint6DOF passes the null check.")]
+        public static bool NullCheck(this Constraint6DOF constraint, string methodName = "Method")
+        {
+            if (constraint == null)
+            {
+                ErrorMessage(methodName, "Constraint6DOF");
+                return false;
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a Constraint3DOF is null and outputs relevant error message.")]
+        [Input("panel", "The Constraint3DOF to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the Constraint3DOF passes the null check.")]
+        public static bool NullCheck(this Constraint3DOF constraint, string methodName = "Method")
+        {
+            if (constraint == null)
+            {
+                ErrorMessage(methodName, "Constraint3DOF");
+                return false;
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a Constraint4DOF is null and outputs relevant error message.")]
+        [Input("panel", "The Constraint4DOF to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the Constraint4DOF passes the null check.")]
+        public static bool NullCheck(this Constraint4DOF constraint, string methodName = "Method")
+        {
+            if (constraint == null)
+            {
+                ErrorMessage(methodName, "Constraint3DOF");
                 return false;
             }
 
