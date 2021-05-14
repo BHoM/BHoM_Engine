@@ -30,6 +30,7 @@ using BH.oM.Reflection;
 using BH.Engine.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Spatial;
 using System.ComponentModel;
 
 
@@ -121,7 +122,7 @@ namespace BH.Engine.Structure
                 return results;
             }
 
-            BoundingBox box = Geometry.Query.Bounds(curves.Select(x => x.IBounds()).ToList());
+            BoundingBox box = Geometry.Query.Bounds(curves.Select(x => Engine.Geometry.Query.IBounds(x)).ToList());
 
             Point min = box.Min;
             Point max = box.Max;
@@ -177,6 +178,9 @@ namespace BH.Engine.Structure
         [MultiOutput(1, "constants", "The section constants calculated based on the provided section profile.")]
         public static Output<IProfile, Dictionary<string, double>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
         {
+            if (profile.IsNull())
+                return null;
+
             Dictionary<string, double> results = IntegrateSection(profile.Edges.ToList(), tolerance);
 
             Vector adjustment = new Vector() { X = -results["CentreY"], Y = -results["CentreZ"], Z = 0 };
