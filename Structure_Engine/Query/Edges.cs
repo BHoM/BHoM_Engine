@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Output("edges", "The list of curves representing the edges of the underlying surface.")]
         public static List<ICurve> Edges(this Surface surface)
         {
-            if (!surface.IsNull("Edges"))
+            if (surface.IsNull("Edges"))
                 return null;
             if (surface.Extents != null)
                 return surface.Extents.IExternalEdges();
@@ -60,7 +60,7 @@ namespace BH.Engine.Structure
         [Output("edges", "The list of curves representing all internal and external edges of an element.")]
         public static IEnumerable<ICurve> IEdges(this IAreaElement element)
         {
-            return element.IIsNull("IEdges") ? Edges(element as dynamic) : null;
+            return element.IIsNull("IEdges") ? null : Edges(element as dynamic);
         }
 
         /***************************************************/

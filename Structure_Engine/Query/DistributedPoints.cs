@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Output("points", "List of evenly distibuted points along the Bar.")]
         public static List<Point> DistributedPoints(this Bar bar, int divisions, double startLength = 0, double endLength = 0)
         {
-            if (!bar.IsNull("DistributedPoints"))
+            if (bar.IsNull("DistributedPoints"))
                 return null;
 
             if (divisions < 1)

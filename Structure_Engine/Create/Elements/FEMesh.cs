@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a FEMesh based on a geometrical Mesh.")]
-        [Input("mesh","The geometrical Mesh to extract geometrical and topological information from.")]
+        [Input("mesh", "The geometrical Mesh to extract geometrical and topological information from.")]
         [InputFromProperty("property")]
         [Input("name", "The name of the created FEMesh.")]
         [Input("localX", "Vector to set as local x of the FEMeshFaces of the FEMesh. Default value of null gives default orientation. If this vector is not in the plane of the FEMeshFace it will get projected. If the vector is parallel to the normal of the FEMeshFace the operation will fail and the FEMeshFace will be assigned default orientation.")]

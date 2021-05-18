@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
         [Output("modifiers", "Returns the modifier values of the property as a double array in the following order: FXX, FXY, FYY, MXX, MXY, MYY, VXZ, VYZ, Mass, Weight. Returns null if no modifiers are found.")]
         public static double[] Modifiers(this ISurfaceProperty property)
         {
-            if (!property.IsNull("Modifiers"))
+            if (property.IsNull("Modifiers"))
                 return null;
 
             SurfacePropertyModifier modifier = property.FindFragment<SurfacePropertyModifier>();
@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
         [Output("modifiers", "Returns the modifier values of the section as a double array in the following order: Area, Iy, Iz, J, Asy, Asz. Returns null if no modifiers are found.")]
         public static double[] Modifiers(this ISectionProperty property)
         {
-            if (!property.IsNull("Modifiers"))
+            if (property.IsNull("Modifiers"))
                 return null;
 
             SectionModifier modifier = property.FindFragment<SectionModifier>();

@@ -217,7 +217,7 @@ namespace BH.Engine.Structure
                 constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
 
             //Postprocess section. Sets default name if null, and grabs default material for section if noting is provided
-            return section.IsNull("SteelSectionFromProfile") ? PostProcessSectionCreate(section, name, material, MaterialType.Steel) : null;
+            return section.IsNull("SteelSectionFromProfile") ? null : PostProcessSectionCreate(section, name, material, MaterialType.Steel);
 
         }
 

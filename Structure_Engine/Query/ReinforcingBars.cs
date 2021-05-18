@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
         [Output("rebars", "All physical ReinforcingBar on the provided Bar.")]
         public static List<IReinforcingBar> ReinforcingBars(this Bar bar)
         {
-            if (!bar.IsNull("ReinforcingBars"))
+            if (bar.IsNull("ReinforcingBars"))
                 return null;
 
             List<IReinforcingBar> rebars = new List<IReinforcingBar>();

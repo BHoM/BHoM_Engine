@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("FramingProperty", "The constructed physical Constant Framing Property to be used with IFramingElements such as Beams/Columns/Bracing.")]
         public static ConstantFramingProperty ConstantFramingProperty(ISectionProperty sectionProperty, double orientationAngle = 0, string name = "")
         {
-            if (!sectionProperty.IsNull("ConstantFramingProperty"))
+            if (sectionProperty.IsNull("ConstantFramingProperty"))
                 return null;
 
             IProfile profile = null;

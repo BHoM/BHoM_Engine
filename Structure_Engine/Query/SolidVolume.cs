@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The Bar solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Bar bar)
         {
-            if (!bar.IsNull("SolidVolume"))
+            if (bar.IsNull("SolidVolume"))
                 return 0;
 
             if (bar.SectionProperty == null)
@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The IAreaElement solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IAreaElement areaElement)
         {
-            if (!areaElement.IIsNull("SolidVolume"))
+            if (areaElement.IIsNull("SolidVolume"))
                 return 0;
 
             if (areaElement.Property == null)

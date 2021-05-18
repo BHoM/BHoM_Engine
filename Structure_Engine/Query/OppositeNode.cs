@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Output("node", "The oposite Node of the Bar in relation to the one provided.")]
         public static Node OppositeNode(this Bar bar, Node node)
         {
-            if (!bar.IsNull("OppositeNode") || !node.IsNull("OppositeNode"))
+            if (bar.IsNull("OppositeNode") || node.IsNull("OppositeNode"))
                 return null;
 
             if (bar.EndNode.BHoM_Guid == node.BHoM_Guid)

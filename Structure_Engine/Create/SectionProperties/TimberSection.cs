@@ -76,7 +76,7 @@ namespace BH.Engine.Structure
                 constants["Welz"], constants["Wply"], constants["Wplz"], constants["CentreZ"], constants["CentreY"], constants["Vz"],
                 constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
 
-            return section.IsNull("TimberSectionFromProfile") ? PostProcessSectionCreate(section, name, material, MaterialType.Timber) : null;
+            return section.IsNull("TimberSectionFromProfile") ? null : PostProcessSectionCreate(section, name, material, MaterialType.Timber);
 
         }
 
