@@ -31,6 +31,7 @@ using BH.oM.Structure.MaterialFragments;
 using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -49,6 +50,15 @@ namespace BH.Engine.Structure
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement LongitudinalReinforcement(ILayout2D rebarLayout, double diameter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            if (rebarLayout.IsNull())
+                return null;
+            else if(diameter < Tolerance.MacroDistance)
+            {
+                Reflection.Compute.RecordError("The diameter is less than the tolerance. Please check your inputs.");
+                return null;
+            }    
+
+
             CheckEndLocations(ref startLocation, ref endLocation);
             return new LongitudinalReinforcement
             {
