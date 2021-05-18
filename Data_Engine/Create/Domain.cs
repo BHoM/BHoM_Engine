@@ -41,17 +41,9 @@ namespace BH.Engine.Data
         [Description("Creates a numerical domain around the two values.")]
         [Input("min", "The lowest value in the domain, will be set as max if larger than max. Defaults to -infinite (double.MinValue).")]
         [Input("max", "The highest value in the domain, will be set as min if larger than min. Defaults to +infinite (double.MaxValue).")]
-        [Output("domain", "A numerical domain with its extreme values at min and max.")]
-        public static Domain Domain(double min = double.MinValue, double max = double.MaxValue)
-        {
-            return new Domain(Math.Min(min, max), Math.Max(min, max));
-        }
-
-        [Description("Creates a numerical domain around the two values.")]
-        [Input("min", "The lowest value in the domain, will be set as max if larger than max. Defaults to -infinite (double.MinValue).")]
-        [Input("max", "The highest value in the domain, will be set as min if larger than min. Defaults to +infinite (double.MaxValue).")]
         [Input("extremesInclusion", "Whether the Min and Max extremes are included in the Domain or not. `IncludeBoth` by default.")]
         [Output("domain", "A numerical domain with its extreme values at min and max.")]
+        [PreviousVersion("4.2", "BH.Engine.Data.Create.Domain(System.Double, System.Double)")]
         public static Domain Domain(double min = double.MinValue, double max = double.MaxValue, BH.oM.Data.DomainExtremesInclusion extremesInclusion = BH.oM.Data.DomainExtremesInclusion.IncludeBoth)
         {
             return new Domain(Math.Min(min, max), Math.Max(min, max), extremesInclusion);
