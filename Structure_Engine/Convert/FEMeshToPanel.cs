@@ -41,37 +41,21 @@ namespace BH.Engine.Structure
 
         public static List<Panel> FEMeshToPanel(this FEMesh feMesh)
         {
-            if (feMesh == null)
+            if (feMesh.IsNull("FEMeshToPanel"))
             {
-                Engine.Reflection.Compute.RecordError("FEMesh is null, please check inputs.");
                 return null;
             }
-            if (feMesh.Nodes == null || feMesh.Nodes.Count < 3)
+            if (feMesh.Nodes.Count < 3)
             {
-                Engine.Reflection.Compute.RecordError("FEMesh Nodes are null, please check inputs");
+                Reflection.Compute.RecordError("FEMesh Nodes are null, please check inputs");
                 return null;
             }
-            if (feMesh.Faces == null || feMesh.Faces.Count < 1)
+            if (feMesh.Faces.Count < 1)
             {
-                Engine.Reflection.Compute.RecordError("FEMesh Faces are null, please check inputs.");
+                Reflection.Compute.RecordError("FEMesh Faces are null, please check inputs.");
                 return null;
             }
-            foreach (Node node in feMesh.Nodes)
-            {
-                if (node == null)
-                {
-                    Reflection.Compute.RecordError("At least one Node in the FEMesh is null, please check inputs.");
-                    return null;
-                }
-            }
-            foreach (FEMeshFace face in feMesh.Faces)
-            {
-                if (face == null)
-                {
-                    Reflection.Compute.RecordError("At least one Face in the FEMesh is null, please check inputs.");
-                    return null;
-                }
-            }
+
             List<Polyline> polylines = new List<Polyline>();
            
             foreach (FEMeshFace feMeshFace in feMesh.Faces)
