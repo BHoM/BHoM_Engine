@@ -64,7 +64,7 @@ namespace BH.Engine.Structure
             }
             else
             {
-                Reflection.Compute.RecordWarning("Material from sectiion property of the bar is null.");
+                Reflection.Compute.RecordWarning("Material from SectionProperty of the Bar is null.");
             }
 
             name = string.IsNullOrEmpty(name) ? sectionProperty.Name : name;

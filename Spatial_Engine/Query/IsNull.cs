@@ -39,21 +39,33 @@ namespace BH.Engine.Spatial
         [Description("Checks if an IProfile is null and outputs relevant error message.")]
         [Input("profile", "The IProfile to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("pass", "A boolean which is true if the bar passes the null check.")]
-        public static bool IsNull(this IProfile profile, string methodName = "")
+        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Output("pass", "A boolean which is true if the profile is null.")]
+        public static bool IsNull(this IProfile profile, string methodName = "", string errorOverride = "")
         {
             if (profile == null)
             {
                 //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
-                if (string.IsNullOrEmpty(methodName))
+                if (!string.IsNullOrEmpty(errorOverride))
                 {
-                    StackTrace st = new StackTrace();
-                    methodName = st.FrameCount > 0 ? st.GetFrame(1).GetMethod().Name : "Method";
+                    Reflection.Compute.RecordError(errorOverride);
                 }
                 else
-                    methodName = "Method";
+                {
+                    if (string.IsNullOrEmpty(methodName))
+                    {
+                        StackTrace st = new StackTrace();
+                        if (st.FrameCount > 0)
+                        {
+                            methodName = st.GetFrame(1).GetMethod().Name;
+                            methodName.Substring(methodName.IndexOf("<") + 1, methodName.IndexOf("<") + 1 - methodName.IndexOf(">"));
+                        }
+                        else
+                            methodName = "Method";
+                    }
+                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the profile failed a null check.");
+                }
 
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because geometry failed a null check.");
                 return true;
             }
 
