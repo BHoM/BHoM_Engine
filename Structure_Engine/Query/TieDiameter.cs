@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Output("dia", "The diameter of the first TieReinforcement of the ConcreteSection.", typeof(Length))]
         public static double TieDiameter(this ConcreteSection property)
         {
-            if (!property.IsNull("TieDiameter"))
+            if (property.IsNull("TieDiameter"))
                 return 0;
 
             foreach (Reinforcement reo in property.Reinforcement)

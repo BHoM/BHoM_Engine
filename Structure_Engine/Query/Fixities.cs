@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         [Output("springValues", "The fixity values from a constraint as a bool array, where true indicates a fixity, in the following order: TransX, TransY, TransZ, RotX, RotY, RotZ.")]
         public static bool[] Fixities(this Constraint6DOF constraint)
         {
-            return constraint.IsNull("Fixities") ? new bool[]
+            return constraint.IsNull("Fixities") ? null : new bool[]
             {
                 constraint.TranslationX == DOFType.Fixed,
                 constraint.TranslationY == DOFType.Fixed,
@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
                 constraint.RotationX == DOFType.Fixed,
                 constraint.RotationY == DOFType.Fixed,
                 constraint.RotationZ == DOFType.Fixed
-            } : null;
+            };
         }
 
         /***************************************************/

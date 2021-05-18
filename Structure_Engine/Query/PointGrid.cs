@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Output("grid", "Rectangular grid of points on the Panel.")]
         public static List<Point> PointGrid(this Panel panel)
         {
-            if (!panel.IsNull("PointGrid"))
+            if (panel.IsNull("PointGrid"))
                 return null;
 
             List<ICurve> curves = panel.ExternalElementCurves();
@@ -124,7 +124,7 @@ namespace BH.Engine.Structure
         [Output("grid", "Rectangular grid of points on the FEMesh.")]
         public static List<List<Point>> PointGrid(this FEMesh mesh)
         {
-            return mesh.IsNull("PointGrid") ? mesh.Faces.Select(x => x.PointGrid(mesh)).ToList() : null;
+            return mesh.IsNull("PointGrid") ? null : mesh.Faces.Select(x => x.PointGrid(mesh)).ToList();
         }
 
         [Description("Generates a rectangular grid of points on the FEMeshFace of the FEMesh. Used for load visualisation.")]
@@ -133,7 +133,7 @@ namespace BH.Engine.Structure
         [Output("grid", "Rectangular grid of points on the FEMeshFace.")]
         public static List<Point> PointGrid(this FEMeshFace face, FEMesh mesh)
         {
-            if (!face.IsNull("PointGrid") || !mesh.IsNull("PointGrid"))
+            if (face.IsNull("PointGrid") || mesh.IsNull("PointGrid"))
                 return null;
 
             List<Point> pts = face.NodeListIndices.Select(i => mesh.Nodes[i].Position).ToList();
@@ -159,7 +159,7 @@ namespace BH.Engine.Structure
         [Output("grid", "The generated rectangular grid of points on the element.")]
         public static List<Point> IPointGrid(this IAreaElement element)
         {
-            return element.IIsNull("IPointGrid") ? PointGrid(element as dynamic) : null;
+            return element.IIsNull("IPointGrid") ? null : PointGrid(element as dynamic);
         }
 
         /***************************************************/

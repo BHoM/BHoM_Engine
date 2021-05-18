@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         [Output("isConstrained", "Returns true is the Node has a Support assigned.")]
         public static bool IsConstrained(this Node node)
         {
-            return node.IsNull("IsConstrained") ? node.Support != null : false;
+            return node.IsNull("IsConstrained") ? false : node.Support != null;
         }
 
         /***************************************************/

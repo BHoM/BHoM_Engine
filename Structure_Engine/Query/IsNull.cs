@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
+
         [PreviousVersion("4.2", "BH.Engine.Structure.Compute.IsNull(BH.oM.Structure.Elements.Node, System.String)")]
         [Description("Checks if a Node or its defining properties are null and outputs relevant error message.")]
         [Input("node", "The Node to test for null.")]
@@ -55,13 +55,13 @@ namespace BH.Engine.Structure
             // Check Node and Position
             if (node == null)
             {
-                if(string.IsNullOrEmpty(errorOverride))
+                if (string.IsNullOrEmpty(errorOverride))
                     ErrorMessage(methodName, "Node");
                 else
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if(node.Position == null)
+            else if (node.Position == null)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     ErrorMessage(methodName, "Node Position");
@@ -93,7 +93,7 @@ namespace BH.Engine.Structure
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if (bar.StartNode.IsNull(methodName, $"Cannot evaluate {methodName}, StartNode or its Position is null") 
+            else if (bar.StartNode.IsNull(methodName, $"Cannot evaluate {methodName}, StartNode or its Position is null")
                 || bar.EndNode.IsNull(methodName, $"Cannot evaluate {methodName}, StartNode or its Position is null"))
                 return true;
 
@@ -112,7 +112,7 @@ namespace BH.Engine.Structure
         public static bool IsNull(this FEMesh mesh, string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = null, string errorOverride = "")
         {
             // Check FEMesh
-            if(mesh == null)
+            if (mesh == null)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     ErrorMessage(methodName, "Bar");
@@ -120,7 +120,7 @@ namespace BH.Engine.Structure
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if(mesh.Faces == null || mesh.Faces.Count == 0)
+            else if (mesh.Faces == null || mesh.Faces.Count == 0)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the list of Faces are null or the number of Faces is 0.");
@@ -128,14 +128,14 @@ namespace BH.Engine.Structure
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if(mesh.Nodes == null || mesh.Nodes.Count == 0 )
+            else if (mesh.Nodes == null || mesh.Nodes.Count == 0)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the list of Nodes are null or the number of Nodes is 0.");
                 else
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
-            }    
+            }
 
             // Make sure to check all mesh Nodes if none are specified
             // When called from the FEMeshFace version of this method, we limit the Node check to relevant Nodes
@@ -192,7 +192,7 @@ namespace BH.Engine.Structure
                 return true;
             }
 
-            return false;   
+            return false;
         }
 
         [PreviousVersion("4.2", "BH.Engine.Structure.Compute.IsNull(BH.oM.Structure.Elements.FEMeshFace, System.String)")]
@@ -204,7 +204,7 @@ namespace BH.Engine.Structure
         public static bool IsNull(this FEMeshFace face, string methodName = "Method", string errorOverride = "")
         {
             // Check FEMeshFace
-            if(face == null)
+            if (face == null)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     ErrorMessage(methodName, "FEMeshFace");
@@ -220,7 +220,7 @@ namespace BH.Engine.Structure
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if(face.NodeListIndices.Count == 0)
+            else if (face.NodeListIndices.Count == 0)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     Reflection.Compute.RecordError($"Cannot evaluate { methodName} because the Face NodeListIndicies count is 0.");
@@ -240,7 +240,7 @@ namespace BH.Engine.Structure
         [Output("isNull", "True if the Panel or its defining properties are null.")]
         public static bool IsNull(this Panel panel, string methodName = "Method", string errorOverride = "")
         {
-            if(panel == null)
+            if (panel == null)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     ErrorMessage(methodName, "Panel");
@@ -248,7 +248,7 @@ namespace BH.Engine.Structure
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if(panel.ExternalEdges == null)
+            else if (panel.ExternalEdges == null)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     ErrorMessage(methodName, "Panel ExternalEdges");
@@ -256,15 +256,15 @@ namespace BH.Engine.Structure
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if(panel.ExternalEdges.Count == 0)
+            else if (panel.ExternalEdges.Count == 0)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     Reflection.Compute.RecordError($"Cannot evaluate { methodName} because the Panel ExternalEdges count is 0.");
                 else
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
-            }   
-            else if(panel.ExternalEdges.Any(x => x.IsNull(methodName, $"Cannot evaluate { methodName} because at least one of the Panels ExternalEdges or its Curve is null.")))
+            }
+            else if (panel.ExternalEdges.Any(x => x.IsNull(methodName, $"Cannot evaluate { methodName} because at least one of the Panels ExternalEdges or its Curve is null.")))
             {
                 if (!string.IsNullOrEmpty(errorOverride))
                     Reflection.Compute.RecordError(errorOverride);
@@ -301,7 +301,7 @@ namespace BH.Engine.Structure
         [Output("isNull", "True if the Edge or its defining properties are null.")]
         public static bool IsNull(this Edge edge, string methodName = "Method", string errorOverride = "")
         {
-            if(edge == null)
+            if (edge == null)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     ErrorMessage(methodName, "Edge");
@@ -309,7 +309,7 @@ namespace BH.Engine.Structure
                     Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if(edge.Curve == null)
+            else if (edge.Curve == null)
             {
                 if (string.IsNullOrEmpty(errorOverride))
                     ErrorMessage(methodName, "Edge Curve");
