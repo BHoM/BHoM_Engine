@@ -159,7 +159,7 @@ namespace BH.Engine.Structure
         [Output("grid", "The generated rectangular grid of points on the element.")]
         public static List<Point> IPointGrid(this IAreaElement element)
         {
-            return element.NullCheck("IPointGrid") ? PointGrid(element as dynamic) : null;
+            return element.INullCheck("IPointGrid") ? PointGrid(element as dynamic) : null;
         }
 
         /***************************************************/

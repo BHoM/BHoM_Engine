@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The kind of matter the AreaElement is composed of.")]
         public static MaterialComposition MaterialComposition(this IAreaElement areaElement)
         {
-            if (!areaElement.NullCheck("MaterialComposition"))
+            if (!areaElement.INullCheck("MaterialComposition"))
                 return null;
 
             if (areaElement.Property == null || areaElement.Property.Material == null)
