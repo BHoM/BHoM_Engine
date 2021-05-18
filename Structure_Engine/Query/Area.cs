@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
         [Output("area", "The area of the element.", typeof(Area))]
         public static double IArea(this IAreaElement element)
         {
-            return element.NullCheck("Area") ? Area(element as dynamic) : 0;
+            return element.INullCheck("IArea") ? Area(element as dynamic) : 0;
         }
 
         /***************************************************/

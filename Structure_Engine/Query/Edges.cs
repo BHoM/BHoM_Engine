@@ -60,7 +60,7 @@ namespace BH.Engine.Structure
         [Output("edges", "The list of curves representing all internal and external edges of an element.")]
         public static IEnumerable<ICurve> IEdges(this IAreaElement element)
         {
-            return element.NullCheck("IEdges") ? Edges(element as dynamic) : null;
+            return element.INullCheck("IEdges") ? Edges(element as dynamic) : null;
         }
 
         /***************************************************/

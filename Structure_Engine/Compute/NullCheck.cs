@@ -79,28 +79,6 @@ namespace BH.Engine.Structure
             return bar.StartNode.NullCheck(methodName) && bar.EndNode.NullCheck(methodName);
         }
 
-        [Description("Checks if an IAreaElement is null and outputs relevant error message.")]
-        [Input("areaElement", "The IAreaElement to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("pass", "A boolean which is true if the IAreaElement passes the null check.")]
-        public static bool NullCheck(this IAreaElement element, string methodName = "Method")
-        {
-            if (element is Panel)
-                return NullCheck(element as Panel);
-            else if (element is FEMesh)
-                return NullCheck(element as FEMesh);
-            else
-            {
-                if (element == null)
-                {
-                    ErrorMessage(methodName, "IAreaElement");
-                    return false;
-                }
-                else
-                    return true;
-            }
-        }
-
         [Description("Checks if an FEMesh or one of its Nodes are null and outputs relevant error message.")]
         [Input("mesh", "The FEMesh to test for null.")]
         [Input("methodName", "Optional name of the method to reference in the error message.")]
@@ -127,7 +105,7 @@ namespace BH.Engine.Structure
             // If mesh nodes are specified, check that they are in range
             else if (checkNodes && mesh.Nodes.Count - 1 < nodeListIndices.Max())
             {
-                Engine.Reflection.Compute.RecordError($"Cannot evaluate {methodName} because Node indices are out of range for FEMesh");
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because Node indices are out of range for FEMesh");
                 return false;
             }
 
@@ -190,6 +168,22 @@ namespace BH.Engine.Structure
             }
 
             return panel.ExternalEdges.All(x => x.NullCheck("NullCheck")) ? true : false;
+        }
+
+        [Description("Checks if a Surface or its ExternalEdges are null and outputs relevant error message.")]
+        [Input("panel", "The Panel to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the Panel passes the null check.")]
+        public static bool NullCheck(this Surface surface, string methodName = "Method")
+        {
+            // Check Surface
+            if (surface == null)
+            {
+                ErrorMessage(methodName, "Surface");
+                return false;
+            }
+
+            return true;
         }
 
         [Description("Checks if a Edge is null and outputs relevant error message.")]
@@ -343,6 +337,19 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        [Description("Checks if an IAreaElement is null and outputs relevant error message.")]
+        [Input("areaElement", "The IAreaElement to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("pass", "A boolean which is true if the IAreaElement passes the null check.")]
+        public static bool INullCheck(this IAreaElement element, string methodName = "Method")
+        {
+            return NullCheck(element as dynamic, "IAreaElement");
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
@@ -350,5 +357,21 @@ namespace BH.Engine.Structure
         {
             Reflection.Compute.RecordError($"Cannot evaluate {methodName} because {type} failed a null check.");
         }
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static bool NullCheck(this IAreaElement element, string methodName = "Method")
+        {
+            if (element == null)
+            {
+                ErrorMessage(methodName, "IAreaElement");
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

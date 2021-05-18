@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The IAreaElement solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IAreaElement areaElement)
         {
-            if (!areaElement.NullCheck("SolidVolume"))
+            if (!areaElement.INullCheck("SolidVolume"))
                 return 0;
 
             if (areaElement.Property == null)
