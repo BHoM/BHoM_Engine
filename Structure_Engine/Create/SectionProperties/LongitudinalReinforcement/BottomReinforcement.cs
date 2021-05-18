@@ -52,6 +52,12 @@ namespace BH.Engine.Structure
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement BottomReinforcement(double diameter, double area, double spacing, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            if (diameter < Tolerance.MacroDistance || area < Tolerance.MacroDistance || spacing < Tolerance.MacroDistance)
+            {
+                Reflection.Compute.RecordError("The diameter, area or spacing values are less than the tolerance. Please check your inputs.");
+                return null;
+            }
+
             int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
             return MultiLinearReinforcement(diameter, numberOfBars, spacing, spacing, Vector.XAxis, 0, ReferencePoint.BottomCenter, startLocation, endLocation, material);
         }

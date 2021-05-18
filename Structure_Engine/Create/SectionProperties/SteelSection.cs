@@ -29,6 +29,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using System.Linq;
 using BH.oM.Quantities.Attributes;
@@ -190,7 +191,7 @@ namespace BH.Engine.Structure
         [Output("section", "The created free form steel section.")]
         public static SteelSection SteelFreeFormSection(List<ICurve> edges, Steel material = null, string name = null)
         {
-            return SteelSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name);
+            return edges.Count == 0 || edges.Any(x => x.IsNull()) ? null : SteelSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name);
         }
 
         /***************************************************/

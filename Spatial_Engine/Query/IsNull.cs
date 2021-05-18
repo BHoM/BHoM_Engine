@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Reflection.Attributes;
+using BH.oM.Spatial.Layouts;
 using BH.oM.Spatial.ShapeProfiles;
 using System.ComponentModel;
 using System;
@@ -36,11 +37,11 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if an IProfile is null and outputs relevant error message.")]
-        [Input("profile", "The IProfile to test for null.")]
+        [Description("Checks if an Profile is null and outputs relevant error message.")]
+        [Input("profile", "The Profile to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
-        [Output("isNull", "True if the geometry is null.")]
+        [Output("isNull", "True if the Profile is null.")]
         public static bool IsNull(this IProfile profile, string methodName = "", string errorOverride = "")
         {
             if (profile == null)
@@ -63,7 +64,79 @@ namespace BH.Engine.Spatial
                         else
                             methodName = "Method";
                     }
-                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the profile failed a null check.");
+                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Profile failed a null check.");
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if an Layout2D is null and outputs relevant error message.")]
+        [Input("profile", "The Layout2D to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Output("isNull", "True if the Layout2D is null.")]
+        public static bool IsNull(this ILayout2D layout, string methodName = "", string errorOverride = "")
+        {
+            if (layout == null)
+            {
+                //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
+                if (!string.IsNullOrEmpty(errorOverride))
+                {
+                    Reflection.Compute.RecordError(errorOverride);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(methodName))
+                    {
+                        StackTrace st = new StackTrace();
+                        if (st.FrameCount > 0)
+                        {
+                            methodName = st.GetFrame(1).GetMethod().Name;
+                            methodName.Substring(methodName.IndexOf("<") + 1, methodName.IndexOf("<") + 1 - methodName.IndexOf(">"));
+                        }
+                        else
+                            methodName = "Method";
+                    }
+                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Layout2D failed a null check.");
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if an CurveLayout is null and outputs relevant error message.")]
+        [Input("profile", "The CurveLayout to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Output("isNull", "True if the CurveLayout is null.")]
+        public static bool IsNull(this ICurveLayout layout, string methodName = "", string errorOverride = "")
+        {
+            if (layout == null)
+            {
+                //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
+                if (!string.IsNullOrEmpty(errorOverride))
+                {
+                    Reflection.Compute.RecordError(errorOverride);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(methodName))
+                    {
+                        StackTrace st = new StackTrace();
+                        if (st.FrameCount > 0)
+                        {
+                            methodName = st.GetFrame(1).GetMethod().Name;
+                            methodName.Substring(methodName.IndexOf("<") + 1, methodName.IndexOf("<") + 1 - methodName.IndexOf(">"));
+                        }
+                        else
+                            methodName = "Method";
+                    }
+                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the CurveLayout failed a null check.");
                 }
 
                 return true;
