@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
         [Output("transform", "The generated transformation matrix.")]
         public static TransformMatrix BarSectionTranformation(this Bar bar)
         {
-            if (!bar.NullCheck(""))
+            if (!bar.IsNull(""))
                 return null;
 
             Vector trans = bar.StartNode.Position - Point.Origin;

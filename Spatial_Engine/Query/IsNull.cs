@@ -40,7 +40,7 @@ namespace BH.Engine.Spatial
         [Input("profile", "The IProfile to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
-        [Output("pass", "A boolean which is true if the profile is null.")]
+        [Output("isNull", "True if the geometry is null.")]
         public static bool IsNull(this IProfile profile, string methodName = "", string errorOverride = "")
         {
             if (profile == null)
