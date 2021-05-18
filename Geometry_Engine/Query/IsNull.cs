@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry
         [Input("geometry", "The geometry to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
-        [Output("pass", "A boolean which is true if the geometry is null.")]
+        [Output("isNull", "True if the geometry is null.")]
         public static bool IsNull(this IGeometry geometry, string methodName = "", string errorOverride = "")
         {
             if (geometry == null)

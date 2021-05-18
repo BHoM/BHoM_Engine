@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
                 constants["Welz"], constants["Wply"], constants["Wplz"], constants["CentreZ"], constants["CentreY"], constants["Vz"],
                 constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
 
-            return section.NullCheck("GenericSectionFromProfile") ? PostProcessSectionCreate(section, name, material, MaterialType.Undefined) : null;
+            return section.IsNull("GenericSectionFromProfile") ? PostProcessSectionCreate(section, name, material, MaterialType.Undefined) : null;
 
         }
 

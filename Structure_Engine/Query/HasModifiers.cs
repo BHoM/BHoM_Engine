@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if any modifiers exists on the section.")]
         public static bool HasModifiers(this ISurfaceProperty property)
         {
-            if (!property.NullCheck("HasModifiers"))
+            if (!property.IsNull("HasModifiers"))
                 return false;
 
             double[] modifiers = property.Modifiers();
@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if any modifiers exists on the section.")]
         public static bool HasModifiers(this ISectionProperty property)
         {
-            if (!property.NullCheck("HasModifiers"))
+            if (!property.IsNull("HasModifiers"))
                 return false;
 
             double[] modifiers = property.Modifiers();

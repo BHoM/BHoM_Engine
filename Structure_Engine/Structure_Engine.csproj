@@ -91,7 +91,7 @@
     <Compile Include="Convert\FEMeshToPanel.cs" />
     <Compile Include="Compute\MapTaperedProfile.cs" />
     <Compile Include="Compute\IntegrateSection.cs" />
-    <Compile Include="Compute\NullCheck.cs" />
+    <Compile Include="Query\IsNull.cs" />
     <Compile Include="Compute\OrientationAngle.cs" />
     <Compile Include="Convert\PanelToFEMesh.cs" />
     <Compile Include="Compute\PlasticModulus.cs" />

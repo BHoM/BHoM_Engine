@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
 
         public static FEMesh PanelToFEMesh(this Panel panel)
         {
-            if (BH.Engine.Structure.Compute.NullCheck(panel, "PanelToFEMesh") == false)
+            if (panel.IsNull("PanelToFEMesh"))
             {
                 return null;
             }

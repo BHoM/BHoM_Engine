@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("area", "The area of the FEMesh.", typeof(Area))]
         public static double Area(this FEMesh mesh)
         {
-            return mesh.NullCheck("Area") ? Analytical.Query.Geometry(mesh).Area() : 0;
+            return mesh.IsNull("Area") ? Analytical.Query.Geometry(mesh).Area() : 0;
         }
 
         /***************************************************/
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
         [Output("area", "The area of the Surface.", typeof(Area))]
         public static double Area(this Surface surface)
         {
-            return surface.NullCheck("Area") ? surface.Extents.IArea() : 0;
+            return surface.IsNull("Area") ? surface.Extents.IArea() : 0;
         }
 
         /***************************************************/
@@ -65,7 +65,7 @@ namespace BH.Engine.Structure
         [Output("area", "The area of the LongitudinalReinforcement.", typeof(Area))]
         public static double Area(this LongitudinalReinforcement reinforcement)
         {
-            return reinforcement.NullCheck("Area") ? reinforcement.ReinforcingBarCount() * reinforcement.Diameter * reinforcement.Diameter / 4 * Math.PI : 0;
+            return reinforcement.IsNull("Area") ? reinforcement.ReinforcingBarCount() * reinforcement.Diameter * reinforcement.Diameter / 4 * Math.PI : 0;
         }
 
         /***************************************************/
@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
         [Output("area", "The area of the element.", typeof(Area))]
         public static double IArea(this IAreaElement element)
         {
-            return element.INullCheck("IArea") ? Area(element as dynamic) : 0;
+            return element.IIsNull("IArea") ? Area(element as dynamic) : 0;
         }
 
         /***************************************************/

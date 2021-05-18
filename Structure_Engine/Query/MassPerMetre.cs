@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double MassPerMetre(this ISectionProperty section)
         {
-            return section.NullCheck("MassPerMetre") ? section.Area * section.Material.Density : 0;
+            return section.IsNull("MassPerMetre") ? section.Area * section.Material.Density : 0;
         }
 
         /***************************************************/
@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
         public static double MassPerMetre(this ConcreteSection section)
         {
             //TODO: Handle reinforcement
-            return section.NullCheck("MassPerMetre") ? section.NullCheck("MassPerMetre") ? section.Area * section.Material.Density : 0 : 0;
+            return section.IsNull("MassPerMetre") ? section.IsNull("MassPerMetre") ? section.Area * section.Material.Density : 0 : 0;
         }
 
         /***************************************************/
@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
         public static double MassPerMetre(this CompositeSection section)
         {
             //TODO: Handle embedment etc..
-            return section.NullCheck("MassPerMetre") ? section.ConcreteSection.MassPerMetre() + section.SteelSection.MassPerMetre() : 0;
+            return section.IsNull("MassPerMetre") ? section.ConcreteSection.MassPerMetre() + section.SteelSection.MassPerMetre() : 0;
         }
 
         /***************************************************/
@@ -72,7 +72,7 @@ namespace BH.Engine.Structure
         public static double MassPerMetre(this CableSection section)
         {
             //TODO: Add property for kg/m as part of the cable section?
-            return section.NullCheck("MassPerMetre") ? section.Area * section.Material.Density : 0;
+            return section.IsNull("MassPerMetre") ? section.Area * section.Material.Density : 0;
         }
 
 
@@ -85,7 +85,7 @@ namespace BH.Engine.Structure
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]
         public static double IMassPerMetre(this ISectionProperty section)
         {
-            return section.NullCheck("MassPerMetre") ? MassPerMetre(section as dynamic) : 0;
+            return section.IsNull("MassPerMetre") ? MassPerMetre(section as dynamic) : 0;
         }
 
         /***************************************************/
