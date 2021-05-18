@@ -141,12 +141,12 @@ namespace BH.Engine.Reflection
                 Type[] types = type.GetGenericArguments();
 
                 if (replaceGeneric && types.Count() == 1 && type.Namespace != null && !type.Namespace.StartsWith("BH"))
-                    return types[0].ToText(includePath, replaceGeneric);
+                    return types[0].ToText(includePath, replaceGeneric, genericStart, genericSeparator, genericEnd);
                 else
                 {
                     string text = type.Name.Substring(0, type.Name.IndexOf('`'))
                         + genericStart
-                        + types.Select(x => x.ToText(includePath)).Aggregate((x, y) => x + genericSeparator + y)
+                        + types.Select(x => x.ToText(includePath, replaceGeneric, genericStart, genericSeparator, genericEnd)).Aggregate((x, y) => x + genericSeparator + y)
                         + genericEnd;
 
                     if (includePath)

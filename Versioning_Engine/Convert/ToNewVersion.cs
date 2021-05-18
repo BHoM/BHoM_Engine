@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Versioning;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -74,6 +75,11 @@ namespace BH.Engine.Versioning
             if (version == "")
                 version = document.Version();
 
+            // Keep a description of the old document
+            string oldDocument = Compute.VersioningKey(document);
+            string noUpdateMessage = null;
+            bool wasUpdated = false;
+
             // Get the list of upgraders to call
             List<string> versions = Query.UpgradersToCall(version);
 
@@ -95,13 +101,38 @@ namespace BH.Engine.Versioning
                     if (result.Contains("_t") && result["_t"] == "NoUpdate")
                     {
                         if (result.Contains("Message"))
-                            Engine.Reflection.Compute.RecordError(result["Message"].ToString());
+                        {
+                            noUpdateMessage = result["Message"].ToString();
+                            Engine.Reflection.Compute.RecordError(noUpdateMessage);
+                        }     
                     }  
-                    else
+                    else if (document != result)
+                    {
+                        wasUpdated = true;
                         document = result;
+                    }   
                 }   
             }
 
+
+            // Record the fact that a document needed to be upgraded
+            if (wasUpdated || noUpdateMessage != null)
+            {
+                string newDocument = noUpdateMessage != null ? null : Compute.VersioningKey(document);
+                string newVersion = Engine.Reflection.Query.BHoMVersion();
+                string oldVersion = string.IsNullOrWhiteSpace(version) ? "?.?" : version;
+                string message = noUpdateMessage ?? $"{oldDocument} from version {oldVersion} has been upgraded to {newDocument} (version {newVersion})";
+
+                BH.Engine.Reflection.Compute.RecordEvent(new VersioningEvent
+                {
+                    OldDocument = oldDocument,
+                    NewDocument = newDocument,
+                    OldVersion = oldVersion,
+                    NewVersion = newVersion,
+                    Message = message
+                });
+            }
+            
             return document;
         }
 
