@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Spaces with the provided spacetype assigned by a string and a point in the space.\n The method checks whether the space perimeter IsContaining the point.  The string is being parsed to an Enum to set the space type. ")]
+        [Description("Returns a list of Environment Spaces with the provided spacetype assigned by a string and a point in the space.\nThe method checks whether the space perimeter IsContaining the point. The string is being parsed to an Enum to set the space type. ")]
         [Input("spaces", "A collection of Environment Spaces to set the type for")]
         [Input("searchPoints", "A collection of points to search. The points should be contained by the space geometry")]
         [Input("type", "A string representing the space type to assign")]
@@ -61,13 +61,6 @@ namespace BH.Engine.Environment
 
             return spaces.AssignSpaceTypeByPoint(searchPoints, spaceType);
         }
-    }
-
-    public static partial class Modify
-    {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
 
         [Description("Returns a list of Environment Spaces with the provided space type assigned by an Enum and a point in the space.\n The method checks whether the space perimeter IsContaining the point.")]
         [Input("spaces", "A collection of Environment Spaces to set the type for")]

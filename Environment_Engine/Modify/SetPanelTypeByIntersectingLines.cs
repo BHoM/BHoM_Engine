@@ -55,7 +55,8 @@ namespace BH.Engine.Environment
             {
                 for (int i = 0; i < panels.Count; i++)
                 {
-                    if (panels[i].Tilt(distanceTolerance, angleTolerance) >= minTilt && panels[i].Tilt(distanceTolerance, angleTolerance) <= maxTilt && panels[i].Polyline().LineIntersections(l).Count > 0)
+                    double tilt = panels[i].Tilt(distanceTolerance, angleTolerance);
+                    if (tilt >= minTilt && tilt <= maxTilt && panels[i].Polyline().LineIntersections(l).Count > 0)
                     {
                         panels[i].Type = panelType;
                     }
