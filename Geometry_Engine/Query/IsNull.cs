@@ -41,19 +41,13 @@ namespace BH.Engine.Geometry
         [Description("Checks if an Geometry is null and outputs relevant error message.")]
         [Input("geometry", "The Geometry to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Geometry is null.")]
-        public static bool IsNull(this IGeometry geometry, string methodName = "", string errorOverride = "")
+        public static bool IsNull(this IGeometry geometry, string methodName = "", string msg = "")
         {
             if (geometry == null)
             {
                 //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
-                if (!string.IsNullOrEmpty(errorOverride))
-                {
-                    Reflection.Compute.RecordError(errorOverride);
-                }
-                else
-                {
                     if (string.IsNullOrEmpty(methodName))
                     {
                         StackTrace st = new StackTrace();
@@ -65,8 +59,7 @@ namespace BH.Engine.Geometry
                         else
                             methodName = "Method";
                     }
-                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check.");
-                }
+                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg}");
 
                 return true;
             }
