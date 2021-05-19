@@ -149,6 +149,7 @@
     <Compile Include="Create\MaterialFragments\Aluminium.cs" />
     <Compile Include="Create\MaterialFragments\Concrete.cs" />
     <Compile Include="Create\MaterialFragments\Steel.cs" />
+    <Compile Include="Create\Reinforcement\ReinforcementDensity.cs" />
     <Compile Include="Create\Requests\BarResultRequest.cs" />
     <Compile Include="Create\Requests\GlobalResultRequest.cs" />
     <Compile Include="Create\Requests\MeshResultRequest.cs" />
