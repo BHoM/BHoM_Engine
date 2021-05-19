@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Spaces with the provided name being existing space name + '_spaceType', for example 1A_Bedroom. \n Sets a unique name by numbers if multiple spaces are of the same type, i.e. 1A_Bedroom1")]
+        [Description("Returns a list of Environment Spaces with the provided name being existing space name + '_spaceType', for example 1A_Bedroom.\nSets a unique name by numbers if multiple spaces are of the same type, i.e. 1A_Bedroom1")]
         [Input("spaces", "A collection of Environment Spaces to set the name for")]
         [Output("spaces", "A collection of modified Environment Spaces with assigned name")]
         public static List<Space> UpdateSpaceNameByType(List<Space> spaces)
