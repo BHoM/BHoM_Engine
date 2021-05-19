@@ -66,4 +66,3 @@ namespace BH.Engine.Structure
 
     }
 }
-

@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         {
             if (curveLayout.IsNull())
                 return null;
-            else if(diameter < Tolerance.MacroDistance || spacing < Tolerance.MacroDistance)
+            else if (diameter < Tolerance.MacroDistance || spacing < Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The diameter or spacing is less than the tolerance. Please check your inputs.");
                 return null;

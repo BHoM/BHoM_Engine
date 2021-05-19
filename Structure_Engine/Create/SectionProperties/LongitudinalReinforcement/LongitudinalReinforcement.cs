@@ -52,11 +52,11 @@ namespace BH.Engine.Structure
         {
             if (rebarLayout.IsNull())
                 return null;
-            else if(diameter < Tolerance.MacroDistance)
+            else if (diameter < Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The diameter is less than the tolerance. Please check your inputs.");
                 return null;
-            }    
+            }
 
 
             CheckEndLocations(ref startLocation, ref endLocation);

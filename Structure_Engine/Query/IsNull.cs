@@ -48,26 +48,19 @@ namespace BH.Engine.Structure
         [Description("Checks if a Node or its defining properties are null and outputs relevant error message.")]
         [Input("node", "The Node to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Node or its defining properties are null.")]
-        public static bool IsNull(this Node node, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this Node node, string methodName = "Method", string msg = "")
         {
             // Check Node and Position
             if (node == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Node");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Node", msg);
                 return true;
             }
             else if (node.Position == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Node Position");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
-
+                ErrorMessage(methodName, "Node Position", msg);
                 return true;
             }
 
@@ -80,21 +73,17 @@ namespace BH.Engine.Structure
         [Description("Checks if a Bar or its defining properties are null and outputs relevant error message.")]
         [Input("bar", "The Bar to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Bar or its defining properties are null.")]
-        public static bool IsNull(this Bar bar, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this Bar bar, string methodName = "Method", string msg = "")
         {
             // Check bar
             if (bar == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Bar");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Bar", msg);
                 return true;
             }
-            else if (bar.StartNode.IsNull(methodName, $"Cannot evaluate {methodName}, StartNode or its Position is null")
-                || bar.EndNode.IsNull(methodName, $"Cannot evaluate {methodName}, StartNode or its Position is null"))
+            else if (bar.StartNode.IsNull(methodName, "The Node (StartNode) is owned by a Bar.") || bar.EndNode.IsNull(methodName, "The Node (EndNode) is owned by a Bar."))
                 return true;
 
             return false;
@@ -107,33 +96,24 @@ namespace BH.Engine.Structure
         [Input("checkFaces", "Optional bool to tell the method whether to check FEMeshFaces or not.")]
         [Input("checkNodes", "Optional bool to tell the method whether to check mesh Nodes or not.")]
         [Input("nodeListIndices", "Optional list of nodes to limit check to")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the FEMesh or its defining properties are null.")]
-        public static bool IsNull(this FEMesh mesh, string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = null, string errorOverride = "")
+        public static bool IsNull(this FEMesh mesh, string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = null, string msg = "")
         {
             // Check FEMesh
             if (mesh == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Bar");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Bar", msg);
                 return true;
             }
             else if (mesh.Faces == null || mesh.Faces.Count == 0)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the list of Faces are null or the number of Faces is 0.");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the list of Faces are null or the number of Faces is 0. {msg}");
                 return true;
             }
             else if (mesh.Nodes == null || mesh.Nodes.Count == 0)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the list of Nodes are null or the number of Nodes is 0.");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the list of Nodes are null or the number of Nodes is 0. {msg}");
                 return true;
             }
 
@@ -156,14 +136,14 @@ namespace BH.Engine.Structure
             bool passes = false;
             for (int i = 0; checkNodes && passes && i < nodeListIndices.Count; i++)
             {
-                passes = mesh.Nodes[nodeListIndices[i]].IsNull(methodName, $"Cannot evaluate {methodName} because at least one of the FEMesh Nodes or its Position is null.");
+                passes = mesh.Nodes[nodeListIndices[i]].IsNull(methodName, $"The Node is owned by an FEMesh. {msg}");
             }
 
             // Check FEMeshFaces, but only if checkFaces is set to true
             // When called from the FEMeshFace version of this method, we do not need to check FEMeshFaces, as the only relevant face has already been checked
             for (int i = 0; checkFaces && passes && i < mesh.Faces.Count; i++)
             {
-                passes = mesh.Faces[i].IsNull(methodName, $"Cannot evaluate {methodName} because at least one of the FEMeshFaces or its NodeListIndicies are null or count is equal to 0.");
+                passes = mesh.Faces[i].IsNull(methodName, $"The FEMeshFace is owned by an FEMesh. {msg}");
             }
 
             return passes;
@@ -174,21 +154,17 @@ namespace BH.Engine.Structure
         [Input("face", "The FEMeshFace to test for null.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the FEMeshFace or its defining properties are null.")]
-        public static bool IsNull(this FEMeshFace face, FEMesh mesh, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this FEMeshFace face, FEMesh mesh, string methodName = "Method", string msg = "")
         {
             // Check FEMeshFace and relevant nodes in FEMesh
-            if (face.IsNull(methodName))
+            if (face.IsNull(methodName, msg))
             {
-                if (!string.IsNullOrEmpty(errorOverride))
-                    Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
-            else if (mesh.IsNull(methodName, false, true, face.NodeListIndices))
+            else if (mesh.IsNull(methodName, false, true, face.NodeListIndices, msg))
             {
-                if (!string.IsNullOrEmpty(errorOverride))
-                    Reflection.Compute.RecordError(errorOverride);
                 return true;
             }
 
@@ -199,33 +175,24 @@ namespace BH.Engine.Structure
         [Description("Checks if an FEMeshFace or its defining properties are null and outputs relevant error message.")]
         [Input("face", "The FEMeshFace to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the FEMeshFace or its defining properties are null.")]
-        public static bool IsNull(this FEMeshFace face, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this FEMeshFace face, string methodName = "Method", string msg = "")
         {
             // Check FEMeshFace
             if (face == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "FEMeshFace");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "FEMeshFace", msg);
                 return true;
             }
             else if (face.NodeListIndices == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "FEMeshFace NodeListIndicies");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "FEMeshFace NodeListIndicies", msg);
                 return true;
             }
             else if (face.NodeListIndices.Count == 0)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    Reflection.Compute.RecordError($"Cannot evaluate { methodName} because the Face NodeListIndicies count is 0.");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Face NodeListIndicies count is 0. {msg}");
                 return true;
             }
 
@@ -236,38 +203,29 @@ namespace BH.Engine.Structure
         [Description("Checks if a Panel or its defining properties are null and outputs relevant error message.")]
         [Input("panel", "The Panel to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Panel or its defining properties are null.")]
-        public static bool IsNull(this Panel panel, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this Panel panel, string methodName = "Method", string msg = "")
         {
             if (panel == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Panel");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Panel", msg);
                 return true;
             }
             else if (panel.ExternalEdges == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Panel ExternalEdges");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Panel ExternalEdges", msg);
                 return true;
             }
             else if (panel.ExternalEdges.Count == 0)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    Reflection.Compute.RecordError($"Cannot evaluate { methodName} because the Panel ExternalEdges count is 0.");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Panel ExternalEdges count is 0. {msg}");
                 return true;
             }
-            else if (panel.ExternalEdges.Any(x => x.IsNull(methodName, $"Cannot evaluate { methodName} because at least one of the Panels ExternalEdges or its Curve is null.")))
+            else if (panel.ExternalEdges.Any(x => x.IsNull(methodName, $"The ExternalEdges are owned by a Panel. {msg}")))
             {
-                if (!string.IsNullOrEmpty(errorOverride))
-                    Reflection.Compute.RecordError(errorOverride);
+                if (!string.IsNullOrEmpty(msg))
+                    Reflection.Compute.RecordError(msg);
                 return true;
             }
 
@@ -277,16 +235,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a Surface or its defining properties are null and outputs relevant error message.")]
         [Input("panel", "The Surface to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Surface or its defining properties are null.")]
-        public static bool IsNull(this Surface surface, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this Surface surface, string methodName = "Method", string msg = "")
         {
             if (surface == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Surface");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Surface", msg);
                 return true;
             }
 
@@ -297,24 +252,18 @@ namespace BH.Engine.Structure
         [Description("Checks if a Edge or its defining properties are null and outputs relevant error message.")]
         [Input("panel", "The Edge to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Edge or its defining properties are null.")]
-        public static bool IsNull(this Edge edge, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this Edge edge, string methodName = "Method", string msg = "")
         {
             if (edge == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Edge");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Edge", msg);
                 return true;
             }
             else if (edge.Curve == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Edge Curve");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Edge Curve", msg);
                 return true;
             }
 
@@ -324,16 +273,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a SectionProperty is null and outputs relevant error message.")]
         [Input("panel", "The SectionProperty to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the SectionProperty is null.")]
-        public static bool IsNull(this ISectionProperty sectionProperty, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this ISectionProperty sectionProperty, string methodName = "Method", string msg = "")
         {
             if (sectionProperty == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "SectionProperty");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "SectionProperty", msg);
                 return true;
             }
 
@@ -343,16 +289,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a SurfaceProperty is null and outputs relevant error message.")]
         [Input("panel", "The SurfaceProperty to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the SurfaceProperty is null")]
-        public static bool IsNull(this ISurfaceProperty surfaceProperty, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this ISurfaceProperty surfaceProperty, string methodName = "Method", string msg = "")
         {
             if (surfaceProperty == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "SurfaceProperty");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "SurfaceProperty", msg);
                 return true;
             }
 
@@ -362,16 +305,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a MaterialFragment is null and outputs relevant error message.")]
         [Input("panel", "The MaterialFragment to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the MaterialFragment is null.")]
-        public static bool IsNull(this IMaterialFragment material, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this IMaterialFragment material, string methodName = "Method", string msg = "")
         {
             if (material == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "MaterialFragment");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "MaterialFragment", msg);
                 return true;
             }
 
@@ -381,16 +321,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a BarReinforcement is null and outputs relevant error message.")]
         [Input("panel", "The BarReinforcement to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the BarReinforcement is null.")]
-        public static bool IsNull(this IBarReinforcement reinforcement, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this IBarReinforcement reinforcement, string methodName = "Method", string msg = "")
         {
             if (reinforcement == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "BarReinforcement");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "BarReinforcement", msg);
                 return true;
             }
 
@@ -400,16 +337,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a Load is null and outputs relevant error message.")]
         [Input("panel", "The Load to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Load is null.")]
-        public static bool IsNull(this ILoad load, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this ILoad load, string methodName = "Method", string msg = "")
         {
             if (load == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Load");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Load", msg);
                 return true;
             }
 
@@ -419,16 +353,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a Constraint6DOF is null and outputs relevant error message.")]
         [Input("panel", "The Constraint6DOF to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint6DOF is null.")]
-        public static bool IsNull(this Constraint6DOF constraint, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this Constraint6DOF constraint, string methodName = "Method", string msg = "")
         {
             if (constraint == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Constraint6DOF");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Constraint6DOF", msg);
                 return true;
             }
 
@@ -438,16 +369,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a Constraint3DOF is null and outputs relevant error message.")]
         [Input("panel", "The Constraint3DOF to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint3DOF is null.")]
-        public static bool IsNull(this Constraint3DOF constraint, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this Constraint3DOF constraint, string methodName = "Method", string msg = "")
         {
             if (constraint == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Constraint3DOF");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Constraint3DOF", msg);
                 return true;
             }
 
@@ -457,16 +385,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a Constraint4DOF is null and outputs relevant error message.")]
         [Input("panel", "The Constraint4DOF to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint4DOF is null.")]
-        public static bool IsNull(this Constraint4DOF constraint, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this Constraint4DOF constraint, string methodName = "Method", string msg = "")
         {
             if (constraint == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Constraint4DOF");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Constraint4DOF", msg);
                 return true;
             }
 
@@ -476,16 +401,13 @@ namespace BH.Engine.Structure
         [Description("Checks if a Case is null and outputs relevant error message.")]
         [Input("panel", "The Case to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Case is null.")]
-        public static bool IsNull(this ICase loadCase, string methodName = "Method", string errorOverride = "")
+        public static bool IsNull(this ICase loadCase, string methodName = "Method", string msg = "")
         {
             if (loadCase == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
-                    ErrorMessage(methodName, "Case");
-                else
-                    Reflection.Compute.RecordError(errorOverride);
+                ErrorMessage(methodName, "Case", msg);
                 return true;
             }
 
@@ -499,34 +421,34 @@ namespace BH.Engine.Structure
         [Description("Checks if an AreaElement is null and outputs relevant error message.")]
         [Input("areaElement", "The AreaElement to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("pass", "True if the AreaElement is null.")]
-        public static bool IIsNull(this IAreaElement element, string methodName = "Method", string errorOverride = "")
+        public static bool IIsNull(this IAreaElement element, string methodName = "Method", string msg = "")
         {
-            return IsNull(element as dynamic, "AreaElement", errorOverride);
+            return IsNull(element as dynamic, "AreaElement", msg);
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ErrorMessage(string methodName, string type)
+        private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
         {
-            Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null.");
+            Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
         }
 
         /***************************************************/
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        private static bool IsNull(this IAreaElement element, string methodName = "Method", string errorOverride = "")
+        private static bool IsNull(this IAreaElement element, string methodName = "Method", string msg = "")
         {
             if (element == null)
             {
-                if (string.IsNullOrEmpty(errorOverride))
+                if (string.IsNullOrEmpty(msg))
                     ErrorMessage(methodName, "AreaElement");
                 else
-                    Reflection.Compute.RecordError(errorOverride);
+                    Reflection.Compute.RecordError(msg);
                 return true;
             }
 
