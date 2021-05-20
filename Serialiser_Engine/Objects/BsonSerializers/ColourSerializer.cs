@@ -72,6 +72,10 @@ namespace BH.Engine.Serialiser.BsonSerializers
             int g = context.Reader.ReadInt32();
             int b = context.Reader.ReadInt32();
 
+            string version = "";
+            if (context.Reader.FindElement("_bhomVersion"))
+                version = context.Reader.ReadString();
+
             context.Reader.ReadEndDocument();
 
             return Color.FromArgb(a, r, g, b);

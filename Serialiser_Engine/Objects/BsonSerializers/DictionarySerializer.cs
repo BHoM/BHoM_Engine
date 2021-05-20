@@ -108,6 +108,11 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 dic.Add(key, value);
             }
             bsonReader.ReadEndArray();
+
+            string version = "";
+            if (bsonReader.FindElement("_bhomVersion"))
+                version = bsonReader.ReadString();
+
             bsonReader.ReadEndDocument();
 
             return dic;
