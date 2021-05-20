@@ -291,6 +291,9 @@ namespace BH.Engine.Serialiser.BsonSerializers
             // Handle the general case of finding the correct deserialiser and calling it
             try
             {
+                if (!BsonClassMap.IsClassMapRegistered(actualType))
+                    Compute.RegisterClassMap(actualType); // LookupSerializer creates the classMap if it doesn't exist so important to do it through our own method
+
                 IBsonSerializer bsonSerializer = BsonSerializer.LookupSerializer(actualType);
 
                 if (bsonSerializer.GetType().Name == "EnumerableInterfaceImplementerSerializer`2" && context.Reader.CurrentBsonType == BsonType.Document)
