@@ -88,6 +88,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\ReinforcementDensity.cs" />
+    <Compile Include="Compute\SumRequiredArea.cs" />
     <Compile Include="Convert\FEMeshToPanel.cs" />
     <Compile Include="Compute\MapTaperedProfile.cs" />
     <Compile Include="Compute\IntegrateSection.cs" />
