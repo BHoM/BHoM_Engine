@@ -44,6 +44,12 @@ namespace BH.Engine.Graphics
         [PreviousInputNames("upperBound", "to")]
         public static Gradient CenterGradientAsymmetric(this Gradient gradient, double lowerBound, double upperBound)
         {
+            if (gradient?.Markers == null || gradient.Markers.Count < 2)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot edit gradient because gradient is null or invalid.");
+                return null;
+            }
+
             Gradient result = gradient.ShallowClone();
 
             // Add a marker to avoid issues when deleting and transforming

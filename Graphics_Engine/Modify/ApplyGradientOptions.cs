@@ -29,6 +29,12 @@ namespace BH.Engine.Graphics
         public static GradientOptions ApplyGradientOptions(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, string defaultGradient = "BlueToRed")
         {
             
+            if (gradientOptions == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot apply gradientOptions because gradientOptions is null or invalid.");
+                return null;
+            }
+
             GradientOptions result = gradientOptions.ShallowClone();
 
             // Checks if bounds exist or can be automatically set
