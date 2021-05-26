@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
             }
             else if (bars == null || bars.All(x => x == null))
             {
-                Reflection.Compute.RecordError("The Materials are null, these are required to calculate the density of the reinforcing objects.");
+                Reflection.Compute.RecordError("The Bars are null, these are required to calculate the density of the reinforcing objects.");
                 return null;
             }
 
@@ -111,6 +111,85 @@ namespace BH.Engine.Structure
             }
 
             return reinforcementDensity;
+        }
+
+        /***************************************************/
+
+        [Description("Calculates the ReinforcementDensity of a MeshRequiredArea from a given Bar and Material.")]
+        [Input("meshRequiredArea", "The BarRequiredArea containing the reinforced areas and ids for the Bar and Material.")]
+        [Input("bars", "The elements to search for the relevant AreaElement associated with the MeshRequiredArea.")]
+        [Input("materials", "The Materials to search for the relevant Material associated with the MeshRequiredArea.")]
+        [Output("reinforcementDensity", "The ReinforcementDensity calculated using the inputs provided.")]
+        public static ReinforcementDensity ReinforcementDensity(MeshRequiredArea meshRequiredArea, List<IAreaElement> elements, List<IMaterialFragment> materials)
+        {
+            Reflection.Compute.RecordError("Requires an implementation of Regions before the required area can be extrapolated.");
+            return null;
+            //Add to IsNull when PR is merged
+            //if (meshRequiredArea == null)
+            //{
+            //    Reflection.Compute.RecordError("The MeshRequiredArea is null and therefore the ReinforcementDensity cannot be calculated.");
+            //    return null;
+            //}
+            //else if (materials == null || materials.All(x => x == null))
+            //{
+            //    Reflection.Compute.RecordError("The Materials are null, these are required to calculate the density of the reinforcing objects.");
+            //    return null;
+            //}
+            //else if (elements == null || elements.All(x => x == null))
+            //{
+            //    Reflection.Compute.RecordError("The elements are null, these are required to calculate the density of the reinforcing objects.");
+            //    return null;
+            //}
+
+            //Dictionary<string, IMaterialFragment> materialsDict = materials.ToDictionary(x => x.Name.ToString());
+
+            ////Work around until Results_Engine PR is merged which have similar methods
+            //Type fragmentType = elements.FirstOrDefault().Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
+            //List<string> ids = new List<string>();
+
+            //foreach (IAreaElement element in elements)
+            //{
+            //    IFragment id;
+            //    element.Fragments.TryGetValue(fragmentType, out id);
+            //    ids.Add((((IAdapterId)id).Id.ToString()));
+            //}
+
+            //if (ids.Count == 0)
+            //{
+            //    Reflection.Compute.RecordError("No ids were found within the elements, therefore the ReinforcementDensity cannot be evaluated.");
+            //    return null;
+            //}
+
+            //Dictionary<string, IAreaElement> barsDict = ids.Zip(elements, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
+
+            //IMaterialFragment material;
+            //IAreaElement resultElement;
+            //ReinforcementDensity reinforcementDensity;
+
+            //if (materialsDict.TryGetValue(meshRequiredArea.MaterialName, out material) && barsDict.TryGetValue(meshRequiredArea.ObjectId.ToString(), out resultElement))
+            //{
+            //    //Calculate the volume of the Bar
+            //    if (resultElement.Property == null)
+            //    {
+            //        Reflection.Compute.RecordError("The element defined in the MeshRequiredArea does not have a SectionProperty. Therefore, the ReinforcementDensity cannot be evaluated.");
+            //        return null;
+            //    }
+
+
+            //    //Requires some sort of Region implementation before the length of the bars can be calculated and some form of direction
+            //    double elementArea = resultElement.IArea();
+            //    double reinforcedArea = meshRequiredArea.SumRequiredArea();
+            //    double density = material.Density;
+            //    double rebarDensity = reinforcedArea * density / elementArea;
+            //    reinforcementDensity = Create.ReinforcementDensity(rebarDensity, material);
+            //}
+            //else
+            //{
+            //    Reflection.Compute.RecordError("The element and/or Material could not be found in the lists provided corresponding to the ids provided for in the MeshRequiredArea.");
+            //    return null;
+            //}
+
+            //return reinforcementDensity;
         }
 
         /***************************************************/

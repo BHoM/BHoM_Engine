@@ -54,6 +54,25 @@ namespace BH.Engine.Structure
             return barRequiredArea.Top + barRequiredArea.Bottom + barRequiredArea.Perimeter + barRequiredArea.Shear + barRequiredArea.Torsion;
         }
 
+        /***************************************************/
+
+        [Description("Calculates the total required area from MeshRequiredArea summating the top, bottom, perimeter, shear and torsion reinforcement areas.")]
+        [Input("meshRequiredArea", "The BarRequiredArea to evaluate.")]
+        [Output("total", "The total required area.")]
+        public static double SumRequiredArea(this MeshRequiredArea meshRequiredArea)
+        {
+            //Add to IsNull when PR is merged
+            if (meshRequiredArea == null)
+            {
+                Reflection.Compute.RecordError("The BarRequiredArea is null and therefore the ReinforcementDensity cannot be calculated.");
+                return 0;
+            }
+
+            return meshRequiredArea.Top + meshRequiredArea.Bottom + meshRequiredArea.Perimeter + meshRequiredArea.Shear + meshRequiredArea.Torsion;
+        }
+
+        /***************************************************/
+
 
     }
 }
