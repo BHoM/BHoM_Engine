@@ -57,10 +57,12 @@ namespace BH.Engine.Structure
             else if(materials == null || materials.All(x => x == null))
             {
                 Reflection.Compute.RecordError("The Materials are null, these are required to calculate the density of the reinforcing objects.");
+                return null;
             }
             else if (bars == null || bars.All(x => x == null))
             {
                 Reflection.Compute.RecordError("The Materials are null, these are required to calculate the density of the reinforcing objects.");
+                return null;
             }
 
             Dictionary<string, IMaterialFragment> materialsDict = materials.ToDictionary(x => x.Name.ToString());
@@ -73,7 +75,13 @@ namespace BH.Engine.Structure
             {
                 IFragment id;
                 bar.Fragments.TryGetValue(fragmentType, out id);
-                ids.Add(id.ToString());
+                ids.Add((((IAdapterId)id).Id.ToString()));
+            }
+
+            if(ids.Count == 0)
+            {
+                Reflection.Compute.RecordError("No ids were found within the Bars, therefore the ReinforcementDensity cannot be evaluated.");
+                return null;
             }
 
             Dictionary<string, Bar> barsDict = ids.Zip(bars, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
@@ -85,11 +93,16 @@ namespace BH.Engine.Structure
             if(materialsDict.TryGetValue(barRequiredArea.MaterialName, out material) && barsDict.TryGetValue(barRequiredArea.ObjectId.ToString(), out resultBar))
             {
                 //Calculate the volume of the Bar
-                double elementArea = resultBar.Area();
+                if(resultBar.SectionProperty == null)
+                {
+                    Reflection.Compute.RecordError("The Bar defined in the BarRequiredArea does not have a SectionProperty. Therefore, the ReinforcementDensity cannot be evaluated.");
+                    return null;
+                }
+                double elementArea = resultBar.SectionProperty.Area;
                 double reinforcedArea = barRequiredArea.SumRequiredArea();
                 double density = material.Density;
                 double rebarDensity = reinforcedArea * density / elementArea;
-                reinforcementDensity = Structure.Create.ReinforcementDensity(rebarDensity, material);
+                reinforcementDensity = Create.ReinforcementDensity(rebarDensity, material);
             }
             else
             {
