@@ -49,6 +49,17 @@ namespace BH.Engine.Results
             where TResult : IResult
             where TObject : IBHoMObject
         {
+            if (objects == null || objects.Count() < 1)
+            {
+                Engine.Reflection.Compute.RecordError("No objects found. Make sure that your objects are input correctly.");
+                return new List<List<TResult>>();
+            }
+            if (results == null || results.Count() < 1)
+            {
+                Engine.Reflection.Compute.RecordError("No results found. Make sure that your results are input correctly.");
+                return new List<List<TResult>>();
+            }
+
             //Check if no identifier has been provided. If this is the case, identifiers are searched for on the obejcts
             identifier = objects.First().FindIdentifier(identifier);
 
