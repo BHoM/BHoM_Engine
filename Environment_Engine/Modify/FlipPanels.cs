@@ -51,14 +51,12 @@ namespace BH.Engine.Environment
                 if (!p.NormalAwayFromSpace(panelsAsSpace))
                     p.ExternalEdges = p.Polyline().Flip().ToEdges();
 
-                List<Opening> openings = p.Openings.ToList();
-                for (int x = 0; x < openings.Count; x++)
+                for (int x = 0; x < p.Openings.Count; x++)
                 {
-                    if (!openings[x].Polyline().NormalAwayFromSpace(panelsAsSpace))
-                        openings[x].Edges = openings[x].Polyline().Flip().ToEdges();
+                    if (!p.Openings[x].Polyline().NormalAwayFromSpace(panelsAsSpace))
+                        p.Openings[x].Edges = p.Openings[x].Polyline().Flip().ToEdges();
                 }
 
-                p.Openings = openings;
                 modifiedPanels.Add(p);
             }
 

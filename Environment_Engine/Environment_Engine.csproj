@@ -95,7 +95,6 @@
     <Compile Include="Create\Opening.cs" />
     <Compile Include="Modify\UpdateSpaceNameByType.cs" />
     <Compile Include="Modify\FlipPanels.cs" />
-    <Compile Include="Modify\SetPanelTypeByDwelling.cs" />
     <Compile Include="Modify\SetPanelTypeByIntersectingLines.cs" />
     <Compile Include="Modify\TidyPanels.cs" />
     <Compile Include="Modify\Transform.cs" />
