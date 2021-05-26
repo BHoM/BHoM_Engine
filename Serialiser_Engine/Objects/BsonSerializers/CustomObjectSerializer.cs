@@ -123,6 +123,8 @@ namespace BH.Engine.Serialiser.BsonSerializers
                                         dic["CustomData"] = value;
                                 }
                                 break;
+                            case "_bhomVersion":
+                                break;
                             default:
                                 dic[name] = value;
                                 break;
