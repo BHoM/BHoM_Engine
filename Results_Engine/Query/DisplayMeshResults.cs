@@ -62,6 +62,25 @@ namespace BH.Engine.Results
             where TFace : IFace
             where TMeshElementResult : IMeshElementResult
         {
+            if (meshes == null || meshes.Count() < 1)
+            {
+                Engine.Reflection.Compute.RecordError("No meshes found. Make sure that your meshes are input correctly.");
+                return new Output<List<List<RenderMesh>>, GradientOptions>
+                {
+                    Item1 = new List<List<RenderMesh>>(),
+                    Item2 = gradientOptions
+                };
+            }
+            if (meshResults == null || meshResults.Count() < 1)
+            {
+                Engine.Reflection.Compute.RecordError("No results found. Make sure that your results are input correctly.");
+                return new Output<List<List<RenderMesh>>, GradientOptions>
+                {
+                    Item1 = new List<List<RenderMesh>>(),
+                    Item2 = gradientOptions
+                };
+            }
+
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();
             
@@ -120,6 +139,17 @@ namespace BH.Engine.Results
             where TFace : IFace
             where TMeshElementResult : IMeshElementResult
         {
+            if (mesh?.Nodes == null || mesh?.Faces == null || mesh.Nodes.Count < 1 || mesh.Faces.Count < 1)
+            {
+                Engine.Reflection.Compute.RecordError("A mesh is null or invalid. Cannot display results for this mesh.");
+                return null;
+            }
+            if (meshResult?.Results == null || meshResult.Results.Count < 1)
+            {
+                Engine.Reflection.Compute.RecordError("A result is null or invalid. Cannot display results for this mesh.");
+                return null;
+            }
+
             // Order the MeshNodeResults by the IMesh Nodes
             List<List<TMeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, "NodeId", identifier);
             // Get the relevant values into a list
