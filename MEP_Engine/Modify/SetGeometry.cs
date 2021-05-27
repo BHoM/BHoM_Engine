@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.MEP.System;
@@ -27,6 +28,7 @@ using BH.oM.MEP.Fixtures;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.Engine.Base;
+using BH.oM.MEP.System.Fittings;
 
 namespace BH.Engine.MEP
 {
@@ -51,6 +53,22 @@ namespace BH.Engine.MEP
             IFlow clone = flowObj.ShallowClone();
             clone.StartPoint = clone.StartPoint.SetGeometry(curve.IStartPoint());
             clone.EndPoint = clone.EndPoint.SetGeometry(curve.IEndPoint());
+            return clone;
+        }        
+
+        
+        /***************************************************/
+        
+        public static Fitting SetGeometry(this Fitting fittingObj, Point location, List<Point> connectionLocations)
+        {
+            if (connectionLocations.Count < 2)
+            {
+                Engine.Reflection.Compute.RecordError("A fitting requires at least 2 connections, e.g. an elbow fitting has 2.");
+                return null;
+            }
+            Fitting clone = fittingObj.ShallowClone();
+            clone.Location = location;
+            clone.ConnectionsLocation = connectionLocations;
             return clone;
         }        
 
