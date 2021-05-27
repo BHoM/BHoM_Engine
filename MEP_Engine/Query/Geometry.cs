@@ -28,6 +28,7 @@ using BH.oM.MEP.System;
 using BH.oM.MEP.Fixtures;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
+using BH.oM.MEP.System.Fittings;
 
 namespace BH.Engine.MEP
 {
@@ -45,6 +46,26 @@ namespace BH.Engine.MEP
                 return new Line { Start = flowObj.StartPoint, End = flowObj.EndPoint};
         }
 
+        /***************************************************/
+
+        public static List<Line> Geometry(this Fitting fitting)
+        {
+            List<Line> result = new List<Line>();
+            if (fitting.ConnectionsLocation.Count == 2)
+            {
+                result.Add(BH.Engine.Geometry.Create.Line(fitting.ConnectionsLocation[0],fitting.ConnectionsLocation[1]));
+            }
+            else
+            {
+                foreach (Point point in fitting.ConnectionsLocation)
+                {
+                    result.Add(BH.Engine.Geometry.Create.Line(fitting.Location,point));
+                }
+            }
+
+            return result;
+        }
+        
         /***************************************************/
     }
 }
