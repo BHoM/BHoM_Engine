@@ -41,7 +41,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("audience", "Audience to evalaute")]
         [Input("settings", "EvalueSettings to configure the evaluation")]
         [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<Evalue> EvalueAnalysis(Audience audience, EvalueSettings settings, ActivityArea activityArea)
+        public static List<Evalue> EvalueAnalysis(this Audience audience, EvalueSettings settings, ActivityArea activityArea)
         {
             if (audience == null || settings == null || activityArea == null)
             {
@@ -59,7 +59,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("audience", "Audience to evalaute")]
         [Input("settings", "EvalueSettings to configure the evaluation")]
         [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<List<Evalue>> EvalueAnalysis(List<Audience> audience, EvalueSettings settings, ActivityArea activityArea)
+        public static List<List<Evalue>> EvalueAnalysis(this List<Audience> audience, EvalueSettings settings, ActivityArea activityArea)
         {
             List<List<Evalue>> results = new List<List<Evalue>>();
             foreach (Audience a in audience)

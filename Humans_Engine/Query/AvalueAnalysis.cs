@@ -50,7 +50,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("parallelProcess", "Option to run analysis on multiple processors for +- 30% faster processing. When run in parallel the ordered of the list of results will not match the order of spectator's in the audience. " +
             "Results can be matched to input objects where the result ObjectId matches the BHoM_Guid of the spectator. Default value is false.")]
         [Output("results", "Collection of Avalue results.")]
-        public static List<Avalue> AvalueAnalysis(Audience audience, Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
+        public static List<Avalue> AvalueAnalysis(this Audience audience, Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
         {
             List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, parallelProcess);
             return results;
@@ -66,7 +66,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("parallelProcess", "Option to run analysis on multiple processors for +- 30% faster processing. When run in parallel the ordered of the list of results will not match the order of spectator's in the audience. " +
             "Results can be matched to input objects where the result ObjectId matches the BHoM_Guid of the spectator. Default value is false.")]
         [Output("results", "Collection of Avalue results.")]
-        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience,  Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
+        public static List<List<Avalue>> AvalueAnalysis(this List<Audience> audience,  Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
             foreach (Audience a in audience)
