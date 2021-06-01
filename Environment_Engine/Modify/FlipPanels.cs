@@ -45,7 +45,6 @@ namespace BH.Engine.Environment
         [Output("panelsAsSpace", "A collection of modified Environment Panels with normal away from space")]
         public static void FlipPanels(this List<Panel> panelsAsSpace)
         {
-            List<Panel> modifiedPanels = new List<Panel>();
             foreach (Panel p in panelsAsSpace)
             {
                 if (!p.NormalAwayFromSpace(panelsAsSpace))
@@ -56,11 +55,7 @@ namespace BH.Engine.Environment
                     if (!p.Openings[x].Polyline().NormalAwayFromSpace(panelsAsSpace))
                         p.Openings[x].Edges = p.Openings[x].Polyline().Flip().ToEdges();
                 }
-
-                modifiedPanels.Add(p);
             }
-
-            return modifiedPanels;
         }
     }
 }

@@ -56,10 +56,10 @@ namespace BH.Engine.Environment
             else
             {
                 BH.Engine.Reflection.Compute.RecordError("This string does not match any of the options for SpaceType Enum");
-                return spaces;
+                return;
             }
 
-            return spaces.AssignSpaceTypeByPoint(searchPoints, spaceType);
+            spaces.AssignSpaceTypeByPoint(searchPoints, spaceType);
         }
 
         [Description("Returns a list of Environment Spaces with the provided space type assigned by an Enum and a point in the space.\n The method checks whether the space perimeter IsContaining the point.")]
@@ -69,18 +69,17 @@ namespace BH.Engine.Environment
         [Output("spaces", "A collection of modified Environment Spaces with assigned space types")]
         public static void AssignSpaceTypeByPoint(this List<Space> spaces, List<Point> searchPoints, SpaceType spaceType)
         {
-            List<Space> returnSpaces = new List<Space>();
             for (int x = 0; x < searchPoints.Count; x++)
             {
                 Space update = spaces.Where(a => a.Perimeter.IIsContaining(new List<Point> { searchPoints[x] })).FirstOrDefault();
                 if (update == null)
                     continue;
+                    
+                int index = spaces.IndexOf(update);
 
                 update.SpaceType = spaceType;
-                returnSpaces.Add(update);
+                spaces[index] = update;
             }
-
-            return returnSpaces;
         }
     }
 }

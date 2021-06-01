@@ -39,7 +39,7 @@ namespace BH.Engine.Environment
         [Description("Returns a list of Environment Panels with overlapping panels split and merged")] 
         [Input("panels", "A collection of Environment Panels to tidy")]
         [Output("panels", "A collection of modified Environment Panels with with overlapping panels split and merged")]
-        public static void TidyPanels(this List<Panel> panels)
+        public static List<Panel> TidyPanels(this List<Panel> panels)
         {
             List<Panel> fixedPanels = new List<Panel>();
             List<Panel> splitPanels = panels.SplitPanelsByOverlap();
