@@ -54,72 +54,11 @@ namespace BH.Engine.Structure
 
             if (curves.Any(x => x.IsNull()))
             {
-                #region assign zero to everything
-                results["Area"] = 0;
-
-                results["CentreZ"] = 0;
-                results["CentreY"] = 0;
-
-                results["TotalWidth"] = 0;
-                results["TotalDepth"] = 0;
-
-                results["Iy"] = 0;
-                results["Iz"] = 0;
-
-                results["Wply"] = 0;
-                results["Wplz"] = 0;
-
-                results["Rgy"] = 0;
-                results["Rgz"] = 0;
-
-                results["Vy"] = 0;
-                results["Vpy"] = 0;
-                results["Vz"] = 0;
-                results["Vpz"] = 0;
-
-                results["Welz"] = 0;
-                results["Wely"] = 0;
-
-                results["Asy"] = 0;
-                results["Asz"] = 0;
-
-                #endregion
-                return results;
+                return ZeroConstantsDictionary();
             }
             else if (curves.Count == 0)
             {
-                Reflection.Compute.RecordError("The number of curves is equal to 0 and the method cannot be evaluated.");
-                #region assign zero to everything
-                results["Area"] = 0;
-
-                results["CentreZ"] = 0;
-                results["CentreY"] = 0;
-
-                results["TotalWidth"] = 0;
-                results["TotalDepth"] = 0;
-
-                results["Iy"] = 0;
-                results["Iz"] = 0;
-
-                results["Wply"] = 0;
-                results["Wplz"] = 0;
-
-                results["Rgy"] = 0;
-                results["Rgz"] = 0;
-
-                results["Vy"] = 0;
-                results["Vpy"] = 0;
-                results["Vz"] = 0;
-                results["Vpz"] = 0;
-
-                results["Welz"] = 0;
-                results["Wely"] = 0;
-
-                results["Asy"] = 0;
-                results["Asz"] = 0;
-
-                #endregion
-                return results;
+                return ZeroConstantsDictionary();
             }
 
             BoundingBox box = Geometry.Query.Bounds(curves.Select(x => Engine.Geometry.Query.IBounds(x)).ToList());
@@ -179,7 +118,7 @@ namespace BH.Engine.Structure
         public static Output<IProfile, Dictionary<string, double>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
         {
             if (profile.IsNull())
-                return null;
+                return new Output<IProfile, Dictionary<string, double>> { Item1 = null, Item2 = null };
 
             Dictionary<string, double> results = IntegrateSection(profile.Edges.ToList(), tolerance);
 
@@ -253,9 +192,42 @@ namespace BH.Engine.Structure
             }
         }
 
+        private static Dictionary<string, object> ZeroConstantsDictionary()
+        {
+            Dictionary<string, object> results = new Dictionary<string, object>();
+
+            results["Area"] = 0;
+
+            results["CentreZ"] = 0;
+            results["CentreY"] = 0;
+
+            results["TotalWidth"] = 0;
+            results["TotalDepth"] = 0;
+
+            results["Iy"] = 0;
+            results["Iz"] = 0;
+
+            results["Wply"] = 0;
+            results["Wplz"] = 0;
+
+            results["Rgy"] = 0;
+            results["Rgz"] = 0;
+
+            results["Vy"] = 0;
+            results["Vpy"] = 0;
+            results["Vz"] = 0;
+            results["Vpz"] = 0;
+
+            results["Welz"] = 0;
+            results["Wely"] = 0;
+
+            results["Asy"] = 0;
+            results["Asz"] = 0;
+
+            return results;
+        }
+
 
         /***************************************************/
     }
 }
-
-
