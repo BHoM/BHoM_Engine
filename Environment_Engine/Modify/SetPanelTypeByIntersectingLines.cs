@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -40,15 +40,15 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Panel with panel type set by intersecting lines")]
-        [Input("panels", "A collection of Environment Panels to set the type for")]
-        [Input("intersectingLines", "A collection of lines intersecting the outline of panels")]
-        [Input("panelType", "The panel type to set")]
-        [Input("minTilt", "The minimum tilt to filter the collection of panels by")]
-        [Input("maxTilt", "The maximum tilt to filter the collection of panels by")]
-        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
-        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
-        [Output("panels", "A collection of modified Environment Panels with the type set by intsersecting lines")]
+        [Description("Returns a list of Environment Panel with panel type set by intersecting lines.")]
+        [Input("panels", "A collection of Environment Panels to set the type for.")]
+        [Input("intersectingLines", "A collection of lines intersecting the outline of panels.")]
+        [Input("panelType", "The panel type to set.")]
+        [Input("minTilt", "The minimum tilt to filter the collection of panels by.")]
+        [Input("maxTilt", "The maximum tilt to filter the collection of panels by.")]
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle.")]
+        [Output("panels", "A collection of modified Environment Panels with the type set by intsersecting lines.")]
         public static void SetPanelTypeByIntersectingLines(this List<Panel> panels, List<Line> intersectingLines, PanelType panelType, double minTilt = 88, double maxTilt = 92, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             foreach (Line l in intersectingLines)

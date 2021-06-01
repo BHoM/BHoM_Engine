@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -38,9 +38,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the top of a given environment object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical top")]
-        [Output("curve", "An ICurve representation of the top of the object")]
+        [Description("Returns the top of a given environment object.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical top.")]
+        [Output("curve", "An ICurve representation of the top of the object.")]
         public static ICurve Top(this IEnvironmentObject environmentObject)
         {
             if (environmentObject == null) 

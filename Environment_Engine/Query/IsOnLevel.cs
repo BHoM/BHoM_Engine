@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -39,11 +39,11 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a boolean stating whether a polyline is on a certain level")]
-        [Input("polyline", "A polyline to test if it is on a certain level")]
-        [Input("level", "The level to test for")]
+        [Description("Returns a boolean stating whether a polyline is on a certain level.")]
+        [Input("polyline", "A polyline to test if it is on a certain level.")]
+        [Input("level", "The level to test for.")]
         [Input("tolerance", "The tolerance of the distance calculation for determining whether a polyline is on the level. Default is equal to BH.oM.Geometry.Tolerance.Distance.")]
-        [Output("bool", "A boolean stating whether the polyline is on that level")]
+        [Output("bool", "A boolean stating whether the polyline is on that level.")]
         public static bool IsOnLevel(this Polyline polyline, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             double minLevel = polyline.MinimumLevel();

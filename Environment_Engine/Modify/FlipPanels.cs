@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -41,8 +41,8 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Modifies a collection of panels to ensure that their normal is pointing away from the space that they enclose.\nAny openings on the panels will also be tested to ensure the normal is pointing away from the space. This is for a single space's worth of panels.\nIf wishing to use this on multiple spaces, use the ToSpaces component to split the panels per space, plug that into here and flatten the output.")]
-        [Input("panelsAsSpace", "A collection of Environment Panels to check normal direction for")] 
-        [Output("panelsAsSpace", "A collection of modified Environment Panels with normal away from space")]
+        [Input("panelsAsSpace", "A collection of Environment Panels to check normal direction for".)] 
+        [Output("panelsAsSpace", "A collection of modified Environment Panels with normal away from space.")]
         public static void FlipPanels(this List<Panel> panelsAsSpace)
         {
             foreach (Panel p in panelsAsSpace)

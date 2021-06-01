@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -38,9 +38,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the sides of a given environment object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have geometrical sides")]
-        [Output("curves", "ICurve representations of the sides of the object")]
+        [Description("Returns the sides of a given environment object.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have geometrical sides.")]
+        [Output("curves", "ICurve representations of the sides of the object.")]
         public static List<ICurve> Sides(this IEnvironmentObject environmentObject)
         {
             if (environmentObject == null) 
