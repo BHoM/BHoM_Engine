@@ -21,36 +21,57 @@
  */
 
 using System;
+using BH.oM.Geometry;
+using BH.oM.Dimensional;
+using BH.Engine.Geometry;
+using BH.Engine.Spatial;
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
+using BH.oM.Spatial.ShapeProfiles;
+using BH.oM.Analytical.Elements;
+using BH.oM.Physical.FramingProperties;
+using BH.oM.Reflection;
 using System.Collections.Generic;
-using BH.oM.Base;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+using System.Linq;
 
-namespace BH.Engine.Versioning
+namespace BH.Engine.Facade
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****              Public methods               ****/
         /***************************************************/
 
-        public static void AddVersion(this BsonDocument document)
+        [Description("Returns external edges from a collection of 2D elements.")]
+        [Input("elements", "Elements to get external edges from.")]
+        [Output("externalEdges", "External edges of elements.")]
+        public static List<IElement1D> ExternalEdges(this IEnumerable<IElement2D> elements)
         {
-            if (document != null)
-                document["_bhomVersion"] = Reflection.Query.BHoMVersion();
-        }
+            if (elements == null)
+                return null;
 
-        /***************************************************/
-
-        public static void AddVersion(this IBsonWriter writer)
-        {
-            if (writer != null)
+            List<IElement1D> allEdges = new List<IElement1D>();
+            foreach (IElement2D elem in elements)
             {
-                writer.WriteName("_bhomVersion");
-                writer.WriteString(Reflection.Query.BHoMVersion());
+                allEdges.AddRange(elem.ExternalElementCurves());
             }
+
+            List<IElement1D> result = new List<IElement1D>();
+
+            //Get only external curves from all element specific outline curves
+            foreach (ICurve crv in allEdges)
+            {
+                List<IElement1D> adjElems = crv.AdjacentElements(allEdges);
+                if (adjElems.Count == 1)
+                    result.Add(crv);
+            }
+
+            return result;
         }
 
         /***************************************************/
+
     }
 }

@@ -21,36 +21,52 @@
  */
 
 using System;
+using BH.oM.Geometry;
+using BH.oM.Dimensional;
+using BH.Engine.Geometry;
+using BH.Engine.Spatial;
+using BH.oM.Facade.Elements;
+using BH.oM.Facade.SectionProperties;
+using BH.oM.Spatial.ShapeProfiles;
+using BH.oM.Analytical.Elements;
+using BH.oM.Physical.FramingProperties;
+using BH.oM.Reflection;
 using System.Collections.Generic;
-using BH.oM.Base;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+using System.Linq;
 
-namespace BH.Engine.Versioning
+namespace BH.Engine.Facade
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****              Public methods               ****/
         /***************************************************/
 
-        public static void AddVersion(this BsonDocument document)
+        [Description("Returns edge type (Sill, Head, or Jamb) from a FrameEdge and the Opening it belongs to.")]
+        [Input("frameEdge", "FrameEdge to get edge type from.")]
+        [Input("opening", "Opening the FrameEdge belongs to.")]
+        [Input("jambMinimumAngle", "Minimum angle from horizontal (in radians) at which edges are considered jambs.")]
+        [Output("type", "FrameEdge type (Sill, Head, or Jamb).")]
+        public static string FrameEdgeType(this FrameEdge frameEdge, Opening opening, double jambMinimumAngle = 0.7854)
         {
-            if (document != null)
-                document["_bhomVersion"] = Reflection.Query.BHoMVersion();
-        }
-
-        /***************************************************/
-
-        public static void AddVersion(this IBsonWriter writer)
-        {
-            if (writer != null)
+            if (frameEdge == null || opening == null || frameEdge.Curve == null)
+                return null;
+            else
             {
-                writer.WriteName("_bhomVersion");
-                writer.WriteString(Reflection.Query.BHoMVersion());
+                ICurve crv = frameEdge.Curve;
+                double zVal = Math.Abs(crv.IEndDir().Z);
+                if (zVal > Math.Sin(jambMinimumAngle))
+                    return "Jamb";
+                else if (crv.IPointAtParameter(0.5).Z > opening.IElementVertices().Average().Z)
+                    return "Head";
+                else
+                    return "Sill";
             }
         }
 
         /***************************************************/
+
     }
 }

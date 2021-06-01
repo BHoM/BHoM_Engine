@@ -43,49 +43,72 @@ namespace BH.Engine.Facade
         /***************************************************/
 
         [Description("Returns elements adjacent to a provided Element2D from a collection of elements.")]
-        [Input("elem", "Element to find adjacencies at.")]
-        [Input("refElems", "Elements to use to find element adjacencies.")]
-        [Output("adjElems", "Adjacents elements to the provided element.")]
-        public static List<IElement2D> AdjacentElements(this IElement2D elem, List<IElement2D> refElems)
-        {
-            List<IElement2D> adjElems = new List<IElement2D>();
+        [Input("element", "Element to find adjacencies at.")]
+        [Input("referenceElements", "Elements to use to find element adjacencies.")]
+        [Output("adjacentElements", "Adjacents elements to the provided element.")]
+        public static List<IElement2D> AdjacentElements(this IElement2D element, List<IElement2D> referenceElements)
+        {          
+            List<IElement2D> adjacentElements = new List<IElement2D>();
 
-            PolyCurve outline = elem.OutlineCurve();
+            if (element == null || referenceElements == null)
+                return adjacentElements;
 
-            foreach (IElement2D refElem in refElems)
+            PolyCurve outline = element.OutlineCurve();
+
+            foreach (IElement2D refElem in referenceElements)
             {
                 PolyCurve refOutline = refElem.OutlineCurve();
                 BH.oM.Reflection.Output<Point, Point> results = outline.CurveProximity(refOutline);
                 double distance = results.Item1.Distance(results.Item2);
                 if (distance < Tolerance.Distance)
-                    adjElems.Add(refElem);
+                    adjacentElements.Add(refElem);
             }
 
-            return adjElems;
+            return adjacentElements;
         }
+
 
         /***************************************************/
 
-        [Description("Returns elements adjacent to a provided Element1D from a collection of elements")]
-        [Input("elem", "Element to find adjacencies at")]
-        [Input("refElems", "Elements to use to find element adjacencies")]
-        [Output("adjElems", "Adjacents elements to the provided element")]
-        public static List<IElement2D> AdjacentElements(this IElement1D elem, List<IElement2D> refElems)
+        [Description("Returns elements adjacent to a provided Element1D from a collection of elements.")]
+        [Input("element", "Element to find adjacencies at.")]
+        [Input("referenceElements", "Elements to use to find element adjacencies.")]
+        [Output("adjacentElements", "Adjacents elements to the provided element.")]
+        public static List<IElement2D> AdjacentElements(this IElement1D element, List<IElement2D> referenceElements)
         {
-            List<IElement2D> adjElems = new List<IElement2D>();
+            List<IElement2D> adjacentElements = new List<IElement2D>();
 
-            PolyCurve outline = elem.ElementCurves().IJoin()[0];
+            if (element == null || referenceElements == null)
+                return adjacentElements;
 
-            foreach (IElement2D refElem in refElems)
+            PolyCurve outline = element.ElementCurves().IJoin()[0];
+
+            foreach (IElement2D refElem in referenceElements)
             {
                 PolyCurve refOutline = refElem.OutlineCurve();
                 BH.oM.Reflection.Output<Point, Point> results = refOutline.CurveProximity(outline);
                 double distance = results.Item1.Distance(results.Item2);
                 if (distance < Tolerance.Distance)
-                    adjElems.Add(refElem);
+                    adjacentElements.Add(refElem);
             }
 
-            return adjElems;
+            return adjacentElements;
+        }
+
+
+        /***************************************************/
+
+        [Description("Returns elements adjacent to a provided Element1D from a collection of elements.")]
+        [Input("element", "Element to find adjacencies at.")]
+        [Input("referenceElements", "Elements to use to find element adjacencies.")]
+        [Output("adjacentElements", "Adjacent elements to the provided element.")]
+        public static List<IElement1D> AdjacentElements(this IElement1D element, List<IElement1D> referenceElements)
+
+        {
+            if (element == null || referenceElements == null)
+                return new List<IElement1D>(); 
+
+            return referenceElements.Where(x => x.IIsAdjacent(element)).ToList();
         }
     }
 }

@@ -81,7 +81,6 @@ namespace BH.Engine.Serialiser
                 return bson["_v"].AsString;
 
             bson.Remove("_id");
-            bson.RemoveVersion();
 
             object obj = BsonSerializer.Deserialize(bson, typeof(object));
             if (obj is ExpandoObject)

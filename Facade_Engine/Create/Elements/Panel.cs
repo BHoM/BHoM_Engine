@@ -77,6 +77,12 @@ namespace BH.Engine.Facade
         [Output("panel","The created Panel.")]
         public static Panel Panel(ICurve outline, List<ICurve> openings = null, IConstruction construction = null, FrameEdgeProperty frameEdgeProperty = null, PanelType panelType = PanelType.Undefined, IConstruction openingConstruction = null, FrameEdgeProperty openingFrameEdgeProperty = null, string name = "")
         {
+            if (outline == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a panel from a null outline.");
+                return null;
+            }
+            
             if (!outline.IIsClosed())
             {
                 Reflection.Compute.RecordError("Outline not closed. Could not create Panel.");
