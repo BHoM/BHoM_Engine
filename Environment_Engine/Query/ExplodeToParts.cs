@@ -54,7 +54,7 @@ namespace BH.Engine.Environment
             };
 
             if (environmentObject == null) 
-                return null;
+                return finalParts;
 
             finalParts.Item1.Add(environmentObject.Bottom());
             finalParts.Item2.AddRange(environmentObject.Sides());

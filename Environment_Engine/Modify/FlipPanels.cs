@@ -45,6 +45,9 @@ namespace BH.Engine.Environment
         [Output("panelsAsSpace", "A collection of modified Environment Panels with normal away from space.")]
         public static void FlipPanels(this List<Panel> panelsAsSpace)
         {
+            if (panelsAsSpace == null)
+                return;
+
             foreach (Panel p in panelsAsSpace)
             {
                 if (!p.NormalAwayFromSpace(panelsAsSpace))

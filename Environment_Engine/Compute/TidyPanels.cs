@@ -41,6 +41,9 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of modified Environment Panels with with overlapping panels split and merged.")]
         public static List<Panel> TidyPanels(this List<Panel> panels)
         {
+            if (panels == null)
+                return panels;
+
             List<Panel> fixedPanels = new List<Panel>();
             List<Panel> splitPanels = panels.SplitPanelsByOverlap();
             List<List<Panel>> overlappingPanels = splitPanels.Select(x => x.IdentifyOverlaps(splitPanels)).ToList();
@@ -71,7 +74,5 @@ namespace BH.Engine.Environment
             
             return fixedPanels;
         }
-
     }
-
 }

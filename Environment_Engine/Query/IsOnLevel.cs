@@ -46,6 +46,12 @@ namespace BH.Engine.Environment
         [Output("bool", "A boolean stating whether the polyline is on that level.")]
         public static bool IsOnLevel(this Polyline polyline, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
+            if (polyline == null || level == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a polyline is on a level if either the polyline or the level are null.");
+                return false;
+            }
+
             double minLevel = polyline.MinimumLevel();
             double maxLevel = polyline.MaximumLevel();
             return ((minLevel >= (level.Elevation - tolerance)) && (maxLevel <= (level.Elevation + tolerance)));

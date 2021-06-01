@@ -51,6 +51,9 @@ namespace BH.Engine.Environment
         [Output("panels", "A collection of modified Environment Panels with the type set by intsersecting lines.")]
         public static void SetPanelTypeByIntersectingLines(this List<Panel> panels, List<Line> intersectingLines, PanelType panelType, double minTilt = 88, double maxTilt = 92, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
+            if (panels == null || intersectingLines == null)
+                return;
+
             foreach (Line l in intersectingLines)
             {
                 for (int i = 0; i < panels.Count; i++)
