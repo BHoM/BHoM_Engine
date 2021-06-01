@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -39,11 +39,11 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the sides, top and bottom of a given environment object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have geometrical sides, top and bottom")]
-        [MultiOutput(0, "bottom", "An ICurve representation of the bottom of the object")]
-        [MultiOutput(1, "sides", "ICurve representations of the sides of the object")]
-        [MultiOutput(2, "top", "An ICurve representation of the top of the object")]
+        [Description("Returns the sides, top and bottom of a given environment object.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have geometrical sides, top and bottom.")]
+        [MultiOutput(0, "bottom", "An ICurve representation of the bottom of the object.")]
+        [MultiOutput(1, "sides", "ICurve representations of the sides of the object.")]
+        [MultiOutput(2, "top", "An ICurve representation of the top of the object.")]
         public static Output<List<ICurve>, List<ICurve>, List<ICurve>> ExplodeToParts(this IEnvironmentObject environmentObject)
         {
             Output<List<ICurve>, List<ICurve>, List<ICurve>> finalParts = new Output<List<ICurve>, List<ICurve>, List<ICurve>>()

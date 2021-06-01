@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -36,9 +36,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Panels with overlapping panels split and merged")] 
-        [Input("panels", "A collection of Environment Panels to tidy")]
-        [Output("panels", "A collection of modified Environment Panels with with overlapping panels split and merged")]
+        [Description("Returns a list of Environment Panels with overlapping panels split and merged".)] 
+        [Input("panels", "A collection of Environment Panels to tidy.")]
+        [Output("panels", "A collection of modified Environment Panels with with overlapping panels split and merged.")]
         public static List<Panel> TidyPanels(this List<Panel> panels)
         {
             List<Panel> fixedPanels = new List<Panel>();

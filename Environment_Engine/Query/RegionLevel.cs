@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -42,12 +42,12 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the level of an IRegion")]
-        [Input("region", "An IRegion to return the level of")]
-        [Input("searchLevels", "A list of levels to test for")]
+        [Description("Returns the level of an IRegion.")]
+        [Input("region", "An IRegion to return the level of.")]
+        [Input("searchLevels", "A list of levels to test for.")]
         [Input("distanceTolerance", "The tolerance of the distance calculation for determining the elevation of the IRegion. Default is equal to BH.oM.Geometry.Tolerance.Distance.")]
         [Input("angleTolerance", "The degree of tolerance on the angle calculation for collapsing the region perimeter to a polyline. Default is equal to BH.oM.Geometry.Tolerance.Angle.")]
-        [Output("level", "The level that the IRegion is on")]
+        [Output("level", "The level that the IRegion is on.")]
         public static Level RegionLevel(this IRegion region, List<Level> searchLevels, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             double elevation = region.Perimeter.ICollapseToPolyline(angleTolerance).MinimumLevel();
