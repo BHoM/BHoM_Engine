@@ -96,7 +96,7 @@
     <Compile Include="Modify\UpdateSpaceNameByType.cs" />
     <Compile Include="Modify\FlipPanels.cs" />
     <Compile Include="Modify\SetPanelTypeByIntersectingLines.cs" />
-    <Compile Include="Modify\TidyPanels.cs" />
+    <Compile Include="Compute\TidyPanels.cs" />
     <Compile Include="Modify\Transform.cs" />
     <Compile Include="Modify\UpdateZones.cs" />
     <Compile Include="Compute\EquipmentGain.cs" />
