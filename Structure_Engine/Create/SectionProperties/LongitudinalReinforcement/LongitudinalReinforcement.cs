@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection")]
+        [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection.")]
         [InputFromProperty("rebarLayout")]
         [InputFromProperty("diameter")]
         [InputFromProperty("startLocation")]
@@ -74,7 +74,7 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Private checking methods used by all LongitudinalReinforcement create methods to check start and end")]
+        [Description("Private checking methods used by all LongitudinalReinforcement create methods to check start and end.")]
         private static void CheckEndLocations(ref double startLocation, ref double endLocation)
         {
             if (startLocation < 0)

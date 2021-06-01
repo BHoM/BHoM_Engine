@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection")]
+        [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection.")]
         [InputFromProperty("diameter")]
         [Input("barCount", "Number of bars along the along the linear distribution.")]
         [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane. Defaults to the global X-axis.")]
