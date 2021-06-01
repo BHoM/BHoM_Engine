@@ -39,8 +39,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a TransverseReinforcement placing rebars across a straight line along the ConcreteSection")]
-        [InputFromProperty("rebarsCenterlinesLayout")]
+        [Description("Creates a TransverseReinforcement placing rebars across a straight line along the ConcreteSection.")]
+        [InputFromProperty("curveLayout")]
         [InputFromProperty("diameter")]
         [InputFromProperty("spacing")]
         [InputFromProperty("adjustSpacingToFit")]
