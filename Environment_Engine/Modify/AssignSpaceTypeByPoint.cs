@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
         [Input("type", "A string representing the space type to assign")]
         [Input("ignoreCase", "Whether or not the parse will be case sensitive")]
         [Output("spaces", "A collection of modified Environment Spaces with assigned space types")]
-        public static List<Space> AssignSpaceTypeByPoint(this List<Space> spaces, List<Point> searchPoints, string type, bool ignoreCase = true)
+        public static void AssignSpaceTypeByPoint(this List<Space> spaces, List<Point> searchPoints, string type, bool ignoreCase = true)
         {
             SpaceType spaceType = SpaceType.Undefined;
             object value = Enum.Parse(typeof(SpaceType), type, ignoreCase);
@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
         [Input("searchPoints", "A collection of points to search. The points should be contained by the space geometry")]
         [Input("spaceType", "The space type to assign")]
         [Output("spaces", "A collection of modified Environment Spaces with assigned space types")]
-        public static List<Space> AssignSpaceTypeByPoint(this List<Space> spaces, List<Point> searchPoints, SpaceType spaceType)
+        public static void AssignSpaceTypeByPoint(this List<Space> spaces, List<Point> searchPoints, SpaceType spaceType)
         {
             List<Space> returnSpaces = new List<Space>();
             for (int x = 0; x < searchPoints.Count; x++)
