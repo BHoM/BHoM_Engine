@@ -47,12 +47,12 @@ namespace BH.Engine.Structure
             }
             if (feMesh.Nodes.Count < 3)
             {
-                Reflection.Compute.RecordError("FEMesh Nodes are null, please check inputs");
+                Reflection.Compute.RecordError("Insufficient number of nodes to be able to convert FEMesh to a Panel.");
                 return null;
             }
             if (feMesh.Faces.Count < 1)
             {
-                Reflection.Compute.RecordError("FEMesh Faces are null, please check inputs.");
+                Reflection.Compute.RecordError("At least one FEFace required to construct a Panel from FEMesh.");
                 return null;
             }
 
