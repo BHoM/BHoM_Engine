@@ -43,7 +43,6 @@ namespace BH.Engine.Environment
         [Output("spaces", "A collection of modified Environment Spaces with assigned name")]
         public static void UpdateSpaceNameByType(this List<Space> spaces)
         {
-            List<Space> spacesWithNames = new List<Space>();
             foreach (Space s in spaces)
             {
                 string name = s.Name + "_" + s.SpaceType.ToString();
@@ -54,10 +53,7 @@ namespace BH.Engine.Environment
                 }
 
                 s.Name = name;
-                spacesWithNames.Add(s);
             }
-
-            return spacesWithNames;
         }
     }
 }
