@@ -81,6 +81,10 @@ namespace BH.Engine.Serialiser.BsonSerializers
             bsonReader.ReadName();
             string valueName = bsonReader.ReadString();
 
+            string version = "";
+            if (bsonReader.FindElement("_bhomVersion"))
+                version = bsonReader.ReadString();
+
             context.Reader.ReadEndDocument();
 
             try
