@@ -46,6 +46,12 @@ namespace BH.Engine.Environment
         [PreviousVersion("4.2", "BH.Engine.Environment.Compute.MergePanels(BH.oM.Environment.Elements.Panel, BH.oM.Environment.Elements.Panel)")]
         public static Panel MergePanels(this Panel panel1, Panel panel2, bool takeSmallestArea = true)
         {
+            if(panel1 == null || panel2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot merge null panels.");
+                return null;
+            }
+
             Panel rtnPanel = null;
 
             if (takeSmallestArea)

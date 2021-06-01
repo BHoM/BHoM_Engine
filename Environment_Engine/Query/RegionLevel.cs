@@ -50,6 +50,12 @@ namespace BH.Engine.Environment
         [Output("level", "The level that the IRegion is on.")]
         public static Level RegionLevel(this IRegion region, List<Level> searchLevels, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
+            if(region == null || searchLevels == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the level for a region if either the region or the search levels are null.");
+                return null;
+            }
+
             double elevation = region.Perimeter.ICollapseToPolyline(angleTolerance).MinimumLevel();
             return searchLevels.Where(x => x.Elevation >= (elevation - distanceTolerance) && x.Elevation <= (elevation + distanceTolerance)).FirstOrDefault();
         }
