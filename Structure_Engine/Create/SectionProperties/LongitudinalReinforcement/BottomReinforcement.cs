@@ -45,7 +45,6 @@ namespace BH.Engine.Structure
         [InputFromProperty("diameter")]
         [Input("area", "Total minimum required area of bottom reinforcement. Will be used to calculate required number of bars, based on their diameter, hence the resulting area may be larger than the input value.", typeof(Area))]
         [Input("spacing", "Minimum spacing allowed between any two rebars.")]
-        [InputFromProperty("miniumCover")]
         [InputFromProperty("startLocation")]
         [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]

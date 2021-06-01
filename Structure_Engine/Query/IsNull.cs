@@ -250,7 +250,7 @@ namespace BH.Engine.Structure
 
         [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Edge, System.String)")]
         [Description("Checks if a Edge or its defining properties are null and outputs relevant error message.")]
-        [Input("panel", "The Edge to test for null.")]
+        [Input("edge", "The Edge to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Edge or its defining properties are null.")]
@@ -271,7 +271,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a SectionProperty is null and outputs relevant error message.")]
-        [Input("panel", "The SectionProperty to test for null.")]
+        [Input("sectionProperty", "The SectionProperty to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the SectionProperty is null.")]
@@ -287,7 +287,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a SurfaceProperty is null and outputs relevant error message.")]
-        [Input("panel", "The SurfaceProperty to test for null.")]
+        [Input("surfaceProperty", "The SurfaceProperty to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the SurfaceProperty is null")]
@@ -303,7 +303,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a MaterialFragment is null and outputs relevant error message.")]
-        [Input("panel", "The MaterialFragment to test for null.")]
+        [Input("material", "The MaterialFragment to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the MaterialFragment is null.")]
@@ -319,7 +319,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a BarReinforcement is null and outputs relevant error message.")]
-        [Input("panel", "The BarReinforcement to test for null.")]
+        [Input("reinforcement", "The BarReinforcement to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the BarReinforcement is null.")]
@@ -335,7 +335,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a Load is null and outputs relevant error message.")]
-        [Input("panel", "The Load to test for null.")]
+        [Input("load", "The Load to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Load is null.")]
@@ -351,7 +351,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a Constraint6DOF is null and outputs relevant error message.")]
-        [Input("panel", "The Constraint6DOF to test for null.")]
+        [Input("constraint", "The Constraint6DOF to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint6DOF is null.")]
@@ -367,7 +367,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a Constraint3DOF is null and outputs relevant error message.")]
-        [Input("panel", "The Constraint3DOF to test for null.")]
+        [Input("constraint", "The Constraint3DOF to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint3DOF is null.")]
@@ -383,7 +383,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a Constraint4DOF is null and outputs relevant error message.")]
-        [Input("panel", "The Constraint4DOF to test for null.")]
+        [Input("constraint", "The Constraint4DOF to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint4DOF is null.")]
@@ -399,7 +399,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a Case is null and outputs relevant error message.")]
-        [Input("panel", "The Case to test for null.")]
+        [Input("loadCase", "The Case to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Case is null.")]
@@ -419,7 +419,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Checks if an AreaElement is null and outputs relevant error message.")]
-        [Input("areaElement", "The AreaElement to test for null.")]
+        [Input("element", "The AreaElement to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("pass", "True if the AreaElement is null.")]

@@ -67,9 +67,9 @@ namespace BH.Engine.Spatial
         }
 
         [Description("Checks if an Layout2D is null and outputs relevant error message.")]
-        [Input("profile", "The Layout2D to test for null.")]
+        [Input("layout", "The Layout2D to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
         [Output("isNull", "True if the Layout2D is null.")]
         public static bool IsNull(this ILayout2D layout, string methodName = "", string msg = "")
         {
@@ -96,9 +96,9 @@ namespace BH.Engine.Spatial
         }
 
         [Description("Checks if an CurveLayout is null and outputs relevant error message.")]
-        [Input("profile", "The CurveLayout to test for null.")]
+        [Input("layout", "The CurveLayout to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("errorOverride", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
+        [Input("msg", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
         [Output("isNull", "True if the CurveLayout is null.")]
         public static bool IsNull(this ICurveLayout layout, string methodName = "", string msg = "")
         {
