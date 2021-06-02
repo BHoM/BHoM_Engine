@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace BH.Engine.Geometry
 {
@@ -43,23 +44,15 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Geometry is null.")]
-        public static bool IsNull(this IGeometry geometry, string methodName = "", string msg = "")
+        public static bool IsNull(this IGeometry geometry, [CallerMemberName] string methodName = "", string msg = "")
         {
             if (geometry == null)
             {
-                //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
-                    if (string.IsNullOrEmpty(methodName))
-                    {
-                        StackTrace st = new StackTrace();
-                        if (st.FrameCount > 0)
-                        {
-                            methodName = st.GetFrame(1).GetMethod().Name;
-                            methodName.Substring(methodName.IndexOf("<") + 1, methodName.IndexOf("<") + 1 - methodName.IndexOf(">"));
-                        }
-                        else
-                            methodName = "Method";
-                    }
-                    Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg}");
+                if (string.IsNullOrEmpty(methodName))
+                {
+                    methodName = "Method";
+                }
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg}");
 
                 return true;
             }
