@@ -45,10 +45,10 @@ namespace BH.Engine.Structure
 
         [Description("Creates a Bar element from a Line, to be used as centre line of the Bar, and properties.")]
         [Input("line", "Geometrical Line used as centreline of the Bar. The StartNode and EndNode of the bar will be extracted from the Line.")]
-        [InputFromProperty("sectionProperty.")]
-        [InputFromProperty("orientationAngle.")]
-        [InputFromProperty("release.")]
-        [InputFromProperty("feaType", "FEAType.")]
+        [InputFromProperty("sectionProperty")]
+        [InputFromProperty("orientationAngle")]
+        [InputFromProperty("release")]
+        [InputFromProperty("feaType", "FEAType")]
         [Input("name", "The name of the created Bar.")]
         [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
         public static Bar Bar(Line line, ISectionProperty sectionProperty = null, double orientationAngle = 0, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")
@@ -69,11 +69,11 @@ namespace BH.Engine.Structure
 
         [Description("Creates a Bar element from a Line, to be used as centre line of the Bar, and properties.")]
         [Input("line", "Geometrical Line used as centreline of the Bar. The StartNode and EndNode of the bar will be extracted from the Line.")]
-        [InputFromProperty("sectionProperty.")]
+        [InputFromProperty("sectionProperty")]
         [Input("normal", "Vector to be used as normal of the Bar. This vector should generally be orthogonal to the Bar, if it is not, it will be made orthogonal by projecting it to the section plane of the Bar (a plane that has that Bar tangent as its normal). This means that the Normal cannot be paralell to the Tangent of the Bar. \n" +
                          "Vector will be used to determain the orientation angle of the Bar. This is done by measuring the counter clockwise angle in the section plane of the Bar between a reference Vector and the provided Vector. For a non-vertical Bar, the reference vector will be the global Z-axis. For a vertical bar the reference vector will be a vector that is orthogonal to the tangent vector of the Bar and the global Y-axis.")]
-        [InputFromProperty("release.")]
-        [InputFromProperty("feaType", "FEAType.")]
+        [InputFromProperty("release")]
+        [InputFromProperty("feaType", "FEAType")]
         [Input("name", "The name of the created Bar.")]
         [Output("bar", "The created Bar with a centreline matching the provided geometrical Line.")]
         public static Bar Bar(Line line, ISectionProperty sectionProperty = null, Vector normal = null, BarRelease release = null, BarFEAType feaType = BarFEAType.Flexural, string name = "")

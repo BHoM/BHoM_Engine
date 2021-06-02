@@ -41,14 +41,14 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection.")]
-        [InputFromProperty("diameter.")]
+        [InputFromProperty("diameter")]
         [Input("barCount", "Number of bars along the along the linear distribution.")]
         [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane. Defaults to the global X-axis.")]
         [Input("offset", "Offset of the linear layout in relation to the reference point, perpendicular to the Direction vector in the XY-plane.\n" +
                      "A positive value will mean an offset towards the centre of the boundingbox of the ConcreteSection.", typeof(Length))]
         [Input("referencePoint", "Controls, together with the offset, which point on the ConcreteSection that should be used for the layout.")]
-        [InputFromProperty("startLocation.")]
-        [InputFromProperty("endLocation.")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement LayerReinforcement(double diameter, int barCount, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
