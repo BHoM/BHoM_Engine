@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
 
         [Description("Extracts the the diameter of the first tie reinforecment of a ConcreteSection. If no TieReinforcement is found, 0 will be returned.")]
         [Input("property", "The ConcreteSection to get TieReinforcement diameter from.")]
-        [Output("dia", "The diameter of the first TieReinforcement of the ConcreteSection.", typeof(Length))]
+        [Output("dia", "The diameter of the first TieReinforcement of the ConcreteSection.", typeof(Length.))]
         public static double TieDiameter(this ConcreteSection property)
         {
             if (property.IsNull("TieDiameter"))

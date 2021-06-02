@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -44,11 +44,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a steel box-section from input dimensions.")]
-        [Input("height", "Full height of the section.", typeof(Length))]
-        [Input("width", "Full width of the section.", typeof(Length))]
-        [Input("thickness", "Thickness of the webs and flanges.", typeof(Length))]
-        [Input("innerRadius", "Optional inner corner radius. Typically set equal to the thickness.", typeof(Length))]
-        [Input("outerRadius", "Optional outer corner radius. Typically set to 1.5-2 times the thickness.", typeof(Length))]
+        [Input("height", "Full height of the section.", typeof(Length.))]
+        [Input("width", "Full width of the section.", typeof(Length.))]
+        [Input("thickness", "Thickness of the webs and flanges.", typeof(Length.))]
+        [Input("innerRadius", "Optional inner corner radius. Typically set equal to the thickness.", typeof(Length.))]
+        [Input("outerRadius", "Optional outer corner radius. Typically set to 1.5-2 times the thickness.", typeof(Length.))]
         [Input("material", "Steel material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section. This is required for most structural packages to create the section.")]
         [Output("section", "The created steel box-section.")]

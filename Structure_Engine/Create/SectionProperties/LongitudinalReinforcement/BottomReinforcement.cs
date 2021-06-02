@@ -42,11 +42,11 @@ namespace BH.Engine.Structure
 
         [Description("Creates a LongitudinalReinforcement placing rebars along multiple linear parallel axes along the local y-axis of the ConcreteSection, defined along a vector from one side of the perimeter of ConcreteSection to the other. \n" +
                  "Starts by fitting in as many points as possible in a layer towards the bottom of the section, then generates a new one and repeats.")]
-        [InputFromProperty("diameter")]
-        [Input("area", "Total minimum required area of bottom reinforcement. Will be used to calculate required number of bars, based on their diameter, hence the resulting area may be larger than the input value.", typeof(Area))]
+        [InputFromProperty("diameter.")]
+        [Input("area", "Total minimum required area of bottom reinforcement. Will be used to calculate required number of bars, based on their diameter, hence the resulting area may be larger than the input value.", typeof(Area.))]
         [Input("spacing", "Minimum spacing allowed between any two rebars.")]
-        [InputFromProperty("startLocation")]
-        [InputFromProperty("endLocation")]
+        [InputFromProperty("startLocation.")]
+        [InputFromProperty("endLocation.")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement BottomReinforcement(double diameter, double area, double spacing, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)

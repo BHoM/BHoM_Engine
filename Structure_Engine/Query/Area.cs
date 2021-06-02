@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
 
         [Description("Calculates the area of a FEMesh as the sum of the area of all faces. Quad faces will be triangulated to perform the area calculation.")]
         [Input("mesh", "The FEMesh to calculate the area for.")]
-        [Output("area", "The area of the FEMesh.", typeof(Area))]
+        [Output("area", "The area of the FEMesh.", typeof(Area.))]
         public static double Area(this FEMesh mesh)
         {
             return mesh.IsNull("Area") ? 0 : Analytical.Query.Geometry(mesh).Area();
@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
 
         [Description("Calculates the area of a Surface based on the area of the geometrical surface stored in Extents.")]
         [Input("surface", "The Surface to calculate the area for.")]
-        [Output("area", "The area of the Surface.", typeof(Area))]
+        [Output("area", "The area of the Surface.", typeof(Area.))]
         public static double Area(this Surface surface)
         {
             return surface.IsNull("Area") ? 0 : surface.Extents.IArea();
@@ -62,7 +62,7 @@ namespace BH.Engine.Structure
 
         [Description("Calculates the total section area of all rebars in the reinforcement object.")]
         [Input("reinforcement", "The LongitudinalReinforcement to calculate the area for.")]
-        [Output("area", "The area of the LongitudinalReinforcement.", typeof(Area))]
+        [Output("area", "The area of the LongitudinalReinforcement.", typeof(Area.))]
         public static double Area(this LongitudinalReinforcement reinforcement)
         {
             return reinforcement.IsNull("Area") ? 0 : reinforcement.ReinforcingBarCount() * reinforcement.Diameter * reinforcement.Diameter / 4 * Math.PI;
@@ -74,7 +74,7 @@ namespace BH.Engine.Structure
 
         [Description("Calculates the area of an IAreaElement.")]
         [Input("element", "The element to calculate the area for.")]
-        [Output("area", "The area of the element.", typeof(Area))]
+        [Output("area", "The area of the element.", typeof(Area.))]
         public static double IArea(this IAreaElement element)
         {
             return element.IIsNull("IArea") ? 0 : Area(element as dynamic);

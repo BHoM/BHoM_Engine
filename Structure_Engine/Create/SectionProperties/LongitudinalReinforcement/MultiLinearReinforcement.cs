@@ -42,16 +42,16 @@ namespace BH.Engine.Structure
 
         [Description("Creates a LongitudinalReinforcement placing rebars along multiple linear parallel axes, defined along a vector from one side of the perimeter of ConcreteSection to the other. \n" +
                  "Starts by fitting in as many points as possible in the first layer, then generates a new one and repeats.")]
-        [InputFromProperty("diameter")]
+        [InputFromProperty("diameter.")]
         [Input("barCount", "Number of bars along the along the linear distribution axes.")]
-        [Input("parallelSpacing", "Minimum spacing allowed between two rebars in a single layer.", typeof(Length))]
-        [Input("perpendicularSpacing", "Minimum spacing allowed between two layers of rebar.", typeof(Length))]
+        [Input("parallelSpacing", "Minimum spacing allowed between two rebars in a single layer.", typeof(Length.))]
+        [Input("perpendicularSpacing", "Minimum spacing allowed between two layers of rebar.", typeof(Length.))]
         [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane. Defaults to the global X-axis.")]
         [Input("offset", "Offset of the linear layout in relation to the reference point, perpendicular to the Direction vector in the XY-plane.\n" +
-                     "A positive value will mean an offset towards the centre of the boundingbox of the ConcreteSection.", typeof(Length))]
+                     "A positive value will mean an offset towards the centre of the boundingbox of the ConcreteSection.", typeof(Length.))]
         [Input("referencePoint", "Controls, together with the offset, which point on the ConcreteSection that should be used for the layout.")]
-        [InputFromProperty("startLocation")]
-        [InputFromProperty("endLocation")]
+        [InputFromProperty("startLocation.")]
+        [InputFromProperty("endLocation.")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double parallelSpacing, double perpendicularSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)

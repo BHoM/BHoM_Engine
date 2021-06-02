@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
 
         [Description("Get the Vector basis system descibring the local axis orientation from a normal vector and an orientation angle. Used by both Panels and FEMeshes.")]
         [Input("normal", "The normal vector of the element.")]
-        [Input("orientationAngle", "The orientation angle of the element.", typeof(Angle))]
+        [Input("orientationAngle", "The orientation angle of the element.", typeof(Angle.))]
         [Output("orienation", "The local orientation of the element as a vector Basis.")]
         private static Basis LocalOrientation(this Vector normal, double orientationAngle)
         {

@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a Bar's homogeneous MaterialComposition.")]
-        [Input("bar", "The Bar to material from")]
+        [Input("bar", "The Bar to material from.")]
         [Output("materialComposition", "The kind of matter the Bar is composed of.")]
         public static MaterialComposition MaterialComposition(this Bar bar)
         {
@@ -62,7 +62,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a AreaElement's homogeneous MaterialComposition.")]
-        [Input("areaElement", "The AreaElement to material from")]
+        [Input("areaElement", "The AreaElement to material from.")]
         [Output("materialComposition", "The kind of matter the AreaElement is composed of.")]
         public static MaterialComposition MaterialComposition(this IAreaElement areaElement)
         {

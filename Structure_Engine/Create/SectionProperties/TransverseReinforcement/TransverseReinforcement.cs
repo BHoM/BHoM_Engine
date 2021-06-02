@@ -40,12 +40,12 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a TransverseReinforcement placing rebars across a straight line along the ConcreteSection.")]
-        [InputFromProperty("curveLayout")]
-        [InputFromProperty("diameter")]
-        [InputFromProperty("spacing")]
-        [InputFromProperty("adjustSpacingToFit")]
-        [InputFromProperty("startLocation")]
-        [InputFromProperty("endLocation")]
+        [InputFromProperty("curveLayout.")]
+        [InputFromProperty("diameter.")]
+        [InputFromProperty("spacing.")]
+        [InputFromProperty("adjustSpacingToFit.")]
+        [InputFromProperty("startLocation.")]
+        [InputFromProperty("endLocation.")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static TransverseReinforcement TransverseReinforcement(ICurveLayout curveLayout, double diameter, double spacing, bool adjustSpacingToFit = true, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
