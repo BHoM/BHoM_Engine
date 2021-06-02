@@ -91,6 +91,18 @@
     <Compile Include="Convert\FEMeshToPanel.cs" />
     <Compile Include="Compute\MapTaperedProfile.cs" />
     <Compile Include="Compute\IntegrateSection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelISection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelRectangleSection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelCircularSection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelTSection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelAngleSection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelFreeFormSection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelSectionFromProfile.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelTubeSection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelFabricatedISection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\SteelBoxSection.cs" />
+    <Compile Include="Create\SectionProperties\SteelSection\FabricatedSteelBoxSection.cs" />
+    <Compile Include="Create\SectionProperties\TimberSection\TimberRectangleSection.cs" />
     <Compile Include="Query\IsNull.cs" />
     <Compile Include="Compute\OrientationAngle.cs" />
     <Compile Include="Convert\PanelToFEMesh.cs" />
@@ -121,7 +133,7 @@
     <Compile Include="Create\Requests\GlobalResultRequest.cs" />
     <Compile Include="Create\Requests\MeshResultRequest.cs" />
     <Compile Include="Create\Requests\NodeResultRequest.cs" />
-    <Compile Include="Create\SectionProperties\AluminiumSection.cs" />
+    <Compile Include="Create\SectionProperties\AluminiumSection\AluminiumSectionFromProfile.cs" />
     <Compile Include="Create\Framing\ConstantFramingProperty.cs" />
     <Compile Include="Create\Elements\FEMesh.cs" />
     <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteCircularSection.cs" />
@@ -129,10 +141,10 @@
     <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteRectangleSection.cs" />
     <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteSectionFromProfile.cs" />
     <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteTSection.cs" />
-    <Compile Include="Create\SectionProperties\GenericSection.cs" />
+    <Compile Include="Create\SectionProperties\GenericSection\GenericSectionFromProfile.cs" />
     <Compile Include="Create\Requests\IResultRequest.cs" />
     <Compile Include="Create\MaterialFragments\Timber.cs" />
-    <Compile Include="Create\SectionProperties\GeometricalSection.cs" />
+    <Compile Include="Create\SectionProperties\GeometricalSection\SectionPropertyFromProfile.cs" />
     <Compile Include="Create\SectionProperties\LongitudinalReinforcement\BottomReinforcement.cs" />
     <Compile Include="Create\SectionProperties\LongitudinalReinforcement\LayerReinforcement.cs" />
     <Compile Include="Create\SectionProperties\LongitudinalReinforcement\LongitudinalReinforcement.cs" />
@@ -140,7 +152,7 @@
     <Compile Include="Create\SectionProperties\LongitudinalReinforcement\PerimiterReinforcement.cs" />
     <Compile Include="Create\SectionProperties\LongitudinalReinforcement\TopReinforcement.cs" />
     <Compile Include="Create\SectionProperties\TransverseReinforcement\TransverseReinforcement.cs" />
-    <Compile Include="Create\SectionProperties\TimberSection.cs" />
+    <Compile Include="Create\SectionProperties\TimberSection\TimberSectionFromProfile.cs" />
     <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\OrientTowards.cs" />
     <Compile Include="Modify\SetLocalOrientation.cs" />
@@ -189,7 +201,6 @@
     <Compile Include="Create\Constraints\LinkConstraint.cs" />
     <Compile Include="Create\Elements\Opening.cs" />
     <Compile Include="Create\Elements\Surface.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection.cs" />
     <Compile Include="Modify\ApplyModifiers.cs" />
     <Compile Include="Modify\SetElements0D.cs" />
     <Compile Include="Query\AnalyticalBars.cs" />
