@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this CircleProfile profile)
         {
             return 0;
@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this TubeProfile profile)
         {
             return 0;
@@ -58,7 +58,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this BoxProfile profile)
         {
             return 0;
@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this FabricatedBoxProfile profile)
         {
             return 0;
@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this KiteProfile profile)
         {
             return 0;
@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile. This will always return 0 for closed sections.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this RectangleProfile profile)
         {
             return 0;
@@ -100,7 +100,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this ISectionProfile profile)
         {
             if (profile.IsNull())
@@ -120,7 +120,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this FabricatedISectionProfile profile)
         {
             if (profile.IsNull())
@@ -148,7 +148,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this ChannelProfile profile)
         {
             if (profile.IsNull())
@@ -170,7 +170,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the warping constant for the profile.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant.))]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double IWarpingConstant(this IProfile profile)
         {
             return profile.IsNull() ? null : WarpingConstant(profile as dynamic);
