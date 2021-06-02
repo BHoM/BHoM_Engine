@@ -42,9 +42,9 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a structural Panel from its fundamental parts and an local orientation vector.")]
-        [InputFromProperty("externalEdges")]
-        [InputFromProperty("openings")]
-        [InputFromProperty("property")]
+        [InputFromProperty("externalEdges.")]
+        [InputFromProperty("openings.")]
+        [InputFromProperty("property.")]
         [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel.")]
         [Output("panel", "The created Panel.")]
@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
         [Description("Creates a structural Panel from a closed curve defining the outline, and any number of closed curves defining openings.")]
         [Input("outline", "A closed Curve defining the outline of the Panel. The ExternalEdges of the Panel will be the subparts of this curve, where each edge will corespond to one curve segment.")]
         [Input("openings", "A collection of closed curves representing the openings of the Panel.")]
-        [InputFromProperty("property")]
+        [InputFromProperty("property.")]
         [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel.")]
         [Output("panel", "The created Panel.")]
@@ -92,7 +92,7 @@ namespace BH.Engine.Structure
                      "Method will distribute the outlines such that the outermost curve will be assumed to be an external outline of a panel, and any curve contained in this outline will be assumed as an opening of this Panel. \n" +
                      "Any outline curve inside an opening will again be assumed to be the outline of a new Panel.")]
         [Input("outlines", "A collection of outline curves representing outlines of external edges and opening used to create the Panel(s).")]
-        [InputFromProperty("property")]
+        [InputFromProperty("property.")]
         [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel(s).")]
         [Output("panel", "The created Panel(s).")]
@@ -128,7 +128,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a structural Panel from a PlanarSurface, creating external edges from the ExternalBoundary and openings from the InternalBoundaries of the PlanarSurface.")]
         [Input("surface", "A planar surface used to define the geometry of the panel, i.e. the external edges and the openings.")]
-        [InputFromProperty("property")]
+        [InputFromProperty("property.")]
         [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel.")]
         [Output("panel", "The created Panel.")]

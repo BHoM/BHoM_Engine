@@ -95,7 +95,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "Optional name of the method to reference in the error message.")]
         [Input("checkFaces", "Optional bool to tell the method whether to check FEMeshFaces or not.")]
         [Input("checkNodes", "Optional bool to tell the method whether to check mesh Nodes or not.")]
-        [Input("nodeListIndices", "Optional list of nodes to limit check to")]
+        [Input("nodeListIndices", "Optional list of nodes to limit check to.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the FEMesh or its defining properties are null.")]
         public static bool IsNull(this FEMesh mesh, string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = null, string msg = "")
@@ -290,7 +290,7 @@ namespace BH.Engine.Structure
         [Input("surfaceProperty", "The SurfaceProperty to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the SurfaceProperty is null")]
+        [Output("isNull", "True if the SurfaceProperty is null.")]
         public static bool IsNull(this ISurfaceProperty surfaceProperty, string methodName = "Method", string msg = "")
         {
             if (surfaceProperty == null)

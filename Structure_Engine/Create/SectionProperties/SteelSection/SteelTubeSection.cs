@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -36,8 +36,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a circular hollow steel section from input dimensions.")]
-        [Input("diameter", "Outer diameter of the section.", typeof(Length))]
-        [Input("thickness", "Plate thickness of the section.", typeof(Length))]
+        [Input("diameter", "Outer diameter of the section.", typeof(Length.))]
+        [Input("thickness", "Plate thickness of the section.", typeof(Length.))]
         [Input("material", "Steel material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section. This is required for most structural packages to create the section.")]
         [Output("section", "The created circular hollow steel section.")]

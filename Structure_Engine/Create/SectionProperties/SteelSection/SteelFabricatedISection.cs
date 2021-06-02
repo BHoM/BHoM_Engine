@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -36,13 +36,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a fabricated steel I-section from input dimensions.")]
-        [Input("height", "Full height of the section.", typeof(Length))]
-        [Input("webThickness", "Thickness of the web.", typeof(Length))]
-        [Input("topFlangeWidth", "Width of the top flange.", typeof(Length))]
-        [Input("topFlangeThickness", "Thickness of the top flange.", typeof(Length))]
-        [Input("botFlangeWidth", "Width of the bottom flange.", typeof(Length))]
-        [Input("botFlangeThickness", "Thickness of the bottom flange.", typeof(Length))]
-        [Input("weldSize", "Optional fillet weld size between web and flanges. Measured as the distance between intersection of web and flange perpendicular to the edge of the weld.", typeof(Length))]
+        [Input("height", "Full height of the section.", typeof(Length.))]
+        [Input("webThickness", "Thickness of the web.", typeof(Length.))]
+        [Input("topFlangeWidth", "Width of the top flange.", typeof(Length.))]
+        [Input("topFlangeThickness", "Thickness of the top flange.", typeof(Length.))]
+        [Input("botFlangeWidth", "Width of the bottom flange.", typeof(Length.))]
+        [Input("botFlangeThickness", "Thickness of the bottom flange.", typeof(Length.))]
+        [Input("weldSize", "Optional fillet weld size between web and flanges. Measured as the distance between intersection of web and flange perpendicular to the edge of the weld.", typeof(Length.))]
         [Input("material", "Steel material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section. This is required for most structural packages to create the section.")]
         [Output("section", "The created fabricated steel I-section.")]

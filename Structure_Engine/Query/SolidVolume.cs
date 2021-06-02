@@ -40,9 +40,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a Bar's solid volume based on its SectionProperty area and the CentreLine length")]
-        [Input("bar", "The Bar to get the volume from")]
-        [Output("volume", "The Bar solid material volume.", typeof(Volume))]
+        [Description("Returns a Bar's solid volume based on its SectionProperty area and the CentreLine length.")]
+        [Input("bar", "The Bar to get the volume from.")]
+        [Output("volume", "The Bar solid material volume.", typeof(Volume.))]
         public static double SolidVolume(this Bar bar)
         {
             if (bar.IsNull("SolidVolume"))
@@ -59,8 +59,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a IAreaElement's solid volume as the area of the element times the average thickness of its SurfaceProperty. The average thickness is evaluated as if it was applied to an infinite plane.")]
-        [Input("areaElement", "The IAreaElement to get the volume from")]
-        [Output("volume", "The IAreaElement solid material volume.", typeof(Volume))]
+        [Input("areaElement", "The IAreaElement to get the volume from.")]
+        [Output("volume", "The IAreaElement solid material volume.", typeof(Volume.))]
         public static double SolidVolume(this IAreaElement areaElement)
         {
             if (areaElement.IIsNull("SolidVolume"))

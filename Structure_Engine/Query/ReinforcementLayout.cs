@@ -135,7 +135,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the LongitudinalReinforcement positions as a list of points, based on inner and outer profile edges.")]
         [Input("reinforcement", "The LongitudinalReinforcement to extract the points from.")]
-        [Input("cover", "Any additional spacing to be added in relation to the edge curves, such as minimum cover and stirups. This will be added on top of half the rebar Diameter.", typeof(Length))]
+        [Input("cover", "Any additional spacing to be added in relation to the edge curves, such as minimum cover and stirups. This will be added on top of half the rebar Diameter.", typeof(Length.))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
         [Output("points", "The positions of the LongitudinalReinforcement.")]
@@ -162,7 +162,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the TransverseReinforcement positions as a list of curves, based on inner and outer profile edges.")]
         [Input("reinforcement", "The TransverseReinforcement to extract the points from.")]
-        [Input("cover", "Rebar cover.", typeof(Length))]
+        [Input("cover", "Rebar cover.", typeof(Length.))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
         [Output("points", "The centerlines of the TransverseReinforcement.")]
@@ -215,10 +215,10 @@ namespace BH.Engine.Structure
 
         [Description("Gets the LongitudinalReinforcement centrelines as a list of lines, based on inner and outer profile edges and Bar parameters.")]
         [Input("reinforcement", "The LongitudinalReinforcement to extract the centrelines from.")]
-        [Input("cover", "Any additional spacing to be added in relation to the edge curves, such as minimum cover and stirups. This will be added on top of half the rebar Diameter.", typeof(Length))]
+        [Input("cover", "Any additional spacing to be added in relation to the edge curves, such as minimum cover and stirups. This will be added on top of half the rebar Diameter.", typeof(Length.))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
-        [Input("length", "Length of the host Bar used to generate the lines", typeof(Length))]
+        [Input("length", "Length of the host Bar used to generate the lines", typeof(Length.))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<Line> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation = null)
@@ -245,10 +245,10 @@ namespace BH.Engine.Structure
 
         [Description("Gets the TransverseReinforcement centrelines as a list of curves, based on inner and outer profile edges and Bar parameters.")]
         [Input("reinforcement", "The TransverseReinforcement to extract the centrelines from.")]
-        [Input("cover", "Rebar cover.", typeof(Length))]
+        [Input("cover", "Rebar cover.", typeof(Length.))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
-        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
+        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length.))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation = null)
@@ -291,10 +291,10 @@ namespace BH.Engine.Structure
 
         [Description("Gets the IBarReinforcement centrelines as a list of curves, based on inner and outer profile edges and Bar parameters.")]
         [Input("reinforcement", "The TransverseReinforcement to extract the centrelines from.")]
-        [Input("cover", "Rebar cover.", typeof(Length))]
+        [Input("cover", "Rebar cover.", typeof(Length.))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
-        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
+        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length.))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<ICurve> IReinforcementLayout(this IBarReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation = null)
