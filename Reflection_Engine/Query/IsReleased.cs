@@ -38,6 +38,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsReleased(this MethodBase method)
         {
+            if (method == null)
+                return false;
+
             ReleasedAttribute attribute = method.GetCustomAttribute<ReleasedAttribute>();
             if (attribute != null)
             {
@@ -60,6 +63,9 @@ namespace BH.Engine.Reflection
 
         public static bool IsReleased(this Type type) 
         {
+            if (type == null)
+                return false;
+
             ReleasedAttribute attribute = type.GetCustomAttribute<ReleasedAttribute>();
             if (attribute != null)
             {

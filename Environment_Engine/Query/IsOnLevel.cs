@@ -20,46 +20,41 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
 using System.Collections.Generic;
-using BH.oM.Environment.Elements;
-
-using BH.oM.Reflection.Attributes;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.ComponentModel;
 
-using System.Linq;
-using BH.Engine.Base;
+using BH.oM.Geometry;
+using BH.oM.Geometry.SettingOut;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Environment
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels where any connected spaces which are detailed within the spaceNamesToChange are replaced by a replacementSpaceName. The spaceNamesToChange and replacementSpaceNames should match length to provide a 1:1 change")]
-        [Input("panels", "A collection of Environment Panels to update the connected space names of")]
-        [Input("spaceNamesToChange", "A collection of space names which should be updated")]
-        [Input("replacementSpaceNames", "A collection of space names to replace with")]
-        [Output("panels", "A collection of Environment Panels modified so that space names are changed as appropriate")]
-        public static List<Panel> ChangeAdjacentSpaces(this List<Panel> panels, List<string> spaceNamesToChange, List<string> replacementSpaceNames)
+        [Description("Returns a boolean stating whether a polyline is on a certain level.")]
+        [Input("polyline", "A polyline to test if it is on a certain level.")]
+        [Input("level", "The level to test for.")]
+        [Input("tolerance", "The tolerance of the distance calculation for determining whether a polyline is on the level. Default is equal to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("bool", "A boolean stating whether the polyline is on that level.")]
+        public static bool IsOnLevel(this Polyline polyline, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-            if (spaceNamesToChange.Count != replacementSpaceNames.Count)
+            if (polyline == null || level == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Please ensure the number of replacement space names matches the number of changing space names. Panels returned without change");
-                return clonedPanels;
+                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a polyline is on a level if either the polyline or the level are null.");
+                return false;
             }
 
-            for (int x = 0; x < spaceNamesToChange.Count; x++)
-            {
-                for (int a = 0; a < clonedPanels.Count; a++)
-                    clonedPanels[a] = ChangeAdjacentSpace(clonedPanels[a], spaceNamesToChange[x], replacementSpaceNames[x]);
-            }
-
-            return clonedPanels;
+            double minLevel = polyline.MinimumLevel();
+            double maxLevel = polyline.MaximumLevel();
+            return ((minLevel >= (level.Elevation - tolerance)) && (maxLevel <= (level.Elevation + tolerance)));
         }
     }
 }
-
-

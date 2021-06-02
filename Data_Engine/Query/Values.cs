@@ -42,6 +42,12 @@ namespace BH.Engine.Data
         [Output("Data", "All data in the table as CustomObjects.")]
         public static List<CustomObject> Values(this Table table)
         {
+            if (table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the values from a null table.");
+                return new List<CustomObject>();
+            }
+
             return AsCustomObjects(table.Data.Select(), table.Data.Columns);
         }
 

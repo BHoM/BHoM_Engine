@@ -44,6 +44,18 @@ namespace BH.Engine.Environment
         [Output("isLeft", "True if the point is on the left hand side of the line. False if it is on the line or on the right hand side")]
         public static bool IsLeft(Line line, Point check)
         {
+            if(line == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a point is on the left side of a null line.");
+                return false;
+            }
+
+            if(check == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a point is on the left side of a line if the point is null.");
+                return false;
+            }
+
             return ((line.End.X - line.Start.X) * (check.Y - line.Start.Y) - (line.End.Y - line.Start.Y) * (check.X - line.Start.X)) > 0;
         }
     }

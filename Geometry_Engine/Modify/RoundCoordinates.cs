@@ -20,13 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
-using BH.oM.Geometry;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -291,8 +290,9 @@ namespace BH.Engine.Geometry
         [Output("surface", "The modified BHoM Geometry PlanarSurface.")]
         public static PlanarSurface RoundCoordinates(this PlanarSurface planarSurface, int decimalPlaces = 6)
         {
-            Vector normal = planarSurface.Normal().Normalise();
+            Vector normal = planarSurface.FitPlane().Normal;
 
+            //If the PlanarSurface is aligned with one of the main coordinate system's planes then rounded element will get projected on this plane to keep it's planarity.
             if (Math.Abs(Math.Abs(normal.X) - 1) < Tolerance.Angle ||
                 Math.Abs(Math.Abs(normal.Y) - 1) < Tolerance.Angle ||
                 Math.Abs(Math.Abs(normal.Z) - 1) < Tolerance.Angle)
@@ -303,8 +303,17 @@ namespace BH.Engine.Geometry
 
                 return Create.PlanarSurface(externalBoundary, internalBoundaries);
             }
+            else
+            {
+                ICurve externalBoundary = planarSurface.ExternalBoundary.IRoundCoordinates(decimalPlaces);
+                List<ICurve> internalBoundaries = planarSurface.InternalBoundaries.Select(x => x.IRoundCoordinates(decimalPlaces)).ToList();
+                PlanarSurface newSurface = Create.PlanarSurface(externalBoundary, internalBoundaries);
 
-            Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface that is not aligned with the global coordinate system cannot be achieved without risk of losing planarity. No action has been taken.");
+                if (newSurface != null)
+                    return newSurface;
+            }
+
+            Reflection.Compute.RecordWarning("Rounding the coordinates of a planar surface couldn't be achieved without losing planarity. No action has been taken.");
             return planarSurface;
         }
 

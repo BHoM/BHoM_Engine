@@ -40,10 +40,16 @@ namespace BH.Engine.MEP
 
         public static BH.oM.MEP.System.Pipe Pipe(Line line, double flowRate = 0, PipeSectionProperty sectionProperty = null)
         {
+            if (line == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a pipe from an empty line.");
+                return null;
+            }
+
             return new BH.oM.MEP.System.Pipe
             {
-                StartPoint = (Point)line.Start,
-                EndPoint = (Point)line.End,
+                StartPoint = line.Start,
+                EndPoint = line.End,
                 SectionProperty = sectionProperty,
             };
         }

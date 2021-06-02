@@ -54,6 +54,12 @@ namespace BH.Engine.Physical
         [Output("polyline", "BHoM Geometry Polyline")]
         public static List<Polyline> InternalPolyline(BH.oM.Physical.Elements.ISurface physicalObject)
         {
+            if(physicalObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the internal polyline of a null surface.");
+                return new List<Polyline>();
+            }
+
             return physicalObject.Location.IInternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
         }
 
@@ -64,6 +70,12 @@ namespace BH.Engine.Physical
         [Output("polyline", "BHoM Geometry Polyline")]
         public static List<Polyline> InternalPolyline(IOpening physicalOpening)
         {
+            if(physicalOpening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the internal polyline of a null opening.");
+                return new List<Polyline>();
+            }
+
             return physicalOpening.Location.IInternalEdges().Select(x => x.ICollapseToPolyline(Tolerance.Angle)).ToList();
         }
 

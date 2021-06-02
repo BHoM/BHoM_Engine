@@ -87,6 +87,12 @@ namespace BH.Engine.Physical
         [Output("Wall", "The created physical Wall")]
         public static Wall Wall(Line line, double height, IConstruction construction, Offset offset = Offset.Undefined, string name = "")
         {
+            if(line == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a Physical.Wall from a null line.");
+                return null;
+            }
+
             Polyline boundary = new Polyline();
 
             Vector move = Vector.ZAxis * height;

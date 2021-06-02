@@ -43,6 +43,12 @@ namespace BH.Engine.Environment
         [Output("orientation", "The orientation of the Environment Object")]
         public static double? Orientation(this IEnvironmentObject environmentObject, double northAngle = 0.0, bool returnAzimuthAngle = false)
         {
+            if(environmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the orientation of a null environment object.");
+                return null;
+            }
+
             northAngle += Math.PI / 2; // Correct northAngle to be 0 at North, rather than East
 
             Plane xyPlane = BH.Engine.Geometry.Create.Plane(BH.Engine.Geometry.Create.Point(0, 0, 0), BH.Engine.Geometry.Create.Vector(0, 0, 1));

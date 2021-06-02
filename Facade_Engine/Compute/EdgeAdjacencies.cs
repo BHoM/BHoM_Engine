@@ -45,11 +45,11 @@ namespace BH.Engine.Facade
 
         [Description("Returns adjacent edges and elements at a provided frame edge for a collection of panels.")]
         [Input("edge", "Edge to find adjacencies at.")]
-        [Input("elems", "2D elements to use to find edge adjacencies (These should be panels and/or openings).")]
+        [Input("elements", "2D elements to use to find edge adjacencies (These should be panels and/or openings).")]
         [Input("tolerance", "Tolerance is the minimum overlap amount required to consider adjacent.")]
-        [MultiOutput(0, "adjEdges", "Adjacent edges")]
-        [MultiOutput(1, "adjElems", "Adjacent Elements per adjacent edge")]
-        public static Output<List<IElement1D>, List<IElement2D>> EdgeAdjacencies(this IElement1D edge, List<IElement2D> elems, double tolerance = Tolerance.Distance)
+        [MultiOutput(0, "adjacentEdges", "Adjacent edges.")]
+        [MultiOutput(1, "adjacentElems", "Adjacent Elements per adjacent edge.")]
+        public static Output<List<IElement1D>, List<IElement2D>> EdgeAdjacencies(this IElement1D edge, List<IElement2D> elements, double tolerance = Tolerance.Distance)
         {
             List<IElement1D> adjEdges = new List<IElement1D>();
             List<IElement2D> adjElems = new List<IElement2D>();
@@ -58,7 +58,7 @@ namespace BH.Engine.Facade
             PolyCurve edgeGeo = edge.ElementCurves().IJoin()[0];
             Vector edgeDir = edge.IGeometry().IEndDir();
 
-            foreach (IElement2D elem in elems)
+            foreach (IElement2D elem in elements)
             {
                 List<IElement1D> edges = elem.IOutlineElements1D();
 
@@ -79,6 +79,8 @@ namespace BH.Engine.Facade
                 Item2 = adjElems,
             };
         }
+
+        /***************************************************/
 
     }
 }

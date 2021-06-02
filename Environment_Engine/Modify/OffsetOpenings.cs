@@ -42,12 +42,16 @@ namespace BH.Engine.Environment
         [Output("panel", "An Environment Panel object")]
         public static Panel OffsetOpenings(Panel panel)
         {
+            if(panel == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot offset the openings of a null panel.");
+                return panel;
+            }
+
             Panel returnPanel = new Panel();
             //Checking if there are openings            
             if (panel.Openings.Count == 0)
-            {
                 return panel;
-            }
             else
             {
                 //OpeningArea                
@@ -73,9 +77,7 @@ namespace BH.Engine.Environment
 
                 //Comparing the total opening area to the panel area, if equal: reduce the area of the opening(s).
                 if (totalOpeningArea != panelArea)
-                {
                     return panel;
-                }
                 else
                 {
                     List<BH.oM.Geometry.Polyline> openingPolylines = new List<BH.oM.Geometry.Polyline>();

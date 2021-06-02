@@ -45,14 +45,17 @@ namespace BH.Engine.Physical
         [Output("normal", "The FramingElements normal vector")]
         public static Vector Normal(this IFramingElement framingElement)
         {
+            if(framingElement == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the normal of a null framing element.");
+                return null;
+            }
+
             double orientationAngle = 0;
             if (!(framingElement.Property is ConstantFramingProperty))
-            {
                 Reflection.Compute.RecordWarning("No ConstantFramingProperty found, OrientationAngle set as 0");
-            } else
-            {
+            else
                 orientationAngle = (framingElement.Property as ConstantFramingProperty).OrientationAngle;
-            }
 
             return framingElement.Location.ElementNormal(orientationAngle);
         }

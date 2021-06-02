@@ -35,6 +35,12 @@ namespace BH.Engine.Data
 
         public static IEnumerable<IBHoMObject> FilterData(this FilterRequest request, IEnumerable<IBHoMObject> objects)
         {
+            if(request == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot filter data with a null request.");
+                return new List<IBHoMObject>();
+            }
+
             IEnumerable<IBHoMObject> result = objects;
 
             if (request.Tag != "")

@@ -43,6 +43,9 @@ namespace BH.Engine.Structure
         [Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY.")]
         public static CompositeGeometry Geometry(this ConcreteSection section)
         {
+            if (section?.SectionProfile?.Edges == null)
+                return null;
+
             if (section.SectionProfile.Edges.Count == 0)
                 return null;
 
@@ -60,7 +63,10 @@ namespace BH.Engine.Structure
         [Output("outlines", "The geometry of the GeometricalSection as its outline in the global XY plane.")]
         public static IGeometry Geometry(this IGeometricalSection section)
         {
-            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
+            if (section?.SectionProfile?.Edges == null)
+                return new CompositeGeometry();
+            else
+                return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
         }
 
         /***************************************************/
@@ -72,10 +78,15 @@ namespace BH.Engine.Structure
         {
             List<IGeometry> lines = new List<IGeometry>();
 
-            foreach (Node sn in link.SecondaryNodes)
+            if (link?.SecondaryNodes != null && link?.PrimaryNode?.Position != null)
             {
-                lines.Add(new Line() { Start = link.PrimaryNode.Position, End = sn.Position });
+                foreach (Node sn in link.SecondaryNodes)
+                {
+                    if (sn?.Position != null)
+                        lines.Add(new Line() { Start = link.PrimaryNode.Position, End = sn.Position });
+                }   
             }
+            
             return new CompositeGeometry() { Elements = lines };
         }
 
@@ -108,7 +119,10 @@ namespace BH.Engine.Structure
         [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection.", typeof(Query), "Geometry(this IGeometricalSection section).")]
         public static IGeometry Geometry(this SteelSection section)
         {
-            return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
+            if (section?.SectionProfile?.Edges == null)
+                return new CompositeGeometry();
+            else
+                return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
         }
 
         /***************************************************/
@@ -116,5 +130,4 @@ namespace BH.Engine.Structure
     }
 
 }
-
 

@@ -44,6 +44,12 @@ namespace BH.Engine.Graphics
         [Output("marker curves", "COllection of curves to represent the marker.")]
         public static List<ICurve> IMarker(this IMarker marker, Point end, Vector direction)
         {
+            if (marker == null || end == null || direction == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a marker if the basic arrow marker, end attachment point, or direction vector are null.");
+                return new List<ICurve>();
+            }
+
             return Marker(marker as dynamic, end , direction);
         }
 
@@ -55,6 +61,12 @@ namespace BH.Engine.Graphics
         [Output("marker curves", "COllection of curves to represent the marker.")]
         public static List<ICurve> Marker(this BasicArrowMarker marker, Point end, Vector direction)
         {
+            if(marker == null || end == null || direction == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a marker if the basic arrow marker, end attachment point, or direction vector are null.");
+                return new List<ICurve>();
+            }
+
             direction.Normalise();
             Vector back = direction.Reverse() * marker.HeadLength;
             Vector perp = back.CrossProduct(Vector.ZAxis);

@@ -41,6 +41,9 @@ namespace BH.Engine.Environment
         [Output("outputPath", "Full path to target output file")]
         public static string ExportEPW(WeatherFile weatherfile, string outputPath)
         {
+            if (weatherfile == null)
+                return "";
+
             List<string> outputStrings = new List<string>();
 
             // header

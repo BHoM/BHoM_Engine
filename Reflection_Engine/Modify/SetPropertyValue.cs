@@ -26,6 +26,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -43,6 +44,18 @@ namespace BH.Engine.Reflection
         [Output("result", "New object with its property changed to the new value")]
         public static object SetPropertyValue(this object obj, string propName, object value = null)
         {
+            if(obj == null)
+            {
+                Compute.RecordError("Cannot set the property value of a null object.");
+                return obj;
+            }
+
+            if(propName == null)
+            {
+                Compute.RecordError("Cannot set the property value where the property name is null.");
+                return obj;
+            }
+
             object toChange = obj;
             if (propName.Contains("."))
             {
@@ -73,6 +86,24 @@ namespace BH.Engine.Reflection
                     else if (propType.IsValueType || typeof(IEnumerable).IsAssignableFrom(propType))
                         value = Activator.CreateInstance(propType);
                 }
+
+                if (propType.IsEnum && value is string)
+                {
+                    string enumName = (value as string).Split('.').Last();
+                    try
+                    {
+                        object enumValue = Enum.Parse(propType, enumName);
+                        if (enumValue != null)
+                            value = enumValue;
+                    }
+                    catch
+                    {
+                        Engine.Reflection.Compute.RecordError($"An enum of type {propType.ToText(true)} does not have a value of {enumName}");
+                    }   
+                }
+
+                if (propType == typeof(Type) && value is string)
+                    value = Create.Type(value as string);
 
                 if (value != null)
                 {
@@ -115,7 +146,8 @@ namespace BH.Engine.Reflection
             else
             {
                 obj.CustomData[propName] = value;
-                Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as custom data.");
+                if (!(obj is CustomObject))
+                    Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as custom data.");
             }
 
             return true;

@@ -47,6 +47,12 @@ namespace BH.Engine.Environment
         [Output("rValue", "The rValue of the layer calculated as the layers thickness divided by the materials conductivity")]
         public static double RValue(this Layer layer)
         {
+            if(layer == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the RValue of a null layer.");
+                return -1;
+            }
+
             //rValue is calculated as being the thickness of the layer dividied by the materials conductivity
 
             IEnvironmentMaterial envMaterial = layer.Material.Properties.Where(x => x is IEnvironmentMaterial).FirstOrDefault() as IEnvironmentMaterial;

@@ -37,6 +37,12 @@ namespace BH.Engine.Reflection
 
         public static List<Type> UsedTypes(this MethodBase method, bool onlyBHoM = false)
         {
+            if(method == null)
+            {
+                Compute.RecordWarning("Cannot query the used types of a null method. An empty list will be returned as the list of used types.");
+                return new List<Type>();
+            }
+
             try
             {
                 IEnumerable<Type> varTypes = new List<Type>();
@@ -64,6 +70,12 @@ namespace BH.Engine.Reflection
 
         public static List<Type> UsedTypes(this Type type, bool onlyBHoM = false, bool inheritedTypes = true)
         {
+            if(type == null)
+            {
+                Compute.RecordWarning("Cannot query the used types of a null type. An empty list will be returned as the list of used types.");
+                return new List<Type>();
+            }
+
             BindingFlags bindingAll = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Instance;
 
             IEnumerable<Type> fieldTypes = type.GetFields(bindingAll).Select(x => x.FieldType).Distinct();

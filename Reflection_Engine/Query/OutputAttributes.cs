@@ -39,6 +39,9 @@ namespace BH.Engine.Reflection
         [Description("Return names and descriptions of the multiple outputs of a C# method")]
         public static List<OutputAttribute> OutputAttributes(this MethodBase method)
         {
+            if (method == null)
+                return new List<OutputAttribute>();
+
             if (method.IsMultipleOutputs())
             {
                 Dictionary<int, MultiOutputAttribute> outputDefs = method.GetCustomAttributes<MultiOutputAttribute>().ToDictionary(x => x.Index);

@@ -37,6 +37,18 @@ namespace BH.Engine.Reflection
 
         public static List<string> SplitByIndices(string text, List<int> indices)
         {
+            if (text == null)
+            {
+                Compute.RecordError("Cannot split a null string.");
+                return new List<string>();
+            }
+
+            if (indices == null)
+            {
+                Compute.RecordWarning("The 'indices' input is null and was replaced by an empty list");
+                indices = new List<int>();
+            }
+
             int previousIndex = 0;
             List<string> result = new List<string>();
 

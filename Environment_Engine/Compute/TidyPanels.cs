@@ -20,21 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
-using BH.oM.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+
+using BH.oM.Environment.Elements;
 using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Versioning
+namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
@@ -42,22 +36,43 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
-        [Input("declaringType", "Type in which the method is declared. You can use just the name of the type or include a (part of the) namespace in front of it.")]
-        [Input("methodName", "Name of the method. It has to be the exact string. If the method is a constructor, you can leave this input blank.")]
-        [Output("keys", "String representation for each method that matches the input filters.")]
-        public static List<string> VersioningKey(string declaringType, string methodName = "")
+        [Description("Returns a list of Environment Panels with overlapping panels split and merged.")]
+        [Input("panels", "A collection of Environment Panels to tidy.")]
+        [Output("panels", "A collection of modified Environment Panels with with overlapping panels split and merged.")]
+        public static List<Panel> TidyPanels(this List<Panel> panels)
         {
-            if (methodName == "")
-                methodName = ".ctor";
+            if (panels == null)
+                return panels;
 
-            return Engine.Reflection.Query.AllMethodList()
-                .Where(x => x.Name == methodName && x.DeclaringType.FullName.EndsWith(declaringType))
-                .Select(x => x.VersioningKey())
-                .ToList();
+            List<Panel> fixedPanels = new List<Panel>();
+            List<Panel> splitPanels = panels.SplitPanelsByOverlap();
+            List<List<Panel>> overlappingPanels = splitPanels.Select(x => x.IdentifyOverlaps(splitPanels)).ToList();
+            List<Guid> handledPanels = new List<Guid>();
+
+            for (int x = 0; x < splitPanels.Count; x++)
+            {
+                if (handledPanels.Contains(splitPanels[x].BHoM_Guid))
+                    continue; //This panel has already been handled
+                
+                if (overlappingPanels[x].Count == 0)
+                {
+                    fixedPanels.Add(splitPanels[x]);
+                    handledPanels.Add(splitPanels[x].BHoM_Guid);
+                    continue;
+                }
+
+                Panel p = splitPanels[x];
+                for (int y = 0; y < overlappingPanels[x].Count; y++)
+                {
+                    p = p.MergePanels(overlappingPanels[x][y], false);
+                    handledPanels.Add(overlappingPanels[x][y].BHoM_Guid);
+                }
+
+                fixedPanels.Add(p);
+                handledPanels.Add(p.BHoM_Guid);
+            }
+            
+            return fixedPanels;
         }
-
-        /***************************************************/
     }
 }
-

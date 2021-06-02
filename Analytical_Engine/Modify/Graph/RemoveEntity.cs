@@ -44,6 +44,18 @@ namespace BH.Engine.Analytical
         [Output("graph", "The modified Graph with the specified entity and any dependent relations removed.")]
         public static Graph RemoveEntity(this Graph graph, IBHoMObject entityToRemove)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot remove an entity from a null graph.");
+                return null;
+            }
+
+            if(entityToRemove == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot remove a null entity from a graph.");
+                return null;
+            }
+
             graph.RemoveEntity(entityToRemove.BHoM_Guid);
             return graph;
         }
@@ -55,6 +67,12 @@ namespace BH.Engine.Analytical
         [Output("graph", "The modified Graph with the specified entity and any dependent relations removed.")]
         public static Graph RemoveEntity(this Graph graph, Guid entityToRemove)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot remove an entity from a null graph.");
+                return null;
+            }
+
             if (graph.Entities.ContainsKey(entityToRemove))
             {
                 List<IRelation> relations = graph.Relations.FindAll(rel => rel.Source.Equals(entityToRemove) || rel.Target.Equals(entityToRemove)).ToList();

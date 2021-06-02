@@ -20,52 +20,51 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
+using System;
 using System.Collections.Generic;
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
-using BH.oM.Reflection.Attributes;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.ComponentModel;
-using BH.Engine.Base;
+
+using BH.oM.Environment.Elements;
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Environment
 {
     public static partial class Modify
-    {
+    {        
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
-        [Input("panels", "A collection of Environment Panels to add the opening to")]
-        [Input("openings", "A collection of Environment Openings to add to the panels")]
-        [Input("centroidTolerance", "Set the tolerance for obtaining the centroid of openings, default is set to BH.oM.Geometry.Tolerance.Distance")]
-        [Input("containingTolerance", "Set the tolerance for determining geometric association of openings to panels, default is set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("panels", "A collection of modified Environment Panels with the provided openings added")]
-        public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings, double centroidTolerance = BH.oM.Geometry.Tolerance.Distance, double containingTolerance = BH.oM.Geometry.Tolerance.Distance)
+        [Description("Returns a list of Environment Panel with panel type set by intersecting lines.")]
+        [Input("panels", "A collection of Environment Panels to set the type for.")]
+        [Input("intersectingLines", "A collection of lines intersecting the outline of panels.")]
+        [Input("panelType", "The panel type to set.")]
+        [Input("minTilt", "The minimum tilt to filter the collection of panels by.")]
+        [Input("maxTilt", "The maximum tilt to filter the collection of panels by.")]
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle.")]
+        [Output("panels", "A collection of modified Environment Panels with the type set by intsersecting lines.")]
+        public static void SetPanelTypeByIntersectingLines(this List<Panel> panels, List<Line> intersectingLines, PanelType panelType, double minTilt = 88, double maxTilt = 92, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
-            List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-            List<Opening> clonedOpenings = new List<Opening>(openings.Select(x => x.DeepClone<Opening>()).ToList());
+            if (panels == null || intersectingLines == null)
+                return;
 
-            foreach (Opening o in clonedOpenings)
+            foreach (Line l in intersectingLines)
             {
-                Point centre = o.Polyline().Centroid(centroidTolerance);
-                if (centre != null)
+                for (int i = 0; i < panels.Count; i++)
                 {
-                    Panel panel = clonedPanels.PanelsContainingPoint(centre, false, containingTolerance).FirstOrDefault();
-                    if (panel != null)
+                    double tilt = panels[i].Tilt(distanceTolerance, angleTolerance);
+                    if (tilt >= minTilt && tilt <= maxTilt && panels[i].Polyline().LineIntersections(l).Count > 0)
                     {
-                        if (panel.Openings == null) panel.Openings = new List<Opening>();
-                        panel.Openings.Add(o);
+                        panels[i].Type = panelType;
                     }
                 }
             }
-
-            return clonedPanels;
         }
     }
 }
-
-

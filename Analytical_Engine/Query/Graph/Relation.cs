@@ -46,6 +46,24 @@ namespace BH.Engine.Analytical
         [Output("relations", "The collection of matching IRelations.")]
         public static List<IRelation> Relation(this Graph graph, IBHoMObject source, IBHoMObject target, RelationDirection relationDirection = RelationDirection.Forwards)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a null graph.");
+                return new List<IRelation>();
+            }
+
+            if (source == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a graph when the source is null.");
+                return new List<IRelation>();
+            }
+
+            if (target == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a graph when the target is null.");
+                return new List<IRelation>();
+            }
+
             List<IRelation> relations = new List<IRelation>();
             Guid sourceGuid = source.BHoM_Guid;
             Guid targetGuid = target.BHoM_Guid;
@@ -75,6 +93,12 @@ namespace BH.Engine.Analytical
         [Output("relations", "The collection of matching IRelation Guids.")]
         public static List<Guid> Relation(this Graph graph, Guid source, Guid target, RelationDirection relationDirection = RelationDirection.Forwards)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a null graph.");
+                return new List<Guid>();
+            }
+
             List<IRelation> relations = graph.Relation(graph.Entities[source], graph.Entities[target], relationDirection);
             
             List<Guid> guids = relations.Select(rel => rel.BHoM_Guid).ToList();
@@ -83,4 +107,3 @@ namespace BH.Engine.Analytical
         }
     }
 }
-

@@ -48,12 +48,14 @@ namespace BH.Engine.Facade
         [Input("opening", "An opening to set the offset on based on the specified value and provided panel. The opening must have a glazing thickness.")]
         [Input("useroffset", "A user defined offset (exterior face of panel to exterior face of glazing).")]
         [Output("opening", "The opening with the specified offset applied as a fragment.")]
-        public static Opening SetOffsetFromFacetoFaceDist(this Opening opening, Panel panel, double useroffset)
+        public static void SetOffsetFromFacetoFaceDist(this Opening opening, Panel panel, double useroffset)
         {
-            //TODO:
             //Check for null case
-            if (panel == null || opening == null || useroffset == null)
-                return null;
+            if (panel == null || opening == null || useroffset == double.NaN || useroffset < 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Invalid inputs, offset was not applied.");
+                return;
+            }
 
             //Retrieve panel width and opening glazing width
             double panelwidth = panel.Construction.IThickness();
@@ -81,8 +83,6 @@ namespace BH.Engine.Facade
             {
                 offsetFragment.OffsetDistance = offset;
             }
-           
-            return opening;
         }
     }
 }

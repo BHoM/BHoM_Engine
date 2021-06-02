@@ -45,6 +45,12 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
         public static List<Cvalue> CvalueAnalysis(this Audience audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
+            if (audience == null || settings == null || playingArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the CValueAnalysis if the audience, settings, or playing area are null.");
+                return new List<Cvalue>();
+            }
+
             List<Cvalue> results = EvaluateCvalue(audience, settings, playingArea, focalPoint);
             return results;
         }

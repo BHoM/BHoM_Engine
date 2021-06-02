@@ -44,6 +44,18 @@ namespace BH.Engine.Diffing
         [Input("diffConfig", "Diffing settings for this Stream Revision. Hashes of objects contained in this stream will be computed based on these configs.")]
         public static Revision Revision(IEnumerable<IBHoMObject> objects, object streamId, string revisionName = null, string comment = null, DiffingConfig diffConfig = null)
         {
+            if(objects == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a revision from a null collection of objects.");
+                return null;
+            }
+
+            if(streamId == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create a revision from a null stream ID.");
+                return null;
+            }
+
             return new Revision(Modify.PrepareForRevision(objects, diffConfig), ProcessStreamId(streamId), diffConfig, revisionName, comment);
         }
 

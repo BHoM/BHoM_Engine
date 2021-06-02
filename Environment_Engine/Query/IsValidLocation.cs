@@ -40,6 +40,12 @@ namespace BH.Engine.Environment
         /***************************************************/
         public static bool IsValidLocation(this Location location)
         {
+            if(location == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query if a location is valid if the location is null.");
+                return false;
+            }
+
             double latitude = location.Latitude;
             if (latitude < -90 || latitude > 90)
             {

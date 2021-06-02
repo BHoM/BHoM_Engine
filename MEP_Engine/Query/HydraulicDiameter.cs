@@ -41,6 +41,12 @@ namespace BH.Engine.MEP
         [Output("hydraulicDiameter", "Hydraulic Diameter allows you to calculate the round equivalent hydraulic diameter for a non-round duct (rectangular/square).")]
         public static double HydraulicDiameter(this IProfile profile, double area)
         {
+            if(profile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the hydraulic diameter of a null profile.");
+                return -1;
+            }
+
             List<List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(profile.Edges.ToList()).Cast<ICurve>().ToList());
             List<ICurve> innerProfileEdges = new List<ICurve>();
 

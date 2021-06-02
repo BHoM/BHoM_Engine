@@ -35,6 +35,12 @@ namespace BH.Engine.Architecture.Theatron
         /***************************************************/
         public static TheatronPlan OrthogonalPlan(StadiaParameters parameters)
         {
+            if (parameters == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create an orthogonal plan from a null set of stadia parameters.");
+                return null;
+            }
+
             TheatronPlan plan = new TheatronPlan();
             OrthoPlanSetUp(ref plan, parameters.PitchLength,parameters.PitchWidth, parameters.EndBound, parameters.SideBound, 
                 parameters.CornerRadius, parameters.StructBayWidth, parameters.NumCornerBays);

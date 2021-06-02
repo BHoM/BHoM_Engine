@@ -52,7 +52,7 @@ namespace BH.Engine.Versioning
 
             List<string> upgraders = UpgraderVersions();
             int index = upgraders.IndexOf(version);
-            return upgraders.Skip(index + 1).ToList();
+            return upgraders.Skip(Math.Min(index + 1, upgraders.Count - 1)).ToList();
         }
 
 

@@ -42,9 +42,15 @@ namespace BH.Engine.Physical
         [Input("surface", "The ISurface to replace the internal elements of.")]
         [Input("internalElements2D", "New internal elements, will replace any existing ones.")]
         [Output("surface", "The ISurface with new internal elements.")]
-        public static oM.Physical.Elements.ISurface SetInternalElements2D(this oM.Physical.Elements.ISurface surface, List<IElement2D> internalElements2D)
+        public static ISurface SetInternalElements2D(this oM.Physical.Elements.ISurface surface, List<IElement2D> internalElements2D)
         {
-            oM.Physical.Elements.ISurface pp = surface.ShallowClone();
+            if(surface == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot set the internal 2D elements of a null surface.");
+                return null;
+            }
+
+            ISurface pp = surface.ShallowClone();
             pp.Openings = new List<IOpening>(internalElements2D.Cast<IOpening>().ToList());
             return pp;
         }

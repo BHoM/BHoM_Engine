@@ -107,6 +107,7 @@
     <Compile Include="Compute\ComponentAreas.cs" />
     <Compile Include="Compute\EdgeAdjacencies.cs" />
     <Compile Include="Compute\AdjacentElements.cs" />
+    <Compile Include="Create\Elements\CurtainWall.cs" />
     <Compile Include="Modify\SetOffsetFromFacetoFaceDist.cs" />
     <Compile Include="Modify\OffsetVariable.cs" />
     <Compile Include="Modify\Transform.cs" />
@@ -115,6 +116,8 @@
     <Compile Include="Create\Elements\Opening.cs" />
     <Compile Include="Create\Elements\Panel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\FrameEdgeType.cs" />
+    <Compile Include="Query\ExternalEdges.cs" />
     <Compile Include="Query\Depth.cs" />
     <Compile Include="Query\FrameGeometry2D.cs" />
     <Compile Include="Query\MaterialComposition.cs" />

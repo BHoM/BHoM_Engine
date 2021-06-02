@@ -49,9 +49,25 @@ namespace BH.Engine.Analytical
         [Output("shortest path result", "The ShortestPathResult.")]
         public static ShortestPathResult AStarShortestPath(this Graph graph, IBHoMObject start, IBHoMObject end)
         {
-            ShortestPathResult result = AStarShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
-            
-            return result;
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AStar shortest path from a null graph.");
+                return null;
+            }
+
+            if (start == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AStar shortest path between two points when the start is null.");
+                return null;
+            }
+
+            if (end == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AStar shortest path between two points when the end is null.");
+                return null;
+            }
+
+            return AStarShortestPath(graph, start.BHoM_Guid, end.BHoM_Guid);
         }
 
         /***************************************************/
@@ -64,6 +80,12 @@ namespace BH.Engine.Analytical
         [Output("shortest path result", "The ShortestPathResult.")]
         public static ShortestPathResult AStarShortestPath(this Graph graph, Guid start, Guid end)
         {
+            if (graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AStar shortest path from a null graph.");
+                return null;
+            }
+
             m_GeometricGraph = graph.IProjectGraph(new GeometricProjection());
 
             if (m_GeometricGraph.Entities.Count == 0 || m_GeometricGraph.Relations.Count == 0)

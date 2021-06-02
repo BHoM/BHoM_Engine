@@ -47,6 +47,12 @@ namespace BH.Engine.Architecture
         [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Room room)
         {
+            if(room == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null room.");
+                return new List<IElement1D>();
+            }
+
             return room.Perimeter.ISubParts().Cast<IElement1D>().ToList();
         }
 
@@ -57,9 +63,13 @@ namespace BH.Engine.Architecture
         [Output("outlineElements", "A collection of outline 1D elements")]
         public static List<IElement1D> OutlineElements1D(this Ceiling ceiling)
         {
+            if(ceiling == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null ceiling.");
+                return new List<IElement1D>();
+            }
+
             return ceiling.Surface.ISubParts().Cast<IElement1D>().ToList();
         }
     }
 }
-
-

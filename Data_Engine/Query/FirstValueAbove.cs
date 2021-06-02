@@ -45,6 +45,12 @@ namespace BH.Engine.Data
         [Output("Data", "The data matching the provided axes and values as CustomObjects.")]
         public static CustomObject FirstValueAbove(this Table table, List<string> axes, List<object> values, string sortAxis, bool allowEqual = true)
         {
+            if(table == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot get the first value above from a null table.");
+                return null;
+            }
+
             if (!table.AxisExists(axes.Concat(new string[] { sortAxis }).ToList()))
                 return new CustomObject();
 
@@ -52,5 +58,4 @@ namespace BH.Engine.Data
         }
     }
 }
-
 

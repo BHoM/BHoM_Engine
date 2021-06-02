@@ -40,21 +40,58 @@ namespace BH.Engine.Architecture.Theatron
         [Input("profile", "The TheatronFullProfile used in defining the plan")]
         [Input("sParams", "The StadiaParameters")]
         [Input("pParams", "List of the ProfileParameters")]
-        public static TheatronGeometry TheatronGeometry(TheatronPlan planFull, TheatronFullProfile profile,StadiaParameters sParams, List<ProfileParameters> pParams)
+        public static TheatronGeometry TheatronGeometry(TheatronPlan planFull, TheatronFullProfile profile, StadiaParameters sParams, List<ProfileParameters> pParams)
         {
-            var theatron = CreateGeometry(planFull, profile, pParams,sParams.TypeOfBowl);
+            if(planFull == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null theatron plan.");
+                return null;
+            }
+
+            if (profile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null profile.");
+                return null;
+            }
+
+            if (sParams == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null set of stadia parameters.");
+                return null;
+            }
+
+            var theatron = CreateGeometry(planFull, profile, pParams, sParams.TypeOfBowl);
             CopyGeneratorBlocks(ref theatron, planFull, sParams.TypeOfBowl);
 
             return theatron;
         }
 
         /***************************************************/
+
         [Description("Create a partial TheatronGeometry based on structural locations and a TheatronFullProfile, Cvalue is not used to define the TheatronFullProfile")]
         [Input("structuralOrigins", "List of ProfileOrigins to orientate of the structural sections")]
         [Input("profile", "The TheatronFullProfile")]
         [Input("pParams", "List of the ProfileParameters")]
         public static TheatronGeometry TheatronGeometry(List<ProfileOrigin> structuralOrigins, TheatronFullProfile profile, List<ProfileParameters> pParams)
         {
+            if(structuralOrigins == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null list of structural origins.");
+                return null;
+            }
+
+            if (profile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null profile.");
+                return null;
+            }
+
+            if (pParams == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null collection of profile parameters.");
+                return null;
+            }
+
             var plan = PlanGeometry(structuralOrigins, null);
             var theatron = CreateGeometry(plan, profile, pParams,StadiaType.Undefined);
             
@@ -64,12 +101,31 @@ namespace BH.Engine.Architecture.Theatron
         }
 
         /***************************************************/
+
         [Description("Create a partial TheatronGeometry based on a partial plan and a profile, Cvalue is used to define the TheatronFullProfile")]
         [Input("planPart", "The partial TheatronPlan")]
         [Input("profile", "The TheatronFullProfile")]
         [Input("pParams", "List of the ProfileParameters")]
         public static TheatronGeometry TheatronGeometry(TheatronPlan planPart, TheatronFullProfile profile, List<ProfileParameters> pParams)
         {
+            if (planPart == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null theatron plan.");
+                return null;
+            }
+
+            if (profile == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null profile.");
+                return null;
+            }
+
+            if (pParams == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null collection of profile parameters.");
+                return null;
+            }
+
             var theatron = CreateGeometry(planPart, profile, pParams, StadiaType.Undefined);
             theatron.Tiers3d.ForEach(t => t.Generatorblocks.ForEach(g => { t.TierBlocks.Add(g); theatron.Audience.Add(g.Audience); }));
             return theatron;
@@ -87,7 +143,9 @@ namespace BH.Engine.Architecture.Theatron
            
             return theatron;
         }
+
         /***************************************************/
+
         private static void SetGeneratorblocks(ref TheatronGeometry theatronGeom, TheatronFullProfile fullprofile, TheatronPlan theatronPlan,StadiaType stadiatype, List<ProfileParameters> profileParameters)
         {
             //this defines the geometry of the seating blocks from which all others are created

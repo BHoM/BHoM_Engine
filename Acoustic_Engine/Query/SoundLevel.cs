@@ -36,6 +36,12 @@ namespace BH.Engine.Acoustic
 
         public static SoundLevel SoundLevel(this Ray ray, Frequency frequency = Frequency.Sum)
         {
+            if(ray == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the sound level for a null ray.");
+                return null;
+            }
+
             double spl = 0;
             foreach (Line raySegment in ray.Path.SubParts())
                 spl += 10 * Math.Log10(Math.Pow(10, 10 / raySegment.Length()));

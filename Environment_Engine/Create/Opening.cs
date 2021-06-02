@@ -44,6 +44,24 @@ namespace BH.Engine.Environment
         [Output("opening", "An Opening generated with the provided Configuration Options.")]
         public static Opening Opening(Point location, OpeningOption configurationOption, List<Panel> panels)
         {
+            if(location == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Location point to build Opening from was null.");
+                return null;
+            }
+
+            if(configurationOption == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Configuration Options cannot be null to build openings on.");
+                return null;
+            }
+
+            if(panels == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Panels cannot be null, panels are necessary to define the orientation of the openings being built from configurations.");
+                return null;
+            }
+
             Point searchPoint = location.Clone();
             searchPoint.Z += configurationOption.SillHeight;
             searchPoint.Z += configurationOption.Height / 2;

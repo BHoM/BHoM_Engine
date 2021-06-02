@@ -47,6 +47,9 @@ namespace BH.Engine.Physical
         [Output("equal", "True if the IFramingElements' non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool HasMergeablePropertiesWith(this IFramingElement element, IFramingElement other)
         {
+            if(element == null || other == null)
+                return false; //If either is null, then it can probably can't have its properties merged
+
             if (element.GetType() != other.GetType())
                 return false;
 
@@ -87,6 +90,9 @@ namespace BH.Engine.Physical
         [Output("equal", "True if the ISurfaces' non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool HasMergeablePropertiesWith(this ISurface element, ISurface other)
         {
+            if (element == null || other == null)
+                return false; //If either is null, then it can probably can't have its properties merged
+
             if (element.GetType() != other.GetType())
                 return false;
 
@@ -113,6 +119,9 @@ namespace BH.Engine.Physical
         [Output("equal", "True if the IOpenings' non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool HasMergeablePropertiesWith(this IOpening element, IOpening other)
         {
+            if (element == null || other == null)
+                return false; //If either is null, then it can probably can't have its properties merged
+
             return element.GetType() == other.GetType();
         }
 

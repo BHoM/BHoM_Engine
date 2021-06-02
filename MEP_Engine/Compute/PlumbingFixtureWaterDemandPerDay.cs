@@ -42,6 +42,24 @@ namespace BH.Engine.MEP
         [Output("waterPerDay", "The amount of water in m^3 used on a daily basis by plumbing fixtures.")]
         public static double PlumbingFixtureWaterDemandPerDay(Occupancy occupancy, IFixtureFlow fixtureFlow, IFixtureUsage fixtureUsage)
         {
+            if(occupancy == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null occupancy object.");
+                return -1;
+            }
+
+            if(fixtureFlow == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null fixture flow object.");
+                return -1;
+            }
+
+            if(fixtureUsage == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null fixture usage object.");
+                return -1;
+            }
+
             double numberFemales = occupancy.OccupantCount * occupancy.FemalePercentage;
             double numberMales = occupancy.OccupantCount * occupancy.MalePercentage;
             double numberGenderNeutral = occupancy.OccupantCount * occupancy.GenderNeutralPercentage;

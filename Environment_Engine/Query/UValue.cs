@@ -46,6 +46,12 @@ namespace BH.Engine.Environment
         [Output("uValue", "The uValue of the construction")]
         public static double UValue(this Construction construction)
         {
+            if(construction == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the UValue of a null construction.");
+                return 0.0;
+            }
+
             //UValue is, at its simplest, calculated as 1 / the total rValue of the construction
 
             double rValue = 0;

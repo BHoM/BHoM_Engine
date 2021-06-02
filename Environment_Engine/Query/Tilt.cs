@@ -41,25 +41,20 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("3.0", "Deprecated to expose tolerance as optional parameter", null, "Tilt(this IEnvironmentObject environmentObject, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double AngleTolarance = BH.oM.Geometry.Tolerance.Angle)")]
-        public static double Tilt(this IEnvironmentObject environmentObject)
-        {
-            return environmentObject.Tilt(BH.oM.Geometry.Tolerance.Distance, BH.oM.Geometry.Tolerance.Angle);
-        }
-
-        [Deprecated("3.0", "Deprecated to expose tolerance as optional parameter", null, "Tilt(this polyline polyline, double distanceTolarance = BH.oM.Geometry.Tolerance.Distance, double angleTolarance = BH.oM.Geometry.Tolerance.Angle")]
-        public static double Tilt(this Polyline polyline)
-        {
-            return polyline.Tilt(BH.oM.Geometry.Tolerance.Distance, BH.oM.Geometry.Tolerance.Angle);
-        }
-
         [Description("Returns the tilt of an Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its tilt queried")]
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
         [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the Environment Object")]
+        [PreviousVersion("4.2", "BH.Engine.Environment.Query.Tilt(BH.oM.Environment.IEnvironmentObject)")]
         public static double Tilt(this IEnvironmentObject environmentObject, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
+            if(environmentObject == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the tilt of a null environment object.");
+                return -1;
+            }
+
             return environmentObject.Polyline().Tilt(distanceTolerance, angleTolerance);
         }
 
@@ -68,8 +63,15 @@ namespace BH.Engine.Environment
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
         [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the polyline")]
+        [PreviousVersion("4.2", "BH.Engine.Environment.Query.Tilt(BH.oM.Geometry.Polyline)")]
         public static double Tilt(this Polyline polyline, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
+            if(polyline == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the tilt of a null polyline.");
+                return -1;
+            }
+
             double tilt = 0;
 
             List<Point> pts = polyline.DiscontinuityPoints(distanceTolerance, angleTolerance);

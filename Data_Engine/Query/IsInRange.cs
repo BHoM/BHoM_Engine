@@ -46,6 +46,9 @@ namespace BH.Engine.Data
         [Output("true if the two Domainboxes are in range of each other.")]
         public static bool IsInRange(this DomainBox box1, DomainBox box2, double tolerance = Tolerance.Distance)
         {
+            if (box1 == null || box2 == null)
+                return false; //Cannot be in range if either is null
+
             return SquareDistance(box1, box2) < (tolerance * tolerance);
         }
 
@@ -58,6 +61,9 @@ namespace BH.Engine.Data
         [Output("true if the two Domains are in range of each other.")]
         public static bool IsInRange(this Domain domain1, Domain domain2, double tolerance = Tolerance.Distance)
         {
+            if (domain1 == null || domain2 == null)
+                return false; //Cannot be in range if either is null
+
             return Distance(domain1, domain2) < tolerance;
         }
 
@@ -70,6 +76,9 @@ namespace BH.Engine.Data
         [Output("true if the value is in the domain.")]
         public static bool IsInRange(this Domain domain, double val, double tolerance = Tolerance.Distance)
         {
+            if (domain == null)
+                return false;
+
             return val > domain.Min && val < domain.Max;
         }
 

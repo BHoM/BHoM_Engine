@@ -155,7 +155,7 @@ namespace BH.Engine.Analytical
         [Output("face", "The geometry of the IFace as geometrical Mesh Face.")]
         public static Face Geometry(this IFace face)
         {
-            if (face == null)
+            if (face?.NodeListIndices == null)
                 return null;
 
             if (face.NodeListIndices.Count < 3)
@@ -198,6 +198,12 @@ namespace BH.Engine.Analytical
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
         public static CompositeGeometry Geometry(this Graph graph)
         {
+            if(graph == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null graph.");
+                return null;
+            }
+
             List<IGeometry> geometries = new List<IGeometry>();
             Graph geometricGraph = graph?.IProjectGraph(new GeometricProjection());
 
@@ -205,7 +211,6 @@ namespace BH.Engine.Analytical
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
 
             return SpatialGraphGeometry(graph);
-
         }
 
         /***************************************************/
@@ -232,4 +237,3 @@ namespace BH.Engine.Analytical
         
     }
 }
-

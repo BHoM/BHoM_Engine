@@ -46,6 +46,24 @@ namespace BH.Engine.Reflection
 
         public static object Item<T>(this List<T> list, int index)
         {
+            if (list == null)
+            {
+                Compute.RecordWarning("Cannot access item of a null list. A null value is returned.");
+                return null;
+            }
+
+            if (index < 0)
+            {
+                Compute.RecordWarning("Cannot access item with negative index. A null value is returned.");
+                return null;
+            }
+
+            if (index > list.Count)
+            {
+                Compute.RecordWarning("Cannot access item with index outside the range of the list. A null value is returned.");
+                return null;
+            }
+
             return list[index];
         }
 

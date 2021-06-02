@@ -36,6 +36,9 @@ namespace BH.Engine.Graphics
         [Output("numeric", "Boolean indicating if the object is numeric.")]
         public static bool IsNumericType(this object o)
         {
+            if (o == null)
+                return false;
+
             switch (Type.GetTypeCode(o.GetType()))
             {
                 case TypeCode.Byte:
