@@ -64,7 +64,7 @@ namespace BH.Engine.Spatial
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
         [Output("isNull", "True if the Layout2D is null.")]
-        public static bool IsNull(this ILayout2D layout, string methodName = "", string msg = "")
+        public static bool IsNull(this ILayout2D layout, [CallerMemberName] string methodName = "", string msg = "")
         {
             if (layout == null)
             {
@@ -85,7 +85,7 @@ namespace BH.Engine.Spatial
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional error message to override the default error message. Only the contents of this string will be returned as an error.")]
         [Output("isNull", "True if the CurveLayout is null.")]
-        public static bool IsNull(this ICurveLayout layout, string methodName = "", string msg = "")
+        public static bool IsNull(this ICurveLayout layout, [CallerMemberName] string methodName = "", string msg = "")
         {
             if (layout == null)
             {
