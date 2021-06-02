@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         [Output("springValues", "The elastic values, or spring values, from a constraint as a double array in the following order: TransX, TransY, TransZ, RotX, RotY, RotZ.")]
         public static double[] ElasticValues(this Constraint6DOF constraint)
         {
-            return constraint.IsNull("ElasticValues") ? null : new double[]
+            return constraint.IsNull() ? null : new double[]
             {
                 constraint.TranslationalStiffnessX,
                 constraint.TranslationalStiffnessY,

@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this AreaUniformTemperatureLoad areaTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
-            if (areaTempLoad.IsNull("Visualize"))
+            if (areaTempLoad.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this AreaUniformlyDistributedLoad areaUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true, bool edgeDisplay = true, bool gridDisplay = false)
         {
-            if (areaUDL.IsNull("Visualize"))
+            if (areaUDL.IsNull())
                 return null;
 
             if (!displayForces)
@@ -152,7 +152,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarPointLoad barPointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (barPointForce.IsNull("Visualize"))
+            if (barPointForce.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -186,7 +186,7 @@ namespace BH.Engine.Structure
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this BarPrestressLoad barPrestressLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (barPrestressLoad.IsNull("Visualize"))
+            if (barPrestressLoad.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -212,7 +212,7 @@ namespace BH.Engine.Structure
         [Output("lines", "A list of lines representing the load.")]
         public static List<ICurve> Visualize(this BarUniformTemperatureLoad barTempLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (barTempLoad.IsNull("Visualize"))
+            if (barTempLoad.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -237,7 +237,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarUniformlyDistributedLoad barUDL, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (barUDL.IsNull("Visualize"))
+            if (barUDL.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -274,7 +274,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this BarVaryingDistributedLoad barVaryingDistLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (barVaryingDistLoad.IsNull("Visualize"))
+            if (barVaryingDistLoad.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -360,7 +360,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this GravityLoad gravityLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (gravityLoad.IsNull("Visualize"))
+            if (gravityLoad.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -414,7 +414,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointAcceleration pointAcceleration, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
-            if (pointAcceleration.IsNull("Visualize"))
+            if (pointAcceleration.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -442,7 +442,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointDisplacement pointDisplacement, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
-            if (pointDisplacement.IsNull("Visualize"))
+            if (pointDisplacement.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -470,7 +470,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointLoad pointForce, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (pointForce.IsNull("Visualize"))
+            if (pointForce.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -498,7 +498,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this PointVelocity pointVelocity, double scaleFactor = 1.0, bool displayTranslations = true, bool displayRotations = true, bool asResultants = true)
         {
-            if (pointVelocity.IsNull("Visualize"))
+            if (pointVelocity.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -526,7 +526,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this ContourLoad contourLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (contourLoad.IsNull("Visualize"))
+            if (contourLoad.IsNull())
                 return null;
 
             if (!displayForces)
@@ -574,7 +574,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static List<ICurve> Visualize(this GeometricalLineLoad lineLoad, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            if (lineLoad.IsNull("Visualize"))
+            if (lineLoad.IsNull())
                 return null;
 
             List<ICurve> arrows = new List<ICurve>();
@@ -653,7 +653,7 @@ namespace BH.Engine.Structure
         [Output("arrows", "A list of arrows representing the load.")]
         public static IEnumerable<IGeometry> IVisualize(this ILoad load, double scaleFactor = 1.0, bool displayForces = true, bool displayMoments = true, bool asResultants = true)
         {
-            return load.IsNull("Visualize") ? null : Visualize(load as dynamic, scaleFactor, displayForces, displayMoments, asResultants);
+            return load.IsNull() ? null : Visualize(load as dynamic, scaleFactor, displayForces, displayMoments, asResultants);
         }
 
         /***************************************************/

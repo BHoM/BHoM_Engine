@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
         public static double MassPerArea(this ConstantThickness constantThickness)
         {
-            return constantThickness.IsNull("MassPerArea") ? 0 : constantThickness.Thickness * constantThickness.Material.Density;
+            return constantThickness.IsNull() ? 0 : constantThickness.Thickness * constantThickness.Material.Density;
         }
 
         /***************************************************/
@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
         [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
         public static double IMassPerArea(this ISurfaceProperty property)
         {
-            return property.IsNull("MassPerArea") ? 0 : MassPerArea(property as dynamic);
+            return property.IsNull() ? 0 : MassPerArea(property as dynamic);
         }
 
         /***************************************************/

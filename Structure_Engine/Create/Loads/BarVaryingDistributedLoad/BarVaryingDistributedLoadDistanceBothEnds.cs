@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (group.Elements.Any(x => x.IsNull("BarVaryingDistributedLoadDistanceBothEnds")) || loadcase.IsNull("BarVaryingDistributedLoadDistanceBothEnds"))
+            if (group.Elements.Any(x => x.IsNull()) || loadcase.IsNull())
                 return null;
 
             Dictionary<double, List<Bar>> barGroups = GroupBarsByLength(group.Elements, groupingTolerance);

@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Description("Returns true if any of the degrees of freedom is of a value based type or the values are non-zero.")]
         public static bool IsNumericallyDependent(this Constraint3DOF constraint)
         {
-            if (constraint.IsNull("IsNumericallyDependent"))
+            if (constraint.IsNull())
                 return false;
 
             if (constraint.UX.IsNumericallyDependent())
@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
         [Description("Returns true if any of the degrees of freedom is of a value based type or the values are non-zero.")]
         public static bool IsNumericallyDependent(this Constraint4DOF constraint)
         {
-            if (constraint.IsNull("IsNumericallyDependent"))
+            if (constraint.IsNull())
                 return false;
 
             if (constraint.TranslationX.IsNumericallyDependent())
@@ -103,7 +103,7 @@ namespace BH.Engine.Structure
         [Description("Returns true if any of the degrees of freedom is of a value based type or the values are non-zero.")]
         public static bool IsNumericallyDependent(this Constraint6DOF constraint)
         {
-            if (constraint.IsNull("IsNumericallyDependent"))
+            if (constraint.IsNull())
                 return false;
 
             if (constraint.TranslationX.IsNumericallyDependent())

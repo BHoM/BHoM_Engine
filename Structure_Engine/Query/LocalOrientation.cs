@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("orienation", "The local orientation of the Panel as a vector Basis.")]
         public static Basis LocalOrientation(this Panel panel)
         {
-            Vector normal = panel.IsNull("LocalOrientation") ? null : Spatial.Query.Normal(panel);
+            Vector normal = panel.IsNull() ? null : Spatial.Query.Normal(panel);
 
             return normal != null ? LocalOrientation(normal, panel.OrientationAngle) : null;
         }
@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
         [Output("orienations", "The local orientations of the mesh faces as a list of vector Bases.")]
         public static List<Basis> LocalOrientations(this FEMesh mesh)
         {
-            return mesh.IsNull("LocalOrientations", false, false) ? null : mesh.Faces.Select(x => x.LocalOrientation(mesh)).ToList();
+            return mesh.IsNull("", false, false) ? null : mesh.Faces.Select(x => x.LocalOrientation(mesh)).ToList();
         }
 
         /***************************************************/

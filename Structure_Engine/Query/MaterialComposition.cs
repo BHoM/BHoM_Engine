@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The kind of matter the Bar is composed of.")]
         public static MaterialComposition MaterialComposition(this Bar bar)
         {
-            if (bar.IsNull("MaterialComposition"))
+            if (bar.IsNull())
                 return null;
 
             if (bar.SectionProperty == null || bar.SectionProperty.Material == null)
@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The kind of matter the AreaElement is composed of.")]
         public static MaterialComposition MaterialComposition(this IAreaElement areaElement)
         {
-            if (areaElement.IIsNull("MaterialComposition"))
+            if (areaElement.IIsNull())
                 return null;
 
             if (areaElement.Property == null || areaElement.Property.Material == null)
@@ -82,14 +82,14 @@ namespace BH.Engine.Structure
 
         public static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
         {
-            return sectionProperty.IsNull("MaterialComposition") ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
+            return sectionProperty.IsNull() ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
         }
 
         /***************************************************/
 
         public static MaterialComposition MaterialComposition(this ConcreteSection sectionProperty)
         {
-            if (sectionProperty.IsNull("MaterialComposition"))
+            if (sectionProperty.IsNull())
                 return null;
 
             double sectionArea = sectionProperty.Area;
