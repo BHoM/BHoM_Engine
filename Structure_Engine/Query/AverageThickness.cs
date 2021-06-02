@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double AverageThickness(this ConstantThickness property)
         {
-            return property.IsNull("AverageThickness") ? 0 : property.Thickness;
+            return property.IsNull() ? 0 : property.Thickness;
         }
 
         /***************************************************/
@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double AverageThickness(this Ribbed property)
         {
-            if (property.IsNull("AverageThickness"))
+            if (property.IsNull())
                 return 0;
 
             if (property.StemWidth == 0 || property.Spacing < property.StemWidth ||
@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double AverageThickness(this Waffle property)
         {
-            if (property.IsNull("AverageThickness"))
+            if (property.IsNull())
                 return 0;
 
             if (property.StemWidthX == 0 || property.SpacingX < property.StemWidthX ||
@@ -112,7 +112,7 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double IAverageThickness(this ISurfaceProperty property)
         {
-            return property.IsNull("IAverageThickness") ? 0 : AverageThickness(property as dynamic);
+            return property.IsNull() ? 0 : AverageThickness(property as dynamic);
         }
 
 

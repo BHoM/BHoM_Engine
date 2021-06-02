@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
 
         public static List<Panel> FEMeshToPanel(this FEMesh feMesh)
         {
-            if (feMesh.IsNull("FEMeshToPanel"))
+            if (feMesh.IsNull())
             {
                 return null;
             }
@@ -57,13 +57,13 @@ namespace BH.Engine.Structure
             }
 
             List<Polyline> polylines = new List<Polyline>();
-           
+
             foreach (FEMeshFace feMeshFace in feMesh.Faces)
             {
                 List<Point> points = new List<Point>();
                 foreach (int nodeIndex in feMeshFace.NodeListIndices)
                 {
-                    points.Add(feMesh.Nodes[nodeIndex].Position);    
+                    points.Add(feMesh.Nodes[nodeIndex].Position);
                 }
                 points.Add(feMesh.Nodes[feMeshFace.NodeListIndices.First()].Position);
                 polylines.Add(Geometry.Create.Polyline(points));

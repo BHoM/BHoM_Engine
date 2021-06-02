@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Output("panel", "The Panel with updated orientation.")]
         public static Panel SetLocalOrientation(this Panel panel, Vector localX)
         {
-            if (panel.IsNull("SetLocalOrientation") || localX.IsNull())
+            if (panel.IsNull() || localX.IsNull())
                 return null;
 
             Panel clone = panel.ShallowClone();
@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
         [Output("mesh", "The FEMesh with updated face orientations.")]
         public static FEMesh SetLocalOrientations(this FEMesh mesh, Vector localX)
         {
-            if (mesh.IsNull("SetLocalOrientation") || localX.IsNull())
+            if (mesh.IsNull() || localX.IsNull())
                 return null;
 
             FEMesh clone = mesh.ShallowClone();
@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
         [Output("face", "The FEMeshFace with updated face orientation.")]
         public static FEMeshFace SetLocalOrientation(this FEMeshFace face, FEMesh mesh, Vector localX)
         {
-            if (face.IsNull("SetLocalOrientation") || mesh.IsNull("SetLocalOrientation") || localX.IsNull())
+            if (face.IsNull() || mesh.IsNull() || localX.IsNull())
                 return null;
 
             FEMeshFace clone = face.ShallowClone();

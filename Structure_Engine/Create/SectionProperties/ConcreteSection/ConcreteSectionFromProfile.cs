@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
 
             section.MinimumCover = minimumCover;
 
-            return section.IsNull("ConcreteSectionFromProfile") ? null : PostProcessSectionCreate(section, name, material, MaterialType.Concrete);
+            return section.IsNull() ? null : PostProcessSectionCreate(section, name, material, MaterialType.Concrete);
         }
 
         /***************************************************/
