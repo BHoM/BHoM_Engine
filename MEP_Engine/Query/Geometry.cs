@@ -50,16 +50,18 @@ namespace BH.Engine.MEP
 
         public static List<Line> Geometry(this Fitting fitting)
         {
+            if (fitting == null)
+                return null;
+            
             List<Line> result = new List<Line>();
             if (fitting.ConnectionsLocation.Count == 2)
-            {
-                result.Add(BH.Engine.Geometry.Create.Line(fitting.ConnectionsLocation[0],fitting.ConnectionsLocation[1]));
-            }
+                result.Add(BH.Engine.Geometry.Create.Line(fitting.ConnectionsLocation[0], fitting.ConnectionsLocation[1]));
+            
             else
             {
                 foreach (Point point in fitting.ConnectionsLocation)
                 {
-                    result.Add(BH.Engine.Geometry.Create.Line(fitting.Location,point));
+                    result.Add(BH.Engine.Geometry.Create.Line(fitting.Location, point));
                 }
             }
 

@@ -59,11 +59,19 @@ namespace BH.Engine.MEP
         
         /***************************************************/
         
+        [Description("Updates geometry of a Fitting object by updating the positions of its location point and connection locaiton points.")]
+        [Input("fittingObj", "The Fitting object to update.")]
+        [Input("location", "The new center location of the Fitting.")]
+        [Input("connectionLocations", "The new physical connection locations of the Fitting.")]
+        [Output("object", "The IFlow Object with updated geometry.")]
         public static Fitting SetGeometry(this Fitting fittingObj, Point location, List<Point> connectionLocations)
         {
+            if (fittingObj == null || location == null || connectionLocations == null)
+                return null;
+            
             if (connectionLocations.Count < 2)
             {
-                Engine.Reflection.Compute.RecordError("A fitting requires at least 2 connections, e.g. an elbow fitting has 2.");
+                Engine.Reflection.Compute.RecordError("A fitting requires at least 2 physical connections, e.g. an elbow fitting has 2, please input at least two Points in connectionLocations.");
                 return null;
             }
             Fitting clone = fittingObj.ShallowClone();
