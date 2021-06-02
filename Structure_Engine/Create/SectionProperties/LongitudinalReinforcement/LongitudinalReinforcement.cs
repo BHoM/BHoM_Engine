@@ -42,10 +42,10 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection.")]
-        [InputFromProperty("rebarLayout.")]
-        [InputFromProperty("diameter.")]
-        [InputFromProperty("startLocation.")]
-        [InputFromProperty("endLocation.")]
+        [InputFromProperty("rebarLayout")]
+        [InputFromProperty("diameter")]
+        [InputFromProperty("startLocation")]
+        [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement LongitudinalReinforcement(ILayout2D rebarLayout, double diameter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
