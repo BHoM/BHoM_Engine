@@ -103,7 +103,7 @@ namespace BH.Engine.Structure
             // Check FEMesh
             if (mesh == null)
             {
-                ErrorMessage(methodName, "Bar", msg);
+                ErrorMessage(methodName, "FEMesh", msg);
                 return true;
             }
             else if (mesh.Faces == null || mesh.Faces.Count == 0)
@@ -133,20 +133,20 @@ namespace BH.Engine.Structure
 
             // Check Nodes, but only if checkNodes is set to true
             // When called from methods that run on the list of mesh FEMeshFaces, we only want a basic check as null checks will be performed individually for each face
-            bool passes = false;
-            for (int i = 0; checkNodes && passes && i < nodeListIndices.Count; i++)
+            bool isNull = false;
+            for (int i = 0; checkNodes && !isNull && i < nodeListIndices.Count; i++)
             {
-                passes = mesh.Nodes[nodeListIndices[i]].IsNull(methodName, $"The Node is owned by an FEMesh. {msg}");
+                isNull = mesh.Nodes[nodeListIndices[i]].IsNull(methodName, $"The Node is owned by an FEMesh. {msg}");
             }
 
             // Check FEMeshFaces, but only if checkFaces is set to true
             // When called from the FEMeshFace version of this method, we do not need to check FEMeshFaces, as the only relevant face has already been checked
-            for (int i = 0; checkFaces && passes && i < mesh.Faces.Count; i++)
+            for (int i = 0; checkFaces && !isNull && i < mesh.Faces.Count; i++)
             {
-                passes = mesh.Faces[i].IsNull(methodName, $"The FEMeshFace is owned by an FEMesh. {msg}");
+                isNull = mesh.Faces[i].IsNull(methodName, $"The FEMeshFace is owned by an FEMesh. {msg}");
             }
 
-            return passes;
+            return isNull;
         }
 
         [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.FEMeshFace, BH.oM.Structure.Elements.FEMesh, System.String)")]
