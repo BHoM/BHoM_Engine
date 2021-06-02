@@ -233,7 +233,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a Surface or its defining properties are null and outputs relevant error message.")]
-        [Input("panel", "The Surface to test for null.")]
+        [Input("surface", "The Surface to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Surface or its defining properties are null.")]

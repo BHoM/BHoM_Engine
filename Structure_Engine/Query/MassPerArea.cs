@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
 
         [Description("Calculates the mass per area for the property as its thickness mutiplied by the density.")]
         [Input("constantThickness", "The ConstantThickness property to calculate the mass per area for.")]
-        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea.))]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
         public static double MassPerArea(this ConstantThickness constantThickness)
         {
             return constantThickness.IsNull("MassPerArea") ? 0 : constantThickness.Thickness * constantThickness.Material.Density;
@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
         [NotImplemented]
         [Description("Gets the mass per area for a LoadingPanelProperty. This will always return 0.")]
         [Input("loadingPanelProperty", "The LoadingPanelProperty property to calculate the mass per area for.")]
-        [Output("massPerArea", "The mass per area for the property. THis will always return 0 for a LoadingPanelProperty.", typeof(MassPerUnitArea.))]
+        [Output("massPerArea", "The mass per area for the property. THis will always return 0 for a LoadingPanelProperty.", typeof(MassPerUnitArea))]
         public static double MassPerArea(this LoadingPanelProperty loadingPanelProperty)
         {
             return 0;
@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
 
         [Description("Calculates the mass per area for the property.")]
         [Input("property", "The ISurfaceProperty property to calculate the mass per area for.")]
-        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea.))]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
         public static double IMassPerArea(this ISurfaceProperty property)
         {
             return property.IsNull("MassPerArea") ? 0 : MassPerArea(property as dynamic);

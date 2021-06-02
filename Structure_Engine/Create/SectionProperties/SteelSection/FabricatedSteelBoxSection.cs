@@ -37,11 +37,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a fabricated steel box-section from input dimensions.")]
-        [Input("height", "Full height of the section.", typeof(Length.))]
-        [Input("width", "Full width of the section.", typeof(Length.))]
-        [Input("webThickness", "Thickness of the webs.", typeof(Length.))]
-        [Input("flangeThickness", "Thickness of the flanges.", typeof(Length.))]
-        [Input("weldSize", "Optional fillet weld size between inside of web and flanges. Measured as the distance between intersection of web and flange perpendicular to the edge of the weld.", typeof(Length.))]
+        [Input("height", "Full height of the section.", typeof(Length))]
+        [Input("width", "Full width of the section.", typeof(Length))]
+        [Input("webThickness", "Thickness of the webs.", typeof(Length))]
+        [Input("flangeThickness", "Thickness of the flanges.", typeof(Length))]
+        [Input("weldSize", "Optional fillet weld size between inside of web and flanges. Measured as the distance between intersection of web and flange perpendicular to the edge of the weld.", typeof(Length))]
         [Input("material", "Steel material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the steel section. This is required for most structural packages to create the section. This is required for most structural packages to create the section.")]
         [Output("section", "The created fabricated steel box-section.")]

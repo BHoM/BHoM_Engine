@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace BH.Engine.Spatial
 {
@@ -42,7 +43,7 @@ namespace BH.Engine.Spatial
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Profile is null.")]
-        public static bool IsNull(this IProfile profile, string methodName = "", string msg = "")
+        public static bool IsNull(this IProfile profile, [CallerMemberName] string methodName = "", string msg = "")
         {
             if (profile == null)
             {

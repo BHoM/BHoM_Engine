@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
                      "Calculates section constants for a region on the XY-Plane. \n" +
                      "The resulting properties are oriented to the XY-Plane.")]
         [Input("curves", "Non-intersecting planar edge curves that make up the section. All curves should be in the global XY-plane. Curves not in this plane will be projected which might give inaccurate results.")]
-        [Input("tolerance", "The distance tolerance used in the algorithm.", typeof(Length.))]
+        [Input("tolerance", "The distance tolerance used in the algorithm.", typeof(Length))]
         [Output("V", "Dictionary containing the section properties for the X and Y axis as well as integration slices created and used in the algorithm.")]
         public static Dictionary<string, object> Integrate(List<ICurve> curves, double tolerance = Tolerance.Distance)
         {

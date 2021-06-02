@@ -43,9 +43,9 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a rectangular solid timber section from input dimensions.")]
-        [Input("height", "Height of the section.", typeof(Length.))]
-        [Input("width", "Width of the section.", typeof(Length.))]
-        [Input("cornerRadius", "Optional corner radius for the section.", typeof(Length.))]
+        [Input("height", "Height of the section.", typeof(Length))]
+        [Input("width", "Width of the section.", typeof(Length))]
+        [Input("cornerRadius", "Optional corner radius for the section.", typeof(Length))]
         [Input("material", "Timber material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the timber section. This is required for most structural packages to create the section.")]
         [Output("section", "The created rectangular solid timber section.")]
