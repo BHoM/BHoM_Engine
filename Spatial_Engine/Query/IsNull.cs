@@ -46,17 +46,9 @@ namespace BH.Engine.Spatial
         {
             if (profile == null)
             {
-                //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
                 if (string.IsNullOrEmpty(methodName))
                 {
-                    StackTrace st = new StackTrace();
-                    if (st.FrameCount > 0)
-                    {
-                        methodName = st.GetFrame(1).GetMethod().Name;
-                        methodName.Substring(methodName.IndexOf("<") + 1, methodName.IndexOf("<") + 1 - methodName.IndexOf(">"));
-                    }
-                    else
-                        methodName = "Method";
+                    methodName = "Method";
                 }
                 Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Profile failed a null check. {msg}");
 
@@ -75,17 +67,9 @@ namespace BH.Engine.Spatial
         {
             if (layout == null)
             {
-                //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
                 if (string.IsNullOrEmpty(methodName))
                 {
-                    StackTrace st = new StackTrace();
-                    if (st.FrameCount > 0)
-                    {
-                        methodName = st.GetFrame(1).GetMethod().Name;
-                        methodName.Substring(methodName.IndexOf("<") + 1, methodName.IndexOf("<") + 1 - methodName.IndexOf(">"));
-                    }
-                    else
-                        methodName = "Method";
+                    methodName = "Method";
                 }
                 Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Layout2D failed a null check. {msg}");
 
@@ -104,17 +88,9 @@ namespace BH.Engine.Spatial
         {
             if (layout == null)
             {
-                //If the methodName is not provided, use StackTrace to get it, if the method was called indepedently use "Method".
                 if (string.IsNullOrEmpty(methodName))
                 {
-                    StackTrace st = new StackTrace();
-                    if (st.FrameCount > 0)
-                    {
-                        methodName = st.GetFrame(1).GetMethod().Name;
-                        methodName.Substring(methodName.IndexOf("<") + 1, methodName.IndexOf("<") + 1 - methodName.IndexOf(">"));
-                    }
-                    else
-                        methodName = "Method";
+                    methodName = "Method";
                 }
                 Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the CurveLayout failed a null check. {msg}");
 
