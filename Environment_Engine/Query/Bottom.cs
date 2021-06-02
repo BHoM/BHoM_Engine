@@ -41,19 +41,21 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the bottom of a given environment object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical bottom")]
-        [Output("curve", "An ICurve representation of the bottom of the object")]
+        [Description("Returns the bottom of a given environment object.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have a geometrical bottom.")]
+        [Output("curve", "An ICurve representation of the bottom of the object.")]
         public static ICurve Bottom(this IEnvironmentObject environmentObject)
         {
-            if (environmentObject == null) return null;
+            if (environmentObject == null) 
+                return null;
 
-            Polyline workingCurves = null;
+            if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("Cannot find the bottom of a horizontal IEnvironmentObject");
+                return null;
+            }
 
-            if (environmentObject is Panel)
-                workingCurves = (environmentObject as Panel).ExternalEdges.Polyline();
-            else if (environmentObject is Opening)
-                workingCurves = (environmentObject as Opening).Edges.Polyline();
+            Polyline workingCurves = environmentObject.Polyline();
 
             if (workingCurves == null)
                 return null;
