@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Input("section", "The concrete section to return all points from.")]
         [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
         [Output("points", "The positions of the LongitudinalReinforcement.")]
-        public static List<Point> LongitudinalReinforcementLayout(ConcreteSection section, double position = -1)
+        public static List<Point> LongitudinalReinforcementLayout(this ConcreteSection section, double position = -1)
         {
             if (section.IsNull("LongitudinalReinforcementLayout"))
                 return null;
@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
         [Input("section", "The concrete section to return all points from.")]
         [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
         [Output("curves", "The positions of the LongitudinalReinforcement.")]
-        public static List<ICurve> TransverseReinforcementLayout(ConcreteSection section, double position = -1)
+        public static List<ICurve> TransverseReinforcementLayout(this ConcreteSection section, double position = -1)
         {
             if (section.IsNull("TransverseReinforcementLayout"))
                 return null;
@@ -103,7 +103,7 @@ namespace BH.Engine.Structure
         [Input("section", "The concrete section to return all points from.")]
         [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
         [Output("geometry", "The positions of the IBarReinforcement.")]
-        public static List<IGeometry> ReinforcementLayout(ConcreteSection section, double position = -1)
+        public static List<IGeometry> ReinforcementLayout(this ConcreteSection section, double position = -1)
         {
             if (section.IsNull("ReinforcementLayout"))
                 return null;
@@ -182,7 +182,7 @@ namespace BH.Engine.Structure
         [Description("Gets all the reinforcement centrelines in the Bar as a list of Curves.")]
         [Input("bar", "The Bar to extract all longitudinal reinforcement from. If the Bar does not contain a ConcreteSection an empty list will be returned.")]
         [Output("lines", "The centrelines of the IBarReinforcement.")]
-        public static List<ICurve> ReinforcementLayout(Bar bar)
+        public static List<ICurve> ReinforcementLayout(this Bar bar)
         {
             if (bar.IsNull("ReinforcementLayout"))
                 return null;
