@@ -117,7 +117,7 @@ namespace BH.Engine.Structure
 
         [Description("Calculates the ReinforcementDensity of a MeshRequiredArea from a given Bar and Material.")]
         [Input("meshRequiredArea", "The BarRequiredArea containing the reinforced areas and ids for the Bar and Material.")]
-        [Input("bars", "The elements to search for the relevant AreaElement associated with the MeshRequiredArea.")]
+        [Input("elements", "The elements to search for the relevant AreaElement associated with the MeshRequiredArea.")]
         [Input("materials", "The Materials to search for the relevant Material associated with the MeshRequiredArea.")]
         [Output("reinforcementDensity", "The ReinforcementDensity calculated using the inputs provided.")]
         public static ReinforcementDensity ReinforcementDensity(MeshRequiredArea meshRequiredArea, List<IAreaElement> elements, List<IMaterialFragment> materials)
