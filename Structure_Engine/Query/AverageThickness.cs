@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
         [Input("property", "The property to evaluate the average thickness of.")]
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(ConstantThickness property)
+        public static double AverageThickness(this ConstantThickness property)
         {
             return property.IsNull("AverageThickness") ? 0 : property.Thickness;
         }
@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
         [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
         [Input("property", "The property to evaluate the average thickness of.")]
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(Ribbed property)
+        public static double AverageThickness(this Ribbed property)
         {
             if (property.IsNull("AverageThickness"))
                 return 0;
@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
         [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
         [Input("property", "The property to evaluate the average thickness of.")]
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(Waffle property)
+        public static double AverageThickness(this Waffle property)
         {
             if (property.IsNull("AverageThickness"))
                 return 0;
@@ -96,7 +96,7 @@ namespace BH.Engine.Structure
         [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
         [Input("property", "The property to evaluate the average thickness of.")]
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(LoadingPanelProperty property)
+        public static double AverageThickness(this LoadingPanelProperty property)
         {
             Reflection.Compute.RecordWarning("Structural IAreaElements are defined without volume.");
             return 0;
