@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement BottomReinforcement(double diameter, double area, double spacing, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            if (diameter < Tolerance.MacroDistance || area < Tolerance.MacroDistance || spacing < Tolerance.MacroDistance)
+            if (diameter < Tolerance.Distance || area < Math.Pow(Tolerance.Distance, 2) || spacing < Tolerance.Distance)
             {
                 Reflection.Compute.RecordError("The diameter, area or spacing values are less than the tolerance. Please check your inputs.");
                 return null;

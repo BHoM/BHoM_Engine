@@ -44,7 +44,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Geometry is null.")]
-        public static bool IsNull(this IGeometry geometry, [CallerMemberName] string methodName = "", string msg = "")
+        public static bool IsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "")
         {
             if (geometry == null)
             {
