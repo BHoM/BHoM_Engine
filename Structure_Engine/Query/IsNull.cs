@@ -245,6 +245,12 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "Surface", msg);
                 return true;
             }
+            else if (surface.Extents == null)
+            {
+                ErrorMessage(methodName, "Surface Extents", msg);
+                return true;
+            }
+
 
             return false;
         }
@@ -428,7 +434,7 @@ namespace BH.Engine.Structure
         {
             if (element == null)
             {
-                ErrorMessage("AreaElement", msg, methodName);
+                ErrorMessage(methodName, "AreaElement", msg);
                 return true;
             }
 
@@ -439,7 +445,7 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ErrorMessage(string type = "type", string msg = "", [CallerMemberName] string methodName = "Method")
+        private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
         {
             Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
         }
@@ -452,10 +458,7 @@ namespace BH.Engine.Structure
         {
             if (element == null)
             {
-                if (string.IsNullOrEmpty(msg))
-                    ErrorMessage(methodName, "AreaElement");
-                else
-                    Reflection.Compute.RecordError(msg);
+                ErrorMessage(methodName, "AreaElement", msg);
                 return true;
             }
 
