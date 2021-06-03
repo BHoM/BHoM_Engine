@@ -221,10 +221,15 @@ namespace BH.Engine.Structure
         [Input("length", "Length of the host Bar used to generate the lines", typeof(Length))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
-        public static List<Line> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation = null)
+        public static List<Line> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
         {
-            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || length == 0)
+            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || transformation.IsNull())
                 return null;
+            else if (length < Tolerance.MicroDistance)
+            {
+                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                return null;
+            }
 
             List<Point> planLayout = ReinforcementLayout(reinforcement, cover, outerProfileEdges, innerProfileEdges);
 
@@ -251,10 +256,15 @@ namespace BH.Engine.Structure
         [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
-        public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation = null)
+        public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
         {
-            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || length == 0)
+            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || transformation.IsNull())
                 return null;
+            else if (length <= Tolerance.MicroDistance)
+            {
+                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                return null;
+            }
 
             List<ICurve> rebarLines = new List<ICurve>();
             List<ICurve> stirrupOutline = reinforcement.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges);
@@ -297,10 +307,15 @@ namespace BH.Engine.Structure
         [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
-        public static List<ICurve> IReinforcementLayout(this IBarReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation = null)
+        public static List<ICurve> IReinforcementLayout(this IBarReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
         {
-            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || length == 0)
+            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || transformation.IsNull())
                 return null;
+            else if (length <= Tolerance.MicroDistance)
+            {
+                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                return null;
+            }
 
             return new List<ICurve>(ReinforcementLayout(reinforcement as dynamic, cover, outerProfileEdges, innerProfileEdges, length, transformation));
         }

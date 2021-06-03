@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
         [Output("coordinateSystems", "The local cartesian coordinate systems of the FEMeshFaces of the FEMesh.")]
         public static List<Cartesian> CoordinateSystem(this FEMesh mesh)
         {
-            return mesh.IsNull("", false, false) ? null : mesh.Faces.Select(x => x.CoordinateSystem(mesh)).ToList();
+            return mesh.IsNull(false, false) ? null : mesh.Faces.Select(x => x.CoordinateSystem(mesh)).ToList();
         }
 
         /***************************************************/

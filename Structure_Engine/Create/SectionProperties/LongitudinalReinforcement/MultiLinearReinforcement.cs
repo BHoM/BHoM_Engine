@@ -56,7 +56,7 @@ namespace BH.Engine.Structure
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double parallelSpacing, double perpendicularSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            if (diameter < Tolerance.MacroDistance || barCount < Tolerance.MacroDistance || parallelSpacing < Tolerance.MacroDistance || perpendicularSpacing < Tolerance.MacroDistance)
+            if (diameter < Tolerance.Distance || barCount <= 0 || parallelSpacing < Tolerance.Distance || perpendicularSpacing < Tolerance.Distance)
             {
                 Reflection.Compute.RecordError("The diameter, bar count, parallel spacing or perpindicular spacing is less than the tolerance. Please check your inputs.");
                 return null;

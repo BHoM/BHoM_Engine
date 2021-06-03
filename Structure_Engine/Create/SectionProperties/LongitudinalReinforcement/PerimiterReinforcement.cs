@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement PerimiterReinforcement(double diameter, int barCount, bool rebarsAtProfileDiscontinuities = false, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
-            if (diameter < Tolerance.MacroDistance || barCount < Tolerance.MacroDistance)
+            if (diameter < Tolerance.Distance || barCount <= 0)
             {
                 Reflection.Compute.RecordError("The diameter or bar count is less than the tolerance. Please check your inputs.");
                 return null;

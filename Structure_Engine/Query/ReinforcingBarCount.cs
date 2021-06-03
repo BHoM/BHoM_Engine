@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
         [Output("count", "Number of bars in the provided LongitudinalReinforcement.")]
         public static int ReinforcingBarCount(this LongitudinalReinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? null : LayoutCount(reinforcement.RebarLayout as dynamic);
+            return reinforcement.IsNull() ? 0 : LayoutCount(reinforcement.RebarLayout as dynamic);
         }
 
         /***************************************************/

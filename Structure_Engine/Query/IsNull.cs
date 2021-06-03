@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Node or its defining properties are null.")]
-        public static bool IsNull(this Node node, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Node node, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             // Check Node and Position
             if (node == null)
@@ -76,7 +76,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Bar or its defining properties are null.")]
-        public static bool IsNull(this Bar bar, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Bar bar, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             // Check bar
             if (bar == null)
@@ -84,7 +84,7 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "Bar", msg);
                 return true;
             }
-            else if (bar.StartNode.IsNull(methodName, "The Node (StartNode) is owned by a Bar.") || bar.EndNode.IsNull(methodName, "The Node (EndNode) is owned by a Bar."))
+            else if (bar.StartNode.IsNull("The Node (StartNode) is owned by a Bar.", methodName) || bar.EndNode.IsNull("The Node (EndNode) is owned by a Bar.", methodName))
                 return true;
 
             return false;
@@ -99,7 +99,7 @@ namespace BH.Engine.Structure
         [Input("nodeListIndices", "Optional list of nodes to limit check to.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the FEMesh or its defining properties are null.")]
-        public static bool IsNull(this FEMesh mesh, [CallerMemberName] string methodName = "Method", bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = null, string msg = "")
+        public static bool IsNull(this FEMesh mesh, bool checkFaces = true, bool checkNodes = true, List<int> nodeListIndices = null, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             // Check FEMesh
             if (mesh == null)
@@ -137,14 +137,14 @@ namespace BH.Engine.Structure
             bool isNull = false;
             for (int i = 0; checkNodes && !isNull && i < nodeListIndices.Count; i++)
             {
-                isNull = mesh.Nodes[nodeListIndices[i]].IsNull(methodName, $"The Node is owned by an FEMesh. {msg}");
+                isNull = mesh.Nodes[nodeListIndices[i]].IsNull($"The Node is owned by an FEMesh. {msg}", methodName);
             }
 
             // Check FEMeshFaces, but only if checkFaces is set to true
             // When called from the FEMeshFace version of this method, we do not need to check FEMeshFaces, as the only relevant face has already been checked
             for (int i = 0; checkFaces && !isNull && i < mesh.Faces.Count; i++)
             {
-                isNull = mesh.Faces[i].IsNull(methodName, $"The FEMeshFace is owned by an FEMesh. {msg}");
+                isNull = mesh.Faces[i].IsNull($"The FEMeshFace is owned by an FEMesh. {msg}", methodName);
             }
 
             return isNull;
@@ -157,14 +157,14 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the FEMeshFace or its defining properties are null.")]
-        public static bool IsNull(this FEMeshFace face, FEMesh mesh, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this FEMeshFace face, FEMesh mesh, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             // Check FEMeshFace and relevant nodes in FEMesh
-            if (face.IsNull(methodName, msg))
+            if (face.IsNull(msg, methodName))
             {
                 return true;
             }
-            else if (mesh.IsNull(methodName, false, true, face.NodeListIndices, msg))
+            else if (mesh.IsNull(false, true, face.NodeListIndices, msg, methodName))
             {
                 return true;
             }
@@ -178,7 +178,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the FEMeshFace or its defining properties are null.")]
-        public static bool IsNull(this FEMeshFace face, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this FEMeshFace face, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             // Check FEMeshFace
             if (face == null)
@@ -206,7 +206,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Panel or its defining properties are null.")]
-        public static bool IsNull(this Panel panel, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Panel panel, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (panel == null)
             {
@@ -223,7 +223,7 @@ namespace BH.Engine.Structure
                 Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Panel ExternalEdges count is 0. {msg}");
                 return true;
             }
-            else if (panel.ExternalEdges.Any(x => x.IsNull(methodName, $"The ExternalEdges are owned by a Panel. {msg}")))
+            else if (panel.ExternalEdges.Any(x => x.IsNull($"The ExternalEdges are owned by a Panel. {msg}", methodName)))
             {
                 if (!string.IsNullOrEmpty(msg))
                     Reflection.Compute.RecordError(msg);
@@ -238,7 +238,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Surface or its defining properties are null.")]
-        public static bool IsNull(this Surface surface, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Surface surface, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (surface == null)
             {
@@ -255,7 +255,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Edge or its defining properties are null.")]
-        public static bool IsNull(this Edge edge, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Edge edge, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (edge == null)
             {
@@ -276,7 +276,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the SectionProperty is null.")]
-        public static bool IsNull(this ISectionProperty sectionProperty, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this ISectionProperty sectionProperty, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (sectionProperty == null)
             {
@@ -292,7 +292,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the SurfaceProperty is null.")]
-        public static bool IsNull(this ISurfaceProperty surfaceProperty, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this ISurfaceProperty surfaceProperty, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (surfaceProperty == null)
             {
@@ -308,7 +308,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the MaterialFragment is null.")]
-        public static bool IsNull(this IMaterialFragment material, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this IMaterialFragment material, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (material == null)
             {
@@ -324,7 +324,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the BarReinforcement is null.")]
-        public static bool IsNull(this IBarReinforcement reinforcement, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this IBarReinforcement reinforcement, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (reinforcement == null)
             {
@@ -340,7 +340,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Load is null.")]
-        public static bool IsNull(this ILoad load, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this ILoad load, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (load == null)
             {
@@ -356,7 +356,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint6DOF is null.")]
-        public static bool IsNull(this Constraint6DOF constraint, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Constraint6DOF constraint, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (constraint == null)
             {
@@ -372,7 +372,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint3DOF is null.")]
-        public static bool IsNull(this Constraint3DOF constraint, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Constraint3DOF constraint, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (constraint == null)
             {
@@ -388,7 +388,7 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Constraint4DOF is null.")]
-        public static bool IsNull(this Constraint4DOF constraint, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Constraint4DOF constraint, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (constraint == null)
             {
@@ -424,16 +424,22 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("pass", "True if the AreaElement is null.")]
-        public static bool IIsNull(this IAreaElement element, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IIsNull(this IAreaElement element, string msg = "", [CallerMemberName] string methodName = "Method")
         {
-            return IsNull(element as dynamic, "AreaElement", msg);
+            if (element == null)
+            {
+                ErrorMessage("AreaElement", msg, methodName);
+                return true;
+            }
+
+            return IsNull(element as dynamic, msg, methodName);
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
+        private static void ErrorMessage(string type = "type", string msg = "", [CallerMemberName] string methodName = "Method")
         {
             Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
         }
@@ -442,7 +448,7 @@ namespace BH.Engine.Structure
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        private static bool IsNull(this IAreaElement element, [CallerMemberName] string methodName = "Method", string msg = "")
+        private static bool IsNull(this IAreaElement element, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (element == null)
             {
