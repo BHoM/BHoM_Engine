@@ -148,6 +148,7 @@
     <Compile Include="Modify\SplitOpeningByGeometry.cs" />
     <Compile Include="Modify\SplitPanelByGeometry.cs" />
     <Compile Include="Modify\SplitPanelsByPoints.cs" />
+    <Compile Include="Query\CountNodes.cs" />
     <Compile Include="Query\GetRow.cs" />
     <Compile Include="Query\IsJagged.cs" />
     <Compile Include="Query\GetShape.cs" />
