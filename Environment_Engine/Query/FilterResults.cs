@@ -126,6 +126,16 @@ namespace BH.Engine.Environment
 
             return resultList;
         }
+
+        [Description("Returns a collection of Environment Simulation Results by Simulation Result Type")]
+        [Input("results", "A collection of Simulation Results")]
+        [Input("type", "The Simulation Result Type filter")]
+        [Output("simulationResults", "A collection of filtered simulation results")]
+        public static List<IAnalysisResult> FilterResultsByType(this List<IAnalysisResult> results, ResultType type)
+        {
+            var resultsType = Activator.CreateInstance("BH.oM.Environment.Results", String.Format("{0}Result", type));
+            return results.Where(x => x.GetType() == resultsType.GetType()).ToList();
+        }
     }
 }
 
