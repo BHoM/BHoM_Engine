@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
         [Output("orienations", "The local orientations of the mesh faces as a list of vector Bases.")]
         public static List<Basis> LocalOrientations(this FEMesh mesh)
         {
-            return mesh.IsNull(false, false) ? null : mesh.Faces.Select(x => x.LocalOrientation(mesh)).ToList();
+            return mesh.IsNull(true, true) ? null : mesh.Faces.Select(x => x.LocalOrientation(mesh)).ToList();
         }
 
         /***************************************************/

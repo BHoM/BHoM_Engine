@@ -438,7 +438,12 @@ namespace BH.Engine.Structure
                 return true;
             }
 
-            return IsNull(element as dynamic, msg, methodName);
+            if (element is Panel)
+                return IsNull(element as Panel, msg, methodName);
+            else if (element is FEMesh)
+                return IsNull(element as FEMesh, true, true, null, msg, methodName);
+
+            return false;
         }
 
         /***************************************************/
