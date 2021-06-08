@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
                 return 0;
             }
 
-            return meshRequiredArea.Top + meshRequiredArea.Bottom + meshRequiredArea.Perimeter + meshRequiredArea.Shear + meshRequiredArea.Torsion;
+            return meshRequiredArea.Top + meshRequiredArea.Bottom + meshRequiredArea.Shear + meshRequiredArea.Torsion;
         }
 
         /***************************************************/
