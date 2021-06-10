@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
         [Output("ptVel", "The created PointVelocity.")]
         public static PointVelocity PointVelocity(Loadcase loadcase, IEnumerable<Node> objects, Vector translationalVelocity = null, Vector rotationalVelocity = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return PointVelocity(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translationalVelocity, rotationalVelocity, axis, name);
+            return loadcase.IsNull() ? null : PointVelocity(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translationalVelocity, rotationalVelocity, axis, name);
         }
 
         /***************************************************/

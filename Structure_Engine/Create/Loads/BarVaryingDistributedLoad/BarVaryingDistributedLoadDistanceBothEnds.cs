@@ -31,6 +31,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -65,6 +66,8 @@ namespace BH.Engine.Structure
         [Output("barVarLoad", "The created BarVaryingDistributedLoads with bars grouped by length.")]
         public static List<BarVaryingDistributedLoad> BarVaryingDistributedLoadDistanceBothEnds(Loadcase loadcase, BHoMGroup<Bar> group, bool relativePositions, double startToStartDistance = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endToEndDistance = 0, Vector forceAtEnd = null, Vector momentAtEnd = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "", double groupingTolerance = Tolerance.Distance)
         {
+            if ((forceAtStart.IsNull() || forceAtEnd.IsNull()) && (momentAtStart.IsNull() || momentAtEnd.IsNull()))
+                return null;
             if (loadcase.IsNull())
                 return null;
 
@@ -115,7 +118,7 @@ namespace BH.Engine.Structure
         [Output("barVarLoad", "The created BarVaryingDistributedLoads with bars grouped by length.")]
         public static List<BarVaryingDistributedLoad> BarVaryingDistributedLoadDistanceBothEnds(Loadcase loadcase, IEnumerable<Bar> objects, bool relativePositions, double startToStartDistance = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endToEndDistance = 0, Vector forceAtEnd = null, Vector momentAtEnd = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "", double groupingTolerance = Tolerance.Distance)
         {
-            return BarVaryingDistributedLoadDistanceBothEnds(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, relativePositions, startToStartDistance, forceAtStart, forceAtEnd, endToEndDistance, forceAtEnd, momentAtEnd, axis, projected, name, groupingTolerance);
+            return loadcase.IsNull() ? null : BarVaryingDistributedLoadDistanceBothEnds(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, relativePositions, startToStartDistance, forceAtStart, forceAtEnd, endToEndDistance, forceAtEnd, momentAtEnd, axis, projected, name, groupingTolerance);
         }
 
         /***************************************************/

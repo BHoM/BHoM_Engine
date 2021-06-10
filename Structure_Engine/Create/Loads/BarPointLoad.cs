@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
         [Output("barPtLoad", "The created BarPointLoad.")]
         public static BarPointLoad BarPointLoad(Loadcase loadcase, double distFromA, IEnumerable<Bar> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return BarPointLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, distFromA, force, moment, axis, name);
+            return force.IsNull() && moment.IsNull() || loadcase.IsNull() ? null : BarPointLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, distFromA, force, moment, axis, name);
         }
 
         /***************************************************/

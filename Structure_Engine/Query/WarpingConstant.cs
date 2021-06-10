@@ -173,7 +173,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double IWarpingConstant(this IProfile profile)
         {
-            return profile.IsNull() ? null : WarpingConstant(profile as dynamic);
+            return profile.IsNull() ? 0 : WarpingConstant(profile as dynamic);
         }
 
         /***************************************************/

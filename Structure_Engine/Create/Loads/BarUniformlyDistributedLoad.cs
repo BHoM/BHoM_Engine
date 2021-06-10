@@ -76,7 +76,7 @@ namespace BH.Engine.Structure
         [Output("barUDL", "The created BarPointLoad.")]
         public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, IEnumerable<Bar> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return BarUniformlyDistributedLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, force, moment, axis, projected, name);
+            return force.IsNull() && moment.IsNull() || loadcase.IsNull() ? null : BarUniformlyDistributedLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, force, moment, axis, projected, name);
         }
 
         /***************************************************/

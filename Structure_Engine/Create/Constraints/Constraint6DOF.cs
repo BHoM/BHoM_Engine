@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Output("cons", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(string name, List<bool> fixity, List<double> values)
         {
-            if (fixity.IsNull() && values.IsNull())
+            if (fixity.IsNull() || values.IsNull())
                 return null;
 
             return new Constraint6DOF

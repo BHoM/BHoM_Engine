@@ -48,6 +48,11 @@ namespace BH.Engine.Structure
         {
             if (results.IsNull())
                 return null;
+            else if (loadcase == null)
+            {
+                Reflection.Compute.RecordError("Loadcase provided is null, therefore SelectCase cannot be evaluated.");
+                return null;
+            }
 
             if (loadcase != null)
             {

@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
         [Output("ptDisp", "The created PointDisplacement.")]
         public static PointDisplacement PointDisplacement(Loadcase loadcase, IEnumerable<Node> objects, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return PointDisplacement(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translation, rotation, axis, name);
+            return loadcase.IsNull() ? null : PointDisplacement(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translation, rotation, axis, name);
         }
 
         /***************************************************/
