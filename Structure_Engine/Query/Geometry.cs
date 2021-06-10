@@ -84,8 +84,10 @@ namespace BH.Engine.Structure
                 {
                     if (sn?.Position != null)
                         lines.Add(new Line() { Start = link.PrimaryNode.Position, End = sn.Position });
-                }   
+                }
             }
+            else
+                return null;
             
             return new CompositeGeometry() { Elements = lines };
         }
@@ -100,7 +102,7 @@ namespace BH.Engine.Structure
         [Output("outlines", "The geometry of the SectionProperty.")]
         public static IGeometry IGeometry(this ISectionProperty section)
         {
-            return Geometry(section as dynamic);
+            return section.IsNull() ? null : Geometry(section as dynamic);
         }
 
         /***************************************************/

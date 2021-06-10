@@ -29,6 +29,7 @@ using BH.oM.Analytical.Results;
 using BH.oM.Structure.Loads;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
 using System.ComponentModel;
 
 namespace BH.Engine.Structure
@@ -45,6 +46,9 @@ namespace BH.Engine.Structure
         [Output("results", "The filtered results. If no filtering param could be extracted, all results are returned.")]
         public static List<T> SelectCase<T>(this List<T> results, object loadcase) where T : IResult
         {
+            if (results.IsNull())
+                return null;
+
             if (loadcase != null)
             {
                 string loadCaseId = null;
