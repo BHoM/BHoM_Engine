@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if the objects assigned to the IElementLoad all have an identifier matching the AdapterIdName assigned.\n" + 
+        [Description("Checks if the objects assigned to the IElementLoad all have an identifier matching the AdapterIdName assigned.\n" +
                      "Loads without correctly assigned ids to the objects can generally not be pushed through to structural packages.")]
         [Input("load", "The load to check for id assignment.")]
         [Input("adapterIdType", "The the type of AdapterId fragment to check for. For example RobotId for Autodesk Robot.")]
