@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this CircleProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this TubeProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this BoxProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this FabricatedBoxProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this KiteProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this RectangleProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/

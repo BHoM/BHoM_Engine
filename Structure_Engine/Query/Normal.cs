@@ -105,7 +105,7 @@ namespace BH.Engine.Structure
         [Output("normal", "Vector representing the local z-axis element.")]
         public static Vector INormal(this IAreaElement areaElement)
         {
-            return Normal(areaElement as dynamic);
+            return areaElement.IsNull() ? null : Normal(areaElement as dynamic);
         }
 
         /***************************************************/

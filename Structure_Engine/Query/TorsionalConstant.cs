@@ -346,7 +346,7 @@ namespace BH.Engine.Structure
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double ITorsionalConstant(this IProfile profile)
         {
-            return profile.IsNull() ? null : TorsionalConstant(profile as dynamic);
+            return profile.IsNull() ? 0 : TorsionalConstant(profile as dynamic);
         }
 
         /***************************************************/
