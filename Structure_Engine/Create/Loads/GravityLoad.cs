@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -46,7 +47,7 @@ namespace BH.Engine.Structure
         [Output("gravLoad", "The created GravityLoad.")]
         public static GravityLoad GravityLoad(Loadcase loadcase, Vector gravityDirection, IEnumerable<IBHoMObject> objects, string name = "")
         {
-            return new GravityLoad
+            return loadcase.IsNull() || gravityDirection.IsNull() ? null : new GravityLoad
             {
                 Loadcase = loadcase,
                 GravityDirection = gravityDirection,

@@ -22,6 +22,7 @@
 
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,9 @@ namespace BH.Engine.Structure
         [Output("opening", "Created structural Opening.")]
         public static Opening Opening(IEnumerable<ICurve> edges)
         {
+            if (edges.IsNull() || edges.Any(x => x.IsNull()))
+                return null;
+
             List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
 
             if (joined.Count == 0)

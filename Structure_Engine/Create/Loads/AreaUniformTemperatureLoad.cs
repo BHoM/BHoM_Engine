@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
         [Output("areaUniformTempLoad", "The created AreaUniformTempratureLoad.")]
         public static AreaUniformTemperatureLoad AreaUniformTemperatureLoad(Loadcase loadcase, double temperatureChange, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return new AreaUniformTemperatureLoad
+            return loadcase.IsNull() ? null : new AreaUniformTemperatureLoad
             {
                 Loadcase = loadcase,
                 TemperatureChange = temperatureChange,

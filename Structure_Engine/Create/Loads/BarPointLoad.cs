@@ -50,10 +50,7 @@ namespace BH.Engine.Structure
         [Output("barPtLoad", "The created BarPointLoad.")]
         public static BarPointLoad BarPointLoad(Loadcase loadcase, BHoMGroup<Bar> group, double distFromA, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            if (force.IsNull() && moment.IsNull())
-                return null;
-
-            return new BarPointLoad
+            return force.IsNull() && moment.IsNull() || loadcase.IsNull() ? null : new BarPointLoad
             {
                 Loadcase = loadcase,
                 DistanceFromA = distFromA,

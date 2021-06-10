@@ -29,7 +29,7 @@ using System.Linq;
 using System;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.Engine.Spatial;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -55,11 +55,8 @@ namespace BH.Engine.Structure
         [Output("barVarLoad", "The created BarVaryingDistributedLoad.")]
         public static BarVaryingDistributedLoad BarVaryingDistributedLoad(Loadcase loadcase, BHoMGroup<Bar> group, double startPosition = 0, Vector forceAtStart = null, Vector momentAtStart = null, double endPosition = 1, Vector forceAtEnd = null, Vector momentAtEnd = null, bool relativePositions = true, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            if ((forceAtStart == null || forceAtEnd == null) && (momentAtStart == null || momentAtEnd == null))
-            {
-                Engine.Reflection.Compute.RecordError("Bar varying load requires either the force at start and end and/or the moment at start and end to be defined.");
+            if ((forceAtStart.IsNull() || forceAtEnd.IsNull()) && (momentAtStart.IsNull() || momentAtEnd.IsNull()))
                 return null;
-            }
 
             if (startPosition < 0 || endPosition < 0)
             {

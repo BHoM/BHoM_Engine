@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Base;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -47,6 +48,9 @@ namespace BH.Engine.Structure
         [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
         public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, IEnumerable<IAreaElement> objects, string name = "")
         {
+            if (loadcase.IsNull() || positions.IsNull() || temperatures.IsNull())
+                return null;
+
             //Checks for positions and profiles
             if (positions.Count != temperatures.Count)
             {
@@ -89,7 +93,7 @@ namespace BH.Engine.Structure
         [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
         public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, IEnumerable<IAreaElement> objects, string name = "")
         {
-            return AreaDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, objects, name);
+            return loadcase.IsNull() ? null : AreaDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, objects, name);
 
         }
 
