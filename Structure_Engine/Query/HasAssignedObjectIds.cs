@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
 
             if (adapterIdType == null)
             {
-                Reflection.Compute.RecordError("The provided adapter id type is null. Could not check object id assignment for the load.");
+                Reflection.Compute.RecordError("The provided AdapterId type is null. Could not check object id assignment for the load.");
                 return false;
             }
 

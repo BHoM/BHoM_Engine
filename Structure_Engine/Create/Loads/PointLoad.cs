@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
         [Output("ptLoad", "The created PointLoad.")]
         public static PointLoad PointLoad(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return PointLoad(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, force, moment, axis, name);
+            return loadcase.IsNull() ? null : PointLoad(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, force, moment, axis, name);
         }
 
         /***************************************************/

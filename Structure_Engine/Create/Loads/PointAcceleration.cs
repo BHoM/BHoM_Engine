@@ -76,7 +76,7 @@ namespace BH.Engine.Structure
         [Output("ptAcc", "The created PointAcceleration.")]
         public static PointAcceleration PointAcceleration(Loadcase loadcase, IEnumerable<Node> objects, Vector translationAcc = null, Vector rotationAcc = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return PointAcceleration(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translationAcc, rotationAcc, axis, name);
+            return loadcase.IsNull() ? null : PointAcceleration(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translationAcc, rotationAcc, axis, name);
         }
 
         /***************************************************/
