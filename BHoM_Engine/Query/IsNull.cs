@@ -54,6 +54,16 @@ namespace BH.Engine.Base
 
                 return true;
             }
+            else if(!list.Any())
+            {
+                if (string.IsNullOrEmpty(methodName))
+                {
+                    methodName = "Method";
+                }
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the List is empty. {msg}");
+
+                return true;
+            }
 
             return false;
         }
