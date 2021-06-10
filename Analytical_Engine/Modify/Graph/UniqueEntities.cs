@@ -43,23 +43,24 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph from which duplicate entities should be removed.")]
         [Input("replaceMap", "A Dictionary providing the replacement mapping, where Key is replaced with Value.")]
         [Output("graph", "The Graph with unique entities.")]
-        public static Graph UniqueEntities(this Graph graph, Dictionary<Guid, IBHoMObject> replaceMap)
+        public static Graph<T> UniqueEntities<T>(this Graph<T> graph, Dictionary<Guid, T> replaceMap)
+            where T : IBHoMObject
         {
-            Dictionary<Guid, IBHoMObject> uniqueEntities = new Dictionary<Guid, IBHoMObject>();
+            Dictionary<Guid, T> uniqueEntities = new Dictionary<Guid, T>();
 
-            foreach (KeyValuePair<Guid, IBHoMObject> kvp in graph.Entities)
+            foreach (KeyValuePair<Guid, T> kvp in graph.Entities)
             {
-                IBHoMObject unique = replaceMap[kvp.Key];
+                T unique = replaceMap[kvp.Key];
                 if (!uniqueEntities.ContainsKey(unique.BHoM_Guid))
                     uniqueEntities.Add(unique.BHoM_Guid, unique);
             }
 
             graph.Entities = uniqueEntities;
 
-            List<IRelation> uniqueRelations = new List<IRelation>();
-            foreach (IRelation relation in graph.Relations)
+            List<IRelation<T>> uniqueRelations = new List<IRelation<T>>();
+            foreach (IRelation<T> relation in graph.Relations)
             {
-                IRelation relation1 = relation.UniqueEntities(replaceMap);
+                IRelation<T> relation1 = relation.UniqueEntities(replaceMap);
 
                 //keep if it does not already exist
                 if(!uniqueRelations.Any(r => r.Source.Equals(relation1.Source) && r.Target.Equals(relation1.Target)))
@@ -74,7 +75,8 @@ namespace BH.Engine.Analytical
         /****           Private Methods                 ****/
         /***************************************************/
 
-        private static IRelation UniqueEntities(this IRelation relation, Dictionary<Guid, IBHoMObject> replaceMap)
+        private static IRelation<T> UniqueEntities<T>(this IRelation<T> relation, Dictionary<Guid, T> replaceMap)
+            where T : IBHoMObject
         {
             if(replaceMap.ContainsKey(relation.Source))
                 relation.Source = replaceMap[relation.Source].BHoM_Guid;

@@ -49,9 +49,10 @@ namespace BH.Engine.Analytical
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
         [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities, ComparisonConfig comparisonConfig = null)
+        public static Graph<T> Graph<T>(List<T> entities, ComparisonConfig comparisonConfig = null)
+            where T : IBHoMObject
         {
-            return Graph(entities, new List<IRelation>(), comparisonConfig);
+            return Graph(entities, new List<IRelation<T>>(), comparisonConfig);
         }
 
         /***************************************************/
@@ -60,9 +61,10 @@ namespace BH.Engine.Analytical
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
         [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IRelation> relations, ComparisonConfig comparisonConfig = null)
+        public static Graph<T> Graph<T>(List<IRelation<T>> relations, ComparisonConfig comparisonConfig = null)
+            where T : IBHoMObject
         {
-            return Graph(new List<IBHoMObject>(), relations, comparisonConfig);
+            return Graph(new List<T>(), relations, comparisonConfig);
         }
 
         /***************************************************/
@@ -72,12 +74,13 @@ namespace BH.Engine.Analytical
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
         [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(List<IBHoMObject> entities = null, List<IRelation> relations = null, ComparisonConfig comparisonConfig = null)
+        public static Graph<T> Graph<T>(List<T> entities = null, List<IRelation<T>> relations = null, ComparisonConfig comparisonConfig = null)
+            where T : IBHoMObject
         {
-            Graph graph = new Graph();
+            Graph<T> graph = new Graph<T>();
 
-            List<IBHoMObject> clonedEntities = entities.DeepClone();
-            List<IRelation> clonedRelations = relations.DeepClone();
+            List<T> clonedEntities = entities.DeepClone();
+            List<IRelation<T>> clonedRelations = relations.DeepClone();
 
             //add objects from sub graphs if any
             clonedEntities.AddRange(clonedRelations.SelectMany(r => r.Subgraph.Entities.Values.DeepClone()).ToList());
@@ -88,7 +91,7 @@ namespace BH.Engine.Analytical
                 return graph;
             }
 
-            m_MatchedObjects = Query.UniqueEntitiesReplacementMap(clonedEntities, comparisonConfig);
+            Dictionary<Guid, T> matchedEntities = Query.UniqueEntitiesReplacementMap(clonedEntities, comparisonConfig);
 
             //convert dependency fragments attached to entities and add to relations
             clonedEntities.ForEach(ent => clonedRelations.AddRange(ent.ToRelation())); 
@@ -97,14 +100,14 @@ namespace BH.Engine.Analytical
             graph.Relations.AddRange(clonedRelations);
 
             //add unique objects
-            foreach (KeyValuePair< Guid, IBHoMObject> kvp in m_MatchedObjects)
+            foreach (KeyValuePair< Guid, T> kvp in matchedEntities)
             {
  
                 if (!graph.Entities.ContainsKey(kvp.Value.BHoM_Guid))
                     graph.Entities.Add(kvp.Value.BHoM_Guid, kvp.Value);
                 
             }
-            graph = graph.UniqueEntities(m_MatchedObjects);
+            graph = graph.UniqueEntities(matchedEntities);
 
             graph.UniqueEntityNames();
 
@@ -123,31 +126,31 @@ namespace BH.Engine.Analytical
         [Input("snappingTolerance", "Optional tolerance used when comparing connectingCurves end points and provided entities. Default is Tolerance.Distance (1e-6).")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph<T>(List<ICurve> connectingCurves, T prototypeEntity, List<IElement0D> entities = null, double snappingTolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
-        where T : IElement0D
+        public static Graph<T> Graph<T>(List<ICurve> connectingCurves, T prototypeEntity, List<T> entities = null, double snappingTolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
+        where T : INode
         {
             if (entities == null)
-                entities = new List<IElement0D>();
+                entities = new List<T>();
 
-            List<IElement0D> entitiesCloned = entities.DeepClone();
+            List<T> entitiesCloned = entities.DeepClone();
 
-            List<IRelation> relations = new List<IRelation>();
+            List<IRelation<T>> relations = new List<IRelation<T>>();
             foreach (ICurve curve in connectingCurves)
             {
-                IElement0D start = FindOrCreateEntity(entitiesCloned, curve.IStartPoint(), snappingTolerance, prototypeEntity);
-                IElement0D end = FindOrCreateEntity(entitiesCloned, curve.IEndPoint(), snappingTolerance, prototypeEntity);
+                T start = FindOrCreateEntity(entitiesCloned, curve.IStartPoint(), snappingTolerance, prototypeEntity);
+                T end = FindOrCreateEntity(entitiesCloned, curve.IEndPoint(), snappingTolerance, prototypeEntity);
 
-                Relation relation = new Relation()
+                Relation<T> relation = new Relation<T>()
                 {
-                    Source = ((IBHoMObject)start).BHoM_Guid,
-                    Target = ((IBHoMObject)end).BHoM_Guid,
+                    Source = start.BHoM_Guid,
+                    Target = end.BHoM_Guid,
                     Curve = curve
                 };
                 relations.AddRange(RelationsToAdd(relation, relationDirection));
             }
-            Graph graph = new Graph();
+            Graph<T> graph = new Graph<T>();
             
-            entitiesCloned.ForEach(n => graph.Entities.Add(((IBHoMObject)n).BHoM_Guid, ((IBHoMObject)n)));
+            entitiesCloned.ForEach(n => graph.Entities.Add(n.BHoM_Guid, n));
             graph.Relations = relations;
             graph.UniqueEntityNames();
 
@@ -164,25 +167,26 @@ namespace BH.Engine.Analytical
         [Input("tolerance", "Optional minimum distance permitted between randomly generated entities. Default is Tolerance.Distance (1e-6).")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph(int entityCount, int branching, BoundingBox boundingBox, IElement0D prototypeEntity, double tolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static Graph<T> Graph<T>(int entityCount, int branching, BoundingBox boundingBox, T prototypeEntity, double tolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
+            where T : IBHoMObject
         {
-            Graph graph = new Graph();
-            List<IElement0D> entities = new List<IElement0D>();
+            Graph<T> graph = new Graph<T>();
+            List<T> entities = new List<T>();
 
             for (int i = 0; i < entityCount; i++)
             {
                 Point p = Geometry.Create.RandomPoint(m_Rnd, boundingBox);
-                IElement0D entity = prototypeEntity.ClonePositionGuid(p);
+                T entity = prototypeEntity.ClonePositionGuid<T>(p);
                 
                 if (!ToCloseToAny(entities, entity, tolerance))
                     entities.Add(entity);
 
             }
 
-            List<IRelation> relations = new List<IRelation>();
-            foreach (IElement0D entity in entities)
+            List<IRelation<T>> relations = new List<IRelation<T>>();
+            foreach (T entity in entities)
             {
-                foreach (IElement0D d in ClosestIElement0Ds(entities, entity, branching))
+                foreach (T d in ClosestIElement0Ds(entities, entity, branching))
                 {
                     Relation relation = new Relation()
                     {
@@ -266,11 +270,12 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****           Private Methods                 ****/
         /***************************************************/
-        private static IElement0D FindOrCreateEntity(List<IElement0D> entities, Point point, double tolerance, IElement0D prototypeEntity)
+        private static T FindOrCreateEntity<T>(List<T> entities, Point point, double tolerance, T prototypeEntity)
+            where T : INode
         {
-            IElement0D entity = entities.ClosestIElement0D(point);
+            T entity = entities.ClosestIElement0D<T>(point);
 
-            if (entity == null || entity.IGeometry().Distance(point) > tolerance)
+            if (entity == null || entity.Position.Distance(point) > tolerance)
             {
                 entity = prototypeEntity.ClonePositionGuid(point);
                 entities.Add(entity);
@@ -281,19 +286,21 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        private static IElement0D ClonePositionGuid(this IElement0D element0D, Point position)
+        private static T ClonePositionGuid<T>(this T node, Point position)
+            where T : INode
         {
-            element0D = element0D.DeepClone();
-            element0D = element0D.ISetGeometry(position);
-            ((IBHoMObject)element0D).BHoM_Guid = Guid.NewGuid();
-            return element0D;
+            node = node.DeepClone();
+            node.Position = position;
+            node.BHoM_Guid = Guid.NewGuid();
+            return node;
         }
 
         /***************************************************/
 
-        private static List<IRelation> RelationsToAdd(IRelation relation, RelationDirection linkDirection)
+        private static List<IRelation<T>> RelationsToAdd<T>(IRelation<T> relation, RelationDirection linkDirection)
+            where T : IBHoMObject
         {
-            List<IRelation> relations = new List<IRelation>();
+            List<IRelation<T>> relations = new List<IRelation<T>>();
             if (linkDirection == RelationDirection.Forwards)
                 relations.Add(relation);
 
@@ -303,7 +310,7 @@ namespace BH.Engine.Analytical
             if (linkDirection == RelationDirection.Both)
             {
                 relations.Add(relation);
-                IRelation clone = relation.DeepClone();
+                IRelation<T> clone = relation.DeepClone();
                 relations.Add(clone.IReverse());
             }
             return relations;
@@ -381,7 +388,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         private static Random m_Rnd = new Random();
-        private static Dictionary<Guid, IBHoMObject> m_MatchedObjects = new Dictionary<Guid, IBHoMObject>();
+        
     }
 }
 

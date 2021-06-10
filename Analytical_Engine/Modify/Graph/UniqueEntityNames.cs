@@ -38,7 +38,8 @@ namespace BH.Engine.Analytical
         [Description("Enforce unique entity names on a collection of entities.")]
         [Input("graph", "The Graph to modify.")]
         [Output("graph", "The modified graph.")]
-        public static Graph UniqueEntityNames(this Graph graph)
+        public static Graph<T> UniqueEntityNames<T>(this Graph<T> graph)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
@@ -46,12 +47,12 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            List<IBHoMObject> entities = graph.Entities.Values.ToList();
+            List<T> entities = graph.Entities.Values.ToList();
             List<string> distinctNames = entities.Select(x => x.Name).Distinct().ToList();
 
             foreach (string name in distinctNames)
             {
-                List<IBHoMObject> matchentities = entities.FindAll(x => x.Name == name);
+                List<T> matchentities = entities.FindAll(x => x.Name == name);
                 if (matchentities.Count > 1)
                 {
                     for (int i = 0; i < matchentities.Count; i++)

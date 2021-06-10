@@ -45,19 +45,20 @@ namespace BH.Engine.Analytical
         [Input("entities", "A collection of IBHoMObjects from which unique instances are identified.")]
         [Input("comparisonConfig", "Configuration of diffing used to find unique entities.")]
         [Output("replacementMap", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
-        public static Dictionary<Guid, IBHoMObject> UniqueEntitiesReplacementMap(this List<IBHoMObject> entities, ComparisonConfig comparisonConfig = null)
+        public static Dictionary<Guid, T> UniqueEntitiesReplacementMap<T>(this List<T> entities, ComparisonConfig comparisonConfig = null)
+            where T : IBHoMObject
         {
             ComparisonConfig cc = comparisonConfig ?? new ComparisonConfig();
 
-            Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
-            Dictionary<IBHoMObject, string> entitiesHash = new Dictionary<IBHoMObject, string>();
+            Dictionary<Guid, T> replaceMap = new Dictionary<Guid, T>();
+            Dictionary<T, string> entitiesHash = new Dictionary<T, string>();
 
             // populate dictionary
             entities.ForEach(ent => entitiesHash.Add(ent, ent.Hash(cc)));
 
-            foreach (KeyValuePair<IBHoMObject, string> entityA in entitiesHash)
+            foreach (KeyValuePair<T, string> entityA in entitiesHash)
             {
-                foreach (KeyValuePair<IBHoMObject, string> entityB in entitiesHash)
+                foreach (KeyValuePair<T, string> entityB in entitiesHash)
                 {
                     //only if same object type
                     if (entityA.Key.GetType() == entityB.Key.GetType())

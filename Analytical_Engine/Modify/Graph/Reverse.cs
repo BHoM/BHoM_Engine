@@ -23,6 +23,7 @@
 using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -43,7 +44,8 @@ namespace BH.Engine.Analytical
         [Description("Modifies an IRelation by reversing it.")]
         [Input("relation", "The IRelation to reverse.")]
         [Output("relation", "The reversed IRelation.")]
-        public static IRelation IReverse(this IRelation relation)
+        public static IRelation<T> IReverse<T>(this IRelation<T> relation)
+            where T : IBHoMObject
         {
             return Reverse(relation as dynamic);
         }
@@ -53,7 +55,8 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Relation by reversing it.")]
         [Input("relation", "The Relation to reverse.")]
         [Output("relation", "The reversed Relation.")]
-        public static Relation Reverse(this Relation relation)
+        public static Relation<T> Reverse<T>(this Relation<T> relation)
+            where T : IBHoMObject
         {
             if(relation == null)
             {
@@ -61,7 +64,7 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            relation.FlipSourceTarget<Relation>();
+            relation.FlipSourceTarget();
             relation.Curve = relation.Curve.IFlip();
             return relation;
         }
@@ -71,7 +74,8 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Graph by reversing all Relations within it.")]
         [Input("graph", "The Graph to reverse.")]
         [Output("graph", "The reversed Graph.")]
-        public static Graph Reverse(this Graph graph)
+        public static Graph<T> Reverse<T>(this Graph<T> graph)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
@@ -79,8 +83,8 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            List<IRelation> reversed = new List<IRelation>();
-            foreach (IRelation relation in graph.Relations)
+            List<IRelation<T>> reversed = new List<IRelation<T>>();
+            foreach (IRelation<T> relation in graph.Relations)
                 reversed.Add(relation.Reverse());
 
             graph.Relations = reversed;
@@ -94,7 +98,8 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Relation by reversing it.")]
         [Input("relation", "The Relation to reverse.")]
         [Output("relation", "The reversed Relation.")]
-        public static IRelation Reverse(this IRelation relation)
+        public static IRelation<T> Reverse<T>(this IRelation<T> relation)
+            where T : IBHoMObject
         {
             return relation;
         }
@@ -103,8 +108,8 @@ namespace BH.Engine.Analytical
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static T FlipSourceTarget<T>(this T relation)
-            where T : IRelation
+        private static IRelation<T> FlipSourceTarget<T>(this IRelation<T> relation)
+            where T : IBHoMObject
         {
             Guid oldSource = relation.Source;
             Guid oldTarget = relation.Target;
