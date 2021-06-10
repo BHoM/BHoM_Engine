@@ -50,10 +50,7 @@ namespace BH.Engine.Structure
         [Output("barUDL", "The created BarPointLoad.")]
         public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, BHoMGroup<Bar> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            if (force.IsNull() && moment.IsNull() || loadcase.IsNull())
-                return null;
-
-            return new BarUniformlyDistributedLoad
+            return force.IsNull() && moment.IsNull() || loadcase.IsNull() ? null : new BarUniformlyDistributedLoad
             {
                 Loadcase = loadcase,
                 Objects = group,

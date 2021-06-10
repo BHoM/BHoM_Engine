@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
         [Output("areaUDL", "The created AreaUniformlyDistributedLoad.")]
         public static AreaUniformlyDistributedLoad AreaUniformlyDistributedLoad(Loadcase loadcase, Vector pressure, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return new AreaUniformlyDistributedLoad
+            return loadcase.IsNull() ? null : new AreaUniformlyDistributedLoad
             {
                 Loadcase = loadcase,
                 Pressure = pressure,

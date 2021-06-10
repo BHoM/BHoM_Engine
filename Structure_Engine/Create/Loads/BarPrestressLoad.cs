@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Output("barPreStress", "The created BarPrestressLoad.")]
         public static BarPrestressLoad BarPrestressLoad(Loadcase loadcase, double prestress, IEnumerable<Bar> objects, string name = "")
         {
-            return new BarPrestressLoad
+            return loadcase.IsNull() ? null : new BarPrestressLoad
             {
                 Loadcase = loadcase,
                 Prestress = prestress,
