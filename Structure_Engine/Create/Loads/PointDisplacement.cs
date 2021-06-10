@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Base;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -48,8 +50,8 @@ namespace BH.Engine.Structure
         [Output("ptDisp", "The created PointDisplacement.")]
         public static PointDisplacement PointDisplacement(Loadcase loadcase, BHoMGroup<Node> group, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            if (translation == null && rotation == null)
-                throw new ArgumentException("Point displacement requires either the translation or the rotation vector to be defined");
+            if (translation.IsNull() && rotation.IsNull() || loadcase.IsNull())
+                return null;
 
             return new PointDisplacement
             {

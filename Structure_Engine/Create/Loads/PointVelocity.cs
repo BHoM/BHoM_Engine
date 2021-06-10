@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Base;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -48,8 +50,8 @@ namespace BH.Engine.Structure
         [Output("ptVel", "The created PointVelocity.")]
         public static PointVelocity PointVelocity(Loadcase loadcase, BHoMGroup<Node> group, Vector translationalVelocity = null, Vector rotationalVelocity = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            if (translationalVelocity == null && rotationalVelocity == null)
-                throw new ArgumentException("Point velocity requires either the translation or the rotation vector to be defined");
+            if (translationalVelocity.IsNull() && rotationalVelocity.IsNull() || loadcase.IsNull())
+                return null;
 
             return new PointVelocity
             {

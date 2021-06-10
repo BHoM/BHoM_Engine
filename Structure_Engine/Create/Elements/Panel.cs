@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BH.Engine.Geometry;
+using BH.Engine.Base;
 using System.ComponentModel;
 using BH.Engine.Analytical;
 
@@ -50,6 +51,9 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel.")]
         public static Panel Panel(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
+            if (externalEdges.IsNull() || externalEdges.Any(x => x.IsNull()))
+                return null;
+
             Panel panel = new Panel
             {
                 ExternalEdges = externalEdges,
@@ -75,9 +79,11 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel.")]
         public static Panel Panel(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
-            if (!outline.IIsClosed())
+            if (outline.IsNull())
+                return null;
+            else if (!outline.IIsClosed())
             {
-                Reflection.Compute.RecordError("Outline not closed. Could not create Panel.");
+                Reflection.Compute.RecordError("Outline is not closed. Could not create Panel.");
                 return null;
             }
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).Where(x => x != null).ToList() : new List<Opening>();
@@ -98,6 +104,9 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel(s).")]
         public static List<Panel> Panel(List<ICurve> outlines, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
+            if (outlines.IsNull() || outlines.Any(x => x.IsNull()))
+                return null;
+
             List<Panel> result = new List<Panel>();
             List<List<IElement1D>> outlineEdges = outlines.Select(x => x.ISubParts().Select(y => new Edge { Curve = y } as IElement1D).ToList()).ToList();
 

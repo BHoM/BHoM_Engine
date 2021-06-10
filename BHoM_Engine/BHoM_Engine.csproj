@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Query\Geometry3D.cs" />
+    <Compile Include="Query\IsNull.cs" />
     <Compile Include="Query\UniquenessRestrictions.cs" />
     <Compile Include="Query\CanTarget.cs" />
     <Compile Include="Query\Hash.cs" />

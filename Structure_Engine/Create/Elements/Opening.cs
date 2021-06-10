@@ -44,7 +44,9 @@ namespace BH.Engine.Structure
         [Output("opening", "Created structural Opening.")]
         public static Opening Opening(ICurve outline)
         {
-            if (outline.IIsClosed())
+            if (outline.IsNull())
+                return null;
+            else if (outline.IIsClosed())
                 return new Opening { Edges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList() };
             else
             {
@@ -81,7 +83,7 @@ namespace BH.Engine.Structure
                 Reflection.Compute.RecordError("Provided curves does not form a closed loop. Could not create opening.");
                 return null;
             }
-            
+
         }
 
         /***************************************************/

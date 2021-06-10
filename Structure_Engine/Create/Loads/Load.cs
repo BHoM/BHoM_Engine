@@ -41,9 +41,9 @@ namespace BH.Engine.Structure
         [Description("Method used to create a load from a specified type as well as range of variables.")]
         [Input("type", "Specifies the type of load that should be created.")]
         [InputFromProperty("loadcase")]
-        [Input("magnitude", "Should be a list of 1-6 doubles, depending on load type. \n" + 
-                            "-For load types with a single value, such as temprature loads, only the first value is used. \n" + 
-                            "-For load types with a single vector, such as Area UDLs, the first three numbers are used, and assumed to be the x, y and z component of this vector. \n" + 
+        [Input("magnitude", "Should be a list of 1-6 doubles, depending on load type. \n" +
+                            "-For load types with a single value, such as temprature loads, only the first value is used. \n" +
+                            "-For load types with a single vector, such as Area UDLs, the first three numbers are used, and assumed to be the x, y and z component of this vector. \n" +
                             "-For load types with two vectors, such as bar UDLs, the first three values will be assumed to be the force vector, and the last three the moment vector. \n" +
                             "Quantity varies with load type.")]
         [Input("groupName", "Value will be given to the object group on the load as well as to the load itself.")]
@@ -52,6 +52,11 @@ namespace BH.Engine.Structure
         [Output("load", "The created Load.")]
         public static ILoad Load(LoadType type, Loadcase loadCase, List<double> magnitude, string groupName, LoadAxis axis, bool isProjected, string units = "kN")
         {
+            if (loadCase.IsNull())
+                return null;
+            else if (magnitude == null || String.IsNullOrEmpty(groupName))
+                return null;
+
             units = units.ToUpper();
             units = units.Replace(" ", "");
 
@@ -76,7 +81,8 @@ namespace BH.Engine.Structure
                     sFac = 1;
                     break;
                 default:
-                    throw new ArgumentException("Unrecognised unit type");
+                    Reflection.Compute.RecordError("Unrecognised unit type.");
+                    return null;
             }
 
             Vector force = null;
@@ -84,7 +90,10 @@ namespace BH.Engine.Structure
             double mag;
 
             if (magnitude.Count < 1)
-                throw new ArgumentException("Need at least one maginute value");
+            {
+                Reflection.Compute.RecordError("At least magnitude value is required, please check inputs.");
+                return null;
+            }
 
             mag = magnitude[0] * sFac;
 
@@ -143,7 +152,8 @@ namespace BH.Engine.Structure
                 case LoadType.Pressure:
                 case LoadType.Geometrical:
                 default:
-                    throw new NotImplementedException("Load type not implemented");
+                    Reflection.Compute.RecordError("Load type not implemented");
+                    return null;
             }
         }
 
