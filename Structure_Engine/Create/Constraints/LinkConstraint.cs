@@ -24,7 +24,7 @@ using BH.oM.Structure.Constraints;
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
 using System.ComponentModel;
 
 
@@ -43,6 +43,9 @@ namespace BH.Engine.Structure
         [Output("linkConstraint", "The created custom LinkConstraint.")]
         public static LinkConstraint LinkConstraint(string name, List<bool> fixity)
         {
+            if (fixity.IsNull())
+                return null;
+
             return new LinkConstraint
             {
                 XtoX = fixity[0],
@@ -62,7 +65,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        
+
         [Description("Creates a LinkConstraint where all directions are linked, rotations at secondary nodes are linked to rotations of the primary.")]
         [Input("name", "Name of the created LinkConstraint. Defaults to 'Fixed'. This is required for various structural packages to create the object.")]
         [Output("linkConstraint", "The created LinkConstraint.")]
@@ -70,15 +73,15 @@ namespace BH.Engine.Structure
         {
             return new LinkConstraint
             {
-                XtoX   = true,
-                YtoY   = true,
-                ZtoZ   = true,
-                XtoYY  = true,
-                XtoZZ  = true,
-                YtoXX  = true,
-                YtoZZ  = true,
-                ZtoXX  = true,
-                ZtoYY  = true,
+                XtoX = true,
+                YtoY = true,
+                ZtoZ = true,
+                XtoYY = true,
+                XtoZZ = true,
+                YtoXX = true,
+                YtoZZ = true,
+                ZtoXX = true,
+                ZtoYY = true,
                 XXtoXX = true,
                 YYtoYY = true,
                 ZZtoZZ = true,
@@ -93,7 +96,6 @@ namespace BH.Engine.Structure
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintPinned(string name = "Pinned")
         {
-
             bool[] fixities = new bool[12];
 
             for (int i = 0; i < 9; i++)
@@ -112,14 +114,14 @@ namespace BH.Engine.Structure
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintXYPlane(string name = "xy-Plane")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.XtoX = true;
-                constr.XtoZZ = true;
-                constr.YtoY = true;
-                constr.YtoZZ = true;
-                constr.ZZtoZZ = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.XtoX = true;
+            constr.XtoZZ = true;
+            constr.YtoY = true;
+            constr.YtoZZ = true;
+            constr.ZZtoZZ = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
@@ -129,14 +131,14 @@ namespace BH.Engine.Structure
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintYZPlane(string name = "yz-Plane")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.YtoY = true;
-                constr.YtoXX = true;
-                constr.ZtoZ = true;
-                constr.ZtoXX = true;
-                constr.XXtoXX = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.YtoY = true;
+            constr.YtoXX = true;
+            constr.ZtoZ = true;
+            constr.ZtoXX = true;
+            constr.XXtoXX = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
@@ -146,14 +148,14 @@ namespace BH.Engine.Structure
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintZXPlane(string name = "zx-Plane")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.XtoX = true;
-                constr.XtoYY = true;
-                constr.ZtoZ = true;
-                constr.ZtoYY = true;
-                constr.YYtoYY = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.XtoX = true;
+            constr.XtoYY = true;
+            constr.ZtoZ = true;
+            constr.ZtoYY = true;
+            constr.YYtoYY = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
@@ -163,13 +165,13 @@ namespace BH.Engine.Structure
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintXYPlanePin(string name = "xy-Plane Pin")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.XtoX = true;
-                constr.XtoZZ = true;
-                constr.YtoY = true;
-                constr.YtoZZ = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.XtoX = true;
+            constr.XtoZZ = true;
+            constr.YtoY = true;
+            constr.YtoZZ = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
@@ -179,13 +181,13 @@ namespace BH.Engine.Structure
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintYZPlanePin(string name = "yz-Plane Pin")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.YtoY = true;
-                constr.YtoXX = true;
-                constr.ZtoZ = true;
-                constr.ZtoXX = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.YtoY = true;
+            constr.YtoXX = true;
+            constr.ZtoZ = true;
+            constr.ZtoXX = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
@@ -195,91 +197,91 @@ namespace BH.Engine.Structure
         [Output("linkConstraint", "The created LinkConstraint.")]
         public static LinkConstraint LinkConstraintZXPlanePin(string name = "zx-Plane Pin")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.XtoX = true;
-                constr.XtoYY = true;
-                constr.ZtoZ = true;
-                constr.ZtoYY = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.XtoX = true;
+            constr.XtoYY = true;
+            constr.ZtoZ = true;
+            constr.ZtoYY = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
 
         public static LinkConstraint LinkConstraintXPlate(string name = "x-Plate")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.XtoX = true;
-                constr.XtoYY = true;
-                constr.XtoZZ = true;
-                constr.YYtoYY = true;
-                constr.ZZtoZZ = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.XtoX = true;
+            constr.XtoYY = true;
+            constr.XtoZZ = true;
+            constr.YYtoYY = true;
+            constr.ZZtoZZ = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
 
         public static LinkConstraint LinkConstraintYPlate(string name = "y-Plate")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.YtoY = true;
-                constr.YtoXX = true;
-                constr.YtoZZ = true;
-                constr.XXtoXX = true;
-                constr.ZZtoZZ = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.YtoY = true;
+            constr.YtoXX = true;
+            constr.YtoZZ = true;
+            constr.XXtoXX = true;
+            constr.ZZtoZZ = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
 
         public static LinkConstraint LinkConstraintYPlateZPlate(string name = "z-Plate")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.ZtoZ = true;
-                constr.ZtoXX = true;
-                constr.ZtoYY = true;
-                constr.XXtoXX = true;
-                constr.YYtoYY = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.ZtoZ = true;
+            constr.ZtoXX = true;
+            constr.ZtoYY = true;
+            constr.XXtoXX = true;
+            constr.YYtoYY = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
 
         public static LinkConstraint LinkConstraintXPlatePin(string name = "x-Plate Pin")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.XtoX = true;
-                constr.XtoYY = true;
-                constr.XtoZZ = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.XtoX = true;
+            constr.XtoYY = true;
+            constr.XtoZZ = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
 
         public static LinkConstraint LinkConstraintYPlatePin(string name = "y-Plate Pin")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.YtoY = true;
-                constr.YtoXX = true;
-                constr.YtoZZ = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.YtoY = true;
+            constr.YtoXX = true;
+            constr.YtoZZ = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/
 
         public static LinkConstraint LinkConstraintZPlatePin(string name = "z-Plate Pin")
         {
-                LinkConstraint constr = new LinkConstraint();
-                constr.ZtoZ = true;
-                constr.ZtoXX = true;
-                constr.ZtoYY = true;
-                constr.Name = name;
-                return constr;
+            LinkConstraint constr = new LinkConstraint();
+            constr.ZtoZ = true;
+            constr.ZtoXX = true;
+            constr.ZtoYY = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/

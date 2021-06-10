@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -49,8 +50,8 @@ namespace BH.Engine.Structure
         [Output("barPtLoad", "The created BarPointLoad.")]
         public static BarPointLoad BarPointLoad(Loadcase loadcase, BHoMGroup<Bar> group, double distFromA, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            if (force == null && moment == null)
-                throw new ArgumentException("Bar point load requires either the force and/or the moment vector to be defined");
+            if (force.IsNull() && moment.IsNull())
+                return null;
 
             return new BarPointLoad
             {

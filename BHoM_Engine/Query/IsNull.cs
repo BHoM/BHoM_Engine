@@ -20,10 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
-using BH.oM.Geometry;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -31,7 +29,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -39,20 +37,20 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a Geometry is null and outputs relevant error message.")]
-        [Input("geometry", "The Geometry to test for null.")]
+        [Description("Checks if a List is null and outputs relevant error message.")]
+        [Input("geometry", "The List to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the Geometry is null.")]
-        public static bool IsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "")
+        [Output("isNull", "True if the List or its elements are null.")]
+        public static bool IsNull<T>(this IEnumerable<T> list, string msg = "", [CallerMemberName] string methodName = "")
         {
-            if (geometry == null)
+            if (list == null)
             {
                 if (string.IsNullOrEmpty(methodName))
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg}");
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the List failed a null check. {msg}");
 
                 return true;
             }

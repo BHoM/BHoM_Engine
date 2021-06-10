@@ -23,7 +23,7 @@
 using BH.oM.Structure.Constraints;
 using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
 using System.ComponentModel;
 
 
@@ -43,6 +43,9 @@ namespace BH.Engine.Structure
         [Output("cons", "The created custom Constraint6DOF.")]
         public static Constraint6DOF Constraint6DOF(string name, List<bool> fixity, List<double> values)
         {
+            if (fixity.IsNull() && values.IsNull())
+                return null;
+
             return new Constraint6DOF
             {
                 Name = name,
