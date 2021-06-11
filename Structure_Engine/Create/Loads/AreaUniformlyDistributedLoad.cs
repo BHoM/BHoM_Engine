@@ -48,11 +48,17 @@ namespace BH.Engine.Structure
         [Output("areaUDL", "The created AreaUniformlyDistributedLoad.")]
         public static AreaUniformlyDistributedLoad AreaUniformlyDistributedLoad(Loadcase loadcase, Vector pressure, IEnumerable<IAreaElement> objects, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return loadcase.IsNull() ? null : new AreaUniformlyDistributedLoad
+            BHoMGroup<IAreaElement> group = new BHoMGroup<IAreaElement>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
+            return new AreaUniformlyDistributedLoad
             {
                 Loadcase = loadcase,
                 Pressure = pressure,
-                Objects = new BHoMGroup<IAreaElement>() { Elements = objects.ToList() },
+                Objects = group,
                 Axis = axis,
                 Projected = projected,
                 Name = name

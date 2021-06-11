@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
         [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
         public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, IEnumerable<IAreaElement> objects, string name = "")
         {
-            if (loadcase.IsNull() || positions.IsNullOrEmpty() || temperatures.IsNullOrEmpty())
+            if (positions.IsNullOrEmpty() || temperatures.IsNullOrEmpty())
                 return null;
 
             //Checks for positions and profiles
@@ -73,11 +73,17 @@ namespace BH.Engine.Structure
             Dictionary<double, double> temperatureProfile = positions.Zip(temperatures, (z, t) => new { z, t })
                 .ToDictionary(x => x.z, x => x.t);
 
+            BHoMGroup<IAreaElement> group = new BHoMGroup<IAreaElement>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
             return new AreaDifferentialTemperatureLoad
             {
                 Loadcase = loadcase,
                 TemperatureProfile = temperatureProfile,
-                Objects = new BHoMGroup<IAreaElement>() { Elements = objects.ToList() },
+                Objects = group,
                 Name = name
             };
         }
@@ -93,7 +99,7 @@ namespace BH.Engine.Structure
         [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
         public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, IEnumerable<IAreaElement> objects, string name = "")
         {
-            return loadcase.IsNull() ? null : AreaDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, objects, name);
+            return AreaDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, objects, name);
 
         }
 

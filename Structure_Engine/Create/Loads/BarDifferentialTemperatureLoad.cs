@@ -81,13 +81,18 @@ namespace BH.Engine.Structure
             Dictionary<Double, Double> temperatureProfile = positions.Zip(temperatures, (z, t) => new { z, t })
                 .ToDictionary(x => x.z, x => x.t);
 
+            BHoMGroup<Bar> group = new BHoMGroup<Bar>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
 
             return new BarDifferentialTemperatureLoad
             {
                 Loadcase = loadcase,
                 TemperatureProfile = temperatureProfile,
                 LoadDirection = localLoadDirection,
-                Objects = new BHoMGroup<Bar>() { Elements = objects.ToList() },
+                Objects = group,
                 Name = name
             };
         }
@@ -104,7 +109,7 @@ namespace BH.Engine.Structure
         [Output("areaDiffTempLoad", "The created AreaUniformTempratureLoad.")]
         public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, DifferentialTemperatureLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
         {
-            return loadcase.IsNull() ? null : BarDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, localLoadDirection, objects, name);
+            return BarDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, localLoadDirection, objects, name);
 
         }
 

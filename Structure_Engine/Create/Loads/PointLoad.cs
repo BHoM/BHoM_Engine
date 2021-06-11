@@ -50,8 +50,11 @@ namespace BH.Engine.Structure
         [Output("ptLoad", "The created PointLoad.")]
         public static PointLoad PointLoad(Loadcase loadcase, BHoMGroup<Node> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            if (force.IsNull() && moment.IsNull() || loadcase.IsNull())
+            if (force == null && moment == null)
+            {
+                Reflection.Compute.RecordError("PointForce requires at least the force or moment vector to be defined");
                 return null;
+            }
 
             return new PointLoad
             {
@@ -77,7 +80,13 @@ namespace BH.Engine.Structure
         [Output("ptLoad", "The created PointLoad.")]
         public static PointLoad PointLoad(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return loadcase.IsNull() ? null : PointLoad(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, force, moment, axis, name);
+            BHoMGroup<Node> group = new BHoMGroup<Node>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
+            return PointLoad(loadcase, group, force, moment, axis, name);
         }
 
         /***************************************************/

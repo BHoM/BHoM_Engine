@@ -45,9 +45,9 @@ namespace BH.Engine.Structure
             if (fixity.IsNullOrEmpty())
                 return null;
 
-            if (fixity.Count != 6)
+            if (fixity.Count != 12)
             {
-                Reflection.Compute.RecordError("The list of fixities is not equal to 6 and therefore the LinkConstraint cannot be created.");
+                Reflection.Compute.RecordError("The list of fixities is not equal to 12 and therefore the LinkConstraint cannot be created.");
                 return null;
             }
 

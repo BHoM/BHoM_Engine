@@ -47,11 +47,18 @@ namespace BH.Engine.Structure
         [Output("gravLoad", "The created GravityLoad.")]
         public static GravityLoad GravityLoad(Loadcase loadcase, Vector gravityDirection, IEnumerable<IBHoMObject> objects, string name = "")
         {
-            return loadcase.IsNull() || gravityDirection.IsNull() ? null : new GravityLoad
+            BHoMGroup<BHoMObject> group = new BHoMGroup<BHoMObject>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.Cast<BHoMObject>().ToList();
+
+
+            return gravityDirection.IsNull() ? null : new GravityLoad
             {
                 Loadcase = loadcase,
                 GravityDirection = gravityDirection,
-                Objects = new BHoMGroup<BHoMObject>() { Elements = objects.Cast<BHoMObject>().ToList() },
+                Objects = group,
                 Name = name
             };
         }
