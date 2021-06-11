@@ -103,6 +103,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\UValueOpeningCAM.cs" />
+    <Compile Include="Compute\UValueOpeningSAM.cs" />
     <Compile Include="Compute\FacadeAreasByConstruction.cs" />
     <Compile Include="Compute\ComponentAreas.cs" />
     <Compile Include="Compute\EdgeAdjacencies.cs" />
