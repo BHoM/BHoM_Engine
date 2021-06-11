@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
         [Output("areaDiffTempLoad", "The created AreaDifferentialTempratureLoad.")]
         public static AreaDifferentialTemperatureLoad AreaDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, IEnumerable<IAreaElement> objects, string name = "")
         {
-            if (loadcase.IsNull() || positions.IsNull() || temperatures.IsNull())
+            if (loadcase.IsNull() || positions.IsNullOrEmpty() || temperatures.IsNullOrEmpty())
                 return null;
 
             //Checks for positions and profiles

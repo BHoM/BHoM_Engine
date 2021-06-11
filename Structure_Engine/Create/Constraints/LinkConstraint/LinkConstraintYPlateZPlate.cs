@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,53 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-using System;
+using BH.oM.Structure.Constraints;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using BH.oM.Reflection.Attributes;
+using BH.Engine.Base;
+using System.ComponentModel;
 
-namespace BH.Engine.Base
+
+namespace BH.Engine.Structure
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a List is null and outputs relevant error message.")]
-        [Input("geometry", "The List to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the List or its elements are null.")]
-        public static bool IsNull<T>(this IEnumerable<T> list, string msg = "", [CallerMemberName] string methodName = "")
+        public static LinkConstraint LinkConstraintYPlateZPlate(string name = "z-Plate")
         {
-            if (list == null)
-            {
-                if (string.IsNullOrEmpty(methodName))
-                {
-                    methodName = "Method";
-                }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the List failed a null check. {msg}");
-
-                return true;
-            }
-            else if (!list.Any())
-            {
-                if (string.IsNullOrEmpty(methodName))
-                {
-                    methodName = "Method";
-                }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the List is empty. {msg}");
-
-                return true;
-            }
-
-            return false;
+            LinkConstraint constr = new LinkConstraint();
+            constr.ZtoZ = true;
+            constr.ZtoXX = true;
+            constr.ZtoYY = true;
+            constr.XXtoXX = true;
+            constr.YYtoYY = true;
+            constr.Name = name;
+            return constr;
         }
 
+        /***************************************************/
     }
 }
+
+

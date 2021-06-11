@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Output("results", "The filtered results. If no filtering param could be extracted, all results are returned.")]
         public static List<T> SelectCase<T>(this List<T> results, object loadcase) where T : IResult
         {
-            if (results.IsNull())
+            if (results.IsNullOrEmpty())
                 return null;
             else if (loadcase == null)
             {
