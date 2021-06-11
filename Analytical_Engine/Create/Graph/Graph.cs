@@ -121,7 +121,7 @@ namespace BH.Engine.Analytical
 
         [Description("Create a graph from a collection of ICurves.")]
         [Input("connectingCurves", "A collection of ICurve representing the Graph Relations.")]
-        [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
+        [Input("prototypeEntity", "An INode to be used as the prototype of all entities in the Graph.")]
         [Input("entities", "Optional collection of IBHoMObjects to use as Graph entities.")]
         [Input("snappingTolerance", "Optional tolerance used when comparing connectingCurves end points and provided entities. Default is Tolerance.Distance (1e-6).")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
@@ -163,7 +163,7 @@ namespace BH.Engine.Analytical
         [Input("entityCount", "Total number of entities.")]
         [Input("branching", "Total number of Relations between an entity and its closest neighbours.")]
         [Input("boundingBox", "BoundingBox defining the spatial limits of the Graph.")]
-        [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
+        [Input("prototypeEntity", "An INode to be used as the prototype of all entities in the Graph.")]
         [Input("tolerance", "Optional minimum distance permitted between randomly generated entities. Default is Tolerance.Distance (1e-6).")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
@@ -197,10 +197,10 @@ namespace BH.Engine.Analytical
                 }
             }
 
-            graph.UniqueEntityNames();
             entities.ForEach(n => graph.Entities.Add(n.BHoM_Guid, n));
             graph.Relations = relations;
-
+            graph.UniqueEntityNames();
+            
             return graph;
         }
 
@@ -233,7 +233,7 @@ namespace BH.Engine.Analytical
                         entity.Position = p;
                         entity.BHoM_Guid = Guid.NewGuid();
 
-                        graph.Entities.Add(((IBHoMObject)entity).BHoM_Guid, entity);
+                        graph.Entities.Add(entity.BHoM_Guid, entity);
 
                         col.Add(entity);
                     }
@@ -249,7 +249,7 @@ namespace BH.Engine.Analytical
                     {
 
                         List<T> connections = RandomNeighbours(entityGrid, i, j, k);
-                        foreach (IBHoMObject c in connections)
+                        foreach (T c in connections)
                         {
                             Relation<T> relation = new Relation<T>()
                             {

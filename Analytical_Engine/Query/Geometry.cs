@@ -197,7 +197,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "Graph to get the geometry from.")]
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
         public static CompositeGeometry Geometry<T>(this Graph<T> graph)
-            where T :IBHoMObject
+            where T : IBHoMObject
         {
             if(graph == null)
             {
@@ -211,14 +211,14 @@ namespace BH.Engine.Analytical
             if (geometricGraph?.Entities?.Count == 0 || geometricGraph?.Relations?.Count == 0)
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
 
-            return SpatialGraphGeometry(graph);
+            return GeometricGraphGeometry(geometricGraph);
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static CompositeGeometry SpatialGraphGeometry<T>(Graph<T> spatialGraph)
+        private static CompositeGeometry GeometricGraphGeometry<T>(Graph<T> spatialGraph)
             where T : IBHoMObject
         {
             List<IGeometry> geometries = new List<IGeometry>();
@@ -232,7 +232,20 @@ namespace BH.Engine.Analytical
                 }
             }
             foreach (IRelation<T> relation in spatialGraph?.Relations)
-                geometries.Add(relation?.RelationArrow());
+            {
+                
+                //set a line if no curve found
+                if (relation.Curve == null && spatialGraph.Entities[relation.Source] is IElement0D && spatialGraph.Entities[relation.Target] is IElement0D)
+                {
+                    IElement0D source = spatialGraph.Entities[relation.Source] as IElement0D;
+                    IElement0D target = spatialGraph.Entities[relation.Target] as IElement0D;
+                    relation.Curve = Engine.Geometry.Create.Line(source.IGeometry(), target.IGeometry());
+                }
+                CompositeGeometry arrow = relation.RelationArrow();
+                if(arrow != null)
+                    geometries.Add(arrow);
+            }
+                
 
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
         }

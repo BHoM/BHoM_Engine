@@ -63,11 +63,11 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The SpatialView.")]
         [Output("graph", "The spatial Graph.")]
-        private static Graph<T> IProjectGraph<T>(this Graph<T> graph, GeometricProjection projection)
+        private static Graph<T> ProjectGraph<T>(this Graph<T> graph, GeometricProjection projection)
             where T : IBHoMObject
         {
             Graph<T> geometricGraph = graph.DeepClone();
-            foreach (IBHoMObject entity in geometricGraph.Entities.Values.ToList())
+            foreach (T entity in geometricGraph.Entities.Values.ToList())
             {
                 if (!typeof(IElement0D).IsAssignableFrom(entity.GetType()))
                     geometricGraph.RemoveEntity(entity.BHoM_Guid);
@@ -82,7 +82,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The SpatialView.")]
         [Output("graph", "The spatial Graph.")]
-        private static Graph<T> IProjectGraph<T>(this Graph<T> graph, SpatialProjection projection)
+        private static Graph<T> ProjectGraph<T>(this Graph<T> graph, SpatialProjection projection)
             where T : IBHoMObject
         {
             Graph<T> spatialGraph = graph.DeepClone();

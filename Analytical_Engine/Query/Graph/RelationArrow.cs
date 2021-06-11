@@ -49,6 +49,8 @@ namespace BH.Engine.Analytical
         public static CompositeGeometry RelationArrow<T>(this IRelation<T> relation, double headLength = 1, double baseWidth = 0.3, bool closed = false)
             where T : IBHoMObject
         {
+            if (relation.Curve == null)
+                return null;
 
             List<IGeometry> geometries = new List<IGeometry>();
 
@@ -58,7 +60,6 @@ namespace BH.Engine.Analytical
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
             }
                 
-
             ICurve curve = relation.Curve;
             geometries.Add(curve);
             if (curve is NurbsCurve)

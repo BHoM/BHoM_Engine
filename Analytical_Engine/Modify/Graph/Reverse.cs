@@ -65,7 +65,8 @@ namespace BH.Engine.Analytical
             }
 
             relation.FlipSourceTarget();
-            relation.Curve = relation.Curve.IFlip();
+            if(relation.Curve != null)
+                relation.Curve = relation.Curve.IFlip();
             return relation;
         }
         

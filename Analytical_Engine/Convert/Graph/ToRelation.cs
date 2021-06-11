@@ -135,7 +135,7 @@ namespace BH.Engine.Analytical
 
             List<IFragment> dependencyFragments = obj.GetAllFragments(typeof(IDependencyFragment));
             foreach (IDependencyFragment dependency in dependencyFragments)
-                relations.AddRange(dependency.IToRelation<T>(obj.BHoM_Guid));
+                relations.AddRange(ToRelation<T>(dependency as dynamic, obj.BHoM_Guid));
 
             return relations;
         }
