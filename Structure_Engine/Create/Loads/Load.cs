@@ -47,6 +47,7 @@ namespace BH.Engine.Structure
                             "-For load types with two vectors, such as bar UDLs, the first three values will be assumed to be the force vector, and the last three the moment vector. \n" +
                             "Quantity varies with load type.")]
         [Input("groupName", "Value will be given to the object group on the load as well as to the load itself.")]
+        [InputFromProperty("axis")]
         [InputFromProperty("isProjected", "Projected")]
         [Input("units", "Scales the magnitude inputs to SI depending on the provided value. Accepted values are N, Newton, Newtons, kN, kilo newton, kilo newtons, C, Celcius, K, Kelvin.")]
         [Output("load", "The created Load.")]
