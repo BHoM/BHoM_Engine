@@ -51,7 +51,11 @@ namespace BH.Engine.Structure
         public static PointAcceleration PointAcceleration(Loadcase loadcase, BHoMGroup<Node> group, Vector translationAcc = null, Vector rotationAcc = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (translationAcc == null && rotationAcc == null)
+            {
                 Reflection.Compute.RecordError("PointAcceleration requires at least the translation or rotation vector to be defined");
+                return null;
+            }
+
 
             return new PointAcceleration
             {

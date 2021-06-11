@@ -48,11 +48,6 @@ namespace BH.Engine.Structure
         {
             if (results.IsNullOrEmpty())
                 return null;
-            else if (loadcase == null)
-            {
-                Reflection.Compute.RecordError("Loadcase provided is null, therefore SelectCase cannot be evaluated.");
-                return null;
-            }
 
             if (loadcase != null)
             {
@@ -65,7 +60,7 @@ namespace BH.Engine.Structure
                 else if (loadcase is int || loadcase is double)
                     loadCaseId = loadcase.ToString();
 
-                if (string.IsNullOrWhiteSpace(loadCaseId))
+                if (!string.IsNullOrWhiteSpace(loadCaseId))
                     return results.Where(x => x.ResultCase.ToString() == loadCaseId).ToList();
                 else
                     Reflection.Compute.RecordWarning("Could not extract filter identifier from the provided loadcase filter. All results are returned.");
