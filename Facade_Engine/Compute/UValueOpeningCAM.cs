@@ -43,9 +43,9 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns effective U-Value of opening calculated using Psi-tj method. Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
-        [Input("opening", "Opening to find areas for.")]
-        [Output("effectiveUValue", "Effective U-value of opening caclulated using SAM.")]
+        [Description("Returns effective U-Value of opening calculated using the Component Assessment Method (Using Psi-g). Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
+        [Input("opening", "Opening to find U-value for.")]
+        [Output("effectiveUValue", "Effective U-value of opening calculated using CAM.")]
         public static double UValueOpeningCAM(this Opening opening)
         {
             double glassArea = opening.ComponentAreas().Item1;
@@ -69,8 +69,8 @@ namespace BH.Engine.Facade
             List<double> psigLengths = new List<double>();
             List<double> psigValues = new List<double>();
 
-            int h = 0;
-            int j = 0;
+            int h;
+            int j;
             for (int i = 0; i < frameEdges.Count; i++)
             {
                 if (i == 0)
@@ -135,6 +135,10 @@ namespace BH.Engine.Facade
             }
 
             double totArea = opening.Area();
+            if (totArea == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has a calculated area of 0. Ensure the opening is valid with associated edges defining its geometry and try again.");
+            }
             double effectiveUValue = (((glassArea * glassUValue) + psigProduct + FrameUValProduct) / totArea);
             return effectiveUValue;
         }

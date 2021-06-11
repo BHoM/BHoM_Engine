@@ -43,8 +43,8 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns effective U-Value of opening calculated using Psi-tj method. Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
-        [Input("opening", "Opening to find areas for.")]
+        [Description("Returns effective U-Value of opening calculated using the Single Assessment Method (Using Psi-tj). Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
+        [Input("opening", "Opening to find U-value for.")]
         [Output("effectiveUValue", "Effective U-value of opening caclulated using SAM.")]
         public static double UValueOpeningSAM(this Opening opening)
         {
