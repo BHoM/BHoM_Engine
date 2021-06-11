@@ -31,6 +31,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.Engine.Base;
 using BH.oM.Facade.Fragments;
+using BH.oM.Facade.Results;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -45,24 +46,26 @@ namespace BH.Engine.Facade
 
         [Description("Returns effective U-Value of a collection of openings calculated using the Single Assessment Method (Using Psi-tj). Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
         [Input("openings", "Openings to find U-value for.")]
-        [Output("effectiveUValue", "Effective total U-value of opening caclulated using SAM.")]
-        public static double UValueOpeningsSAM(this List<Opening> openings)
+        [Output("effectiveUValue", "Effective total U-value result of opening calculated using SAM.")]
+        public static OverallUValue UValueOpeningsSAM(this List<Opening> openings)
         {
             double uValueProduct = 0;
             double totalArea = 0;
             foreach (Opening opening in openings)
             {
                 double area = opening.Area();
-                uValueProduct += opening.UValueOpeningSAM() * area;
+                uValueProduct += opening.UValueOpeningSAM().UValue * area;
                 totalArea += area;
             }
             if (totalArea == 0)
             {
                 BH.Engine.Reflection.Compute.RecordError("Openings have a total calculated area of 0. Ensure Openings are valid with associated edges defining their geometry and try again.");
-                return double.NaN;
+                return null;
             }
 
-            return uValueProduct / totalArea; ;
+            double effectiveUValue =  uValueProduct / totalArea;
+            OverallUValue result = new OverallUValue { UValue = effectiveUValue, ObjectIds = openings.Select(x => x.BHoM_Guid as IComparable).ToList() };
+            return result;
         }
 
         /***************************************************/

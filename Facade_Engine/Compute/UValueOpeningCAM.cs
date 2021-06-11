@@ -31,6 +31,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.Engine.Base;
 using BH.oM.Facade.Fragments;
+using BH.oM.Facade.Results;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -45,8 +46,8 @@ namespace BH.Engine.Facade
 
         [Description("Returns effective U-Value of opening calculated using the Component Assessment Method (Using Psi-g). Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
         [Input("opening", "Opening to find U-value for.")]
-        [Output("effectiveUValue", "Effective U-value of opening calculated using CAM.")]
-        public static double UValueOpeningCAM(this Opening opening)
+        [Output("effectiveUValue", "Effective U-value result of opening calculated using CAM.")]
+        public static OverallUValue UValueOpeningCAM(this Opening opening)
         {
             double glassArea = opening.ComponentAreas().Item1;
 
@@ -54,12 +55,12 @@ namespace BH.Engine.Facade
             if (glassUValues.Count <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-value assigned.");
-                return double.NaN;
+                return null;
             }
             if (glassUValues.Count > 1)
             {
                 BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Glass U-value assigned.");
-                return double.NaN;
+                return null;
             }
             double glassUValue = (glassUValues[0] as UValueGlassCentre).UValue;
 
@@ -101,12 +102,12 @@ namespace BH.Engine.Facade
                 if (uValues.Count <= 0)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Frame U-value assigned.");
-                    return double.NaN;
+                    return null;
                 }
                 if (uValues.Count > 1)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Frame U-value assigned.");
-                    return double.NaN;
+                    return null;
                 }
                 double frameUValue = (uValues[0] as UValueFrame).UValue;
                 frameUValues.Add(frameUValue);
@@ -115,12 +116,12 @@ namespace BH.Engine.Facade
                 if (psiGs.Count <= 0)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} does not have PsiG value assigned.");
-                    return double.NaN;
+                    return null;
                 }
                 if (psiGs.Count > 1)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} has more than one PsiG value assigned. Each FrameEdge should only have one unique PsiG value assigned to it.");
-                    return double.NaN;
+                    return null;
                 }
                 double psiG = (psiGs[0] as PsiGlassEdge).PsiValue;
                 psigValues.Add(psiG);
@@ -140,7 +141,8 @@ namespace BH.Engine.Facade
                 BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has a calculated area of 0. Ensure the opening is valid with associated edges defining its geometry and try again.");
             }
             double effectiveUValue = (((glassArea * glassUValue) + psigProduct + FrameUValProduct) / totArea);
-            return effectiveUValue;
+            OverallUValue result = new OverallUValue { UValue = effectiveUValue, ObjectIds = new List<IComparable> { opening.BHoM_Guid } };
+            return result;
         }
 
         /***************************************************/
