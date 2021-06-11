@@ -24,6 +24,7 @@ using BH.Engine.Base;
 using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
 using BH.oM.Analytical.Fragments;
+using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
@@ -43,7 +44,8 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to modify.")]
         [Input("projection", "The IProjection required of the Graph.")]
         [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
-        public static Graph IRelationCurves(this Graph graph, IProjection projection)
+        public static Graph<T> IRelationCurves<T>(this Graph<T> graph, IProjection projection)
+            where T : IBHoMObject
         {
            
             RelationCurves(graph, projection as dynamic);
@@ -56,25 +58,26 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to modify.")]
         [Input("projection", "SpatialProjection of the Graph.")]
         [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
-        private static Graph RelationCurves(this Graph graph, SpatialProjection projection)
+        private static Graph<T> RelationCurves<T>(this Graph<T> graph, SpatialProjection projection)
+            where T : INode
         {
-            //these should set representationfragment on relations
-            foreach (IRelation relation in graph.Relations)
+            foreach (IRelation<T> relation in graph.Relations)
             {
                 if (relation.Curve == null)
                 {
-                    IElement0D source = graph.Entities[relation.Source] as IElement0D;
-                    IElement0D target = graph.Entities[relation.Target] as IElement0D;
-                    relation.Curve = new Line() { Start = source.IGeometry(), End = target.IGeometry() };
+                    T source = graph.Entities[relation.Source];
+                    T target = graph.Entities[relation.Target] ;
+                    relation.Curve = new Line() { Start = source.Position, End = target.Position };
                 }
             }
             return graph;
         }
 
         /***************************************************/
-        private static void RelationCurves(this Graph graph, GraphicalProjection projection)
+        private static void RelationCurves<T>(this Graph<T> graph, GraphicalProjection projection)
+            where T : IBHoMObject
         {
-            foreach (IRelation relation in graph.Relations)
+            foreach (IRelation<T> relation in graph.Relations)
             {
                 if (relation.Curve == null)
                 {
@@ -91,7 +94,8 @@ namespace BH.Engine.Analytical
         /**** Fallback Methods                          ****/
         /***************************************************/
 
-        private static void RelationCurves(this Graph graph, IProjection projection)
+        private static void RelationCurves<T>(this Graph<T> graph, IProjection projection)
+            where T : IBHoMObject
         {
             Reflection.Compute.RecordError("Modify method RelationCurves for IProjection provided has not been implemented.");
             return;

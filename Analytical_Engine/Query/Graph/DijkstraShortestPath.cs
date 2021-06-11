@@ -45,7 +45,8 @@ namespace BH.Engine.Analytical
         [Input("start", "The IBHoMObject entity used for the start of the path.")]
         [Input("end", "The IBHoMObject entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-        public static ShortestPathResult DijkstraShortestPath(this Graph graph, IBHoMObject start, IBHoMObject end)
+        public static ShortestPathResult<T> DijkstraShortestPath<T>(this Graph<T> graph, T start, T end)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
@@ -75,15 +76,14 @@ namespace BH.Engine.Analytical
         [Input("start", "The Guid entity used for the start of the path.")]
         [Input("end", "The Guid entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-        public static ShortestPathResult DijkstraShortestPath(this Graph graph, Guid start, Guid end)
+        public static ShortestPathResult<T> DijkstraShortestPath<T>(this Graph<T> graph, Guid start, Guid end)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path from a null graph.");
                 return null;
             }
-
-            m_NonSpatialGraph = graph;
 
             SetFragments(graph);
             
@@ -94,22 +94,23 @@ namespace BH.Engine.Analytical
 
             double length = 0;
             double cost = 0;
-            List<IRelation> relations = new List<IRelation>();
+            List<IRelation<T>> relations = new List<IRelation<T>>();
 
-            DijkstraResult(shortestPath, end,ref length, ref cost, ref relations);
+            graph.DijkstraResult(shortestPath, end,ref length, ref cost, ref relations);
             shortestPath.Reverse();
-            List<IBHoMObject> objPath = new List<IBHoMObject>();
+            List<T> objPath = new List<T>();
             shortestPath.ForEach(g => objPath.Add(graph.Entities[g]));
 
-            List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => graph.Entities[kvp.Key]).ToList();
-            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "DijkstraShortestPath", -1, objPath, length, cost, entitiesVisited, relations);
+            List<T> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => graph.Entities[kvp.Key]).ToList();
+            ShortestPathResult<T> result = new ShortestPathResult<T>(graph.BHoM_Guid, "DijkstraShortestPath", -1, objPath, length, cost, entitiesVisited, relations);
             return result;
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void SetFragments(Graph graph)
+        private static void SetFragments<T>(Graph<T> graph)
+            where T : IBHoMObject
         {
             m_Fragments = new Dictionary<Guid, RoutingFragment>();
             foreach (Guid n in graph.Entities.Keys.ToList())
@@ -119,7 +120,8 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        private static void DijkstraSearch(Graph graph, Guid start, Guid end)
+        private static void DijkstraSearch<T>(Graph<T> graph, Guid start, Guid end)
+            where T : IBHoMObject
         {
             m_Fragments[start].MinCostToSource = 0;
             var prioQueue = new List<Guid>();
@@ -129,10 +131,10 @@ namespace BH.Engine.Analytical
                 prioQueue = prioQueue.OrderBy(x => m_Fragments[x].MinCostToSource).ToList();
                 Guid currentEntity = prioQueue.First();
                 prioQueue.Remove(currentEntity);
-                List<IRelation> relations = graph.Relations.FindAll(link => link.Source.Equals(currentEntity));
+                List<IRelation<T>> relations = graph.Relations.FindAll(link => link.Source.Equals(currentEntity));
                 
                 //use weight to define cost to end
-                foreach (IRelation r in relations)
+                foreach (IRelation<T> r in relations)
                     m_Fragments[r.Target].Cost = r.Weight;
 
                 List<Guid> connections = relations.Select(link => link.Target).ToList();
@@ -162,7 +164,8 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        private static void DijkstraResult(List<Guid> list, Guid currentEntity, ref double length, ref double cost, ref List<IRelation> relations)
+        private static void DijkstraResult<T>(this Graph<T> graph, List<Guid> list, Guid currentEntity, ref double length, ref double cost, ref List<IRelation<T>> relations)
+            where T : IBHoMObject
         {
             if (m_Fragments[currentEntity].NearestToSource == Guid.Empty)
                 return;
@@ -173,7 +176,7 @@ namespace BH.Engine.Analytical
             length += 1;
 
             //relations linking entities working backwards from end
-            List<IRelation> links = m_NonSpatialGraph.Relation(m_NonSpatialGraph.Entities[n], m_NonSpatialGraph.Entities[currentEntity]).ToList();
+            List<IRelation<T>> links = graph.Relation(graph.Entities[n], graph.Entities[currentEntity]).ToList();
             
             //hang on to all if multiple exist
             relations.AddRange(links);
@@ -181,7 +184,7 @@ namespace BH.Engine.Analytical
             if (m_Fragments[n].Cost.HasValue)
                 cost += m_Fragments[n].Cost.Value;
 
-            DijkstraResult(list, n, ref length, ref cost, ref relations);
+            graph.DijkstraResult(list, n, ref length, ref cost, ref relations);
         }
 
         /***************************************************/
@@ -189,8 +192,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
 
         private static Dictionary<Guid, RoutingFragment> m_Fragments = new Dictionary<Guid, RoutingFragment>();
-        
-        private static Graph m_NonSpatialGraph = new Graph();
+
     }
 }
 

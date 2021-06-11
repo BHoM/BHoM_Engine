@@ -168,7 +168,7 @@ namespace BH.Engine.Analytical
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
         public static Graph<T> Graph<T>(int entityCount, int branching, BoundingBox boundingBox, T prototypeEntity, double tolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
-            where T : IBHoMObject
+            where T : INode
         {
             Graph<T> graph = new Graph<T>();
             List<T> entities = new List<T>();
@@ -176,7 +176,7 @@ namespace BH.Engine.Analytical
             for (int i = 0; i < entityCount; i++)
             {
                 Point p = Geometry.Create.RandomPoint(m_Rnd, boundingBox);
-                T entity = prototypeEntity.ClonePositionGuid<T>(p);
+                T entity = prototypeEntity.ClonePositionGuid(p);
                 
                 if (!ToCloseToAny(entities, entity, tolerance))
                     entities.Add(entity);
@@ -186,19 +186,19 @@ namespace BH.Engine.Analytical
             List<IRelation<T>> relations = new List<IRelation<T>>();
             foreach (T entity in entities)
             {
-                foreach (T d in ClosestIElement0Ds(entities, entity, branching))
+                foreach (T d in ClosestINodes(entities, entity, branching))
                 {
-                    Relation relation = new Relation()
+                    Relation<T> relation = new Relation<T>()
                     {
-                        Source = ((IBHoMObject)entity).BHoM_Guid,
-                        Target = ((IBHoMObject)d).BHoM_Guid
+                        Source = entity.BHoM_Guid,
+                        Target = d.BHoM_Guid
                     };
                     relations.AddRange(RelationsToAdd(relation, relationDirection));
                 }
             }
 
             graph.UniqueEntityNames();
-            entities.ForEach(n => graph.Entities.Add(((IBHoMObject)n).BHoM_Guid, ((IBHoMObject)n)));
+            entities.ForEach(n => graph.Entities.Add(n.BHoM_Guid, n));
             graph.Relations = relations;
 
             return graph;
@@ -214,28 +214,28 @@ namespace BH.Engine.Analytical
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
-        public static Graph Graph<T>(int width, int length, int height, double cellSize, T prototypeEntity, RelationDirection relationDirection = RelationDirection.Forwards)
-            where T : IElement0D
+        public static Graph<T> Graph<T>(int width, int length, int height, double cellSize, T prototypeEntity, RelationDirection relationDirection = RelationDirection.Forwards)
+            where T : INode
         {
-            Graph graph = new Graph();
-            List<List<List<IBHoMObject>>> entityGrid = new List<List<List<IBHoMObject>>>();
+            Graph<T> graph = new Graph<T>();
+            List<List<List<T>>> entityGrid = new List<List<List<T>>>();
             for (int k = 0; k < height; k++)
             {
-                List<List<IBHoMObject>> level = new List<List<IBHoMObject>>();
+                List<List<T>> level = new List<List<T>>();
                 for (int i = 0; i < width; i++)
                 {
-                    List<IBHoMObject> col = new List<IBHoMObject>();
+                    List<T> col = new List<T>();
                     for (int j = 0; j < length; j++)
                     {
                         Point p = Geometry.Create.Point(i * cellSize, j * cellSize, k * cellSize);
 
-                        IElement0D entity = prototypeEntity.DeepClone();
-                        entity = entity.ISetGeometry(p);
-                        ((IBHoMObject)entity).BHoM_Guid = Guid.NewGuid();
+                        T entity = prototypeEntity.DeepClone();
+                        entity.Position = p;
+                        entity.BHoM_Guid = Guid.NewGuid();
 
-                        graph.Entities.Add(((IBHoMObject)entity).BHoM_Guid, ((IBHoMObject)entity));
+                        graph.Entities.Add(((IBHoMObject)entity).BHoM_Guid, entity);
 
-                        col.Add((IBHoMObject)entity);
+                        col.Add(entity);
                     }
                     level.Add(col);
                 }
@@ -248,10 +248,10 @@ namespace BH.Engine.Analytical
                     for (int j = 0; j < length; j++)
                     {
 
-                        List<IBHoMObject> connections = RandomNeighbours(entityGrid, i, j, k);
+                        List<T> connections = RandomNeighbours(entityGrid, i, j, k);
                         foreach (IBHoMObject c in connections)
                         {
-                            Relation relation = new Relation()
+                            Relation<T> relation = new Relation<T>()
                             {
                                 Source = entityGrid[k][i][j].BHoM_Guid,
                                 Target = c.BHoM_Guid
@@ -273,7 +273,8 @@ namespace BH.Engine.Analytical
         private static T FindOrCreateEntity<T>(List<T> entities, Point point, double tolerance, T prototypeEntity)
             where T : INode
         {
-            T entity = entities.ClosestIElement0D<T>(point);
+            
+            T entity = entities.ClosestINode(point);
 
             if (entity == null || entity.Position.Distance(point) > tolerance)
             {
@@ -318,11 +319,12 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        private static bool ToCloseToAny(List<IElement0D> entities, IElement0D entity, double tolerance)
+        private static bool ToCloseToAny<T>(List<T> entities, T entity, double tolerance)
+            where T : INode
         {
-            foreach (IElement0D n in entities)
+            foreach (T n in entities)
             {
-                double d = n.IGeometry().Distance(entity.IGeometry());
+                double d = n.Position.Distance(entity.Position);
                 if (d < tolerance)
                     return true;
             }
@@ -331,19 +333,21 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        private static List<IElement0D> ClosestIElement0Ds(List<IElement0D> entities, IElement0D element0D, int branching)
+        private static List<T> ClosestINodes<T>(List<T> entities, T entity, int branching)
+            where T : INode
         {
 
-            List<IElement0D> ordered = entities.OrderBy(n => n.IGeometry().Distance(element0D.IGeometry())).ToList();
+            List<T> ordered = entities.OrderBy(n => n.Position.Distance(entity.Position)).ToList();
 
             return ordered.GetRange(1, branching);
         }
 
         /***************************************************/
-        private static List<IBHoMObject> RandomNeighbours(List<List<List<IBHoMObject>>> entities, int i, int j, int k)
+        private static List<T> RandomNeighbours<T>(List<List<List<T>>> entities, int i, int j, int k)
+            where T : INode
         {
             //from Von Neumann neighborhood randomly select 2 to all neighbours
-            List<IBHoMObject> neighbours = new List<IBHoMObject>();
+            List<T> neighbours = new List<T>();
             int left = i - 1;
             int right = i + 1;
             int infront = j + 1;
@@ -372,10 +376,10 @@ namespace BH.Engine.Analytical
                 return neighbours;
 
             int total = m_Rnd.Next(2, neighbours.Count);
-            List<IBHoMObject> wanted = new List<IBHoMObject>();
+            List<T> wanted = new List<T>();
             while (wanted.Count < total)
             {
-                IBHoMObject next = neighbours[m_Rnd.Next(0, neighbours.Count)];
+                T next = neighbours[m_Rnd.Next(0, neighbours.Count)];
                 if (wanted.Contains(next))
                     continue;
                 wanted.Add(next);

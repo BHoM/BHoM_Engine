@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -41,15 +42,16 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
-        public static List<Graph> SubGraphs(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static List<Graph<T>> SubGraphs<T>(this Graph<T> graph, RelationDirection relationDirection = RelationDirection.Forwards)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the sub graphs of a null graph.");
-                return new List<Graph>();
+                return new List<Graph<T>>();
             }
 
-            List<Graph> subGraphs = new List<Graph>();
+            List<Graph<T>> subGraphs = new List<Graph<T>>();
             m_Adjacency = graph.Adjacency(relationDirection);
             m_MarkedEntity = new Dictionary<Guid, int>();
             m_MarkedRelation = new Dictionary<Guid, int>();
@@ -79,14 +81,15 @@ namespace BH.Engine.Analytical
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void Traverse(this Graph graph, Guid entity)
+        private static void Traverse<T>(this Graph<T> graph, Guid entity)
+            where T : IBHoMObject
         {
             m_MarkedEntity[entity] = m_SubNumber;
            
             foreach(Guid c in m_Adjacency[entity])
             {
                 //tag the relation
-                IRelation relation = graph.Relations.Find(r => r.Source.Equals(entity) && r.Target.Equals(c));
+                IRelation<T> relation = graph.Relations.Find(r => r.Source.Equals(entity) && r.Target.Equals(c));
                 if (relation != null)
                     m_MarkedRelation[relation.BHoM_Guid] = m_SubNumber;
 
@@ -96,7 +99,8 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        private static Graph SetSubGraph(this Graph graph)
+        private static Graph<T> SetSubGraph<T>(this Graph<T> graph)
+            where T : IBHoMObject
         {
             List<Guid> subEntities = m_MarkedEntity.Where(pair => pair.Value == m_SubNumber)
                                            .Select(pair => pair.Key).ToList();
@@ -104,11 +108,11 @@ namespace BH.Engine.Analytical
             List<Guid> subRelations = m_MarkedRelation.Where(pair => pair.Value == m_SubNumber)
                                        .Select(pair => pair.Key).ToList();
 
-            Graph subgraph = new Graph();
+            Graph<T> subgraph = new Graph<T>();
 
             subEntities.ForEach(ent => subgraph.Entities.Add(ent, graph.Entities[ent]));
 
-            List<IRelation> relations = new List<IRelation>();
+            List<IRelation<T>> relations = new List<IRelation<T>>();
 
             subgraph.Relations.AddRange(graph.Relations.FindAll(r => subRelations.Contains(r.BHoM_Guid)));
 

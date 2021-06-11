@@ -196,7 +196,8 @@ namespace BH.Engine.Analytical
         [Description("Gets the geometry of a Graph if it comprises of entities that inherit from IElement0D. Method required for automatic display in UI packages.")]
         [Input("graph", "Graph to get the geometry from.")]
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
-        public static CompositeGeometry Geometry(this Graph graph)
+        public static CompositeGeometry Geometry<T>(this Graph<T> graph)
+            where T :IBHoMObject
         {
             if(graph == null)
             {
@@ -205,7 +206,7 @@ namespace BH.Engine.Analytical
             }
 
             List<IGeometry> geometries = new List<IGeometry>();
-            Graph geometricGraph = graph?.IProjectGraph(new GeometricProjection());
+            Graph<T> geometricGraph = graph?.IProjectGraph(new GeometricProjection());
 
             if (geometricGraph?.Entities?.Count == 0 || geometricGraph?.Relations?.Count == 0)
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
@@ -217,19 +218,20 @@ namespace BH.Engine.Analytical
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static CompositeGeometry SpatialGraphGeometry(Graph spatialGraph)
+        private static CompositeGeometry SpatialGraphGeometry<T>(Graph<T> spatialGraph)
+            where T : IBHoMObject
         {
             List<IGeometry> geometries = new List<IGeometry>();
 
-            foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in spatialGraph?.Entities)
+            foreach (KeyValuePair<System.Guid, T> kvp in spatialGraph?.Entities)
             {
-                if (kvp.Value is IElement0D)
+                if (kvp.Value is T)
                 {
-                    IElement0D entity = kvp.Value as IElement0D;
+                    T entity = kvp.Value;
                     geometries.Add(entity.IGeometry());
                 }
             }
-            foreach (IRelation relation in spatialGraph?.Relations)
+            foreach (IRelation<T> relation in spatialGraph?.Relations)
                 geometries.Add(relation?.RelationArrow());
 
             return BH.Engine.Geometry.Create.CompositeGeometry(geometries);

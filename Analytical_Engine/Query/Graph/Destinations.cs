@@ -42,7 +42,8 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("entity", "The Guid of the entity for which the destinations are required.")]
         [Output("entities", "The collection of guids of the destination entities.")]
-        public static List<Guid> Destinations(this Graph graph, Guid entity)
+        public static List<Guid> Destinations<T>(this Graph<T> graph, Guid entity)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
@@ -59,21 +60,22 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("entity", "The IBHoMObject entity for which the destinations are required.")]
         [Output("entities", "The collection of IBHoMObjects of the destination entities.")]
-        public static List<IBHoMObject> Destinations(this Graph graph, IBHoMObject entity)
+        public static List<T> Destinations<T>(this Graph<T> graph, IBHoMObject entity)
+             where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the destinations of a null graph.");
-                return new List<IBHoMObject>();
+                return new List<T>();
             }
 
             if(entity == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the destinations of a graph when the entity is null.");
-                return new List<IBHoMObject>();
+                return new List<T>();
             }
 
-            List<IBHoMObject> destinations = new List<IBHoMObject>();
+            List<T> destinations = new List<T>();
             foreach (Guid g in graph.Destinations(entity.BHoM_Guid))
                 destinations.Add(graph.Entities[g]);
             return destinations;

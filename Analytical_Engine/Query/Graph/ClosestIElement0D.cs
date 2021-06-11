@@ -42,13 +42,13 @@ namespace BH.Engine.Analytical
         [Input("entities", "The collection of entities to search.")]
         [Input("point", "The Point to search from.")]
         [Output("entity", "The IElement0D closest to the Point.")]
-        public static IElement0D ClosestIElement0D<T>(this List<T> entities, Point point)
-            where T : IElement0D
+        public static T ClosestINode<T>(this List<T> entities, Point point)
+            where T : INode
         {
             if (entities.Count == 0)
-                return null;
+                return default(T);
 
-            IElement0D closest = entities.Select(p => new { Node = p, Distance2 = p.IGeometry().Distance(point) })
+            T closest = entities.Select(p => new { Node = p, Distance2 = p.IGeometry().Distance(point) })
                             .Aggregate((p1, p2) => p1.Distance2 < p2.Distance2 ? p1 : p2)
                             .Node;
 

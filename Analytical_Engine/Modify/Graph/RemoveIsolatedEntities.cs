@@ -22,6 +22,7 @@
 
 using BH.Engine.Base;
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,8 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Graph by removing all entities that are not used by relations.")]
         [Input("graph", "The Graph to modify.")]
         [Output("graph", "The modified Graph without isolated entities.")]
-        public static Graph RemoveIsolatedEntities(this Graph graph)
+        public static Graph<T> RemoveIsolatedEntities<T>(this Graph<T> graph)
+            where T: IBHoMObject
         {
             if (graph == null)
             {

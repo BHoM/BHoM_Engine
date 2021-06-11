@@ -23,6 +23,7 @@
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -44,7 +45,8 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph that owns the IRelation.")]
         [Input("relation", "The IRelation to query.")]
         [Output("length", "The length of the IRelation.")]
-        public static double RelationLength(this Graph graph, IRelation relation)
+        public static double RelationLength<T>(this Graph<T> graph, IRelation<T> relation)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
@@ -61,12 +63,14 @@ namespace BH.Engine.Analytical
             double length = 0;
             if (relation.Curve != null)
                 length = relation.Curve.ILength();
-            else
+            else if(graph.Entities[relation.Source] is IElement0D && graph.Entities[relation.Target] is IElement)
             {
                 IElement0D source = graph.Entities[relation.Source] as IElement0D;
                 IElement0D target = graph.Entities[relation.Target] as IElement0D;
                 length = source.IGeometry().Distance(target.IGeometry());
             }
+            else
+                BH.Engine.Reflection.Compute.RecordWarning("Cannot query the relation length as it has not been defined with spatial source and target nodes.");
             return length;
         }
     }

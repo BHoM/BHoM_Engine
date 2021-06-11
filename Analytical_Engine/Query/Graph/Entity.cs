@@ -42,12 +42,13 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to extract the entity from.")]
         [Input("entityName", "The name of the entity.")]
         [Output("entity", "The entity as an IBHoMObject.")]
-        public static IBHoMObject Entity(this Graph graph, string entityName)
+        public static T Entity<T>(this Graph<T> graph, string entityName)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the entities of a null graph.");
-                return null;
+                return default(T);
             }
 
             return graph.Entities.Values.ToList().Find(x => x.Name == entityName);
@@ -59,12 +60,13 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to extract the entity from.")]
         [Input("entityGuid", "The Guid of the entity.")]
         [Output("entity", "The Guid of the entity.")]
-        public static IBHoMObject Entity(this Graph graph, Guid entityGuid)
+        public static T Entity<T>(this Graph<T> graph, Guid entityGuid)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the entities of a null graph.");
-                return null;
+                return default(T);
             }
 
             return graph.Entities[entityGuid]; 

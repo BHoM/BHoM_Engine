@@ -51,7 +51,8 @@ namespace BH.Engine.Analytical
         [Input("subgraph", "Optional sub Graph of this Relation. Default is a new Graph.")]
         [Input("weight", "Optional weight for the Relation. Default is 1.")]
         [Output("curve", "Optional Curve that represents the link between the source and target entities Default is null.")]
-        public static Relation Relation(IBHoMObject source, IBHoMObject target, Graph subgraph = null, double weight = 1, ICurve curve = null)
+        public static Relation<T> Relation<T>(T source, T target, Graph<T> subgraph = null, double weight = 1, ICurve curve = null)
+            where T : IBHoMObject
         {
             if(source == null || target == null)
             {
@@ -60,9 +61,9 @@ namespace BH.Engine.Analytical
             }
 
             if (subgraph == null)
-                subgraph = new Graph();
+                subgraph = new Graph<T>();
 
-            Relation relation = new Relation()
+            Relation<T> relation = new Relation<T>()
             {
                 Source = source.BHoM_Guid,
                 Target = target.BHoM_Guid,

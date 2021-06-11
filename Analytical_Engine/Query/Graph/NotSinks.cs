@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -40,7 +41,8 @@ namespace BH.Engine.Analytical
         [Description("Returns the collection of entity Guids that are used as at least one Relation source.")]
         [Input("graph", "The Graph to search.")]
         [Output("not sinks", "The collection of entity Guids that are not sinks.")]
-        public static List<Guid> NotSinks(this Graph graph)
+        public static List<Guid> NotSinks<T>(this Graph<T> graph)
+            where T : IBHoMObject
         {
             if(graph == null)
             {

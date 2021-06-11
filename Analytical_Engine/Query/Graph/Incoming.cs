@@ -43,7 +43,8 @@ namespace BH.Engine.Analytical
         [Input("graph", "The graph to search.")]
         [Input("entity", "The Guid of the entity for which the accessing entities are required.")]
         [Output("entities", "The collection of Guids of the accessing entities.")]
-        public static List<Guid> Incoming(this Graph graph, Guid entity)
+        public static List<Guid> Incoming<T>(this Graph<T> graph, Guid entity)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
@@ -60,21 +61,22 @@ namespace BH.Engine.Analytical
         [Input("graph", "The graph to search.")]
         [Input("entity", "The IBHoMObject entity for which the accessing entities are required.")]
         [Output("entities", "The collection of IBHoMObjects of the accessing entities.")]
-        public static List<IBHoMObject> Incoming(this Graph graph, IBHoMObject entity)
+        public static List<T> Incoming<T>(this Graph<T> graph, IBHoMObject entity)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a null graph.");
-                return new List<IBHoMObject>();
+                return new List<T>();
             }
 
             if(entity == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the relations for a graph if the entity is null.");
-                return new List<IBHoMObject>();
+                return new List<T>();
             }
 
-            List<IBHoMObject> incoming = new List<IBHoMObject>();
+            List<T> incoming = new List<T>();
             foreach (Guid g in  graph.Incoming(entity.BHoM_Guid))
                 incoming.Add(graph.Entities[g]);
             return incoming;

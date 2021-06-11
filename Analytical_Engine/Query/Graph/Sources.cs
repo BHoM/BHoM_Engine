@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,8 @@ namespace BH.Engine.Analytical
         [Description("Returns the collection of entity Guids that are never used as Relation targets.")]
         [Input("graph", "The Graph to search.")]
         [Output("sources", "The collection of entity Guids that are sources.")]
-        public static List<Guid> Sources(this Graph graph)
+        public static List<Guid> Sources<T>(this Graph<T> graph)
+            where T : IBHoMObject
         {
             if(graph == null)
             {

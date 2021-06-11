@@ -44,17 +44,18 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to filter the entities from.")]
         [Input("typeFilter", "The Type of the entities to filter.")]
         [Output("filter entities", "Entity Dictionary containing the filtered entities.")]
-        public static Dictionary<Guid, IBHoMObject> FilterEntities(this Graph graph, Type typeFilter)
+        public static Dictionary<Guid, T> FilterEntities<T>(this Graph<T> graph, Type typeFilter)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot filter the entities of a null graph.");
-                return new Dictionary<Guid, IBHoMObject>();
+                return new Dictionary<Guid, T>();
             }
 
-            Dictionary<Guid, IBHoMObject> entityDict = new Dictionary<Guid, IBHoMObject>();
+            Dictionary<Guid, T> entityDict = new Dictionary<Guid, T>();
 
-            List<IBHoMObject> filtered = graph.Entities().Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList();
+            List<T> filtered = graph.Entities().Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList();
             filtered.ForEach(obj => entityDict.Add(obj.BHoM_Guid, obj));
 
             return entityDict;

@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -91,7 +92,8 @@ namespace BH.Engine.Analytical
         [Input("graph", "The graph to extract the depth dictionary from.")]
         [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
         [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]
-        public static Dictionary<Guid, int> Depth(this Graph graph, Guid startEntity)
+        public static Dictionary<Guid, int> Depth<T>(this Graph<T> graph, Guid startEntity)
+            where T : IBHoMObject
         {
             if(graph == null)
             {

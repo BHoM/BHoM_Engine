@@ -47,7 +47,8 @@ namespace BH.Engine.Analytical
         [Input("start", "The IBHoMObject entity used for the start of the path.")]
         [Input("end", "The IBHoMObject entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-        public static ShortestPathResult AStarShortestPath(this Graph graph, IBHoMObject start, IBHoMObject end)
+        public static ShortestPathResult<T> AStarShortestPath<T>(this Graph<T> graph, T start, T end)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
@@ -78,7 +79,8 @@ namespace BH.Engine.Analytical
         [Input("start", "The Guid entity used for the start of the path.")]
         [Input("end", "The Guid entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-        public static ShortestPathResult AStarShortestPath(this Graph graph, Guid start, Guid end)
+        public static ShortestPathResult<T> AStarShortestPath<T>(this Graph<T> graph, Guid start, Guid end)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
@@ -86,9 +88,9 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            m_GeometricGraph = graph.IProjectGraph(new GeometricProjection());
+            Graph<T> geometricGraph = graph.IProjectGraph(new GeometricProjection());
 
-            if (m_GeometricGraph.Entities.Count == 0 || m_GeometricGraph.Relations.Count == 0)
+            if (geometricGraph.Entities.Count == 0 || geometricGraph.Relations.Count == 0)
             {
                 Reflection.Compute.RecordWarning("The graph provided does not contain sufficient spatial entities or relations.\n" +
                     "To use a star shortest path provide a graph where some entities implement IElement0D and spatial relations are defined between them.\n" +
@@ -97,17 +99,17 @@ namespace BH.Engine.Analytical
                 return DijkstraShortestPath(graph, start, end);
             }
                 
-            SetFragments(m_GeometricGraph);
+            SetFragments(geometricGraph);
 
             //calculate straight line distance from each entity to the end
-            IElement0D endEntity = m_GeometricGraph.Entities[end] as IElement0D;
-            foreach (Guid entity in m_GeometricGraph.Entities.Keys.ToList())
+            IElement0D endEntity = geometricGraph.Entities[end] as IElement0D;
+            foreach (Guid entity in geometricGraph.Entities.Keys.ToList())
             {
-                IElement0D element0D = m_GeometricGraph.Entities[entity] as IElement0D;
+                IElement0D element0D = geometricGraph.Entities[entity] as IElement0D;
                 m_Fragments[entity].StraightLineDistanceToTarget = element0D.IGeometry().Distance(endEntity.IGeometry());
             }
                 
-            AStarSearch(m_GeometricGraph, start, ref end);
+            AStarSearch(geometricGraph, start, ref end);
 
             List<Guid> shortestPath = new List<Guid>();
             shortestPath.Add(end);
@@ -115,15 +117,15 @@ namespace BH.Engine.Analytical
             double length = 0;
             double cost = 0;
             List<ICurve> curves = new List<ICurve>();
-            List<IRelation> relations = new List<IRelation>();
-            AStarResult(shortestPath, end,ref length, ref cost, ref curves, ref relations);
+            List<IRelation<T>> relations = new List<IRelation<T>>();
+            graph.AStarResult(shortestPath, end,ref length, ref cost, ref curves, ref relations);
             shortestPath.Reverse();
 
-            List<IBHoMObject> objPath = new List<IBHoMObject>();
-            shortestPath.ForEach(g => objPath.Add(m_GeometricGraph.Entities[g]));
+            List<T> objPath = new List<T>();
+            shortestPath.ForEach(g => objPath.Add(geometricGraph.Entities[g]));
 
-            List<IBHoMObject> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => m_GeometricGraph.Entities[kvp.Key]).ToList();
-            ShortestPathResult result = new ShortestPathResult(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, relations, curves);
+            List<T> entitiesVisited = m_Fragments.Where(kvp => kvp.Value.Visited).Select(kvp => geometricGraph.Entities[kvp.Key]).ToList();
+            ShortestPathResult<T> result = new ShortestPathResult<T>(graph.BHoM_Guid, "AStarShortestPath", -1, objPath, length, cost, entitiesVisited, relations, curves);
             return result;
         }
 
@@ -131,7 +133,8 @@ namespace BH.Engine.Analytical
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void AStarSearch(Graph graph, Guid start,ref Guid end)
+        private static void AStarSearch<T>(this Graph<T> graph, Guid start,ref Guid end)
+            where T : IBHoMObject
         {
             m_Fragments[start].MinCostToSource = 0;
             List <Guid> prioQueue = new List<Guid>();
@@ -141,10 +144,10 @@ namespace BH.Engine.Analytical
                 prioQueue = prioQueue.OrderBy(x => m_Fragments[x].MinCostToSource + m_Fragments[x].StraightLineDistanceToTarget).ToList();
                 Guid currentEntity = prioQueue.First();
                 prioQueue.Remove(currentEntity);
-                List<IRelation> relations = graph.Relations.FindAll(link => link.Source.Equals(currentEntity));
-                IBHoMObject current = m_GeometricGraph.Entities[currentEntity];
+                List<IRelation<T>> relations = graph.Relations.FindAll(link => link.Source.Equals(currentEntity));
+                T current = graph.Entities[currentEntity];
                 //use weight AND length of the relation to define cost to end
-                foreach (IRelation r in relations)
+                foreach (IRelation<T> r in relations)
                 {
                     
                     double length = graph.RelationLength(r);
@@ -182,7 +185,8 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        private static void AStarResult(List<Guid> list, Guid entity, ref double length, ref double cost, ref List<ICurve> curves, ref List<IRelation> relations)
+        private static void AStarResult<T>(this Graph<T> graph, List<Guid> list, Guid entity, ref double length, ref double cost, ref List<ICurve> curves, ref List<IRelation<T>> relations)
+            where T : IBHoMObject
         {
             if (m_Fragments[entity].NearestToSource == Guid.Empty)
                 return;
@@ -190,12 +194,12 @@ namespace BH.Engine.Analytical
             list.Add(n);
 
             //relations linking entities working backwards from end
-            List<IRelation> links = m_GeometricGraph.Relation(m_GeometricGraph.Entities[n], m_GeometricGraph.Entities[entity]).ToList();
+            List<IRelation<T>> links = graph.Relation(graph.Entities[n], graph.Entities[entity]).ToList();
 
             //order by length and only use the shortest.
-            links = links.OrderBy(sr => m_GeometricGraph.RelationLength(sr)).ToList();
+            links = links.OrderBy(sr => graph.RelationLength(sr)).ToList();
 
-            length += m_GeometricGraph.RelationLength(links[0]);
+            length += graph.RelationLength(links[0]);
 
             relations.Add(links[0]);
 
@@ -204,7 +208,7 @@ namespace BH.Engine.Analytical
             if (m_Fragments[n].Cost.HasValue)
                 cost += m_Fragments[n].Cost.Value;
 
-            AStarResult(list, n, ref length, ref cost, ref curves, ref relations);
+            graph.AStarResult(list, n, ref length, ref cost, ref curves, ref relations);
         }
 
         /***************************************************/
@@ -231,12 +235,6 @@ namespace BH.Engine.Analytical
 
             return nearestEntity;
         }
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static Graph m_GeometricGraph = new Graph();
 
     }
 }

@@ -44,15 +44,16 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
-        public static List<Graph> EntityNeighbourhood(this Graph graph, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static List<Graph<T>> EntityNeighbourhood<T>(this Graph<T> graph, RelationDirection relationDirection = RelationDirection.Forwards)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the entity neighbourhood of a null graph.");
-                return new List<Graph>();
+                return new List<Graph<T>>();
             }
 
-            List<Graph> subGraphs = new List<Graph>();
+            List<Graph<T>> subGraphs = new List<Graph<T>>();
             m_Adjacency = graph.Adjacency(relationDirection);
 
             foreach (KeyValuePair<Guid, List<Guid>> kvp in m_Adjacency)
@@ -69,7 +70,8 @@ namespace BH.Engine.Analytical
         [Input("maximumDepth", "The maximum traversal depth from the given entity.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "The sub Graph found in the input Graph.")]
-        public static Graph EntityNeighbourhood(this Graph graph, IBHoMObject entity, int maximumDepth, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static Graph<T> EntityNeighbourhood<T>(this Graph<T> graph, T entity, int maximumDepth, RelationDirection relationDirection = RelationDirection.Forwards)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
@@ -83,7 +85,7 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            List<Graph> subGraphs = new List<Graph>();
+            List<Graph<T>> subGraphs = new List<Graph<T>>();
             m_Adjacency = graph.Adjacency(relationDirection);
             m_AccessibleEntities = new List<Guid>();
             m_AccessibleRelations = new List<Guid>();
@@ -93,7 +95,7 @@ namespace BH.Engine.Analytical
 
             graph.Traverse(entity.BHoM_Guid, maximumDepth, 0, relationDirection);
 
-            Graph subgraph = new Graph();
+            Graph<T> subgraph = new Graph<T>();
             foreach(Guid guid in m_AccessibleEntities)
             {
                 if (!subgraph.Entities.ContainsKey(guid))
@@ -112,7 +114,8 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void Traverse(this Graph graph, Guid entity, int maxDepth, int currentDepth, RelationDirection relationDirection)
+        private static void Traverse<T>(this Graph<T> graph, Guid entity, int maxDepth, int currentDepth, RelationDirection relationDirection)
+            where T : IBHoMObject
         {
             if (currentDepth >= maxDepth)
                 return;
@@ -125,10 +128,11 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        private static Graph SetSubGraph(this Graph graph, Guid sourceEntity, List<Guid> entityAdjacency, RelationDirection relationDirection)
+        private static Graph<T> SetSubGraph<T>(this Graph<T> graph, Guid sourceEntity, List<Guid> entityAdjacency, RelationDirection relationDirection)
+             where T : IBHoMObject
         {
 
-            Graph subgraph = new Graph();
+            Graph<T> subgraph = new Graph<T>();
 
             //add start entity
             subgraph.Entities.Add(sourceEntity, graph.Entities[sourceEntity].DeepClone());

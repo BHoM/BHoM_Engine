@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,8 @@ namespace BH.Engine.Analytical
         [Input("shape", "The optional DotFormat shape to represent Graph entities. Default is \"box\".")]
         [Input("fontsize", "The optional DotFormat fontsize for text in the DotFormat. Default is 12.")]
         [Output("dotFormat", "The DotFormat string that can be copied and pasted in on line viewers like https://visjs.github.io/vis-network/examples/network/data/dotLanguage/dotPlayground.html for quick visualisation.")]
-        public static string ToDotFormat(this Graph graph, string shape = "box", int fontsize = 12)
+        public static string ToDotFormat<T>(this Graph<T> graph, string shape = "box", int fontsize = 12)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
@@ -58,7 +60,7 @@ namespace BH.Engine.Analytical
             StringBuilder sb = new StringBuilder();
             sb.Append("digraph {\n");
             sb.Append("node [shape = " + shape + " fontsize=" + fontsize + "]\n");
-            foreach (IRelation link in graph.Relations)
+            foreach (IRelation<T> link in graph.Relations)
             {
                 if (link.Weight == 0) continue;
                 string start = Regex.Replace(regEx.Replace(graph.Entities[link.Source].Name, replacement), @"\s+", "");

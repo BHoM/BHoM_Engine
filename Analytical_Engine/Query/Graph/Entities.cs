@@ -40,12 +40,13 @@ namespace BH.Engine.Analytical
         [Description("Returns all the entities in a Graph as collection.")]
         [Input("graph", "The Graph to extract entities from.")]
         [Output("entities", "The Graph entities.")]
-        public static List<IBHoMObject> Entities(this Graph graph)
+        public static List<T> Entities<T>(this Graph<T> graph)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the entities of a null graph.");
-                return new List<IBHoMObject>();
+                return new List<T>();
             }
 
             return graph.Entities.Values.ToList();

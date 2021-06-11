@@ -50,9 +50,10 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The required IView.")]
         [Output("graph", "The projection of the original Graph.")]
-        public static Graph IProjectGraph(this Graph graph, IProjection projection)
+        public static Graph<T> IProjectGraph<T>(this Graph<T> graph, IProjection projection)
+            where T : IBHoMObject
         {
-            Graph graphProjected = ProjectGraph(graph, projection as dynamic);
+            Graph<T> graphProjected = ProjectGraph(graph, projection as dynamic);
 
             return graphProjected;
         }
@@ -62,9 +63,10 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The SpatialView.")]
         [Output("graph", "The spatial Graph.")]
-        private static Graph ProjectGraph(this Graph graph, GeometricProjection projection)
+        private static Graph<T> IProjectGraph<T>(this Graph<T> graph, GeometricProjection projection)
+            where T : IBHoMObject
         {
-            Graph geometricGraph = graph.DeepClone();
+            Graph<T> geometricGraph = graph.DeepClone();
             foreach (IBHoMObject entity in geometricGraph.Entities.Values.ToList())
             {
                 if (!typeof(IElement0D).IsAssignableFrom(entity.GetType()))
@@ -80,9 +82,10 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The SpatialView.")]
         [Output("graph", "The spatial Graph.")]
-        private static Graph ProjectGraph(this Graph graph, SpatialProjection projection)
+        private static Graph<T> IProjectGraph<T>(this Graph<T> graph, SpatialProjection projection)
+            where T : IBHoMObject
         {
-            Graph spatialGraph = graph.DeepClone();
+            Graph<T> spatialGraph = graph.DeepClone();
             //set representation based on projection
             
             return spatialGraph;
@@ -95,9 +98,10 @@ namespace BH.Engine.Analytical
         [Input("projection", "The ProcessView.")]
         [Output("graph", "The process Graph.")]
 
-        private static Graph ProjectGraph(this Graph graph,  GraphicalProjection projection)
+        private static Graph<T> ProjectGraph<T>(this Graph<T> graph,  GraphicalProjection projection)
+            where T : IBHoMObject
         {
-            Graph processGraph = graph.DeepClone();
+            Graph<T> processGraph = graph.DeepClone();
 
             Dataset graphData = SetGraphDataSet(processGraph, projection.View);
 
@@ -111,28 +115,30 @@ namespace BH.Engine.Analytical
         /**** Fallback Methods                          ****/
         /***************************************************/
 
-        private static Graph ProjectGraph(this Graph graph, IProjection projection)
+        private static Graph<T> ProjectGraph<T>(this Graph<T> graph, IProjection projection)
+            where T : IBHoMObject
         {
             Reflection.Compute.RecordError("IProjection provided does not have a corresponding GraphView method implemented.");
-            return new Graph();
+            return new Graph<T>();
         }
        
         /***************************************************/
 
-        private static Dataset SetGraphDataSet(Graph graph, IView view)
+        private static Dataset SetGraphDataSet<T>(Graph<T> graph, IView view)
+            where T : IBHoMObject
         {
             if(view is DependencyChart)
             {
                 DependencyChart chart = view as DependencyChart;
                 string groupPropertName = chart.Boxes.Group;
-                foreach (IBHoMObject entity in graph.Entities())
+                foreach (T entity in graph.Entities())
                 {
                     if (chart.Boxes.GroupsToIgnore.Contains(entity.PropertyValue(groupPropertName)))
                         graph.RemoveEntity(entity);
                 }
             }
 
-            BHoMGroup<IBHoMObject> entities = new BHoMGroup<IBHoMObject>();
+            BHoMGroup<T> entities = new BHoMGroup<T>();
             entities.Elements = graph.Entities();
             entities.Name = "Entities";
 

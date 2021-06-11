@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Analytical.Elements;
+using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
@@ -45,8 +46,10 @@ namespace BH.Engine.Analytical
         [Input("baseWidth", "Optional width of the arrow head. Default is 0.3.")]
         [Input("closed", "Optional boolean to set if the arrow head is closed or open. Default is false.")]
         [Output("composite geometry", "CompositeGeometry of the arrow.")]
-        public static CompositeGeometry RelationArrow(this IRelation relation, double headLength = 1, double baseWidth = 0.3, bool closed = false)
+        public static CompositeGeometry RelationArrow<T>(this IRelation<T> relation, double headLength = 1, double baseWidth = 0.3, bool closed = false)
+            where T : IBHoMObject
         {
+
             List<IGeometry> geometries = new List<IGeometry>();
 
             if (headLength == 0)

@@ -44,27 +44,28 @@ namespace BH.Engine.Analytical
         [Input("target", "The IBHoMObject target to search for.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forwards indicating traversal is from source to target.")]
         [Output("relations", "The collection of matching IRelations.")]
-        public static List<IRelation> Relation(this Graph graph, IBHoMObject source, IBHoMObject target, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static List<IRelation<T>> Relation<T>(this Graph<T> graph, T source, T target, RelationDirection relationDirection = RelationDirection.Forwards)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a null graph.");
-                return new List<IRelation>();
+                return new List<IRelation<T>>();
             }
 
             if (source == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a graph when the source is null.");
-                return new List<IRelation>();
+                return new List<IRelation<T>>();
             }
 
             if (target == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a graph when the target is null.");
-                return new List<IRelation>();
+                return new List<IRelation<T>>();
             }
 
-            List<IRelation> relations = new List<IRelation>();
+            List<IRelation<T>> relations = new List<IRelation<T>>();
             Guid sourceGuid = source.BHoM_Guid;
             Guid targetGuid = target.BHoM_Guid;
             switch (relationDirection)
@@ -91,7 +92,8 @@ namespace BH.Engine.Analytical
         [Input("target", "The Guid of the target to search for.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forwards indicating traversal is from source to target.")]
         [Output("relations", "The collection of matching IRelation Guids.")]
-        public static List<Guid> Relation(this Graph graph, Guid source, Guid target, RelationDirection relationDirection = RelationDirection.Forwards)
+        public static List<Guid> Relation<T>(this Graph<T> graph, Guid source, Guid target, RelationDirection relationDirection = RelationDirection.Forwards)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
@@ -99,7 +101,7 @@ namespace BH.Engine.Analytical
                 return new List<Guid>();
             }
 
-            List<IRelation> relations = graph.Relation(graph.Entities[source], graph.Entities[target], relationDirection);
+            List<IRelation<T>> relations = graph.Relation(graph.Entities[source], graph.Entities[target], relationDirection);
             
             List<Guid> guids = relations.Select(rel => rel.BHoM_Guid).ToList();
             

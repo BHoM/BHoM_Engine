@@ -41,7 +41,8 @@ namespace BH.Engine.Analytical
         [Description("Returns the collection of entity Guids that are never used as Relation targets or sources.")]
         [Input("graph", "The Graph to search.")]
         [Output("isolated entities", "The collection of entity Guids that are isolated.")]
-        public static List<Guid> IsolatedEntities(this Graph graph)
+        public static List<Guid> IsolatedEntities<T>(this Graph<T> graph)
+            where T : IBHoMObject
         {
             if(graph == null)
             {

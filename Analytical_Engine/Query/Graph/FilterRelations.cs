@@ -43,12 +43,13 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to filter the relations from.")]
         [Input("typeFilter", "The Type of the relation to filter.")]
         [Output("filtered relations", "Collection of IRelations filtered from the Graph.")]
-        public static List<IRelation> FilterRelations(this Graph graph, Type typeFilter)
+        public static List<IRelation<T>> FilterRelations<T>(this Graph<T> graph, Type typeFilter)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot filter the relations of a null graph.");
-                return new List<IRelation>();
+                return new List<IRelation<T>>();
             }
 
             return graph.Relations.Where(x => typeFilter.IsAssignableFrom(x.GetType())).ToList(); 

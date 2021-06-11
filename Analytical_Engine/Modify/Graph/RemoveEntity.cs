@@ -42,7 +42,8 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to modify.")]
         [Input("entityToRemove", "The IBHoMObject entity to remove.")]
         [Output("graph", "The modified Graph with the specified entity and any dependent relations removed.")]
-        public static Graph RemoveEntity(this Graph graph, IBHoMObject entityToRemove)
+        public static Graph<T> RemoveEntity<T>(this Graph<T> graph, T entityToRemove)
+            where T : IBHoMObject
         {
             if(graph == null)
             {
@@ -65,7 +66,8 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to modify.")]
         [Input("entityToRemove", "The Guid of the entity to remove.")]
         [Output("graph", "The modified Graph with the specified entity and any dependent relations removed.")]
-        public static Graph RemoveEntity(this Graph graph, Guid entityToRemove)
+        public static Graph<T> RemoveEntity<T>(this Graph<T> graph, Guid entityToRemove)
+            where T : IBHoMObject
         {
             if (graph == null)
             {
@@ -75,7 +77,7 @@ namespace BH.Engine.Analytical
 
             if (graph.Entities.ContainsKey(entityToRemove))
             {
-                List<IRelation> relations = graph.Relations.FindAll(rel => rel.Source.Equals(entityToRemove) || rel.Target.Equals(entityToRemove)).ToList();
+                List<IRelation<T>> relations = graph.Relations.FindAll(rel => rel.Source.Equals(entityToRemove) || rel.Target.Equals(entityToRemove)).ToList();
                 graph.Relations = graph.Relations.Except(relations).ToList();
                 graph.Entities.Remove(entityToRemove);
             }
