@@ -50,8 +50,10 @@ namespace BH.Engine.Structure
         [Output("ptVel", "The created PointVelocity.")]
         public static PointVelocity PointVelocity(Loadcase loadcase, BHoMGroup<Node> group, Vector translationalVelocity = null, Vector rotationalVelocity = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            if (translationalVelocity.IsNull() && rotationalVelocity.IsNull() || loadcase.IsNull())
-                return null;
+            if (translationalVelocity == null && rotationalVelocity == null)
+            {
+                Reflection.Compute.RecordError("PointVelocity requires at least the translation or the rotation vector to be defined");
+            }
 
             return new PointVelocity
             {
@@ -77,7 +79,13 @@ namespace BH.Engine.Structure
         [Output("ptVel", "The created PointVelocity.")]
         public static PointVelocity PointVelocity(Loadcase loadcase, IEnumerable<Node> objects, Vector translationalVelocity = null, Vector rotationalVelocity = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return loadcase.IsNull() ? null : PointVelocity(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translationalVelocity, rotationalVelocity, axis, name);
+            BHoMGroup<Node> group = new BHoMGroup<Node>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
+            return PointVelocity(loadcase, group, translationalVelocity, rotationalVelocity, axis, name);
         }
 
         /***************************************************/

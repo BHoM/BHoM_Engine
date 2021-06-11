@@ -50,7 +50,12 @@ namespace BH.Engine.Structure
         [Output("barPtLoad", "The created BarPointLoad.")]
         public static BarPointLoad BarPointLoad(Loadcase loadcase, BHoMGroup<Bar> group, double distFromA, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return force.IsNull() && moment.IsNull() || loadcase.IsNull() ? null : new BarPointLoad
+            if (force == null && moment == null)
+            {
+                Reflection.Compute.RecordError("BarPointLoad requires at least the force or the moment vector to be defined.");
+            }
+
+            return new BarPointLoad
             {
                 Loadcase = loadcase,
                 DistanceFromA = distFromA,
@@ -75,7 +80,13 @@ namespace BH.Engine.Structure
         [Output("barPtLoad", "The created BarPointLoad.")]
         public static BarPointLoad BarPointLoad(Loadcase loadcase, double distFromA, IEnumerable<Bar> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return force.IsNull() && moment.IsNull() || loadcase.IsNull() ? null : BarPointLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, distFromA, force, moment, axis, name);
+            BHoMGroup<Bar> group = new BHoMGroup<Bar>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
+            return BarPointLoad(loadcase, group, distFromA, force, moment, axis, name);
         }
 
         /***************************************************/

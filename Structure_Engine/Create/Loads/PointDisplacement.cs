@@ -50,8 +50,11 @@ namespace BH.Engine.Structure
         [Output("ptDisp", "The created PointDisplacement.")]
         public static PointDisplacement PointDisplacement(Loadcase loadcase, BHoMGroup<Node> group, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            if (translation.IsNull() && rotation.IsNull() || loadcase.IsNull())
+            if (translation == null && rotation == null)
+            {
+                Reflection.Compute.RecordError("PointDisplacement requires at least the translation or rotation vector to be defined");
                 return null;
+            }
 
             return new PointDisplacement
             {
@@ -77,7 +80,13 @@ namespace BH.Engine.Structure
         [Output("ptDisp", "The created PointDisplacement.")]
         public static PointDisplacement PointDisplacement(Loadcase loadcase, IEnumerable<Node> objects, Vector translation = null, Vector rotation = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return loadcase.IsNull() ? null : PointDisplacement(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translation, rotation, axis, name);
+            BHoMGroup<Node> group = new BHoMGroup<Node>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
+            return PointDisplacement(loadcase, group, translation, rotation, axis, name);
         }
 
         /***************************************************/

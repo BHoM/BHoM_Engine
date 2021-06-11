@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Base;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -53,9 +54,7 @@ namespace BH.Engine.Structure
         [Output("load", "The created Load.")]
         public static ILoad Load(LoadType type, Loadcase loadcase, List<double> magnitude, string groupName, LoadAxis axis, bool isProjected, string units = "kN")
         {
-            if (loadcase.IsNull())
-                return null;
-            else if (magnitude == null || String.IsNullOrEmpty(groupName))
+            if (magnitude.IsNullOrEmpty() || String.IsNullOrEmpty(groupName))
                 return null;
 
             units = units.ToUpper();
@@ -153,7 +152,7 @@ namespace BH.Engine.Structure
                 case LoadType.Pressure:
                 case LoadType.Geometrical:
                 default:
-                    Reflection.Compute.RecordError("Load type not implemented");
+                    Reflection.Compute.RecordError("Load type not implemented.");
                     return null;
             }
         }
