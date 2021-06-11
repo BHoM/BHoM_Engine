@@ -86,8 +86,6 @@ namespace BH.Engine.Structure
                         lines.Add(new Line() { Start = link.PrimaryNode.Position, End = sn.Position });
                 }
             }
-            else
-                return null;
 
             return new CompositeGeometry() { Elements = lines };
         }

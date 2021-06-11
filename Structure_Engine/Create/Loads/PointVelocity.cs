@@ -53,6 +53,7 @@ namespace BH.Engine.Structure
             if (translationalVelocity == null && rotationalVelocity == null)
             {
                 Reflection.Compute.RecordError("PointVelocity requires at least the translation or the rotation vector to be defined");
+                return null;
             }
 
             return new PointVelocity
