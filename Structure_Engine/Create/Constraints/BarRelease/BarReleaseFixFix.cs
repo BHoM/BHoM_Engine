@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a BarRelease that is fully fixed in both ends, i.e. all degrees of freedom, translational and rotational will be fixed.")]
-        [Input("name", "Name of the BarRelease. Defaults to FixFix. This is required by most structural analysis software to create the object")]
+        [Input("name", "Name of the BarRelease. Defaults to FixFix. This is required by most structural analysis software to create the object.")]
         [Output("release", "The created fully fixed BarRelease.")]
         public static BarRelease BarReleaseFixFix(string name = "FixFix")
         {

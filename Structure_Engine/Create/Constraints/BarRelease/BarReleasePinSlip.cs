@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         [Description("Creates a BarRelease that is pinned at one end and axially released at the other. \n" +
                      "This means that the start node will have all tranlational degrees fixed as well as the rx, to avoid instability, i.e. to prevent it from rotating about the local x-axis (the centreline axis). \n" +
                      "The end node will be fixed in the y-axis and z-axis translationally, all other degrees of freedom will be free, i.e. it will be free to rotate as well as translate along the local x-axis (the centreline axis) of the Bar.")]
-        [Input("name", "Name of the BarRelease. Defaults to PinSlip. This is required by most structural analysis software to create the object")]
+        [Input("name", "Name of the BarRelease. Defaults to PinSlip. This is required by most structural analysis software to create the object.")]
         [Output("release", "The created pin-slip BarRelease.")]
         public static BarRelease BarReleasePinSlip(string name = "PinSlip")
         {

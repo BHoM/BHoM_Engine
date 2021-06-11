@@ -34,7 +34,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a BarRelease that is pinned at both ends, i.e. all translational degrees of freedom will be fixed, and rotational released, with one exception. The rx release on the start will be fixed to avoid instability of the Bar, to prevent it from rotating about the local x-axis (the centreline axis).")]
-        [Input("name", "Name of the BarRelease. Defaults to PinPin. This is required by most structural analysis software to create the object")]
+        [Input("name", "Name of the BarRelease. Defaults to PinPin. This is required by most structural analysis software to create the object.")]
         [Output("release", "The created pinned BarRelease.")]
         public static BarRelease BarReleasePinPin(string name = "PinPin")
         {
