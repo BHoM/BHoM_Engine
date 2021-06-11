@@ -21,12 +21,9 @@
  */
 
 using BH.oM.Structure.Constraints;
-using System.Collections.Generic;
-using System.Linq;
 using BH.oM.Reflection.Attributes;
-using BH.Engine.Base;
+using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
-
 
 namespace BH.Engine.Structure
 {
@@ -36,35 +33,20 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LinkConstraint from a list of booleans. True denotes fixity.")]
-        [Input("name", "Name of the created LinkConstraint. This is required for various structural packages to create the object.")]
-        [Input("fixity", "List of booleans setting the fixities of the LinkConstraint. True denotes fixity. A list of 12 booleans in the following order: XtoX, YtoY, ZtoZ, XtoYY, XtoZZ, YtoXX, YtoZZ, ZtoXX, ZtoYY, XXtoXX, YYtoYY, ZZtoZZ.")]
-        [Output("linkConstraint", "The created custom LinkConstraint.")]
-        public static LinkConstraint LinkConstraint(string name, List<bool> fixity)
+        [Description("Creates a BarRelease that is pinned at one end and axially released at the other. \n" +
+                     "This means that the start node will have all tranlational degrees fixed as well as the rx, to avoid instability, i.e. to prevent it from rotating about the local x-axis (the centreline axis). \n" +
+                     "The end node will be fixed in the y-axis and z-axis translationally, all other degrees of freedom will be free, i.e. it will be free to rotate as well as translate along the local x-axis (the centreline axis) of the Bar.")]
+        [Input("name", "Name of the BarRelease. Defaults to PinSlip. This is required by most structural analysis software to create the object")]
+        [Output("release", "The created pin-slip BarRelease.")]
+        public static BarRelease BarReleasePinSlip(string name = "PinSlip")
         {
-            if (fixity.IsNullOrEmpty())
-                return null;
+            Constraint6DOF startRelease = PinConstraint6DOF();
+            startRelease.RotationX = DOFType.Fixed;
 
-            if (fixity.Count != 6)
+            return new BarRelease
             {
-                Reflection.Compute.RecordError("The list of fixities is not equal to 6 and therefore the LinkConstraint cannot be created.");
-                return null;
-            }
-
-            return new LinkConstraint
-            {
-                XtoX = fixity[0],
-                YtoY = fixity[1],
-                ZtoZ = fixity[2],
-                XtoYY = fixity[3],
-                XtoZZ = fixity[4],
-                YtoXX = fixity[5],
-                YtoZZ = fixity[6],
-                ZtoXX = fixity[7],
-                ZtoYY = fixity[8],
-                XXtoXX = fixity[9],
-                YYtoYY = fixity[10],
-                ZZtoZZ = fixity[11],
+                StartRelease = startRelease,
+                EndRelease = Constraint6DOF(false, true, true, false, false, false, "Slip"),
                 Name = name
             };
         }
