@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel.")]
         public static Panel Panel(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
-            if (externalEdges.IsNull() || externalEdges.Any(x => x.IsNull()))
+            if (externalEdges.IsNullOrEmpty() || externalEdges.Any(x => x.IsNull()))
                 return null;
 
             Panel panel = new Panel
@@ -104,7 +104,7 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel(s).")]
         public static List<Panel> Panel(List<ICurve> outlines, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
-            if (outlines.IsNull() || outlines.Any(x => x.IsNull()))
+            if (outlines.IsNullOrEmpty() || outlines.Any(x => x.IsNull()))
                 return null;
 
             List<Panel> result = new List<Panel>();

@@ -50,9 +50,9 @@ namespace BH.Engine.Structure
         [InputFromProperty("isProjected", "Projected")]
         [Input("units", "Scales the magnitude inputs to SI depending on the provided value. Accepted values are N, Newton, Newtons, kN, kilo newton, kilo newtons, C, Celcius, K, Kelvin.")]
         [Output("load", "The created Load.")]
-        public static ILoad Load(LoadType type, Loadcase loadCase, List<double> magnitude, string groupName, LoadAxis axis, bool isProjected, string units = "kN")
+        public static ILoad Load(LoadType type, Loadcase loadcase, List<double> magnitude, string groupName, LoadAxis axis, bool isProjected, string units = "kN")
         {
-            if (loadCase.IsNull())
+            if (loadcase.IsNull())
                 return null;
             else if (magnitude == null || String.IsNullOrEmpty(groupName))
                 return null;
@@ -108,43 +108,43 @@ namespace BH.Engine.Structure
                 case LoadType.Selfweight:
                     {
                         BHoMGroup<BHoMObject> group = new BHoMGroup<BHoMObject>() { Name = groupName };
-                        return GravityLoad(loadCase, force, group, groupName);
+                        return GravityLoad(loadcase, force, group, groupName);
                     }
                 case LoadType.PointForce:
                     {
                         BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
-                        return PointForce(loadCase, group, force, moment, axis, groupName);
+                        return PointForce(loadcase, group, force, moment, axis, groupName);
                     }
                 case LoadType.PointDisplacement:
                     {
                         BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
-                        return PointDisplacement(loadCase, group, force, moment, axis, groupName);
+                        return PointDisplacement(loadcase, group, force, moment, axis, groupName);
                     }
                 case LoadType.PointVelocity:
                     {
                         BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
-                        return PointVelocity(loadCase, group, force, moment, axis, groupName);
+                        return PointVelocity(loadcase, group, force, moment, axis, groupName);
                     }
                 case LoadType.PointAcceleration:
                     {
                         BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
-                        return PointAcceleration(loadCase, group, force, moment, axis, groupName);
+                        return PointAcceleration(loadcase, group, force, moment, axis, groupName);
                     }
                 case LoadType.BarUniformLoad:
                     {
                         BHoMGroup<Bar> group = new BHoMGroup<Bar>() { Name = groupName };
-                        return BarUniformlyDistributedLoad(loadCase, group, force, moment, axis, isProjected, groupName);
+                        return BarUniformlyDistributedLoad(loadcase, group, force, moment, axis, isProjected, groupName);
                     }
 
                 case LoadType.BarTemperature:
                     {
                         BHoMGroup<Bar> group = new BHoMGroup<Bar>() { Name = groupName };
-                        return BarUniformTemperatureLoad(loadCase, mag, group, axis, isProjected, groupName);
+                        return BarUniformTemperatureLoad(loadcase, mag, group, axis, isProjected, groupName);
                     }
                 case LoadType.AreaUniformLoad:
                     {
                         BHoMGroup<IAreaElement> group = new BHoMGroup<IAreaElement>() { Name = groupName };
-                        return AreaUniformlyDistributedLoad(loadCase, force, group, axis, isProjected, groupName);
+                        return AreaUniformlyDistributedLoad(loadcase, force, group, axis, isProjected, groupName);
                     }
                 case LoadType.BarVaryingLoad:
                 case LoadType.BarPointLoad:
