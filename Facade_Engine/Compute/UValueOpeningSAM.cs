@@ -31,6 +31,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.Engine.Base;
 using BH.oM.Facade.Fragments;
+using BH.oM.Facade.Results;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
@@ -45,8 +46,8 @@ namespace BH.Engine.Facade
 
         [Description("Returns effective U-Value of opening calculated using the Single Assessment Method (Using Psi-tj). Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
         [Input("opening", "Opening to find U-value for.")]
-        [Output("effectiveUValue", "Effective U-value of opening caclulated using SAM.")]
-        public static double UValueOpeningSAM(this Opening opening)
+        [Output("effectiveUValue", "Effective U-value result of opening caclulated using SAM.")]
+        public static OverallUValue UValueOpeningSAM(this Opening opening)
         {
             double area = opening.Area();
 
@@ -54,12 +55,12 @@ namespace BH.Engine.Facade
             if (uValues.Count <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have U-value assigned.");
-                return double.NaN;
+                return null;
             }
             if (uValues.Count > 1)
             {
                 BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one U-value assigned.");
-                return double.NaN;
+                return null;
             }
             double uValue = (uValues[0] as UValueGlassCentre).UValue;
 
@@ -73,12 +74,12 @@ namespace BH.Engine.Facade
                 if (psiJoints.Count <= 0)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} does not have PsiJoint value assigned.");
-                    return double.NaN;
+                    return null;
                 }
                 if (psiJoints.Count > 1)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} has more than one PsiJoint value assigned. Each FrameEdge should only have one unique PsiJoint value assigned to it.");
-                    return double.NaN;
+                    return null;
                 }
                 double psiJoint = (psiJoints[0] as PsiJoint).PsiValue;
                 psiValues.Add(psiJoint);
@@ -94,7 +95,8 @@ namespace BH.Engine.Facade
             }
 
             double effectiveUValue = (((area * uValue) + psiProduct) / area);
-            return effectiveUValue;
+            OverallUValue result = new OverallUValue { UValue = effectiveUValue, ObjectIds = new List<IComparable> { opening.BHoM_Guid } };
+            return result;
         }
 
         /***************************************************/
