@@ -141,7 +141,7 @@ namespace BH.Engine.Facade
                 BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has a calculated area of 0. Ensure the opening is valid with associated edges defining its geometry and try again.");
             }
             double effectiveUValue = (((glassArea * glassUValue) + psigProduct + FrameUValProduct) / totArea);
-            OverallUValue result = new OverallUValue { UValue = effectiveUValue, ObjectIds = new List<IComparable> { opening.BHoM_Guid } };
+            OverallUValue result = new OverallUValue (effectiveUValue, new List<IComparable> { opening.BHoM_Guid });
             return result;
         }
 
