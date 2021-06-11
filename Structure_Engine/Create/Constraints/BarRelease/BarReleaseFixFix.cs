@@ -21,12 +21,9 @@
  */
 
 using BH.oM.Structure.Constraints;
-using System.Collections.Generic;
-using System.Linq;
 using BH.oM.Reflection.Attributes;
-using BH.Engine.Base;
+using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
-
 
 namespace BH.Engine.Structure
 {
@@ -36,37 +33,12 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LinkConstraint from a list of booleans. True denotes fixity.")]
-        [Input("name", "Name of the created LinkConstraint. This is required for various structural packages to create the object.")]
-        [Input("fixity", "List of booleans setting the fixities of the LinkConstraint. True denotes fixity. A list of 12 booleans in the following order: XtoX, YtoY, ZtoZ, XtoYY, XtoZZ, YtoXX, YtoZZ, ZtoXX, ZtoYY, XXtoXX, YYtoYY, ZZtoZZ.")]
-        [Output("linkConstraint", "The created custom LinkConstraint.")]
-        public static LinkConstraint LinkConstraint(string name, List<bool> fixity)
+        [Description("Creates a BarRelease that is fully fixed in both ends, i.e. all degrees of freedom, translational and rotational will be fixed.")]
+        [Input("name", "Name of the BarRelease. Defaults to FixFix. This is required by most structural analysis software to create the object")]
+        [Output("release", "The created fully fixed BarRelease.")]
+        public static BarRelease BarReleaseFixFix(string name = "FixFix")
         {
-            if (fixity.IsNullOrEmpty())
-                return null;
-
-            if (fixity.Count != 6)
-            {
-                Reflection.Compute.RecordError("The list of fixities is not equal to 6 and therefore the LinkConstraint cannot be created.");
-                return null;
-            }
-
-            return new LinkConstraint
-            {
-                XtoX = fixity[0],
-                YtoY = fixity[1],
-                ZtoZ = fixity[2],
-                XtoYY = fixity[3],
-                XtoZZ = fixity[4],
-                YtoXX = fixity[5],
-                YtoZZ = fixity[6],
-                ZtoXX = fixity[7],
-                ZtoYY = fixity[8],
-                XXtoXX = fixity[9],
-                YYtoYY = fixity[10],
-                ZZtoZZ = fixity[11],
-                Name = name
-            };
+            return new BarRelease { StartRelease = FixConstraint6DOF(), EndRelease = FixConstraint6DOF(), Name = name };
         }
 
         /***************************************************/

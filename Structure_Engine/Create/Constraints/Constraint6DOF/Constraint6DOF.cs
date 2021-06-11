@@ -46,6 +46,12 @@ namespace BH.Engine.Structure
             if (fixity.IsNullOrEmpty() || values.IsNullOrEmpty())
                 return null;
 
+            if(fixity.Count != 6 || values.Count != 6)
+            {
+                Reflection.Compute.RecordError("The list of fixities or the list of values are not equal to 6 and therefore the Constraint6DOF cannot be created.");
+                return null;
+            }
+
             return new Constraint6DOF
             {
                 Name = name,
