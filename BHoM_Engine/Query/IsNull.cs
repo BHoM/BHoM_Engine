@@ -54,7 +54,7 @@ namespace BH.Engine.Base
 
                 return true;
             }
-            else if(!list.Any())
+            else if (!list.Any())
             {
                 if (string.IsNullOrEmpty(methodName))
                 {
