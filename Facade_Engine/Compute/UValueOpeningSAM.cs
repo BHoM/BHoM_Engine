@@ -95,7 +95,7 @@ namespace BH.Engine.Facade
             }
 
             double effectiveUValue = (((area * uValue) + psiProduct) / area);
-            OverallUValue result = new OverallUValue { UValue = effectiveUValue, ObjectIds = new List<IComparable> { opening.BHoM_Guid } };
+            OverallUValue result = new OverallUValue(effectiveUValue, new List<IComparable> { opening.BHoM_Guid });
             return result;
         }
 

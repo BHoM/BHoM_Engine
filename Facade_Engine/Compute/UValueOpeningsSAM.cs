@@ -64,7 +64,7 @@ namespace BH.Engine.Facade
             }
 
             double effectiveUValue =  uValueProduct / totalArea;
-            OverallUValue result = new OverallUValue { UValue = effectiveUValue, ObjectIds = openings.Select(x => x.BHoM_Guid as IComparable).ToList() };
+            OverallUValue result = new OverallUValue(effectiveUValue, openings.Select(x => x.BHoM_Guid as IComparable).ToList());
             return result;
         }
 
