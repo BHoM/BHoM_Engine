@@ -28,8 +28,11 @@ using BH.oM.Geometry;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Spatial;
 using System.Linq;
 using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
+
 
 namespace BH.Engine.Structure
 {
@@ -39,26 +42,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Generates a aluminium section based on a Profile and a material. \n This is the main create method for aluminium sections, responsible for calculating section constants etc. and is being called from all other create methods for aluminium sections.")]
-        [Input("profile", "The section profile the aluminium section. All section constants are derived based on the dimensions of this.")]
-        [Input("material", "aluminium material to be applied to the section.")]
-        [Input("name", "Name of the aluminium section. If null or empty the name of the profile will be used. This is required for most structural packages to create the section.")]
-        [Output("section", "The created aluminium section.")]
-        public static AluminiumSection AluminiumSectionFromProfile(IProfile profile, Aluminium material = null, string name = "")
+        [Description("Creates a rectangular solid timber section from input dimensions.")]
+        [Input("height", "Height of the section.", typeof(Length))]
+        [Input("width", "Width of the section.", typeof(Length))]
+        [Input("cornerRadius", "Optional corner radius for the section.", typeof(Length))]
+        [Input("material", "Timber material to be applied to the section. If null a default material will be extracted from the database.")]
+        [Input("name", "Name of the timber section. This is required for most structural packages to create the section.")]
+        [Output("section", "The created rectangular solid timber section.")]
+        public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, Timber material = null, string name = "")
         {
-            //Run pre-process for section create. Calculates all section constants and checks name of profile
-            var preProcessValues = PreProcessSectionCreate(name, profile);
-            name = preProcessValues.Item1;
-            profile = preProcessValues.Item2;
-            Dictionary<string, double> constants = preProcessValues.Item3;
-
-            AluminiumSection section = new AluminiumSection(profile,
-                constants["Area"], constants["Rgy"], constants["Rgz"], constants["J"], constants["Iy"], constants["Iz"], constants["Iw"], constants["Wely"],
-                constants["Welz"], constants["Wply"], constants["Wplz"], constants["CentreZ"], constants["CentreY"], constants["Vz"],
-                constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
-
-            return PostProcessSectionCreate(section, name, material, MaterialType.Aluminium);
-
+            return TimberSectionFromProfile(Spatial.Create.RectangleProfile(height, width, cornerRadius), material, name);
         }
 
         /***************************************************/

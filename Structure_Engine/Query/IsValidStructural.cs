@@ -41,11 +41,17 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if the physical Material contains structural data.")]
         public static bool IsValidStructural(this Material material)
         {
+            if (material == null)
+            {
+                Reflection.Compute.RecordError("The Material provided is null and is not a valid structural material fragment.");
+                return false;
+            }
+
             return material.Properties.Where(x => x is IMaterialFragment).Count() == 1;
         }
 
         /***************************************************/
-        
+
     }
 }
 

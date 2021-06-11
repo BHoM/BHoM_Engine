@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -50,7 +51,10 @@ namespace BH.Engine.Structure
         public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, BHoMGroup<Bar> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
             if (force == null && moment == null)
-                throw new ArgumentException("Bar uniform load requires either the force and/or the moment vector to be defined");
+            {
+                Reflection.Compute.RecordError("BarUniformLoad requires at least the force or the moment vector to be defined");
+                return null;
+            }
 
             return new BarUniformlyDistributedLoad
             {
@@ -78,7 +82,13 @@ namespace BH.Engine.Structure
         [Output("barUDL", "The created BarPointLoad.")]
         public static BarUniformlyDistributedLoad BarUniformlyDistributedLoad(Loadcase loadcase, IEnumerable<Bar> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, bool projected = false, string name = "")
         {
-            return BarUniformlyDistributedLoad(loadcase, new BHoMGroup<Bar>() { Elements = objects.ToList() }, force, moment, axis, projected, name);
+            BHoMGroup<Bar> group = new BHoMGroup<Bar>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
+            return BarUniformlyDistributedLoad(loadcase, group, force, moment, axis, projected, name);
         }
 
         /***************************************************/

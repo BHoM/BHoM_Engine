@@ -45,13 +45,18 @@ namespace BH.Engine.Structure
         [InputFromProperty("diameter")]
         [Input("area", "Total minimum required area of bottom reinforcement. Will be used to calculate required number of bars, based on their diameter, hence the resulting area may be larger than the input value.", typeof(Area))]
         [Input("spacing", "Minimum spacing allowed between any two rebars.")]
-        [InputFromProperty("miniumCover")]
         [InputFromProperty("startLocation")]
         [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement BottomReinforcement(double diameter, double area, double spacing, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            if (diameter < Tolerance.Distance || area < Math.Pow(Tolerance.Distance, 2) || spacing < Tolerance.Distance)
+            {
+                Reflection.Compute.RecordError("The diameter, area or spacing values are less than the tolerance. Please check your inputs.");
+                return null;
+            }
+
             int numberOfBars = (int)Math.Ceiling(area / (diameter * diameter * Math.PI / 4));
             return MultiLinearReinforcement(diameter, numberOfBars, spacing, spacing, Vector.XAxis, 0, ReferencePoint.BottomCenter, startLocation, endLocation, material);
         }

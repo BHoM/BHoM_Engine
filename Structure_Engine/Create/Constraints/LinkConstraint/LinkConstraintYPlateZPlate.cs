@@ -20,16 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Structure.Constraints;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using BH.oM.Structure.SectionProperties;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Geometry;
-using BH.oM.Structure.MaterialFragments;
-using BH.oM.Reflection;
-using BH.oM.Reflection.Attributes;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
+using BH.Engine.Base;
 using System.ComponentModel;
+
 
 namespace BH.Engine.Structure
 {
@@ -39,26 +36,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a generic section from any shape profile. Should only be used for material types not yet explicitly supported.")]
-        [Input("profile", "Profile containing the geometric information to be used to create the generic section.")]
-        [Input("material", "Material to use on the section.")]
-        [Input("name", "Name of the section. If no name is provided, the name from the profile will be used. This is required for most structural packages to create the section.")]
-        [Output("genericSec", "The created generic section.")]
-        public static GenericSection GenericSectionFromProfile(IProfile profile, IMaterialFragment material = null, string name = "")
+        public static LinkConstraint LinkConstraintYPlateZPlate(string name = "z-Plate")
         {
-            //Run pre-process for section create. Calculates all section constants and checks name of profile
-            var preProcessValues = PreProcessSectionCreate(name, profile);
-            name = preProcessValues.Item1;
-            profile = preProcessValues.Item2;
-            Dictionary<string, double> constants = preProcessValues.Item3;
-
-            GenericSection section = new GenericSection(profile,
-                constants["Area"], constants["Rgy"], constants["Rgz"], constants["J"], constants["Iy"], constants["Iz"], constants["Iw"], constants["Wely"],
-                constants["Welz"], constants["Wply"], constants["Wplz"], constants["CentreZ"], constants["CentreY"], constants["Vz"],
-                constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
-
-            return PostProcessSectionCreate(section, name, material, MaterialType.Undefined);
-
+            LinkConstraint constr = new LinkConstraint();
+            constr.ZtoZ = true;
+            constr.ZtoXX = true;
+            constr.ZtoYY = true;
+            constr.XXtoXX = true;
+            constr.YYtoYY = true;
+            constr.Name = name;
+            return constr;
         }
 
         /***************************************************/

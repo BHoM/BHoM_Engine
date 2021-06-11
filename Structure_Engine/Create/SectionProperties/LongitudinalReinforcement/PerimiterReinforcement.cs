@@ -48,8 +48,14 @@ namespace BH.Engine.Structure
         [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
-        public static LongitudinalReinforcement PerimiterReinforcement(double diameter, int barCount, bool rebarsAtProfileDiscontinuities, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        public static LongitudinalReinforcement PerimiterReinforcement(double diameter, int barCount, bool rebarsAtProfileDiscontinuities = false, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            if (diameter < Tolerance.Distance || barCount <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter or bar count is less than the tolerance. Please check your inputs.");
+                return null;
+            }
+
             return LongitudinalReinforcement(new PerimeterLayout() { NumberOfPoints = barCount, EnforceDiscontinuityPoints = rebarsAtProfileDiscontinuities }, diameter, startLocation, endLocation, material);
         }
 

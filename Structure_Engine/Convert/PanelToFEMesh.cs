@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
 
         public static FEMesh PanelToFEMesh(this Panel panel)
         {
-            if (BH.Engine.Structure.Compute.NullCheck(panel) == false)
+            if (panel.IsNull())
             {
                 return null;
             }
@@ -73,7 +73,7 @@ namespace BH.Engine.Structure
             }
             int count = points.Distinct().Count();
             Face face = new Face();
-            if (count>4)
+            if (count > 4)
             {
                 Reflection.Compute.RecordError("Panel contains more than four control points.");
                 return null;
@@ -92,14 +92,14 @@ namespace BH.Engine.Structure
             feMesh = Create.FEMesh(mesh, null, null, panel.Name);
             if (panel.Property != null)
             {
-                feMesh.Property= panel.Property;
+                feMesh.Property = panel.Property;
             }
             if (panel.Tags.Count > 0)
             {
                 feMesh.Tags = panel.Tags;
             }
             return feMesh;
-            
+
         }
         /***************************************************/
 

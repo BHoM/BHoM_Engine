@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Base;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -48,6 +49,9 @@ namespace BH.Engine.Structure
         [Output("barDiffTempLoad", "The created BarDifferentialTemperatureLoad.")]
         public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, List<double> positions, List<double> temperatures, DifferentialTemperatureLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
         {
+            if (loadcase.IsNull() || positions.IsNullOrEmpty() || temperatures.IsNullOrEmpty())
+                return null;
+
             //Checks for positions and profiles
             if (positions.Count != temperatures.Count)
             {
@@ -61,7 +65,7 @@ namespace BH.Engine.Structure
             }
 
             // Check that top and bottom positions are included
-            if(!(positions.Contains(0) && positions.Contains(1)))
+            if (!(positions.Contains(0) && positions.Contains(1)))
             {
                 Reflection.Compute.RecordError("Positions must inlude the bottom (0) and top (1) position.");
                 return null;
@@ -77,13 +81,18 @@ namespace BH.Engine.Structure
             Dictionary<Double, Double> temperatureProfile = positions.Zip(temperatures, (z, t) => new { z, t })
                 .ToDictionary(x => x.z, x => x.t);
 
+            BHoMGroup<Bar> group = new BHoMGroup<Bar>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
 
             return new BarDifferentialTemperatureLoad
             {
                 Loadcase = loadcase,
                 TemperatureProfile = temperatureProfile,
                 LoadDirection = localLoadDirection,
-                Objects = new BHoMGroup<Bar>() { Elements = objects.ToList() },
+                Objects = group,
                 Name = name
             };
         }

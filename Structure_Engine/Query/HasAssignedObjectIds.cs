@@ -36,28 +36,25 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if the objects assigned to the IElementLoad all have an identifier matching the AdapterIdName assigned.\n" + 
+        [Description("Checks if the objects assigned to the IElementLoad all have an identifier matching the AdapterIdName assigned.\n" +
                      "Loads without correctly assigned ids to the objects can generally not be pushed through to structural packages.")]
         [Input("load", "The load to check for id assignment.")]
         [Input("adapterIdType", "The the type of AdapterId fragment to check for. For example RobotId for Autodesk Robot.")]
         [Output("result", "Returns true if all objects assigned to the load has an id matching the AdapterIdName assigned.")]
         public static bool HasAssignedObjectIds<T>(this IElementLoad<T> load, Type adapterIdType) where T : IBHoMObject
         {
-            if (load == null)
-            {
-                Reflection.Compute.RecordError("The provided load is null and could not be evaluated.");
+            if (load.IsNull())
                 return false;
-            }
 
             if (load.Objects == null || load.Objects.Elements == null || load.Objects.Elements.Any(x => x == null))
             {
-                Reflection.Compute.RecordError("At least one of the provided objects assigned to the load is null. Id assignement could not be evaluated.");
+                Reflection.Compute.RecordError("At least one of the provided objects assigned to the load is null. Id assignment could not be evaluated.");
                 return false;
             }
 
             if (adapterIdType == null)
             {
-                Reflection.Compute.RecordError("The provided adapter id type is null. Could not check object id assignement for the load.");
+                Reflection.Compute.RecordError("The provided AdapterId type is null. Could not check object id assignment for the load.");
                 return false;
             }
 

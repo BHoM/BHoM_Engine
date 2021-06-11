@@ -50,14 +50,18 @@ namespace BH.Engine.Structure
         [Output("plasticModulus", "The plasticModulus of the region.", typeof(SectionModulus))]
         public static double PlasticModulus(this Polyline pLine, IEnumerable<ICurve> curves = null, double trueArea = double.NaN)
         {
-            double area = BH.Engine.Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
+            if (pLine.IsNull())
+                return 0;
+
+            double area = Geometry.Compute.IIntegrateRegion(pLine, 0);   //Should be calculated here for consistency
 
             if (curves == null)
             {
                 curves = new List<ICurve>() { pLine };
                 if (double.IsNaN(trueArea))
                     trueArea = area;
-            } else if (double.IsNaN(trueArea))
+            }
+            else if (double.IsNaN(trueArea))
                 trueArea = curves.Sum(x => x.IIntegrateRegion(0));
 
             double halfTrueArea = trueArea * 0.5;
@@ -94,7 +98,7 @@ namespace BH.Engine.Structure
                 // Nudges the solution to be correct, will give exact result if the neutralAxis and the diff is somewhere with constant thickness, 
                 // otherwise very close to it.
                 double diff = (halfTrueArea - upperArea) / d;   // missing area divided by sectionthickness = width of the missing area
-                double add = (3 * d * ( Math.Pow(neutralAxis - diff, 2) -  Math.Pow(neutralAxis, 2)) / 6); //SpecialCase of IntegrateRegion(1)
+                double add = (3 * d * (Math.Pow(neutralAxis - diff, 2) - Math.Pow(neutralAxis, 2)) / 6); //SpecialCase of IntegrateRegion(1)
                 plasticModulus -= 2 * add;
             }
             return Math.Abs(plasticModulus);
@@ -255,7 +259,7 @@ namespace BH.Engine.Structure
                 return SplitAtX(polyCurve.Curves[0] as Circle, x, tol);
 
             List<ICurve> results = SplitOnCurve(polyCurve, x, tol).ToList();
-            
+
             results = SplitOnPoints(results, x, tol * 2).ToList();
 
             // Close the curve if it was closed and the start point is not on the splitline
@@ -366,14 +370,16 @@ namespace BH.Engine.Structure
                         // Both to the right
                         results.Insert(0, Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, startAngle, toSplit.EndAngle < startAngle ? toSplit.EndAngle + pi2 : toSplit.EndAngle));
                         results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, toSplit.StartAngle, endAngle < toSplit.StartAngle ? endAngle + pi2 : endAngle));
-                    } else
+                    }
+                    else
                     {
                         results.RemoveAt(0);
                         // start right, end left
                         results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, startAngle, toSplit.EndAngle < startAngle ? toSplit.EndAngle + pi2 : toSplit.EndAngle));
                         results.Add(Geometry.Create.Arc(toSplit.CoordinateSystem, arc.Radius, toSplit.EndAngle, endAngle < toSplit.EndAngle ? endAngle + pi2 : endAngle));
                     }
-                } else
+                }
+                else
                 {
                     Arc toSplit = (Arc)results[0];
                     results.RemoveAt(0);
@@ -399,7 +405,7 @@ namespace BH.Engine.Structure
             else
                 results.Add(arc.Clone());
 
-                return results;
+            return results;
         }
 
         /***************************************************/
@@ -453,7 +459,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        
+
         private static IEnumerable<ICurve> SplitAtX(ICurve curve, double x, double tol = Tolerance.Distance)
         {
             throw new NotImplementedException("Plastic modulus could not be calculated. Can not perform necessary splitting operation on curves of type " + curve.GetType().Name + ".");

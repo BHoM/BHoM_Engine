@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BH.Engine.Geometry;
+using BH.Engine.Base;
 using System.ComponentModel;
 using BH.Engine.Analytical;
 
@@ -50,6 +51,9 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel.")]
         public static Panel Panel(List<Edge> externalEdges, List<Opening> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
+            if (externalEdges.IsNullOrEmpty() || externalEdges.Any(x => x.IsNull()))
+                return null;
+
             Panel panel = new Panel
             {
                 ExternalEdges = externalEdges,
@@ -72,12 +76,14 @@ namespace BH.Engine.Structure
         [InputFromProperty("property")]
         [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel.")]
-        [Output("panel","The created Panel.")]
+        [Output("panel", "The created Panel.")]
         public static Panel Panel(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
-            if (!outline.IIsClosed())
+            if (outline.IsNull())
+                return null;
+            else if (!outline.IIsClosed())
             {
-                Reflection.Compute.RecordError("Outline not closed. Could not create Panel.");
+                Reflection.Compute.RecordError("Outline is not closed. Could not create Panel.");
                 return null;
             }
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).Where(x => x != null).ToList() : new List<Opening>();
@@ -88,7 +94,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a list of Panels based on a collection of outline curves. \n" + 
+        [Description("Creates a list of Panels based on a collection of outline curves. \n" +
                      "Method will distribute the outlines such that the outermost curve will be assumed to be an external outline of a panel, and any curve contained in this outline will be assumed as an opening of this Panel. \n" +
                      "Any outline curve inside an opening will again be assumed to be the outline of a new Panel.")]
         [Input("outlines", "A collection of outline curves representing outlines of external edges and opening used to create the Panel(s).")]
@@ -98,9 +104,12 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel(s).")]
         public static List<Panel> Panel(List<ICurve> outlines, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
+            if (outlines.IsNullOrEmpty() || outlines.Any(x => x.IsNull()))
+                return null;
+
             List<Panel> result = new List<Panel>();
             List<List<IElement1D>> outlineEdges = outlines.Select(x => x.ISubParts().Select(y => new Edge { Curve = y } as IElement1D).ToList()).ToList();
-            
+
             List<List<List<IElement1D>>> sortedOutlines = outlineEdges.DistributeOutlines(true);
             foreach (List<List<IElement1D>> panelOutlines in sortedOutlines)
             {
@@ -134,7 +143,7 @@ namespace BH.Engine.Structure
         [Output("panel", "The created Panel.")]
         public static Panel Panel(PlanarSurface surface, ISurfaceProperty property = null, Vector localX = null, string name = "")
         {
-            return Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, localX, name);
+            return surface.IsNull() ? null : Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, localX, name);
         }
 
         /***************************************************/

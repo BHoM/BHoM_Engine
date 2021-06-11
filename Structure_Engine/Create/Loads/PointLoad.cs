@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Base;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -49,7 +51,10 @@ namespace BH.Engine.Structure
         public static PointLoad PointLoad(Loadcase loadcase, BHoMGroup<Node> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (force == null && moment == null)
-                throw new ArgumentException("Point force requires either the force or the moment vector to be defined");
+            {
+                Reflection.Compute.RecordError("PointForce requires at least the force or moment vector to be defined");
+                return null;
+            }
 
             return new PointLoad
             {
@@ -75,7 +80,13 @@ namespace BH.Engine.Structure
         [Output("ptLoad", "The created PointLoad.")]
         public static PointLoad PointLoad(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return PointLoad(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, force, moment, axis, name);
+            BHoMGroup<Node> group = new BHoMGroup<Node>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
+            return PointLoad(loadcase, group, force, moment, axis, name);
         }
 
         /***************************************************/

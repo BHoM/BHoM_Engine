@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Loads;
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
+using BH.Engine.Base;
+using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -49,7 +51,11 @@ namespace BH.Engine.Structure
         public static PointAcceleration PointAcceleration(Loadcase loadcase, BHoMGroup<Node> group, Vector translationAcc = null, Vector rotationAcc = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             if (translationAcc == null && rotationAcc == null)
-                throw new ArgumentException("Point acceleration requires either the translation or the rotation vector to be defined");
+            {
+                Reflection.Compute.RecordError("PointAcceleration requires at least the translation or rotation vector to be defined");
+                return null;
+            }
+
 
             return new PointAcceleration
             {
@@ -74,7 +80,13 @@ namespace BH.Engine.Structure
         [Output("ptAcc", "The created PointAcceleration.")]
         public static PointAcceleration PointAcceleration(Loadcase loadcase, IEnumerable<Node> objects, Vector translationAcc = null, Vector rotationAcc = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
-            return PointAcceleration(loadcase, new BHoMGroup<Node>() { Elements = objects.ToList() }, translationAcc, rotationAcc, axis, name);
+            BHoMGroup<Node> group = new BHoMGroup<Node>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
+            return PointAcceleration(loadcase, group, translationAcc, rotationAcc, axis, name);
         }
 
         /***************************************************/
