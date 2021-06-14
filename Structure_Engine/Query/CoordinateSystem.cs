@@ -67,25 +67,15 @@ namespace BH.Engine.Structure
         public static Cartesian CoordinateSystem(this Panel panel)
         {
             Basis orientation = panel?.LocalOrientation();
+            Point centroid = panel?.Centroid();
 
-            Point centroid;
-
-            if (orientation == null)
+            if (orientation != null && centroid == null)
             {
-                return null;
-            }
-            // If Centroid was properly null checked we would not need to check for self-intersection here, we could just call Centroid and check if it returns null.
-            else if (panel.IsSelfIntersecting())
-            {
-                Reflection.Compute.RecordWarning("Centroid of panel could not be calculated as panel is self-intersecting. CoordinateSystem will use average of control points as substitute.");
+                Reflection.Compute.RecordWarning("Panel Centroid could not be calculated. Using control point average as substitute.");
                 centroid = panel.ControlPoints().Average();
             }
-            else
-            {
-                centroid = panel.Centroid();
-            }
 
-            return new Cartesian(centroid, orientation.X, orientation.Y, orientation.Z);
+            return orientation != null ? new Cartesian(centroid, orientation.X, orientation.Y, orientation.Z) : null;
         }
 
         /***************************************************/
