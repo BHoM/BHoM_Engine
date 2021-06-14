@@ -200,6 +200,9 @@ namespace BH.Engine.Geometry
 
         public static PolySurface Project(this PolySurface surface, Plane p)
         {
+            if (surface.IsNull() || p.IsNull())
+                return null;
+
             return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.IProject(p)).ToList() };
         }
 
@@ -210,6 +213,9 @@ namespace BH.Engine.Geometry
 
         public static Mesh Project(this Mesh mesh, Plane p)
         {
+            if (mesh.IsNull() || p.IsNull())
+                return null;
+
             return new Mesh { Vertices = mesh.Vertices.Select(x => x.Project(p)).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
         }
 
@@ -217,6 +223,9 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry Project(this CompositeGeometry group, Plane p)
         {
+            if (group.IsNull() || p.IsNull())
+                return null;
+
             return new CompositeGeometry { Elements = group.Elements.Select(x => x.IProject(p)).ToList() };
         }
 

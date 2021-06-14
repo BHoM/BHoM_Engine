@@ -37,6 +37,9 @@ namespace BH.Engine.Geometry
 
         public static Point Transform(this Point pt, TransformMatrix transform)
         {
+            if (pt.IsNull() || transform.IsNull())
+                return null;
+
             double[,] matrix = transform.Matrix;
 
             return new Point
@@ -51,6 +54,9 @@ namespace BH.Engine.Geometry
 
         public static Vector Transform(this Vector vector, TransformMatrix transform)
         {
+            if (vector.IsNull() || transform.IsNull())
+                return null;
+
             double[,] matrix = transform.Matrix;
 
             return new Vector
@@ -65,6 +71,9 @@ namespace BH.Engine.Geometry
 
         public static Plane Transform(this Plane plane, TransformMatrix transform)
         {
+            if (plane.IsNull() || transform.IsNull())
+                return null;
+
             return new Plane { Origin = plane.Origin.Transform(transform), Normal = plane.Normal.Transform(transform).Normalise() };
         }
 
@@ -72,6 +81,9 @@ namespace BH.Engine.Geometry
 
         public static Basis Transform(this Basis basis, TransformMatrix transform)
         {
+            if (basis.IsNull() || transform.IsNull())
+                return null;
+
             return Create.Basis(basis.X.Transform(transform), basis.Y.Transform(transform));
         }
 
@@ -79,6 +91,9 @@ namespace BH.Engine.Geometry
 
         public static Cartesian Transform(this Cartesian coordinateSystem, TransformMatrix transform)
         {
+            if (coordinateSystem.IsNull() || transform.IsNull())
+                return null;
+
             Point origin = coordinateSystem.Origin.Transform(transform);
             Vector x = coordinateSystem.X.Transform(transform);
 
@@ -95,6 +110,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Arc curve, TransformMatrix transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             if (transform.IsRigidTransformation() || transform.IsUniformScaling())
                 return new Arc
                 {
@@ -114,6 +132,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Circle curve, TransformMatrix transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             if (transform.IsRigidTransformation() || transform.IsUniformScaling())
                 return new Circle
                 {
@@ -132,6 +153,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve Transform(this Ellipse curve, TransformMatrix transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             if (transform.IsRigidTransformation() || transform.IsUniformScaling())
                 return new Ellipse
                 {
@@ -152,6 +176,9 @@ namespace BH.Engine.Geometry
 
         public static Line Transform(this Line curve, TransformMatrix transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new Line { Start = curve.Start.Transform(transform), End = curve.End.Transform(transform) };
         }
 
@@ -159,6 +186,9 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve Transform(this NurbsCurve curve, TransformMatrix transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new NurbsCurve()
             {
                 ControlPoints = curve.ControlPoints.Select(cp => cp.Transform(transform)).ToList(),
@@ -171,6 +201,9 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve Transform(this PolyCurve curve, TransformMatrix transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new PolyCurve { Curves = curve.Curves.Select(x => x.ITransform(transform)).ToList() };
         }
 
@@ -178,6 +211,9 @@ namespace BH.Engine.Geometry
 
         public static Polyline Transform(this Polyline curve, TransformMatrix transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new Polyline { ControlPoints = curve.ControlPoints.Select(x => x.Transform(transform)).ToList() };
         }
 
@@ -188,6 +224,9 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Transform(this Extrusion surface, TransformMatrix transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new Extrusion { Curve = surface.Curve.ITransform(transform), Direction = surface.Direction.Transform(transform), Capped = surface.Capped };
         }
 
@@ -195,6 +234,9 @@ namespace BH.Engine.Geometry
 
         public static Loft Transform(this Loft surface, TransformMatrix transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new Loft { Curves = surface.Curves.Select(x => x.ITransform(transform)).ToList() };
         }
 
@@ -202,6 +244,9 @@ namespace BH.Engine.Geometry
 
         public static NurbsSurface Transform(this NurbsSurface surface, TransformMatrix transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             List<SurfaceTrim> innerTrims = surface.InnerTrims.Select(x => new SurfaceTrim(ITransform(x.Curve3d, transform), x.Curve2d)).ToList();
 
             List<SurfaceTrim> outerTrims = surface.OuterTrims.Select(x => new SurfaceTrim(ITransform(x.Curve3d, transform), x.Curve2d)).ToList();
@@ -221,6 +266,9 @@ namespace BH.Engine.Geometry
 
         public static Pipe Transform(this Pipe surface, TransformMatrix transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new Pipe { Centreline = surface.Centreline.ITransform(transform), Radius = surface.Radius, Capped = surface.Capped };
         }
 
@@ -228,6 +276,9 @@ namespace BH.Engine.Geometry
 
         public static PlanarSurface Transform(this PlanarSurface surface, TransformMatrix transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new PlanarSurface(surface.ExternalBoundary.ITransform(transform), surface.InternalBoundaries.Select(x => x.ITransform(transform)).ToList());
         }
 
@@ -235,6 +286,9 @@ namespace BH.Engine.Geometry
 
         public static PolySurface Transform(this PolySurface surface, TransformMatrix transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.ITransform(transform)).ToList() };
         }
 
@@ -245,6 +299,9 @@ namespace BH.Engine.Geometry
 
         public static Mesh Transform(this Mesh mesh, TransformMatrix transform)
         {
+            if (mesh.IsNull() || transform.IsNull())
+                return null;
+
             return new Mesh { Vertices = mesh.Vertices.Select(x => x.Transform(transform)).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
         }
 
@@ -255,6 +312,9 @@ namespace BH.Engine.Geometry
 
         public static BoundaryRepresentation Transform(this BoundaryRepresentation solid, TransformMatrix transform)
         {
+            if (solid.IsNull() || transform.IsNull())
+                return null;
+
             double volume = solid.Volume;
             if (transform.IsRigidTransformation())
             {
@@ -272,6 +332,9 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry Transform(this CompositeGeometry group, TransformMatrix transform)
         {
+            if (group.IsNull() || transform.IsNull())
+                return null;
+
             return new CompositeGeometry { Elements = group.Elements.Select(x => x.ITransform(transform)).ToList() };
         }
 

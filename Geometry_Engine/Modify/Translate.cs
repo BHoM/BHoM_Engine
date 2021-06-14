@@ -37,6 +37,9 @@ namespace BH.Engine.Geometry
 
         public static Point Translate(this Point pt, Vector transform)
         {
+            if (pt.IsNull() || transform.IsNull())
+                return null;
+
             return pt + transform;
         }
 
@@ -44,6 +47,9 @@ namespace BH.Engine.Geometry
 
         public static Vector Translate(this Vector vector, Vector transform)
         {
+            if (vector.IsNull() || transform.IsNull())
+                return null;
+
             return new Vector { X = vector.X, Y = vector.Y, Z = vector.Z };
         }
 
@@ -51,6 +57,9 @@ namespace BH.Engine.Geometry
 
         public static Plane Translate(this Plane plane, Vector transform)
         {
+            if (plane.IsNull() || transform.IsNull())
+                return null;
+
             return new Plane { Origin = plane.Origin + transform, Normal = plane.Normal.DeepClone() };
         }
 
@@ -58,6 +67,9 @@ namespace BH.Engine.Geometry
 
         public static Cartesian Translate(this Cartesian coordinateSystem, Vector transform)
         {
+            if (coordinateSystem.IsNull() || transform.IsNull())
+                return null;
+
             return new Cartesian(coordinateSystem.Origin + transform, coordinateSystem.X, coordinateSystem.Y, coordinateSystem.Z);
         }
 
@@ -67,6 +79,9 @@ namespace BH.Engine.Geometry
 
         public static Arc Translate(this Arc curve, Vector transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new Arc
             {
                 CoordinateSystem = curve.CoordinateSystem.Translate(transform),
@@ -80,6 +95,9 @@ namespace BH.Engine.Geometry
 
         public static Circle Translate(this Circle curve, Vector transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new Circle { Centre = curve.Centre + transform, Normal = curve.Normal.DeepClone(), Radius = curve.Radius };
         }
 
@@ -87,6 +105,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve Translate(this Ellipse curve, Vector transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             TransformMatrix translationMatrix = Create.TranslationMatrix(transform);
             return Transform(curve, translationMatrix);
         }
@@ -95,6 +116,9 @@ namespace BH.Engine.Geometry
 
         public static Line Translate(this Line curve, Vector transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new Line { Start = curve.Start + transform, End = curve.End + transform };
         }
 
@@ -102,6 +126,9 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve Translate(this NurbsCurve curve, Vector transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             TransformMatrix translationMatrix = Create.TranslationMatrix(transform);
             return Transform(curve, translationMatrix);
         }
@@ -111,6 +138,9 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve Translate(this PolyCurve curve, Vector transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new PolyCurve { Curves = curve.Curves.Select(x => x.ITranslate(transform)).ToList() };
         }
 
@@ -118,6 +148,9 @@ namespace BH.Engine.Geometry
 
         public static Polyline Translate(this Polyline curve, Vector transform)
         {
+            if (curve.IsNull() || transform.IsNull())
+                return null;
+
             return new Polyline { ControlPoints = curve.ControlPoints.Select(x => x + transform).ToList() };
         }
 
@@ -128,6 +161,9 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Translate(this Extrusion surface, Vector transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new Extrusion { Curve = surface.Curve.ITranslate(transform), Direction = surface.Direction.DeepClone(), Capped = surface.Capped };
         }
 
@@ -135,6 +171,9 @@ namespace BH.Engine.Geometry
 
         public static Loft Translate(this Loft surface, Vector transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new Loft { Curves = surface.Curves.Select(x => x.ITranslate(transform)).ToList() };
         }
 
@@ -142,6 +181,9 @@ namespace BH.Engine.Geometry
 
         public static NurbsSurface Translate(this NurbsSurface surface, Vector transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             TransformMatrix translationMatrix = Create.TranslationMatrix(transform);
             return Transform(surface, translationMatrix);
         }
@@ -150,6 +192,9 @@ namespace BH.Engine.Geometry
 
         public static Pipe Translate(this Pipe surface, Vector transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new Pipe { Centreline = surface.Centreline.ITranslate(transform), Radius = surface.Radius, Capped = surface.Capped };
         }
 
@@ -157,6 +202,9 @@ namespace BH.Engine.Geometry
 
         public static PlanarSurface Translate(this PlanarSurface surface, Vector transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new PlanarSurface(surface.ExternalBoundary.ITranslate(transform), surface.InternalBoundaries.Select(x => x.ITranslate(transform)).ToList());
         }
 
@@ -164,6 +212,9 @@ namespace BH.Engine.Geometry
 
         public static PolySurface Translate(this PolySurface surface, Vector transform)
         {
+            if (surface.IsNull() || transform.IsNull())
+                return null;
+
             return new PolySurface { Surfaces = surface.Surfaces.Select(x => x.ITranslate(transform)).ToList() };
         }
 
@@ -174,6 +225,9 @@ namespace BH.Engine.Geometry
 
         public static Mesh Translate(this Mesh mesh, Vector transform)
         {
+            if (mesh.IsNull() || transform.IsNull())
+                return null;
+
             return new Mesh { Vertices = mesh.Vertices.Select(x => x + transform).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
         }
 
@@ -181,6 +235,9 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry Translate(this CompositeGeometry group, Vector transform)
         {
+            if (group.IsNull() || transform.IsNull())
+                return null;
+
             return new CompositeGeometry { Elements = group.Elements.Select(x => x.ITranslate(transform)).ToList() };
         }
 
