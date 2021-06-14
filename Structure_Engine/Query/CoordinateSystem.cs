@@ -67,7 +67,15 @@ namespace BH.Engine.Structure
         public static Cartesian CoordinateSystem(this Panel panel)
         {
             Basis orientation = panel?.LocalOrientation();
-            return orientation != null ? new Cartesian(panel.Centroid(), orientation.X, orientation.Y, orientation.Z) : null;
+            Point centroid = panel?.Centroid();
+
+            if (orientation != null && centroid == null)
+            {
+                Reflection.Compute.RecordWarning("Panel Centroid could not be calculated. Using control point average as substitute.");
+                centroid = panel.ControlPoints().Average();
+            }
+
+            return orientation != null ? new Cartesian(centroid, orientation.X, orientation.Y, orientation.Z) : null;
         }
 
         /***************************************************/
