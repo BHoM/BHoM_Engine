@@ -35,6 +35,9 @@ namespace BH.Engine.Geometry
 
         public static Vector[] Eigenvectors(this TransformMatrix matrix, double tolerance = Tolerance.Distance)
         {
+            if (matrix.IsNull())
+                return null;
+
             return matrix.Matrix.Eigenvectors(tolerance);
         }
 

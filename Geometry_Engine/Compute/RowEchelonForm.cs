@@ -35,6 +35,8 @@ namespace BH.Engine.Geometry
 
         public static double[,] RowEchelonForm(this double[,] imatrix, bool reduced = true, double tolerance = Tolerance.Distance)
         {
+            if (imatrix == null)
+                return null;
             // Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
 
             double[,] matrix = (double[,])imatrix.DeepClone();

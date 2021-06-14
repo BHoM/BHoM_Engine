@@ -96,6 +96,9 @@ namespace BH.Engine.Geometry
 
         public static List<Line> BooleanIntersection(this Line line, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
+            if (line.IsNull() || refLines.Any(x => x.IsNull()))
+                return null;
+
             List<Line> result = new List<Line>();
             if (line.Length() <= tolerance)
                 return result;
@@ -133,6 +136,9 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            if (region.IsNull() || refRegion.IsNull())
+                return null;
+
             if (!region.IsClosed(tolerance) || !refRegion.IsClosed(tolerance))
             {
                 Reflection.Compute.RecordError("Boolean Union works on closed regions.");
