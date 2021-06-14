@@ -34,6 +34,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix TransformMatrix(Quaternion q)
         {
+            if (q.IsNull())
+                return null;
+
             return new TransformMatrix
             {
                 Matrix = new double[,]
@@ -50,6 +53,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix TranslationMatrix(Vector vector)
         {
+            if (vector.IsNull())
+                return null;
+
             return new TransformMatrix
             {
                 Matrix = new double[,]
@@ -82,6 +88,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix RotationMatrix(Point centre, Vector axis, double angle)
         {
+            if (centre.IsNull() || axis.IsNull())
+                return null;
+
             TransformMatrix rotation = TransformMatrix(Quaternion(axis.Normalise(), angle));
             TransformMatrix t1 = TranslationMatrix(centre - oM.Geometry.Point.Origin);
             TransformMatrix t2 = TranslationMatrix(oM.Geometry.Point.Origin - centre);
@@ -93,6 +102,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix ScaleMatrix(Point refPoint, Vector scaleVector)
         {
+            if (refPoint.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix move1 = TranslationMatrix(oM.Geometry.Point.Origin - refPoint);
             TransformMatrix move2 = TranslationMatrix(refPoint - oM.Geometry.Point.Origin);
             TransformMatrix scale = new TransformMatrix
@@ -113,6 +125,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix ProjectionMatrix(Plane plane, Vector vector = null)
         {
+            if (plane.IsNull())
+                return null;
+
             Point x = new Point() { X = 1 };
             Point y = new Point() { Y = 1 };
             Point z = new Point() { Z = 1 };
@@ -160,6 +175,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix RandomMatrix(Random rnd, double minVal = -1, double maxVal = 1)
         {
+            if (rnd == null)
+                return null;
+
             double[,] matrix = new double[4, 4];
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 4; j++)
@@ -173,6 +191,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix OrientationMatrixGlobalToLocal(Cartesian csTo)
         {
+            if (csTo.IsNull())
+                return null;
+
             Vector XWorld = new Vector { X = 1, Y = 0, Z = 0 };
             Vector YWorld = new Vector { X = 0, Y = 1, Z = 0 };
             Vector ZWorld = new Vector { X = 0, Y = 0, Z = 1 };
@@ -199,6 +220,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix OrientationMatrixLocalToGlobal(Cartesian csFrom)
         {
+            if (csFrom.IsNull())
+                return null;
+
             return OrientationMatrixGlobalToLocal(csFrom).Invert();
         }
     
@@ -206,6 +230,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix OrientationMatrix(this Cartesian csFrom, Cartesian csTo)
         {
+            if (csFrom.IsNull() || csTo.IsNull())
+                return null;
+
             return OrientationMatrixGlobalToLocal(csTo) * OrientationMatrixLocalToGlobal(csFrom);
         }
 

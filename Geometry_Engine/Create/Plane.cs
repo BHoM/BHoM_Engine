@@ -41,6 +41,9 @@ namespace BH.Engine.Geometry
 
         public static Plane Plane(Point p1, Point p2, Point p3)
         {
+            if (p1.IsNull() || p2.IsNull() || p3.IsNull())
+                return null;
+
             Vector normal = Query.CrossProduct(p2 - p1, p3 - p1).Normalise();
             return new Plane { Origin = p1.DeepClone(), Normal = normal };
         }
@@ -62,6 +65,9 @@ namespace BH.Engine.Geometry
 
         public static Plane RandomPlane(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             return new Plane
             {
                 Origin = RandomPoint(rnd, box),

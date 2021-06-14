@@ -41,6 +41,9 @@ namespace BH.Engine.Geometry
 
         public static Point Point(Vector v)
         {
+            if(v.IsNull())
+                return null;
+
             return new Point { X = v.X, Y = v.Y, Z = v.Z };
         }
 
@@ -61,6 +64,9 @@ namespace BH.Engine.Geometry
 
         public static Point RandomPoint(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             if (box != null)
             {
                 return new Point

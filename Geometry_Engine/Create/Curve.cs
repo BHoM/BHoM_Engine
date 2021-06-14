@@ -43,6 +43,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve RandomCurve(Random rnd, BoundingBox box = null, bool closed = false)
         {
+            if (rnd == null)
+                return null;
+
             int nb = rnd.Next(5);
             switch (nb)
             {
@@ -73,6 +76,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve RandomCurve(Point from, Random rnd, BoundingBox box = null, bool closed = false)
         {
+            if (from.IsNull() || rnd == null)
+                return null;
+
             int nb = rnd.Next(3);
             switch (nb)
             {

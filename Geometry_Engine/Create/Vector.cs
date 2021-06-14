@@ -40,6 +40,9 @@ namespace BH.Engine.Geometry
 
         public static Vector Vector(Point v)
         {
+            if (v.IsNull())
+                return null;
+
             return new Vector { X = v.X, Y = v.Y, Z = v.Z };
         }
 
@@ -47,6 +50,9 @@ namespace BH.Engine.Geometry
 
         public static Vector Vector(Point a, Point b)
         {
+            if (a.IsNull() || b.IsNull())
+                return null;
+
             return b - a;
         }
 
@@ -54,6 +60,9 @@ namespace BH.Engine.Geometry
 
         public static Vector Vector(Point v,string name)
         {
+            if (v.IsNull())
+                return null;
+
             return new Vector { X = v.X, Y = v.Y, Z = v.Z };
         }
         /***************************************************/
@@ -72,6 +81,9 @@ namespace BH.Engine.Geometry
 
         public static Vector RandomVector(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             if (box != null)
             {
                 return new Vector
@@ -89,6 +101,9 @@ namespace BH.Engine.Geometry
 
         public static Vector RandomVectorInPlane(Plane plane, bool normalise = false, int seed = -1)
         {
+            if (plane.IsNull())
+                return null;
+
             if (seed == -1)
                 seed = m_Random.Next();
             Random rnd = new Random(seed);
@@ -99,6 +114,9 @@ namespace BH.Engine.Geometry
 
         public static Vector RandomVectorInPlane(Plane plane, Random rnd, bool normalise = false)
         {
+            if (plane.IsNull() || rnd == null)
+                return null;
+
             Vector v1 = RandomVector(rnd);
 
             if (v1.IsParallel(plane.Normal) != 0)

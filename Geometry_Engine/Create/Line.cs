@@ -44,6 +44,9 @@ namespace BH.Engine.Geometry
 
         public static Line Line(Point start, Vector direction)
         {
+            if (start.IsNull() || direction.IsNull())
+                return null;
+
             return new Line
             {
                 Start = start,
@@ -69,6 +72,9 @@ namespace BH.Engine.Geometry
 
         public static Line RandomLine(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             return new Line
             {
                 Start = RandomPoint(rnd, box),
@@ -90,6 +96,9 @@ namespace BH.Engine.Geometry
 
         public static Line RandomLine(Point from, Random rnd, BoundingBox box = null)
         {
+            if (from.IsNull() || rnd == null)
+                return null;
+
             return new Line
             {
                 Start = from,

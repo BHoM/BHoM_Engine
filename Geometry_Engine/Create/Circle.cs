@@ -57,6 +57,9 @@ namespace BH.Engine.Geometry
 
         public static Circle Circle(Point pt1, Point pt2, Point pt3, double tolerance = Tolerance.Distance)
         {
+            if (pt1.IsNull() || pt2.IsNull() || pt3.IsNull())
+                return null;
+
             Vector v1 = pt1 - pt3;
             Vector v2 = pt2 - pt3;
             Vector normal = v1.CrossProduct(v2).Normalise();
@@ -88,6 +91,9 @@ namespace BH.Engine.Geometry
 
         public static Circle RandomCircle(Random rnd, BoundingBox box = null)
         {
+            if(rnd == null)
+                retun null;
+
             if (box == null)
             {
                 return new Circle

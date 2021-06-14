@@ -46,6 +46,9 @@ namespace BH.Engine.Geometry
 
         public static ISurface RandomSurface(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             int nb = rnd.Next(4);
             switch (nb)
             {

@@ -55,6 +55,9 @@ namespace BH.Engine.Geometry
 
         public static PolySurface RandomPolySurface(Random rnd, BoundingBox box = null, int minNbSurfaces = 2, int maxNbSurfaces = 10)
         {
+            if (rnd == null)
+                return null;
+
             List<ISurface> surfaces = new List<ISurface>();
             for (int i = 0; i < rnd.Next(minNbSurfaces, maxNbSurfaces + 1); i++)
             {

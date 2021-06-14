@@ -46,6 +46,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox BoundingBox(Point centre, Vector extent)
         {
+            if (centre.IsNull() || extent.IsNull())
+                return null;
+
             return new BoundingBox
             {
                 Min = new Point { X = centre.X - extent.X, Y = centre.Y - extent.Y, Z = centre.Z - extent.Z },
@@ -61,6 +64,9 @@ namespace BH.Engine.Geometry
         [Output("boundingBox", "BoundingBox based on the properties of the cuboid.")]
         public static BoundingBox BoundingBox(this Cuboid globallyAlignedCuboid)
         {
+            if (globallyAlignedCuboid.IsNull())
+                return null;
+
             return new BoundingBox
             {
                 Min = new Point { X = -globallyAlignedCuboid.Length / 2, Y = -globallyAlignedCuboid.Depth / 2, Z = -globallyAlignedCuboid.Height / 2 },
@@ -84,6 +90,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox RandomBoundingBox(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             Point p1 = RandomPoint(rnd, box);
             Point p2 = RandomPoint(rnd, box);
             return new BoundingBox

@@ -40,6 +40,9 @@ namespace BH.Engine.Geometry
 
         public static Quaternion Quaternion(Vector axis, double angle)
         {
+            if (axis.IsNull())
+                return null;
+
             double sin = Math.Sin(angle / 2);
             return new Quaternion
             {
@@ -67,6 +70,9 @@ namespace BH.Engine.Geometry
 
         public static Quaternion RandomQuaternion(Random rnd)
         {
+            if (rnd == null)
+                return null;
+
             return new Quaternion { X = rnd.NextDouble(), Y = rnd.NextDouble(), Z = rnd.NextDouble(), W = rnd.NextDouble() }.Normalise();
         }
 

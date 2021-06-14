@@ -36,6 +36,8 @@ namespace BH.Engine.Geometry
         [Description("Creates a Cartesian CoordinateSystem. x and y will be unitised. If x and why are non-orthogonal, y will be made orthogonal to x, while x will be kept")]
         public static Cartesian CartesianCoordinateSystem(Point origin, Vector x, Vector y)
         {
+            if (origin.IsNull() || x.IsNull() || y.IsNull())
+                return null;
 
             x = x.Normalise();
             y = y.Normalise();
@@ -74,6 +76,9 @@ namespace BH.Engine.Geometry
 
         public static Cartesian RandomCartesianCoordinateSystem(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             Vector x = RandomVector(rnd, box);
             Vector y = RandomVector(rnd, box);
 

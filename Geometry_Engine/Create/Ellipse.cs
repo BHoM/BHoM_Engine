@@ -46,6 +46,9 @@ namespace BH.Engine.Geometry
 
         public static Ellipse Ellipse(Point centre, Vector axis1, Vector axis2, double radius1, double radius2)
         {
+            if (centre.IsNull() || axis1.IsNull() || axis2.IsNull())
+                return null;
+
             if (Math.Abs(axis1.DotProduct(axis2)) > Tolerance.Angle)
                 Reflection.Compute.RecordWarning("Axis1 and axis2 are not orthogonal. Result may be wrong.");
 
@@ -76,6 +79,9 @@ namespace BH.Engine.Geometry
 
         public static Ellipse RandomEllipse(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             if (box == null)
             {
                 Vector axis1 = RandomVector(rnd).Normalise();

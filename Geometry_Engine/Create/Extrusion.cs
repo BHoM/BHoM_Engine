@@ -58,6 +58,9 @@ namespace BH.Engine.Geometry
 
         public static Extrusion RandomExtrusion(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             if (box == null)
             {
                 return new Extrusion
