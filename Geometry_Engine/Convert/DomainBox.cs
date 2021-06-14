@@ -37,6 +37,9 @@ namespace BH.Engine.Geometry
 
         public static DomainBox DomainBox(this BoundingBox box)
         {
+            if (box.IsNull())
+                return null;
+
             return new oM.Data.Collections.DomainBox()
             {
                 Domains = new Domain[]

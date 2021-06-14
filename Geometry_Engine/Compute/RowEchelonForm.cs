@@ -97,6 +97,9 @@ namespace BH.Engine.Geometry
 
         public static int CountNonZeroRows(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
+            if (matrix == null)
+                return 0;
+
             int m = matrix.GetLength(0);
             int n = matrix.GetLength(1);
             int c = 0;
@@ -120,6 +123,9 @@ namespace BH.Engine.Geometry
 
         public static double REFTolerance(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
+            if (matrix == null)
+                return 0;
+
             int d1 = matrix.GetLength(0);
             int d2 = matrix.GetLength(1);
             double maxRowSum = 0;
