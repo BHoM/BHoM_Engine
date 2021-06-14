@@ -36,6 +36,9 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve SortCurves(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull())
+                return null;
+
             if (curve.Curves.Count < 2)
                 return curve.DeepClone();
 

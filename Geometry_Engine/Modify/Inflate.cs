@@ -32,6 +32,9 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Inflate(this BoundingBox box, double amount)
         {
+            if (box.IsNull())
+                return null;
+
             Vector extents = new Vector { X = amount, Y = amount, Z = amount };
             return new BoundingBox { Min = box.Min - extents, Max = box.Max + extents };
         }

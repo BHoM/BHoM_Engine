@@ -36,6 +36,9 @@ namespace BH.Engine.Geometry
 
         public static Point Scale(this Point pt, Point origin, Vector scaleVector)
         {
+            if (pt.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(pt, scaleMatrix);
         }
@@ -44,6 +47,9 @@ namespace BH.Engine.Geometry
 
         public static Vector Scale(this Vector vector, Point origin, Vector scaleVector)
         {
+            if (vector.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             return new Vector { X = vector.X * scaleVector.X, Y = vector.Y * scaleVector.Y, Z = vector.Z * scaleVector.Z };
         }
 
@@ -51,6 +57,9 @@ namespace BH.Engine.Geometry
 
         public static Plane Scale(this Plane plane, Point origin, Vector scaleVector)
         {
+            if (plane.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(plane, scaleMatrix);
         }
@@ -62,6 +71,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve Scale(this Arc curve, Point origin, Vector scaleVector)
         {
+            if (curve.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(curve, scaleMatrix);
         }
@@ -70,6 +82,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve Scale(this Circle curve, Point origin, Vector scaleVector)
         {
+            if (curve.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(curve, scaleMatrix);
         }
@@ -78,6 +93,9 @@ namespace BH.Engine.Geometry
 
         public static ICurve Scale(this Ellipse curve, Point origin, Vector scaleVector)
         {
+            if (curve.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(curve, scaleMatrix);
         }
@@ -86,6 +104,9 @@ namespace BH.Engine.Geometry
         
         public static Line Scale(this Line curve, Point origin, Vector scaleVector)
         {
+            if (curve.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(curve, scaleMatrix);
         }
@@ -94,6 +115,9 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve Scale(this NurbsCurve curve, Point origin, Vector scaleVector)
         {
+            if (curve.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(curve, scaleMatrix);
         }
@@ -103,6 +127,9 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve Scale(this PolyCurve curve, Point origin, Vector scaleVector)
         {
+            if (curve.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(curve, scaleMatrix);
         }
@@ -111,6 +138,9 @@ namespace BH.Engine.Geometry
 
         public static Polyline Scale(this Polyline curve, Point origin, Vector scaleVector)
         {
+            if (curve.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(curve, scaleMatrix);
         }
@@ -122,6 +152,9 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Scale(this Extrusion surface, Point origin, Vector scaleVector)
         {
+            if (surface.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(surface, scaleMatrix);
         }
@@ -130,6 +163,9 @@ namespace BH.Engine.Geometry
 
         public static Loft Scale(this Loft surface, Point origin, Vector scaleVector)
         {
+            if (surface.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(surface, scaleMatrix);
         }
@@ -138,6 +174,9 @@ namespace BH.Engine.Geometry
 
         public static NurbsSurface Scale(this NurbsSurface surface, Point origin, Vector scaleVector)
         {
+            if (surface.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return surface.Transform(scaleMatrix);
         }
@@ -146,6 +185,9 @@ namespace BH.Engine.Geometry
 
         public static Pipe Scale(this Pipe surface, Point origin, Vector scaleVector)
         {
+            if (surface.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(surface, scaleMatrix);
         }
@@ -154,6 +196,9 @@ namespace BH.Engine.Geometry
 
         public static PlanarSurface Scale(this PlanarSurface surface, Point origin, Vector scaleVector)
         {
+            if (surface.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return surface.Transform(scaleMatrix);
         }
@@ -162,6 +207,9 @@ namespace BH.Engine.Geometry
 
         public static PolySurface Scale(this PolySurface surface, Point origin, Vector scaleVector)
         {
+            if (surface.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(surface, scaleMatrix);
         }
@@ -173,6 +221,9 @@ namespace BH.Engine.Geometry
 
         public static Mesh Scale(this Mesh mesh, Point origin, Vector scaleVector)
         {
+            if (mesh.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(mesh, scaleMatrix);
         }
@@ -181,6 +232,9 @@ namespace BH.Engine.Geometry
 
         public static Cartesian Scale(this Cartesian coordinate, Point origin, Vector scaleVector)
         {
+            if (coordinate.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             return new Cartesian(coordinate.Origin.Scale(origin, scaleVector), coordinate.X, coordinate.Y, coordinate.Z);
         }
 
@@ -188,6 +242,9 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry Scale(this CompositeGeometry group, Point origin, Vector scaleVector)
         {
+            if (group.IsNull() || origin.IsNull() || scaleVector.IsNull())
+                return null;
+
             TransformMatrix scaleMatrix = Create.ScaleMatrix(origin, scaleVector);
             return Transform(group, scaleMatrix);
         }

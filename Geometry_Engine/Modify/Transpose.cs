@@ -32,6 +32,9 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix Transpose(this TransformMatrix transform)
         {
+            if (transform.IsNull())
+                return null;
+
             return new TransformMatrix { Matrix = transform.Matrix.Transpose() };
         }
 
@@ -39,6 +42,9 @@ namespace BH.Engine.Geometry
 
         public static double[,] Transpose(this double[,] matrix)
         {
+            if (matrix == null)
+                return null;
+
             int h = matrix.GetLength(0);
             int w = matrix.GetLength(1);
             double[,] transpose = new double[w, h];

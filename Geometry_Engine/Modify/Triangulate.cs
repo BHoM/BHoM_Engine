@@ -33,6 +33,9 @@ namespace BH.Engine.Geometry
 
         public static Mesh Triangulate(this Mesh mesh)
         {
+            if (mesh.IsNull())
+                return null;
+
             Mesh tMesh = new Mesh();
             List<Point> vertices = mesh.Vertices;
             List<Face> faces = mesh.Faces;
