@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
         public static Circle RandomCircle(Random rnd, BoundingBox box = null)
         {
             if(rnd == null)
-                retun null;
+                return null;
 
             if (box == null)
             {

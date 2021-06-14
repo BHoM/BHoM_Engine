@@ -96,7 +96,7 @@ namespace BH.Engine.Geometry
 
         public static List<Line> BooleanIntersection(this Line line, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
-            if (line.IsNull() || refLines.Any(x => x.IsNull()))
+            if (line.IsNull() || refLines.IsNullOrContainsNulls())
                 return null;
 
             List<Line> result = new List<Line>();
