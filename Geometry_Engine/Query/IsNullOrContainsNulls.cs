@@ -22,17 +22,19 @@ namespace BH.Engine.Geometry
         [Output("isNull", "True if the List of Geometry is null or it contains nulls.")]
         public static bool IsNullOrContainsNulls(this IEnumerable<IGeometry> geometries, string msg = "", [CallerMemberName] string methodName = "")
         {
+            //check the collection
             if (geometries == null)
             {
                 if (string.IsNullOrEmpty(methodName))
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg}");
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg} . The collection is null.");
 
                 return true;
             }
-            return geometries.Any(x => x.IsNull(msg, methodName));
+            //check the geometry contained in the collection
+            return geometries.Any(x => IIsNull(x as dynamic, msg + " One or more of elements the in the collection failed a null test.", methodName));
         }
     }
 }
