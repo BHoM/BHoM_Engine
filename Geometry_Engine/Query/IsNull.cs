@@ -319,7 +319,7 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Polyline", msg);
                 return true;
             }
-            if (geometry.ControlPoints.IsNullOrContainsNulls(msg + " Polyline.ControlPoints failed a null test." + msg, methodName))
+            if (geometry.ControlPoints.IsNullOrContainsNulls(msg + " Polyline.ControlPoints failed a null test.", methodName))
                 return true;
 
             return false;
@@ -425,7 +425,7 @@ namespace BH.Engine.Geometry
                 return true;
             }
             //check attributes
-            return IsNull(geometry as dynamic, msg + "One or more nested attributes was found to be null", methodName);
+            return IsNull(geometry as dynamic, msg + " One or more nested attributes was found to be null.", methodName);
         }
 
         /***************************************************/

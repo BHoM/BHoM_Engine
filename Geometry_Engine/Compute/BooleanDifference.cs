@@ -130,7 +130,7 @@ namespace BH.Engine.Geometry
         
         public static List<Polyline> BooleanDifference(this Polyline region, List<Polyline> refRegions, double tolerance = Tolerance.Distance)
         {
-            if (region.IsNull() || refRegions.IsNullOrContainsNulls())
+            if (region.IsNull("Argument region failed a null test.") || refRegions.IsNullOrContainsNulls("Argument refRegions failed a null test."))
                 return null;
 
             if (!region.IsClosed(tolerance) || refRegions.Any(x => !x.IsClosed()))

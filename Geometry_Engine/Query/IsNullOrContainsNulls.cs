@@ -29,7 +29,7 @@ namespace BH.Engine.Geometry
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg} . The collection is null.");
+                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg} The collection is null.");
 
                 return true;
             }
