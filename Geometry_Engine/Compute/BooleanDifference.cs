@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
-            if (line.IIsNull() || refLine.IIsNull())
+            if (line.IsNull() || refLine.IsNull())
                 return null;
 
             if (refLine.Length() <= tolerance)
@@ -130,7 +130,7 @@ namespace BH.Engine.Geometry
         
         public static List<Polyline> BooleanDifference(this Polyline region, List<Polyline> refRegions, double tolerance = Tolerance.Distance)
         {
-            if (region.IIsNull() || refRegions.IsNullOrContainsNulls())
+            if (region.IsNull() || refRegions.IsNullOrContainsNulls())
                 return null;
 
             if (!region.IsClosed(tolerance) || refRegions.Any(x => !x.IsClosed()))
