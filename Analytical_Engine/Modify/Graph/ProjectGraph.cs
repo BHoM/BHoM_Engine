@@ -50,6 +50,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The required IView.")]
         [Output("graph", "The projection of the original Graph.")]
+        [PreviousVersion("5.0", "BH.Engine.Analytical.Modify.IProjectGraph(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.IProjection)")]
         public static Graph<T> IProjectGraph<T>(this Graph<T> graph, IProjection projection)
             where T : IBHoMObject
         {
@@ -63,6 +64,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The SpatialView.")]
         [Output("graph", "The spatial Graph.")]
+        [PreviousVersion("5.0", "BH.Engine.Analytical.Modify.IProjectGraph(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.GeometricProjection)")]
         private static Graph<T> ProjectGraph<T>(this Graph<T> graph, GeometricProjection projection)
             where T : IBHoMObject
         {
@@ -82,6 +84,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The SpatialView.")]
         [Output("graph", "The spatial Graph.")]
+        [PreviousVersion("5.0", "BH.Engine.Analytical.Modify.IProjectGraph(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.SpatialProjection)")]
         private static Graph<T> ProjectGraph<T>(this Graph<T> graph, SpatialProjection projection)
             where T : IBHoMObject
         {
@@ -97,6 +100,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to query.")]
         [Input("projection", "The ProcessView.")]
         [Output("graph", "The process Graph.")]
+        [PreviousVersion("5.0", "BH.Engine.Analytical.Modify.IProjectGraph(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.GraphicalProjection)")]
 
         private static Graph<T> ProjectGraph<T>(this Graph<T> graph,  GraphicalProjection projection)
             where T : IBHoMObject
