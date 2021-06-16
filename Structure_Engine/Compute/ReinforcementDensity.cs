@@ -48,22 +48,8 @@ namespace BH.Engine.Structure
         [Output("reinforcementDensity", "The ReinforcementDensity calculated using the inputs provided.")]
         public static ReinforcementDensity ReinforcementDensity(BarRequiredArea barRequiredArea, List<Bar> bars, List<IMaterialFragment> materials)
         {
-            //Add to IsNull when PR is merged
-            if(barRequiredArea == null)
-            {
-                Reflection.Compute.RecordError("The BarRequiredArea is null and therefore the ReinforcementDensity cannot be calculated.");
+            if (barRequiredArea.IsNull() || materials.IsNullOrEmpty() || materials.Any(x => x.IsNull()) || bars.IsNullOrEmpty() || bars.Any(x => x.IsNull()))
                 return null;
-            }
-            else if(materials == null || materials.All(x => x == null))
-            {
-                Reflection.Compute.RecordError("The Materials are null, these are required to calculate the density of the reinforcing objects.");
-                return null;
-            }
-            else if (bars == null || bars.All(x => x == null))
-            {
-                Reflection.Compute.RecordError("The Bars are null, these are required to calculate the density of the reinforcing objects.");
-                return null;
-            }
 
             Dictionary<string, IMaterialFragment> materialsDict = materials.ToDictionary(x => x.Name);
 
@@ -78,11 +64,8 @@ namespace BH.Engine.Structure
                 ids.Add((((IAdapterId)id).Id.ToString()));
             }
 
-            if(ids.Count == 0)
-            {
-                Reflection.Compute.RecordError("No ids were found within the Bars, therefore the ReinforcementDensity cannot be evaluated.");
+            if (ids.IsNullOrEmpty())
                 return null;
-            }
 
             Dictionary<string, Bar> barsDict = ids.Zip(bars, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
 
@@ -93,11 +76,9 @@ namespace BH.Engine.Structure
             if(materialsDict.TryGetValue(barRequiredArea.MaterialName, out material) && barsDict.TryGetValue(barRequiredArea.ObjectId.ToString(), out resultBar))
             {
                 //Calculate the volume of the Bar
-                if(resultBar.SectionProperty == null)
-                {
-                    Reflection.Compute.RecordError("The Bar defined in the BarRequiredArea does not have a SectionProperty. Therefore, the ReinforcementDensity cannot be evaluated.");
+                if (resultBar.SectionProperty.IsNull())
                     return null;
-                }
+
                 double elementArea = resultBar.SectionProperty.Area;
                 double reinforcedArea = barRequiredArea.SumRequiredArea();
                 double density = material.Density;
