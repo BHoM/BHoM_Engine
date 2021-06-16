@@ -44,14 +44,7 @@ namespace BH.Engine.Structure
         [Output("total", "The total required area.")]
         public static double SumRequiredArea(this BarRequiredArea barRequiredArea)
         {
-            //Add to IsNull when PR is merged
-            if (barRequiredArea == null)
-            {
-                Reflection.Compute.RecordError("The BarRequiredArea is null and therefore the ReinforcementDensity cannot be calculated.");
-                return 0;
-            }
-
-            return barRequiredArea.Top + barRequiredArea.Bottom + barRequiredArea.Perimeter + barRequiredArea.Shear + barRequiredArea.Torsion;
+            return barRequiredArea.IsNull() ? 0 : barRequiredArea.Top + barRequiredArea.Bottom + barRequiredArea.Perimeter + barRequiredArea.Shear + barRequiredArea.Torsion;
         }
 
         /***************************************************/
@@ -61,14 +54,7 @@ namespace BH.Engine.Structure
         [Output("total", "The total required area.")]
         public static double SumRequiredArea(this MeshRequiredArea meshRequiredArea)
         {
-            //Add to IsNull when PR is merged
-            if (meshRequiredArea == null)
-            {
-                Reflection.Compute.RecordError("The BarRequiredArea is null and therefore the ReinforcementDensity cannot be calculated.");
-                return 0;
-            }
-
-            return meshRequiredArea.Top + meshRequiredArea.Bottom + meshRequiredArea.Shear + meshRequiredArea.Torsion;
+            return meshRequiredArea.IsNull() ? 0 : meshRequiredArea.TopPrimary + meshRequiredArea.TopSecondary + meshRequiredArea.BottomPrimary + meshRequiredArea.BottomSecondary + meshRequiredArea.Shear + meshRequiredArea.Torsion;
         }
 
         /***************************************************/

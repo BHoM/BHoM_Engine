@@ -24,8 +24,10 @@ using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Structure.Constraints;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.Fragments;
 using BH.oM.Structure.Loads;
 using BH.oM.Structure.MaterialFragments;
+using BH.oM.Structure.Results;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Structure.SurfaceProperties;
@@ -431,6 +433,54 @@ namespace BH.Engine.Structure
             if (loadCase == null)
             {
                 ErrorMessage(methodName, "Case", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a ReinforcementDensity is null and outputs relevant error message.")]
+        [Input("reinforcementDensity", "The ReinforcementDensity to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the ReinforcementDensity is null.")]
+        public static bool IsNull(this ReinforcementDensity reinforcementDensity, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (reinforcementDensity == null)
+            {
+                ErrorMessage(methodName, "ReinforcementDensity", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a BarRequiredArea is null and outputs relevant error message.")]
+        [Input("barRequiredArea", "The BarRequiredArea to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the BarRequiredArea is null.")]
+        public static bool IsNull(this BarRequiredArea barRequiredArea, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (barRequiredArea == null)
+            {
+                ErrorMessage(methodName, "BarRequiredArea", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a MeshRequiredArea is null and outputs relevant error message.")]
+        [Input("meshRequiredArea", "The MeshRequiredArea to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the MeshRequiredArea is null.")]
+        public static bool IsNull(this MeshRequiredArea meshRequiredArea, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (meshRequiredArea == null)
+            {
+                ErrorMessage(methodName, "MeshRequiredArea", msg);
                 return true;
             }
 
