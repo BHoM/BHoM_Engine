@@ -49,12 +49,7 @@ namespace BH.Engine.Geometry
         {
             if (geometry == null)
             {
-                if (string.IsNullOrEmpty(methodName))
-                {
-                    methodName = "Method";
-                }
                 ErrorMessage(methodName, "Geometry", msg);
-
                 return true;
             }
 
@@ -481,6 +476,10 @@ namespace BH.Engine.Geometry
 
         private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
         {
+            if (string.IsNullOrEmpty(methodName))
+            {
+                methodName = "Method";
+            }
             Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
         }
 
