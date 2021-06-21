@@ -127,7 +127,7 @@ namespace BH.Engine.Geometry
             }
 
             return result;
-        }IsNull()
+        }
 
 
         /***************************************************/

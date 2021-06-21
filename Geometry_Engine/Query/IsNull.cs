@@ -54,7 +54,7 @@ namespace BH.Engine.Geometry
                     methodName = "Method";
                 }
                 ErrorMessage(methodName, "Geometry", msg);
-                
+
                 return true;
             }
 
@@ -449,6 +449,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surface                  ****/
         /***************************************************/
 
+        /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
         [Description("Checks if an IGeometry is null and outputs a relevant error message.")]
         [Input("geometry", "The IGeometry to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -466,6 +470,10 @@ namespace BH.Engine.Geometry
             return IsNull(geometry as dynamic, msg, methodName, deepCheck);
            
         }
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
 
         /***************************************************/
         /**** Private Methods                           ****/

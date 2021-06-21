@@ -23,7 +23,7 @@ namespace BH.Engine.Geometry
         [Output("isNull", "True if the List of Geometry is null or it contains nulls.")]
         public static bool ContainsNulls(this IEnumerable<IGeometry> geometries, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
-            if (geometries.IsNullOrEmpty(methodName))
+            if (geometries.IsNullOrEmpty(msg, methodName))
             {
                 if (string.IsNullOrEmpty(methodName))
                 {
