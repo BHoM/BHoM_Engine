@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
 
         public static Point Point(Vector v)
         {
-            if(v.IsNull())
+            if(v.IsNull(deepCheck: true))
                 return null;
 
             return new Point { X = v.X, Y = v.Y, Z = v.Z };

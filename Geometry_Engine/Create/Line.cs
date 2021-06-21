@@ -44,7 +44,7 @@ namespace BH.Engine.Geometry
 
         public static Line Line(Point start, Vector direction)
         {
-            if (start.IsNull() || direction.IsNull())
+            if (start.IsNull(deepCheck: true) || direction.IsNull(deepCheck: true))
                 return null;
 
             return new Line
@@ -96,7 +96,7 @@ namespace BH.Engine.Geometry
 
         public static Line RandomLine(Point from, Random rnd, BoundingBox box = null)
         {
-            if (from.IsNull() || rnd == null)
+            if (from.IsNull(deepCheck: true) || rnd == null)
                 return null;
 
             return new Line

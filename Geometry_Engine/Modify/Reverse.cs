@@ -44,7 +44,7 @@ namespace BH.Engine.Geometry
 
         public static Line Reverse(this Line line)
         {
-            if (line.IsNull())
+            if (line.IsNull(deepCheck: true))
                 return null;
 
             return new Line { Start = line.End, End = line.Start, Infinite = line.Infinite };

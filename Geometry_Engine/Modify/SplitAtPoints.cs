@@ -88,7 +88,7 @@ namespace BH.Engine.Geometry
 
         public static List<ICurve> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (circle.IsNull() || points.IsNullOrContainsNulls())
+            if (circle.IsNull(deepCheck: true) || points.ContainsNulls(deepCheck: true))
                 return null;
 
             List<ICurve> result = new List<ICurve>();
@@ -159,7 +159,7 @@ namespace BH.Engine.Geometry
 
         public static List<Line> SplitAtPoints(this Line line, List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (line.IsNull() || points.IsNullOrContainsNulls())
+            if (line.IsNull(deepCheck: true) || points.ContainsNulls(deepCheck: true))
                 return null;
 
             List<Line> result = new List<Line>();

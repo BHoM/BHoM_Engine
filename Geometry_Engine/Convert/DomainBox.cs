@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static DomainBox DomainBox(this BoundingBox box)
         {
-            if (box.IsNull())
+            if (box.IsNull(deepCheck: true))
                 return null;
 
             return new oM.Data.Collections.DomainBox()

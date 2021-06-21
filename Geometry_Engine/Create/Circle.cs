@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
 
         public static Circle Circle(Point pt1, Point pt2, Point pt3, double tolerance = Tolerance.Distance)
         {
-            if (pt1.IsNull() || pt2.IsNull() || pt3.IsNull())
+            if (pt1.IsNull(deepCheck: true) || pt2.IsNull(deepCheck: true) || pt3.IsNull(deepCheck: true))
                 return null;
 
             Vector v1 = pt1 - pt3;

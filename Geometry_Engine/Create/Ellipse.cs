@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
 
         public static Ellipse Ellipse(Point centre, Vector axis1, Vector axis2, double radius1, double radius2)
         {
-            if (centre.IsNull() || axis1.IsNull() || axis2.IsNull())
+            if (centre.IsNull(deepCheck: true) || axis1.IsNull(deepCheck: true) || axis2.IsNull(deepCheck: true))
                 return null;
 
             if (Math.Abs(axis1.DotProduct(axis2)) > Tolerance.Angle)

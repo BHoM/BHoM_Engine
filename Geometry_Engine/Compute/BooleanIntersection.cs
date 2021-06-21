@@ -96,7 +96,7 @@ namespace BH.Engine.Geometry
 
         public static List<Line> BooleanIntersection(this Line line, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
-            if (line.IsNull() || refLines.IsNullOrContainsNulls())
+            if (line.IsNull(deepCheck: true) || refLines.ContainsNulls(deepCheck: true))
                 return null;
 
             List<Line> result = new List<Line>();
@@ -127,7 +127,7 @@ namespace BH.Engine.Geometry
             }
 
             return result;
-        }
+        }IsNull()
 
 
         /***************************************************/
@@ -136,7 +136,7 @@ namespace BH.Engine.Geometry
 
         public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            if (region.IsNull() || refRegion.IsNull())
+            if (region.IsNull(deepCheck: true) || refRegion.IsNull(deepCheck: true))
                 return null;
 
             if (!region.IsClosed(tolerance) || !refRegion.IsClosed(tolerance))

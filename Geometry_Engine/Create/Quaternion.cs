@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
 
         public static Quaternion Quaternion(Vector axis, double angle)
         {
-            if (axis.IsNull())
+            if (axis.IsNull(deepCheck: true))
                 return null;
 
             double sin = Math.Sin(angle / 2);

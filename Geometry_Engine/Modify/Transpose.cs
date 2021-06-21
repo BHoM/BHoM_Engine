@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix Transpose(this TransformMatrix transform)
         {
-            if (transform.IsNull())
+            if (transform.IsNull(deepCheck: true))
                 return null;
 
             return new TransformMatrix { Matrix = transform.Matrix.Transpose() };

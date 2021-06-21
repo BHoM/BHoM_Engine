@@ -103,7 +103,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this Arc curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return (Plane)curve.CoordinateSystem;
@@ -113,7 +113,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this Circle curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return new Plane { Origin = curve.Centre, Normal = curve.Normal };
@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this Ellipse curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return new Plane { Origin = curve.Centre, Normal = curve.Axis1.CrossProduct(curve.Axis2).Normalise() };
@@ -133,7 +133,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this Line curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return null;
@@ -143,7 +143,7 @@ namespace BH.Engine.Geometry
         
         public static Plane FitPlane(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return curve.ControlPoints.FitPlane();
@@ -153,7 +153,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return FitPlane(curve.ControlPoints(), tolerance);
@@ -163,7 +163,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this Polyline curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return FitPlane(curve.ControlPoints, tolerance);
@@ -176,7 +176,7 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this PlanarSurface surface, double tolerance = Tolerance.Distance)
         {
-            if (surface.IsNull())
+            if (surface.IsNull(deepCheck: true))
                 return null;
 
             return IFitPlane(surface.ExternalBoundary, tolerance);
@@ -189,7 +189,7 @@ namespace BH.Engine.Geometry
 
         public static Plane IFitPlane(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return FitPlane(curve as dynamic, tolerance);

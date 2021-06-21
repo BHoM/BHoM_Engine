@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix Invert(this TransformMatrix transform)
         {
-            if (transform.IsNull())
+            if (transform.IsNull(deepCheck: true))
                 return null;
 
             double[,] m = transform.Matrix;

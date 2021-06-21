@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static List<Line> BooleanUnion(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
-            if (line.IsNull() || refLine.IsNull())
+            if (line.IsNull(deepCheck: true) || refLine.IsNull(deepCheck: true))
                 return null;
 
             if (line.IsCollinear(refLine, tolerance))

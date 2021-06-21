@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
         [Output("Basis", "An orthogonal vector basis with all unit vectors")]
         public static Basis Basis(Vector x, Vector y)
         {
-            if (x.IsNull() || y.IsNull())
+            if (x.IsNull(deepCheck: true) || y.IsNull(deepCheck: true))
                 return null;
 
             x = x.Normalise();

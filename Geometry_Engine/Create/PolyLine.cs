@@ -83,7 +83,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline RandomPolyline(Point from, int seed = -1, BoundingBox box = null, int minNbCPs = 3, int maxNbCPs = 20)
         {
-            if (from.IsNull())
+            if (from.IsNull(deepCheck: true))
                 return null;
 
             if (seed == -1)
@@ -96,7 +96,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline RandomPolyline(Point from, Random rnd, BoundingBox box = null, int minNbCPs = 3, int maxNbCPs = 20)
         {
-            if (from.IsNull() || rnd  == null)
+            if (from.IsNull(deepCheck: true) || rnd  == null)
                 return null;
 
             List<Point> points = new List<Point>();

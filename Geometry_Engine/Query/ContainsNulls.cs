@@ -1,4 +1,5 @@
-﻿using BH.oM.Geometry;
+﻿using BH.Engine.Base;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -20,21 +21,17 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the List of Geometry is null or it contains nulls.")]
-        public static bool IsNullOrContainsNulls(this IEnumerable<IGeometry> geometries, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool ContainsNulls(this IEnumerable<IGeometry> geometries, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
-            //check the collection
-            if (geometries == null)
+            if (geometries.IsNullOrEmpty(methodName))
             {
                 if (string.IsNullOrEmpty(methodName))
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg} The collection is null.");
-
                 return true;
             }
-            //check the geometry contained in the collection
-            return geometries.Any(x => IIsNull(x as dynamic, msg + " One or more of elements the in the collection failed a null test.", methodName));
+            return geometries.Any(x => IIsNull(x, msg, methodName, deepCheck));
         }
     }
 }

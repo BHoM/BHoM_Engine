@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
         [Output("mesh", "A regular mesh with the same vertices and faces as the Mesh3D.")]
         public static Mesh ToMesh(this Mesh3D mesh3d)
         {
-            if (mesh3d.IsNull())
+            if (mesh3d.IsNull(deepCheck: true))
                 return null;
 
             return new Mesh()

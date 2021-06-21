@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
 
         public static double[] Eigenvalues(this TransformMatrix matrix, double tolerance = Tolerance.Distance)
         {
-            if (matrix.IsNull())
+            if (matrix.IsNull(deepCheck: true))
                 return null;
 
             return matrix.Matrix.Eigenvalues(tolerance);

@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Flip(this Arc curve)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             Cartesian system = Create.CartesianCoordinateSystem(curve.CoordinateSystem.Origin, curve.CoordinateSystem.X, -curve.CoordinateSystem.Y);
@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
 
         public static Circle Flip(this Circle curve)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return new Circle { Centre = curve.Centre, Normal = -curve.Normal, Radius = curve.Radius };
@@ -60,7 +60,7 @@ namespace BH.Engine.Geometry
 
         public static Line Flip(this Line curve)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return new Line { Start = curve.End, End = curve.Start };
@@ -70,7 +70,7 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve Flip(this NurbsCurve curve)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             NurbsCurve result = curve.DeepClone();
@@ -87,7 +87,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve Flip(this PolyCurve curve)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return new PolyCurve { Curves = curve.Curves.Select(x => x.IFlip()).Reverse().ToList() };
@@ -97,7 +97,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline Flip(this Polyline curve)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return new Polyline { ControlPoints = curve.ControlPoints.Reverse<Point>().ToList() };

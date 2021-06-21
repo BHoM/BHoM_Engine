@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline ToPolyline(this PolyCurve curve)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             if (curve.Curves.Count == 0)
@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline ToPolyline(Line curve)
         {
-            if (curve.IsNull())
+            if (curve.IsNull(deepCheck: true))
                 return null;
 
             return new Polyline { ControlPoints = new List<Point> { curve.Start, curve.End } };

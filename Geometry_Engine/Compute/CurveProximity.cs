@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Point> cIntersections = curve1.CurveIntersections(curve2);
@@ -80,7 +80,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Line curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Point> cIntersections = curve1.CurveIntersections(curve2);
@@ -172,7 +172,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Line curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Point> cIntersections = curve1.CurveIntersections(curve2);
@@ -245,7 +245,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Line curve1, PolyCurve curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -256,7 +256,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Line curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -267,7 +267,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Arc curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -278,7 +278,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Arc curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Point> cIntersections = curve1.CurveIntersections(curve2);
@@ -502,7 +502,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Arc curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Point> cIntersections = curve1.CurveIntersections(curve2);
@@ -655,7 +655,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Arc curve1, PolyCurve curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -666,7 +666,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Arc curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -677,7 +677,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Circle curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -688,7 +688,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Circle curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -699,7 +699,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Circle curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Point> cIntersections = curve1.CurveIntersections(curve2);
@@ -859,7 +859,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Circle curve1, PolyCurve curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -870,7 +870,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Circle curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -881,7 +881,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this PolyCurve curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.ICurveProximity(curve1.Curves[0]);
@@ -902,7 +902,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this PolyCurve curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.ICurveProximity(curve1.Curves[0]);
@@ -923,7 +923,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this PolyCurve curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.ICurveProximity(curve1.Curves[0]);
@@ -944,7 +944,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this PolyCurve curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Line> temp = new List<Line>();
@@ -974,7 +974,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this PolyCurve curve1, PolyCurve curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.ICurveProximity(curve1.Curves[0]);
@@ -995,7 +995,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Polyline curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
 
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
             List<Line> temp = new List<Line>();
@@ -1022,7 +1022,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Polyline curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Line> temp = new List<Line>();
@@ -1048,7 +1048,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Polyline curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Line> temp = new List<Line>();
@@ -1075,7 +1075,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Polyline curve1, PolyCurve curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = curve2.CurveProximity(curve1);
@@ -1086,7 +1086,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> CurveProximity(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             List<Line> temp = new List<Line>();
@@ -1116,7 +1116,7 @@ namespace BH.Engine.Geometry
 
         public static Output<Point, Point> ICurveProximity(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Output<Point, Point> result = CurveProximity(curve1 as dynamic, curve2 as dynamic);
@@ -1140,7 +1140,7 @@ namespace BH.Engine.Geometry
 
         private static Output<Point, Point> CurveProximity(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
-            if (curve1.IsNull() || curve2.IsNull())
+            if (curve1.IsNull(deepCheck: true) || curve2.IsNull(deepCheck: true))
                 return new Output<Point, Point> { Item1 = null, Item2 = null };
 
             Reflection.Compute.RecordError($"CurveProximity is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");

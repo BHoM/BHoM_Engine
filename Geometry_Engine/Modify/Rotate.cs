@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static Point Rotate(this Point pt, Point origin, Vector axis, double rad)
         {
-            if (pt.IsNull() || origin.IsNull() || axis.IsNull())
+            if (pt.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -64,7 +64,7 @@ namespace BH.Engine.Geometry
 
         public static Plane Rotate(this Plane plane, Point origin, Vector axis, double rad)
         {
-            if (plane.IsNull() || origin.IsNull() || axis.IsNull())
+            if (plane.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -75,7 +75,7 @@ namespace BH.Engine.Geometry
 
         public static Basis Rotate(this Basis basis, double rad, Vector axis)
         {
-            if (basis.IsNull())
+            if (basis.IsNull(deepCheck: true))
                 return null;
 
             return Create.Basis(basis.X.Rotate(rad, axis), basis.Y.Rotate(rad, axis));
@@ -88,7 +88,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Rotate(this Arc curve, Point origin, Vector axis, double rad)
         {
-            if (curve.IsNull() || origin.IsNull() || axis.IsNull())
+            if (curve.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             return new Arc
@@ -104,7 +104,7 @@ namespace BH.Engine.Geometry
 
         public static Circle Rotate(this Circle curve, Point origin, Vector axis, double rad)
         {
-            if (curve.IsNull() || origin.IsNull() || axis.IsNull())
+            if (curve.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             return new Circle { Centre = curve.Centre.Rotate(origin, axis, rad), Normal = curve.Normal.Rotate(rad, axis), Radius = curve.Radius };
@@ -114,7 +114,7 @@ namespace BH.Engine.Geometry
 
         public static ICurve Rotate(this Ellipse curve, Point origin, Vector axis, double rad)
         {
-            if (curve.IsNull() || origin.IsNull() || axis.IsNull())
+            if (curve.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -125,7 +125,7 @@ namespace BH.Engine.Geometry
 
         public static Line Rotate(this Line curve, Point origin, Vector axis, double rad)
         {
-            if (curve.IsNull() || origin.IsNull() || axis.IsNull())
+            if (curve.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -136,7 +136,7 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve Rotate(this NurbsCurve curve, Point origin, Vector axis, double rad)
         {
-            if (curve.IsNull() || origin.IsNull() || axis.IsNull())
+            if (curve.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -148,7 +148,7 @@ namespace BH.Engine.Geometry
 
         public static PolyCurve Rotate(this PolyCurve curve, Point origin, Vector axis, double rad)
         {
-            if (curve.IsNull() || origin.IsNull() || axis.IsNull())
+            if (curve.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -159,7 +159,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline Rotate(this Polyline curve, Point origin, Vector axis, double rad)
         {
-            if (curve.IsNull() || origin.IsNull() || axis.IsNull())
+            if (curve.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -173,7 +173,7 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Rotate(this Extrusion surface, Point origin, Vector axis, double rad)
         {
-            if (surface.IsNull() || origin.IsNull() || axis.IsNull())
+            if (surface.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -184,7 +184,7 @@ namespace BH.Engine.Geometry
 
         public static Loft Rotate(this Loft surface, Point origin, Vector axis, double rad)
         {
-            if (surface.IsNull() || origin.IsNull() || axis.IsNull())
+            if (surface.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -195,7 +195,7 @@ namespace BH.Engine.Geometry
 
         public static NurbsSurface Rotate(this NurbsSurface surface, Point origin, Vector axis, double rad)
         {
-            if (surface.IsNull() || origin.IsNull() || axis.IsNull())
+            if (surface.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -206,7 +206,7 @@ namespace BH.Engine.Geometry
 
         public static Pipe Rotate(this Pipe surface, Point origin, Vector axis, double rad)
         {
-            if (surface.IsNull() || origin.IsNull() || axis.IsNull())
+            if (surface.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -217,7 +217,7 @@ namespace BH.Engine.Geometry
 
         public static PlanarSurface Rotate(this PlanarSurface surface, Point origin, Vector axis, double rad)
         {
-            if (surface.IsNull() || origin.IsNull() || axis.IsNull())
+            if (surface.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -228,7 +228,7 @@ namespace BH.Engine.Geometry
 
         public static PolySurface Rotate(this PolySurface surface, Point origin, Vector axis, double rad)
         {
-            if (surface.IsNull() || origin.IsNull() || axis.IsNull())
+            if (surface.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -242,7 +242,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Rotate(this Mesh mesh, Point origin, Vector axis, double rad)
         {
-            if (mesh.IsNull() || origin.IsNull() || axis.IsNull())
+            if (mesh.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -253,7 +253,7 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry Rotate(this CompositeGeometry group, Point origin, Vector axis, double rad)
         {
-            if (group.IsNull() || origin.IsNull() || axis.IsNull())
+            if (group.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
 
                 return null;
             TransformMatrix rotationMatrix = Create.RotationMatrix(origin, axis, rad);
@@ -264,7 +264,7 @@ namespace BH.Engine.Geometry
 
         public static Cartesian Rotate(this Cartesian coordinate, Point origin, Vector axis, double rad)
         {
-            if (coordinate.IsNull() || origin.IsNull() || axis.IsNull())
+            if (coordinate.IsNull(deepCheck: true) || origin.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             return new Cartesian(coordinate.Origin.Rotate(origin, axis, rad), coordinate.X.Rotate(rad, axis), coordinate.Y.Rotate(rad, axis), coordinate.Z.Rotate(rad, axis));

@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh MergedVertices(this Mesh mesh, double tolerance = Tolerance.Distance) //TODO: use the point matrix 
         {
-            if (mesh.IsNull())
+            if (mesh.IsNull(deepCheck: true))
                 return null;
 
             List<Face> faces = mesh.Faces?.Select(x => x.DeepClone()).ToList();

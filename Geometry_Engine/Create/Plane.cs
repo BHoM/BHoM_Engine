@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
 
         public static Plane Plane(Point p1, Point p2, Point p3)
         {
-            if (p1.IsNull() || p2.IsNull() || p3.IsNull())
+            if (p1.IsNull(deepCheck: true) || p2.IsNull(deepCheck: true) || p3.IsNull(deepCheck: true))
                 return null;
 
             Vector normal = Query.CrossProduct(p2 - p1, p3 - p1).Normalise();

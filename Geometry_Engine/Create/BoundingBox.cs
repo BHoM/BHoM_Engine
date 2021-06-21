@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox BoundingBox(Point centre, Vector extent)
         {
-            if (centre.IsNull() || extent.IsNull())
+            if (centre.IsNull(deepCheck: true) || extent.IsNull(deepCheck: true))
                 return null;
 
             return new BoundingBox
@@ -64,7 +64,7 @@ namespace BH.Engine.Geometry
         [Output("boundingBox", "BoundingBox based on the properties of the cuboid.")]
         public static BoundingBox BoundingBox(this Cuboid globallyAlignedCuboid)
         {
-            if (globallyAlignedCuboid.IsNull())
+            if (globallyAlignedCuboid.IsNull(deepCheck: true))
                 return null;
 
             return new BoundingBox

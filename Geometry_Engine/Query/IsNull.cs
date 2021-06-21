@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Geometry is null.")]
-        public static bool IsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             if (geometry == null)
             {
@@ -70,7 +70,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Basis is null.")]
-        public static bool IsNull(this Basis geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Basis geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -78,10 +78,14 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Basis", msg);
                 return true;
             }
-            if (geometry.X.IsNull(msg + " Basis.X failed a null test.", methodName) || 
-                geometry.Y.IsNull(msg + " Basis.Y failed a null test.", methodName) || 
-                geometry.Z.IsNull(msg + " Basis.Z failed a null test.", methodName))
-                return true;
+            if(deepCheck)
+            {
+                if (geometry.X.IsNull(msg, methodName, deepCheck) ||
+                geometry.Y.IsNull(msg, methodName, deepCheck) ||
+                geometry.Z.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
+            
 
             return false;
         }
@@ -93,7 +97,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Plane is null.")]
-        public static bool IsNull(this Plane geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Plane geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -101,9 +105,12 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Plane", msg);
                 return true;
             }
-            if (geometry.Origin.IsNull(msg + " Plane.Origin failed a null test.", methodName) || 
-                geometry.Normal.IsNull(msg + " Plane.Normal failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.Origin.IsNull(msg, methodName, deepCheck) ||
+                geometry.Normal.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -115,7 +122,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Point is null.")]
-        public static bool IsNull(this Point geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Point geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -134,7 +141,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Vector is null.")]
-        public static bool IsNull(this Vector geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Vector geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -155,7 +162,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Cartesian is null.")]
-        public static bool IsNull(this Cartesian geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Cartesian geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -163,11 +170,14 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Cartesian", msg);
                 return true;
             }
-            if (geometry.X.IsNull(msg + " Cartesian.X failed a null test.", methodName) || 
-                geometry.Y.IsNull(msg + " Cartesian.Y failed a null test.", methodName) || 
-                geometry.Z.IsNull(msg + " Cartesian.Z failed a null test.", methodName) ||
-                geometry.Origin.IsNull(msg + " Cartesian.Origin failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.X.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Y.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Z.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Origin.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -181,7 +191,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Arc is null.")]
-        public static bool IsNull(this Arc geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Arc geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -189,8 +199,11 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Arc", msg);
                 return true;
             }
-            if (geometry.CoordinateSystem.IsNull(msg + " Arc.CoordiateSystem failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.CoordinateSystem.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -202,7 +215,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Circle is null.")]
-        public static bool IsNull(this Circle geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Circle geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -210,9 +223,12 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Circle", msg);
                 return true;
             }
-            if ( geometry.Centre.IsNull(msg + " Circle.Centre failed a null test.", methodName) || 
-                geometry.Normal.IsNull(msg + " Circle.Normal failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.Centre.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Normal.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -224,7 +240,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Ellipse is null.")]
-        public static bool IsNull(this Ellipse geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Ellipse geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -232,10 +248,13 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Ellipse", msg);
                 return true;
             }
-            if (geometry.Centre.IsNull(msg + " Ellipse.Centre failed a null test.", methodName) || 
-                geometry.Axis1.IsNull(msg + " Ellipse.Axis1 failed a null test.", methodName) || 
-                geometry.Axis2.IsNull(msg + " Ellipse.Axis2 failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.Centre.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Axis1.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Axis2.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -247,7 +266,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Line is null.")]
-        public static bool IsNull(this Line geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Line geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -255,9 +274,12 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Line", msg);
                 return true;
             }
-            if (geometry.Start.IsNull(msg + " Line.StartPoint failed a null test.", methodName) || 
-                geometry.End.IsNull(msg + " Line.EndPoint failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.Start.IsNull(msg, methodName, deepCheck) ||
+                    geometry.End.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -269,7 +291,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the NurbsCurve is null.")]
-        public static bool IsNull(this NurbsCurve geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this NurbsCurve geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -277,8 +299,11 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "NurbsCurve", msg);
                 return true;
             }
-            if (geometry.ControlPoints.IsNullOrContainsNulls(msg + " NurbsCurve.ControlPoints failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.ControlPoints.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -290,7 +315,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the PolyCurve is null.")]
-        public static bool IsNull(this PolyCurve geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this PolyCurve geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -298,8 +323,11 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "PolyCurve", msg);
                 return true;
             }
-            if (geometry.Curves.IsNullOrContainsNulls(msg + " PolyCurve.Curves failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.Curves.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -311,16 +339,20 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Polyline is null.")]
-        public static bool IsNull(this Polyline geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Polyline geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
+            //MemberExpression body = (MemberExpression)propertySelector.Body;
             if (geometry == null)
             {
                 ErrorMessage(methodName, "Polyline", msg);
                 return true;
             }
-            if (geometry.ControlPoints.IsNullOrContainsNulls(msg + " Polyline.ControlPoints failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.ControlPoints.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -334,7 +366,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the CellRelation is null.")]
-        public static bool IsNull(this CellRelation geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this CellRelation geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -353,7 +385,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Mesh is null.")]
-        public static bool IsNull(this Mesh geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Mesh geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -361,9 +393,12 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Mesh", msg);
                 return true;
             }
-            if (geometry.Vertices.IsNullOrContainsNulls(msg + " Mesh.Vertices failed a null test.", methodName) ||
-                geometry.Faces.IsNullOrContainsNulls(msg + " Mesh.Faces failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.Vertices.ContainsNulls(msg, methodName, deepCheck) ||
+                    geometry.Faces.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -375,7 +410,7 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Mesh3D is null.")]
-        public static bool IsNull(this Mesh3D geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this Mesh3D geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
             if (geometry == null)
@@ -383,10 +418,13 @@ namespace BH.Engine.Geometry
                 ErrorMessage(methodName, "Mesh", msg);
                 return true;
             }
-            if (geometry.Vertices.IsNullOrContainsNulls(msg + " Mesh3D.Vertices failed a null test.", methodName) ||
-                geometry.Faces.IsNullOrContainsNulls(msg + " Mesh3D.Faces failed a null test.", methodName) ||
-                geometry.CellRelation.IsNullOrContainsNulls(msg + " Mesh3D.CellRelation failed a null test.", methodName))
-                return true;
+            if (deepCheck)
+            {
+                if (geometry.Vertices.ContainsNulls(msg, methodName, deepCheck) ||
+                    geometry.Faces.ContainsNulls(msg, methodName, deepCheck) ||
+                    geometry.CellRelation.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
 
             return false;
         }
@@ -416,16 +454,17 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("pass", "True if the IGeometry is null.")]
-        public static bool IIsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "Method")
+        public static bool IIsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             //check the object
-            if(geometry == null)
+            if (geometry == null)
             {
                 ErrorMessage(methodName, "Geometry", msg);
                 return true;
             }
             //check attributes
-            return IsNull(geometry as dynamic, msg + " One or more nested attributes was found to be null.", methodName);
+            return IsNull(geometry as dynamic, msg, methodName, deepCheck);
+           
         }
 
         /***************************************************/

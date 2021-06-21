@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 
         public static BoundingBox Inflate(this BoundingBox box, double amount)
         {
-            if (box.IsNull())
+            if (box.IsNull(deepCheck: true))
                 return null;
 
             Vector extents = new Vector { X = amount, Y = amount, Z = amount };

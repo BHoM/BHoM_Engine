@@ -44,7 +44,7 @@ namespace BH.Engine.Geometry
         public static double IntSurfLine(Point a, Point b, int powX, double tol = Tolerance.Distance)
         {
             //TODO powX could be a double, but that might slow thing down somewhat
-            if (a.IsNull() || b.IsNull())
+            if (a.IsNull(deepCheck: true) || b.IsNull(deepCheck: true))
                 return 0;
 
             double diffX;

@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SortAlongCurve(this List<Point> points, Arc arc, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            if (points.IsNullOrContainsNulls() || arc.IsNull())
+            if (points.ContainsNulls(deepCheck: true) || arc.IsNull(deepCheck: true))
                 return null;
 
             if (arc.Angle() <= angleTolerance)
@@ -57,7 +57,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SortAlongCurve(this List<Point> points, Circle circle, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            if (points.IsNullOrContainsNulls() || circle.IsNull())
+            if (points.ContainsNulls(deepCheck: true) || circle.IsNull(deepCheck: true))
                 return null;
 
             if (circle.Radius <= distanceTolerance)
@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SortAlongCurve(this List<Point> points, Line line, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            if (points.IsNullOrContainsNulls() || line.IsNull())
+            if (points.ContainsNulls(deepCheck: true) || line.IsNull(deepCheck: true))
                 return null;
 
             if (line.Length() <= distanceTolerance)

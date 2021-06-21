@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Triangulate(this Mesh mesh)
         {
-            if (mesh.IsNull())
+            if (mesh.IsNull(deepCheck: true))
                 return null;
 
             Mesh tMesh = new Mesh();

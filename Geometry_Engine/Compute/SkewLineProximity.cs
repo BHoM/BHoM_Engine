@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
 
         public static Output<double, double> SkewLineProximity(this Line line1, Line line2, double angleTolerance = Tolerance.Angle)
         {
-            if(line1.IsNull() || line2.IsNull())
+            if(line1.IsNull(deepCheck: true) || line2.IsNull(deepCheck: true))
                 return new Output<double, double> { Item1 = 0, Item2 = 0 };
 
             Vector v1 = line1.End - line1.Start;

@@ -49,7 +49,7 @@ namespace BH.Engine.Geometry
 
         public static Arc Arc(Point start, Point middle, Point end, double tolerance = Tolerance.Distance)
         {
-            if (start.IsNull() || middle.IsNull() || end.IsNull())
+            if (start.IsNull(deepCheck: true) || middle.IsNull(deepCheck: true) || end.IsNull(deepCheck: true))
                 return null;
 
             Vector v1 = start - middle;
@@ -86,7 +86,7 @@ namespace BH.Engine.Geometry
         [Description("Creates an arc by centre, start and end points. Only able to create arcs with angle < 180 degress")]
         public static Arc ArcByCentre(Point centre, Point start, Point end, double tolerance = Tolerance.Distance)
         {
-            if (start.IsNull() || centre.IsNull() || end.IsNull())
+            if (start.IsNull(deepCheck: true) || centre.IsNull(deepCheck: true) || end.IsNull(deepCheck: true))
                 return null;
 
             double radius = start.Distance(centre);
@@ -157,7 +157,7 @@ namespace BH.Engine.Geometry
 
         public static Arc RandomArc(Point from, int seed = -1, BoundingBox box = null)
         {
-            if (from.IsNull())
+            if (from.IsNull(deepCheck: true))
                 return null;
 
             if (seed == -1)
@@ -170,7 +170,7 @@ namespace BH.Engine.Geometry
 
         public static Arc RandomArc(Point from, Random rnd, BoundingBox box = null)
         {
-            if (from.IsNull() || rnd == null)
+            if (from.IsNull(deepCheck: true) || rnd == null)
                 return null;
 
             Point centre;

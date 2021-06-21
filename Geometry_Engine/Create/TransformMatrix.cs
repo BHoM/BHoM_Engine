@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix TransformMatrix(Quaternion q)
         {
-            if (q.IsNull())
+            if (q.IsNull(deepCheck: true))
                 return null;
 
             return new TransformMatrix
@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix TranslationMatrix(Vector vector)
         {
-            if (vector.IsNull())
+            if (vector.IsNull(deepCheck: true))
                 return null;
 
             return new TransformMatrix
@@ -88,7 +88,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix RotationMatrix(Point centre, Vector axis, double angle)
         {
-            if (centre.IsNull() || axis.IsNull())
+            if (centre.IsNull(deepCheck: true) || axis.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix rotation = TransformMatrix(Quaternion(axis.Normalise(), angle));
@@ -102,7 +102,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix ScaleMatrix(Point refPoint, Vector scaleVector)
         {
-            if (refPoint.IsNull() || scaleVector.IsNull())
+            if (refPoint.IsNull(deepCheck: true) || scaleVector.IsNull(deepCheck: true))
                 return null;
 
             TransformMatrix move1 = TranslationMatrix(oM.Geometry.Point.Origin - refPoint);
@@ -125,7 +125,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix ProjectionMatrix(Plane plane, Vector vector = null)
         {
-            if (plane.IsNull())
+            if (plane.IsNull(deepCheck: true))
                 return null;
 
             Point x = new Point() { X = 1 };
@@ -191,7 +191,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix OrientationMatrixGlobalToLocal(Cartesian csTo)
         {
-            if (csTo.IsNull())
+            if (csTo.IsNull(deepCheck: true))
                 return null;
 
             Vector XWorld = new Vector { X = 1, Y = 0, Z = 0 };
@@ -220,7 +220,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix OrientationMatrixLocalToGlobal(Cartesian csFrom)
         {
-            if (csFrom.IsNull())
+            if (csFrom.IsNull(deepCheck: true))
                 return null;
 
             return OrientationMatrixGlobalToLocal(csFrom).Invert();
@@ -230,7 +230,7 @@ namespace BH.Engine.Geometry
 
         public static TransformMatrix OrientationMatrix(this Cartesian csFrom, Cartesian csTo)
         {
-            if (csFrom.IsNull() || csTo.IsNull())
+            if (csFrom.IsNull(deepCheck: true) || csTo.IsNull(deepCheck: true))
                 return null;
 
             return OrientationMatrixGlobalToLocal(csTo) * OrientationMatrixLocalToGlobal(csFrom);
