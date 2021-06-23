@@ -50,8 +50,7 @@ namespace BH.Engine.Environment
         [Input("panelType", "The panel type to assign to the panels, if no input is added roof, floor and wall types are assigned by default")]
         [Output("panelsAsSpace", "A collection of Environment Panels representing a closed space generated from the provided Brep geometry")]
         [PreviousVersion("4.2", "BH.Engine.Environment.Create.Panels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
-        [PreviousInputNames("brep, connectedSpaceName, angleTolerance, panelType", "brep, connectedSpaceName, angleTolerance")]
-        public static List<Panel> Panels(this BoundaryRepresentation brep, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = 0)
+        public static List<Panel> Panels(this BoundaryRepresentation brep, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = PanelType.Undefined)
         {
             if(brep == null)
             {
@@ -69,8 +68,7 @@ namespace BH.Engine.Environment
         [Input("panelType", "The panel type to assign to the panels, if no input is added roof, floor and wall types are assigned by default")]
         [Output("panel", "An Environment Panels representing a closed space generated from the provided surfaces")]
         [PreviousVersion("4.2", "BH.Engine.Environment.Create.Panels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
-        [PreviousInputNames("surfaces, connectedSpaceName, angleTolerance, panelType", "surfaces, connectedSpaceName, angleTolerance")]
-        public static List<Panel> Panels(this List<ISurface> surfaces, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = 0)
+        public static List<Panel> Panels(this List<ISurface> surfaces, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = PanelType.Undefined)
         {
             if(surfaces == null)
             {
@@ -83,7 +81,7 @@ namespace BH.Engine.Environment
 
             List<Panel> panels = surfaces.Select(x => x.Panel(connectedSpaceName, angleTolerance, panelType)).ToList();
 
-            if (panelType == 0)
+            if (panelType == PanelType.Undefined)
             {
                 panels = panels.SetRoofPanels();
                 panels = panels.SetFloorPanels();
@@ -100,8 +98,7 @@ namespace BH.Engine.Environment
         [Input("panelType", "The panel type to assign to the panel, default type is Undefined")]
         [Output("panel", "An Environment Panels representing a closed space generated from the provided Brep geometry")]
         [PreviousVersion("4.2", "BH.Engine.Environment.Create.Panel(BH.oM.Environment.Elements.Panel)")]
-        [PreviousInputNames("surface, connectedSpaceName, angleTolerance, panelType", "surface, connectedSpaceName, angleTolerance")]
-        public static Panel Panel(this ISurface surface, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = 0)
+        public static Panel Panel(this ISurface surface, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = PanelType.Undefined)
         {
 
             if (connectedSpaceName == null)
