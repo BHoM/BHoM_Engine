@@ -90,7 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modify\AssignSpaceTypeByPoint.cs" />
+    <Compile Include="Compute\AssignSpaceTypeByPoint.cs" />
     <Compile Include="Compute\BooleanIntersect.cs" />
     <Compile Include="Compute\RegionNameMapping.cs" />
     <Compile Include="Create\Opening.cs" />
