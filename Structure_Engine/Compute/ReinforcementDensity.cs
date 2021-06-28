@@ -46,14 +46,13 @@ namespace BH.Engine.Structure
         [Input("bars", "The Bars to search for the relevant Bar associated with the BarRequiredArea.")]
         [Input("materials", "The Materials to search for the relevant Material associated with the BarRequiredArea.")]
         [Output("reinforcementDensity", "The ReinforcementDensity calculated using the inputs provided.")]
-        public static ReinforcementDensity ReinforcementDensity(BarRequiredArea barRequiredArea, List<Bar> bars, List<IMaterialFragment> materials)
+        public static List<ReinforcementDensity> ReinforcementDensity(List<BarRequiredArea> barRequiredAreas, List<Bar> bars, List<IMaterialFragment> materials)
         {
-            if (barRequiredArea.IsNull() || materials.IsNullOrEmpty() || materials.Any(x => x.IsNull()) || bars.IsNullOrEmpty() || bars.Any(x => x.IsNull()))
+            if (barRequiredAreas.IsNullOrEmpty() || barRequiredAreas.Any(x => x.IsNull()) || materials.IsNullOrEmpty() || materials.Any(x => x.IsNull()) || bars.IsNullOrEmpty() || bars.Any(x => x.IsNull()))
                 return null;
 
             Dictionary<string, IMaterialFragment> materialsDict = materials.ToDictionary(x => x.Name);
 
-            //Work around until Results_Engine PR is merged which have similar methods
             Type fragmentType = bars.FirstOrDefault().Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
             List<string> ids = new List<string>();
 
@@ -71,27 +70,30 @@ namespace BH.Engine.Structure
 
             IMaterialFragment material;
             Bar resultBar;
-            ReinforcementDensity reinforcementDensity;
+            List<ReinforcementDensity> reinforcementDensities = new List<ReinforcementDensity>();
 
-            if(materialsDict.TryGetValue(barRequiredArea.MaterialName, out material) && barsDict.TryGetValue(barRequiredArea.ObjectId.ToString(), out resultBar))
+            foreach(BarRequiredArea barRequiredArea in barRequiredAreas)
             {
-                //Calculate the volume of the Bar
-                if (resultBar.SectionProperty.IsNull())
+                if (materialsDict.TryGetValue(barRequiredArea.MaterialName, out material) && barsDict.TryGetValue(barRequiredArea.ObjectId.ToString(), out resultBar))
+                {
+                    if (resultBar.SectionProperty.IsNull())
+                        return null;
+
+                    double elementArea = resultBar.SectionProperty.Area;
+                    double reinforcedArea = barRequiredArea.SumRequiredArea();
+                    double density = material.Density;
+                    double rebarDensity = reinforcedArea * density / elementArea;
+                    reinforcementDensities.Add(Create.ReinforcementDensity(rebarDensity, material));
+                }
+                else
+                {
+                    Reflection.Compute.RecordError("The Bar and/or Material could not be found in the lists provided corresponding to the ids provided for in the BarRequiredArea.");
                     return null;
-
-                double elementArea = resultBar.SectionProperty.Area;
-                double reinforcedArea = barRequiredArea.SumRequiredArea();
-                double density = material.Density;
-                double rebarDensity = reinforcedArea * density / elementArea;
-                reinforcementDensity = Create.ReinforcementDensity(rebarDensity, material);
-            }
-            else
-            {
-                Reflection.Compute.RecordError("The Bar and/or Material could not be found in the lists provided corresponding to the ids provided for in the BarRequiredArea.");
-                return null;
+                }
             }
 
-            return reinforcementDensity;
+
+            return reinforcementDensities;
         }
 
         /***************************************************/
