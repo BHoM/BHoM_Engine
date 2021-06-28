@@ -24,8 +24,10 @@ using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Humans.ViewQuality;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,9 +36,13 @@ namespace BH.Engine.Humans
 {
     public static partial class Query
     {
-
+        [Description("Find the orientation of a spectator.")]
+        [Input("spectator", "Spectator to query.")]
+        [Output("cartesian", "Cartesian representing the orientation of the spectator.")]
         public static Cartesian Cartesian(this Spectator spectator)
         {
+            if (spectator == null)
+                return null;
             //set local orientation
             Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, spectator.Head.PairOfEyes.ViewDirection);
             Vector viewY = Geometry.Query.CrossProduct(spectator.Head.PairOfEyes.ViewDirection, rowVector);

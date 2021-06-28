@@ -38,7 +38,7 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [PreviousVersion("4.2", "BH.Engine.Humans.ViewQuality.Create.Spectator(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [PreviousVersion("4.3", "BH.Engine.Humans.ViewQuality.Create.Spectator(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Create a Spectator.")]
         [Input("location", "Point defining the Eye location.")]
         [Input("viewDirection", "Vector defining the Eye view directions.")]
@@ -50,7 +50,8 @@ namespace BH.Engine.Humans.ViewQuality
         [Output("spectator", "Spectator with location, view direction and head outline defined.")]
         public static Spectator Spectator(Point location, Vector viewDirection, Polyline headOutline = null, double majorRadius = 0.11, double minorRadius = 0.078)
         {
-
+            if (location.IsNull() || viewDirection.IsNull())
+                return null;
             if (headOutline == null)
             {
                 //create basic elliptical head form

@@ -52,6 +52,11 @@ namespace BH.Engine.Humans.ViewQuality
         [Output("results", "Collection of Avalue results.")]
         public static List<Avalue> AvalueAnalysis(this Audience audience, Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
         {
+            if (audience == null || settings == null || playingArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AvalueAnalysis if the audience, settings, or playing area are null.");
+                return new List<Avalue>();
+            }
             List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, parallelProcess);
             return results;
         }
@@ -69,6 +74,11 @@ namespace BH.Engine.Humans.ViewQuality
         public static List<List<Avalue>> AvalueAnalysis(this List<Audience> audience,  Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
+            if (audience == null || settings == null || playingArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AvalueAnalysis if the audience, settings, or playing area are null.");
+                return results;
+            }
             foreach (Audience a in audience)
             {
                 results.Add(EvaluateAvalue(a, settings, playingArea, parallelProcess));

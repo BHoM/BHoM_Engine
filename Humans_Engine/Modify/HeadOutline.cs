@@ -47,6 +47,9 @@ namespace BH.Engine.Humans.Modify
             "If none provided the default is a simple Polyline based on an ellipse with major radius of 0.11 and minor radius of 0.078.")]
         public static void HeadOutline(this Spectator spectator, Polyline newHeadOutline)
         {
+            if (spectator == null || newHeadOutline.IsNull())
+                return;
+
             if (!newHeadOutline.IsPlanar() || !newHeadOutline.IsClosed())
             {
                 Reflection.Compute.RecordError("The reference headOutline must be closed and planar.");
@@ -70,6 +73,9 @@ namespace BH.Engine.Humans.Modify
         "If none provided the default is a simple Polyline based on an ellipse with major radius of 0.11 and minor radius of 0.078.")]
         public static void HeadOutline(this Audience audience, Polyline newHeadOutline)
         {
+            if (audience == null || newHeadOutline.IsNull())
+                return;
+
             foreach (Spectator spectator in audience.Spectators)
                 spectator.HeadOutline(newHeadOutline);
         }

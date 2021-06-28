@@ -39,15 +39,15 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
 
         [Description("Evaluate Cvalues for a single Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions")]
-        [Input("audience", "Audience to evaluate")]
-        [Input("settings", "CvalueSettings to configure the evaluation")]
-        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("settings", "CvalueSettings to configure the evaluation.")]
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area.")]
         [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
         public static List<Cvalue> CvalueAnalysis(this Audience audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
             if (audience == null || settings == null || playingArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the CValueAnalysis if the audience, settings, or playing area are null.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the CvalueAnalysis if the audience, settings, or playing area are null.");
                 return new List<Cvalue>();
             }
 
@@ -57,13 +57,18 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        [Description("Evaluate Cvalues for a List of Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions")]
+        [Description("Evaluate Cvalues for a List of Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions.")]
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "CvalueSettings to configure the evaluation.")]
         [Input("playingArea", "Polyline to be used for defining edge of performance or playing area.")]
         [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
         public static List<List<Cvalue>> CvalueAnalysis(this List<Audience> audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
+            if (audience == null || settings == null || playingArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the CvalueAnalysis if the audience, settings, or playing area are null.");
+                return new List<List<Cvalue>>();
+            }
             List<List<Cvalue>> results = new List<List<Cvalue>>();
             foreach (Audience a in audience)
             {
