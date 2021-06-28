@@ -123,6 +123,7 @@
     <Compile Include="Query\IsNearGrid.cs" />
     <Compile Include="Query\IsFullyOnLevel.cs" />
     <Compile Include="Query\IsNearLevel.cs" />
+    <Compile Include="Query\IsNull.cs" />
     <Compile Include="Query\IsPlanar.cs" />
     <Compile Include="Query\IsSelfIntersecting.cs" />
     <Compile Include="Query\Length.cs" />

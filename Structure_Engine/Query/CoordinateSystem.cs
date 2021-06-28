@@ -40,11 +40,11 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Get the carteseian coordinate system descibring the position and local orientation of the node in the global coordinate system.")]
-        [Input("node","The Node to extract the local coordinate system from.")]
+        [Input("node", "The Node to extract the local coordinate system from.")]
         [Output("coordinateSystem", "The local cartesian coordinate system of the Node.")]
         public static Cartesian CoordinateSystem(this Node node)
         {
-            return node.NullCheck("CoordinateSystem") ? Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y) : null;
+            return node.IsNull() ? null : Engine.Geometry.Create.CartesianCoordinateSystem(node.Position, node.Orientation.X, node.Orientation.Y);
         }
 
         /***************************************************/
@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
         [Output("coordinateSystems", "The local cartesian coordinate systems of the FEMeshFaces of the FEMesh.")]
         public static List<Cartesian> CoordinateSystem(this FEMesh mesh)
         {
-            return mesh.NullCheck("CoordinateSystem", false, false) ? mesh.Faces.Select(x => x.CoordinateSystem(mesh)).ToList() : null;
+            return mesh.IsNull() ? null : mesh.Faces.Select(x => x.CoordinateSystem(mesh)).ToList();
         }
 
         /***************************************************/

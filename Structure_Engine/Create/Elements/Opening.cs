@@ -22,6 +22,7 @@
 
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,9 @@ namespace BH.Engine.Structure
         [Output("opening", "Created structural Opening.")]
         public static Opening Opening(ICurve outline)
         {
-            if (outline.IIsClosed())
+            if (outline.IsNull())
+                return null;
+            else if (outline.IIsClosed())
                 return new Opening { Edges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList() };
             else
             {
@@ -60,6 +63,9 @@ namespace BH.Engine.Structure
         [Output("opening", "Created structural Opening.")]
         public static Opening Opening(IEnumerable<ICurve> edges)
         {
+            if (edges.IsNullOrEmpty() || edges.Any(x => x.IsNull()))
+                return null;
+
             List<PolyCurve> joined = Geometry.Compute.IJoin(edges.ToList());
 
             if (joined.Count == 0)
@@ -81,7 +87,7 @@ namespace BH.Engine.Structure
                 Reflection.Compute.RecordError("Provided curves does not form a closed loop. Could not create opening.");
                 return null;
             }
-            
+
         }
 
         /***************************************************/

@@ -30,6 +30,7 @@ using BH.oM.Reflection;
 using BH.Engine.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Spatial;
 using System.ComponentModel;
 
 
@@ -51,42 +52,16 @@ namespace BH.Engine.Structure
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
-            if (curves.Count == 0)
+            if (curves.Any(x => x.IsNull()))
             {
-                #region assing zero to everything
-                results["Area"] = 0;
-
-                results["CentreZ"] = 0;
-                results["CentreY"] = 0;
-
-                results["TotalWidth"] = 0;
-                results["TotalDepth"] = 0;
-
-                results["Iy"] = 0;
-                results["Iz"] = 0;
-
-                results["Wply"] = 0;
-                results["Wplz"] = 0;
-
-                results["Rgy"] = 0;
-                results["Rgz"] = 0;
-
-                results["Vy"] = 0;
-                results["Vpy"] = 0;
-                results["Vz"] = 0;
-                results["Vpz"] = 0;
-
-                results["Welz"] = 0;
-                results["Wely"] = 0;
-
-                results["Asy"] = 0;
-                results["Asz"] = 0;
-
-                #endregion 
-                return results;
+                return ZeroConstantsDictionary();
+            }
+            else if (curves.Count == 0)
+            {
+                return ZeroConstantsDictionary();
             }
 
-            BoundingBox box = Geometry.Query.Bounds(curves.Select(x => x.IBounds()).ToList());
+            BoundingBox box = Geometry.Query.Bounds(curves.Select(x => Engine.Geometry.Query.IBounds(x)).ToList());
 
             Point min = box.Min;
             Point max = box.Max;
@@ -142,6 +117,9 @@ namespace BH.Engine.Structure
         [MultiOutput(1, "constants", "The section constants calculated based on the provided section profile.")]
         public static Output<IProfile, Dictionary<string, double>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
         {
+            if (profile.IsNull())
+                return new Output<IProfile, Dictionary<string, double>> { Item1 = null, Item2 = null };
+
             Dictionary<string, double> results = IntegrateSection(profile.Edges.ToList(), tolerance);
 
             Vector adjustment = new Vector() { X = -results["CentreY"], Y = -results["CentreZ"], Z = 0 };
@@ -214,9 +192,42 @@ namespace BH.Engine.Structure
             }
         }
 
+        private static Dictionary<string, object> ZeroConstantsDictionary()
+        {
+            Dictionary<string, object> results = new Dictionary<string, object>();
+
+            results["Area"] = 0;
+
+            results["CentreZ"] = 0;
+            results["CentreY"] = 0;
+
+            results["TotalWidth"] = 0;
+            results["TotalDepth"] = 0;
+
+            results["Iy"] = 0;
+            results["Iz"] = 0;
+
+            results["Wply"] = 0;
+            results["Wplz"] = 0;
+
+            results["Rgy"] = 0;
+            results["Rgz"] = 0;
+
+            results["Vy"] = 0;
+            results["Vpy"] = 0;
+            results["Vz"] = 0;
+            results["Vpz"] = 0;
+
+            results["Welz"] = 0;
+            results["Wely"] = 0;
+
+            results["Asy"] = 0;
+            results["Asz"] = 0;
+
+            return results;
+        }
+
 
         /***************************************************/
     }
 }
-
-

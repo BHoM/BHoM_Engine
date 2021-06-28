@@ -24,10 +24,12 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Structure.MaterialFragments;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -37,8 +39,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a TransverseReinforcement placing rebars across a straight line along the ConcreteSection")]
-        [InputFromProperty("rebarsCenterlinesLayout")]
+        [Description("Creates a TransverseReinforcement placing rebars across a straight line along the ConcreteSection.")]
+        [InputFromProperty("curveLayout")]
         [InputFromProperty("diameter")]
         [InputFromProperty("spacing")]
         [InputFromProperty("adjustSpacingToFit")]
@@ -46,8 +48,17 @@ namespace BH.Engine.Structure
         [InputFromProperty("endLocation")]
         [Input("material", "Material of the Rebars. If null, a default material will be pulled from the Datasets.")]
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
-        public static TransverseReinforcement TransverseReinforcement(ICurveLayout curveLayout, double diameter, double spacing, bool adjustSpacingToFit, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
+        public static TransverseReinforcement TransverseReinforcement(ICurveLayout curveLayout, double diameter, double spacing, bool adjustSpacingToFit = true, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            if (curveLayout.IsNull())
+                return null;
+            else if (diameter < Tolerance.Distance || spacing < Tolerance.Distance)
+            {
+                Reflection.Compute.RecordError("The diameter or spacing is less than the tolerance. Please check your inputs.");
+                return null;
+            }
+
+
             CheckEndLocations(ref startLocation, ref endLocation);
             return new TransverseReinforcement
             {

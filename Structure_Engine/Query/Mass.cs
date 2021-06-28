@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Output("mass", "The mass of the Bar.", typeof(Mass))]
         public static double Mass(this Bar bar)
         {
-            return bar.Length() * bar.SectionProperty.IMassPerMetre();
+            return bar.IsNull() ? 0 : bar.Length() * bar.SectionProperty.IMassPerMetre();
         }
 
         /***************************************************/
@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
         [Output("mass", "The mass of the Panel.", typeof(Mass))]
         public static double Mass(this Panel panel)
         {
-            return panel.Area() * panel.Property.IMassPerArea();
+            return panel.IsNull() ? 0 : panel.Area() * panel.Property.IMassPerArea();
         }
 
         /***************************************************/

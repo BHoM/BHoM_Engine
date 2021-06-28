@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if the reinforcement is longitudinal. Always true for LayerReinforcement.")]
         public static bool IsLongitudinal(this LayerReinforcement reinforcement)
         {
-            return true;
+            return reinforcement.IsNull() ? false : true;
         }
 
         /***************************************************/
@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if the reinforcement is longitudinal. Always true for PerimeterReinforcement.")]
         public static bool IsLongitudinal(this PerimeterReinforcement reinforcement)
         {
-            return true;
+            return reinforcement.IsNull() ? false : true;
         }
 
         /***************************************************/
@@ -58,7 +58,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if the reinforcement is longitudinal. Always false for TieReinforcement.")]
         public static bool IsLongitudinal(this TieReinforcement reinforcement)
         {
-            return false;
+            return reinforcement.IsNull() ? false : false;
         }
 
 
@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if the reinforcement is longitudinal.")]
         public static bool IIsLongitudinal(this Reinforcement reinforcement)
         {
-            return IsLongitudinal(reinforcement as dynamic);
+            return reinforcement.IsNull() ? false : IsLongitudinal(reinforcement as dynamic);
         }
 
         /***************************************************/

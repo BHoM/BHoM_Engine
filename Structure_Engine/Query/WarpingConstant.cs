@@ -22,9 +22,9 @@
 
 using System;
 using BH.oM.Spatial.ShapeProfiles;
-
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Spatial;
 using System.ComponentModel;
 
 namespace BH.Engine.Structure
@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this CircleProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this TubeProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this BoxProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this FabricatedBoxProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this KiteProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this RectangleProfile profile)
         {
-            return 0;
+            return profile.IsNull() ? 0 : 0;
         }
 
         /***************************************************/
@@ -103,6 +103,9 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this ISectionProfile profile)
         {
+            if (profile.IsNull())
+                return 0;
+
             double width = profile.Width;
             double height = profile.Height;
             double tf = profile.FlangeThickness;
@@ -120,6 +123,9 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this FabricatedISectionProfile profile)
         {
+            if (profile.IsNull())
+                return 0;
+
             double b1 = profile.TopFlangeWidth;
             double b2 = profile.BotFlangeWidth;
             double height = profile.Height;
@@ -145,6 +151,9 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this ChannelProfile profile)
         {
+            if (profile.IsNull())
+                return 0;
+
             double width = profile.FlangeWidth;
             double height = profile.Height;
             double tf = profile.FlangeThickness;
@@ -164,7 +173,7 @@ namespace BH.Engine.Structure
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double IWarpingConstant(this IProfile profile)
         {
-            return WarpingConstant(profile as dynamic);
+            return profile.IsNull() ? 0 : WarpingConstant(profile as dynamic);
         }
 
         /***************************************************/

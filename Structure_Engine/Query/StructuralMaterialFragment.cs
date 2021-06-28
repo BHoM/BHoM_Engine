@@ -41,12 +41,18 @@ namespace BH.Engine.Structure
         [Output("strMat", "The structural MaterialFragment.")]
         public static IMaterialFragment StructuralMaterialFragment(this Material material)
         {
-            if (!material.IsValidStructural())
+            if (material == null)
             {
-                Engine.Reflection.Compute.RecordWarning("Material with name " + material.Name + " does not contain an structural material fragment");
+                Engine.Reflection.Compute.RecordError("Material is null and therefore the StructuralMaterialFragment cannot be evaluated.");
                 return null;
             }
-            
+
+            if (!material.IsValidStructural())
+            {
+                Reflection.Compute.RecordWarning("Material with name " + material.Name + " does not contain a structural material fragment.");
+                return null;
+            }
+
             return material.Properties.Where(x => x is IMaterialFragment).Cast<IMaterialFragment>().FirstOrDefault();
         }
 

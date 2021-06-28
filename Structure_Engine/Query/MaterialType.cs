@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this Steel materialFragment)
         {
-            return oM.Structure.MaterialFragments.MaterialType.Steel;
+            return materialFragment.IsNull() ? oM.Structure.MaterialFragments.MaterialType.Undefined : oM.Structure.MaterialFragments.MaterialType.Steel;
         }
 
         /***************************************************/
@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this Concrete materialFragment)
         {
-            return oM.Structure.MaterialFragments.MaterialType.Concrete;
+            return materialFragment.IsNull() ? oM.Structure.MaterialFragments.MaterialType.Undefined : oM.Structure.MaterialFragments.MaterialType.Concrete;
         }
 
         /***************************************************/
@@ -59,7 +59,7 @@ namespace BH.Engine.Structure
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this Timber materialFragment)
         {
-            return oM.Structure.MaterialFragments.MaterialType.Timber;
+            return materialFragment.IsNull() ? oM.Structure.MaterialFragments.MaterialType.Undefined : oM.Structure.MaterialFragments.MaterialType.Timber;
         }
 
         /***************************************************/
@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this Aluminium materialFragment)
         {
-            return oM.Structure.MaterialFragments.MaterialType.Aluminium;
+            return materialFragment.IsNull() ? oM.Structure.MaterialFragments.MaterialType.Undefined : oM.Structure.MaterialFragments.MaterialType.Aluminium;
         }
 
         /***************************************************/
@@ -79,7 +79,7 @@ namespace BH.Engine.Structure
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this GenericIsotropicMaterial materialFragment)
         {
-            return oM.Structure.MaterialFragments.MaterialType.Undefined;
+            return materialFragment.IsNull() ? oM.Structure.MaterialFragments.MaterialType.Undefined : oM.Structure.MaterialFragments.MaterialType.Undefined;
         }
 
         /***************************************************/
@@ -89,7 +89,7 @@ namespace BH.Engine.Structure
         [Output("type", "The material type of the provided material.")]
         public static MaterialType MaterialType(this GenericOrthotropicMaterial materialFragment)
         {
-            return oM.Structure.MaterialFragments.MaterialType.Undefined;
+            return materialFragment.IsNull() ? oM.Structure.MaterialFragments.MaterialType.Undefined : oM.Structure.MaterialFragments.MaterialType.Undefined;
         }
 
         /***************************************************/
@@ -101,7 +101,7 @@ namespace BH.Engine.Structure
         [Output("type", "The material type of the provided material.")]
         public static MaterialType IMaterialType(this IMaterialFragment materialFragment)
         {
-            return MaterialType(materialFragment as dynamic);
+            return materialFragment.IsNull() ? oM.Structure.MaterialFragments.MaterialType.Undefined : MaterialType(materialFragment as dynamic);
         }
 
         /***************************************************/

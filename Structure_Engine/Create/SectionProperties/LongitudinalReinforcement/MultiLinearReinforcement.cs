@@ -44,8 +44,8 @@ namespace BH.Engine.Structure
                  "Starts by fitting in as many points as possible in the first layer, then generates a new one and repeats.")]
         [InputFromProperty("diameter")]
         [Input("barCount", "Number of bars along the along the linear distribution axes.")]
-        [Input("parallelSpacing", "Minimum spacing allowed between two rebars in a single layer", typeof(Length))]
-        [Input("perpendicularSpacing", "Minimum spacing allowed between two layers of rebar", typeof(Length))]
+        [Input("parallelSpacing", "Minimum spacing allowed between two rebars in a single layer.", typeof(Length))]
+        [Input("perpendicularSpacing", "Minimum spacing allowed between two layers of rebar.", typeof(Length))]
         [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane. Defaults to the global X-axis.")]
         [Input("offset", "Offset of the linear layout in relation to the reference point, perpendicular to the Direction vector in the XY-plane.\n" +
                      "A positive value will mean an offset towards the centre of the boundingbox of the ConcreteSection.", typeof(Length))]
@@ -56,6 +56,12 @@ namespace BH.Engine.Structure
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement MultiLinearReinforcement(double diameter, int barCount, double parallelSpacing, double perpendicularSpacing, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            if (diameter < Tolerance.Distance || barCount <= 0 || parallelSpacing < Tolerance.Distance || perpendicularSpacing < Tolerance.Distance)
+            {
+                Reflection.Compute.RecordError("The diameter, bar count, parallel spacing or perpindicular spacing is less than the tolerance. Please check your inputs.");
+                return null;
+            }
+
             return LongitudinalReinforcement(Spatial.Create.MultiLinearLayout(barCount, parallelSpacing + diameter, perpendicularSpacing + diameter, direction, offset, referencePoint), diameter, startLocation, endLocation, material);
         }
 

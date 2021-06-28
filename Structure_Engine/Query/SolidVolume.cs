@@ -40,11 +40,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a Bar's solid volume based on its SectionProperty area and the CentreLine length")]
-        [Input("bar", "The Bar to get the volume from")]
+        [Description("Returns a Bar's solid volume based on its SectionProperty area and the CentreLine length.")]
+        [Input("bar", "The Bar to get the volume from.")]
         [Output("volume", "The Bar solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Bar bar)
         {
+            if (bar.IsNull())
+                return 0;
+
             if (bar.SectionProperty == null)
             {
                 Engine.Reflection.Compute.RecordError("The Bars Solid Volume could not be calculated as no section property has been assigned. Returning zero volume.");
@@ -56,10 +59,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a IAreaElement's solid volume as the area of the element times the average thickness of its SurfaceProperty. The average thickness is evaluated as if it was applied to an infinite plane.")]
-        [Input("areaElement", "The IAreaElement to get the volume from")]
+        [Input("areaElement", "The IAreaElement to get the volume from.")]
         [Output("volume", "The IAreaElement solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IAreaElement areaElement)
         {
+            if (areaElement.IIsNull())
+                return 0;
+
             if (areaElement.Property == null)
             {
                 Engine.Reflection.Compute.RecordError("The IAreaElements Solid Volume could not be calculated as no surface property has been assigned. Returning zero volume.");

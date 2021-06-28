@@ -44,6 +44,9 @@ namespace BH.Engine.Structure
         [Output("concSection", "The ConcreteSection with new Reinforcement.")]
         public static ConcreteSection SetReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
         {
+            if (section.IsNull() || reinforcement.Any(x => x.IsNull()))
+                return null;
+
             ConcreteSection clone = section.ShallowClone();
             clone.Reinforcement = reinforcement.ToList();
             return clone;

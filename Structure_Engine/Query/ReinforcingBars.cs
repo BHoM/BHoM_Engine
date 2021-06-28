@@ -45,11 +45,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extract all physical ReinforcingBars from the structural Bar. Only extract reinforcement for bars owning a ConcreteSection, for other section types, an empty list will be returned.")]
+        [Description("Extract all physical ReinforcingBars from the structural Bar. Only extracts reinforcement for bars owning a ConcreteSection, for other section types, an empty list will be returned.")]
         [Input("bar", "The structural Bar to extract Reinforcement from.")]
         [Output("rebars", "All physical ReinforcingBar on the provided Bar.")]
         public static List<IReinforcingBar> ReinforcingBars(this Bar bar)
         {
+            if (bar.IsNull())
+                return null;
+
             List<IReinforcingBar> rebars = new List<IReinforcingBar>();
             ConcreteSection section = bar.SectionProperty as ConcreteSection;
 

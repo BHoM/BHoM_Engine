@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -35,6 +36,9 @@ namespace BH.Engine.Structure
         [NotImplemented]
         public static double WidthAt(this IProfile section, double y)
         {
+            if (section.IsNull())
+                return 0;
+
             IntegrationSlice slice = Engine.Geometry.Query.SliceAt(section.Edges, y, 1, oM.Geometry.Plane.XZ);
             //Slice slice = SliceAt(y, 1, Plane.XZ());// new Plane(Point.Origin, Vector.YAxis()));
             return slice.Length;
@@ -45,6 +49,9 @@ namespace BH.Engine.Structure
         [NotImplemented]
         public static double WidthAt(this IProfile section, double y, ref double[] range)
         {
+            if (section.IsNull())
+                return 0;
+
             IntegrationSlice slice = Engine.Geometry.Query.SliceAt(section.Edges, y, 1, oM.Geometry.Plane.XZ);
             //Slice slice = SliceAt(y, 1, Plane.XZ());
             range = slice.Placement;
