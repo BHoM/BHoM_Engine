@@ -43,6 +43,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to filter the relations from.")]
         [Input("typeFilter", "The Type of the relation to filter.")]
         [Output("filtered relations", "Collection of IRelations filtered from the Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.FilterRelations(BH.oM.Analytical.Elements.Graph,System.Type>")]
         public static List<IRelation<T>> FilterRelations<T>(this Graph<T> graph, Type typeFilter)
             where T : IBHoMObject
         {

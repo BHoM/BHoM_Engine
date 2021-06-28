@@ -45,6 +45,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph that owns the IRelation.")]
         [Input("relation", "The IRelation to query.")]
         [Output("length", "The length of the IRelation.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.RelationLength(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.IRelation>")]
         public static double RelationLength<T>(this Graph<T> graph, IRelation<T> relation)
             where T : IBHoMObject
         {

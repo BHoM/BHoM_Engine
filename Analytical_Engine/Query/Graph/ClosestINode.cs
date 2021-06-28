@@ -42,7 +42,7 @@ namespace BH.Engine.Analytical
         [Input("entities", "The collection of entities to search.")]
         [Input("point", "The Point to search from.")]
         [Output("entity", "The IElement0D closest to the Point.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.ClosestINode(BH.oM.Analytical.Elements.Graph,BH.oM.Geometry.Point>")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.ClosestIElement0D(System.Collections.Generic.List<BH.oM.Base.IBHoMObject>,BH.oM.Geometry.Point>")]
         public static T ClosestINode<T>(this List<T> entities, Point point)
             where T : INode
         {

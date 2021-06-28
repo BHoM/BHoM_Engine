@@ -45,6 +45,7 @@ namespace BH.Engine.Analytical
         [Input("entities", "A collection of IBHoMObjects from which unique instances are identified.")]
         [Input("comparisonConfig", "Configuration of diffing used to find unique entities.")]
         [Output("replacementMap", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.UniqueEntitiesReplacementMap(System.Collections.Generic.List<BH.oM.Base.IBHoMObject>, BH.oM.Base.ComparisonConfig")]
         public static Dictionary<Guid, T> UniqueEntitiesReplacementMap<T>(this List<T> entities, ComparisonConfig comparisonConfig = null)
             where T : IBHoMObject
         {

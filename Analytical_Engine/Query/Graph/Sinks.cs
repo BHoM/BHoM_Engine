@@ -41,6 +41,7 @@ namespace BH.Engine.Analytical
         [Description("Returns the collection of entity Guids that are never used a Relation source.")]
         [Input("graph", "The Graph to search.")]
         [Output("sinks", "The collection of entity Guids that are sinks.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Sinks(BH.oM.Analytical.Elements.Graph>")]
         public static List<Guid> Sinks<T>(this Graph<T> graph)
             where T : IBHoMObject
         {

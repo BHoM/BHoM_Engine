@@ -44,6 +44,7 @@ namespace BH.Engine.Analytical
         [Input("target", "The IBHoMObject target to search for.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forwards indicating traversal is from source to target.")]
         [Output("relations", "The collection of matching IRelations.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Relation(BH.oM.Analytical.Elements.Graph,BH.oM.Base.IBHoMObject,BH.oM.Base.IBHoMObject,BH.oM.Analytical.Elements.RelationDirection>")]
         public static List<IRelation<T>> Relation<T>(this Graph<T> graph, T source, T target, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : IBHoMObject
         {
@@ -92,6 +93,7 @@ namespace BH.Engine.Analytical
         [Input("target", "The Guid of the target to search for.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forwards indicating traversal is from source to target.")]
         [Output("relations", "The collection of matching IRelation Guids.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Relation(BH.oM.Analytical.Elements.Graph,System.Guid,System.Guid,BH.oM.Analytical.Elements.RelationDirection>")]
         public static List<Guid> Relation<T>(this Graph<T> graph, Guid source, Guid target, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : IBHoMObject
         {

@@ -42,6 +42,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("relationDirection", "The RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.SubGraphs(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.RelationDirection>")]
         public static List<Graph<T>> SubGraphs<T>(this Graph<T> graph, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : IBHoMObject
         {

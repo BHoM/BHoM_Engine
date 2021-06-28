@@ -46,6 +46,7 @@ namespace BH.Engine.Analytical
         [Input("baseWidth", "Optional width of the arrow head. Default is 0.3.")]
         [Input("closed", "Optional boolean to set if the arrow head is closed or open. Default is false.")]
         [Output("composite geometry", "CompositeGeometry of the arrow.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.RelationArrow(BH.oM.Analytical.Elements.IRelation, System.Double, System.Double, System.Boolean>")]
         public static CompositeGeometry RelationArrow<T>(this IRelation<T> relation, double headLength = 1, double baseWidth = 0.3, bool closed = false)
             where T : IBHoMObject
         {

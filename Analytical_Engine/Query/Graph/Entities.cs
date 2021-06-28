@@ -40,6 +40,7 @@ namespace BH.Engine.Analytical
         [Description("Returns all the entities in a Graph as collection.")]
         [Input("graph", "The Graph to extract entities from.")]
         [Output("entities", "The Graph entities.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Entities(BH.oM.Analytical.Elements.Graph>")]
         public static List<T> Entities<T>(this Graph<T> graph)
             where T : IBHoMObject
         {
