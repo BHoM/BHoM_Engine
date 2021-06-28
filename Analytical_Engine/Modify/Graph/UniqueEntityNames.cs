@@ -38,6 +38,7 @@ namespace BH.Engine.Analytical
         [Description("Enforce unique entity names on a collection of entities.")]
         [Input("graph", "The Graph to modify.")]
         [Output("graph", "The modified graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.UniqueEntityNames(BH.oM.Analytical.Elements.Graph>")]
         public static Graph<T> UniqueEntityNames<T>(this Graph<T> graph)
             where T : IBHoMObject
         {

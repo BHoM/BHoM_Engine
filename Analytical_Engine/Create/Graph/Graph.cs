@@ -49,6 +49,7 @@ namespace BH.Engine.Analytical
         [Input("entities", "A collection of IBHoMOBjects to use as Graph entities. Entities should include DependencyFragments to determine the Graph Relations.")]
         [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Create.Graph(System.Collections.Generic.List<BH.oM.Base.IBHoMObject>, BH.oM.Base.ComparisonConfig)")]
         public static Graph<T> Graph<T>(List<T> entities, ComparisonConfig comparisonConfig = null)
             where T : IBHoMObject
         {
@@ -61,6 +62,7 @@ namespace BH.Engine.Analytical
         [Input("relations", "A collection of IRelations to use as Graph Relations. Relations should include sub Graphs containing the entities to be used in the Graph.")]
         [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Create.Graph(System.Collections.Generic.List<BH.oM.Analytical.Elements.IRelation>, BH.oM.Base.ComparisonConfig)")]
         public static Graph<T> Graph<T>(List<IRelation<T>> relations, ComparisonConfig comparisonConfig = null)
             where T : IBHoMObject
         {
@@ -74,6 +76,7 @@ namespace BH.Engine.Analytical
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
         [Input("comparisonConfig", "Settings to determine the uniqueness of entities.")]
         [Output("graph", "Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Create.Graph(System.Collections.Generic.List<BH.oM.Base.IBHoMObject>,System.Collections.Generic.List<BH.oM.Analytical.Elements.IRelation>, BH.oM.Base.ComparisonConfig)")]
         public static Graph<T> Graph<T>(List<T> entities = null, List<IRelation<T>> relations = null, ComparisonConfig comparisonConfig = null)
             where T : IBHoMObject
         {
@@ -126,6 +129,7 @@ namespace BH.Engine.Analytical
         [Input("snappingTolerance", "Optional tolerance used when comparing connectingCurves end points and provided entities. Default is Tolerance.Distance (1e-6).")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Create.Graph(System.Collections.Generic.List<BH.oM.Geometry.ICurve>,BH.oM.Base.IBHoMObject, System.Collections.Generic.List<BH.oM.Base.IBHoMObject>, System.Double, BH.oM.Analytical.Elements.RelationDirection)")]
         public static Graph<T> Graph<T>(List<ICurve> connectingCurves, T prototypeEntity, List<T> entities = null, double snappingTolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
         where T : INode
         {
@@ -167,6 +171,7 @@ namespace BH.Engine.Analytical
         [Input("tolerance", "Optional minimum distance permitted between randomly generated entities. Default is Tolerance.Distance (1e-6).")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Create.Graph(System.Int32,System.Int32, BH.oM.Geometry.BoundingBox, BH.oM.Base.IBHoMObject, System.Double, BH.oM.Analytical.Elements.RelationDirection)")]
         public static Graph<T> Graph<T>(int entityCount, int branching, BoundingBox boundingBox, T prototypeEntity, double tolerance = Tolerance.Distance, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : INode
         {
@@ -214,6 +219,7 @@ namespace BH.Engine.Analytical
         [Input("prototypeEntity", "An IElement0D to be used as the prototype of all entities in the Graph.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Create.Graph(System.Int32,System.Int32, System.Int32, System.Double, BH.oM.Base.IBHoMObject, System.Double, BH.oM.Analytical.Elements.RelationDirection)")]
         public static Graph<T> Graph<T>(int width, int length, int height, double cellSize, T prototypeEntity, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : INode
         {

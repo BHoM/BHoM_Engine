@@ -42,6 +42,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to modify.")]
         [Input("entityToRemove", "The IBHoMObject entity to remove.")]
         [Output("graph", "The modified Graph with the specified entity and any dependent relations removed.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.RemoveEntity(BH.oM.Analytical.Elements.Graph, BH.oM.Base.IBHoMObject)")]
         public static Graph<T> RemoveEntity<T>(this Graph<T> graph, T entityToRemove)
             where T : IBHoMObject
         {
@@ -66,6 +67,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to modify.")]
         [Input("entityToRemove", "The Guid of the entity to remove.")]
         [Output("graph", "The modified Graph with the specified entity and any dependent relations removed.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.RemoveEntity(BH.oM.Analytical.Elements.Graph, System.Guid)")]
         public static Graph<T> RemoveEntity<T>(this Graph<T> graph, Guid entityToRemove)
             where T : IBHoMObject
         {

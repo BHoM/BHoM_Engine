@@ -42,7 +42,7 @@ namespace BH.Engine.Analytical
         [Input("dependency", "The IDependencyFragment to convert.")]
         [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
         [Output("relations", "Collection of the converted relations.")]
-        [PreviousVersion("5.0", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Fragments.IDependencyFragment, System.Guid)")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Fragments.IDependencyFragment, System.Guid)")]
         public static List<IRelation<T>> IToRelation<T>(this IDependencyFragment dependency, Guid owningEntity)
             where T : IBHoMObject
         {
@@ -55,7 +55,7 @@ namespace BH.Engine.Analytical
         [Input("dependency", "The DependencyFragment to convert.")]
         [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
         [Output("relations", "Collection of the converted relations.")]
-        [PreviousVersion("5.0", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Fragments.SourcesDependencyFragment, System.Guid)")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Fragments.SourcesDependencyFragment, System.Guid)")]
         public static List<IRelation<T>> ToRelation<T>(this SourcesDependencyFragment dependency, Guid owningEntity)
             where T : IBHoMObject
         {
@@ -89,7 +89,7 @@ namespace BH.Engine.Analytical
         [Input("dependency", "The DependencyFragment to convert.")]
         [Input("owningEntity", "The Guid of the entity from where the fragment was extracted.")]
         [Output("relations", "Collection of the converted relations.")]
-        [PreviousVersion("5.0", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Fragments.TargetsDependencyFragment, System.Guid)")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Fragments.TargetsDependencyFragment, System.Guid)")]
         public static List<IRelation<T>> ToRelation<T>(this TargetsDependencyFragment dependency, Guid owningEntity)
             where T : IBHoMObject
         {
@@ -125,7 +125,7 @@ namespace BH.Engine.Analytical
         [Description("Convert an IBHoMObject to a collection of relations.")]
         [Input("obj", "The IBHoMObject to convert.")]
         [Output("relations", "Collection of the converted relations.")]
-        [PreviousVersion("5.0", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Base.IBHoMObject)")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Base.IBHoMObject)")]
         public static List<IRelation<T>> ToRelation<T>(this T obj)
             where  T : IBHoMObject
         {
@@ -150,7 +150,7 @@ namespace BH.Engine.Analytical
         [Input("link", "The ILink to convert.")]
         [Input("linkDirection", "The optional RelationDirection defining the direction of the relation. Default is RelationDirection.Forwards.")]
         [Output("relations", "Collection of the converted relations.")]
-        [PreviousVersion("5.0", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Elements.ILink,BH.oM.Analytical.Elements.RelationDirection)")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Elements.ILink,BH.oM.Analytical.Elements.RelationDirection)")]
         public static List<IRelation<TNode>> ToRelation<TNode>(this ILink<TNode> link, RelationDirection linkDirection = RelationDirection.Forwards)
             where TNode : INode
         {
@@ -176,7 +176,7 @@ namespace BH.Engine.Analytical
         [Description("Convert a an ILink to a single forward direction relation.")]
         [Input("link", "The ILink to convert.")]
         [Output("relation", "The converted relation.")]
-        [PreviousVersion("5.0", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Elements.ILink)")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Convert.IToRelation(BH.oM.Analytical.Elements.ILink)")]
         public static IRelation<TNode> ToRelation<TNode>(this ILink<TNode> link)
             where TNode : INode
         {

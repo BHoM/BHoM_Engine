@@ -44,7 +44,7 @@ namespace BH.Engine.Analytical
         [Input("shape", "The optional DotFormat shape to represent Graph entities. Default is \"box\".")]
         [Input("fontsize", "The optional DotFormat fontsize for text in the DotFormat. Default is 12.")]
         [Output("dotFormat", "The DotFormat string that can be copied and pasted in on line viewers like https://visjs.github.io/vis-network/examples/network/data/dotLanguage/dotPlayground.html for quick visualisation.")]
-        [PreviousVersion("5.0", "BH.Engine.Analytical.Convert.ToDotFormat(BH.oM.Analytical.Elements.Graph, System.String, System.Int)")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Convert.ToDotFormat(BH.oM.Analytical.Elements.Graph, System.String, System.Int)")]
         public static string ToDotFormat<T>(this Graph<T> graph, string shape = "box", int fontsize = 12)
             where T : IBHoMObject
         {

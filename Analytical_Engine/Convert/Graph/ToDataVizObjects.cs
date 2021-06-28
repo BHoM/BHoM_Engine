@@ -42,7 +42,7 @@ namespace BH.Engine.Analytical
         [Description("Convert a graph to CustomOBjects for visualisation.")]
         [Input("graph", "The Graph to convert.")]
         [Output("custom objects", "CUstom objects representing the Graph.")]
-        [PreviousVersion("5.0", "BH.Engine.Analytical.Convert.ToDataVizObjects(BH.oM.Analytical.Elements.Graph)")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Convert.ToDataVizObjects(BH.oM.Analytical.Elements.Graph)")]
         public static List<CustomObject> ToDataVizObjects<T>(this Graph<T> graph)
             where T : IBHoMObject
         {

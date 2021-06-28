@@ -43,6 +43,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to represent as an adjacency dictionary.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forwards indicating traversal is from source to target.")]
         [Output("adjacency", "The Dictionary where the keys are entities and the values are the collection of adjacent entities.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Adjacency(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.RelationDirection>")]
         public static Dictionary<Guid, List<Guid>> Adjacency<T>(this Graph<T> graph, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : IBHoMObject
         {

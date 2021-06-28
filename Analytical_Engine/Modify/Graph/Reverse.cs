@@ -44,6 +44,7 @@ namespace BH.Engine.Analytical
         [Description("Modifies an IRelation by reversing it.")]
         [Input("relation", "The IRelation to reverse.")]
         [Output("relation", "The reversed IRelation.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.IReverse(BH.oM.Analytical.Elements.IRelation)")]
         public static IRelation<T> IReverse<T>(this IRelation<T> relation)
             where T : IBHoMObject
         {
@@ -55,6 +56,7 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Relation by reversing it.")]
         [Input("relation", "The Relation to reverse.")]
         [Output("relation", "The reversed Relation.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.Reverse(BH.oM.Analytical.Elements.Relation)")]
         public static Relation<T> Reverse<T>(this Relation<T> relation)
             where T : IBHoMObject
         {
@@ -75,6 +77,7 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Graph by reversing all Relations within it.")]
         [Input("graph", "The Graph to reverse.")]
         [Output("graph", "The reversed Graph.")]
+        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.Reverse(BH.oM.Analytical.Elements.Graph)")]
         public static Graph<T> Reverse<T>(this Graph<T> graph)
             where T : IBHoMObject
         {
