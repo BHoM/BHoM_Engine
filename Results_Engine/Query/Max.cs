@@ -136,7 +136,7 @@ namespace BH.Engine.Results
         [Input("caseFromFirst", "True if the case from the first BarRequiredArea should be assigned to output BarRequiredArea. Otherwise a case will not be assigned.")]
         [Input("materialFromFirst", "True if the material from the first BarRequiredArea should be assigned to output BarRequiredArea. Otherwise a material will not be assigned.")]
         [Output("maxEnvelope", "A BarRequiredArea object containing the enveloped required areas in each of its components.")]
-        public static BarRequiredArea MaxEnvelope(this IEnumerable<BarRequiredArea> results, bool idFromFirst = false, bool caseFromFirst = false)
+        public static BarRequiredArea MaxEnvelope(this IEnumerable<BarRequiredArea> results, bool idFromFirst = false, bool caseFromFirst = false, bool materialFromFirst = false)
         {
             return new BarRequiredArea(
                 idFromFirst ? results.First().ObjectId : "",
@@ -150,7 +150,7 @@ namespace BH.Engine.Results
                 results.Max(x => x.Perimeter),
                 results.Max(x => x.Shear),
                 results.Max(x => x.Torsion),
-                results.First().MaterialName
+                materialFromFirst ? results.First().MaterialName : ""
                 );
         }
 
