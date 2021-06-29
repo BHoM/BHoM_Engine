@@ -38,7 +38,7 @@ namespace BH.Engine.Results
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Determines the maximum force for each component of the BarForce and returns a new BarForce with its concurrent forces.")]
+        [Description("Returns a list of BarForces, one for each component, that contain the maximum value for each components and its concurrent forces.")]
         [Input("forces", "The BarForce results to be considered.")]
         [Output("maxForces", "A list of BarForces, one for each component of the BarForce, containing the maximum force and its concurrent forces.")]
         public static List<BarForce> MaxForces(this IEnumerable<BarForce> forces)
@@ -58,7 +58,7 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
-        [Description("Determines the maximum required area for each component of the BarRequiredArea and returns a new BarRequiredArea with its concurrent required areas.")]
+        [Description("Returns a list of BarRequiredArea results, one for each component, that contain the maximum value for each required area and its concurrent required areas.")]
         [Input("results", "The BarRequiredArea results to be considered.")]
         [Output("maxResults", "A list of BarRequiredAreas, one for each component of the BarRequiredArea, containing the maximum required area and its concurrent required areas.")]
         public static List<BarRequiredArea> MaxBarRequiredArea(this IEnumerable<BarRequiredArea> results)
@@ -77,7 +77,7 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
-        [Description("Determines the maximum required area for each component of the MeshRequiredArea and returns a new MeshRequiredArea with its concurrent required areas.")]
+        [Description("Returns a list of MeshRequiredAreas results, one for each component, that contain the maximum value for each required area and its concurrent required areas.")]
         [Input("results", "The MeshRequiredArea results to be considered.")]
         [Output("maxResults", "A list of MeshRequiredAreas, one for each component of the MeshRequiredAreas, containing the maximum required area and its concurrent required areas.")]
         public static List<MeshRequiredArea> MaxMeshRequiredArea(this IEnumerable<MeshRequiredArea> results)
@@ -97,7 +97,7 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
-        [Description("Groups the BarForces by case and finds the maximum envelope returning a single enveloped BarForce for each case.")]
+        [Description("Groups the BarForces by case and finds the maximum envelope returning a single enveloped BarForce for each case. The resulting BarForce will not contain concurrent forces.")]
         [Input("forces", "The BarForces to be considered.")]
         [Output("maxResults", "A list of BarForces, one for each case, enveloped to produce the maximum forces for that case.")]
         public static List<BarForce> MaxEnvelopeByCase(this IEnumerable<BarForce> forces)
@@ -106,7 +106,7 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
-        [Description("Groups the BarForces by id and finds the maximum envelope returning a single enveloped BarForce for each id.")]
+        [Description("Groups the BarForces by id and finds the maximum envelope returning a single enveloped BarForce for each id. The resulting BarForce will not contain concurrent forces.")]
         [Input("forces", "The BarForces to be considered.")]
         [Output("maxResults", "A list of BarForces, one for each id, enveloped to produce the maximum forces for that id.")]
         public static List<BarForce> MaxEnvelopeByObject(this IEnumerable<BarForce> forces)
