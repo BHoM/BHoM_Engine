@@ -487,6 +487,22 @@ namespace BH.Engine.Structure
             return false;
         }
 
+        [Description("Checks if a BarFofrce is null and outputs relevant error message.")]
+        [Input("barForce", "The BarFofrce to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the BarForce is null.")]
+        public static bool IsNull(this BarForce barForce, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (barForce == null)
+            {
+                ErrorMessage(methodName, "BarForce", msg);
+                return true;
+            }
+
+            return false;
+        }
+
         /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
