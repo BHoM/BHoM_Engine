@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         [Description("Calculates the ReinforcementDensity of a BarRequiredArea from a given Bar and Material. \n " +
             "The input output relation is one to one, so it is recommended that some enveloping methods are used prior to this method.")]
-        [Input("barRequiredArea", "The BarRequiredArea containing the reinforced areas and ids for the Bar and Material.")]
+        [Input("barRequiredAreas", "The BarRequiredArea containing the reinforced areas and ids for the Bar and Material.")]
         [Input("bars", "The Bars to search for the relevant Bar associated with the BarRequiredArea.")]
         [Input("materials", "The Materials to search for the relevant Material associated with the BarRequiredArea.")]
         [Output("reinforcementDensity", "The ReinforcementDensity calculated using the inputs provided.")]
