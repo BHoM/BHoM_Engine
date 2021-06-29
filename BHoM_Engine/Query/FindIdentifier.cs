@@ -37,26 +37,32 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Tries to find a IAdapterId on the object.")]
+        [Description("Tries to find an IAdapterId on the object.")]
+        [Input("o", "The object to search for an IAdapterId.")]
         [Output("identifier", "First plausible identifier present on the object.")]
         public static Type FindIdentifier(this IBHoMObject o)
         {
-            return o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
+            return o?.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
         }
 
         /***************************************************/
 
-        [Description("Tries to find a AdapterIdName on the object if no input is provided.")]
-        [Output("adapterIdName", "First plausible identifier present on the object or provided.")]
+        [Description("Tries to find a AdapterIdType on the object if no input is provided.")]
+        [Output("adapterIdType", "First plausible identifier present on the object or provided.")]
         public static Type FindIdentifier(this IBHoMObject o, Type adapterIdType)
         {
+            if (o == null)
+            {
+                Reflection.Compute.RecordError("The object provided is null, please check inputs.");
+                return null;
+            }
             if (adapterIdType == null)
             {
                 adapterIdType = o.FindIdentifier();
                 if (adapterIdType == null)
                 {
-                    //Engine.Reflection.Compute.RecordError("No Identifier found");
-                    throw new System.Exception("No Identifier found");
+                    Reflection.Compute.RecordError("No Identifier found.");
+                    return null;
                 }
                 else
                     Reflection.Compute.RecordNote("Auto-generated Identifier as " + adapterIdType.Name);
