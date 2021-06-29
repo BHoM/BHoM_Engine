@@ -42,7 +42,22 @@ namespace BH.Engine.Base
         [Output("identifier", "First plausible identifier present on the object.")]
         public static Type FindIdentifier(this IBHoMObject o)
         {
-            return o?.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
+            if (o == null)
+            {
+                Reflection.Compute.RecordError("Provided object is null. Cannot extract identifier.");
+                return null;
+            }
+            Type adapterIdType = o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
+            if (adapterIdType == null)
+            {
+                Reflection.Compute.RecordError("No Identifier found.");
+                return null;
+            }
+            else
+            {
+                Reflection.Compute.RecordNote($"Auto-generated Identifier as {adapterIdType.Name}.");
+                return adapterIdType;
+            }
         }
 
         /***************************************************/
@@ -51,28 +66,15 @@ namespace BH.Engine.Base
         [Output("adapterIdType", "First plausible identifier present on the object or provided.")]
         public static Type FindIdentifier(this IBHoMObject o, Type adapterIdType)
         {
-            if (o == null)
-            {
-                Reflection.Compute.RecordError("The object provided is null, please check inputs.");
-                return null;
-            }
             if (adapterIdType == null)
             {
-                adapterIdType = o.FindIdentifier();
-                if (adapterIdType == null)
-                {
-                    Reflection.Compute.RecordError("No Identifier found.");
-                    return null;
-                }
-                else
-                    Reflection.Compute.RecordNote("Auto-generated Identifier as " + adapterIdType.Name);
+                return o.FindIdentifier();
             }
             else if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
             {
                 Reflection.Compute.RecordError("The provided adapterIdType need to be a type of IAdapterId.");
                 return null;
             }
-
             return adapterIdType;
         }
 
