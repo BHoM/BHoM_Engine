@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using BH.oM.Base; 
+using BH.oM.Base;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Fragments;
 using BH.oM.Structure.MaterialFragments;
@@ -65,7 +65,7 @@ namespace BH.Engine.Structure
             Bar resultBar;
             List<ReinforcementDensity> reinforcementDensities = new List<ReinforcementDensity>();
 
-            foreach(BarRequiredArea barRequiredArea in barRequiredAreas)
+            foreach (BarRequiredArea barRequiredArea in barRequiredAreas)
             {
                 if (materialsDict.TryGetValue(barRequiredArea.MaterialName, out material) && barsDict.TryGetValue(barRequiredArea.ObjectId.ToString(), out resultBar))
                 {
