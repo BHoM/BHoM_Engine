@@ -112,34 +112,5 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        [Description("Tries to find a IAdapterId on the object.")]
-        [Output("identifier", "First plausible identifier present on the object.")]
-        private static Type FindIdentifier(this IBHoMObject o)
-        {
-            return o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
-        }
-
-        /***************************************************/
-
-        [Description("Tries to find a AdapterIdName on the object if no input is provided.")]
-        [Output("adapterIdName", "First plausible identifier present on the object or provided.")]
-        private static Type FindIdentifier(this IBHoMObject o, Type adapterIdType)
-        {
-            if (adapterIdType == null)
-            {
-                adapterIdType = o.FindIdentifier();
-                if (adapterIdType == null)
-                {
-                    //Engine.Reflection.Compute.RecordError("No Identifier found");
-                    throw new System.Exception("No Identifier found");
-                }
-                else
-                    Engine.Reflection.Compute.RecordNote("Auto-generated Identifier as " + adapterIdType.Name);
-            }
-            return adapterIdType;
-        }
-
-        /***************************************************/
-
     }
 }

@@ -22,10 +22,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.Engine.Base;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.Results;
+
 
 namespace BH.Engine.Results
 {
@@ -34,10 +38,11 @@ namespace BH.Engine.Results
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Determines the maximum force for each component of the BarForce and returns a new BarForce with its concurrent forces.")]
+        [Input("forces", "The BarForce results to be considered.")]
+        [Output("maxForces", "A list of BarForces, one for each component of the BarForce, containing the maximum force and its concurrent forces.")]
         public static List<BarForce> MaxForces(this IEnumerable<BarForce> forces)
         {
-
             List<BarForce> maxForces = new List<BarForce>();
             maxForces.Add(forces.MaxBy(x => x.FX));
             maxForces.Add(forces.MaxBy(x => x.FY));
@@ -50,21 +55,62 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
+        [Description("Determines the maximum required area for each component of the BarRequiredArea and returns a new BarRequiredArea with its concurrent required areas.")]
+        [Input("results", "The BarRequiredArea results to be considered.")]
+        [Output("maxResults", "A list of BarRequiredAreas, one for each component of the BarRequiredArea, containing the maximum required area and its concurrent required areas.")]
+        public static List<BarRequiredArea> MaxBarRequiredArea(this IEnumerable<BarRequiredArea> results)
+        {
+            List<BarRequiredArea> maxResults = new List<BarRequiredArea>();
+            maxResults.Add(results.MaxBy(x => x.Top));
+            maxResults.Add(results.MaxBy(x => x.Bottom));
+            maxResults.Add(results.MaxBy(x => x.Perimeter));
+            maxResults.Add(results.MaxBy(x => x.Shear));
+            maxResults.Add(results.MaxBy(x => x.Torsion));
 
+            return maxResults;
+        }
+
+        /***************************************************/
+        [Description("Determines the maximum required area for each component of the MeshRequiredArea and returns a new MeshRequiredArea with its concurrent required areas.")]
+        [Input("results", "The MeshRequiredArea results to be considered.")]
+        [Output("maxResults", "A list of MeshRequiredAreas, one for each component of the MeshRequiredAreas, containing the maximum required area and its concurrent required areas.")]
+        public static List<MeshRequiredArea> MaxMeshRequiredArea(this IEnumerable<MeshRequiredArea> results)
+        {
+            List<MeshRequiredArea> maxResults = new List<MeshRequiredArea>();
+            maxResults.Add(results.MaxBy(x => x.TopPrimary));
+            maxResults.Add(results.MaxBy(x => x.TopSecondary));
+            maxResults.Add(results.MaxBy(x => x.BottomPrimary));
+            maxResults.Add(results.MaxBy(x => x.BottomSecondary));
+            maxResults.Add(results.MaxBy(x => x.Shear));
+            maxResults.Add(results.MaxBy(x => x.Torsion));
+
+            return maxResults;
+        }
+
+        /***************************************************/
+        [Description("Groups the BarForces by case and finds the maximum envelope returning a single enveloped BarForce for each case.")]
+        [Input("forces", "The BarForces to be considered.")]
+        [Output("maxResults", "A list of BarForces, one for each case, enveloped to produce the maximum forces for that case.")]
         public static List<BarForce> MaxEnvelopeByCase(this IEnumerable<BarForce> forces)
         {
             return forces.GroupByCase().Select(x => x.MaxEnvelope(false, true)).ToList();
         }
 
         /***************************************************/
-
+        [Description("Groups the BarForces by id and finds the maximum envelope returning a single enveloped BarForce for each id.")]
+        [Input("forces", "The BarForces to be considered.")]
+        [Output("maxResults", "A list of BarForces, one for each id, enveloped to produce the maximum forces for that id.")]
         public static List<BarForce> MaxEnvelopeByObject(this IEnumerable<BarForce> forces)
         {
             return forces.GroupByObjectId().Select(x => x.MaxEnvelope(true, false)).ToList();
         }
 
         /***************************************************/
-
+        [Description("Determines the maximum force in each component of the BarForce and returns a single BarForce object with the enveloped forces.")]
+        [Input("forces", "The BarForces to be considered.")]
+        [Input("idFromFirst", "True is the id from the first BarForce should be assigned to output BarForce. Otherwise an id will not be assigned.")]
+        [Input("caseFromFirst", "True if the case from the first BarForce should be assigned to output Barforce. Otherwise a case will not be assigned.")]
+        [Output("maxEnvelope", "A BarForce object containing the maximum enveloped forces in each of its components.")]
         public static BarForce MaxEnvelope(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
         {
             return new BarForce(
@@ -84,7 +130,65 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
+        [Description("Determines the maximum required in each component of the BarRequiredArea and returns a single BarRequiredArea object with the enveloped required areas.")]
+        [Input("results", "The BarRequiredArea results to be considered.")]
+        [Input("idFromFirst", "True is the id from the first BarRequiredArea should be assigned to output BarRequiredArea. Otherwise an id will not be assigned.")]
+        [Input("caseFromFirst", "True if the case from the first BarRequiredArea should be assigned to output BarRequiredArea. Otherwise a case will not be assigned.")]
+        [Input("materialFromFirst", "True if the material from the first BarRequiredArea should be assigned to output BarRequiredArea. Otherwise a material will not be assigned.")]
+        [Output("maxEnvelope", "A BarRequiredArea object containing the enveloped required areas in each of its components.")]
+        public static BarRequiredArea MaxEnvelope(this IEnumerable<BarRequiredArea> results, bool idFromFirst = false, bool caseFromFirst = false)
+        {
+            return new BarRequiredArea(
+                idFromFirst ? results.First().ObjectId : "",
+                caseFromFirst ? results.First().ResultCase : "",
+                0,
+                0,
+                0,
+                0,
+                results.Max(x => x.Top),
+                results.Max(x => x.Bottom),
+                results.Max(x => x.Perimeter),
+                results.Max(x => x.Shear),
+                results.Max(x => x.Torsion),
+                results.First().MaterialName
+                );
+        }
 
+        /***************************************************/
+        [Description("Determines the maximum required in each component of the MeshRequiredArea and returns a single MeshRequiredArea object with the enveloped required areas.")]
+        [Input("results", "The MeshRequiredArea results to be considered.")]
+        [Input("idFromFirst", "True is the id from the first MeshRequiredArea should be assigned to output MeshRequiredArea. Otherwise an id will not be assigned.")]
+        [Input("caseFromFirst", "True if the case from the first MeshRequiredArea should be assigned to output MeshRequiredArea. Otherwise a case will not be assigned.")]
+        [Input("materialFromFirst", "True if the material from the first MeshRequiredArea should be assigned to output MeshRequiredArea. Otherwise a material will not be assigned.")]
+        [Output("maxEnvelope", "A MeshRequiredArea object containing the enveloped required areas in each of its components.")]
+        public static MeshRequiredArea MaxEnvelope(this IEnumerable<MeshRequiredArea> results, bool idFromFirst = false, bool caseFromFirst = false, bool materialFromFirst = false)
+        {
+            return new MeshRequiredArea(
+                idFromFirst ? results.First().ObjectId : "",
+                0,
+                0,
+                caseFromFirst ? results.First().ResultCase : "",
+                0,
+                0,
+                MeshResultLayer.Maximum,
+                0,
+                MeshResultSmoothingType.None,
+                null,
+                results.Max(x => x.TopPrimary),
+                results.Max(x => x.TopSecondary),
+                results.Max(x => x.BottomPrimary),
+                results.Max(x => x.BottomSecondary),
+                results.Max(x => x.Shear),
+                results.Max(x => x.Torsion),
+                materialFromFirst ? results.First().MaterialName : ""
+                );
+        }
+
+        /***************************************************/
+        [Description("Determines the maximum value of a property specified by the selector and returns the host object.")]
+        [Input("source", "The objects to be considered.")]
+        [Input("selector", "The property used to determine the maximum value.")]
+        [Output("maxObj", "The source object containing the maximum value of the property specified.")]
         //TODO: Move these generic methods somewhere else
         public static T MaxBy<T, U>(this IEnumerable<T> source, Func<T, U> selector) where U : IComparable<U>
         {
@@ -111,6 +215,7 @@ namespace BH.Engine.Results
                 }
             }
             if (first) throw new InvalidOperationException("Sequence is empty.");
+
             return maxObj;
         }
 

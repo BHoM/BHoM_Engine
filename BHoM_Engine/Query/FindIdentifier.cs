@@ -21,43 +21,57 @@
  */
 
 using System;
-
-using BH.oM.Structure.Elements;
-using BH.oM.Geometry;
-using BH.oM.Structure.SectionProperties;
-using BH.oM.Structure.Constraints;
-using BH.oM.Structure.Fragments;
-using BH.oM.Structure.MaterialFragments;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
-using BH.Engine.Spatial;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 
-
-namespace BH.Engine.Structure
+namespace BH.Engine.Base
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a ReinforcementDensity Fragment that can be owned by a Bar or IAreaElements.")]
-        [Input("density", "The mass of reinforcing mateial per unit volume of reinforced material.")]
-        [Input("material","The material of the reinforcement.")]
-        [Output("reinforcementDensity", "The ReinforcementDensity to be added to Bar and IAreaElements.")]
-        public static ReinforcementDensity ReinforcementDensity(double density, IMaterialFragment material = null)
+        [Description("Tries to find a IAdapterId on the object.")]
+        [Output("identifier", "First plausible identifier present on the object.")]
+        public static Type FindIdentifier(this IBHoMObject o)
         {
-            return new ReinforcementDensity
-            {
-                Density = density,
-                Material = material
-            };
+            return o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
         }
+
+        /***************************************************/
+
+        [Description("Tries to find a AdapterIdName on the object if no input is provided.")]
+        [Output("adapterIdName", "First plausible identifier present on the object or provided.")]
+        public static Type FindIdentifier(this IBHoMObject o, Type adapterIdType)
+        {
+            if (adapterIdType == null)
+            {
+                adapterIdType = o.FindIdentifier();
+                if (adapterIdType == null)
+                {
+                    //Engine.Reflection.Compute.RecordError("No Identifier found");
+                    throw new System.Exception("No Identifier found");
+                }
+                else
+                    Reflection.Compute.RecordNote("Auto-generated Identifier as " + adapterIdType.Name);
+            }
+            else if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
+            {
+                Reflection.Compute.RecordError("The provided adapterIdType need to be a type of IAdapterId.");
+                return null;
+            }
+
+            return adapterIdType;
+        }
+
+        /***************************************************/
 
     }
 }
-
 
