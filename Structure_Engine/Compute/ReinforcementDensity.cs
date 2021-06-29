@@ -41,32 +41,25 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Calculates the ReinforcementDensity of a BarRequiredArea from a given Bar and Material.")]
+        [Description("Calculates the ReinforcementDensity of a BarRequiredArea from a given Bar and Material. \n " +
+            "The input output relation is one to one, so it is recommended that some enveloping methods are used prior to this method.")]
         [Input("barRequiredArea", "The BarRequiredArea containing the reinforced areas and ids for the Bar and Material.")]
         [Input("bars", "The Bars to search for the relevant Bar associated with the BarRequiredArea.")]
         [Input("materials", "The Materials to search for the relevant Material associated with the BarRequiredArea.")]
         [Output("reinforcementDensity", "The ReinforcementDensity calculated using the inputs provided.")]
-        public static List<ReinforcementDensity> ReinforcementDensity(List<BarRequiredArea> barRequiredAreas, List<Bar> bars, List<IMaterialFragment> materials)
+        public static List<ReinforcementDensity> ReinforcementDensity(List<BarRequiredArea> barRequiredAreas, List<Bar> bars, List<IMaterialFragment> materials, Type adapterIdType = null)
         {
             if (barRequiredAreas.IsNullOrEmpty() || barRequiredAreas.Any(x => x.IsNull()) || materials.IsNullOrEmpty() || materials.Any(x => x.IsNull()) || bars.IsNullOrEmpty() || bars.Any(x => x.IsNull()))
                 return null;
 
             Dictionary<string, IMaterialFragment> materialsDict = materials.ToDictionary(x => x.Name);
 
-            Type fragmentType = bars.FirstOrDefault().Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
-            List<string> ids = new List<string>();
+            adapterIdType = bars.First().FindIdentifier(adapterIdType);
 
-            foreach(Bar bar in bars)
-            {
-                IFragment id;
-                bar.Fragments.TryGetValue(fragmentType, out id);
-                ids.Add((((IAdapterId)id).Id.ToString()));
-            }
-
-            if (ids.IsNullOrEmpty())
+            if (adapterIdType == null)
                 return null;
 
-            Dictionary<string, Bar> barsDict = ids.Zip(bars, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
+            Dictionary<string, Bar> barsDict = bars.ToDictionary(x => ((IAdapterId)x.Fragments[adapterIdType]).Id.ToString());
 
             IMaterialFragment material;
             Bar resultBar;
@@ -83,7 +76,7 @@ namespace BH.Engine.Structure
                     double reinforcedArea = barRequiredArea.SumRequiredArea();
                     double density = material.Density;
                     double rebarDensity = reinforcedArea * density / elementArea;
-                    reinforcementDensities.Add(Create.ReinforcementDensity(rebarDensity, material));
+                    reinforcementDensities.Add(new ReinforcementDensity() { Density = rebarDensity, Material = material });
                 }
                 else
                 {
