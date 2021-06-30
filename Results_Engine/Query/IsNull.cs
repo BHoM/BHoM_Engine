@@ -41,7 +41,7 @@ namespace BH.Engine.Results
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Result or its defining properties are null.")]
-        public static bool IsNull<T>(this IResult result, string msg = "", [CallerMemberName] string methodName = "Method") where T:IResult
+        public static bool IsNull<T>(this T result, string msg = "", [CallerMemberName] string methodName = "Method") where T:IResult
         {
             if (result == null)
             {
