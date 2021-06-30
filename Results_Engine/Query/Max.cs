@@ -27,7 +27,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.Engine.Base;
-using BH.Engine.Structure;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.Results;
 
@@ -43,7 +42,7 @@ namespace BH.Engine.Results
         [Output("maxForces", "A list of BarForces, one for each component of the BarForce, containing the maximum force and its concurrent forces.")]
         public static List<BarForce> MaxForces(this IEnumerable<BarForce> forces)
         {
-            if (forces.IsNullOrEmpty() || forces.Any(x => x.IsNull()))
+            if (forces.IsNullOrEmpty() || forces.Any(x => x.IsNull<BarForce>()))
                 return null;
 
             List<BarForce> maxForces = new List<BarForce>();
@@ -63,7 +62,7 @@ namespace BH.Engine.Results
         [Output("maxResults", "A list of BarRequiredAreas, one for each component of the BarRequiredArea, containing the maximum required area and its concurrent required areas.")]
         public static List<BarRequiredArea> MaxBarRequiredArea(this IEnumerable<BarRequiredArea> results)
         {
-            if (results.IsNullOrEmpty() || results.Any(x => x.IsNull()))
+            if (results.IsNullOrEmpty() || results.Any(x => x.IsNull<BarRequiredArea>()))
                 return null;
 
             List<BarRequiredArea> maxResults = new List<BarRequiredArea>();
@@ -82,7 +81,7 @@ namespace BH.Engine.Results
         [Output("maxResults", "A list of MeshRequiredAreas, one for each component of the MeshRequiredAreas, containing the maximum required area and its concurrent required areas.")]
         public static List<MeshRequiredArea> MaxMeshRequiredArea(this IEnumerable<MeshRequiredArea> results)
         {
-            if (results.IsNullOrEmpty() || results.Any(x => x.IsNull()))
+            if (results.IsNullOrEmpty() || results.Any(x => x.IsNull<MeshRequiredArea>()))
                 return null;
 
             List<MeshRequiredArea> maxResults = new List<MeshRequiredArea>();
@@ -102,7 +101,7 @@ namespace BH.Engine.Results
         [Output("maxResults", "A list of BarForces, one for each case, enveloped to produce the maximum forces for that case.")]
         public static List<BarForce> MaxEnvelopeByCase(this IEnumerable<BarForce> forces)
         {
-            return forces.IsNullOrEmpty() || forces.Any(x => x.IsNull()) ? null : forces.GroupByCase().Select(x => x.MaxEnvelope(false, true)).ToList();
+            return forces.IsNullOrEmpty() || forces.Any(x => x.IsNull<BarForce>()) ? null : forces.GroupByCase().Select(x => x.MaxEnvelope(false, true)).ToList();
         }
 
         /***************************************************/
@@ -111,7 +110,7 @@ namespace BH.Engine.Results
         [Output("maxResults", "A list of BarForces, one for each id, enveloped to produce the maximum forces for that id.")]
         public static List<BarForce> MaxEnvelopeByObject(this IEnumerable<BarForce> forces)
         {
-            return forces.IsNullOrEmpty() || forces.Any(x => x.IsNull()) ? null : forces.GroupByObjectId().Select(x => x.MaxEnvelope(true, false)).ToList();
+            return forces.IsNullOrEmpty() || forces.Any(x => x.IsNull<BarForce>()) ? null : forces.GroupByObjectId().Select(x => x.MaxEnvelope(true, false)).ToList();
         }
 
         /***************************************************/
@@ -122,7 +121,7 @@ namespace BH.Engine.Results
         [Output("maxEnvelope", "A BarForce object containing the maximum enveloped forces in each of its components.")]
         public static BarForce MaxEnvelope(this IEnumerable<BarForce> forces, bool idFromFirst = false, bool caseFromFirst = false)
         {
-            if (forces.IsNullOrEmpty() || forces.Any(x => x.IsNull()))
+            if (forces.IsNullOrEmpty() || forces.Any(x => x.IsNull<BarForce>()))
                 return null;
 
             return new BarForce(
@@ -150,7 +149,7 @@ namespace BH.Engine.Results
         [Output("maxEnvelope", "A BarRequiredArea object containing the enveloped required areas in each of its components.")]
         public static BarRequiredArea MaxEnvelope(this IEnumerable<BarRequiredArea> results, bool idFromFirst = false, bool caseFromFirst = false, bool materialFromFirst = false)
         {
-            if (results.IsNullOrEmpty() || results.Any(x => x.IsNull()))
+            if (results.IsNullOrEmpty() || results.Any(x => x.IsNull<BarRequiredArea>()))
                 return null;
 
             return new BarRequiredArea(
@@ -178,7 +177,7 @@ namespace BH.Engine.Results
         [Output("maxEnvelope", "A MeshRequiredArea object containing the enveloped required areas in each of its components.")]
         public static MeshRequiredArea MaxEnvelope(this IEnumerable<MeshRequiredArea> results, bool idFromFirst = false, bool caseFromFirst = false, bool materialFromFirst = false)
         {
-            if (results.IsNullOrEmpty() || results.Any(x => x.IsNull()))
+            if (results.IsNullOrEmpty() || results.Any(x => x.IsNull<MeshRequiredArea>()))
                 return null;
 
             return new MeshRequiredArea(
