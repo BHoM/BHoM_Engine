@@ -54,10 +54,6 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Structure_Engine">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Structure_Engine.dll</HintPath>
-	  <Private>False</Private>
-    </Reference>
     <Reference Include="Structure_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Structure_oM.dll</HintPath>
       <Private>False</Private>
@@ -77,6 +73,7 @@
     <Compile Include="Query\AbsoluteMax.cs" />
     <Compile Include="Query\DisplayMeshResults.cs" />
     <Compile Include="Query\Group.cs" />
+    <Compile Include="Query\IsNull.cs" />
     <Compile Include="Query\MapResults.cs" />
     <Compile Include="Query\Max.cs" />
     <Compile Include="Query\Min.cs" />
