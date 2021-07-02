@@ -50,8 +50,6 @@ namespace BH.Engine.Environment
         [MultiOutput(0, "regionsByLevel", "A collection of BHoM Regions grouped by levels.")]
         [MultiOutput(1, "levelsInUse", "A sublist of the BHoM Levels that have Room.")]
         [MultiOutput(2, "regionsNotMapped", "A collection of BHoM Regions which did not sit neatly on any of the provided levels")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Compute.MapToLevel(System.Collections.Generic.List<BH.oM.Environment.Elements.Space>, System.Collections.Generic.List<BH.oM.Geometry.SettingOut.Level>, System.Int32)")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Compute.MapToLevel(System.Collections.Generic.List<BH.oM.Architecture.Elements.Room>, System.Collections.Generic.List<BH.oM.Geometry.SettingOut.Level>, System.Int32)")]
         [PreviousInputNames("regions", "spaces, rooms")]
         public static Output<List<List<IRegion>>, List<oM.Geometry.SettingOut.Level>, List<IRegion>> MapToLevel(List<IRegion> regions, List<oM.Geometry.SettingOut.Level> levels, int decimals = 6)
         {

@@ -39,7 +39,6 @@ namespace BH.Engine.Physical
         [Input("material", "A material to add properties to")]
         [Input("newProperties", "The properties to add to the material")]
         [Output("The updated Material")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Modify.AddMaterialProperties(BH.oM.Physical.Materials.Material, BH.oM.Physical.Materials.IMaterialProperties)")]
         public static Material AddMaterialProperties(this Material material, IMaterialProperties newProperties)
         {
             if (material == null)

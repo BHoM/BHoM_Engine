@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -39,7 +39,6 @@ namespace BH.Engine.Graphics
         [Input("lowerBound", "The lower bound that the gradient will be used with.")]
         [Input("upperBound", "The upper bound that the gradient will be used with.")]
         [Output("gradient", "A gradient with its middle colour set to 0 relative to the pair of boundary values.")]
-        [PreviousVersion("4.2", "BH.Engine.Graphics.Query.CenterGradientAsymmetric(BH.oM.Graphics.Gradient, System.Double, System.Double)")]
         [PreviousInputNames("lowerBound", "from")]
         [PreviousInputNames("upperBound", "to")]
         public static Gradient CenterGradientAsymmetric(this Gradient gradient, double lowerBound, double upperBound)
