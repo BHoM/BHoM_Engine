@@ -47,7 +47,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Node, System.String)")]
         [Description("Checks if a Node or its defining properties are null and outputs relevant error message.")]
         [Input("node", "The Node to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -72,7 +71,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Bar, System.String)")]
         [Description("Checks if a Bar or its defining properties are null and outputs relevant error message.")]
         [Input("bar", "The Bar to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -92,7 +90,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.FEMesh, System.String, System.Boolean, System.Boolean, System.Collections.Generic.List<System.Int32>)")]
         [Description("Checks if an FEMesh or its defining properties are null and outputs relevant error message.")]
         [Input("mesh", "The FEMesh to test for null.")]
         [Input("methodName", "Optional name of the method to reference in the error message.")]
@@ -152,7 +149,6 @@ namespace BH.Engine.Structure
             return isNull;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.FEMeshFace, BH.oM.Structure.Elements.FEMesh, System.String)")]
         [Description("Checks if an FEMeshFace or its defining properties are null and outputs relevant error message.")]
         [Input("face", "The FEMeshFace to test for null.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
@@ -174,7 +170,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.FEMeshFace, System.String)")]
         [Description("Checks if an FEMeshFace or its defining properties are null and outputs relevant error message.")]
         [Input("face", "The FEMeshFace to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -202,7 +197,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Panel, System.String)")]
         [Description("Checks if a Panel or its defining properties are null and outputs relevant error message.")]
         [Input("panel", "The Panel to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -257,7 +251,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Edge, System.String)")]
         [Description("Checks if a Edge or its defining properties are null and outputs relevant error message.")]
         [Input("edge", "The Edge to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]

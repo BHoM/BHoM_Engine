@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -44,7 +44,6 @@ namespace BH.Engine.Results
         [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        [PreviousVersion("4.2", "BH.Engine.Structure.Results.Query.MapResults(System.Collections.Generic.IEnumerable<BH.oM.Base.IBHoMObject>, System.Collections.Generic.IEnumerable<BH.oM.Analytical.Results.IResult>, BH.oM.Structure.Results.MapResultsBy, System.Type, System.Collections.Generic.List<System.String>)")]
         public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) 
             where TResult : IResult
             where TObject : IBHoMObject

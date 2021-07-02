@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -37,7 +37,6 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.ModelLaundry.Compute.FitPlane(BH.oM.Dimensional.IElement0D, System.Double)")]
         [Description("Computes plane that fits best in the IElements control points using least square fitting. Always returns null for IElement0Ds.")]
         [Input("element0D", "Element to fit the plane to. Impossible with IElement0D.")]
         [Input("tolerance", "Tolerance used to evaluate planarity (and linearity for special cases), as explained in Compute.FitPlane method in Geometry_Engine.", typeof(Length))]
@@ -52,7 +51,6 @@ namespace BH.Engine.Spatial
         /****            IElement1D            ****/
         /******************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.ModelLaundry.Compute.FitPlane(BH.oM.Dimensional.IElement1D, System.Double)")]
         [Description("Computes plane that fits best in the IElements control points using least square fitting. Returns null for linear IElement1Ds.")]
         [Input("element1D", "Element to fit the plane to. No singular solution for linear IElement1Ds")]
         [Input("tolerance", "Tolerance used to evaluate planarity (and linearity for special cases), as explained in Compute.FitPlane method in Geometry_Engine.", typeof(Length))]
@@ -69,7 +67,6 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.ModelLaundry.Compute.FitPlane(BH.oM.Dimensional.IElement2D, System.Boolean, System.Double)")]
         [Description("Computes plane that fits best in the IElements control points using least square fitting. Returns null if no singular solution exists.")]
         [Input("element2D", "Element to fit the plane to.")]
         [Input("externalOnly", "If true, only the external outline of an element is taken into account.")]
@@ -95,7 +92,6 @@ namespace BH.Engine.Spatial
         /****            Interfaces            ****/
         /******************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.ModelLaundry.Compute.IFitPlane(BH.oM.Dimensional.IElement, System.Boolean, System.Double)")]
         [Description("Computes plane that fits best in the IElements control points using least square fitting.")]
         [Input("element", "Element to fit the plane to. Returns null for elements whose geometry can't return a singular Plane.")]
         [Input("externalOnly", "If true, only the external outline of an element is taken into account.")]
