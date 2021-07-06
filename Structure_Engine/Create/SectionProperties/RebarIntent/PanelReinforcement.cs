@@ -46,16 +46,25 @@ namespace BH.Engine.Structure
         [Input("transverseDepth", "The depth of the reinforcement in the longitudinal direction, measured from the centre of the Panel.")]
         [InputFromProperty("minimumCover")]
         [Output("rebarIntent", "The created PanelReinforcement to be assigned to the RebarIntent.")]
-        public static PanelReinforcement PanelReinforcement(IMaterialFragment material, ReinforcementRegion region, 
+        public static PanelReinforcement PanelReinforcement(IMaterialFragment material, ReinforcementRegion region,
             double longitudinalDiameter, double longitudinalSpacing, double longitudinalDepth,
             double transverseDiameter, double transverseSpacing, double transverseDepth, double minimumCover)
         {
-            if (material.IsNull()|| region.IsNull())
+            if (material.IsNull() || region.IsNull())
                 return null;
 
-            return new PanelReinforcement() { Material = material, Region = region, 
-            LongitudinalDiameter = longitudinalDiameter, LongitudinalSpacing = longitudinalSpacing, LongitudinalDepth = longitudinalDepth,
-            TransverseDiameter = transverseDiameter, TransverseSpacing = transverseSpacing, TransverseDepth = transverseDepth, MinimumCover = minimumCover};
+            return new PanelReinforcement()
+            {
+                Material = material,
+                Region = region,
+                LongitudinalDiameter = longitudinalDiameter,
+                LongitudinalSpacing = longitudinalSpacing,
+                LongitudinalDepth = longitudinalDepth,
+                TransverseDiameter = transverseDiameter,
+                TransverseSpacing = transverseSpacing,
+                TransverseDepth = transverseDepth,
+                MinimumCover = minimumCover
+            };
         }
 
         /***************************************************/
