@@ -47,11 +47,10 @@ namespace BH.Engine.Structure
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
-        [InputFromProperty("minimumCover")]
         [Output("section", "The created free form concrete section.")]
-        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
+        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {
-            return edges.Count == 0 || edges.Any(x => x.IsNull()) ? null : ConcreteSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name, reinforcement, minimumCover);
+            return edges.Count == 0 || edges.Any(x => x.IsNull()) ? null : ConcreteSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name, rebarIntent);
         }
 
         /***************************************************/

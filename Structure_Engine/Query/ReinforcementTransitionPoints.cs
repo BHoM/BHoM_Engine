@@ -45,14 +45,14 @@ namespace BH.Engine.Structure
         [Output("locations", "The locations of reinforcement transitions in the crossection.")]
         public static List<double> ReinforcementTransitionPoints(this ConcreteSection concreteSection, double tolerance = Tolerance.Distance)
         {
-            if (concreteSection == null || concreteSection.Reinforcement == null || concreteSection.Reinforcement.Count == 0)
+            if (concreteSection == null || concreteSection.RebarIntent == null || concreteSection.RebarIntent.BarReinforcement.Count == 0)
             {
                 return new List<double>();
             }
 
             HashSet<int> uniquePositions = new HashSet<int>();
 
-            foreach (IBarReinforcement reinforcement in concreteSection.Reinforcement)
+            foreach (IBarReinforcement reinforcement in concreteSection.RebarIntent.BarReinforcement)
             {
                 uniquePositions.Add((int)Math.Round((reinforcement.StartLocation / tolerance)));
                 uniquePositions.Add((int)Math.Round((reinforcement.EndLocation / tolerance)));
