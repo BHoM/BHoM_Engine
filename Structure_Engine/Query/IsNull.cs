@@ -336,6 +336,22 @@ namespace BH.Engine.Structure
             return false;
         }
 
+        [Description("Checks if a PanelReinforcement is null and outputs relevant error message.")]
+        [Input("panelReinforcement", "The PanelReinforcement to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PanelReinforcement is null.")]
+        public static bool IsNull(this PanelReinforcement panelReinforcement, string msg = "", [CallerMemberName] string methodName = "Method")
+        {
+            if (panelReinforcement == null)
+            {
+                ErrorMessage(methodName, "PanelReinforcement", msg);
+                return true;
+            }
+
+            return false;
+        }
+
         [Description("Checks if a Reinforcement is null and outputs relevant error message.")]
         [Input("reinforcement", "The Reinforcement to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -490,6 +506,22 @@ namespace BH.Engine.Structure
             if (barForce == null)
             {
                 ErrorMessage(methodName, "BarForce", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a ReinforcementRegion is null and outputs relevant error message.")]
+        [Input("reinforcementRegion", "The ReinforcementRegion to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the BarForce is null.")]
+        public static bool IsNull(this ReinforcementRegion reinforcementRegion, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (reinforcementRegion == null)
+            {
+                ErrorMessage(methodName, "ReinforcementRegion", msg);
                 return true;
             }
 
