@@ -42,10 +42,10 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a RebarIntent that can be added to a ConreteSection.")]
+        [Description("Creates a RebarIntent illustrating the reinforcement intent of the Bar using LongitudinalReinforcement and TransverseReinforcement.")]
         [Input("reinforcement", "A list of LongitudinalReinforcement and/or TransverseReinforcement illustrating the rebar intent.")]
         [InputFromProperty("minimumCover")]
-        [Output("rebarIntent", "The created circular concrete section.")]
+        [Output("rebarIntent", "The BarRebarIntent that can be added to a ConcreteSection.")]
         public static BarRebarIntent BarRebarIntent(List<IBarReinforcement> reinforcement, double minimumCover = 0)
         {
             if (reinforcement.IsNullOrEmpty() || reinforcement.Any(x => x.IsNull()))

@@ -23,15 +23,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using BH.oM.Structure.SectionProperties;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Structure.SectionProperties.Reinforcement;
-using BH.oM.Geometry;
-using BH.oM.Reflection;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Structure.MaterialFragments;
 using System.Linq;
-using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.Engine.Base;
 
 namespace BH.Engine.Structure
@@ -42,10 +36,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a RebarIntent that can be added to a ConreteSection.")]
-        [Input("reinforcement", "A list of LongitudinalReinforcement and/or TransverseReinforcement illustrating the rebar intent.")]
-        [InputFromProperty("minimumCover")]
-        [Output("rebarIntent", "The created circular concrete section.")]
+        [Description("Creates a PanelRebarIntent that can be added to a Panel as a Fragment.")]
+        [Input("reinforcement", "A list of PanelReinforcement illustrating the rebar intent.")]
+        [Output("rebarIntent", "The created PanelRebarIntent containing the layers of reinforcement intent for the Panel.")]
         public static PanelRebarIntent PanelRebarIntent(List<PanelReinforcement> reinforcement)
         {
             if (reinforcement.IsNullOrEmpty()|| reinforcement.Any(x => x.IsNull()))
