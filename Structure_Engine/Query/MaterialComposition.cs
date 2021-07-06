@@ -98,7 +98,7 @@ namespace BH.Engine.Structure
             List<Material> materials = new List<Material>();
 
             //TODO: Resolve for stirups as well
-            foreach (LongitudinalReinforcement reinforcement in sectionProperty.Reinforcement.OfType<LongitudinalReinforcement>())
+            foreach (LongitudinalReinforcement reinforcement in sectionProperty.RebarIntent.BarReinforcement.OfType<LongitudinalReinforcement>())
             {
                 //Calculate reinforcement area for a section cut
                 double reinArea = reinforcement.Area();

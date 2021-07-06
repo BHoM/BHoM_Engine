@@ -46,10 +46,9 @@ namespace BH.Engine.Structure
         [Input("profile", "The section profile the concrete section. All section constants are derived based on the dimensions of this.")]
         [Input("material", "concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. If null or empty the name of the profile will be used. This is required for most structural packages to create the section.")]
-        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
-        [InputFromProperty("minimumCover")]
+        [Input("rebarIntent", "Optional BarRebarIntent to be applied to the section.")]
         [Output("section", "The created concrete section.")]
-        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
+        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", BarRebarIntent reinforcement = null)
         {
             if (profile.IsNull())
                 return null;
@@ -67,9 +66,7 @@ namespace BH.Engine.Structure
 
             //Set reinforcement if any provided
             if (reinforcement != null)
-                section.Reinforcement = reinforcement;
-
-            section.MinimumCover = minimumCover;
+                section.RebarIntent = reinforcement;
 
             return PostProcessSectionCreate(section, name, material, MaterialType.Concrete);
         }

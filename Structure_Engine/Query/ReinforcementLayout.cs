@@ -341,8 +341,8 @@ namespace BH.Engine.Structure
             }
 
             //Starting default value to the minimum cover of the section.
-            longCover = section.MinimumCover;
-            tranCover = section.MinimumCover;
+            longCover = section.RebarIntent.MinimumCover;
+            tranCover = section.RebarIntent.MinimumCover;
 
 
 
@@ -352,7 +352,7 @@ namespace BH.Engine.Structure
             //Check if any offsetlayout, if so, check if larger than minimum cover
             if (tranReif.Any(x => x.CenterlineLayout is OffsetCurveLayout))
             {
-                double maxCover = Math.Max(section.MinimumCover, tranReif.Select(x => x.CenterlineLayout).OfType<OffsetCurveLayout>().Max(x => x.Offset));
+                double maxCover = Math.Max(section.RebarIntent.MinimumCover, tranReif.Select(x => x.CenterlineLayout).OfType<OffsetCurveLayout>().Max(x => x.Offset));
                 longCover = maxCover;
                 tranCover = maxCover;
             }
@@ -401,20 +401,20 @@ namespace BH.Engine.Structure
 
         private static List<LongitudinalReinforcement> LongitudinalReinforcement(this ConcreteSection section)
         {
-            if (section == null || section.Reinforcement == null || section.Reinforcement.Count == 0)
+            if (section == null || section.RebarIntent == null || section.RebarIntent.BarReinforcement.Count == 0)
                 return new List<LongitudinalReinforcement>();
 
-            return section.Reinforcement.Where(x => x is LongitudinalReinforcement).Cast<LongitudinalReinforcement>().ToList();
+            return section.RebarIntent.BarReinforcement.Where(x => x is LongitudinalReinforcement).Cast<LongitudinalReinforcement>().ToList();
         }
 
         /***************************************************/
 
         private static List<TransverseReinforcement> TransverseReinforcement(this ConcreteSection section)
         {
-            if (section == null || section.Reinforcement == null || section.Reinforcement.Count == 0)
+            if (section == null || section.RebarIntent == null || section.RebarIntent.BarReinforcement.Count == 0)
                 return new List<TransverseReinforcement>();
 
-            return section.Reinforcement.Where(x => x is TransverseReinforcement).Cast<TransverseReinforcement>().ToList();
+            return section.RebarIntent.BarReinforcement.Where(x => x is TransverseReinforcement).Cast<TransverseReinforcement>().ToList();
         }
 
         /***************************************************/

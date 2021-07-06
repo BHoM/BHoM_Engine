@@ -49,11 +49,10 @@ namespace BH.Engine.Structure
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for various structural packages to create the object.")]
         [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
-        [InputFromProperty("minimumCover")]
         [Output("section", "The created concrete T-section.")]
-        public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
+        public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {
-            return ConcreteSectionFromProfile(Spatial.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement, minimumCover);
+            return ConcreteSectionFromProfile(Spatial.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, rebarIntent);
         }
 
 

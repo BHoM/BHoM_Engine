@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
-            foreach (Reinforcement reo in property.Reinforcement)
+            foreach (Reinforcement reo in property.RebarIntent.BarReinforcement)
             {
                 if (reo is TieReinforcement)
                 {
