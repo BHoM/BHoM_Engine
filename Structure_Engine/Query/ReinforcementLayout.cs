@@ -30,9 +30,9 @@ using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Structure.Elements;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
-using BH.oM.Base;
 using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
@@ -385,7 +385,7 @@ namespace BH.Engine.Structure
             outerProfileEdges = new List<ICurve>();
             innerProfileEdges = new List<ICurve>();
 
-            if (section == null || section.SectionProfile == null || section.SectionProfile.Edges == null || section.SectionProfile.Edges.Count == 0)
+            if (section == null || section.SectionProfile == null || section.SectionProfile.Edges.IsNullOrEmpty())
                 return;
 
             List<List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(section.SectionProfile.Edges.ToList()).Cast<ICurve>().ToList());
@@ -401,7 +401,7 @@ namespace BH.Engine.Structure
 
         private static List<LongitudinalReinforcement> LongitudinalReinforcement(this ConcreteSection section)
         {
-            if (section == null || section.RebarIntent == null || section.RebarIntent.BarReinforcement.Count == 0)
+            if (section == null || section.RebarIntent == null || section.RebarIntent.BarReinforcement.IsNullOrEmpty())
                 return new List<LongitudinalReinforcement>();
 
             return section.RebarIntent.BarReinforcement.Where(x => x is LongitudinalReinforcement).Cast<LongitudinalReinforcement>().ToList();
@@ -411,7 +411,7 @@ namespace BH.Engine.Structure
 
         private static List<TransverseReinforcement> TransverseReinforcement(this ConcreteSection section)
         {
-            if (section == null || section.RebarIntent == null || section.RebarIntent.BarReinforcement.Count == 0)
+            if (section == null || section.RebarIntent == null || section.RebarIntent.BarReinforcement.IsNullOrEmpty())
                 return new List<TransverseReinforcement>();
 
             return section.RebarIntent.BarReinforcement.Where(x => x is TransverseReinforcement).Cast<TransverseReinforcement>().ToList();
