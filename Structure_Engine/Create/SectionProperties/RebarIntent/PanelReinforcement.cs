@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Input("longitudinalDiameter", "The diameter of the reinforcement in the longitudinal direction, denoted by the local x direction of the ReinforcementRegion.")]
         [Input("longitudinalSpacing", "The spacing of the reinforcement in the longitudinal direction, measured perpindicular to the local x direction of the ReinforcementRegion.")]
         [Input("longitudinalDepth", "The depth of the reinforcement in the longitudinal direction, measured from the centre of the Panel.")]
-        [Input("transverseDiameter", "The diameter of the reinforcement in the transverse direction, denoted by the local y direction of the ReinforcementRegion")]
+        [Input("transverseDiameter", "The diameter of the reinforcement in the transverse direction, denoted by the local y direction of the ReinforcementRegion.")]
         [Input("transverseSpacing", "The spacing of the reinforcement in the transverse direction, measured perpindicular to the local y direction of the ReinforcementRegion.")]
         [Input("transverseDepth", "The depth of the reinforcement in the longitudinal direction, measured from the centre of the Panel.")]
         [InputFromProperty("minimumCover")]

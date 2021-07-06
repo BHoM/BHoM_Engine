@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Input("width", "Width of the section.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for various structural packages to create the object.")]
-        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
+        [Input("rebarIntent", "Optional RebarIntent to be applied to the section.")]
         [Output("section", "The created rectangular concrete section.")]
         public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {

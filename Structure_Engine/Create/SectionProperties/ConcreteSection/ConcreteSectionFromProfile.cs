@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
         [Input("name", "Name of the concrete section. If null or empty the name of the profile will be used. This is required for most structural packages to create the section.")]
         [Input("rebarIntent", "Optional BarRebarIntent to be applied to the section.")]
         [Output("section", "The created concrete section.")]
-        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", BarRebarIntent reinforcement = null)
+        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {
             if (profile.IsNull())
                 return null;
@@ -65,8 +65,8 @@ namespace BH.Engine.Structure
                 constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
 
             //Set reinforcement if any provided
-            if (reinforcement != null)
-                section.RebarIntent = reinforcement;
+            if (rebarIntent != null)
+                section.RebarIntent = rebarIntent;
 
             return PostProcessSectionCreate(section, name, material, MaterialType.Concrete);
         }
