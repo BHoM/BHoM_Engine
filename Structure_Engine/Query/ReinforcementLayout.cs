@@ -218,7 +218,7 @@ namespace BH.Engine.Structure
         [Input("cover", "Any additional spacing to be added in relation to the edge curves, such as minimum cover and stirups. This will be added on top of half the rebar Diameter.", typeof(Length))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
-        [Input("length", "Length of the host Bar used to generate the lines", typeof(Length))]
+        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<Line> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
