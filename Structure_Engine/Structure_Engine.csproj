@@ -272,7 +272,7 @@
     <Compile Include="Query\WarpingConstant.cs" />
     <Compile Include="Modify\Flip.cs" />
     <Compile Include="Query\AverageElement.cs" />
-    <Compile Include="Modify\SetRebarIntent.cs" />
+    <Compile Include="Modify\SetReinforcement.cs" />
     <Compile Include="Query\IsConstrained.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -38,17 +38,22 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Sets RebarIntent to a ConcreteSection. Any previous RebarIntent will be overwritten.")]
-        [Input("section", "The ConcreteSection to set RebarIntent to.")]
-        [Input("rebarIntent", "The RebarIntent to set to the ConcreteSection.")]
-        [Output("concSection", "The ConcreteSection with new RebarIntent.")]
-        public static ConcreteSection SetRebarIntent(this ConcreteSection section, BarRebarIntent rebarIntent)
+        [Description("Sets Reinforcement to a ConcreteSection. Any previous Reinforcement will be overwritten.")]
+        [Input("section", "The ConcreteSection to set Reinforcement to.")]
+        [Input("reinforcement", "The collection of Reinforcement to set to the ConcreteSection.")]
+        [Output("concSection", "The ConcreteSection with new Reinforcement.")]
+        public static ConcreteSection SetReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
         {
-            if (section.IsNull() || rebarIntent.BarReinforcement.Any(x => x.IsNull()))
+            if (section.IsNull() || reinforcement.Any(x => x.IsNull()))
                 return null;
 
             ConcreteSection clone = section.ShallowClone();
-            clone.RebarIntent = rebarIntent;
+
+            if (clone.RebarIntent.IsNull())
+                clone.RebarIntent = new BarRebarIntent { BarReinforcement = reinforcement.ToList() };
+            else
+                clone.RebarIntent.BarReinforcement = reinforcement.ToList();
+
             return clone;
         }
 
