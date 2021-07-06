@@ -25,7 +25,6 @@ using BH.oM.Structure.SectionProperties.Reinforcement;
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 
@@ -38,26 +37,23 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Adds RebarIntent to a ConcreteSection. Any previous RebarIntent will be kept.")]
-        [Input("section", "The concrete section to add RebarIntent to.")]
-        [Input("rebarIntent", "The RebarIntent to add to the ConcreteSection.")]
-        [Output("concSection", "The ConcreteSection with RebarIntent.")]
-        public static ConcreteSection AddRebarIntent(this ConcreteSection section, BarRebarIntent rebarIntent)
+        [Description("Adds Reinforcement to a ConcreteSection. Any previous Reinforcement will be kept.")]
+        [Input("section", "The concrete section to add Reinforcement to.")]
+        [Input("reinforcement", "The collection of Reinforcement to add to the ConcreteSection.")]
+        [Output("concSection", "The ConcreteSection with additional Reinforcement.")]
+        public static ConcreteSection AddReinforcement(this ConcreteSection section, IEnumerable<IBarReinforcement> reinforcement)
         {
             if (section.IsNull())
                 return null;
 
             ConcreteSection clone = section.ShallowClone();
 
-            if (clone.RebarIntent == null)
-                clone.RebarIntent = rebarIntent;
-            else
-            {
-                BarRebarIntent rebarClone = rebarIntent.ShallowClone();
-                foreach (IBarReinforcement reinforcement in section.RebarIntent.BarReinforcement)
-                    rebarClone.BarReinforcement.Add(reinforcement);
-                clone.RebarIntent = rebarClone;
-            }
+            if (clone.RebarIntent.IsNull())
+                clone.RebarIntent = new BarRebarIntent() { BarReinforcement = new List<IBarReinforcement>() };
+            else if (clone.RebarIntent.BarReinforcement.IsNullOrEmpty())
+                clone.RebarIntent.BarReinforcement = new List<IBarReinforcement>();
+
+            clone.RebarIntent.BarReinforcement.AddRange(reinforcement);
 
             return clone;
         }
