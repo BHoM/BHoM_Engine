@@ -528,6 +528,38 @@ namespace BH.Engine.Structure
             return false;
         }
 
+        [Description("Checks if a BarRebarIntent is null and outputs relevant error message.")]
+        [Input("barRebarIntent", "The BarRebarIntent to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the BarRebarIntent is null.")]
+        public static bool IsNull(this BarRebarIntent rebarIntent, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (rebarIntent == null)
+            {
+                ErrorMessage(methodName, "BarRebarIntent", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a PanelRebarIntent is null and outputs relevant error message.")]
+        [Input("panelRebarIntent", "The PanelRebarIntent to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PanelRebarIntent is null.")]
+        public static bool IsNull(this PanelRebarIntent rebarIntent, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (rebarIntent == null)
+            {
+                ErrorMessage(methodName, "PanelRebarIntent", msg);
+                return true;
+            }
+
+            return false;
+        }
+
         /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/

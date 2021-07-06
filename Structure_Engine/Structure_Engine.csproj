@@ -175,7 +175,7 @@
     <Compile Include="Create\SectionProperties\LongitudinalReinforcement\TopReinforcement.cs" />
     <Compile Include="Create\SectionProperties\TransverseReinforcement\TransverseReinforcement.cs" />
     <Compile Include="Create\SectionProperties\TimberSection\TimberSectionFromProfile.cs" />
-    <Compile Include="Modify\AddRebarIntent.cs" />
+    <Compile Include="Modify\AddReinforcement.cs" />
     <Compile Include="Modify\OrientTowards.cs" />
     <Compile Include="Modify\SetLocalOrientation.cs" />
     <Compile Include="Modify\SetMaterial.cs" />
