@@ -52,8 +52,10 @@ namespace BH.Engine.Facade
         [MultiOutput(3, "uniqueAdjacencyEdge2", "The second edge of each pair per each unique adjacency.")]
         [MultiOutput(4, "uniqueAdjacencyElement2", "The second element of each pair per each unique adjacency.")]
 
-        public static Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>, List<List<IElement1D>>, List<List<IElement2D>>> UniqueAdjacencies(List<IElement2D> elems, bool splitHorAndVert = false)
+        public static Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>, List<List<IElement1D>>, List<List<IElement2D>>> UniqueAdjacencies(IEnumerable<IElement2D> elems, bool splitHorAndVert = false)
         {
+            List<IElement2D> elemsList = elems.ToList(); 
+            
             List<string> adjacencyIDs = new List<string>();
             List<List<IElement1D>> adjEdges = new List<List<IElement1D>>();
             List<List<IElement2D>> adjElems = new List<List<IElement2D>>();
@@ -68,13 +70,13 @@ namespace BH.Engine.Facade
             foreach (Panel panel in panels.ToList())
             {
                 List<Opening> panelOpenings = panel.Openings;
-                elems.AddRange(panelOpenings);
+                elemsList.AddRange(panelOpenings);
             }
-            List<IElement2D> uniqueElems = elems.Distinct().ToList();
+            List<IElement2D> uniqueElems = elemsList.Distinct().ToList();
 
-            foreach (IElement2D elem in elems)
+            foreach (IElement2D elem in uniqueElems)
             {
-                List<IElement2D> tempElems = elems.Except(new List<IElement2D> { elem }).ToList();
+                List<IElement2D> tempElems = uniqueElems.Except(new List<IElement2D> { elem }).ToList();
                 foreach (IEdge edge in elem.IOutlineElements1D())
                 {
                     BH.oM.Reflection.Output<List<IElement1D>, List<IElement2D>> result = edge.EdgeAdjacencies(tempElems);
