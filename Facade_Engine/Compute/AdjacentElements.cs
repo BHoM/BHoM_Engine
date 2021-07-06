@@ -46,7 +46,7 @@ namespace BH.Engine.Facade
         [Input("element", "Element to find adjacencies at.")]
         [Input("referenceElements", "Elements to use to find element adjacencies.")]
         [Output("adjacentElements", "Adjacents elements to the provided element.")]
-        public static List<IElement2D> AdjacentElements(this IElement2D element, List<IElement2D> referenceElements)
+        public static List<IElement2D> AdjacentElements(this IElement2D element, IEnumerable<IElement2D> referenceElements)
         {          
             List<IElement2D> adjacentElements = new List<IElement2D>();
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Facade
         [Input("element", "Element to find adjacencies at.")]
         [Input("referenceElements", "Elements to use to find element adjacencies.")]
         [Output("adjacentElements", "Adjacents elements to the provided element.")]
-        public static List<IElement2D> AdjacentElements(this IElement1D element, List<IElement2D> referenceElements)
+        public static List<IElement2D> AdjacentElements(this IElement1D element, IEnumerable<IElement2D> referenceElements)
         {
             List<IElement2D> adjacentElements = new List<IElement2D>();
 
@@ -102,7 +102,7 @@ namespace BH.Engine.Facade
         [Input("element", "Element to find adjacencies at.")]
         [Input("referenceElements", "Elements to use to find element adjacencies.")]
         [Output("adjacentElements", "Adjacent elements to the provided element.")]
-        public static List<IElement1D> AdjacentElements(this IElement1D element, List<IElement1D> referenceElements)
+        public static List<IElement1D> AdjacentElements(this IElement1D element, IEnumerable<IElement1D> referenceElements)
 
         {
             if (element == null || referenceElements == null)
