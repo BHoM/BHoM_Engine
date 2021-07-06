@@ -115,6 +115,9 @@ namespace BH.Test.Engine
             // Try invoking the method
             try
             {
+                if (method.IsGenericMethodDefinition)
+                    method = method.MakeFromGeneric();
+
                 method.Invoke(null, inputs);
             }
             catch (Exception e)
