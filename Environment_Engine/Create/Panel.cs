@@ -47,8 +47,9 @@ namespace BH.Engine.Environment
         [Input("brep", "A BHoM Boundary Representation to convert into a collection of Environment Panels")]
         [Input("connectedSpaceName", "A name for the space which these panels are connected to. If no name is provided, a randomised default will be generated")]
         [Input("angleTolerance", "The angle tolerance for collapsing to polylines used when generating the external edges of the surfaces")]
+        [Input("panelType", "The panel type to assign to the panels, if no input is added roof, floor and wall types are assigned by default")]
         [Output("panelsAsSpace", "A collection of Environment Panels representing a closed space generated from the provided Brep geometry")]
-        public static List<Panel> Panels(this BoundaryRepresentation brep, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
+        public static List<Panel> Panels(this BoundaryRepresentation brep, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = PanelType.Undefined)
         {
             if(brep == null)
             {
@@ -56,15 +57,16 @@ namespace BH.Engine.Environment
                 return null;
             }
 
-            return brep.Surfaces.ToList().Panels(connectedSpaceName, angleTolerance);
+            return brep.Surfaces.ToList().Panels(connectedSpaceName, angleTolerance, panelType);
         }
 
         [Description("Create a collection of Environment Panels from a collection of BHoM Surfaces")]
         [Input("surfaces", "A collection of BHoM surfaces to convert into a Environment Panels. The surfaces should be grouped as a single space as all panels generated from the surfaces will have the same connectedSpaceName")]
         [Input("connectedSpaceName", "A name for the space which these panels are connected to. If no name is provided, a randomised default will be generated")]
         [Input("angleTolerance", "The angle tolerance for collapsing to polylines used when generating the external edges of the surfaces")]
+        [Input("panelType", "The panel type to assign to the panels, if no input is added roof, floor and wall types are assigned by default")]
         [Output("panel", "An Environment Panels representing a closed space generated from the provided surfaces")]
-        public static List<Panel> Panels(this List<ISurface> surfaces, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
+        public static List<Panel> Panels(this List<ISurface> surfaces, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = PanelType.Undefined)
         {
             if(surfaces == null)
             {
@@ -73,13 +75,16 @@ namespace BH.Engine.Environment
             }
 
             if (connectedSpaceName == null)
-                connectedSpaceName = Guid.NewGuid().ToString();
+                connectedSpaceName = "auto" + Guid.NewGuid().ToString();
 
-            List<Panel> panels = surfaces.Select(x => x.Panel(connectedSpaceName, angleTolerance)).ToList();
+            List<Panel> panels = surfaces.Select(x => x.Panel(connectedSpaceName, angleTolerance, panelType)).ToList();
 
-            panels = panels.SetRoofPanels();
-            panels = panels.SetFloorPanels();
-            panels = panels.SetWallPanels();
+            if (panelType == PanelType.Undefined)
+            {
+                panels = panels.SetRoofPanels();
+                panels = panels.SetFloorPanels();
+                panels = panels.SetWallPanels();
+            }
 
             return panels;
         }
@@ -88,9 +93,11 @@ namespace BH.Engine.Environment
         [Input("surface", "A BHoM surface to convert into an Environment Panel")]
         [Input("connectedSpaceName", "A name for the space which this panel is connected to. If no name is provided, a randomised default will be generated")]
         [Input("angleTolerance", "The angle tolerance for collapsing to polylines used when generating the external edges of the surfaces")]
+        [Input("panelType", "The panel type to assign to the panel, default type is Undefined")]
         [Output("panel", "An Environment Panels representing a closed space generated from the provided Brep geometry")]
-        public static Panel Panel(this ISurface surface, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
+        public static Panel Panel(this ISurface surface, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = PanelType.Undefined)
         {
+
             if (connectedSpaceName == null)
                 connectedSpaceName = Guid.NewGuid().ToString();
 
@@ -109,14 +116,14 @@ namespace BH.Engine.Environment
                 });
             }
 
-            return new Panel
-            {
-                ExternalEdges = surface.IExternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList().Join().ToEdges(),
-                ConnectedSpaces = new List<string> { connectedSpaceName },
-                Openings = openings,
-            };
+           return new Panel
+                {
+                    ExternalEdges = surface.IExternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList().Join().ToEdges(),
+                    ConnectedSpaces = new List<string> { connectedSpaceName },
+                    Openings = openings,
+                    Type = panelType,
+                };         
         }
     }
 }
-
 

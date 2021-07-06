@@ -39,12 +39,15 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical IFramingElement from a Bar. The framing element will be assigned a ConstantFramingProperty based on the sectionproeprty of the bar and have a type based on the structural usage.")]
+        [Description("Creates a physical IFramingElement from a Bar. The framing element will be assigned a ConstantFramingProperty based on the SectionProperty of the Bar and have a type based on the structural usage.")]
         [Input("bar", "The Bar to use as the base for the framing element.")]
         [Input("structuralUsage", "Used to determine which type of framing element that should be constructed.")]
         [Output("framing", "The created physical FramingElement based on the Bar element provided.")]
         public static BHPE.IFramingElement FramingElement(Bar bar, StructuralUsage1D structuralUsage = StructuralUsage1D.Beam)
         {
+            if (bar.IsNull())
+                return null;
+
             ISectionProperty prop = bar.SectionProperty;
             BHPP.ConstantFramingProperty framingProp = null;
             if (prop == null)

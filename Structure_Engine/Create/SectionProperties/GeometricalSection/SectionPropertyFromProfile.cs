@@ -30,6 +30,7 @@ using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Geometry;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -46,6 +47,9 @@ namespace BH.Engine.Structure
         [Output("section", "The created section property of a type matching the material provided.")]
         public static IGeometricalSection SectionPropertyFromProfile(IProfile profile, IMaterialFragment material = null, string name = "")
         {
+            if (profile.IsNull())
+                return null;
+
             MaterialType materialType = material == null ? MaterialType.Undefined : material.IMaterialType();
 
             switch (materialType)
@@ -101,7 +105,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("PostProcess needed for all section creates. Null checks the material and sets to empty if nothing provided and tries to grab material from Library.")]
-        private static T PostProcessSectionCreate<T>(T section, string name, IMaterialFragment material, MaterialType materialType) where T: ISectionProperty
+        private static T PostProcessSectionCreate<T>(T section, string name, IMaterialFragment material, MaterialType materialType) where T : ISectionProperty
         {
             name = name ?? "";
             section.Name = name;

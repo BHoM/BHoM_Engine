@@ -46,11 +46,17 @@ namespace BH.Engine.Structure
         [Output("barPreStress", "The created BarPrestressLoad.")]
         public static BarPrestressLoad BarPrestressLoad(Loadcase loadcase, double prestress, IEnumerable<Bar> objects, string name = "")
         {
+            BHoMGroup<Bar> group = new BHoMGroup<Bar>();
+            if (objects == null)
+                group = null;
+            else
+                group.Elements = objects.ToList();
+
             return new BarPrestressLoad
             {
                 Loadcase = loadcase,
                 Prestress = prestress,
-                Objects = new BHoMGroup<Bar>() { Elements = objects.ToList() },
+                Objects = group,
                 Name = name
             };
         }

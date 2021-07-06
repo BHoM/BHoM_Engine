@@ -38,14 +38,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Created a Node from a Cartesian coordinate system. The position of the Node will be the Orgin, and the Orientation of the node will match the axes of the Coordinate system.")]
+        [Description("Creates a Node from a Cartesian coordinate system. The position of the Node will be the Orgin, and the Orientation of the node will match the axes of the Coordinate system.")]
         [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the Node.")]
         [Input("name", "The name of the created Node.")]
         [InputFromProperty("support")]
         [Output("node", "The created structural Node.")]
         public static Node Node(Cartesian coordinates, string name = "", Constraint6DOF support = null)
         {
-            return new Node
+            return coordinates.IsNull() ? null : new Node
             {
                 Position = coordinates.Origin,
                 Orientation = (Basis)coordinates,

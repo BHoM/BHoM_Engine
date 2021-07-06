@@ -39,7 +39,6 @@ namespace BH.Engine.Security
         [Description("Gets the camera's geometry as a closed ICurve cone-shape. Method required for automatic display in UI packages.")]
         [Input("cameraDevice", "Camera to get the ICurve from.")]
         [Output("icurve", "The geometry of the Camera.")]
-        [PreviousVersion("4.2", "BH.Engine.MEP.Query.Geometry(BH.oM.Security.Elements.CameraDevice)")]
         public static ICurve Geometry(this CameraDevice cameraDevice)
         {
             if(cameraDevice == null)

@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection")]
+        [Description("Creates a LongitudinalReinforcement placing rebars along a straight line throughout the ConcreteSection.")]
         [InputFromProperty("diameter")]
         [Input("barCount", "Number of bars along the along the linear distribution.")]
         [Input("direction", "Direction of the axis of the reinforcement. Should be a vector in the global XY-plane. Defaults to the global X-axis.")]
@@ -53,6 +53,12 @@ namespace BH.Engine.Structure
         [Output("reinforcement", "The created Reinforcement to be applied to a ConcreteSection.")]
         public static LongitudinalReinforcement LayerReinforcement(double diameter, int barCount, Vector direction = null, double offset = 0, ReferencePoint referencePoint = ReferencePoint.BottomCenter, double startLocation = 0, double endLocation = 1, IMaterialFragment material = null)
         {
+            if (diameter < Tolerance.Distance || barCount <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter or bar count is less than the tolerance. Please check your inputs.");
+                return null;
+            }
+
             return LongitudinalReinforcement(Spatial.Create.LinearLayout(barCount, direction, offset, referencePoint), diameter, startLocation, endLocation, material);
         }
 
@@ -60,4 +66,3 @@ namespace BH.Engine.Structure
 
     }
 }
-

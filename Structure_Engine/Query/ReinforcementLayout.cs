@@ -47,8 +47,11 @@ namespace BH.Engine.Structure
         [Input("section", "The concrete section to return all points from.")]
         [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
         [Output("points", "The positions of the LongitudinalReinforcement.")]
-        public static List<Point> LongitudinalReinforcementLayout(ConcreteSection section, double position = -1)
+        public static List<Point> LongitudinalReinforcementLayout(this ConcreteSection section, double position = -1)
         {
+            if (section.IsNull())
+                return null;
+
             List<Point> rebarPoints = new List<Point>();
 
             List<ICurve> outerProfileEdges;
@@ -72,8 +75,11 @@ namespace BH.Engine.Structure
         [Input("section", "The concrete section to return all points from.")]
         [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
         [Output("curves", "The positions of the LongitudinalReinforcement.")]
-        public static List<ICurve> TransverseReinforcementLayout(ConcreteSection section, double position = -1)
+        public static List<ICurve> TransverseReinforcementLayout(this ConcreteSection section, double position = -1)
         {
+            if (section.IsNull())
+                return null;
+
             List<ICurve> rebarCurves = new List<ICurve>();
 
             List<ICurve> outerProfileEdges;
@@ -97,8 +103,11 @@ namespace BH.Engine.Structure
         [Input("section", "The concrete section to return all points from.")]
         [Input("position", "Position along the section to extract reinforcement. A negative value will return all reinforcement.")]
         [Output("geometry", "The positions of the IBarReinforcement.")]
-        public static List<IGeometry> ReinforcementLayout(ConcreteSection section, double position = -1)
+        public static List<IGeometry> ReinforcementLayout(this ConcreteSection section, double position = -1)
         {
+            if (section.IsNull())
+                return null;
+
             List<IGeometry> rebarLayout = new List<IGeometry>();
             List<ICurve> rebarCurves = new List<ICurve>();
             List<Point> rebarPoints = new List<Point>();
@@ -132,6 +141,9 @@ namespace BH.Engine.Structure
         [Output("points", "The positions of the LongitudinalReinforcement.")]
         public static List<Point> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges = null)
         {
+            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()))
+                return null;
+
             innerProfileEdges = innerProfileEdges ?? new List<ICurve>();
             double offset = cover + reinforcement.Diameter / 2;
 
@@ -141,7 +153,7 @@ namespace BH.Engine.Structure
             if (outerCurves.Count() == 0)
             {
                 Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
-                return new List<Point>();
+                return null;
             }
             return reinforcement.RebarLayout.IPointLayout(outerCurves, innerCurves);
         }
@@ -156,6 +168,9 @@ namespace BH.Engine.Structure
         [Output("points", "The centerlines of the TransverseReinforcement.")]
         public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges = null)
         {
+            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()))
+                return null;
+
             return reinforcement.CenterlineLayout.ICurveLayout(outerProfileEdges, innerProfileEdges, cover);
         }
 
@@ -165,10 +180,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets all the reinforcement centrelines in the Bar as a list of Curves.")]
-        [Input("bar", "The Bar to extract all longitudinal reinforcement from. If the bar does not contain a ConcreteSection an empty list will be returned.")]
+        [Input("bar", "The Bar to extract all longitudinal reinforcement from. If the Bar does not contain a ConcreteSection an empty list will be returned.")]
         [Output("lines", "The centrelines of the IBarReinforcement.")]
-        public static List<ICurve> ReinforcementLayout(Bar bar)
+        public static List<ICurve> ReinforcementLayout(this Bar bar)
         {
+            if (bar.IsNull())
+                return null;
+
             List<ICurve> barLocations = new List<ICurve>();
             ConcreteSection section = bar.SectionProperty as ConcreteSection;
 
@@ -205,6 +223,14 @@ namespace BH.Engine.Structure
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<Line> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
         {
+            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || transformation.IsNull())
+                return null;
+            else if (length < Tolerance.MicroDistance)
+            {
+                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                return null;
+            }
+
             List<Point> planLayout = ReinforcementLayout(reinforcement, cover, outerProfileEdges, innerProfileEdges);
 
             double start = reinforcement.StartLocation * length;
@@ -232,6 +258,14 @@ namespace BH.Engine.Structure
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<ICurve> ReinforcementLayout(this TransverseReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
         {
+            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || transformation.IsNull())
+                return null;
+            else if (length <= Tolerance.MicroDistance)
+            {
+                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                return null;
+            }
+
             List<ICurve> rebarLines = new List<ICurve>();
             List<ICurve> stirrupOutline = reinforcement.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges);
 
@@ -275,6 +309,14 @@ namespace BH.Engine.Structure
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<ICurve> IReinforcementLayout(this IBarReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
         {
+            if (reinforcement.IsNull() || outerProfileEdges.Any(x => x.IsNull()) || transformation.IsNull())
+                return null;
+            else if (length <= Tolerance.MicroDistance)
+            {
+                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                return null;
+            }
+
             return new List<ICurve>(ReinforcementLayout(reinforcement as dynamic, cover, outerProfileEdges, innerProfileEdges, length, transformation));
         }
 
@@ -306,7 +348,7 @@ namespace BH.Engine.Structure
 
             longReif = section.LongitudinalReinforcement();
             tranReif = section.TransverseReinforcement();
-            
+
             //Check if any offsetlayout, if so, check if larger than minimum cover
             if (tranReif.Any(x => x.CenterlineLayout is OffsetCurveLayout))
             {

@@ -47,6 +47,9 @@ namespace BH.Engine.Structure
         [Output("extrusion", "The volumetric representation of the Bar as an extrusion or a geometrical bounding box mesh.")]
         public static List<IGeometry> Extrude(this Bar bar, bool simple = false)
         {
+            if (bar.IsNull())
+                return null;
+
             if (bar.SectionProperty == null || !(bar.SectionProperty is IGeometricalSection))
                 return new List<IGeometry>();
 
@@ -64,7 +67,7 @@ namespace BH.Engine.Structure
 
         }
 
-     
+
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/

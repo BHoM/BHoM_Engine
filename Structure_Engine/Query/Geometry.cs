@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
+
         [Description("Gets the geometry of a ConcreteSection as its profile outlines and reinforcement in the global XY plane. Method required for automatic display in UI packages.")]
         [Input("section", "ConcreteSection to get outline and reinforcement geometry from.")]
         [Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY.")]
@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
 
             CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
             //if(section.Reinforcement != null)
-                //geom.Elements.AddRange(section.Layout().Elements);
+            //geom.Elements.AddRange(section.Layout().Elements);
 
             return geom;
         }
@@ -84,9 +84,9 @@ namespace BH.Engine.Structure
                 {
                     if (sn?.Position != null)
                         lines.Add(new Line() { Start = link.PrimaryNode.Position, End = sn.Position });
-                }   
+                }
             }
-            
+
             return new CompositeGeometry() { Elements = lines };
         }
 
@@ -100,7 +100,7 @@ namespace BH.Engine.Structure
         [Output("outlines", "The geometry of the SectionProperty.")]
         public static IGeometry IGeometry(this ISectionProperty section)
         {
-            return Geometry(section as dynamic);
+            return section.IsNull() ? null : Geometry(section as dynamic);
         }
 
         /***************************************************/

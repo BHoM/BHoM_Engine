@@ -30,6 +30,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.MaterialFragments;
+using BH.Engine.Geometry;
 using System.Linq;
 using BH.oM.Quantities.Attributes;
 
@@ -50,7 +51,7 @@ namespace BH.Engine.Structure
         [Output("section", "The created free form concrete section.")]
         public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
         {
-            return ConcreteSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name, reinforcement, minimumCover);
+            return edges.Count == 0 || edges.Any(x => x.IsNull()) ? null : ConcreteSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name, reinforcement, minimumCover);
         }
 
         /***************************************************/

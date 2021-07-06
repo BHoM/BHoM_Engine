@@ -43,10 +43,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a Bar's homogeneous MaterialComposition.")]
-        [Input("bar", "The Bar to material from")]
+        [Input("bar", "The Bar to material from.")]
         [Output("materialComposition", "The kind of matter the Bar is composed of.")]
         public static MaterialComposition MaterialComposition(this Bar bar)
         {
+            if (bar.IsNull())
+                return null;
+
             if (bar.SectionProperty == null || bar.SectionProperty.Material == null)
             {
                 Engine.Reflection.Compute.RecordError("The Bars MaterialComposition could not be calculated as no Material has been assigned.");
@@ -58,12 +61,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a areaElement's homogeneous MaterialComposition.")]
-        [Input("areaElement", "The areaElement to material from")]
-        [Output("materialComposition", "The kind of matter the areaElement is composed of.")]
+        [Description("Returns a AreaElement's homogeneous MaterialComposition.")]
+        [Input("areaElement", "The AreaElement to material from.")]
+        [Output("materialComposition", "The kind of matter the AreaElement is composed of.")]
         public static MaterialComposition MaterialComposition(this IAreaElement areaElement)
-        {   
-                if (areaElement.Property == null || areaElement.Property.Material == null)
+        {
+            if (areaElement.IIsNull())
+                return null;
+
+            if (areaElement.Property == null || areaElement.Property.Material == null)
             {
                 Engine.Reflection.Compute.RecordError("The areaElements MaterialComposition could not be calculated as no Material has been assigned.");
                 return null;
@@ -76,13 +82,16 @@ namespace BH.Engine.Structure
 
         public static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
         {
-            return (MaterialComposition)Physical.Create.Material(sectionProperty.Material); 
+            return sectionProperty.IsNull() ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
         }
 
         /***************************************************/
 
         public static MaterialComposition MaterialComposition(this ConcreteSection sectionProperty)
         {
+            if (sectionProperty.IsNull())
+                return null;
+
             double sectionArea = sectionProperty.Area;
 
             List<double> areas = new List<double>();
