@@ -35,10 +35,17 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a RebarIntent that can be added to a ConreteSection.")]
-        [Input("reinforcement", "A list of LongitudinalReinforcement and/or TransverseReinforcement illustrating the rebar intent.")]
+        [Description("Creates a PanelReinforcement to illustrate the reinforcement in the longitudinal and transverse directions as denoted by the ReinforcementRegion.")]
+        [InputFromProperty("material")]
+        [Input("region", "The region definining the area of the Panel to reinforce.")]
+        [Input("longitudinalDiameter", "The diameter of the reinforcement in the longitudinal direction, denoted by the local x direction of the ReinforcementRegion.")]
+        [Input("longitudinalSpacing", "The spacing of the reinforcement in the longitudinal direction, measured perpindicular to the local x direction of the ReinforcementRegion.")]
+        [Input("longitudinalDepth", "The depth of the reinforcement in the longitudinal direction, measured from the centre of the Panel.")]
+        [Input("transverseDiameter", "The diameter of the reinforcement in the transverse direction, denoted by the local y direction of the ReinforcementRegion")]
+        [Input("transverseSpacing", "The spacing of the reinforcement in the transverse direction, measured perpindicular to the local y direction of the ReinforcementRegion.")]
+        [Input("transverseDepth", "The depth of the reinforcement in the longitudinal direction, measured from the centre of the Panel.")]
         [InputFromProperty("minimumCover")]
-        [Output("rebarIntent", "The created circular concrete section.")]
+        [Output("rebarIntent", "The created PanelReinforcement to be assigned to the RebarIntent.")]
         public static PanelReinforcement PanelReinforcement(IMaterialFragment material, ReinforcementRegion region, 
             double longitudinalDiameter, double longitudinalSpacing, double longitudinalDepth,
             double transverseDiameter, double transverseSpacing, double transverseDepth, double minimumCover)
