@@ -113,6 +113,7 @@
     <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintXYPlane.cs" />
     <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintPinned.cs" />
     <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintFixed.cs" />
+    <Compile Include="Create\SectionProperties\BarRebarIntent.cs" />
     <Compile Include="Create\SectionProperties\SteelSection\SteelISection.cs" />
     <Compile Include="Create\SectionProperties\SteelSection\SteelRectangleSection.cs" />
     <Compile Include="Create\SectionProperties\SteelSection\SteelCircularSection.cs" />
