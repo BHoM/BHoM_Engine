@@ -44,7 +44,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to modify.")]
         [Input("projection", "The IProjection required of the Graph.")]
         [Output("graph", "The modified Graph where all relations have a representative ICurve.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.IRelationCurves(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.IProjection)")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Modify.IRelationCurves(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.IProjection)")]
 
         public static Graph<T> IRelationCurves<T>(this Graph<T> graph, IProjection projection)
             where T : IBHoMObject

@@ -43,7 +43,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph from which duplicate entities should be removed.")]
         [Input("replaceMap", "A Dictionary providing the replacement mapping, where Key is replaced with Value.")]
         [Output("graph", "The Graph with unique entities.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.UniqueEntities(BH.oM.Analytical.Elements.Graph, System.Collections.Generic.Dictionary<System.Guid,BH.oM.Base.IBHoMObject>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Modify.UniqueEntities(BH.oM.Analytical.Elements.Graph, System.Collections.Generic.Dictionary<System.Guid,BH.oM.Base.IBHoMObject>")]
         public static Graph<T> UniqueEntities<T>(this Graph<T> graph, Dictionary<Guid, T> replaceMap)
             where T : IBHoMObject
         {

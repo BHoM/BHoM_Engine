@@ -41,7 +41,7 @@ namespace BH.Engine.Analytical
         [Description("Returns the collection of entity Guids that are never used as Relation targets.")]
         [Input("graph", "The Graph to search.")]
         [Output("sources", "The collection of entity Guids that are sources.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Sources(BH.oM.Analytical.Elements.Graph>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.Sources(BH.oM.Analytical.Elements.Graph>")]
         public static List<Guid> Sources<T>(this Graph<T> graph)
             where T : IBHoMObject
         {

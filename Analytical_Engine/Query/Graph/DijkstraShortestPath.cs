@@ -45,7 +45,7 @@ namespace BH.Engine.Analytical
         [Input("start", "The IBHoMObject entity used for the start of the path.")]
         [Input("end", "The IBHoMObject entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.DijkstraShortestPath(BH.oM.Analytical.Elements.Graph, BH.oM.Base.IBHoMObject, BH.oM.Base.IBHoMObject>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.DijkstraShortestPath(BH.oM.Analytical.Elements.Graph, BH.oM.Base.IBHoMObject, BH.oM.Base.IBHoMObject>")]
         public static ShortestPathResult<T> DijkstraShortestPath<T>(this Graph<T> graph, T start, T end)
             where T : IBHoMObject
         {
@@ -77,7 +77,7 @@ namespace BH.Engine.Analytical
         [Input("start", "The Guid entity used for the start of the path.")]
         [Input("end", "The Guid entity used for the end of the path.")]
         [Output("shortest path result", "The ShortestPathResult.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.DijkstraShortestPath(BH.oM.Analytical.Elements.Graph, System.Guid, System.Guid>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.DijkstraShortestPath(BH.oM.Analytical.Elements.Graph, System.Guid, System.Guid>")]
         public static ShortestPathResult<T> DijkstraShortestPath<T>(this Graph<T> graph, Guid start, Guid end)
             where T : IBHoMObject
         {

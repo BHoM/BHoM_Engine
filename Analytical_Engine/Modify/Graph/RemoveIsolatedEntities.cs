@@ -40,7 +40,7 @@ namespace BH.Engine.Analytical
         [Description("Modifies a Graph by removing all entities that are not used by relations.")]
         [Input("graph", "The Graph to modify.")]
         [Output("graph", "The modified Graph without isolated entities.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Modify.RemoveIsolatedEntities(BH.oM.Analytical.Elements.Graph)")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Modify.RemoveIsolatedEntities(BH.oM.Analytical.Elements.Graph)")]
         public static Graph<T> RemoveIsolatedEntities<T>(this Graph<T> graph)
             where T: IBHoMObject
         {

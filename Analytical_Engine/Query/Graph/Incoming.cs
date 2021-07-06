@@ -43,7 +43,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The graph to search.")]
         [Input("entity", "The Guid of the entity for which the accessing entities are required.")]
         [Output("entities", "The collection of Guids of the accessing entities.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Incoming(BH.oM.Analytical.Elements.Graph,System.Guid>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.Incoming(BH.oM.Analytical.Elements.Graph,System.Guid>")]
         public static List<Guid> Incoming<T>(this Graph<T> graph, Guid entity)
             where T : IBHoMObject
         {
@@ -62,7 +62,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The graph to search.")]
         [Input("entity", "The IBHoMObject entity for which the accessing entities are required.")]
         [Output("entities", "The collection of IBHoMObjects of the accessing entities.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Incoming(BH.oM.Analytical.Elements.Graph,BH.oM.Base.IBHoMObject>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.Incoming(BH.oM.Analytical.Elements.Graph,BH.oM.Base.IBHoMObject>")]
         public static List<T> Incoming<T>(this Graph<T> graph, IBHoMObject entity)
             where T : IBHoMObject
         {

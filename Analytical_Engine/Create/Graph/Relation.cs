@@ -51,7 +51,7 @@ namespace BH.Engine.Analytical
         [Input("subgraph", "Optional sub Graph of this Relation. Default is a new Graph.")]
         [Input("weight", "Optional weight for the Relation. Default is 1.")]
         [Output("curve", "Optional Curve that represents the link between the source and target entities Default is null.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Create.Relation(BH.oM.Base.IBHoMObject,BH.oM.Base.IBHoMObject, BH.oM.Analytical.Elements.Graph, System.Double, BH.oM.Geometry.ICurve)")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Create.Relation(BH.oM.Base.IBHoMObject,BH.oM.Base.IBHoMObject, BH.oM.Analytical.Elements.Graph, System.Double, BH.oM.Geometry.ICurve)")]
         public static Relation<T> Relation<T>(T source, T target, Graph<T> subgraph = null, double weight = 1, ICurve curve = null)
             where T : IBHoMObject
         {

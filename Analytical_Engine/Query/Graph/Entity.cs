@@ -42,7 +42,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to extract the entity from.")]
         [Input("entityName", "The name of the entity.")]
         [Output("entity", "The entity as an IBHoMObject.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Entities(BH.oM.Analytical.Elements.Graph, System.String>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.Entities(BH.oM.Analytical.Elements.Graph, System.String>")]
         public static T Entity<T>(this Graph<T> graph, string entityName)
             where T : IBHoMObject
         {
@@ -61,7 +61,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to extract the entity from.")]
         [Input("entityGuid", "The Guid of the entity.")]
         [Output("entity", "The Guid of the entity.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Entities(BH.oM.Analytical.Elements.Graph, System.Guid>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.Entities(BH.oM.Analytical.Elements.Graph, System.Guid>")]
         public static T Entity<T>(this Graph<T> graph, Guid entityGuid)
             where T : IBHoMObject
         {

@@ -44,7 +44,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to filter the entities from.")]
         [Input("typeFilter", "The Type of the entities to filter.")]
         [Output("filter entities", "Entity Dictionary containing the filtered entities.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.FilterEntities(BH.oM.Analytical.Elements.Graph,System.Type>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.FilterEntities(BH.oM.Analytical.Elements.Graph,System.Type>")]
         public static Dictionary<Guid, T> FilterEntities<T>(this Graph<T> graph, Type typeFilter)
             where T : IBHoMObject
         {

@@ -42,7 +42,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("entity", "The Guid of the entity for which the destinations are required.")]
         [Output("entities", "The collection of guids of the destination entities.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Destinations(BH.oM.Analytical.Elements.Graph, System.Guid>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.Destinations(BH.oM.Analytical.Elements.Graph, System.Guid>")]
         public static List<Guid> Destinations<T>(this Graph<T> graph, Guid entity)
             where T : IBHoMObject
         {
@@ -61,7 +61,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("entity", "The IBHoMObject entity for which the destinations are required.")]
         [Output("entities", "The collection of IBHoMObjects of the destination entities.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.Destinations(BH.oM.Analytical.Elements.Graph, BH.oM.Base.IBHoMObject>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.Destinations(BH.oM.Analytical.Elements.Graph, BH.oM.Base.IBHoMObject>")]
         public static List<T> Destinations<T>(this Graph<T> graph, IBHoMObject entity)
              where T : IBHoMObject
         {

@@ -44,7 +44,7 @@ namespace BH.Engine.Analytical
         [Input("graph", "The Graph to search.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graphs", "The collection of sub Graphs found in the input Graph.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.EntityNeighbourhood(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.RelationDirection>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.EntityNeighbourhood(BH.oM.Analytical.Elements.Graph,BH.oM.Analytical.Elements.RelationDirection>")]
         public static List<Graph<T>> EntityNeighbourhood<T>(this Graph<T> graph, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : IBHoMObject
         {
@@ -71,7 +71,7 @@ namespace BH.Engine.Analytical
         [Input("maximumDepth", "The maximum traversal depth from the given entity.")]
         [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forward indicating traversal is from source to target.")]
         [Output("graph", "The sub Graph found in the input Graph.")]
-        [PreviousVersion("4.3", "BH.Engine.Analytical.Query.EntityNeighbourhood(BH.oM.Analytical.Elements.Graph, BH.oM.Base.IBHoMObject, System.Int32, BH.oM.Analytical.Elements.RelationDirection>")]
+        [PreviousVersion("4.2", "BH.Engine.Analytical.Query.EntityNeighbourhood(BH.oM.Analytical.Elements.Graph, BH.oM.Base.IBHoMObject, System.Int32, BH.oM.Analytical.Elements.RelationDirection>")]
         public static Graph<T> EntityNeighbourhood<T>(this Graph<T> graph, T entity, int maximumDepth, RelationDirection relationDirection = RelationDirection.Forwards)
             where T : IBHoMObject
         {
