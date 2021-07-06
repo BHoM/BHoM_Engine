@@ -49,7 +49,7 @@ namespace BH.Engine.Facade
         [Input("tolerance", "Tolerance is the minimum overlap amount required to consider adjacent.")]
         [MultiOutput(0, "adjacentEdges", "Adjacent edges.")]
         [MultiOutput(1, "adjacentElems", "Adjacent Elements per adjacent edge.")]
-        public static Output<List<IElement1D>, List<IElement2D>> EdgeAdjacencies(this IElement1D edge, List<IElement2D> elements, double tolerance = Tolerance.Distance)
+        public static Output<List<IElement1D>, List<IElement2D>> EdgeAdjacencies(this IElement1D edge, IEnumerable<IElement2D> elements, double tolerance = Tolerance.Distance)
         {
             List<IElement1D> adjEdges = new List<IElement1D>();
             List<IElement2D> adjElems = new List<IElement2D>();
