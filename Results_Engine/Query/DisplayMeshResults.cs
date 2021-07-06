@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -55,7 +55,6 @@ namespace BH.Engine.Results
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
-        [PreviousVersion("4.2", "BH.Engine.Structure.Results.Query.DisplayMeshResults(System.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.FEMesh>, System.Collections.Generic.IEnumerable<BH.oM.Structure.Results.MeshResult>, System.Type, System.Collections.Generic.List<System.String>, BH.oM.Structure.Results.MeshResultDisplay, BH.oM.Graphics.GradientOptions)")]
         public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<TMeshElementResult>> meshResults,
                       Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
             where TNode : INode
