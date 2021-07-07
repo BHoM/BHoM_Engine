@@ -21,7 +21,8 @@ namespace BH.Engine.Geometry
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the List of Geometry is null or it contains nulls.")]
-        public static bool ContainsNulls(this IEnumerable<IGeometry> geometries, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        public static bool ContainsNulls<T>(this IEnumerable<T> geometries, [CallerMemberName] string methodName = "", bool deepCheck = false, string msg = "")
+            where T : IGeometry
         {
             if (geometries.IsNullOrEmpty(msg, methodName))
             {
@@ -31,7 +32,7 @@ namespace BH.Engine.Geometry
                 }
                 return true;
             }
-            return geometries.Any(x => IIsNull(x, msg, methodName, deepCheck));
+            return geometries.Any(x => IIsNull(x, methodName, deepCheck, msg));
         }
     }
 }
