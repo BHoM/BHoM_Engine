@@ -80,6 +80,17 @@ namespace BH.Test.Engine
 
         public static TestResult NullChecks(MethodInfo method)
         {
+            //Check if the method provided is null
+            if (method == null)
+            {
+                return new TestResult
+                {
+                    Description = "",
+                    Status = TestStatus.Warning,
+                    Message = $"Warning: The provided method is null and can not be tested.",
+                };
+            }
+
             string methodDescription = method.IToText(true);
 
             //Check if method is generic type, and if so, make it generic based on its constraints
