@@ -87,7 +87,7 @@ namespace BH.Test.Engine
                 {
                     Description = "",
                     Status = TestStatus.Warning,
-                    Message = $"Warning: The provided method is null and can not be tested.",
+                    Message = $"Warning: The provided method is null and cannot be tested.",
                 };
             }
 
