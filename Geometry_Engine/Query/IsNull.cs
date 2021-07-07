@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Geometry
 {
@@ -39,26 +40,449 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a Geometry is null and outputs relevant error message.")]
+        [Description("Checks if a Geometry is null and outputs a relevant error message.")]
         [Input("geometry", "The Geometry to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Geometry is null.")]
-        public static bool IsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "")
+        public static bool IsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
         {
             if (geometry == null)
             {
-                if (string.IsNullOrEmpty(methodName))
-                {
-                    methodName = "Method";
-                }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Geometry failed a null check. {msg}");
-
+                ErrorMessage(methodName, "Geometry", msg);
                 return true;
             }
 
             return false;
         }
 
+        /***************************************************/
+        /**** Public Methods - Vector                   ****/
+        /***************************************************/
+
+        [Description("Checks if a Basis is null and outputs a relevant error message.")]
+        [Input("geometry", "The Basis to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Basis is null.")]
+        public static bool IsNull(this Basis geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Basis", msg);
+                return true;
+            }
+            if(deepCheck)
+            {
+                if (geometry.X.IsNull(msg, methodName, deepCheck) ||
+                geometry.Y.IsNull(msg, methodName, deepCheck) ||
+                geometry.Z.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
+            
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Plane is null and outputs a relevant error message.")]
+        [Input("geometry", "The Plane to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Plane is null.")]
+        public static bool IsNull(this Plane geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Plane", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.Origin.IsNull(msg, methodName, deepCheck) ||
+                geometry.Normal.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Point is null and outputs a relevant error message.")]
+        [Input("geometry", "The Point to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Point is null.")]
+        public static bool IsNull(this Point geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Point", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Vector is null and outputs a relevant error message.")]
+        [Input("geometry", "The Vector to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Vector is null.")]
+        public static bool IsNull(this Vector geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Vector", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+        /**** Public Methods - CoordinateSystem         ****/
+        /***************************************************/
+
+        [Description("Checks if a Cartesian is null and outputs a relevant error message.")]
+        [Input("geometry", "The Cartesian to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Cartesian is null.")]
+        public static bool IsNull(this Cartesian geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Cartesian", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.X.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Y.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Z.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Origin.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Curves                   ****/
+        /***************************************************/
+
+        [Description("Checks if a Arc is null and outputs a relevant error message.")]
+        [Input("geometry", "The Arc to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Arc is null.")]
+        public static bool IsNull(this Arc geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Arc", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.CoordinateSystem.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Circle is null and outputs a relevant error message.")]
+        [Input("geometry", "The Circle to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Circle is null.")]
+        public static bool IsNull(this Circle geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Circle", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.Centre.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Normal.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Ellipse is null and outputs a relevant error message.")]
+        [Input("geometry", "The Ellipse to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Ellipse is null.")]
+        public static bool IsNull(this Ellipse geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Ellipse", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.Centre.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Axis1.IsNull(msg, methodName, deepCheck) ||
+                    geometry.Axis2.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Line is null and outputs a relevant error message.")]
+        [Input("geometry", "The Line to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Line is null.")]
+        public static bool IsNull(this Line geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Line", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.Start.IsNull(msg, methodName, deepCheck) ||
+                    geometry.End.IsNull(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a NurbsCurve is null and outputs a relevant error message.")]
+        [Input("geometry", "The NurbsCurve to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the NurbsCurve is null.")]
+        public static bool IsNull(this NurbsCurve geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "NurbsCurve", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.ControlPoints.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a PolyCurve is null and outputs a relevant error message.")]
+        [Input("geometry", "The PolyCurve to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PolyCurve is null.")]
+        public static bool IsNull(this PolyCurve geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "PolyCurve", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.Curves.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Polyline is null and outputs a relevant error message.")]
+        [Input("geometry", "The Polyline to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Polyline is null.")]
+        public static bool IsNull(this Polyline geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            //MemberExpression body = (MemberExpression)propertySelector.Body;
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Polyline", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.ControlPoints.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Mesh                     ****/
+        /***************************************************/
+
+        [Description("Checks if a CellRelation is null and outputs a relevant error message.")]
+        [Input("geometry", "The CellRelation to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the CellRelation is null.")]
+        public static bool IsNull(this CellRelation geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "CellRelation", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Mesh is null and outputs a relevant error message.")]
+        [Input("geometry", "The Mesh to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Mesh is null.")]
+        public static bool IsNull(this Mesh geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Mesh", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.Vertices.ContainsNulls(msg, methodName, deepCheck) ||
+                    geometry.Faces.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Mesh3D is null and outputs a relevant error message.")]
+        [Input("geometry", "The Mesh3D to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Mesh3D is null.")]
+        public static bool IsNull(this Mesh3D geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Mesh", msg);
+                return true;
+            }
+            if (deepCheck)
+            {
+                if (geometry.Vertices.ContainsNulls(msg, methodName, deepCheck) ||
+                    geometry.Faces.ContainsNulls(msg, methodName, deepCheck) ||
+                    geometry.CellRelation.ContainsNulls(msg, methodName, deepCheck))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Misc                     ****/
+        /***************************************************/
+
+        /***************************************************/
+        /**** Public Methods - SettingOut               ****/
+        /***************************************************/
+
+        /***************************************************/
+        /**** Public Methods - Solid                    ****/
+        /***************************************************/
+
+        /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        /***************************************************/
+        /**** Public Methods - Surface                  ****/
+        /***************************************************/
+
+        /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        [Description("Checks if an IGeometry is null and outputs a relevant error message.")]
+        [Input("geometry", "The IGeometry to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("pass", "True if the IGeometry is null.")]
+        public static bool IIsNull(this IGeometry geometry, string msg = "", [CallerMemberName] string methodName = "", bool deepCheck = false)
+        {
+            //check the object
+            if (geometry == null)
+            {
+                ErrorMessage(methodName, "Geometry", msg);
+                return true;
+            }
+            //check attributes
+            return IsNull(geometry as dynamic, msg, methodName, deepCheck);
+           
+        }
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
+        {
+            if (string.IsNullOrEmpty(methodName))
+            {
+                methodName = "Method";
+            }
+            Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
+        }
+
     }
+    
 }

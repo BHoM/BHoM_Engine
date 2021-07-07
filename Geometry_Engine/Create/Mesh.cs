@@ -59,6 +59,9 @@ namespace BH.Engine.Geometry
 
         public static Mesh RandomMesh(Random rnd, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)
         {
+            if (rnd == null)
+                return null;
+
             if (box == null)
                 box = new BoundingBox { Min = Point(0, 0, 0), Max = Point(1, 1, 1) };
 

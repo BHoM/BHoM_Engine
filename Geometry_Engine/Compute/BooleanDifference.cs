@@ -37,6 +37,9 @@ namespace BH.Engine.Geometry
 
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
+            if (line.IsNull(deepCheck: true) || refLine.IsNull(deepCheck: true))
+                return null;
+
             if (refLine.Length() <= tolerance)
                 return new List<Line> { line.DeepClone() };
 
@@ -127,6 +130,9 @@ namespace BH.Engine.Geometry
         
         public static List<Polyline> BooleanDifference(this Polyline region, List<Polyline> refRegions, double tolerance = Tolerance.Distance)
         {
+            if (region.IsNull("Argument: region failed a null check.", deepCheck: true) || refRegions.ContainsNulls("Argument: refRegions failed a null check.", deepCheck: true))
+                return null;
+
             if (!region.IsClosed(tolerance) || refRegions.Any(x => !x.IsClosed()))
             {
                 Reflection.Compute.RecordError("Boolean Difference works on closed regions.");

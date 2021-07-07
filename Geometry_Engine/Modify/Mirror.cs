@@ -38,6 +38,9 @@ namespace BH.Engine.Geometry
 
         public static Point Mirror(this Point pt, Plane p)
         {
+            if (pt.IsNull(deepCheck: true) || p.IsNull(deepCheck: true))
+                return null;
+
             return pt - 2 * p.Normal.DotProduct(pt - p.Origin) * p.Normal;
         }
 
@@ -45,6 +48,9 @@ namespace BH.Engine.Geometry
 
         public static Vector Mirror(this Vector vector, Plane p)
         {
+            if (vector.IsNull(deepCheck: true) || p.IsNull(deepCheck: true))
+                return null;
+
             return vector - 2 * vector.DotProduct(p.Normal) * p.Normal;
         }
 
@@ -52,6 +58,9 @@ namespace BH.Engine.Geometry
 
         public static Plane Mirror(this Plane plane, Plane p)
         {
+            if (plane.IsNull(deepCheck: true) || p.IsNull(deepCheck: true))
+                return null;
+
             return new Plane { Origin = plane.Origin.Mirror(p), Normal = plane.Normal.Mirror(p) };
         }
 
@@ -59,6 +68,9 @@ namespace BH.Engine.Geometry
 
         public static Basis Mirror(this Basis basis, Plane p)
         {
+            if (basis.IsNull(deepCheck: true) || p.IsNull(deepCheck: true))
+                return null;
+
             return new Basis(basis.X.Mirror(p), basis.Y.Mirror(p), basis.Z.Mirror(p));
         }
 
@@ -66,6 +78,9 @@ namespace BH.Engine.Geometry
 
         public static Cartesian Mirror(this Cartesian coordinateSystem, Plane p)
         {
+            if (coordinateSystem.IsNull(deepCheck: true) || p.IsNull(deepCheck: true))
+                return null;
+
             return Create.CartesianCoordinateSystem(coordinateSystem.Origin.Mirror(p), coordinateSystem.X.Mirror(p), coordinateSystem.Y.Mirror(p));
         }
 
@@ -76,6 +91,9 @@ namespace BH.Engine.Geometry
 
         public static Arc Mirror(this Arc arc, Plane p)
         {
+            if (arc.IsNull(deepCheck: true) || p.IsNull(deepCheck: true))
+                return null;
+
             return new Arc { CoordinateSystem = arc.CoordinateSystem.Mirror(p), StartAngle = arc.StartAngle, EndAngle = arc.EndAngle, Radius = arc.Radius };
         }
 
@@ -83,6 +101,9 @@ namespace BH.Engine.Geometry
 
         public static Circle Mirror(this Circle circle, Plane p)
         {
+            if (circle.IsNull(deepCheck: true) || p.IsNull(deepCheck: true))
+                return null;
+
             return new Circle { Centre = circle.Centre.Mirror(p), Normal = circle.Normal.Mirror(p), Radius = circle.Radius };
         }
 

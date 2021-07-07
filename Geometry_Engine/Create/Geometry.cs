@@ -43,6 +43,9 @@ namespace BH.Engine.Geometry
 
         public static IGeometry RandomGeometry(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             int nb = rnd.Next(13);
             switch(nb)
             {

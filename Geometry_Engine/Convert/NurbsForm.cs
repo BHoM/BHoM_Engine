@@ -37,6 +37,8 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve ToNurbsCurve(this Arc arc)
         {
+            if (arc.IsNull(deepCheck: true))
+                return null;
             {
                 double angle = arc.EndAngle - arc.StartAngle;
                 Point centre = arc.Centre();
@@ -79,6 +81,8 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve ToNurbsCurve(this Circle circle)
         {
+            if (circle.IsNull(deepCheck: true))
+                return null;
             {
                 Point centre = circle.Centre;
                 Vector d1 = circle.StartPoint() - centre;
@@ -111,6 +115,8 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve ToNurbsCurve(this Ellipse ellipse)
         {
+            if (ellipse.IsNull(deepCheck: true))
+                return null;
             {
                 Point centre = ellipse.Centre;
                 Vector d1 = ellipse.Radius1 * ellipse.Axis1;
@@ -143,6 +149,9 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve ToNurbsCurve(this Line line)
         {
+            if (line.IsNull(deepCheck: true))
+                return null;
+
             return Create.NurbsCurve(new List<Point> { line.Start, line.End }, new double[] { 1, 1 }, new double[] { 0, 1 });
         }
 
@@ -157,6 +166,9 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve ToNurbsCurve(this Polyline curve)
         {
+            if (curve.IsNull(deepCheck: true))
+                return null;
+
             List<Point> points = curve.ControlPoints;
             List<double> weights = curve.ControlPoints.Select(x => 1.0).ToList();
             List<double> knots = new List<double> { 0 };

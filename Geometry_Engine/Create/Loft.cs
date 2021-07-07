@@ -55,6 +55,9 @@ namespace BH.Engine.Geometry
 
         public static Loft RandomLoft(Random rnd, BoundingBox box = null, int minNbCurves = 2, int maxNbCurves = 10)
         {
+            if (rnd == null)
+                return null;
+
             List<ICurve> curves = new List<ICurve>();
             for (int i = 0; i < rnd.Next(minNbCurves, maxNbCurves + 1); i++)
             {

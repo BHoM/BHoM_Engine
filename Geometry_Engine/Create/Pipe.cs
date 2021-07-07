@@ -59,6 +59,9 @@ namespace BH.Engine.Geometry
 
         public static Pipe RandomPipe(Random rnd, BoundingBox box = null)
         {
+            if (rnd == null)
+                return null;
+
             if (box == null)
             {
                 return new Pipe

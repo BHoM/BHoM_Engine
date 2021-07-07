@@ -55,6 +55,9 @@ namespace BH.Engine.Geometry
 
         public static CompositeGeometry RandomCompositeGeometry(Random rnd, BoundingBox box = null, int minNbParts = 1, int maxNbParts = 10)
         {
+            if (rnd == null)
+                return null;
+
             List<IGeometry> elements = new List<IGeometry>();
             for (int i = 0; i < rnd.Next(minNbParts, maxNbParts + 1); i++)
                 elements.Add(RandomCurve(rnd, box));
