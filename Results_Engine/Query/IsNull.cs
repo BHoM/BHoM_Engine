@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,40 +20,46 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using BH.oM.Environment.Elements;
-
 using BH.oM.Reflection.Attributes;
+using BH.oM.Analytical.Results;
 using System.ComponentModel;
-
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using BH.Engine.Base;
+using System.Runtime.CompilerServices;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Results
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a single Environment Panel with the provided space names added as the connecting spaces")]
-        [Input("panel", "A single Environment Panel to add the space names to")]
-        [Input("spaceNames", "The collection of names of the spaces the panel is connected to")]
-        [Output("panel", "A modified Environment Panel with the provided space names listed as the connecting spaces")]
-        public static Panel SetAdjacentSpaces(this Panel panel, List<string> spaceNames)
+        [Description("Checks if a Result is null and outputs relevant error message.")]
+        [Input("result", "The Result to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Result or its defining properties are null.")]
+        public static bool IsNull<T>(this T result, string msg = "", [CallerMemberName] string methodName = "Method") where T : IResult
         {
-            if(panel == null)
+            if (result == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the adjacent spaces of a null panel.");
-                return panel;
+                ErrorMessage(methodName, typeof(T).Name, msg);
+                return true;
             }
 
-            Panel clonedPanel = panel.DeepClone<Panel>();
-            clonedPanel.ConnectedSpaces = spaceNames;
-            return clonedPanel;
+            return false;
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
+        {
+            Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
+        }
+
     }
 }
-
-

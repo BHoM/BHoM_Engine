@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,40 +20,46 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
 using System.Collections.Generic;
-using BH.oM.Environment.Elements;
-
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-
 using System.Linq;
+using BH.oM.Base;
+using BH.oM.Structure.Elements;
+using BH.oM.Structure.Fragments;
+using BH.oM.Structure.MaterialFragments;
+using BH.oM.Structure.Results;
+using BH.oM.Reflection.Attributes;
 using BH.Engine.Base;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Description("Returns a single Environment Panel with the provided space names added as the connecting spaces")]
-        [Input("panel", "A single Environment Panel to add the space names to")]
-        [Input("spaceNames", "The collection of names of the spaces the panel is connected to")]
-        [Output("panel", "A modified Environment Panel with the provided space names listed as the connecting spaces")]
-        public static Panel SetAdjacentSpaces(this Panel panel, List<string> spaceNames)
+        [Description("Calculates the total required area from BarRequiredArea summating the top, bottom, perimeter, shear and torsion reinforcement areas.")]
+        [Input("barRequiredArea", "The BarRequiredArea to evaluate.")]
+        [Output("total", "The total required area.")]
+        public static double SumRequiredArea(this BarRequiredArea barRequiredArea)
         {
-            if(panel == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the adjacent spaces of a null panel.");
-                return panel;
-            }
-
-            Panel clonedPanel = panel.DeepClone<Panel>();
-            clonedPanel.ConnectedSpaces = spaceNames;
-            return clonedPanel;
+            return barRequiredArea.IsNull() ? 0 : barRequiredArea.Top + barRequiredArea.Bottom + barRequiredArea.Perimeter + barRequiredArea.Shear + barRequiredArea.Torsion;
         }
+
+        /***************************************************/
+
+        [Description("Calculates the total required area from MeshRequiredArea summating the top, bottom, perimeter, shear and torsion reinforcement areas.")]
+        [Input("meshRequiredArea", "The BarRequiredArea to evaluate.")]
+        [Output("total", "The total required area.")]
+        public static double SumRequiredArea(this MeshRequiredArea meshRequiredArea)
+        {
+            return meshRequiredArea.IsNull() ? 0 : meshRequiredArea.TopPrimary + meshRequiredArea.TopSecondary + meshRequiredArea.BottomPrimary + meshRequiredArea.BottomSecondary + meshRequiredArea.Shear + meshRequiredArea.Torsion;
+        }
+
+        /***************************************************/
+
+
     }
 }
-
 

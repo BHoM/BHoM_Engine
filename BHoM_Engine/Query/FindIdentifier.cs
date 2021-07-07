@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,53 +20,66 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
 using System;
 using System.Collections.Generic;
-using BH.oM.Geometry;
-using BH.oM.Security.Elements;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using BH.Engine.Geometry;
+using System.ComponentModel;
 
-namespace BH.Engine.Security
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
         /***************************************************/
-        /****             Public Methods                ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the camera's geometry as a closed ICurve cone-shape. Method required for automatic display in UI packages.")]
-        [Input("cameraDevice", "Camera to get the ICurve from.")]
-        [Output("icurve", "The geometry of the Camera.")]
-        public static ICurve Geometry(this CameraDevice cameraDevice)
+        [Description("Tries to find an IAdapterId on the object.")]
+        [Input("o", "The object to search for an IAdapterId.")]
+        [Output("identifier", "First plausible identifier present on the object.")]
+        public static Type FindIdentifier(this IBHoMObject o)
         {
-            if(cameraDevice == null)
+            if (o == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null camera device.");
+                Reflection.Compute.RecordError("Provided object is null. Cannot extract identifier.");
                 return null;
             }
-
-            Vector direction = BH.Engine.Geometry.Create.Vector(
-                BH.Engine.Geometry.Create.Point(cameraDevice.EyePosition.X, cameraDevice.EyePosition.Y, 0),
-                BH.Engine.Geometry.Create.Point(cameraDevice.TargetPosition.X, cameraDevice.TargetPosition.Y, 0)).Normalise();
-
-            Vector perpendicular = direction.Rotate((Math.PI / 180) * 90, Vector.ZAxis);
-
-            List<Point> vertices = new List<Point>();
-            Point point1 = cameraDevice.EyePosition.Clone();
-            Point point2 = cameraDevice.TargetPosition.Clone().Translate(perpendicular * (cameraDevice.HorizontalFieldOfView / 2));
-            Point point3 = cameraDevice.TargetPosition.Clone().Translate(perpendicular * ((cameraDevice.HorizontalFieldOfView / 2)) * -1);
-            vertices.Add(point1);
-            vertices.Add(point2);
-            vertices.Add(point3);
-            vertices.Add(point1);
-
-            Polyline polyline = BH.Engine.Geometry.Create.Polyline(vertices);
-
-            return polyline;
+            Type adapterIdType = o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
+            if (adapterIdType == null)
+            {
+                Reflection.Compute.RecordError("No Identifier found.");
+                return null;
+            }
+            else
+            {
+                Reflection.Compute.RecordNote($"Auto-generated Identifier as {adapterIdType.Name}.");
+                return adapterIdType;
+            }
         }
 
         /***************************************************/
+
+        [Description("Tries to find a AdapterIdType on the object if no input is provided.")]
+        [Output("adapterIdType", "First plausible identifier present on the object or provided.")]
+        public static Type FindIdentifier(this IBHoMObject o, Type adapterIdType)
+        {
+            if (adapterIdType == null)
+            {
+                return o.FindIdentifier();
+            }
+            else if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
+            {
+                Reflection.Compute.RecordError("The provided adapterIdType need to be a type of IAdapterId.");
+                return null;
+            }
+            return adapterIdType;
+        }
+
+        /***************************************************/
+
     }
 }
+

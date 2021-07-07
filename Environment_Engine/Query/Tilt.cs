@@ -46,7 +46,6 @@ namespace BH.Engine.Environment
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
         [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the Environment Object")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Query.Tilt(BH.oM.Environment.IEnvironmentObject)")]
         public static double Tilt(this IEnvironmentObject environmentObject, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             if(environmentObject == null)
@@ -63,7 +62,6 @@ namespace BH.Engine.Environment
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to BH.oM.Geometry.Tolerance.Distance")]
         [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle")]
         [Output("tilt", "The tilt of the polyline")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Query.Tilt(BH.oM.Geometry.Polyline)")]
         public static double Tilt(this Polyline polyline, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             if(polyline == null)

@@ -48,7 +48,6 @@ namespace BH.Engine.Environment
         [Input("polyline", "An Environment polyline to find the maximum level from")]
         [Input("decimals", "Provide decimal location for the maximum levels")]
         [Output("maximumLevel", "The maximum level of the z axis of the polyline")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Query.MaximumLevel(BH.oM.Geometry.Polyline)")]
         public static double MaximumLevel(this Polyline polyline, int decimals = 3)
         {
             List<Point> crvPts = polyline.IControlPoints();
@@ -64,7 +63,6 @@ namespace BH.Engine.Environment
         [Input("panel", "An Environment Panel to find the maximum level from")]
         [Input("decimals", "Provide decimal location for the maximum levels")]
         [Output("maximumLevel", "The maximum level of the z axis of the panel")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Query.MaximumLevel(BH.oM.Environment.Elements.Panel)")]
         public static double MaximumLevel(this Panel panel, int decimals = 3)
         {
             if(panel == null)
@@ -80,7 +78,6 @@ namespace BH.Engine.Environment
         [Input("opening", "An Environment Opening to find the maximum level from")]
         [Input("decimals", "Provide decimal location for the maximum levels")]
         [Output("maximumLevel", "The maximum level of the z axis of the opening")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Query.MaximumLevel(BH.oM.Environment.Elements.Opening)")]
         public static double MaximumLevel(this Opening opening, int decimals = 3)
         {
             if (opening == null)
