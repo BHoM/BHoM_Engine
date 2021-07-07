@@ -87,16 +87,13 @@ namespace BH.Test.Engine
             {
                 if (method.IsGenericMethodDefinition)
                     method = method.MakeFromGeneric();
+
+                if (method == null)
+                    return GenericsFailedResult(methodDescription);
             }
             catch (Exception e)
             {
-                return new TestResult
-                {
-                    Description = methodDescription,
-                    Status = TestStatus.Warning,
-                    Message = $"Warning: Failed to make method {methodDescription} into a generic method. It will not be tested.",
-                    Information = new List<ITestInformation> { new EventMessage { Message = e.Message, StackTrace = e.StackTrace } }
-                };
+                return GenericsFailedResult(methodDescription, e);
             }
 
             // Collect the inputs setting themm to null when relevant
@@ -162,6 +159,23 @@ namespace BH.Test.Engine
 
             // All test objects passed the test
             return BH.Engine.Test.Create.PassResult(methodDescription);
+        }
+
+        /*************************************/
+
+        private static TestResult GenericsFailedResult(string methodDescription, Exception e = null)
+        {
+            List<ITestInformation> information = new List<ITestInformation>();
+            if (e != null)
+                information.Add(new EventMessage { Message = e.Message, StackTrace = e.StackTrace });
+
+            return new TestResult
+            {
+                Description = methodDescription,
+                Status = TestStatus.Warning,
+                Message = $"Warning: Failed to make method {methodDescription} into a generic method. It will not be tested.",
+                Information = information
+            };
         }
 
         /*************************************/
