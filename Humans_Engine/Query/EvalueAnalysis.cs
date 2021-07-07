@@ -37,15 +37,15 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Evaulate Evalues for a single Audience")]
-        [Input("audience", "Audience to evalaute")]
-        [Input("settings", "EvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<Evalue> EvalueAnalysis(Audience audience, EvalueSettings settings, ActivityArea activityArea)
+        [Description("Evaluate Evalues for a single Audience.")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("settings", "EvalueSettings to configure the evaluation.")]
+        [Input("activityArea", "ActivityArea to use in the evaluation.")]
+        public static List<Evalue> EvalueAnalysis(this Audience audience, EvalueSettings settings, ActivityArea activityArea)
         {
             if (audience == null || settings == null || activityArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the EValueAnalysis if the audience, settings, or activity area are null.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the EvalueAnalysis if the audience, settings, or activity area are null.");
                 return new List<Evalue>();
             }
 
@@ -55,13 +55,19 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        [Description("Evaulate Evalues for a List of Audience")]
-        [Input("audience", "Audience to evalaute")]
-        [Input("settings", "EvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<List<Evalue>> EvalueAnalysis(List<Audience> audience, EvalueSettings settings, ActivityArea activityArea)
+        [Description("Evaluate Evalues for a List of Audience.")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("settings", "EvalueSettings to configure the evaluation.")]
+        [Input("activityArea", "ActivityArea to use in the evaluation.")]
+        public static List<List<Evalue>> EvalueAnalysis(this List<Audience> audience, EvalueSettings settings, ActivityArea activityArea)
         {
             List<List<Evalue>> results = new List<List<Evalue>>();
+            if (audience == null || settings == null || activityArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the EvalueAnalysis if the audience, settings, or activity area are null.");
+                return results;
+            }
+            
             foreach (Audience a in audience)
             {
                 results.Add(EvaluateEvalue(a, settings, activityArea));
@@ -76,7 +82,7 @@ namespace BH.Engine.Humans.ViewQuality
         private static List<Evalue> EvaluateEvalue(Audience audience, EvalueSettings settings, ActivityArea activityArea)
         {
             List<Evalue> results = new List<Evalue>();
-            KDTree<Spectator> spectatorTree = SetKDTree(audience);
+            SetKDTree(audience);
             foreach (Spectator s in audience.Spectators)
             {
                 Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
@@ -85,7 +91,7 @@ namespace BH.Engine.Humans.ViewQuality
                 {
                     viewVector = activityArea.ActivityFocalPoint - s.Head.PairOfEyes.ReferenceLocation;
                 }
-                results.Add(EvalueResult(s, rowVector, viewVector,activityArea.PlayingArea,settings));
+                results.Add(EvalueResult(s, rowVector, viewVector, activityArea.PlayingArea, settings));
             }
             return results;
         }
