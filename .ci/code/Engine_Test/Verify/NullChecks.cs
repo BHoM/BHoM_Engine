@@ -82,6 +82,23 @@ namespace BH.Test.Engine
         {
             string methodDescription = method.IToText(true);
 
+            //Check if method is generic type, and if so, make it generic based on its constraints
+            try
+            {
+                if (method.IsGenericMethodDefinition)
+                    method = method.MakeFromGeneric();
+            }
+            catch (Exception e)
+            {
+                return new TestResult
+                {
+                    Description = methodDescription,
+                    Status = TestStatus.Warning,
+                    Message = $"Warning: Failed to make method {methodDescription} into a generic method. It will not be tested.",
+                    Information = new List<ITestInformation> { new EventMessage { Message = e.Message, StackTrace = e.StackTrace } }
+                };
+            }
+
             // Collect the inputs setting themm to null when relevant
             object[] inputs = new object[0];
             try
@@ -115,9 +132,6 @@ namespace BH.Test.Engine
             // Try invoking the method
             try
             {
-                if (method.IsGenericMethodDefinition)
-                    method = method.MakeFromGeneric();
-
                 method.Invoke(null, inputs);
             }
             catch (Exception e)
