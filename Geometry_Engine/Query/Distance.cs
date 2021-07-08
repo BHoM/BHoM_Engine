@@ -52,6 +52,7 @@ namespace BH.Engine.Geometry
             return dx * dx + dy * dy + dz * dz;
         }
 
+        
         /***************************************************/
 
         public static double Distance(this Vector a, Vector b)
@@ -66,6 +67,35 @@ namespace BH.Engine.Geometry
 
         public static double SquareDistance(this Vector a, Vector b)
         {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return dx * dx + dy * dy + dz * dz;
+        }
+        public static double SquareDistanceA(this Point a, Point b)
+        {
+            if (a == null || b == null)
+                return 0;
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        public static double SquareDistanceB(this Point a, Point b)
+        {
+            if (a.IsNull() || b.IsNull())
+                return 0;
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        public static double SquareDistanceC(this Point a, Point b)
+        {
+            if (a.IIsNull() || b.IIsNull())
+                return 0;
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
             double dz = a.Z - b.Z;

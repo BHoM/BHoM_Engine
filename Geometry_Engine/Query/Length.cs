@@ -96,8 +96,43 @@ namespace BH.Engine.Geometry
 
             return length;
         }
+        public static double LengthA(this Polyline curve)
+        {
+            if (curve == null)
+                return 0;
+            double length = 0;
+            List<Point> pts = curve.ControlPoints;
 
+            for (int i = 1; i < pts.Count; i++)
+                length += (pts[i] - pts[i - 1]).Length();
 
+            return length;
+        }
+        public static double LengthB(this Polyline curve, bool deep)
+        {
+            if (curve.IsNull(deepCheck: deep))
+                return 0;
+            double length = 0;
+            List<Point> pts = curve.ControlPoints;
+
+            for (int i = 1; i < pts.Count; i++)
+                length += (pts[i] - pts[i - 1]).Length();
+
+            return length;
+        }
+
+        public static double LengthC(this Polyline curve, bool deep)
+        {
+            if (curve.IIsNull(deepCheck: deep))
+                return 0;
+            double length = 0;
+            List<Point> pts = curve.ControlPoints;
+
+            for (int i = 1; i < pts.Count; i++)
+                length += (pts[i] - pts[i - 1]).Length();
+
+            return length;
+        }
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
