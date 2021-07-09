@@ -102,6 +102,18 @@ namespace BH.Engine.Reflection
                     }   
                 }
 
+                if (propType == typeof(DateTime) && value is string)
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(value as string, out date))
+                        value = date;
+                    else
+                    {
+                        Engine.Reflection.Compute.RecordError($"The value provided for {propName} is not a valid DateTime.");
+                        value = DateTime.MinValue;
+                    }
+                }
+
                 if (propType == typeof(Type) && value is string)
                     value = Create.Type(value as string);
 
