@@ -144,7 +144,7 @@ namespace BH.Test.Engine
             }
             catch (Exception e)
             {
-                if (e is TargetInvocationException && e.InnerException != null)
+                while (e is TargetInvocationException && e.InnerException != null)
                     e = e.InnerException;
 
                 if (e is NullReferenceException)
@@ -154,6 +154,24 @@ namespace BH.Test.Engine
                         Description = methodDescription,
                         Status = TestStatus.Error,
                         Message = $"Error: A NullReferenceException was received from method {methodDescription}.",
+                    };
+                }
+                else if (e is ArgumentNullException)
+                {
+                    return new TestResult
+                    {
+                        Description = methodDescription,
+                        Status = TestStatus.Error,
+                        Message = $"Error: A ArgumentNullException was received from method {methodDescription}.",
+                    };
+                }
+                else if (e is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                {
+                    return new TestResult
+                    {
+                        Description = methodDescription,
+                        Status = TestStatus.Error,
+                        Message = $"Error: A RuntimeBinderException was received from method {methodDescription}. This indicates trying to cast a null as dynamic.",
                     };
                 }
                 else
