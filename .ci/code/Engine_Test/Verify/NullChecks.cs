@@ -145,7 +145,7 @@ namespace BH.Test.Engine
             }
             catch (Exception e)
             {
-                if (e is TargetInvocationException && e.InnerException != null)
+                while (e is TargetInvocationException && e.InnerException != null)
                     e = e.InnerException;
 
                 if (e is NullReferenceException)
