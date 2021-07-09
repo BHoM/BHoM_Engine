@@ -42,6 +42,30 @@ namespace BH.Engine.Geometry
             return Math.Sqrt(dx * dx + dy * dy + dz * dz);
         }
 
+        public static double DistanceA(this Point a, Point b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        public static double DistanceB(this Point a, Point b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        public static double DistanceC(this Point a, Point b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            double dz = a.Z - b.Z;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
         /***************************************************/
 
         public static double SquareDistance(this Point a, Point b)
@@ -75,7 +99,11 @@ namespace BH.Engine.Geometry
         public static double SquareDistanceA(this Point a, Point b)
         {
             if (a == null || b == null)
+            {
+                Reflection.Compute.RecordError("Error null");
                 return 0;
+            }
+                
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
             double dz = a.Z - b.Z;
@@ -95,11 +123,28 @@ namespace BH.Engine.Geometry
         public static double SquareDistanceC(this Point a, Point b)
         {
             if (a.IIsNull() || b.IIsNull())
+
                 return 0;
             double dx = a.X - b.X;
             double dy = a.Y - b.Y;
             double dz = a.Z - b.Z;
             return dx * dx + dy * dy + dz * dz;
+        }
+
+        public static double SquareDistanceD(this Point a, Point b)
+        {
+            try
+            {
+                double dx = a.X - b.X;
+                double dy = a.Y - b.Y;
+                double dz = a.Z - b.Z;
+                return dx * dx + dy * dy + dz * dz;
+            }
+            catch(NullReferenceException e)
+            {
+                Reflection.Compute.RecordError("Error null");
+                return 0;
+            }
         }
 
         /***************************************************/

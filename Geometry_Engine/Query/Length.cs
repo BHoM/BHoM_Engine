@@ -92,14 +92,18 @@ namespace BH.Engine.Geometry
             List<Point> pts = curve.ControlPoints;
 
             for (int i = 1; i < pts.Count; i++)
-                length += (pts[i] - pts[i - 1]).Length();
+                length += pts[i].Distance( pts[i - 1]);
 
             return length;
         }
         public static double LengthA(this Polyline curve)
         {
             if (curve == null)
+            {
+                Reflection.Compute.RecordError("Error null");
                 return 0;
+            }
+                
             double length = 0;
             List<Point> pts = curve.ControlPoints;
 
