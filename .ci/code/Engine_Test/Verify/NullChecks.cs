@@ -157,6 +157,15 @@ namespace BH.Test.Engine
                         Message = $"Error: A NullReferenceException was received from method {methodDescription}.",
                     };
                 }
+                else if (e is ArgumentNullException)
+                {
+                    return new TestResult
+                    {
+                        Description = methodDescription,
+                        Status = TestStatus.Error,
+                        Message = $"Error: A ArgumentNullException was received from method {methodDescription}.",
+                    };
+                }
                 else
                 {
                     return new TestResult
