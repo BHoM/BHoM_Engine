@@ -166,6 +166,15 @@ namespace BH.Test.Engine
                         Message = $"Error: A ArgumentNullException was received from method {methodDescription}.",
                     };
                 }
+                else if (e is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                {
+                    return new TestResult
+                    {
+                        Description = methodDescription,
+                        Status = TestStatus.Error,
+                        Message = $"Error: A RuntimeBinderException was received from method {methodDescription}. This indicates trying to cast a null as dynamic.",
+                    };
+                }
                 else
                 {
                     return new TestResult
