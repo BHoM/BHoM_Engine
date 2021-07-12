@@ -89,10 +89,7 @@ namespace BH.Engine.Spatial
             
             //check if length tolerance passes
             if (orthogonalLengths.Max() < groupedLengths.Max() * orthogonalLengthTolerance)
-            {
                 return dominantVector;
-                //display warning
-            }
 
             return orthogonalDominantVector;
         }
@@ -112,6 +109,7 @@ namespace BH.Engine.Spatial
             IElement1D outline = BH.Engine.Geometry.Create.PolyCurve(element2D.IOutlineElements1D().Select(x =>x as ICurve));
             return DominantVector(outline, orthogonalPriority, orthogonalLengthTolerance, angleTolerance);
         }
+        
         /******************************************/
         /****              Private             ****/
         /******************************************/
