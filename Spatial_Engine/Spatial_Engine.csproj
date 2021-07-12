@@ -100,6 +100,7 @@
     <Compile Include="Modify\MapPositionDomain.cs" />
     <Compile Include="Modify\RoundCoordinates.cs" />
     <Compile Include="Modify\Transform.cs" />
+    <Compile Include="Query\DominantVector.cs" />
     <Compile Include="Query\HasMergeablePropertiesWith.cs" />
     <Compile Include="Query\InternalOutlineCurves.cs" />
     <Compile Include="Create\NewElement0D.cs" />
