@@ -114,6 +114,7 @@
     <Compile Include="Query\Axes.cs" />
     <Compile Include="Query\AxisExists.cs" />
     <Compile Include="Query\Children.cs" />
+    <Compile Include="Query\Description.cs" />
     <Compile Include="Query\IsPotentialOverlap.cs" />
     <Compile Include="Query\Linq\GroupBy.cs" />
     <Compile Include="Query\RemoveNulls.cs" />
