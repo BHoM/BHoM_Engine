@@ -46,7 +46,11 @@ namespace BH.Engine.Spatial
         public static BH.oM.Geometry.Vector DominantVector(IElement1D element1D, bool orthogonalPriority = true, double orthogonalLengthTolerance = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             List<ICurve> curves = element1D.IGeometry().ISubParts().ToList();
-            List<Vector> vectors = curves.Select(x => x.IStartDir() * x.Length()).ToList();
+            
+            if(!curves.Any(x=> x.IIsLinear()))
+                BH.Engine.Reflection.Compute.RecordWarning("Non-linear curves are using an approximate vector between its start and end.");
+            
+            List<Vector> vectors = curves.Select(x => (x.IStartPoint() -x.IEndPoint())).ToList();
 
             //group vectors by direction whilst comparing angle for tolerance
             List<List<Vector>> groupByNormal = GroupSimilarVectorsWithTolerance(vectors, angleTolerance);
