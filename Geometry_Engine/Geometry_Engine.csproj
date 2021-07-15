@@ -150,6 +150,7 @@
     <Compile Include="Query\Cells.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\ClosestPoints.cs" />
+    <Compile Include="Query\IsOrthogonal.cs" />
     <Compile Include="Query\IsRigidTransformation.cs" />
     <Compile Include="Query\PrincipalCurvatureAtParameter.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
