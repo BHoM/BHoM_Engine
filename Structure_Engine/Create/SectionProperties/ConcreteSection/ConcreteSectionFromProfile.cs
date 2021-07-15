@@ -42,14 +42,14 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.3", "BH.Engine.Structure.Create.ConcreteSectionFromProfile(BH.oM.Spatial.ShapeProfiles.IProfile, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.IBarReinforcement>, System.Double)")]
         [Description("Generates a concrete section based on a Profile and a material. \n This is the main create method for concrete sections, responsible for calculating section constants etc. and is being called from all other create methods for concrete sections.")]
         [Input("profile", "The section profile the concrete section. All section constants are derived based on the dimensions of this.")]
         [Input("material", "concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. If null or empty the name of the profile will be used. This is required for most structural packages to create the section.")]
-        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
-        [InputFromProperty("minimumCover")]
+        [Input("rebarIntent", "Optional BarRebarIntent to be applied to the section.")]
         [Output("section", "The created concrete section.")]
-        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
+        public static ConcreteSection ConcreteSectionFromProfile(IProfile profile, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {
             if (profile.IsNull())
                 return null;
@@ -66,10 +66,8 @@ namespace BH.Engine.Structure
                 constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
 
             //Set reinforcement if any provided
-            if (reinforcement != null)
-                section.Reinforcement = reinforcement;
-
-            section.MinimumCover = minimumCover;
+            if (rebarIntent != null)
+                section.RebarIntent = rebarIntent;
 
             return PostProcessSectionCreate(section, name, material, MaterialType.Concrete);
         }

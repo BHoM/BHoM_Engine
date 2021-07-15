@@ -42,16 +42,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.3", "BH.Engine.Structure.Create.ConcreteFreeFormSection(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.IBarReinforcement>, System.Double)")]
         [Description("Creates a concrete freeform section based on edge curves. Please note that this type of section generally will have less support in adapters. If the type of section being created can be achieved by any other profile, aim use them instead.")]
         [Input("edges", "Edges defining the section. Should consist of closed curve(s) in the global xy-plane.")]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
-        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
-        [InputFromProperty("minimumCover")]
+        [Input("rebarIntent", "Optional RebarIntent to be applied to the section.")]
         [Output("section", "The created free form concrete section.")]
-        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
+        public static ConcreteSection ConcreteFreeFormSection(List<ICurve> edges, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {
-            return edges.Count == 0 || edges.Any(x => x.IsNull()) ? null : ConcreteSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name, reinforcement, minimumCover);
+            return edges.Count == 0 || edges.Any(x => x.IsNull()) ? null : ConcreteSectionFromProfile(Spatial.Create.FreeFormProfile(edges), material, name, rebarIntent);
         }
 
         /***************************************************/

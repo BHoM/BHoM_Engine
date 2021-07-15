@@ -25,7 +25,6 @@ using BH.oM.Structure.SectionProperties.Reinforcement;
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 
@@ -49,13 +48,12 @@ namespace BH.Engine.Structure
 
             ConcreteSection clone = section.ShallowClone();
 
-            if (clone.Reinforcement == null)
-                clone.Reinforcement = new List<IBarReinforcement>();
-            else
-                clone.Reinforcement = new List<IBarReinforcement>(clone.Reinforcement);
+            if (clone.RebarIntent == null)
+                clone.RebarIntent = new BarRebarIntent() { BarReinforcement = new List<IBarReinforcement>() };
+            else if (clone.RebarIntent.BarReinforcement == null)
+                clone.RebarIntent.BarReinforcement = new List<IBarReinforcement>();
 
-
-            clone.Reinforcement.AddRange(reinforcement);
+            clone.RebarIntent.BarReinforcement.AddRange(reinforcement);
 
             return clone;
         }

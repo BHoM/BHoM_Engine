@@ -30,9 +30,9 @@ using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Structure.Elements;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
-using BH.oM.Base;
 using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
@@ -218,7 +218,7 @@ namespace BH.Engine.Structure
         [Input("cover", "Any additional spacing to be added in relation to the edge curves, such as minimum cover and stirups. This will be added on top of half the rebar Diameter.", typeof(Length))]
         [Input("outerProfileEdges", "The outer profile edges of the ConcreteSection to be populated.")]
         [Input("innerProfileEdges", "The inner profile edges, or openings, of the ConcreteSection to be populated.")]
-        [Input("length", "Length of the host Bar used to generate the lines", typeof(Length))]
+        [Input("length", "Length of the host Bar used to generate the lines.", typeof(Length))]
         [Input("transformation", "Transformation needed to move the lines from the position of the host element.")]
         [Output("points", "The centrelines of the LongitudinalReinforcement.")]
         public static List<Line> ReinforcementLayout(this LongitudinalReinforcement reinforcement, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges, double length, TransformMatrix transformation)
@@ -341,8 +341,8 @@ namespace BH.Engine.Structure
             }
 
             //Starting default value to the minimum cover of the section.
-            longCover = section.MinimumCover;
-            tranCover = section.MinimumCover;
+            longCover = section.RebarIntent.MinimumCover;
+            tranCover = section.RebarIntent.MinimumCover;
 
 
 
@@ -352,7 +352,7 @@ namespace BH.Engine.Structure
             //Check if any offsetlayout, if so, check if larger than minimum cover
             if (tranReif.Any(x => x.CenterlineLayout is OffsetCurveLayout))
             {
-                double maxCover = Math.Max(section.MinimumCover, tranReif.Select(x => x.CenterlineLayout).OfType<OffsetCurveLayout>().Max(x => x.Offset));
+                double maxCover = Math.Max(section.RebarIntent.MinimumCover, tranReif.Select(x => x.CenterlineLayout).OfType<OffsetCurveLayout>().Max(x => x.Offset));
                 longCover = maxCover;
                 tranCover = maxCover;
             }
@@ -385,7 +385,7 @@ namespace BH.Engine.Structure
             outerProfileEdges = new List<ICurve>();
             innerProfileEdges = new List<ICurve>();
 
-            if (section == null || section.SectionProfile == null || section.SectionProfile.Edges == null || section.SectionProfile.Edges.Count == 0)
+            if (section == null || section.SectionProfile == null || section.SectionProfile.Edges.IsNullOrEmpty())
                 return;
 
             List<List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(section.SectionProfile.Edges.ToList()).Cast<ICurve>().ToList());
@@ -401,20 +401,20 @@ namespace BH.Engine.Structure
 
         private static List<LongitudinalReinforcement> LongitudinalReinforcement(this ConcreteSection section)
         {
-            if (section == null || section.Reinforcement == null || section.Reinforcement.Count == 0)
+            if (section == null || section.RebarIntent == null || section.RebarIntent.BarReinforcement.IsNullOrEmpty())
                 return new List<LongitudinalReinforcement>();
 
-            return section.Reinforcement.Where(x => x is LongitudinalReinforcement).Cast<LongitudinalReinforcement>().ToList();
+            return section.RebarIntent.BarReinforcement.Where(x => x is LongitudinalReinforcement).Cast<LongitudinalReinforcement>().ToList();
         }
 
         /***************************************************/
 
         private static List<TransverseReinforcement> TransverseReinforcement(this ConcreteSection section)
         {
-            if (section == null || section.Reinforcement == null || section.Reinforcement.Count == 0)
+            if (section == null || section.RebarIntent == null || section.RebarIntent.BarReinforcement.IsNullOrEmpty())
                 return new List<TransverseReinforcement>();
 
-            return section.Reinforcement.Where(x => x is TransverseReinforcement).Cast<TransverseReinforcement>().ToList();
+            return section.RebarIntent.BarReinforcement.Where(x => x is TransverseReinforcement).Cast<TransverseReinforcement>().ToList();
         }
 
         /***************************************************/

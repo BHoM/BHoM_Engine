@@ -41,17 +41,17 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.3", "BH.Engine.Structure.Create.ConcreteRectangleSection(System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.IBarReinforcement>, System.Double)")]
         [Description("Creates a rectangular solid concrete section from input dimensions.")]
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for various structural packages to create the object.")]
-        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
-        [InputFromProperty("minimumCover")]
+        [Input("rebarIntent", "Optional RebarIntent to be applied to the section.")]
         [Output("section", "The created rectangular concrete section.")]
-        public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
+        public static ConcreteSection ConcreteRectangleSection(double height, double width, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {
-            return ConcreteSectionFromProfile(Spatial.Create.RectangleProfile(height, width, 0), material, name, reinforcement, minimumCover);
+            return ConcreteSectionFromProfile(Spatial.Create.RectangleProfile(height, width, 0), material, name, rebarIntent);
         }
 
         /***************************************************/

@@ -41,16 +41,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("4.3", "BH.Engine.Structure.Create.ConcreteCircularSection(System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.IBarReinforcement>, System.Double)")]
         [Description("Creates a circular solid concrete section from input dimensions.")]
         [Input("diameter", "Diameter of the section.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for most structural packages to create the section.")]
-        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
-        [InputFromProperty("minimumCover")]
+        [Input("rebarIntent", "Optional list of RebarIntent to be applied to the section.")]
         [Output("section", "The created circular concrete section.")]
-        public static ConcreteSection ConcreteCircularSection(double diameter, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
+        public static ConcreteSection ConcreteCircularSection(double diameter, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {
-            return ConcreteSectionFromProfile(Spatial.Create.CircleProfile(diameter), material, name, reinforcement, minimumCover);
+            return ConcreteSectionFromProfile(Spatial.Create.CircleProfile(diameter), material, name, rebarIntent);
         }
 
         /***************************************************/

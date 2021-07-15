@@ -48,7 +48,12 @@ namespace BH.Engine.Structure
                 return null;
 
             ConcreteSection clone = section.ShallowClone();
-            clone.Reinforcement = reinforcement.ToList();
+
+            if (clone.RebarIntent == null)
+                clone.RebarIntent = new BarRebarIntent { BarReinforcement = reinforcement.ToList() };
+            else
+                clone.RebarIntent.BarReinforcement = reinforcement.ToList();
+
             return clone;
         }
 

@@ -41,19 +41,19 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a rectangular solid concrete section from input dimensions.")]
+        [PreviousVersion("4.3", "BH.Engine.Structure.Create.ConcreteTSection(System.Double, System.Double, System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.IBarReinforcement>, System.Double)")]
+        [Description("Creates a concrete T-section section from input dimensions.")]
         [Input("height", "Full height of the section.", typeof(Length))]
         [Input("webThickness", "Thickness of the web.", typeof(Length))]
         [Input("flangeWidth", "Width of the flange.", typeof(Length))]
         [Input("flangeThickness", "Thickness of the flange.", typeof(Length))]
         [Input("material", "Concrete material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the concrete section. This is required for various structural packages to create the object.")]
-        [Input("reinforcement", "Optional list of reinforcement to be applied to the section.")]
-        [InputFromProperty("minimumCover")]
+        [Input("rebarIntent", "Optional RebarIntent to be applied to the section.")]
         [Output("section", "The created concrete T-section.")]
-        public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", List<IBarReinforcement> reinforcement = null, double minimumCover = 0)
+        public static ConcreteSection ConcreteTSection(double height, double webThickness, double flangeWidth, double flangeThickness, Concrete material = null, string name = "", BarRebarIntent rebarIntent = null)
         {
-            return ConcreteSectionFromProfile(Spatial.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, reinforcement, minimumCover);
+            return ConcreteSectionFromProfile(Spatial.Create.TSectionProfile(height, flangeWidth, webThickness, flangeThickness, 0, 0), material, name, rebarIntent);
         }
 
 
