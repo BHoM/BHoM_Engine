@@ -54,35 +54,23 @@ namespace BH.Engine.Spatial
 
             //group vectors by direction whilst comparing angle for tolerance
             List<List<Vector>> groupByNormal = GroupSimilarVectorsWithTolerance(vectors, angleTolerance);
+            groupByNormal = groupByNormal.OrderByDescending(x => x.Sum(y => y.Length())).ToList();
+            List<Vector> largestGlobal = groupByNormal[0];
 
-            //then sum their total length
-            List<double> groupedLengths = groupByNormal.Select(x => x.Select(y => y.Length()).Sum()).ToList();
-
-            //get index of biggest length, which will be dominant vector
-            int biggestLengthIndex = groupedLengths.IndexOf(groupedLengths.Max());
-
-            Vector dominantVector = groupByNormal[biggestLengthIndex].First().Normalise();
-            
-            if(!orthogonalPriority)
+            Vector dominantVector = largestGlobal[0].Normalise();
+            if (!orthogonalPriority)
                 return dominantVector;
-
-            //filter grouped vectors to find only curves that are fully in X, Y or Z vectors (orthogonal planes)
-            var orthogonalVectors = groupByNormal.Where(x => (x.First().IsOrthogonal(angleTolerance))).ToList();
-            //then sum their total length
-            List<double> orthogonalLengths = orthogonalVectors.Select(x => x.Select(y => y.Length()).Sum()).ToList();
-            //get index of biggest length, which will be dominant vector
-            int biggestOrthogonalLengthIndex = orthogonalLengths.IndexOf(orthogonalLengths.Max());
             
-            Vector orthogonalDominantVector = orthogonalVectors[biggestOrthogonalLengthIndex].First().Normalise();
-            
-            //check if length tolerance passes
-            if (orthogonalLengths.Max() < groupedLengths.Max() * orthogonalLengthTolerance)
+            List<Vector> largestOrthogonal = groupByNormal.FirstOrDefault(x => (x.First().IsOrthogonal(angleTolerance)));
+            if (largestOrthogonal != null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Orthogonal vector was found but didn't pass the length tolerance in relation to the actual non-orthogonal dominant vector. The actual dominant vector is the output.");
-                return dominantVector;
+                if (largestGlobal.Sum(x => x.Length()) * orthogonalLengthTolerance > largestOrthogonal.Sum(x => x.Length()))
+                    BH.Engine.Reflection.Compute.RecordWarning("Orthogonal vector was found but didn't pass the length tolerance in relation to the actual non-orthogonal dominant vector. The actual dominant vector is the output.");
+                else
+                    dominantVector = largestOrthogonal[0].Normalise();
             }
 
-            return orthogonalDominantVector;
+            return dominantVector;
         }
 
         /******************************************/
