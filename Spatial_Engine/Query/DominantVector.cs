@@ -43,7 +43,7 @@ namespace BH.Engine.Spatial
         [Input("orthogonalLengthTolerance", "Optional, tests the orthogonal vector length's in relation to the actual non-orthogonal dominant vector. For example if the dominant vector is 10 in length but the orthogonal is only 5 in length, then this number should be 0.5 for it to pass the test.")]
         [Input("angleTolerance", "Optional, angle in radians that vectors will be considered similar.")]
         [Output("dominantVector", "The dominant vector of an Element1D.")]
-        public static BH.oM.Geometry.Vector DominantVector(IElement1D element1D, bool orthogonalPriority = true, double orthogonalLengthTolerance = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
+        public static BH.oM.Geometry.Vector DominantVector(IElement1D element1D, bool orthogonalPriority = true, double orthogonalLengthFactor = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             List<ICurve> curves = element1D.IGeometry().ISubParts().ToList();
             
@@ -64,7 +64,7 @@ namespace BH.Engine.Spatial
             List<Vector> largestOrthogonal = groupByNormal.FirstOrDefault(x => (x.First().IsOrthogonal(angleTolerance)));
             if (largestOrthogonal != null)
             {
-                if (largestGlobal.Sum(x => x.Length()) * orthogonalLengthTolerance > largestOrthogonal.Sum(x => x.Length()))
+                if (largestGlobal.Sum(x => x.Length()) * orthogonalLengthFactor > largestOrthogonal.Sum(x => x.Length()))
                     BH.Engine.Reflection.Compute.RecordWarning("Orthogonal vector was found but didn't pass the length tolerance in relation to the actual non-orthogonal dominant vector. The actual dominant vector is the output.");
                 else
                     dominantVector = largestOrthogonal[0].Normalise();
@@ -80,13 +80,13 @@ namespace BH.Engine.Spatial
         [Description("Gets the the dominant vector (orientation) of an Element2D based on its lines lengths.")]
         [Input("element1D", "Element2D to evaluate.")]
         [Input("orthogonalPriority", "Optional, if true gives priority to curves that are on the orthogonal axis (X, Y or Z vectors.")]
-        [Input("orthogonalLengthTolerance", "Optional, tests the orthogonal vector length's in relation to the actual non-orthogonal dominant vector. For example if the dominant vector is 10 in length but the orthogonal is only 5 in length, then this number should be 0.5 for it to pass the test.")]
+        [Input("orthogonalLengthFactor", "Optional, tests the orthogonal vector length's in relation to the actual non-orthogonal dominant vector. For example if the dominant vector is 10 in length but the orthogonal is only 5 in length, then this number should be 0.5 for it to pass the test.")]
         [Input("angleTolerance", "Optional, angle in radians that vectors will be considered similar.")]
         [Output("dominantVector", "The dominant vector of an Element2D.")]
-        public static BH.oM.Geometry.Vector DominantVector(IElement2D element2D, bool orthogonalPriority = true, double orthogonalLengthTolerance = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
+        public static BH.oM.Geometry.Vector DominantVector(IElement2D element2D, bool orthogonalPriority = true, double orthogonalLengthFactor = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
             IElement1D outline = BH.Engine.Geometry.Create.PolyCurve(element2D.IOutlineElements1D().Select(x =>x.IGeometry()));
-            return DominantVector(outline, orthogonalPriority, orthogonalLengthTolerance, angleTolerance);
+            return DominantVector(outline, orthogonalPriority, orthogonalLengthFactor, angleTolerance);
         }
         
         /******************************************/
