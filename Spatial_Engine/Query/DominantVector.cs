@@ -114,22 +114,20 @@ namespace BH.Engine.Spatial
             List<List<Vector>> result = new List<List<Vector>>();
             List<Vector> orderByLength = vectors.OrderByDescending(x => x.Length()).ToList();
 
-            for (int i = 0; i < orderByLength.Count; i++)
+            while (orderByLength.Count != 0)
             {
                 List<Vector> sublist = new List<Vector>();
-                sublist.Add(orderByLength[i]);
+                sublist.Add(orderByLength[0]);
                 
-                for (int j = 1; j < orderByLength.Count; j++)
+                for (int i = orderByLength.Count - 1; i > 0; i--)
                 {
-                    if (orderByLength[i].IsParallel(orderByLength[j],angleTolerance) != 0)
+                    if (orderByLength[0].IsParallel(orderByLength[i],angleTolerance) != 0)
                     {
-                        sublist.Add(orderByLength[j]);
-                        orderByLength.RemoveAt(j);
-                        j = j - 1;
+                        sublist.Add(orderByLength[i]);
+                        orderByLength.RemoveAt(i);
                     }
                 }
-                orderByLength.RemoveAt(i);
-                i = i - 1;
+                orderByLength.RemoveAt(0);
                 result.Add(sublist);
             }
 
@@ -139,4 +137,3 @@ namespace BH.Engine.Spatial
         /******************************************/
     }
 }
-
