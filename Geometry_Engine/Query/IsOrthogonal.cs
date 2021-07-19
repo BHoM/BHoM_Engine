@@ -39,13 +39,16 @@ namespace BH.Engine.Geometry
         [Output("isOrthogonal", "The boolean value of whether the vector is orthogonal or not.")]
         public static bool IsOrthogonal(this Vector vector, double angleTolerance = Tolerance.Angle)
         {
+            if (vector == null || angleTolerance == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("One or more of the inputs is empty or null.");
+                return false;
+            }
+
             return (vector.IsParallel(Vector.XAxis, angleTolerance) != 0 || vector.IsParallel(Vector.YAxis, angleTolerance) != 0 || vector.IsParallel(Vector.ZAxis, angleTolerance) != 0);
         }
 
         /***************************************************/
-
-       
-
 
     }
 }

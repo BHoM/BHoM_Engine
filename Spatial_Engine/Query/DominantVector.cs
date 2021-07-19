@@ -45,8 +45,11 @@ namespace BH.Engine.Spatial
         [Output("dominantVector", "The dominant vector of an Element1D.")]
         public static BH.oM.Geometry.Vector DominantVector(this IElement1D element1D, bool orthogonalPriority = true, double orthogonalLengthFactor = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
-            if (element1D == null)
+            if (element1D == null || orthogonalPriority == null || orthogonalLengthFactor == null || angleTolerance == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("One or more of the inputs is empty or null.");
                 return null;
+            }
 
             List<ICurve> curves = element1D.IGeometry().ISubParts().ToList();
             
@@ -88,9 +91,12 @@ namespace BH.Engine.Spatial
         [Output("dominantVector", "The dominant vector of an Element2D.")]
         public static BH.oM.Geometry.Vector DominantVector(this IElement2D element2D, bool orthogonalPriority = true, double orthogonalLengthFactor = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
         {
-            if (element2D == null)
+            if (element2D == null || orthogonalPriority == null || orthogonalLengthFactor == null || angleTolerance == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("One or more of the inputs is empty or null.");
                 return null;
-            
+            }
+
             IElement1D outline = BH.Engine.Geometry.Create.PolyCurve(element2D.IOutlineElements1D().Select(x =>x.IGeometry()));
             return DominantVector(outline, orthogonalPriority, orthogonalLengthFactor, angleTolerance);
         }
