@@ -63,7 +63,7 @@ namespace BH.Engine.MEP
         [Input("fittingObj", "The Fitting object to update.")]
         [Input("location", "The new center location of the Fitting.")]
         [Input("connectionLocations", "The new physical connection locations of the Fitting.")]
-        [Output("object", "The IFlow Object with updated geometry.")]
+        [Output("object", "The Fitting object with updated geometry.")]
         public static Fitting SetGeometry(this Fitting fittingObj, Point location, List<Point> connectionLocations)
         {
             if (fittingObj == null || location == null || connectionLocations == null)

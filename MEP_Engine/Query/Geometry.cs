@@ -38,6 +38,9 @@ namespace BH.Engine.MEP
         /****             Public Methods                ****/
         /***************************************************/
         
+        [Description("Queries an IFlow object for its geometry.")]
+        [Input("flowObj", "The object to query geometry from.")]
+        [Output("geometry", "The geometry queried from the object.")]
         public static IGeometry Geometry(this IFlow flowObj)
         {
             if (flowObj?.StartPoint == null || flowObj?.EndPoint == null)
@@ -48,6 +51,9 @@ namespace BH.Engine.MEP
 
         /***************************************************/
 
+        [Description("Queries a Fitting object for its geometry.")]
+        [Input("fitting", "The object to query geometry from.")]
+        [Output("geometry", "The geometry queried from the object.")]
         public static List<Line> Geometry(this Fitting fitting)
         {
             if (fitting == null)
