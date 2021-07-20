@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Geometry.CoordinateSystem;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -36,59 +38,54 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Create a Spectator")]
-        [Input("location", "Point defining the Eye location")]
-        [Input("viewDirection", "Vector defining the Eye view directions")]
-        [Input("createHeadOutline", "Should we generate the 2d head outline for this Spectator")]
-        [Input("scale", "Scaling the head outline if not using metres")]
-        public static Spectator Spectator(Point location, Vector viewDirection,bool createHeadOutline = false, double scale = 1)
+        [PreviousVersion("4.3", "BH.Engine.Humans.ViewQuality.Create.Spectator(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [Description("Create a Spectator.")]
+        [Input("location", "Point defining the Eye location.")]
+        [Input("viewDirection", "Vector defining the Eye view directions.")]
+        [Input("headOutline", "2d, closed, planar reference Polyline that represents the outline of the head. " +
+            "The headOutline should be created in the XY plane where the origin represents the reference eye location of the spectator." +
+            "If none provided the default is a simple Polyline based on an ellipse with the defined majorRadius and minorRadius.")]
+        [Input("majorRadius", "Major radius of the ellipse used as a headOutline if no head outline was provided. Default value is 0.11.")]
+        [Input("minorRadius", "Minor radius of the ellipse used as a headOutline if no head outline was provided. Default value is 0.078.")]
+        [Output("spectator", "Spectator with location, view direction and head outline defined.")]
+        public static Spectator Spectator(Point location, Vector viewDirection, Polyline headOutline = null, double majorRadius = 0.11, double minorRadius = 0.078)
         {
-            Head head = Humans.Create.Head(location, viewDirection);
-
-            Polyline outline = new Polyline();
-
-            if (createHeadOutline)
+            if (location.IsNull() || viewDirection.IsNull())
+                return null;
+            if (headOutline == null)
             {
-                GetHeadOutline(head, scale);
+                //create basic elliptical head form
+                List<Point> points = new List<Point>();
+                double theta = 2 * Math.PI / 16;
+                for (int i = 0; i <= 16; i++)
+                {
+                    double x = minorRadius * Math.Cos(theta * i);
+                    double y = majorRadius * Math.Sin(theta * i);
+                    points.Add(Geometry.Create.Point(x, y, 0));
+                }
+                headOutline = Geometry.Create.Polyline(points);
             }
 
-            return new Spectator
+            if (!headOutline.IsPlanar() || !headOutline.IsClosed())
             {
-                Head = head,
-
-                HeadOutline = outline,
-
-            };
-        }
-
-        /***************************************************/
-
-        public static Polyline GetHeadOutline(Head head, double scale = 1)
-        {
-            if(head == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot get the head outline from a null head object.");
+                Reflection.Compute.RecordError("The reference headOutline must be closed and planar.");
                 return null;
             }
 
-            //data should be in datasets
-            double[] xcoords = { 0.025198, 0.025841, 0.040367, 0.065967, 0.097698, 0.129429, 0.15503, 0.169555, 0.170198, 0.152041, 0.141581, 0.122141, 0.097698, 0.073255, 0.053815, 0.043355, 0.025198 };
+            //create the head
+            Head head = Humans.Create.Head(location, viewDirection);
 
-            double[] ycoords = { 0.004467, 0.036987, 0.066089, 0.086153, 0.093301, 0.086153, 0.066089, 0.036987, 0.004467, -0.084287, -0.107096, -0.122963, -0.128638, -0.122963, -0.107096, -0.084287, 0.004467 };
+            Spectator spectator = new Spectator() { Head = head };
 
-            var scaledX = Array.ConvertAll(xcoords, x => x* scale);
+            //local cartesian
+            Cartesian local = spectator.Cartesian();
 
-            var scaledY= Array.ConvertAll(ycoords, x => x * scale);
+            //transform the reference head outline
+            TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
+            spectator.HeadOutline = headOutline.Transform(transform);
 
-            Vector horiz = Geometry.Query.CrossProduct(Vector.ZAxis, head.PairOfEyes.ViewDirection);
-
-            Vector up = Geometry.Query.CrossProduct(horiz, head.PairOfEyes.ViewDirection * -1);
-
-            List<Point> points = OrientatePoints(up, horiz, head.PairOfEyes.ReferenceLocation, scaledX, scaledY, 0);
-
-            return Geometry.Create.Polyline(points);
+            return spectator;
         }
+
     }
 }
-
-
