@@ -38,16 +38,17 @@ namespace BH.Engine.Humans.ViewQuality
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Evaluate Cvalues for a single Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions")]
-        [Input("audience", "Audience to evaluate")]
-        [Input("settings", "CvalueSettings to configure the evaluation")]
-        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area")]
+        [Description("Evaluate Cvalues for a single Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions.")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("settings", "CvalueSettings to configure the evaluation.")]
+        [Input("playingArea", "Polyline to be used for defining edge of performance or playing area.")]
         [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
+        [Output("results", "Collection of Cvalue results.")]
         public static List<Cvalue> CvalueAnalysis(this Audience audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
             if (audience == null || settings == null || playingArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the CValueAnalysis if the audience, settings, or playing area are null.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the CvalueAnalysis if the audience, settings, or playing area are null.");
                 return new List<Cvalue>();
             }
 
@@ -57,13 +58,19 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        [Description("Evaluate Cvalues for a List of Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions")]
+        [Description("Evaluate Cvalues for a List of Audience. See the wiki page to understand how Cvalue is calculated. https://github.com/BHoM/documentation/wiki/BHoM-View-quality-conventions.")]
         [Input("audience", "Audience to evaluate.")]
         [Input("settings", "CvalueSettings to configure the evaluation.")]
         [Input("playingArea", "Polyline to be used for defining edge of performance or playing area.")]
         [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
+        [Output("results", "Collection of Cvalue results.")]
         public static List<List<Cvalue>> CvalueAnalysis(this List<Audience> audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
+            if (audience == null || settings == null || playingArea == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the CvalueAnalysis if the audience, settings, or playing area are null.");
+                return new List<List<Cvalue>>();
+            }
             List<List<Cvalue>> results = new List<List<Cvalue>>();
             foreach (Audience a in audience)
             {
@@ -82,8 +89,10 @@ namespace BH.Engine.Humans.ViewQuality
             if (audience.Spectators.Count == 0)
                 return results;
 
-            KDTree<Spectator> spectatorTree = SetKDTree(audience);
+            SetKDTree(audience);
+
             m_CvalueSettings = settings;
+            m_FarClippingPlaneDistance = settings.FarClippingPlaneDistance;
 
             if (focalPoint == null)
                 focalPoint = new Point();
@@ -92,9 +101,9 @@ namespace BH.Engine.Humans.ViewQuality
             {
 
                 m_CvalueExists = true;
-                    
+
                 Point focal = GetFocalPoint(s, playingArea, focalPoint);
-                double cvalue = GetCValue(s, spectatorTree, focal);
+                double cvalue = GetCValue(s, focal);
 
                 results.Add(CvalueResult(s, focal, cvalue));
             }
@@ -134,7 +143,7 @@ namespace BH.Engine.Humans.ViewQuality
             Cvalue result = new Cvalue();
             result.ObjectId = current.BHoM_Guid;
             Vector d = current.Head.PairOfEyes.ReferenceLocation - focal;
-            
+
             result.AbsoluteDist = d.Length();
             result.Focalpoint = focal;
             result.HorizDist = Geometry.Create.Vector(d.X, d.Y, 0).Length();
@@ -207,10 +216,10 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static double GetCValue(Spectator current, KDTree<Spectator> tree, Point focalPoint)
+        private static double GetCValue(Spectator current, Point focalPoint)
         {
             //get spectators in front
-            List<Spectator> infront = GetSpectatorsInfront(current, tree, focalPoint);
+            List<Spectator> infront = GetSpectatorsInfront(current, m_CvalueSettings.ViewConeAngle);
             if (infront.Count == 0)
             {
                 m_CvalueExists = false;
@@ -219,7 +228,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             Vector rowV = current.Head.PairOfEyes.ViewDirection.CrossProduct(Vector.ZAxis);
             //plane parallel to view direction perpendicular to row
-            
+
             Plane viewVert = Geometry.Create.Plane(current.Head.PairOfEyes.ReferenceLocation, rowV.Normalise());
             double minDist = double.MaxValue;
             Point closest = null;
@@ -235,7 +244,7 @@ namespace BH.Engine.Humans.ViewQuality
                 }
             }
             //check if closest in front is within clipping range
-            if(minDist > m_CvalueSettings.FarClippingPlaneDistance)
+            if (minDist > m_CvalueSettings.FarClippingPlaneDistance)
             {
                 m_CvalueExists = false;
                 return 0;
@@ -252,13 +261,13 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static List<Spectator> GetSpectatorsInfront(Spectator current, KDTree<Spectator> tree, Point focalPoint)
+        private static List<Spectator> GetSpectatorsInfront(Spectator current, double viewConeAngle)
         {
             PairOfEyes viewer = current.Head.PairOfEyes;
 
             double[] query = { viewer.ReferenceLocation.X, viewer.ReferenceLocation.Y, viewer.ReferenceLocation.Z };
             //first get the neighbourhood around the current spec
-            var neighbours = tree.Nearest(query, neighbors:16);
+            var neighbours = m_KDTree.Nearest(query, radius: m_FarClippingPlaneDistance);
 
             List<Spectator> infront = new List<Spectator>();
 
@@ -272,7 +281,7 @@ namespace BH.Engine.Humans.ViewQuality
 
                 //point in plane within +-coneAngle in direction viewer is looking
                 double testAngle = Geometry.Query.Angle(toNeighbour, viewer.ViewDirection);
-                if (testAngle < m_CvalueSettings.ViewConeAngle / 2)
+                if (testAngle < viewConeAngle / 2)
                     infront.Add(n.Node.Value);
             }
             return infront;
@@ -284,5 +293,6 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static bool m_CvalueExists = true;
         private static CvalueSettings m_CvalueSettings;
+        private static double m_FarClippingPlaneDistance;
     }
 }
