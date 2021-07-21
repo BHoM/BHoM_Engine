@@ -26,15 +26,39 @@ using BH.oM.Geometry;
 using BH.oM.MEP.System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using System.Linq;
+using BH.oM.MEP.System.Fittings;
 
 namespace BH.Engine.MEP
 {
     public static partial class Modify
     {
         /***************************************************/
-        /**** Interface Methods - IElements             ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
+        [Description("Transforms the Fitting's location and connections location points by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("fitting", "Fitting to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified Fitting with unchanged properties, but transformed location and connections location points.")]
+        public static Fitting Transform(this Fitting fitting, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            if (!transform.IsRigidTransformation(tolerance))
+            {
+                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            Fitting result = fitting.GetShallowClone() as Fitting;
+            result.Location = result.Location.Transform(transform);
+            result.ConnectionsLocation = result.ConnectionsLocation.Select(x=>x.Transform(transform)).ToList();
+
+            return result;
+        }
+
+        /***************************************************/
+        
         [Description("Transforms the CableTray's end points and orientation angle by the transform matrix. Only rigid body transformations are supported.")]
         [Input("cableTray", "CableTray to transform.")]
         [Input("transform", "Transform matrix.")]

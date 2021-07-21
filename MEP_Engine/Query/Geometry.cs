@@ -60,9 +60,14 @@ namespace BH.Engine.MEP
                 return null;
             
             List<Line> result = new List<Line>();
-            if (fitting.ConnectionsLocation.Count == 2)
-                result.Add(BH.Engine.Geometry.Create.Line(fitting.ConnectionsLocation[0], fitting.ConnectionsLocation[1]));
             
+            if (fitting.ConnectionsLocation.Count <= 1)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Only one or less connectors were found in this fitting. Could not query the intended geometry.");
+                return result;
+            }
+            else if (fitting.ConnectionsLocation.Count == 2)
+                result.Add(BH.Engine.Geometry.Create.Line(fitting.ConnectionsLocation[0], fitting.ConnectionsLocation[1]));
             else
             {
                 foreach (Point point in fitting.ConnectionsLocation)
