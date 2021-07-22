@@ -41,18 +41,20 @@ namespace BH.Engine.Environment
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
         [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle.")]
         [Input("numericTolerance", "Tolerance for determining whether a calulated number is within a range defined by the tolerance, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
-        [Output("panels", "A collection of modified Environment Panels with with overlapping panels split and merged.")]
+        [Output("panels", "A collection of modified Environment Panels with overlapping panels split and merged.")]
         [PreviousVersion("4.3", "BH.Engine.Environment.Compute.TidyPanels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
         public static List<Panel> TidyPanels(this List<Panel> panels, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double numericTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panels == null)
                 return panels;
-
-            List<Panel> fixedPanels = panels.Where(x =>
+            
+            List<Panel> flipPanels = panels.Where(x =>
             {
                 double tilt = x.Tilt(distanceTolerance, angleTolerance);
                 return (tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance);
             }).ToList();
+
+            List<Panel> returnPanels = flipPanels;
 
             panels = panels.Where(x =>
             {
@@ -60,6 +62,7 @@ namespace BH.Engine.Environment
                 return !((tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance));
             }).ToList();
 
+            List<Panel> fixedPanels = new List<Panel>();
             List<Panel> splitPanels = panels.SplitPanelsByOverlap();
             List<List<Panel>> overlappingPanels = splitPanels.Select(x => x.IdentifyOverlaps(splitPanels)).ToList();
             List<Guid> handledPanels = new List<Guid>();
@@ -85,10 +88,29 @@ namespace BH.Engine.Environment
 
                 fixedPanels.Add(p);
                 handledPanels.Add(p.BHoM_Guid);
-                
+
             }
-            
-            return fixedPanels;
+
+            List<Panel> cullDuplicates = new List<Panel>();
+            flipPanels.AddRange(fixedPanels);
+            List<List<Panel>> panelsAsSpaces = flipPanels.ToSpaces();
+            for (int i = 0; i < panelsAsSpaces.Count; i++)
+            {
+                panelsAsSpaces[i].FlipPanels();
+
+                cullDuplicates.AddRange(panelsAsSpaces[i]);
+            }
+            cullDuplicates = cullDuplicates.Where(x =>
+                {
+                    double tilt = x.Tilt(distanceTolerance, angleTolerance);
+                    return (tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance);
+                }).ToList();
+
+            List<Panel> culledPanels = cullDuplicates.CullDuplicates();
+            foreach (Panel p in culledPanels)
+                returnPanels.Add(p);
+
+            return returnPanels;
         }
     }
 }
