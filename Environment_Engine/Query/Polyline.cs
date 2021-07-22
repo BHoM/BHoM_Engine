@@ -100,6 +100,17 @@ namespace BH.Engine.Environment
             return opening.Edges.Polyline();
         }
 
+        public static Polyline Polyline(this Space space)
+        {
+            if(space == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the polyline of a null space");
+                return null;
+            }
+
+            return space.Perimeter.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
+        }
+
         [Description("Returns the external boundary from a generic Environment Object")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its boundaries extracted")]
         [Output("polyline", "BHoM Geometry Polyline")]
@@ -112,6 +123,12 @@ namespace BH.Engine.Environment
             }
 
             return Polyline(environmentObject as dynamic);
+        }
+
+        private static Polyline Polyline(this object obj)
+        {
+            BH.Engine.Reflection.Compute.RecordError("Cannot query the polyline of environment object type " + obj.GetType());
+            return null;
         }
     }
 }
