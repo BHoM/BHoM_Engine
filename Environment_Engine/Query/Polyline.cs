@@ -100,6 +100,9 @@ namespace BH.Engine.Environment
             return opening.Edges.Polyline();
         }
 
+        [Description("Returns the external boundary from an Environment Space as a BHoM Geometry Polyline")]
+        [Input("space", "An Environment Space to obtain the external boundary from")]
+        [Output("polyline", "BHoM Geometry Polyline")]
         public static Polyline Polyline(this Space space)
         {
             if(space == null)
