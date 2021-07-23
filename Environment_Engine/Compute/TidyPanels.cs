@@ -41,9 +41,10 @@ namespace BH.Engine.Environment
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
         [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle.")]
         [Input("numericTolerance", "Tolerance for determining whether a calulated number is within a range defined by the tolerance, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("autoFixPanelOrientations", "Whether or not the panels should be flipped away from space")]
         [Output("panels", "A collection of modified Environment Panels with overlapping panels split and merged.")]
         [PreviousVersion("4.3", "BH.Engine.Environment.Compute.TidyPanels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
-        public static List<Panel> TidyPanels(this List<Panel> panels, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double numericTolerance = BH.oM.Geometry.Tolerance.Distance)
+        public static List<Panel> TidyPanels(this List<Panel> panels, bool autoFixPanelOrientations = true, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double numericTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panels == null)
                 return panels;
@@ -91,24 +92,30 @@ namespace BH.Engine.Environment
 
             }
 
-            List<Panel> cullDuplicates = new List<Panel>();
-            flipPanels.AddRange(fixedPanels);
-            List<List<Panel>> panelsAsSpaces = flipPanels.ToSpaces();
-            for (int i = 0; i < panelsAsSpaces.Count; i++)
+            if (autoFixPanelOrientations)
             {
-                panelsAsSpaces[i].FlipPanels();
-
-                cullDuplicates.AddRange(panelsAsSpaces[i]);
-            }
-            cullDuplicates = cullDuplicates.Where(x =>
+                List<Panel> cullDuplicates = new List<Panel>();
+                flipPanels.AddRange(fixedPanels);
+                List<List<Panel>> panelsAsSpaces = flipPanels.ToSpaces();
+                for (int i = 0; i < panelsAsSpaces.Count; i++)
                 {
-                    double tilt = x.Tilt(distanceTolerance, angleTolerance);
-                    return (tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance);
-                }).ToList();
+                    panelsAsSpaces[i].FlipPanels();
 
-            List<Panel> culledPanels = cullDuplicates.CullDuplicates();
-            foreach (Panel p in culledPanels)
-                returnPanels.Add(p);
+                    cullDuplicates.AddRange(panelsAsSpaces[i]);
+                }
+                cullDuplicates = cullDuplicates.Where(x =>
+                    {
+                        double tilt = x.Tilt(distanceTolerance, angleTolerance);
+                        return (tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance);
+                    }).ToList();
+
+                List<Panel> culledPanels = cullDuplicates.CullDuplicates();
+                foreach (Panel p in culledPanels)
+                    returnPanels.Add(p);
+            }
+
+            else
+                returnPanels.AddRange(fixedPanels);
 
             return returnPanels;
         }
