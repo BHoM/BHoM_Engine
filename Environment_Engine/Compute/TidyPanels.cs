@@ -89,7 +89,6 @@ namespace BH.Engine.Environment
 
                 fixedPanels.Add(p);
                 handledPanels.Add(p.BHoM_Guid);
-
             }
 
             if (autoFixPanelOrientations)
@@ -100,9 +99,9 @@ namespace BH.Engine.Environment
                 for (int i = 0; i < panelsAsSpaces.Count; i++)
                 {
                     panelsAsSpaces[i].FlipPanels();
-
                     cullDuplicates.AddRange(panelsAsSpaces[i]);
                 }
+
                 cullDuplicates = cullDuplicates.Where(x =>
                     {
                         double tilt = x.Tilt(distanceTolerance, angleTolerance);
@@ -113,7 +112,6 @@ namespace BH.Engine.Environment
                 foreach (Panel p in culledPanels)
                     returnPanels.Add(p);
             }
-
             else
                 returnPanels.AddRange(fixedPanels);
 
