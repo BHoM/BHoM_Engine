@@ -53,7 +53,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            IFramingElement result = framingElement.ShallowClone() as IFramingElement;
+            IFramingElement result = framingElement.ShallowClone();
             result.Location = result.Location.ITransform(transform);
 
             ConstantFramingProperty property = result.Property as ConstantFramingProperty;
@@ -120,5 +120,4 @@ namespace BH.Engine.Physical
         /***************************************************/
     }
 }
-
 
