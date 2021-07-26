@@ -32,6 +32,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -167,7 +168,7 @@ namespace BH.Engine.Structure
             }
 
             d = 0;
-            return curve.IClone();
+            return curve.DeepClone();
         }
 
         /***************************************************/
