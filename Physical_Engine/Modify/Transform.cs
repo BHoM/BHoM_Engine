@@ -111,7 +111,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            oM.Physical.Elements.ISurface result = panel.ShallowClone() as oM.Physical.Elements.ISurface;
+            oM.Physical.Elements.ISurface result = panel.ShallowClone();
             result.Location = result.Location?.ITransform(transform);
             result.Openings = result.Openings?.Select(x => x?.Transform(transform, tolerance)).ToList();
             return result;
