@@ -42,6 +42,12 @@ namespace BH.Engine.Analytical
         [Output("region", "A region with a cleaned perimeter.")]
         public static void CleanRegion(this IRegion region, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double minimumSegmentLength = BH.oM.Geometry.Tolerance.Distance)
         {
+            if (region == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot clean the perimeter of a null region.");
+                return;
+            }
+
             region.Perimeter = region.Perimeter.ICollapseToPolyline(angleTolerance).CleanPolyline(angleTolerance, minimumSegmentLength);
         }
     }
