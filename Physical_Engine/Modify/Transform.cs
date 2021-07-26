@@ -63,7 +63,7 @@ namespace BH.Engine.Physical
             {
                 if (framingElement.Location is Line)
                 {
-                    ConstantFramingProperty newProperty = property.ShallowClone() as ConstantFramingProperty;
+                    ConstantFramingProperty newProperty = property.ShallowClone();
                     Vector normalBefore = ((Line)framingElement.Location).ElementNormal(property.OrientationAngle);
                     Vector normalAfter = normalBefore.Transform(transform);
                     newProperty.OrientationAngle = normalAfter.OrientationAngleLinear((Line)result.Location);
@@ -120,4 +120,3 @@ namespace BH.Engine.Physical
         /***************************************************/
     }
 }
-
