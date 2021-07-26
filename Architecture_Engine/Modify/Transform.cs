@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Architecture.BuildersWork;
 using BH.oM.Architecture.Elements;
@@ -49,7 +50,7 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            Ceiling result = ceiling.GetShallowClone() as Ceiling;
+            Ceiling result = ceiling.ShallowClone() as Ceiling;
             result.Surface = result.Surface.ITransform(transform);
             result.Tiles = result.Tiles.Select(x => x.Transform(transform)).ToList();
             return result;
@@ -70,7 +71,7 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            CeilingTile result = tile.GetShallowClone() as CeilingTile;
+            CeilingTile result = tile.ShallowClone() as CeilingTile;
             result.Perimeter = result.Perimeter.ITransform(transform);
             return result;
         }
@@ -90,7 +91,7 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            Opening result = opening.GetShallowClone() as Opening;
+            Opening result = opening.ShallowClone() as Opening;
             result.CoordinateSystem = result.CoordinateSystem.Transform(transform);
             return result;
         }
@@ -110,7 +111,7 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            Room result = room.GetShallowClone() as Room;
+            Room result = room.ShallowClone() as Room;
             result.Perimeter = result.Perimeter.ITransform(transform);
             result.Location = result.Location.Transform(transform);
             return result;
