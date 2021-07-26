@@ -93,7 +93,7 @@ namespace BH.Engine.Analytical
             }
 
             IEdge clone = edge.ShallowClone();
-            clone.Curve = curve.IClone();
+            clone.Curve = curve.DeepClone();
             return clone;
         }
 
