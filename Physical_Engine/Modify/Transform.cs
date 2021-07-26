@@ -91,7 +91,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            IOpening result = opening.ShallowClone() as IOpening;
+            IOpening result = opening.ShallowClone();
             result.Location = result.Location?.ITransform(transform);
             return result;
         }
