@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Lighting.Elements;
@@ -47,7 +48,7 @@ namespace BH.Engine.Lighting
                 return null;
             }
 
-            Luminaire result = luminaire.GetShallowClone() as Luminaire;
+            Luminaire result = luminaire.ShallowClone() as Luminaire;
             result.Position = result.Position.Transform(transform);
             result.Direction = result.Direction.Transform(transform);
             return result;
