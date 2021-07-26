@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
@@ -47,7 +48,7 @@ namespace BH.Engine.Environment
                 return null;
             }
 
-            Space result = space.GetShallowClone() as Space;
+            Space result = space.ShallowClone() as Space;
             result.Perimeter = result.Perimeter.ITransform(transform);
             result.Location = result.Location.Transform(transform);
             return result;
