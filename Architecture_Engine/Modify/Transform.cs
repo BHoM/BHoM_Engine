@@ -50,7 +50,7 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            Ceiling result = ceiling.ShallowClone() as Ceiling;
+            Ceiling result = ceiling.ShallowClone();
             result.Surface = result.Surface.ITransform(transform);
             result.Tiles = result.Tiles.Select(x => x.Transform(transform)).ToList();
             return result;
@@ -120,4 +120,3 @@ namespace BH.Engine.Architecture
         /***************************************************/
     }
 }
-
