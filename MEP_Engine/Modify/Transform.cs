@@ -50,7 +50,7 @@ namespace BH.Engine.MEP
                 return null;
             }
 
-            Fitting result = fitting.GetShallowClone() as Fitting;
+            Fitting result = fitting.ShallowClone();
             result.Location = result.Location.Transform(transform);
             result.ConnectionsLocation = result.ConnectionsLocation.Select(x => x.Transform(transform)).ToList();
 
@@ -112,4 +112,3 @@ namespace BH.Engine.MEP
         /***************************************************/
     }
 }
-
