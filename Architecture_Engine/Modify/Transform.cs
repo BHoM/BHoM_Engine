@@ -71,7 +71,7 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            CeilingTile result = tile.ShallowClone() as CeilingTile;
+            CeilingTile result = tile.ShallowClone();
             result.Perimeter = result.Perimeter.ITransform(transform);
             return result;
         }
