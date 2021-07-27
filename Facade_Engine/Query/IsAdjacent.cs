@@ -142,6 +142,53 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
+        [Description("Returns if lines are adjacent.")]
+        [Input("curve1", "First crv to check adjacency for.")]
+        [Input("curve2", "Second crv to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided lines are adjacent.")]
+
+        public static bool IsAdjacent(this Line curve1, Polyline curve2, double tolerance = Tolerance.Distance)
+        {
+            foreach (Line crv in curve2.SubParts())
+                if (crv.IsAdjacent(curve2, tolerance))
+                    return true;
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Returns if lines are adjacent.")]
+        [Input("curve1", "First crv to check adjacency for.")]
+        [Input("curve2", "Second crv to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided lines are adjacent.")]
+
+        public static bool IsAdjacent(this Polyline curve1, Line curve2, double tolerance = Tolerance.Distance)
+        {
+            foreach (Line crv in curve1.SubParts())
+                if (crv.IsAdjacent(curve2, tolerance))
+                    return true;
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Returns if lines are adjacent.")]
+        [Input("curve1", "First crv to check adjacency for.")]
+        [Input("curve2", "Second crv to check adjacency for.")]
+        [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
+        [Output("bool", "True if provided lines are adjacent.")]
+
+        public static bool IsAdjacent(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
+        {
+           foreach (Line crv2 in curve2.SubParts())
+               if (curve1.IsAdjacent(crv2, tolerance))
+                   return true;
+            return false;
+        }
+
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
@@ -154,7 +201,7 @@ namespace BH.Engine.Facade
 
         public static bool IIsAdjacent (this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
-            return IsAdjacent(curve1 as dynamic, curve2 as dynamic);
+            return IsAdjacent(new Polyline { ControlPoints = curve1.IControlPoints() } as dynamic, new Polyline { ControlPoints = curve2.IControlPoints() } as dynamic);
         }
 
         [Description("Returns if curves are adjacent.")]
