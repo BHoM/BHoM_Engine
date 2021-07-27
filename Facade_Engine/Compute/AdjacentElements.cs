@@ -58,9 +58,7 @@ namespace BH.Engine.Facade
             foreach (IElement2D refElem in referenceElements)
             {
                 PolyCurve refOutline = refElem.OutlineCurve();
-                BH.oM.Reflection.Output<Point, Point> results = outline.CurveProximity(refOutline);
-                double distance = results.Item1.Distance(results.Item2);
-                if (distance < Tolerance.Distance)
+                if (refOutline.IIsAdjacent(outline))
                     adjacentElements.Add(refElem);
             }
 
@@ -86,9 +84,7 @@ namespace BH.Engine.Facade
             foreach (IElement2D refElem in referenceElements)
             {
                 PolyCurve refOutline = refElem.OutlineCurve();
-                BH.oM.Reflection.Output<Point, Point> results = refOutline.CurveProximity(outline);
-                double distance = results.Item1.Distance(results.Item2);
-                if (distance < Tolerance.Distance)
+                if (refOutline.IIsAdjacent(outline))
                     adjacentElements.Add(refElem);
             }
 
