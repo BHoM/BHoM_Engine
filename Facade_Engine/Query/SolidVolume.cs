@@ -54,7 +54,7 @@ namespace BH.Engine.Facade
         {
             if (curtainWall == null || curtainWall.Openings == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null panel.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null curtain wall");
                 return 0;
             }
 

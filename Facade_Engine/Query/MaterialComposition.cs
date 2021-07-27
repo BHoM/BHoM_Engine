@@ -46,6 +46,46 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets all the Materials a CurtainWall is composed of and in which ratios.")]
+        [Input("curtainWall", "The CurtainWall to get the MaterialComposition from.")]
+        [Output("materialComposition", "The kind of matter the CurtainWall is composed of and in which ratios.")]
+        public static MaterialComposition MaterialComposition(this CurtainWall curtainWall)
+        {
+            if (curtainWall == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null curtain wall.");
+                return null;
+            }
+
+            if (curtainWall.Openings == null || curtainWall.Openings.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("CurtainWall has no openings. Please confirm the CurtainWall is valid and try again.");
+                return null;
+            }
+
+            List<MaterialComposition> matComps = new List<MaterialComposition>() {};
+            List<double> volumes = new List<double>() {};
+            foreach (Opening opening in curtainWall.Openings)
+            {
+                matComps.Add(opening.MaterialComposition());
+                volumes.Add(opening.SolidVolume());
+            }
+            foreach (FrameEdge extEdge in curtainWall.ExternalEdges)
+            {
+                MaterialComposition matComp = extEdge.MaterialComposition();
+                if (matComp != null)
+                {
+                    matComps.Add(matComp);
+                    volumes.Add(extEdge.SolidVolume());
+                }
+            }
+
+            return Matter.Compute.AggregateMaterialComposition(matComps, volumes);
+        }
+
+
+        /***************************************************/
+
         [Description("Gets all the Materials a Panel is composed of and in which ratios.")]
         [Input("panel", "The Panel to get the MaterialComposition from.")]
         [Output("materialComposition", "The kind of matter the Panel is composed of and in which ratios.")]
@@ -161,7 +201,7 @@ namespace BH.Engine.Facade
 
             if (frameEdge.FrameEdgeProperty == null)
             {
-                Engine.Reflection.Compute.RecordError("The frame edge does not have a frame edge property assigned to get material composition from");
+                Engine.Reflection.Compute.RecordWarning("The frame edge does not have a frame edge property assigned to get material composition from, material composition returned is empty.");
                 return null;
             }
 
