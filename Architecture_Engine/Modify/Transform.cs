@@ -111,7 +111,7 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            Room result = room.ShallowClone() as Room;
+            Room result = room.ShallowClone();
             result.Perimeter = result.Perimeter.ITransform(transform);
             result.Location = result.Location.Transform(transform);
             return result;
