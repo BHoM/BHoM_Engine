@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
                 return null;
             }
 
-            Space result = space.ShallowClone() as Space;
+            Space result = space.ShallowClone();
             result.Perimeter = result.Perimeter.ITransform(transform);
             result.Location = result.Location.Transform(transform);
             return result;
@@ -57,4 +57,3 @@ namespace BH.Engine.Environment
         /***************************************************/
     }
 }
-
