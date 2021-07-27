@@ -47,6 +47,34 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns a CurtainWall's solid volume.")]
+        [Input("curtainWall", "The curtainWall to get the volume from")]
+        [Output("volume", "The CurtainWall's solid volume", typeof(Volume))]
+        public static double SolidVolume(this CurtainWall curtainWall)
+        {
+            if (curtainWall == null || curtainWall.Openings == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null panel.");
+                return 0;
+            }
+
+            double volume = 0;
+
+            foreach (Opening opening in curtainWall.Openings)
+                volume += opening.SolidVolume();
+
+            if (curtainWall.ExternalEdges != null)
+            {
+                foreach (FrameEdge frameEdge in curtainWall.ExternalEdges)
+                    volume += frameEdge.SolidVolume(); 
+            }
+
+            return volume;
+        }
+
+
+        /***************************************************/
+
         [Description("Returns an Openings solid volume based on its area, and construction thickness")]
         [Input("panel", "The Panel to get the volume from")]
         [Output("volume", "The Panel solid volume", typeof(Volume))]
