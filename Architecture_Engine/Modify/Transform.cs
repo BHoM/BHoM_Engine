@@ -91,7 +91,7 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            Opening result = opening.ShallowClone() as Opening;
+            Opening result = opening.ShallowClone();
             result.CoordinateSystem = result.CoordinateSystem.Transform(transform);
             return result;
         }
