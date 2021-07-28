@@ -52,23 +52,29 @@ namespace BH.Engine.Facade
         public static Output<List<double>, List <string>, double> FacadeAreasByConstruction(this IEnumerable<IFacadeObject> elems)
         {
             List<IFacadeObject> elemList = elems.ToList();
-            if (elems.Any(x => x is Panel == false & x is Opening == false))
+            if (elems.Any(x => x is Panel == false & x is Opening == false & x is CurtainWall == false))
             {
-                Reflection.Compute.RecordWarning("Some of the provided elements are not Openings or Panels. These elements have been ignored.");
+                Reflection.Compute.RecordWarning("Some of the provided elements are not valid Facade Element Types. These elements have been ignored.");
             }
 
             Dictionary<string, double> areasDict = new Dictionary<string, double>();
             double frameArea = 0;
 
+            IEnumerable<CurtainWall> cws = elems.OfType<CurtainWall>();
+            foreach (CurtainWall cw in cws.ToList())
+            {
+                List<Opening> cwOpenings = cw.Openings;
+                elemList.AddRange(cwOpenings);
+            }
+            
             IEnumerable<Panel> panels = elems.OfType<Panel>();
-
             foreach (Panel panel in panels.ToList())
             {
                 List<Opening> panelOpenings = panel.Openings;
                 elemList.AddRange(panelOpenings);
             }
 
-            List<IFacadeObject> uniqueElems = elems.Distinct().ToList();
+            List<IFacadeObject> uniqueElems = elemList.Distinct().ToList();
 
             foreach (IFacadeObject elem in uniqueElems)
             {
