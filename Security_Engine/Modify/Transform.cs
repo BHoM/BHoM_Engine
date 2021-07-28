@@ -51,7 +51,7 @@ namespace BH.Engine.Security
                 return null;
             }
 
-            CameraDevice result = camera.ShallowClone() as CameraDevice;
+            CameraDevice result = camera.ShallowClone();
             result.EyePosition = result.EyePosition.Transform(transform);
             result.TargetPosition = result.TargetPosition.Transform(transform);
             return result;
@@ -60,5 +60,4 @@ namespace BH.Engine.Security
         /***************************************************/
     }
 }
-
 
