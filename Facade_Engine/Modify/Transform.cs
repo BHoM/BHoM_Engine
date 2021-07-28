@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Facade.Elements;
@@ -51,7 +52,7 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            FrameEdge result = edge.GetShallowClone() as FrameEdge;
+            FrameEdge result = edge.ShallowClone();
             result.Curve = result.Curve.ITransform(transform);
 
             if (edge.FrameEdgeProperty != null)
@@ -64,7 +65,7 @@ namespace BH.Engine.Facade
                     List<ConstantFramingProperty> newProperties = new List<ConstantFramingProperty>();
                     foreach (ConstantFramingProperty property in edge.FrameEdgeProperty.SectionProperties)
                     {
-                        ConstantFramingProperty newProperty = property.GetShallowClone() as ConstantFramingProperty;
+                        ConstantFramingProperty newProperty = property.ShallowClone();
                         Vector normalBefore = lineBefore.ElementNormal(property.OrientationAngle);
                         Vector normalAfter = normalBefore.Transform(transform);
                         newProperty.OrientationAngle = normalAfter.OrientationAngleLinear(lineAfter);
@@ -95,7 +96,7 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            Opening result = opening.GetShallowClone() as Opening;
+            Opening result = opening.ShallowClone();
             result.Edges = result.Edges.Select(x => x.Transform(transform, tolerance)).ToList();
             return result;
         }
@@ -115,7 +116,7 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            Panel result = panel.GetShallowClone() as Panel;
+            Panel result = panel.ShallowClone();
             result.ExternalEdges = result.ExternalEdges.Select(x => x.Transform(transform, tolerance)).ToList();
             result.Openings = result.Openings.Select(x => x.Transform(transform, tolerance)).ToList();
 
@@ -137,7 +138,7 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            CurtainWall result = wall.GetShallowClone() as CurtainWall;
+            CurtainWall result = wall.ShallowClone();
             result.ExternalEdges = result.ExternalEdges.Select(x => x.Transform(transform, tolerance)).ToList();
             result.Openings = result.Openings.Select(x => x.Transform(transform, tolerance)).ToList();
 
