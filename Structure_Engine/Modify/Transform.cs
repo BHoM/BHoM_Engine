@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Geometry;
@@ -51,7 +50,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Node result = node.ShallowClone() as Node;
+            Node result = node.GetShallowClone() as Node;
             result.Position = result.Position.Transform(transform);
             result.Orientation = result.Orientation?.Transform(transform);
             return result;
@@ -72,7 +71,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Bar result = bar.ShallowClone() as Bar;
+            Bar result = bar.GetShallowClone() as Bar;
             result.StartNode = result.StartNode.Transform(transform, tolerance);
             result.EndNode = result.EndNode.Transform(transform, tolerance);
             
@@ -98,7 +97,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            RigidLink result = link.ShallowClone() as RigidLink;
+            RigidLink result = link.GetShallowClone() as RigidLink;
             result.PrimaryNode = result.PrimaryNode.Transform(transform, tolerance);
             result.SecondaryNodes = result.SecondaryNodes.Select(x => x.Transform(transform, tolerance)).ToList();
             return result;
@@ -119,7 +118,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Edge result = edge.ShallowClone() as Edge;
+            Edge result = edge.GetShallowClone() as Edge;
             result.Curve = result.Curve.ITransform(transform);
             return result;
         }
@@ -139,7 +138,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Opening result = opening.ShallowClone() as Opening;
+            Opening result = opening.GetShallowClone() as Opening;
             result.Edges = result.Edges.Select(x => x.Transform(transform, tolerance)).ToList();
             return result;
         }
@@ -159,7 +158,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Panel result = panel.ShallowClone() as Panel;
+            Panel result = panel.GetShallowClone() as Panel;
             result.ExternalEdges = result.ExternalEdges.Select(x => x.Transform(transform, tolerance)).ToList();
             result.Openings = result.Openings.Select(x => x.Transform(transform, tolerance)).ToList();
 
@@ -187,7 +186,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            FEMesh result = mesh.ShallowClone() as FEMesh;
+            FEMesh result = mesh.GetShallowClone() as FEMesh;
             result.Nodes = result.Nodes.Select(x => x.Transform(transform, tolerance)).ToList();
 
             List<Basis> orientationsBefore = mesh.LocalOrientations();
