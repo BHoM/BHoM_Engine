@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -19,51 +19,33 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
-using BH.Engine.Geometry;
 using BH.oM.Architecture.BuildersWork;
-using BH.oM.Architecture.Elements;
-using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
-using System.Collections.Generic;
-using System.Linq;
+using BH.oM.Spatial.ShapeProfiles;
 
-namespace BH.Engine.Architecture
+namespace BH.Engine.Architecture.Elements
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ICurve Geometry(this Grid grid)
+        public static Opening Opening(Cartesian coordinateSystem, double height, double width, double depth)
         {
-            return grid?.Curve;
+            RectangleProfile profile = BH.Engine.Spatial.Create.RectangleProfile(height, width);
+            return new Opening { CoordinateSystem = coordinateSystem, Profile = profile, Depth = depth };
         }
 
         /***************************************************/
 
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronGeometry theatron)
+        public static Opening Opening(Cartesian coordinateSystem, double diameter, double depth)
         {
-            return Engine.Geometry.Create.CompositeGeometry(theatron?.Tiers3d?.SelectMany(x => x?.TierBlocks).Select(x => x?.Floor));
-        }
-
-        /***************************************************/
-
-        public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronFullProfile theatronFullProfile)
-        {
-            return Engine.Geometry.Create.CompositeGeometry(theatronFullProfile?.BaseTierProfiles?.Select(x => x?.Profile));
-        }
-
-        /***************************************************/
-
-        public static PlanarSurface Geometry(this Opening opening)
-        {
-            return new PlanarSurface(new PolyCurve { Curves = opening.Profile.Edges.ToList() }, new List<ICurve>()).Orient(new Cartesian(), opening.CoordinateSystem);
+            CircleProfile profile = BH.Engine.Spatial.Create.CircleProfile(diameter);
+            return new Opening { CoordinateSystem = coordinateSystem, Profile = profile, Depth = depth };
         }
 
         /***************************************************/
     }
 }
-
 
