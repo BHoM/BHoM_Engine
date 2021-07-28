@@ -53,9 +53,10 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Quantities_oM, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Quantities_oM">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
