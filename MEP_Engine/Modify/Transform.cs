@@ -49,7 +49,7 @@ namespace BH.Engine.MEP
                 return null;
             }
 
-            CableTray result = cableTray.ShallowClone() as CableTray;
+            CableTray result = cableTray.ShallowClone();
             result.StartPoint = result.StartPoint.Transform(transform);
             result.EndPoint = result.EndPoint.Transform(transform);
 
@@ -89,5 +89,4 @@ namespace BH.Engine.MEP
         /***************************************************/
     }
 }
-
 
