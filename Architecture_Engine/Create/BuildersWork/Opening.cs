@@ -21,7 +21,10 @@
  */
 using BH.oM.Architecture.BuildersWork;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Spatial.ShapeProfiles;
+using System.ComponentModel;
 
 namespace BH.Engine.Architecture.Elements
 {
@@ -31,6 +34,12 @@ namespace BH.Engine.Architecture.Elements
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Created a rectangular BuildersWork opening with given dimensions, in a given coordinate system.")]
+        [InputFromProperty("coordinateSystem")]
+        [Input("height", "Height of the created opening.", typeof(Length))]
+        [Input("width", "Width of the created opening.", typeof(Length))]
+        [InputFromProperty("depth")]
+        [Output("Opening")]
         public static Opening Opening(Cartesian coordinateSystem, double height, double width, double depth)
         {
             RectangleProfile profile = BH.Engine.Spatial.Create.RectangleProfile(height, width);
@@ -39,6 +48,11 @@ namespace BH.Engine.Architecture.Elements
 
         /***************************************************/
 
+        [Description("Created a circular BuildersWork opening with given dimensions, in a given coordinate system.")]
+        [InputFromProperty("coordinateSystem")]
+        [Input("diameter", "Diameter of the created opening.", typeof(Length))]
+        [InputFromProperty("depth")]
+        [Output("Opening")]
         public static Opening Opening(Cartesian coordinateSystem, double diameter, double depth)
         {
             CircleProfile profile = BH.Engine.Spatial.Create.CircleProfile(diameter);
