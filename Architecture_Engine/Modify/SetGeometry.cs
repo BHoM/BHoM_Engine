@@ -59,12 +59,11 @@ namespace BH.Engine.Architecture
 
         /***************************************************/
 
-        //[Description("Assign new geometry to an Architecture Room. If either geometry is null then original geometry is used")]
-        //[Input("room", "An Architecture Room to set the geometry of")]
-        //[Input("locationPoint", "A BHoM Geometry Point defining the location of the room, default null")]
-        //[Input("perimeterCurve", "A BHoM Geometry ICurve defining the perimeter of the room, default null")]
-        //[Output("room", "An Architecture Room with an updated geometry")]
-        public static Opening SetGeometry(this Opening opening, Point point)
+        [Description("Assign new geometry (location) to a BuildersWork Opening. Dimensions need to be set by updating the properties of Opening's profile.")]
+        [Input("opening", "A BuildersWork Opening to set the geometry (location) of.")]
+        [Input("locationPoint", "A BHoM geometry Point defining the new location of the Opening.")]
+        [Output("opening", "A BuildersWork Opening with updated geometry (location).")]
+        public static Opening SetGeometry(this Opening opening, Point locationPoint)
         {
             if (opening == null)
             {
@@ -72,14 +71,14 @@ namespace BH.Engine.Architecture
                 return null;
             }
 
-            if (point == null)
+            if (locationPoint == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of an opening to a null point.");
                 return null;
             }
 
             Opening clone = opening.ShallowClone();
-            clone.CoordinateSystem = new Cartesian(point, opening.CoordinateSystem.X, opening.CoordinateSystem.Y, opening.CoordinateSystem.Z);
+            clone.CoordinateSystem = new Cartesian(locationPoint, opening.CoordinateSystem.X, opening.CoordinateSystem.Y, opening.CoordinateSystem.Z);
 
             BH.Engine.Reflection.Compute.RecordWarning("Only the location point of the opening has been updated - to update its dimension, please modify relevant properties of the Profile.");
             return clone;
@@ -87,11 +86,10 @@ namespace BH.Engine.Architecture
 
         /***************************************************/
 
-        //[Description("Assign new geometry to an Architecture Room. If either geometry is null then original geometry is used")]
-        //[Input("room", "An Architecture Room to set the geometry of")]
-        //[Input("locationPoint", "A BHoM Geometry Point defining the location of the room, default null")]
-        //[Input("perimeterCurve", "A BHoM Geometry ICurve defining the perimeter of the room, default null")]
-        //[Output("room", "An Architecture Room with an updated geometry")]
+        [Description("Assign new geometry (location) to a BuildersWork Opening. Dimensions need to be set by updating the properties of Opening's profile.")]
+        [Input("opening", "A BuildersWork Opening to set the geometry (location) of.")]
+        [Input("coordinateSystem", "A BHoM geometry Cartesian coordinate system defining the new location (incl. orientation) of the Opening.")]
+        [Output("opening", "A BuildersWork Opening with updated geometry (location).")]
         public static Opening SetGeometry(this Opening opening, Cartesian coordinateSystem)
         {
             if (opening == null)
@@ -102,8 +100,7 @@ namespace BH.Engine.Architecture
             
             Opening clone = opening.ShallowClone();
             clone.CoordinateSystem = coordinateSystem;
-
-
+            
             BH.Engine.Reflection.Compute.RecordWarning("Only the coordinate system of the opening has been updated - to update its dimension, please modify relevant properties of the Profile.");
             return clone;
         }

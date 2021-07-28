@@ -25,7 +25,9 @@ using BH.oM.Architecture.BuildersWork;
 using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Architecture
@@ -36,6 +38,9 @@ namespace BH.Engine.Architecture
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Extracts geometry of the given Grid.")]
+        [Input("grid", "Grid to be queried for its geometry.")]
+        [Output("Geometry of the input Grid.")]
         public static ICurve Geometry(this Grid grid)
         {
             return grid?.Curve;
@@ -43,6 +48,9 @@ namespace BH.Engine.Architecture
 
         /***************************************************/
 
+        [Description("Extracts geometry of the given Theatron.")]
+        [Input("theatron", "Theatron to be queried for its geometry.")]
+        [Output("Geometry of the input Theatron.")]
         public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronGeometry theatron)
         {
             return Engine.Geometry.Create.CompositeGeometry(theatron?.Tiers3d?.SelectMany(x => x?.TierBlocks).Select(x => x?.Floor));
@@ -50,6 +58,9 @@ namespace BH.Engine.Architecture
 
         /***************************************************/
 
+        [Description("Extracts geometry of the given TheatronFullProfile.")]
+        [Input("theatronFullProfile", "TheatronFullProfile to be queried for its geometry.")]
+        [Output("Geometry of the input TheatronFullProfile.")]
         public static CompositeGeometry Geometry(this oM.Architecture.Theatron.TheatronFullProfile theatronFullProfile)
         {
             return Engine.Geometry.Create.CompositeGeometry(theatronFullProfile?.BaseTierProfiles?.Select(x => x?.Profile));
@@ -57,6 +68,9 @@ namespace BH.Engine.Architecture
 
         /***************************************************/
 
+        [Description("Extracts geometry of the given BuildersWork Opening.")]
+        [Input("opening", "BuildersWork Opening to be queried for its geometry.")]
+        [Output("Geometry of the input BuildersWork Opening.")]
         public static PlanarSurface Geometry(this Opening opening)
         {
             return new PlanarSurface(new PolyCurve { Curves = opening.Profile.Edges.ToList() }, new List<ICurve>()).Orient(new Cartesian(), opening.CoordinateSystem);
