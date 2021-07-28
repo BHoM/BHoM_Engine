@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Geometry;
@@ -48,7 +49,7 @@ namespace BH.Engine.MEP
                 return null;
             }
 
-            CableTray result = cableTray.GetShallowClone() as CableTray;
+            CableTray result = cableTray.ShallowClone() as CableTray;
             result.StartPoint = result.StartPoint.Transform(transform);
             result.EndPoint = result.EndPoint.Transform(transform);
 
@@ -74,7 +75,7 @@ namespace BH.Engine.MEP
                 return null;
             }
 
-            Duct result = duct.GetShallowClone() as Duct;
+            Duct result = duct.ShallowClone() as Duct;
             result.StartPoint = result.StartPoint.Transform(transform);
             result.EndPoint = result.EndPoint.Transform(transform);
 
