@@ -75,7 +75,7 @@ namespace BH.Engine.MEP
                 return null;
             }
 
-            Duct result = duct.ShallowClone() as Duct;
+            Duct result = duct.ShallowClone();
             result.StartPoint = result.StartPoint.Transform(transform);
             result.EndPoint = result.EndPoint.Transform(transform);
 
@@ -89,4 +89,3 @@ namespace BH.Engine.MEP
         /***************************************************/
     }
 }
-
