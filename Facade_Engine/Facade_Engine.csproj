@@ -103,6 +103,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\UValueOpeningAW.cs" />
     <Compile Include="Compute\UValueOpeningsSAM.cs" />
     <Compile Include="Compute\UValueOpeningsCAM.cs" />
     <Compile Include="Compute\UValueOpeningCAM.cs" />
