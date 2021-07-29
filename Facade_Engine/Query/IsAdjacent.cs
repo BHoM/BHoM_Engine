@@ -150,6 +150,12 @@ namespace BH.Engine.Facade
 
         public static bool IsAdjacent(this Line curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
+            if (curve1 == null || curve2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two curves if either curve is null.");
+                return false;
+            }
+            
             foreach (Line crv in curve2.SubParts())
                 if (crv.IsAdjacent(curve2, tolerance))
                     return true;
@@ -166,6 +172,12 @@ namespace BH.Engine.Facade
 
         public static bool IsAdjacent(this Polyline curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
+            if (curve1 == null || curve2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of a PolyLine and a Curve if either is null.");
+                return false;
+            }
+            
             foreach (Line crv in curve1.SubParts())
                 if (crv.IsAdjacent(curve2, tolerance))
                     return true;
@@ -182,7 +194,13 @@ namespace BH.Engine.Facade
 
         public static bool IsAdjacent(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-           foreach (Line crv2 in curve2.SubParts())
+            if (curve1 == null || curve2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two PolyLines if either PolyLine is null.");
+                return false;
+            }
+            
+            foreach (Line crv2 in curve2.SubParts())
                if (curve1.IsAdjacent(crv2, tolerance))
                    return true;
             return false;
@@ -201,6 +219,12 @@ namespace BH.Engine.Facade
 
         public static bool IIsAdjacent (this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
+            if (curve1 == null || curve2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two ICurves if either ICurve is null.");
+                return false;
+            }
+            
             return IsAdjacent(new Polyline { ControlPoints = curve1.IControlPoints() } as dynamic, new Polyline { ControlPoints = curve2.IControlPoints() } as dynamic);
         }
 
@@ -212,6 +236,12 @@ namespace BH.Engine.Facade
 
         public static bool IIsAdjacent(this IElement1D elem1, IElement1D elem2, double tolerance = Tolerance.Distance)
         {
+            if (elem1 == null || elem2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two IElement1Ds if either is null.");
+                return false;
+            }
+            
             return IsAdjacent(elem1 as dynamic, elem2 as dynamic);
         }
 
@@ -245,6 +275,11 @@ namespace BH.Engine.Facade
         [Output("bool", "True if provided lines are adjacent.")]
         private static bool IsAdjacent(this IEdge edge1, IEdge edge2, double tolerance = Tolerance.Distance)
         {
+            if (edge1 == null || edge2 == null)
+            {
+                return false;
+            }
+            
             ICurve crv1 = edge1.Curve;
             ICurve crv2 = edge2.Curve;
 
@@ -263,6 +298,11 @@ namespace BH.Engine.Facade
         [Output("bool", "True if provided lines are adjacent.")]
         private static bool IsAdjacent(this IEdge edge1, ICurve crv2, double tolerance = Tolerance.Distance)
         {
+            if (edge1 == null || crv2 == null)
+            {
+                return false;
+            }
+            
             ICurve crv1 = edge1.Curve;
 
             if (crv1 != null && crv2 != null)
@@ -280,6 +320,11 @@ namespace BH.Engine.Facade
         [Output("bool", "True if provided lines are adjacent.")]
         private static bool IsAdjacent(this ICurve crv1, IEdge edge2, double tolerance = Tolerance.Distance)
         {
+            if (crv1 == null || edge2 == null)
+            {
+                return false;
+            }
+            
             ICurve crv2 = edge2.Curve;
 
             if (crv1 != null && crv2 != null)

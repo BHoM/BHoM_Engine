@@ -48,6 +48,9 @@ namespace BH.Engine.Facade
         [MultiOutput(1, "frameArea", "Adjacent Elements per adjacent edge")]
         public static Output<double, double> ComponentAreas(this Opening opening)
         {
+            if (opening == null)
+                return null; 
+            
             IGeometry frameGeo = opening.FrameGeometry2D();
             double frameArea = 0;
 
