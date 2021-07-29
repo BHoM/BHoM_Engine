@@ -73,6 +73,24 @@ namespace BH.Engine.Architecture
         [Output("Geometry of the input BuildersWork Opening.")]
         public static PlanarSurface Geometry(this Opening opening)
         {
+            if (opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot extract the geometry from a null opening.");
+                return null;
+            }
+
+            if (opening.Profile?.Edges == null || opening.Profile?.Edges.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot extract the geometry from an opening without profile edges.");
+                return null;
+            }
+
+            if (opening.CoordinateSystem == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot extract the geometry from an opening without coordinate system.");
+                return null;
+            }
+
             return new PlanarSurface(new PolyCurve { Curves = opening.Profile.Edges.ToList() }, new List<ICurve>()).Orient(new Cartesian(), opening.CoordinateSystem);
         }
 
