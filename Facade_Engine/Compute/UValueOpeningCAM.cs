@@ -49,6 +49,9 @@ namespace BH.Engine.Facade
         [Output("effectiveUValue", "Effective U-value result of opening calculated using CAM.")]
         public static OverallUValue UValueOpeningCAM(this Opening opening)
         {
+            if (opening == null)
+                return null; 
+            
             double glassArea = opening.ComponentAreas().Item1;
 
             List<IFragment> glassUValues = opening.GetAllFragments(typeof(UValueGlassCentre));

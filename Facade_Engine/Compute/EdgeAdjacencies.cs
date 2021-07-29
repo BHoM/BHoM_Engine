@@ -51,12 +51,11 @@ namespace BH.Engine.Facade
         [MultiOutput(1, "adjacentElems", "Adjacent Elements per adjacent edge.")]
         public static Output<List<IElement1D>, List<IElement2D>> EdgeAdjacencies(this IElement1D edge, IEnumerable<IElement2D> elements, double tolerance = Tolerance.Distance)
         {
+            if (edge == null || elements.Count() == 0)
+                return null;
+            
             List<IElement1D> adjEdges = new List<IElement1D>();
             List<IElement2D> adjElems = new List<IElement2D>();
-
-            //List<IElement2D> adjFullElems = AdjacentElements(edge, elems);
-            PolyCurve edgeGeo = edge.ElementCurves().IJoin()[0];
-            Vector edgeDir = edge.IGeometry().IEndDir();
 
             foreach (IElement2D elem in elements)
             {
