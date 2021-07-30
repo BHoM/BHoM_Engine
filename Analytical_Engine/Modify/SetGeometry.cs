@@ -51,7 +51,7 @@ namespace BH.Engine.Analytical
             }
 
             INode clone = node.ShallowClone();
-            clone.Position = point.Clone();
+            clone.Position = point.DeepClone();
             return clone;
         }
 
