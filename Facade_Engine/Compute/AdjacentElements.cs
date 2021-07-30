@@ -50,8 +50,16 @@ namespace BH.Engine.Facade
         {          
             List<IElement2D> adjacentElements = new List<IElement2D>();
 
-            if (element == null || referenceElements == null)
-                return adjacentElements;
+            if (element == null)
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
+                return null;
+            }
+            if (referenceElements.Count() == 0)
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies as the elements list is empty.");
+                return null;
+            }
 
             PolyCurve outline = element.OutlineCurve();
 
@@ -76,8 +84,16 @@ namespace BH.Engine.Facade
         {
             List<IElement2D> adjacentElements = new List<IElement2D>();
 
-            if (element == null || referenceElements == null)
-                return adjacentElements;
+            if (element == null)
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
+                return null;
+            }
+            if (referenceElements.Count() == 0)
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies as the elements list is empty.");
+                return null;
+            }
 
             PolyCurve outline = element.ElementCurves().IJoin()[0];
 
@@ -101,8 +117,16 @@ namespace BH.Engine.Facade
         public static List<IElement1D> AdjacentElements(this IElement1D element, IEnumerable<IElement1D> referenceElements)
 
         {
-            if (element == null || referenceElements == null)
-                return new List<IElement1D>(); 
+            if (element == null)
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
+                return null;
+            }
+            if (referenceElements.Count() == 0)
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies as the elements list is empty.");
+                return null;
+            }
 
             return referenceElements.Where(x => x.IIsAdjacent(element)).ToList();
         }

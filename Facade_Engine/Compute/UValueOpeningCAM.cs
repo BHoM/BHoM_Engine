@@ -50,7 +50,10 @@ namespace BH.Engine.Facade
         public static OverallUValue UValueOpeningCAM(this Opening opening)
         {
             if (opening == null)
-                return null; 
+            {
+                Reflection.Compute.RecordWarning("U Value can not be calculated for a null opening.");
+                return null;
+            }                
             
             double glassArea = opening.ComponentAreas().Item1;
 
