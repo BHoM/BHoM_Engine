@@ -86,7 +86,7 @@ namespace BH.Engine.Geometry
 
             outlines.Sort(delegate (ICurve p1, ICurve p2)
             {
-                return p1.IArea().CompareTo(p2.IArea());
+                return p1.IArea(tolerance).CompareTo(p2.IArea(tolerance));
             });
             outlines.Reverse();
 

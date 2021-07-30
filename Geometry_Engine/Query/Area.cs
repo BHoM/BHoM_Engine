@@ -34,9 +34,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static double IArea(this IGeometry geometry)
+        public static double IArea(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
-            return Area(geometry as dynamic);
+            return Area(geometry as dynamic, tolerance);
         }
 
 
@@ -44,9 +44,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static double Area(this Arc curve)
+        public static double Area(this Arc curve, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsClosed())
+            if (curve.IsClosed(tolerance))
                 return Math.PI * curve.Radius * curve.Radius;
             else
             {
@@ -57,14 +57,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Area(this Circle curve)
+        public static double Area(this Circle curve, double tolerance = Tolerance.Distance)
         {
             return Math.PI * curve.Radius * curve.Radius;
         }
 
         /***************************************************/
 
-        public static double Area(this Line curve)
+        public static double Area(this Line curve, double tolerance = Tolerance.Distance)
         {
             Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
             return 0;
@@ -72,18 +72,18 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Area(this PolyCurve curve)
+        public static double Area(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             if (curve.Curves.Count == 1 && curve.Curves[0] is Circle)
-                return (curve.Curves[0] as Circle).Area();
+                return (curve.Curves[0] as Circle).Area(tolerance);
 
-            if (!curve.IsClosed())
+            if (!curve.IsClosed(tolerance))
             {
                 Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
             }
 
-            Plane p = curve.FitPlane();
+            Plane p = curve.FitPlane(tolerance);
             if (p == null)
                 return 0.0;              // points are collinear
 
@@ -122,9 +122,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Area(this Polyline curve)
+        public static double Area(this Polyline curve, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsClosed())
+            if (!curve.IsClosed(tolerance))
             {
                 Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
@@ -135,7 +135,7 @@ namespace BH.Engine.Geometry
             if (ptsCount < 4)
                 return 0.0;
 
-            Plane p = pts.FitPlane();
+            Plane p = pts.FitPlane(tolerance);
             if (p == null)
                 return 0.0;              // points are collinear
 
@@ -157,7 +157,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        public static double Area(this Mesh mesh)
+        public static double Area(this Mesh mesh, double tolerance = Tolerance.Distance)
         {
             Mesh tMesh = mesh.Triangulate();
             double area = 0;
@@ -179,20 +179,20 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Area(this PolySurface pSurf)
+        public static double Area(this PolySurface pSurf, double tolerance = Tolerance.Distance)
         {
-            return pSurf.Surfaces.Sum(x => x.IArea());
+            return pSurf.Surfaces.Sum(x => x.IArea(tolerance));
         }
 
         /***************************************************/
 
-        public static double Area(this PlanarSurface pSurf)
+        public static double Area(this PlanarSurface pSurf, double tolerance = Tolerance.Distance)
         {
-            double area = pSurf.ExternalBoundary.IArea();
+            double area = pSurf.ExternalBoundary.IArea(tolerance);
 
             if (pSurf.InternalBoundaries != null)
             {
-                area -= pSurf.InternalBoundaries.Sum(x => x.IArea());
+                area -= pSurf.InternalBoundaries.Sum(x => x.IArea(tolerance));
             }
 
             return area;
@@ -203,7 +203,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
-        public static double Area(this Vector v1, Vector v2)
+        public static double Area(this Vector v1, Vector v2, double tolerance = Tolerance.Distance)
         {
             double area = 0;
             area = Length(CrossProduct(v1, v2)) / 2;
@@ -216,7 +216,7 @@ namespace BH.Engine.Geometry
         /**** Private Methods - Fallbacks               ****/
         /***************************************************/
 
-        private static double Area(this IGeometry geometry)
+        private static double Area(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
             Reflection.Compute.RecordError("Area for " + geometry.GetType().Name + " is not implemented.");
             return double.NaN;
