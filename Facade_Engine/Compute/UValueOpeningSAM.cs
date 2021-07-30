@@ -50,8 +50,11 @@ namespace BH.Engine.Facade
         public static OverallUValue UValueOpeningSAM(this Opening opening)
         {
             if (opening == null)
-                return null; 
-            
+            {
+                Reflection.Compute.RecordWarning("U Value can not be calculated for a null opening.");
+                return null;
+            }
+
             double area = opening.Area();
 
             List<IFragment> uValues = opening.GetAllFragments(typeof(UValueGlassCentre));

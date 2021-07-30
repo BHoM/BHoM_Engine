@@ -52,8 +52,11 @@ namespace BH.Engine.Facade
         public static IGeometry FrameGeometry2D(this Opening opening)
         {
             if (opening == null)
-                return null; 
-            
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the Frame Geometry of a null opening.");
+                return null;
+            }
+
             PolyCurve extCrv = opening.Geometry();
             List<double> widths = new List<double>();
 
