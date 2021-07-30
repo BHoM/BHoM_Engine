@@ -49,8 +49,14 @@ namespace BH.Engine.Facade
         public static Output<double, double> ComponentAreas(this Opening opening)
         {
             if (opening == null)
-                return null; 
-            
+            {
+                return new Output<double, double>
+                {
+                    Item1 = double.NaN,
+                    Item2 = double.NaN,
+                };
+            }
+
             IGeometry frameGeo = opening.FrameGeometry2D();
             double frameArea = 0;
 
