@@ -27,6 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
@@ -54,7 +55,7 @@ namespace BH.Engine.Structure
                 return 0;
             }
 
-            Polyline clone = pLine.Clone();
+            Polyline clone = pLine.DeepClone();
             List<Point> controllPoints = new List<Point>(clone.ControlPoints);
 
             double sy = 0;
@@ -80,8 +81,8 @@ namespace BH.Engine.Structure
             }
 
             //TODO Should do some checks if these are good Tolerances
-            Point a = ptA.Clone();
-            Point b = ptB.Clone();
+            Point a = ptA.DeepClone();
+            Point b = ptB.DeepClone();
 
             double axbx = a.X - b.X;
             if (Math.Abs(axbx) < tol)  // The solution is zero
