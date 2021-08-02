@@ -51,14 +51,9 @@ namespace BH.Engine.Facade
         [MultiOutput(1, "adjacentElems", "Adjacent Elements per adjacent edge.")]
         public static Output<List<IElement1D>, List<IElement2D>> EdgeAdjacencies(this IElement1D edge, IEnumerable<IElement2D> elements, double tolerance = Tolerance.Distance)
         {
-            if (edge == null)
+            if (edge == null || elements == null)
             {
-                Reflection.Compute.RecordWarning("Can not get adjacencies of a null edge.");
-                return null;
-            }
-            if (elements.Count() == 0)
-            {
-                Reflection.Compute.RecordWarning("Can not get adjacencies as the elements list is empty.");
+                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
                 return null;
             }
 
