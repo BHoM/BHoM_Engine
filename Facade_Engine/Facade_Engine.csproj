@@ -115,7 +115,7 @@
     <Compile Include="Modify\SetOffsetFromFacetoFaceDist.cs" />
     <Compile Include="Modify\OffsetVariable.cs" />
     <Compile Include="Modify\Transform.cs" />
-    <Compile Include="Query\AdjacencyId.cs" />
+    <Compile Include="Query\AdjacencyID.cs" />
     <Compile Include="Compute\UniqueAdjacencies.cs" />
     <Compile Include="Create\Elements\Opening.cs" />
     <Compile Include="Create\Elements\Panel.cs" />
