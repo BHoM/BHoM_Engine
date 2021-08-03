@@ -51,9 +51,14 @@ namespace BH.Engine.Facade
         [MultiOutput(2, "uniqueAdjacencyElement1", "The first element of each pair per each unique adjacency.")]
         [MultiOutput(3, "uniqueAdjacencyEdge2", "The second edge of each pair per each unique adjacency.")]
         [MultiOutput(4, "uniqueAdjacencyElement2", "The second element of each pair per each unique adjacency.")]
-
         public static Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>, List<List<IElement1D>>, List<List<IElement2D>>> UniqueAdjacencies(IEnumerable<IElement2D> elems, bool splitHorAndVert = false)
         {
+            if(elems == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot calculate unique adjacencies if the input elements are null.");
+                return new Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>, List<List<IElement1D>>, List<List<IElement2D>>>();
+            }
+
             List<IElement2D> elemsList = elems.ToList(); 
             
             List<string> adjacencyIDs = new List<string>();
