@@ -34,11 +34,12 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Description("Creates a PlanarSurface based on boundary curves. Only processing done by this method is checking (co)planarity and that the curves are closed. Internal edges will be assumed to be inside the External")]
-        [Input("externalBoundary", "The outer boundary curve of the surface. Needs to be closed and planar")]
-        [Input("internalBoundaries", "Optional internal boundary curves descibing any openings inside the external. All internal edges need to be closed and co-planar with the external edge")]
-        [Output("PlanarSurface", "Planar surface corresponding to the provided edge curves")]
+        
+        [Description("Creates a PlanarSurface based on boundary curves. Only processing done by this method is checking (co)planarity and that the curves are closed. Internal edges will be assumed to be inside the External.")]
+        [Input("externalBoundary", "The outer boundary curve of the surface. Needs to be closed and planar.")]
+        [Input("internalBoundaries", "Optional internal boundary curves descibing any openings inside the external. All internal edges need to be closed and co-planar with the external edge.")]
+        [Output("PlanarSurface", "Planar surface corresponding to the provided edge curves.")]
+        [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>)")]
         public static PlanarSurface PlanarSurface(ICurve externalBoundary, List<ICurve> internalBoundaries = null, double tolerance = Tolerance.Distance)
         {
             //--------------Planar-External-Boundary-----------------------//
@@ -139,7 +140,7 @@ namespace BH.Engine.Geometry
             //---------------Contained-By-External-Boundary-----------------//
             count = internalBoundaries.Count;
 
-            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve || y is Ellipse) || externalBoundary.IIsContaining(x)).ToList();
+            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve || y is Ellipse) || externalBoundary.IIsContaining(x, true, tolerance)).ToList();
 
             if (internalBoundaries.Count != count)
             {
@@ -151,10 +152,11 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        [Description("Distributes the edge curve and creates a set of boundary planar surfaces")]
-        [Input("boundaryCurves", "Boundary curves to be used. Non-planar and non-closed curves are ignored")]
-        [Output("PlanarSurface", "List of planar surfaces created")]
+        
+        [Description("Distributes the edge curve and creates a set of boundary planar surfaces.")]
+        [Input("boundaryCurves", "Boundary curves to be used. Non-planar and non-closed curves are ignored.")]
+        [Output("PlanarSurface", "List of planar surfaces created.")]
+        [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(System.Collections.Generic.List<BH.oM.Geometry.ICurve)")]
         public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves, double tolerance = Tolerance.Distance)
         {
             List<ICurve> checkedCurves = boundaryCurves.Where(x => x.IIsClosed(tolerance) && x.IIsPlanar(tolerance)).ToList();
