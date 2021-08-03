@@ -43,9 +43,9 @@ namespace BH.Engine.Geometry
         [PreviousVersion("4.3", "BH.Engine.Geometry.Query.IArea(BH.oM.Geometry.IGeometry)")]
         public static double IArea(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
-            if (geometry == null)
+            if (geometry == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
 
@@ -65,9 +65,9 @@ namespace BH.Engine.Geometry
         
         public static double Area(this Arc curve, double tolerance = Tolerance.Distance)
         {
-            if (curve == null)
+            if (curve == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
             
@@ -90,9 +90,9 @@ namespace BH.Engine.Geometry
 
         public static double Area(this Circle curve, double tolerance = Tolerance.Distance)
         {
-            if (curve == null)
+            if (curve == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
 
@@ -124,9 +124,9 @@ namespace BH.Engine.Geometry
         
         public static double Area(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
-            if (curve == null)
+            if (curve == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
             
@@ -186,9 +186,9 @@ namespace BH.Engine.Geometry
 
         public static double Area(this Polyline curve, double tolerance = Tolerance.Distance)
         {
-            if (curve == null)
+            if (curve == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
             
@@ -233,9 +233,9 @@ namespace BH.Engine.Geometry
         
         public static double Area(this Mesh mesh, double tolerance = Tolerance.Distance)
         {
-            if (mesh == null)
+            if (mesh == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
             
@@ -267,9 +267,9 @@ namespace BH.Engine.Geometry
         
         public static double Area(this PolySurface pSurf, double tolerance = Tolerance.Distance)
         {
-            if (pSurf == null)
+            if (pSurf == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
             
@@ -286,9 +286,9 @@ namespace BH.Engine.Geometry
         
         public static double Area(this PlanarSurface pSurf, double tolerance = Tolerance.Distance)
         {
-            if (pSurf == null)
+            if (pSurf == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
             
@@ -316,9 +316,9 @@ namespace BH.Engine.Geometry
         
         public static double Area(this Vector v1, Vector v2, double tolerance = Tolerance.Distance)
         {
-            if (v2 == null || v2 == null)
+            if (v2 == null || v2 == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
             
@@ -341,9 +341,9 @@ namespace BH.Engine.Geometry
         
         private static double Area(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
-            if (geometry == null)
+            if (geometry == null || tolerance == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the area of null geometry.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query area as one of the inputs is null.");
                 return double.NaN;
             }
             
