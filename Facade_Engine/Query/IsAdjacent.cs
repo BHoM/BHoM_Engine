@@ -101,7 +101,6 @@ namespace BH.Engine.Facade
         [Input("curve2", "Second crv to check adjacency for.")]
         [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
         [Output("bool", "True if provided lines are adjacent.")]
-
         public static bool IsAdjacentApprox(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1 == null || curve2 == null)
@@ -147,7 +146,6 @@ namespace BH.Engine.Facade
         [Input("curve2", "Second crv to check adjacency for.")]
         [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
         [Output("bool", "True if provided lines are adjacent.")]
-
         public static bool IsAdjacent(this Line curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1 == null || curve2 == null)
@@ -169,7 +167,6 @@ namespace BH.Engine.Facade
         [Input("curve2", "Second crv to check adjacency for.")]
         [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
         [Output("bool", "True if provided lines are adjacent.")]
-
         public static bool IsAdjacent(this Polyline curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1 == null || curve2 == null)
@@ -191,7 +188,6 @@ namespace BH.Engine.Facade
         [Input("curve2", "Second crv to check adjacency for.")]
         [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
         [Output("bool", "True if provided lines are adjacent.")]
-
         public static bool IsAdjacent(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1 == null || curve2 == null)
@@ -216,8 +212,7 @@ namespace BH.Engine.Facade
         [Input("curve2", "Second curve to check adjacency for.")]
         [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
         [Output("bool", "True if provided curves are adjacent.")]
-
-        public static bool IIsAdjacent (this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
+        public static bool IIsAdjacent(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
             if (curve1 == null || curve2 == null)
             {
@@ -233,7 +228,6 @@ namespace BH.Engine.Facade
         [Input("elem2", "Second element to check adjacency for.")]
         [Input("tolerance", "Minimum overlap length to be considered adjacent (0 = curves only touching at endpoints are included).")]
         [Output("bool", "True if provided elements are adjacent.")]
-
         public static bool IIsAdjacent(this IElement1D elem1, IElement1D elem2, double tolerance = Tolerance.Distance)
         {
             if (elem1 == null || elem2 == null)
@@ -252,6 +246,12 @@ namespace BH.Engine.Facade
 
         private static bool IsAdjacent(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
+            if (curve1 == null || curve2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two curves if either is null.");
+                return false;
+            }
+
             Reflection.Compute.RecordWarning($"IsAdjacent is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
             return false;
         }
@@ -260,6 +260,12 @@ namespace BH.Engine.Facade
 
         private static bool IsAdjacent(this IElement1D elem1, IElement1D elem2, double tolerance = Tolerance.Distance)
         {
+            if(elem1 == null || elem2 == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two IElement1Ds if either is null.");
+                return false;
+            }
+
             Reflection.Compute.RecordWarning($"IsAdjacent is not implemented for a combination of {elem1.GetType().Name} and {elem2.GetType().Name}.");
             return false;
         }
