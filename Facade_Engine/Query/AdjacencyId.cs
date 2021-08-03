@@ -46,7 +46,7 @@ namespace BH.Engine.Facade
         [Input("edges", "Adjacency edges.")]
         [Input("elems", "Adjacency elements.")]
         [Output("adjacencyID", "The generated name of the adjacency.")]
-        public static string AdjacencyID(List<IElement1D> edges, List<IElement2D> elems)
+        public static string AdjacencyID(this List<IElement1D> edges, List<IElement2D> elems)
         {
             string separator = "_";
             List<string> adjIDs = new List<string>();
