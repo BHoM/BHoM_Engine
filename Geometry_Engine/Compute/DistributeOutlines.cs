@@ -20,12 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry;
-using System;
-using System.Linq;
 using BH.Engine.Base;
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Collections.Generic;
+
 
 namespace BH.Engine.Geometry
 {
@@ -35,7 +37,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [DeprecatedAttribute("Moved to Common_Engine")]
+        [Description("Distributes outlines into lists representing containing outlines and the outlines that they each contain.")]
+        [Input("outlines", "The outlines to sort.")]
+        [Input("tolerance", "The tolerance to apply when detecting if outlines are closed and contained.")]
+        [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         public static List<List<Polyline>> DistributeOutlines(this List<Polyline> outlines, double tolerance = Tolerance.Distance)
         {
             foreach (Polyline p in outlines)
@@ -75,7 +80,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("Moved to Common_Engine")]
+        [Description("Distributes outlines into lists representing containing outlines and the outlines that they each contain.")]
+        [Input("outlines", "The outlines to sort.")]
+        [Input("tolerance", "The tolerance to apply when detecting if outlines are closed and contained.")]
+        [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         public static List<List<ICurve>> DistributeOutlines(this List<ICurve> outlines, double tolerance = Tolerance.Distance)
         {
             foreach (ICurve p in outlines)
@@ -117,7 +125,11 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [DeprecatedAttribute("Moved to Common_Engine")]
+        [Description("Distributes outlines into lists representing containing outlines and the outlines that they each contain.")]
+        [Input("panels", "The Polylines representing the containing outlines.")]
+        [Input("openings", "The Polylines representing the contained outlines.")]
+        [Input("tolerance", "The tolerance to apply when detecting if outlines are closed and contained.")]
+        [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         private static List<List<Polyline>> DistributeOpenings(this List<Polyline> panels, List<Polyline> openings, double tolerance = Tolerance.Distance)
         {
             List<List<Polyline>> result = new List<List<Polyline>>();
@@ -144,7 +156,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("Moved to Common_Engine")]
+        [Description("Distributes outlines into lists representing containing outlines and the outlines that they each contain.")]
+        [Input("panels", "The PolyCurves representing the containing outlines.")]
+        [Input("openings", "The PolyCurves representing the contained outlines.")]
+        [Input("tolerance", "The tolerance to apply when detecting if outlines are closed and contained.")]
+        [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         private static List<List<PolyCurve>> DistributeOpenings(this List<PolyCurve> panels, List<PolyCurve> openings, double tolerance = Tolerance.Distance)
         {
             List<List<PolyCurve>> result = new List<List<PolyCurve>>();
@@ -171,7 +187,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [DeprecatedAttribute("Moved to Common_Engine")]
+        [Description("Distributes outlines into lists representing containing outlines and the outlines that they each contain.")]
+        [Input("panels", "The curves representing the containing outlines.")]
+        [Input("openings", "The curves representing the contained outlines.")]
+        [Input("tolerance", "The tolerance to apply when detecting if outlines are closed and contained.")]
+        [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         private static List<List<ICurve>> DistributeOpenings(this List<ICurve> panels, List<ICurve> openings, double tolerance = Tolerance.Distance)
         {
             List<List<ICurve>> result = new List<List<ICurve>>();
