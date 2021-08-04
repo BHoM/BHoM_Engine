@@ -49,12 +49,6 @@ namespace BH.Engine.Geometry
                 return new List<List<Polyline>>();
             }
 
-            if (tolerance == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute outlines as tolerance is null.");
-                return new List<List<Polyline>>();
-            }
-
             foreach (Polyline p in outlines)
             {
                 if (!p.IsClosed(tolerance))
@@ -101,12 +95,6 @@ namespace BH.Engine.Geometry
             if (outlines == null || outlines.Where(x => x != null).Count() == 0)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null list of outlines.");
-                return new List<List<ICurve>>();
-            }
-
-            if (tolerance == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute outlines as tolerance is null.");
                 return new List<List<ICurve>>();
             }
 
@@ -162,12 +150,6 @@ namespace BH.Engine.Geometry
                 return new List<List<Polyline>>();
             }
 
-            if (tolerance == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute outlines as tolerance is null.");
-                return new List<List<Polyline>>();
-            }
-
             List<List<Polyline>> result = new List<List<Polyline>>();
             foreach (Polyline p in panels)
             {
@@ -202,12 +184,6 @@ namespace BH.Engine.Geometry
             if (panels == null || panels.Where(x => x != null).Count() == 0 || openings == null || openings.Where(x => x != null).Count() == 0)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null list of panels/openings.");
-                return new List<List<PolyCurve>>();
-            }
-
-            if (tolerance == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute outlines as tolerance is null.");
                 return new List<List<PolyCurve>>();
             }
 
