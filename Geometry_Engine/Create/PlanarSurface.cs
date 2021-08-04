@@ -48,9 +48,6 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (tolerance == double.NaN)
-                tolerance = Tolerance.Distance;
-
             //--------------Planar-External-Boundary-----------------------//
             if (!externalBoundary.IIsPlanar(tolerance))
             {
@@ -173,9 +170,6 @@ namespace BH.Engine.Geometry
                 BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from null curves.");
                 return null;
             }
-
-            if (tolerance == double.NaN)
-                tolerance = Tolerance.Distance;
 
             List<ICurve> checkedCurves = boundaryCurves.Where(x => x.IIsClosed(tolerance) && x.IIsPlanar(tolerance)).ToList();
             List<List<ICurve>> distributed = Compute.DistributeOutlines(checkedCurves, tolerance);
