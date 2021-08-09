@@ -43,16 +43,16 @@ namespace BH.Engine.Geometry
         [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         public static List<List<Polyline>> DistributeOutlines(this List<Polyline> outlines, double tolerance = Tolerance.Distance)
         {
-            if (outlines == null || outlines.Where(x => x != null).Count() == 0)
+            if (outlines == null || outlines.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null list of outlines.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null or empty collection of outlines.");
                 return new List<List<Polyline>>();
             }
 
-            foreach (Polyline p in outlines)
+            if (outlines.Any(p => !p.IIsClosed(tolerance)))
             {
-                if (!p.IsClosed(tolerance))
-                    throw new Exception("All curves need to be closed to create a panel");
+                BH.Engine.Reflection.Compute.RecordError("All outlines need to be closed to create a panel.");
+                return new List<List<Polyline>>();
             }
 
             outlines.Sort(delegate (Polyline p1, Polyline p2)
@@ -92,16 +92,16 @@ namespace BH.Engine.Geometry
         [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         public static List<List<ICurve>> DistributeOutlines(this List<ICurve> outlines, double tolerance = Tolerance.Distance)
         {
-            if (outlines == null || outlines.Where(x => x != null).Count() == 0)
+            if (outlines == null || outlines.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null list of outlines.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null or empty collection of outlines.");
                 return new List<List<ICurve>>();
             }
 
-            foreach (ICurve p in outlines)
+            if (outlines.Any(p => !p.IIsClosed(tolerance)))
             {
-                if (!p.IIsClosed(tolerance))
-                    throw new Exception("All curves need to be closed to create a panel");
+                BH.Engine.Reflection.Compute.RecordError("All outlines need to be closed to create a panel.");
+                return new List<List<ICurve>>();
             }
 
             outlines.Sort(delegate (ICurve p1, ICurve p2)
@@ -144,9 +144,21 @@ namespace BH.Engine.Geometry
         [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         private static List<List<Polyline>> DistributeOpenings(this List<Polyline> panels, List<Polyline> openings, double tolerance = Tolerance.Distance)
         {
-            if (panels == null || panels.Where(x => x != null).Count() == 0 || openings == null || openings.Where(x => x != null).Count() == 0)
+            if (panels == null || panels.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null list of panels/openings.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null or empty collection of panels.");
+                return new List<List<Polyline>>();
+            }
+
+            if (openings == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null collection of openings.");
+                return new List<List<Polyline>>();
+            }
+
+            if (panels.Any(x => x == null) || openings.Any(x => x == null))
+            {
+                BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines consists of a null curve.");
                 return new List<List<Polyline>>();
             }
 
@@ -181,9 +193,21 @@ namespace BH.Engine.Geometry
         [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         private static List<List<PolyCurve>> DistributeOpenings(this List<PolyCurve> panels, List<PolyCurve> openings, double tolerance = Tolerance.Distance)
         {
-            if (panels == null || panels.Where(x => x != null).Count() == 0 || openings == null || openings.Where(x => x != null).Count() == 0)
+            if (panels == null || panels.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null list of panels/openings.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null or empty collection of panels.");
+                return new List<List<PolyCurve>>();
+            }
+
+            if (openings == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null collection of openings.");
+                return new List<List<PolyCurve>>();
+            }
+
+            if (panels.Any(x => x == null) || openings.Any(x => x == null))
+            {
+                BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines consists of a null curve.");
                 return new List<List<PolyCurve>>();
             }
 
@@ -218,9 +242,21 @@ namespace BH.Engine.Geometry
         [Output("distributedOutlines", "Lists representing each set of outlines. For each list, the first outline is the containing outline and the remainder are the outlines it contains.")]
         private static List<List<ICurve>> DistributeOpenings(this List<ICurve> panels, List<ICurve> openings, double tolerance = Tolerance.Distance)
         {
-            if (panels == null || panels.Where(x => x != null).Count() == 0 || openings == null || openings.Where(x => x != null).Count() == 0)
+            if (panels == null || panels.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null list of panels/openings.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null or empty collection of panels.");
+                return new List<List<ICurve>>();
+            }
+
+            if (openings == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot distribute a null collection of openings.");
+                return new List<List<ICurve>>();
+            }
+
+            if (panels.Any(x => x == null) || openings.Any(x => x == null))
+            {
+                BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines consists of a null curve.");
                 return new List<List<ICurve>>();
             }
 
