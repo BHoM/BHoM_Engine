@@ -36,7 +36,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the path of the assembly containing this item")]
+        [Description("Determines whether the assembly the item is housed in is part of a prototype assembly.")]
         public static bool IsPrototype(this object item)
         {
             if (m_CoreAssemblyPaths == null)
@@ -69,5 +69,4 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
-
 
