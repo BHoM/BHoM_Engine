@@ -49,8 +49,14 @@ namespace BH.Engine.Facade
         [Output("effectiveUValue", "Effective U-value result of opening calculated using area weighting.")]
         public static OverallUValue UValueOpeningAW(this Opening opening)
         {
+            if (opening == null)
+            {
+                Reflection.Compute.RecordError($"U-Value can not be calculated for null opening.");
+                return null;
+            }
 
             List<IFragment> glassUValues = opening.GetAllFragments(typeof(UValueGlassCentre));
+
             if (glassUValues.Count <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-value assigned.");
