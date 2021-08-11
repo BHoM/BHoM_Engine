@@ -42,7 +42,7 @@ namespace BH.Engine.Reflection
             if (m_CoreAssemblyPaths == null)
                 ExtractCoreAssemblyPaths();
 
-            return !m_CoreAssemblyPaths.Contains(System.IO.Path.GetFileName(item.IAssemblyPath()));
+            return m_CoreAssemblyPaths.Count > 0 && !m_CoreAssemblyPaths.Contains(System.IO.Path.GetFileName(item.IAssemblyPath()));
         }
 
 
