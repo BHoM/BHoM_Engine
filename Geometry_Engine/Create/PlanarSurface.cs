@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry
         [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>)")]
         public static PlanarSurface PlanarSurface(ICurve externalBoundary, List<ICurve> internalBoundaries = null, double tolerance = Tolerance.Distance)
         {
-            if (externalBoundary == null || internalBoundaries == null || internalBoundaries.Where(x => x != null).Count() == 0)
+            if (externalBoundary == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from null curves.");
                 return null;
