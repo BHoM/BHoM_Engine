@@ -27,6 +27,7 @@ using BH.oM.Geometry;
 using BH.oM.Security.Elements;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Security
 {
@@ -54,9 +55,9 @@ namespace BH.Engine.Security
             Vector perpendicular = direction.Rotate((Math.PI / 180) * 90, Vector.ZAxis);
 
             List<Point> vertices = new List<Point>();
-            Point point1 = cameraDevice.EyePosition.Clone();
-            Point point2 = cameraDevice.TargetPosition.Clone().Translate(perpendicular * (cameraDevice.HorizontalFieldOfView / 2));
-            Point point3 = cameraDevice.TargetPosition.Clone().Translate(perpendicular * ((cameraDevice.HorizontalFieldOfView / 2)) * -1);
+            Point point1 = cameraDevice.EyePosition.DeepClone();
+            Point point2 = cameraDevice.TargetPosition.DeepClone().Translate(perpendicular * (cameraDevice.HorizontalFieldOfView / 2));
+            Point point3 = cameraDevice.TargetPosition.DeepClone().Translate(perpendicular * ((cameraDevice.HorizontalFieldOfView / 2)) * -1);
             vertices.Add(point1);
             vertices.Add(point2);
             vertices.Add(point3);

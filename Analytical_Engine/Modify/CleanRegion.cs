@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,57 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using BH.oM.Analytical.Elements;
-using BH.oM.Facade.Elements;
-using BH.oM.Facade.SectionProperties;
 using BH.Engine.Geometry;
-using BH.Engine.Spatial;
-using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Facade
+namespace BH.Engine.Analytical
 {
-    public static partial class Query
+    public static partial class Modify
     {
-        /***************************************************/
-        /****          Public Methods                   ****/
-        /***************************************************/
-
-        [Description("Creates adjacency ID from adjacency elements.")]
-        [Input("edges", "Adjacency edges.")]
-        [Input("elems", "Adjacency elements.")]
-        [Output("adjacencyID", "The generated name of the adjacency.")]
-        public static string AdjacencyID(List<IElement1D> edges, List<IElement2D> elems)
+        [Description("Takes the perimeter of an IRegion object, collapses it to a polyline, and then cleans it using the Geometry Engine CleanPolyline method.")]
+        [Input("region", "The IRegion to clean the perimeter of.")]
+        [Input("angleTolerance", "The tolerance to be used for calculating angles when collapsing the perimeter to a polyline, and when cleaning the polyline as the tolerance defining a straight line. Default is set to BH.oM.Geometry.Tolerance.Angle.")]
+        [Input("minimumSegmentLength", "The tolerance of how long a segment should be when cleaning the polyline of the region. Default is set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("region", "A region with a cleaned perimeter.")]
+        public static void CleanRegion(this IRegion region, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double minimumSegmentLength = BH.oM.Geometry.Tolerance.Distance)
         {
-            string separator = "_";
-            List<string> adjIDs = new List<string>();
-            if (edges.Count != elems.Count)
+            if (region == null)
             {
-                Reflection.Compute.RecordWarning("edge and element list lengths do not match. Each edge should have a corresponding element, please check your inputs.");
-                return null;
+                BH.Engine.Reflection.Compute.RecordError("Cannot clean the perimeter of a null region.");
+                return;
             }
-            else
-            {
-                for (int i = 0; i < edges.Count; i++)
-                {
-                    IElement1D edge = edges[i];
-                    IElement2D elem = elems[i];
-                    string adjID = "Elem:" + elem.IPrimaryPropertyName() + " " + "Edge:" + edge.IPrimaryPropertyName();
-                    adjIDs.Add(adjID);
-                }
-            }
-            adjIDs.Sort();
-            return string.Join(separator, adjIDs);    
+
+            region.Perimeter = region.Perimeter.ICollapseToPolyline(angleTolerance).CleanPolyline(angleTolerance, minimumSegmentLength);
         }
-
-
     }
 }
-
-

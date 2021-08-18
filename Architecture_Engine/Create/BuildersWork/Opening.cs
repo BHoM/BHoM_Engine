@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -19,33 +19,47 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-using BH.oM.Humans.ViewQuality;
+using BH.oM.Architecture.BuildersWork;
+using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Spatial.ShapeProfiles;
 using System.ComponentModel;
 
-namespace BH.Engine.Humans.ViewQuality
+namespace BH.Engine.Architecture.Elements
 {
     public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Define the method used to set the ViewConen")]
-        [Input("typeNum", "0 = StaticConeArea,1 = DynamicConeArea,2  = ViewFrameArea,3 = Undefined")]
-        public static ViewConeEnum ViewConeType(int typeNum)
+
+        [Description("Created a rectangular BuildersWork opening with given dimensions, in a given coordinate system.")]
+        [InputFromProperty("coordinateSystem")]
+        [Input("height", "Height of the created opening.", typeof(Length))]
+        [Input("width", "Width of the created opening.", typeof(Length))]
+        [InputFromProperty("depth")]
+        [Output("Opening")]
+        public static Opening Opening(Cartesian coordinateSystem, double height, double width, double depth)
         {
-            var enumCount = ViewConeEnum.GetNames(typeof(ViewConeEnum)).Length;
+            RectangleProfile profile = BH.Engine.Spatial.Create.RectangleProfile(height, width);
+            return new Opening { CoordinateSystem = coordinateSystem, Profile = profile, Depth = depth };
+        }
 
-            //last name is undefined so total possible types is enumCount-2
-            if (typeNum > enumCount - 2) typeNum = 0;
+        /***************************************************/
 
-            ViewConeEnum value = (ViewConeEnum)typeNum;
-
-            return value;
+        [Description("Created a circular BuildersWork opening with given dimensions, in a given coordinate system.")]
+        [InputFromProperty("coordinateSystem")]
+        [Input("diameter", "Diameter of the created opening.", typeof(Length))]
+        [InputFromProperty("depth")]
+        [Output("Opening")]
+        public static Opening Opening(Cartesian coordinateSystem, double diameter, double depth)
+        {
+            CircleProfile profile = BH.Engine.Spatial.Create.CircleProfile(diameter);
+            return new Opening { CoordinateSystem = coordinateSystem, Profile = profile, Depth = depth };
         }
 
         /***************************************************/
     }
 }
-
 

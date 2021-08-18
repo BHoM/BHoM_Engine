@@ -150,6 +150,7 @@
     <Compile Include="Query\Cells.cs" />
     <Compile Include="Query\Centroid.cs" />
     <Compile Include="Query\ClosestPoints.cs" />
+    <Compile Include="Query\IsOrthogonal.cs" />
     <Compile Include="Query\IsRigidTransformation.cs" />
     <Compile Include="Query\PrincipalCurvatureAtParameter.cs" />
     <Compile Include="Query\CurveIntersections.cs" />
@@ -161,7 +162,6 @@
     <Compile Include="Query\GetLineSegment.cs" />
     <Compile Include="Query\IsPartiallyContaining.cs" />
     <Compile Include="Query\IsEqual.cs" />
-    <Compile Include="Query\Clone.cs" />
     <Compile Include="Convert\NurbsForm.cs" />
     <Compile Include="Create\Arc.cs" />
     <Compile Include="Create\Circle.cs" />

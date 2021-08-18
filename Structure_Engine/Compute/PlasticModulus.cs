@@ -32,6 +32,7 @@ using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -167,7 +168,7 @@ namespace BH.Engine.Structure
             }
 
             d = 0;
-            return curve.IClone();
+            return curve.DeepClone();
         }
 
         /***************************************************/
@@ -403,7 +404,7 @@ namespace BH.Engine.Structure
                     results = results.Select(y => y.IFlip()).Reverse().ToList();
             }
             else
-                results.Add(arc.Clone());
+                results.Add(arc.DeepClone());
 
             return results;
         }
@@ -428,7 +429,7 @@ namespace BH.Engine.Structure
                     results = results.Select(y => y.IFlip()).ToList();
             }
             else
-                results.Add(circle.Clone());
+                results.Add(circle.DeepClone());
 
             return results;
         }
@@ -450,10 +451,10 @@ namespace BH.Engine.Structure
                     results.Add(new Line() { Start = ptOn, End = line.End });
                 }
                 else
-                    results.Add(line.Clone());
+                    results.Add(line.DeepClone());
             }
             else
-                results.Add(line.Clone());
+                results.Add(line.DeepClone());
 
             return results;
         }

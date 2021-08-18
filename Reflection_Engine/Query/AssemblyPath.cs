@@ -20,59 +20,51 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Analytical.Elements;
-using BH.oM.Facade.Elements;
-using BH.oM.Facade.SectionProperties;
-using BH.Engine.Geometry;
-using BH.Engine.Spatial;
-using BH.oM.Reflection;
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 
-namespace BH.Engine.Facade
+namespace BH.Engine.Reflection
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
-        /****          Public Methods                   ****/
+        /**** Interface Methods                         ****/
         /***************************************************/
 
-        [Description("Returns frame and clear opening areas for an Opening.")]
-        [Input("opening", "Opening to find areas for.")]
-        [MultiOutput(0, "openingArea", "Area of the portion of the opening not covered by the frame as per a projected elevation of the opening.")]
-        [MultiOutput(1, "frameArea", "Adjacent Elements per adjacent edge")]
-        public static Output<double, double> ComponentAreas(this Opening opening)
+        [Description("Return the path of the assembly containing this item")]
+        public static string IAssemblyPath(this object item)
         {
-            if (opening == null)
-            {
-                Reflection.Compute.RecordWarning("Component areas can not be calculated for a null opening.");
-                return new Output<double, double>
-                {
-                    Item1 = double.NaN,
-                    Item2 = double.NaN,
-                };
-            }
+            return AssemblyPath(item as dynamic);
+        }
 
-            IGeometry frameGeo = opening.FrameGeometry2D();
-            double frameArea = 0;
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-            if (frameGeo is PlanarSurface)
-            {
-                PlanarSurface frameSrf = frameGeo as PlanarSurface;
-                frameArea = frameSrf.Area();
-            }
-            double openArea = opening.Area()-frameArea;
+        [Description("Return the path of the assembly containing this method")]
+        public static string AssemblyPath(this MethodBase method)
+        {
+            return method.DeclaringType.Assembly.Location;
+        }
 
-            return new Output<double, double>
-            {
-                Item1 = openArea,
-                Item2 = frameArea,
-            };
+        /***************************************************/
+
+        [Description("Return the path of the assembly containing this type")]
+        public static string AssemblyPath(this Type type)
+        {
+            return type.Assembly.Location;
+        }
+
+        /***************************************************/
+
+        [Description("Return the path of the assembly containing this type of object")]
+        public static string AssemblyPath(object item)
+        {
+            return item.GetType().AssemblyPath();
         }
 
         /***************************************************/

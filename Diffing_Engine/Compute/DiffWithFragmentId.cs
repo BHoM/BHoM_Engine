@@ -77,7 +77,7 @@ namespace BH.Engine.Diffing
             currentObjs.ForEach(o => o.CustomData[customDataIdKey] = o.GetIdFromFragment(fragmentType, fragmentIdProperty));
             pastObjs.ForEach(o => o.CustomData[customDataIdKey] = o.GetIdFromFragment(fragmentType, fragmentIdProperty));
 
-            return DiffWithCustomId(pastObjs, currentObjs, customDataIdKey, diffConfig);
+            return DiffWithCustomId(pastObjs, currentObjs, customDataIdKey, diffConfigCopy);
         }
 
         private static string GetIdFromFragment(this IBHoMObject obj, Type fragmentType, string fragmentIdProperty)

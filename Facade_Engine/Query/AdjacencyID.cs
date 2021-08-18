@@ -27,7 +27,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Analytical.Elements;
 using BH.oM.Facade.Elements;
-using BH.oM.Facade;
 using BH.oM.Facade.SectionProperties;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
@@ -37,52 +36,39 @@ using System.ComponentModel;
 
 namespace BH.Engine.Facade
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns adjacent edges and elements at a provided frame edge for a collection of panels.")]
-        [Input("edge", "Edge to find adjacencies at.")]
-        [Input("elements", "2D elements to use to find edge adjacencies (These should be panels and/or openings).")]
-        [Input("tolerance", "Tolerance is the minimum overlap amount required to consider adjacent.")]
-        [MultiOutput(0, "adjacentEdges", "Adjacent edges.")]
-        [MultiOutput(1, "adjacentElems", "Adjacent Elements per adjacent edge.")]
-        public static Output<List<IElement1D>, List<IElement2D>> EdgeAdjacencies(this IElement1D edge, IEnumerable<IElement2D> elements, double tolerance = Tolerance.Distance)
+        [Description("Creates adjacency ID from adjacency elements.")]
+        [Input("edges", "Adjacency edges.")]
+        [Input("elems", "Adjacency elements.")]
+        [Output("adjacencyID", "The generated name of the adjacency.")]
+        public static string AdjacencyID(this List<IElement1D> edges, List<IElement2D> elems)
         {
-            if (edge == null || elements == null)
+            string separator = "_";
+            List<string> adjIDs = new List<string>();
+            if (edges.Count != elems.Count)
             {
-                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
+                Reflection.Compute.RecordWarning("Edge and element list lengths do not match. Each edge should have a corresponding element, please check your inputs.");
                 return null;
             }
-
-            List<IElement1D> adjEdges = new List<IElement1D>();
-            List<IElement2D> adjElems = new List<IElement2D>();
-
-            foreach (IElement2D elem in elements)
+            else
             {
-                List<IElement1D> edges = elem.IOutlineElements1D();
-
-                foreach (IElement1D refEdge in edges)
+                for (int i = 0; i < edges.Count; i++)
                 {
-                    if (Query.IIsAdjacent(refEdge, edge))
-                    {
-                        adjEdges.Add(refEdge);
-                        adjElems.Add(elem);
-                    }
+                    IElement1D edge = edges[i];
+                    IElement2D elem = elems[i];
+                    string adjID = "Elem:" + elem.IPrimaryPropertyName() + " " + "Edge:" + edge.IPrimaryPropertyName();
+                    adjIDs.Add(adjID);
                 }
             }
-
-            // Return the adjacencies
-            return new Output<List<IElement1D>, List<IElement2D>>
-            {
-                Item1 = adjEdges,
-                Item2 = adjElems,
-            };
+            adjIDs.Sort();
+            return string.Join(separator, adjIDs);    
         }
 
-        /***************************************************/
 
     }
 }

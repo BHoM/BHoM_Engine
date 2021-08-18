@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTarget="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,7 +38,10 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Data_oM, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Data_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Diffing_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
       <Private>False</Private>
@@ -53,6 +56,7 @@
     </Reference>
     <Reference Include="Graphics_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Graphics_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Physical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
@@ -84,6 +88,7 @@
     <Compile Include="Create\Graph\Graph.cs" />
     <Compile Include="Create\Graph\Relation.cs" />
     <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
+    <Compile Include="Modify\CleanRegion.cs" />
     <Compile Include="Modify\Graph\RelationCurves.cs" />
     <Compile Include="Modify\Graph\RemoveEntity.cs" />
     <Compile Include="Modify\Graph\RemoveIsolatedEntities.cs" />
@@ -123,6 +128,7 @@
     <Compile Include="Query\Graph\IsolatedEntities.cs" />
     <Compile Include="Query\InternalElements2D.cs" />
     <Compile Include="Query\IsAligned.cs" />
+    <Compile Include="Query\IsContaining.cs" />
     <Compile Include="Query\IsHorizontal.cs" />
     <Compile Include="Query\IsOutlineQuad.cs" />
     <Compile Include="Query\IsOutlineRectangular.cs" />
@@ -130,9 +136,7 @@
     <Compile Include="Query\IsVertical.cs" />
     <Compile Include="Query\OutlineElements1D.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Compute\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
       <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
@@ -167,17 +171,10 @@
       <Name>Spatial_Engine</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="" />
   <PropertyGroup>
     <PostBuildEvent>
 xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
     </PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

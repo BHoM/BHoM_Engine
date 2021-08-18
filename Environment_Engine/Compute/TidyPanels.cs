@@ -36,13 +36,32 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a list of Environment Panels with overlapping panels split and merged.")]
+        [Description("Returns a list of Environment Panels with overlapping panels split and merged for non-horizontal panels.")]
         [Input("panels", "A collection of Environment Panels to tidy.")]
-        [Output("panels", "A collection of modified Environment Panels with with overlapping panels split and merged.")]
-        public static List<Panel> TidyPanels(this List<Panel> panels)
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle.")]
+        [Input("numericTolerance", "Tolerance for determining whether a calulated number is within a range defined by the tolerance, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("autoFixPanelOrientations", "Whether or not the panels should be flipped away from space")]
+        [Output("panels", "A collection of modified Environment Panels with overlapping panels split and merged.")]
+        [PreviousVersion("4.3", "BH.Engine.Environment.Compute.TidyPanels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
+        public static List<Panel> TidyPanels(this List<Panel> panels, bool autoFixPanelOrientations = true, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double numericTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panels == null)
                 return panels;
+            
+            List<Panel> flipPanels = panels.Where(x =>
+            {
+                double tilt = x.Tilt(distanceTolerance, angleTolerance);
+                return (tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance);
+            }).ToList();
+
+            List<Panel> returnPanels = flipPanels;
+
+            panels = panels.Where(x =>
+            {
+                double tilt = x.Tilt(distanceTolerance, angleTolerance);
+                return !((tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance));
+            }).ToList();
 
             List<Panel> fixedPanels = new List<Panel>();
             List<Panel> splitPanels = panels.SplitPanelsByOverlap();
@@ -71,8 +90,32 @@ namespace BH.Engine.Environment
                 fixedPanels.Add(p);
                 handledPanels.Add(p.BHoM_Guid);
             }
-            
-            return fixedPanels;
+
+            if (autoFixPanelOrientations)
+            {
+                List<Panel> cullDuplicates = new List<Panel>();
+                flipPanels.AddRange(fixedPanels);
+                List<List<Panel>> panelsAsSpaces = flipPanels.ToSpaces();
+                for (int i = 0; i < panelsAsSpaces.Count; i++)
+                {
+                    panelsAsSpaces[i].FlipPanels();
+                    cullDuplicates.AddRange(panelsAsSpaces[i]);
+                }
+
+                cullDuplicates = cullDuplicates.Where(x =>
+                    {
+                        double tilt = x.Tilt(distanceTolerance, angleTolerance);
+                        return (tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance);
+                    }).ToList();
+
+                List<Panel> culledPanels = cullDuplicates.CullDuplicates();
+                foreach (Panel p in culledPanels)
+                    returnPanels.Add(p);
+            }
+            else
+                returnPanels.AddRange(fixedPanels);
+
+            return returnPanels;
         }
     }
 }

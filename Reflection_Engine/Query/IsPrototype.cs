@@ -20,63 +20,53 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Analytical.Elements;
-using BH.oM.Facade.Elements;
-using BH.oM.Facade.SectionProperties;
-using BH.Engine.Geometry;
-using BH.Engine.Spatial;
-using BH.oM.Reflection;
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
-namespace BH.Engine.Facade
+namespace BH.Engine.Reflection
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
-        /****          Public Methods                   ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns frame and clear opening areas for an Opening.")]
-        [Input("opening", "Opening to find areas for.")]
-        [MultiOutput(0, "openingArea", "Area of the portion of the opening not covered by the frame as per a projected elevation of the opening.")]
-        [MultiOutput(1, "frameArea", "Adjacent Elements per adjacent edge")]
-        public static Output<double, double> ComponentAreas(this Opening opening)
+        [Description("Determines whether the assembly the item is housed in is part of a prototype assembly.")]
+        public static bool IsPrototype(this object item)
         {
-            if (opening == null)
-            {
-                Reflection.Compute.RecordWarning("Component areas can not be calculated for a null opening.");
-                return new Output<double, double>
-                {
-                    Item1 = double.NaN,
-                    Item2 = double.NaN,
-                };
-            }
+            if (m_CoreAssemblyPaths == null)
+                ExtractCoreAssemblyPaths();
 
-            IGeometry frameGeo = opening.FrameGeometry2D();
-            double frameArea = 0;
-
-            if (frameGeo is PlanarSurface)
-            {
-                PlanarSurface frameSrf = frameGeo as PlanarSurface;
-                frameArea = frameSrf.Area();
-            }
-            double openArea = opening.Area()-frameArea;
-
-            return new Output<double, double>
-            {
-                Item1 = openArea,
-                Item2 = frameArea,
-            };
+            return m_CoreAssemblyPaths.Count > 0 && !m_CoreAssemblyPaths.Contains(System.IO.Path.GetFileName(item.IAssemblyPath()));
         }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ExtractCoreAssemblyPaths()
+        {
+            string refFile = @"C:\ProgramData\BHoM\Settings\IncludedDLLs.txt";
+
+            if (File.Exists(refFile))
+                m_CoreAssemblyPaths = new HashSet<string>(File.ReadAllLines(refFile).Select(x => System.IO.Path.GetFileName(x)));
+            else
+                m_CoreAssemblyPaths = new HashSet<string>();
+        }
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static HashSet<string> m_CoreAssemblyPaths = null;
 
         /***************************************************/
     }
 }
-
 

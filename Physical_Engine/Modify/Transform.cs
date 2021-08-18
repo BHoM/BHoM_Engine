@@ -30,6 +30,7 @@ using BH.oM.Physical.Elements;
 using System.Linq;
 using BH.oM.Physical.FramingProperties;
 using BH.Engine.Spatial;
+using BH.Engine.Base;
 
 namespace BH.Engine.Physical
 {
@@ -52,7 +53,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            IFramingElement result = framingElement.GetShallowClone() as IFramingElement;
+            IFramingElement result = framingElement.ShallowClone();
             result.Location = result.Location.ITransform(transform);
 
             ConstantFramingProperty property = result.Property as ConstantFramingProperty;
@@ -62,7 +63,7 @@ namespace BH.Engine.Physical
             {
                 if (framingElement.Location is Line)
                 {
-                    ConstantFramingProperty newProperty = property.GetShallowClone() as ConstantFramingProperty;
+                    ConstantFramingProperty newProperty = property.ShallowClone();
                     Vector normalBefore = ((Line)framingElement.Location).ElementNormal(property.OrientationAngle);
                     Vector normalAfter = normalBefore.Transform(transform);
                     newProperty.OrientationAngle = normalAfter.OrientationAngleLinear((Line)result.Location);
@@ -90,7 +91,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            IOpening result = opening.GetShallowClone() as IOpening;
+            IOpening result = opening.ShallowClone();
             result.Location = result.Location?.ITransform(transform);
             return result;
         }
@@ -110,7 +111,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            oM.Physical.Elements.ISurface result = panel.GetShallowClone() as oM.Physical.Elements.ISurface;
+            oM.Physical.Elements.ISurface result = panel.ShallowClone();
             result.Location = result.Location?.ITransform(transform);
             result.Openings = result.Openings?.Select(x => x?.Transform(transform, tolerance)).ToList();
             return result;
@@ -119,5 +120,3 @@ namespace BH.Engine.Physical
         /***************************************************/
     }
 }
-
-

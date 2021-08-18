@@ -53,6 +53,11 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Quantities_oM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
@@ -74,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\CeilingTiles.cs" />
+    <Compile Include="Create\BuildersWork\Opening.cs" />
     <Compile Include="Create\Theatron\TheatronPlan\CircularPlan.cs" />
     <Compile Include="Create\Theatron\TheatronPlan\EightArcPlan.cs" />
     <Compile Include="Create\Theatron\TheatronPlan\FourArcPlan.cs" />
@@ -126,10 +132,13 @@
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
       <Name>Reflection_Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
+      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
+      <Name>Spatial_Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Convert\" />
-    <Folder Include="Create\SettingOut\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

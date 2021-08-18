@@ -28,6 +28,7 @@ using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
 using BH.oM.Security.Elements;
 using System.Linq;
+using BH.Engine.Base;
 
 namespace BH.Engine.Security
 {
@@ -50,7 +51,7 @@ namespace BH.Engine.Security
                 return null;
             }
 
-            CameraDevice result = camera.GetShallowClone() as CameraDevice;
+            CameraDevice result = camera.ShallowClone();
             result.EyePosition = result.EyePosition.Transform(transform);
             result.TargetPosition = result.TargetPosition.Transform(transform);
             return result;
@@ -59,5 +60,4 @@ namespace BH.Engine.Security
         /***************************************************/
     }
 }
-
 

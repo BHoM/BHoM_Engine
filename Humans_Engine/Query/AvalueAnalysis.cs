@@ -22,18 +22,17 @@
 
 using System.Collections.Generic;
 using BH.oM.Geometry;
-using BH.oM.Architecture.Theatron;
 using BH.oM.Humans.ViewQuality;
 using BH.Engine.Geometry;
 using System.Linq;
-
-using Accord.MachineLearning;
-using Accord.Math.Distances;
 using Accord.Collections;
 using System.IO;
 using BH.Engine.Base;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Geometry.CoordinateSystem;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace BH.Engine.Humans.ViewQuality
 {
@@ -42,34 +41,47 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Evaulate Avalues for a single Audience")]
-        [Input("audience", "Audience to evalaute")]
-        [Input("settings", "AvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<Avalue> AvalueAnalysis(Audience audience, AvalueSettings settings, ActivityArea activityArea)
+
+        [PreviousVersion("4.3", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(BH.oM.Humans.ViewQuality.Audience, BH.oM.Humans.ViewQuality.AvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
+        [Description("Evaluate Avalues for a single Audience.")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("playingArea", "Polyline defining the playing area to use in the evaluation. For football stadia this would be the boundary of the pitch but could also be a stage or screen for alternative venue types.")]
+        [Input("settings", "AvalueSettings to configure the evaluation. If none provided default settings are applied.")]
+        [Input("parallelProcess", "Option to run analysis on multiple processors for +- 30% faster processing. When run in parallel the ordered of the list of results will not match the order of spectator's in the audience. " +
+            "Results can be matched to input objects where the result ObjectId matches the BHoM_Guid of the spectator. Default value is false.")]
+        [Output("results", "Collection of Avalue results.")]
+        public static List<Avalue> AvalueAnalysis(this Audience audience, Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
         {
-            if(audience == null || settings == null || activityArea == null)
+            if (audience == null || settings == null || playingArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the AValueAnalysis if the audience, settings, or activity area are null.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AvalueAnalysis if the audience, settings, or playing area are null.");
                 return new List<Avalue>();
             }
-
-            List<Avalue> results = EvaluateAvalue(audience, settings, activityArea);
+            List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, parallelProcess);
             return results;
         }
 
         /***************************************************/
 
-        [Description("Evaulate Avalues for a List of Audience")]
-        [Input("audience", "Audience to evalaute")]
-        [Input("settings", "AvalueSettings to configure the evaluation")]
-        [Input("activityArea", "ActivityArea to use in the evaluation")]
-        public static List<List<Avalue>> AvalueAnalysis(List<Audience> audience, AvalueSettings settings, ActivityArea activityArea)
+        [PreviousVersion("4.3", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(System.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQuality.AvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
+        [Description("Evaluate Avalues for a List of Audience.")]
+        [Input("audience", "Audience to evaluate.")]
+        [Input("playingArea", "Polyline defining the playing area to use in the evaluation. For football stadia this would be the boundary of the pitch but could also be a stage or screen for alternative venue types.")]
+        [Input("settings", "AvalueSettings to configure the evaluation. If none provided default settings are applied.")]
+        [Input("parallelProcess", "Option to run analysis on multiple processors for +- 30% faster processing. When run in parallel the ordered of the list of results will not match the order of spectator's in the audience. " +
+            "Results can be matched to input objects where the result ObjectId matches the BHoM_Guid of the spectator. Default value is false.")]
+        [Output("results", "Collection of Avalue results.")]
+        public static List<List<Avalue>> AvalueAnalysis(this List<Audience> audience, Polyline playingArea, AvalueSettings settings = null, bool parallelProcess = false)
         {
             List<List<Avalue>> results = new List<List<Avalue>>();
-            foreach(Audience a in audience)
+            if (audience == null || settings == null || playingArea == null)
             {
-                results.Add(EvaluateAvalue(a, settings, activityArea));
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the AvalueAnalysis if the audience, settings, or playing area are null.");
+                return results;
+            }
+            foreach (Audience a in audience)
+            {
+                results.Add(EvaluateAvalue(a, settings, playingArea, parallelProcess));
             }
             return results;
         }
@@ -77,25 +89,49 @@ namespace BH.Engine.Humans.ViewQuality
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-
-        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, ActivityArea activityArea)
+        private static List<Avalue> EvaluateAvalue(Audience audience, AvalueSettings settings, Polyline playingArea, bool parallelProcess)
         {
-            List<Avalue> results = new List<Avalue>();
-            KDTree<Spectator> spectatorTree = null;
-            if (settings.CalculateOcclusion) spectatorTree = SetKDTree(audience);
 
-            foreach (Spectator s in audience.Spectators)
+            if (!SetGlobals(settings))
+                return new List<Avalue>();
+
+            if (m_AvalueSettings.CalculateOcclusion) SetKDTree(audience);
+
+            if (parallelProcess)
             {
-                Vector rowVector = Geometry.Query.CrossProduct(Vector.ZAxis, s.Head.PairOfEyes.ViewDirection);
-                Vector viewVect = activityArea.ActivityFocalPoint - s.Head.PairOfEyes.ReferenceLocation;
-                results.Add(ClipView(s, rowVector, viewVect, settings, activityArea, spectatorTree));
+                ConcurrentBag<Avalue> resultCollection = new ConcurrentBag<Avalue>();
+
+                Parallel.ForEach(audience.Spectators, s =>
+                {
+                    resultCollection.Add(ClipView(s, s.SetViewVector(), playingArea));
+                });
+
+                return resultCollection.ToList();
             }
-            return results;
+            else
+            {
+                List<Avalue> results = new List<Avalue>();
+                foreach (Spectator s in audience.Spectators)
+                {
+                    results.Add(ClipView(s, s.SetViewVector(), playingArea));
+                }
+                return results;
+            }
         }
 
         /***************************************************/
 
-        private static KDTree<Spectator> SetKDTree(Audience audience)
+        private static Vector SetViewVector(this Spectator spectator)
+        {
+            if (m_AvalueSettings.FocalPoint == null)
+                return spectator.Head.PairOfEyes.ViewDirection;
+            else
+                return m_AvalueSettings.FocalPoint - spectator.Head.PairOfEyes.ReferenceLocation;
+        }
+
+        /***************************************************/
+
+        private static void SetKDTree(Audience audience)
         {
             List<double[]> points = new List<double[]>();
 
@@ -104,59 +140,70 @@ namespace BH.Engine.Humans.ViewQuality
                 double[] pt = new double[] { s.Head.PairOfEyes.ReferenceLocation.X, s.Head.PairOfEyes.ReferenceLocation.Y, s.Head.PairOfEyes.ReferenceLocation.Z };
                 points.Add(pt);
             }
-            // To create a tree from a set of points, we use
-            KDTree<Spectator> tree = KDTree.FromData<Spectator>(points.ToArray(),audience.Spectators.ToArray(),true);
+            Audience clone = audience.DeepClone();
 
-            return tree;
+            m_KDTree = KDTree.FromData<Spectator>(points.ToArray(), clone.Spectators.ToArray(), true);
+
         }
-        
+
         /***************************************************/
 
-        private static Avalue ClipView(Spectator spectator, Vector rowV, Vector viewVect, AvalueSettings settings, ActivityArea activityArea, KDTree<Spectator> tree)
+        private static Avalue ClipView(Spectator spectator, Vector viewVect, Polyline activityArea)
         {
             Avalue result = new Avalue();
-            
+
+            result.ObjectId = spectator.BHoM_Guid;
+            result.ReferencePoint = spectator.Head.PairOfEyes.ReferenceLocation;
+
+            Vector rowV = Geometry.Query.CrossProduct(Vector.ZAxis, spectator.Head.PairOfEyes.ViewDirection);
             Vector viewY = Geometry.Query.CrossProduct(viewVect, rowV);
             Vector viewX = Geometry.Query.CrossProduct(viewVect, viewY);
-            
+            //viewX reversed to ensure cartesian Z matches the view direction
+            viewX = viewX.Reverse();
+            viewX = viewX.Normalise();
+            viewY = viewY.Normalise();
             viewVect = viewVect.Normalise();
-            Vector shift = viewVect * settings.EyeFrameDist;
 
-            Point shiftOrigin = spectator.Head.PairOfEyes.ReferenceLocation + shift;
-            Point viewClipOrigin = spectator.Head.PairOfEyes.ReferenceLocation + 2 * shift;
+            //local cartesian
+            Cartesian local = Geometry.Create.CartesianCoordinateSystem(spectator.Head.PairOfEyes.ReferenceLocation, viewX, viewY);
 
-            //planes need orientation
-            Plane viewPlane = Geometry.Create.Plane(shiftOrigin, viewVect);
-            Plane viewClip = Geometry.Create.Plane(viewClipOrigin, viewVect);
-            //get the view cone
-            result.ViewCone = Create.ViewCone(viewY, viewX, shiftOrigin, 1, settings.ConeType);
+            //get the ConeOfVision
+            TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
+            result.ConeOfVision = m_AvalueSettings.EffectiveConeOfVision.Transform(transform);
+
+            //planes where the calculation takes place
+            Plane viewPlane = result.ConeOfVision.FitPlane();
+            //make sure normal is viewvect
+            viewPlane.Normal = viewVect;
+
             //find part of activity area to project
-            Polyline clippedArea = ClipActivityArea(viewClip, activityArea);
+            Polyline clippedArea = ReduceActivityArea(viewPlane, activityArea);
+
             //project the pitch
             result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
-            //clip the pitch against the viewcone
-            
-            result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ViewCone, spectator, viewPlane);
+
+            //clip the projected pitch against the view cone
+            result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ConeOfVision);
+
             //calculate the avalue
-            result.AValue = result.ClippedActivityArea.Sum(x=>x.Area())/result.ViewCone.ConeArea*100;
-            //clip heads infront
-            if (settings.CalculateOcclusion)
+            result.AValue = result.ClippedActivityArea.Area() / result.ConeOfVision.Area() * 100;
+
+            //clip heads in front
+            if (m_AvalueSettings.CalculateOcclusion)
             {
-                List<Spectator> occludingSpectators = GetPotentialOcclusion(spectator, tree, 3);
-                if (occludingSpectators.Count > 0)
+                List<Spectator> infront = GetSpectatorsInfront(spectator, m_ConeOfVisionAngle);
+                if (infront.Count > 0)
                 {
-                    
-                    List <Polyline> occludingClippedHeads = ClipHeads(occludingSpectators, spectator, viewPlane, result.ClippedActivityArea);
+
+                    List<Polyline> occludingClippedHeads = ClipHeads(infront, spectator, viewPlane, result.ClippedActivityArea);
                     if (occludingClippedHeads.Count > 0)
                     {
-                        result.Heads = occludingClippedHeads;
-                        result.Occulsion = occludingClippedHeads.Sum(x => x.Area()) / result.ViewCone.ConeArea * 100;
-                        CheckPolylineGeo(occludingClippedHeads);
+                        result.OccludingHeads = occludingClippedHeads;
+                        result.Occulsion = occludingClippedHeads.Sum(x => x.Area()) / result.ConeOfVision.Area() * 100;
                     }
-                    
+
                 }
-                
-                
+
             }
 
             return result;
@@ -164,78 +211,45 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static void CheckPolylineGeo(List<Polyline> tests)
+        private static List<Polyline> ClipHeads(List<Spectator> nearSpecs, Spectator current, Plane viewPlane, Polyline clippedArea)
         {
-            StreamWriter sw = new StreamWriter("geodump.txt");
-            foreach(Polyline pl in tests)
-            {
-                foreach(Point p in pl.ControlPoints)
-                {
-                    sw.Write(string.Format("{0},{1},{2},",p.X,p.Y,p.Z));
-                }
-                sw.WriteLine("");
-            }
-            sw.WriteLine("");
-            sw.Close();
-        }
-
-        /***************************************************/
-
-        private static List<Spectator> GetPotentialOcclusion(Spectator spectator,KDTree<Spectator> tree,double neighborhoodRadius)
-        {
-            double[] query = new double[] { spectator.Head.PairOfEyes.ReferenceLocation.X, spectator.Head.PairOfEyes.ReferenceLocation.Y, spectator.Head.PairOfEyes.ReferenceLocation.Z };
-            var neighbours = tree.Nearest(query, radius: neighborhoodRadius);
-            List<Spectator> infront = new List<Spectator>();
-            foreach(var n in neighbours)
-            {
-                var nodeZ = n.Node.Position[2];
-                if (nodeZ < spectator.Head.PairOfEyes.ReferenceLocation.Z)
-                {
-                    infront.Add(n.Node.Value);
-                }
-            }
-            infront.ForEach(x => x.HeadOutline = Create.GetHeadOutline(x.Head,3));
-
-            return infront;
-        }
-
-        /***************************************************/
-        private static List<Polyline> ClipHeads(List<Spectator> nearSpecs, Spectator current, Plane viewPlane, List<Polyline> clippedArea)
-        {
-            //using the project activity area to clip heads infront that over lap
+            //using the project activity area to clip heads in front that over lap
             List<Polyline> clippedHeads = new List<Polyline>();
             foreach (Spectator s in nearSpecs)
             {
-                foreach (Polyline pl in clippedArea)
+                Point p = viewPlane.ClosestPoint(s.Head.PairOfEyes.ReferenceLocation);
+                //if distance to view plane is in range
+                if (s.Head.PairOfEyes.ReferenceLocation.Distance(p) <= m_AvalueSettings.FarClippingPlaneDistance)
                 {
-                    Polyline projectedHead = ProjectPolylineToPlane(viewPlane, s.HeadOutline, current.Head.PairOfEyes.ReferenceLocation);
 
-                    Polyline subject = projectedHead.DeepClone();
-                    int np = subject.ControlPoints.Count;
-                    List<Polyline> clippedHead = Geometry.Compute.BooleanIntersection(pl,subject);
-                    if (clippedHead[0].Area() > 0)
+                    Polyline projectedHead = ProjectPolylineToPlane(viewPlane, s.HeadOutline, current.Head.PairOfEyes.ReferenceLocation);
+                    if (projectedHead.ControlPoints.Count == 0)
+                        continue;
+                    List<Polyline> clippedHead = Geometry.Compute.BooleanIntersection(clippedArea, projectedHead);
+                    if (clippedHead.Count > 0)
                     {
                         clippedHeads.Add(clippedHead[0]);
                     }
-                    
                 }
+
             }
             return clippedHeads;
         }
 
         /***************************************************/
 
-        private static Polyline ClipActivityArea(Plane clipping, ActivityArea activityArea)
+        private static Polyline ReduceActivityArea(Plane clipping, Polyline activityArea)
         {
+            //just the part in front of the spectator's view plane
             List<Point> control = new List<Point>();
-            foreach(Line seg in activityArea.PlayingArea.SubParts())
+            foreach (Line seg in activityArea.SubParts())
             {
-                //is start infront or behind plane?
+                //is start in front or behind plane?
                 Point s = seg.StartPoint();
                 Point e = clipping.Origin;
                 Vector v = Geometry.Create.Vector(e) - Geometry.Create.Vector(s);
                 double d = Geometry.Query.DotProduct(clipping.Normal, v);
-                if (d < 0)//infront
+                if (d < 0)//in front
                 {
                     control.Add(s);
                 }
@@ -250,8 +264,9 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static Polyline ProjectPolylineToPlane(Plane plane,Polyline polyline,Point viewPoint)
+        private static Polyline ProjectPolylineToPlane(Plane plane, Polyline polyline, Point viewPoint)
         {
+            //perspective projection to plane of polyline
             List<Point> control = new List<Point>();
             foreach (Point p in polyline.ControlPoints)
             {
@@ -268,22 +283,66 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        private static List<Polyline> ClipActivityArea(Polyline projected, ViewCone viewCone, Spectator origin, Plane viewPlane)
+        private static Polyline ClipActivityArea(Polyline projected, Polyline viewCone)
         {
-            List<Polyline> clippedArea = new List<Polyline>();
-            for (int i = 0; i < viewCone.ConeBoundary.Count; i++)
-            {
-                var subject = projected.DeepClone();
-                List<Polyline> temp = Geometry.Compute.BooleanIntersection(viewCone.ConeBoundary[i], subject);
-
-                if(temp.Count>0)clippedArea.Add(temp[0]);
-            }
-            return clippedArea;
+            List<Polyline> temp = Geometry.Compute.BooleanIntersection(viewCone, projected);
+            if (temp.Count > 0)
+                return temp[0];
+            else
+                return null;
         }
-        
+
         /***************************************************/
-        
+
+        private static bool SetGlobals(AvalueSettings settings)
+        {
+
+            m_AvalueSettings = settings == null ? new AvalueSettings() : settings;
+            m_FarClippingPlaneDistance = settings.FarClippingPlaneDistance;
+
+            if (m_AvalueSettings.EffectiveConeOfVision.ControlPoints.Count == 0)
+            {
+                double halfWidth = m_AvalueSettings.EffectiveConeOfVisionWidth / 2;
+                double halfHeight = m_AvalueSettings.EffectiveConeOfVisionHeight / 2;
+                List<Point> points = new List<Point>()
+                {
+                    Geometry.Create.Point(-halfWidth, -halfHeight, m_AvalueSettings.NearClippingPlaneDistance),
+                    Geometry.Create.Point( halfWidth, -halfHeight, m_AvalueSettings.NearClippingPlaneDistance),
+                    Geometry.Create.Point( halfWidth,  halfHeight, m_AvalueSettings.NearClippingPlaneDistance),
+                    Geometry.Create.Point(-halfWidth,  halfHeight, m_AvalueSettings.NearClippingPlaneDistance),
+                    Geometry.Create.Point(-halfWidth, -halfHeight, m_AvalueSettings.NearClippingPlaneDistance)
+                };
+
+                m_AvalueSettings.EffectiveConeOfVision = Geometry.Create.Polyline(points);
+                Reflection.Compute.RecordNote("No Cone Of Vision was provided by the user the default Cone Of Vision has been created.");
+            }
+
+            if (!m_AvalueSettings.EffectiveConeOfVision.IsPlanar() || !m_AvalueSettings.EffectiveConeOfVision.IsPlanar())
+            {
+                Reflection.Compute.RecordError("Cone Of Vision should be planar and closed.");
+                return false;
+            }
+            //get the view angle from the cone
+            double halfAngle = double.MinValue;
+            foreach (Point p in m_AvalueSettings.EffectiveConeOfVision.ControlPoints)
+            {
+                //project to XZ and make vector
+
+                Vector v = Geometry.Create.Vector(new Point(), p.Project(Plane.XZ));
+                double a = Geometry.Query.Angle(Vector.ZAxis, v);
+                if (a > halfAngle)
+                    halfAngle = a;
+            }
+            m_ConeOfVisionAngle = halfAngle * 2;
+            return true;
+        }
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static AvalueSettings m_AvalueSettings;
+        private static double m_ConeOfVisionAngle;
+        private static KDTree<Spectator> m_KDTree;
     }
 }
-
-
