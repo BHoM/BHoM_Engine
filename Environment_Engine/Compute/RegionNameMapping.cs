@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,57 +20,42 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using BH.oM.Analytical.Elements;
-using BH.oM.Facade.Elements;
-using BH.oM.Facade.SectionProperties;
+using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.Engine.Spatial;
-using BH.oM.Reflection;
+
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Facade
+namespace BH.Engine.Environment
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
-        /****          Public Methods                   ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates adjacency ID from adjacency elements.")]
-        [Input("edges", "Adjacency edges.")]
-        [Input("elems", "Adjacency elements.")]
-        [Output("adjacencyID", "The generated name of the adjacency.")]
-        public static string AdjacencyID(List<IElement1D> edges, List<IElement2D> elems)
+        [Description("Maps a collection of names to a collection of regions by checking if points connected to the names are contained within the region perimeters")]
+        [Input("regions", "A collection of regions")]
+        [Input("points", "A collection of points connected to the space names and located within the region perimeters")]
+        [Input("names", "A collection of names to map to the regions")]
+        [Output("regions", "The regions with the mapped names")]
+        public static List<IRegion> RegionNameMapping(List<IRegion> regions, List<Point> points, List<string> names, double tolerance = Tolerance.Distance)
         {
-            string separator = "_";
-            List<string> adjIDs = new List<string>();
-            if (edges.Count != elems.Count)
+            List<IRegion> sortedRegions = regions.OrderBy(x => x.Perimeter.IArea()).ToList();
+            for (int x = 0; x < points.Count; x++)
             {
-                Reflection.Compute.RecordWarning("edge and element list lengths do not match. Each edge should have a corresponding element, please check your inputs.");
-                return null;
+                IRegion selRegion = regions.Where(y => y.Perimeter.IIsContaining(new List<Point> { points[x] }, true, tolerance)).FirstOrDefault();
+                if (selRegion != null)
+                    selRegion.Name = names[x];
             }
-            else
-            {
-                for (int i = 0; i < edges.Count; i++)
-                {
-                    IElement1D edge = edges[i];
-                    IElement2D elem = elems[i];
-                    string adjID = "Elem:" + elem.IPrimaryPropertyName() + " " + "Edge:" + edge.IPrimaryPropertyName();
-                    adjIDs.Add(adjID);
-                }
-            }
-            adjIDs.Sort();
-            return string.Join(separator, adjIDs);    
+            return regions;
         }
-
-
     }
 }
-
-

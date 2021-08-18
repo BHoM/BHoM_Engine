@@ -41,7 +41,6 @@ namespace BH.Engine.Environment
         [Input("panel", "A single Environment Panel to add the space names to")]
         [Input("spaceNames", "The collection of names of the spaces the panel is connected to")]
         [Output("panel", "A modified Environment Panel with the provided space names listed as the connecting spaces")]
-        [PreviousVersion("4.2", "BH.Engine.Environment.Modify.SetAdjancentSpaces(BH.oM.Environment.Elements.Panel, System.Collections.Generic.List<System.String>)")]
         public static Panel SetAdjacentSpaces(this Panel panel, List<string> spaceNames)
         {
             if(panel == null)

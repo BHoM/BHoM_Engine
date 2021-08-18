@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -19,34 +19,36 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-using BH.oM.Humans.ViewQuality;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using BH.oM.Analytical.Elements;
+using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Humans.ViewQuality
+namespace BH.Engine.Analytical
 {
-    public static partial class Create
+    public static partial class Modify
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-        [Description("Define the settings for an AvalueAnalysis")]
-        [Input("conetype", "Type of view cone")]
-        [Input("calcOcclusion", "Evalaute occulsion of the playing area by the spectators in front")]
-        
-        public static AvalueSettings AvalueSettings(ViewConeEnum conetype, bool calcOcclusion)
+        [Description("Takes the perimeter of an IRegion object, collapses it to a polyline, and then cleans it using the Geometry Engine CleanPolyline method.")]
+        [Input("region", "The IRegion to clean the perimeter of.")]
+        [Input("angleTolerance", "The tolerance to be used for calculating angles when collapsing the perimeter to a polyline, and when cleaning the polyline as the tolerance defining a straight line. Default is set to BH.oM.Geometry.Tolerance.Angle.")]
+        [Input("minimumSegmentLength", "The tolerance of how long a segment should be when cleaning the polyline of the region. Default is set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("region", "A region with a cleaned perimeter.")]
+        public static void CleanRegion(this IRegion region, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double minimumSegmentLength = BH.oM.Geometry.Tolerance.Distance)
         {
-            return new AvalueSettings
+            if (region == null)
             {
+                BH.Engine.Reflection.Compute.RecordError("Cannot clean the perimeter of a null region.");
+                return;
+            }
 
-                ConeType = conetype,
-
-                CalculateOcclusion = calcOcclusion,
-
-            };
+            region.Perimeter = region.Perimeter.ICollapseToPolyline(angleTolerance).CleanPolyline(angleTolerance, minimumSegmentLength);
         }
-        /***************************************************/
     }
 }
-
-

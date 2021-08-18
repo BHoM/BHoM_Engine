@@ -27,6 +27,7 @@ using BH.oM.Geometry;
 using BH.oM.Security.Elements;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Security
 {
@@ -39,7 +40,6 @@ namespace BH.Engine.Security
         [Description("Gets the camera's geometry as a closed ICurve cone-shape. Method required for automatic display in UI packages.")]
         [Input("cameraDevice", "Camera to get the ICurve from.")]
         [Output("icurve", "The geometry of the Camera.")]
-        [PreviousVersion("4.2", "BH.Engine.MEP.Query.Geometry(BH.oM.Security.Elements.CameraDevice)")]
         public static ICurve Geometry(this CameraDevice cameraDevice)
         {
             if(cameraDevice == null)
@@ -55,9 +55,9 @@ namespace BH.Engine.Security
             Vector perpendicular = direction.Rotate((Math.PI / 180) * 90, Vector.ZAxis);
 
             List<Point> vertices = new List<Point>();
-            Point point1 = cameraDevice.EyePosition.Clone();
-            Point point2 = cameraDevice.TargetPosition.Clone().Translate(perpendicular * (cameraDevice.HorizontalFieldOfView / 2));
-            Point point3 = cameraDevice.TargetPosition.Clone().Translate(perpendicular * ((cameraDevice.HorizontalFieldOfView / 2)) * -1);
+            Point point1 = cameraDevice.EyePosition.DeepClone();
+            Point point2 = cameraDevice.TargetPosition.DeepClone().Translate(perpendicular * (cameraDevice.HorizontalFieldOfView / 2));
+            Point point3 = cameraDevice.TargetPosition.DeepClone().Translate(perpendicular * ((cameraDevice.HorizontalFieldOfView / 2)) * -1);
             vertices.Add(point1);
             vertices.Add(point2);
             vertices.Add(point3);

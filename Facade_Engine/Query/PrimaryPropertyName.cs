@@ -50,6 +50,9 @@ namespace BH.Engine.Facade
         [Output("propName", "The name of the element's construction property")]
         public static string IPrimaryPropertyName(this IElement2D elem)
         {
+            if (elem == null)
+                return null;
+
             return PrimaryPropertyName(elem as dynamic);
         }
 
@@ -58,6 +61,9 @@ namespace BH.Engine.Facade
         [Output("propName", "The name of the element's construction property")]
         public static string IPrimaryPropertyName(this IElement1D elem)
         {
+            if (elem == null)
+                return null; 
+            
             return PrimaryPropertyName(elem as dynamic);
         }
 

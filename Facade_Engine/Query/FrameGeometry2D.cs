@@ -51,6 +51,12 @@ namespace BH.Engine.Facade
 
         public static IGeometry FrameGeometry2D(this Opening opening)
         {
+            if (opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the Frame Geometry of a null opening.");
+                return null;
+            }
+
             PolyCurve extCrv = opening.Geometry();
             List<double> widths = new List<double>();
 
@@ -59,8 +65,7 @@ namespace BH.Engine.Facade
                 BH.Engine.Reflection.Compute.RecordWarning("This method only works on planar curves. Opening " + opening.BHoM_Guid + " has non-planar curves and will be ignored.");
                 return null;
             }
-
-            Plane openingPlane = extCrv.FitPlane();            
+            
             foreach (FrameEdge edge in opening.Edges)
             {
                 double width = edge.FrameEdgeProperty.WidthIntoOpening();

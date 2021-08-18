@@ -48,6 +48,16 @@ namespace BH.Engine.Facade
         [MultiOutput(1, "frameArea", "Adjacent Elements per adjacent edge")]
         public static Output<double, double> ComponentAreas(this Opening opening)
         {
+            if (opening == null)
+            {
+                Reflection.Compute.RecordWarning("Component areas can not be calculated for a null opening.");
+                return new Output<double, double>
+                {
+                    Item1 = double.NaN,
+                    Item2 = double.NaN,
+                };
+            }
+
             IGeometry frameGeo = opening.FrameGeometry2D();
             double frameArea = 0;
 

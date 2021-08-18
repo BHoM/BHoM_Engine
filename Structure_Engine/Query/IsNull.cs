@@ -24,8 +24,10 @@ using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Structure.Constraints;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.Fragments;
 using BH.oM.Structure.Loads;
 using BH.oM.Structure.MaterialFragments;
+using BH.oM.Structure.Results;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Structure.SurfaceProperties;
@@ -45,7 +47,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Node, System.String)")]
         [Description("Checks if a Node or its defining properties are null and outputs relevant error message.")]
         [Input("node", "The Node to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -70,7 +71,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Bar, System.String)")]
         [Description("Checks if a Bar or its defining properties are null and outputs relevant error message.")]
         [Input("bar", "The Bar to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -90,7 +90,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.FEMesh, System.String, System.Boolean, System.Boolean, System.Collections.Generic.List<System.Int32>)")]
         [Description("Checks if an FEMesh or its defining properties are null and outputs relevant error message.")]
         [Input("mesh", "The FEMesh to test for null.")]
         [Input("methodName", "Optional name of the method to reference in the error message.")]
@@ -150,7 +149,6 @@ namespace BH.Engine.Structure
             return isNull;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.FEMeshFace, BH.oM.Structure.Elements.FEMesh, System.String)")]
         [Description("Checks if an FEMeshFace or its defining properties are null and outputs relevant error message.")]
         [Input("face", "The FEMeshFace to test for null.")]
         [Input("mesh", "The FEMesh to which the face belongs.")]
@@ -172,7 +170,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.FEMeshFace, System.String)")]
         [Description("Checks if an FEMeshFace or its defining properties are null and outputs relevant error message.")]
         [Input("face", "The FEMeshFace to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -200,7 +197,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Panel, System.String)")]
         [Description("Checks if a Panel or its defining properties are null and outputs relevant error message.")]
         [Input("panel", "The Panel to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -255,7 +251,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [PreviousVersion("4.2", "BH.Engine.Structure.Compute.NullCheck(BH.oM.Structure.Elements.Edge, System.String)")]
         [Description("Checks if a Edge or its defining properties are null and outputs relevant error message.")]
         [Input("edge", "The Edge to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -431,6 +426,70 @@ namespace BH.Engine.Structure
             if (loadCase == null)
             {
                 ErrorMessage(methodName, "Case", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a ReinforcementDensity is null and outputs relevant error message.")]
+        [Input("reinforcementDensity", "The ReinforcementDensity to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the ReinforcementDensity is null.")]
+        public static bool IsNull(this ReinforcementDensity reinforcementDensity, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (reinforcementDensity == null)
+            {
+                ErrorMessage(methodName, "ReinforcementDensity", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a BarRequiredArea is null and outputs relevant error message.")]
+        [Input("barRequiredArea", "The BarRequiredArea to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the BarRequiredArea is null.")]
+        public static bool IsNull(this BarRequiredArea barRequiredArea, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (barRequiredArea == null)
+            {
+                ErrorMessage(methodName, "BarRequiredArea", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a MeshRequiredArea is null and outputs relevant error message.")]
+        [Input("meshRequiredArea", "The MeshRequiredArea to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the MeshRequiredArea is null.")]
+        public static bool IsNull(this MeshRequiredArea meshRequiredArea, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (meshRequiredArea == null)
+            {
+                ErrorMessage(methodName, "MeshRequiredArea", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a BarFofrce is null and outputs relevant error message.")]
+        [Input("barForce", "The BarFofrce to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the BarForce is null.")]
+        public static bool IsNull(this BarForce barForce, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (barForce == null)
+            {
+                ErrorMessage(methodName, "BarForce", msg);
                 return true;
             }
 

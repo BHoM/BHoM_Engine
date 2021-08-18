@@ -40,13 +40,18 @@ namespace BH.Engine.Environment
 
         [Description("Returns the sides of a given environment object.")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have geometrical sides.")]
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle.")]
+        [Input("numericTolerance", "Tolerance for determining whether a calulated number is within a range defined by the tolerance, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
         [Output("curves", "ICurve representations of the sides of the object.")]
-        public static List<ICurve> Sides(this IEnvironmentObject environmentObject)
+        [PreviousVersion("4.3", "BH.Engine.Environment.Query.Sides(BH.oM.Environment.IEnvironmentObject)")]
+        public static List<ICurve> Sides(this IEnvironmentObject environmentObject, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double numericTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (environmentObject == null) 
                 return null;
 
-            if (environmentObject.Tilt() == 0 || environmentObject.Tilt() == 180)
+            double tilt = environmentObject.Tilt(distanceTolerance, angleTolerance);
+            if ((tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance))
             {
                 BH.Engine.Reflection.Compute.RecordWarning("Cannot find the sides of a horizontal IEnvironmentObject");
                 return null;

@@ -54,11 +54,6 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Matter_Engine">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Matter_Engine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="MEP_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\MEP_oM.dll</HintPath>
       <Private>False</Private>
@@ -123,6 +118,10 @@
       <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
       <Name>Geometry_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj">
+      <Project>{65198eea-b572-418f-b77d-b348082ec92e}</Project>
+      <Name>Matter_Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
       <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>

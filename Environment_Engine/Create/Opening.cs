@@ -32,6 +32,7 @@ using BH.oM.Geometry;
 using BH.oM.Environment.Configuration;
 using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Engine.Environment
 {
@@ -62,7 +63,7 @@ namespace BH.Engine.Environment
                 return null;
             }
 
-            Point searchPoint = location.Clone();
+            Point searchPoint = location.DeepClone();
             searchPoint.Z += configurationOption.SillHeight;
             searchPoint.Z += configurationOption.Height / 2;
 
@@ -70,7 +71,7 @@ namespace BH.Engine.Environment
             if (hostPanel == null)
                 return null; //Error
 
-            Point bottomPoint = location.Clone();
+            Point bottomPoint = location.DeepClone();
             bottomPoint.Z += configurationOption.SillHeight;
 
             ICurve bottomEdge = hostPanel.Bottom();
@@ -79,13 +80,13 @@ namespace BH.Engine.Environment
             direction = direction.Normalise();
             direction *= (configurationOption.Width / 2);
 
-            Point bottomCorner1 = bottomPoint.Clone().Translate(direction);
-            Point bottomCorner2 = bottomPoint.Clone().Translate(-direction);
+            Point bottomCorner1 = bottomPoint.DeepClone().Translate(direction);
+            Point bottomCorner2 = bottomPoint.DeepClone().Translate(-direction);
 
-            Point topCorner1 = bottomCorner1.Clone();
+            Point topCorner1 = bottomCorner1.DeepClone();
             topCorner1.Z += configurationOption.Height;
 
-            Point topCorner2 = bottomCorner2.Clone();
+            Point topCorner2 = bottomCorner2.DeepClone();
             topCorner2.Z += configurationOption.Height;
 
             List<Point> controlPoints = new List<Point>()

@@ -20,11 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Architecture.BuildersWork;
 using BH.oM.Architecture.Elements;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace BH.Engine.Architecture
@@ -45,7 +43,18 @@ namespace BH.Engine.Architecture
         }
 
         /******************************************/
-        
+
+        [Description("Evaluates if the two Openings are equal to the point that they could be merged into one object, as Openings only have geometrical data this is always true.")]
+        [Input("element", "A Opening to compare the properties of with an other Opening.")]
+        [Input("other", "The Opening to compare with the other Opening.")]
+        [Output("equal", "True if the Openings non-geometrical property is equal to the point that they could be merged into one object, always true for openings.")]
+        public static bool HasMergeablePropertiesWith(this Opening element, Opening other)
+        {
+            return true;
+        }
+
+        /******************************************/
+
     }
 }
 

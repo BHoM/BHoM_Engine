@@ -49,25 +49,36 @@ namespace BH.Engine.Facade
         [MultiOutput(0, "areas", "Total area per each unique Construction. These areas account for decreased areas for openings where frame edges occur.")]
         [MultiOutput(1, "constructions", "Construction corresponding to each area value in areas.")]
         [MultiOutput(2, "frameArea", "Total frame area.")]
-        public static Output<List<double>, List <string>, double> FacadeAreasByConstruction(this List<IFacadeObject> elems)
+        public static Output<List<double>, List <string>, double> FacadeAreasByConstruction(this IEnumerable<IFacadeObject> elems)
         {
-            if (elems.Any(x => x is Panel == false & x is Opening == false))
+            if(elems == null)
             {
-                Reflection.Compute.RecordWarning("Some of the provided elements are not Openings or Panels. These elements have been ignored.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot calculate facade areas if the input elements are null.");
+                return new Output<List<double>, List<string>, double>();
             }
+
+            List<IFacadeObject> elemList = elems.ToList();
+            if (elems.Any(x => !(x is Panel) && !(x is Opening) && !(x is CurtainWall)))
+                Reflection.Compute.RecordWarning("Some of the provided elements are not valid Facade Element Types. These elements have been ignored.");
 
             Dictionary<string, double> areasDict = new Dictionary<string, double>();
             double frameArea = 0;
 
+            IEnumerable<CurtainWall> cws = elems.OfType<CurtainWall>();
+            foreach (CurtainWall cw in cws.ToList())
+            {
+                List<Opening> cwOpenings = cw.Openings;
+                elemList.AddRange(cwOpenings);
+            }
+            
             IEnumerable<Panel> panels = elems.OfType<Panel>();
-
             foreach (Panel panel in panels.ToList())
             {
                 List<Opening> panelOpenings = panel.Openings;
-                elems.AddRange(panelOpenings);
+                elemList.AddRange(panelOpenings);
             }
 
-            List<IFacadeObject> uniqueElems = elems.Distinct().ToList();
+            List<IFacadeObject> uniqueElems = elemList.Distinct().ToList();
 
             foreach (IFacadeObject elem in uniqueElems)
             {

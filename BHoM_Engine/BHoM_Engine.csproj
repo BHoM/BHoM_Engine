@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Query\FindIdentifier.cs" />
     <Compile Include="Query\Geometry3D.cs" />
     <Compile Include="Query\IsNullOrEmpty.cs" />
     <Compile Include="Query\UniquenessRestrictions.cs" />

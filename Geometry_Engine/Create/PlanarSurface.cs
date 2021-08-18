@@ -34,29 +34,36 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Description("Creates a PlanarSurface based on boundary curves. Only processing done by this method is checking (co)planarity and that the curves are closed. Internal edges will be assumed to be inside the External")]
-        [Input("externalBoundary", "The outer boundary curve of the surface. Needs to be closed and planar")]
-        [Input("internalBoundaries", "Optional internal boundary curves descibing any openings inside the external. All internal edges need to be closed and co-planar with the external edge")]
-        [Output("PlanarSurface", "Planar surface corresponding to the provided edge curves")]
-        public static PlanarSurface PlanarSurface(ICurve externalBoundary, List<ICurve> internalBoundaries = null)
+        
+        [Description("Creates a PlanarSurface based on boundary curves. Only processing done by this method is checking (co)planarity and that the curves are closed. Internal edges will be assumed to be inside the External.")]
+        [Input("externalBoundary", "The outer boundary curve of the surface. Needs to be closed and planar.")]
+        [Input("internalBoundaries", "Optional internal boundary curves descibing any openings inside the external. All internal edges need to be closed and co-planar with the external edge.")]
+        [Output("PlanarSurface", "Planar surface corresponding to the provided edge curves.")]
+        [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>)")]
+        public static PlanarSurface PlanarSurface(ICurve externalBoundary, List<ICurve> internalBoundaries = null, double tolerance = Tolerance.Distance)
         {
+            if (externalBoundary == null || internalBoundaries == null || internalBoundaries.Where(x => x != null).Count() == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from null curves.");
+                return null;
+            }
+
             //--------------Planar-External-Boundary-----------------------//
-            if (!externalBoundary.IIsPlanar())
+            if (!externalBoundary.IIsPlanar(tolerance))
             {
                 Reflection.Compute.RecordError("External edge curve is not planar");
                 return null;
             }
 
             //---------------Closed-External-Boundary-----------------------//
-            if (!externalBoundary.IIsClosed())
+            if (!externalBoundary.IIsClosed(tolerance))
             {
                 Reflection.Compute.RecordError("External edge curve is not closed");
                 return null;
             }
 
             //--------------SelfIntersecting-External-Boundary--------------//
-            if (!externalBoundary.ISubParts().Any(y => y is NurbsCurve) && externalBoundary.IIsSelfIntersecting())
+            if (!externalBoundary.ISubParts().Any(y => y is NurbsCurve) && externalBoundary.IIsSelfIntersecting(tolerance))
             {
                 Reflection.Compute.RecordError("The provided external boundary is self-intersecting.");
                 return null;
@@ -67,7 +74,7 @@ namespace BH.Engine.Geometry
             //----------------Closed-Internal-Boundaries--------------------//
             int count = internalBoundaries.Count;
 
-            internalBoundaries = internalBoundaries.Where(x => x.IIsClosed()).ToList();
+            internalBoundaries = internalBoundaries.Where(x => x.IIsClosed(tolerance)).ToList();
 
             if (internalBoundaries.Count != count)
             {
@@ -77,8 +84,8 @@ namespace BH.Engine.Geometry
             //---------------Coplanar-Internal-Boundaries-------------------//
             count = internalBoundaries.Count;
 
-            Plane p = externalBoundary.IFitPlane();
-            internalBoundaries = internalBoundaries.Where(x => x.IIsInPlane(p)).ToList();
+            Plane p = externalBoundary.IFitPlane(tolerance);
+            internalBoundaries = internalBoundaries.Where(x => x.IIsInPlane(p, tolerance)).ToList();
 
             if (internalBoundaries.Count != count)
             {
@@ -92,7 +99,7 @@ namespace BH.Engine.Geometry
             //--------------Self-Intersecting-Internal-Boundaries-----------//
             count = internalBoundaries.Count;
 
-            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve) || !x.IIsSelfIntersecting()).ToList();
+            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve) || !x.IIsSelfIntersecting(tolerance)).ToList();
 
             if (internalBoundaries.Count != count)
             {
@@ -126,7 +133,7 @@ namespace BH.Engine.Geometry
                 if (intCurve.ISubParts().Any(x => x is NurbsCurve || x is Ellipse))
                     continue;
 
-                if (externalBoundary.ICurveIntersections(intCurve).Count != 0)
+                if (externalBoundary.ICurveIntersections(intCurve, tolerance).Count != 0)
                 {
                     externalBoundary = externalBoundary.BooleanDifference(new List<ICurve>() { intCurve }).Single();
                     internalBoundaries.RemoveAt(i);
@@ -139,7 +146,7 @@ namespace BH.Engine.Geometry
             //---------------Contained-By-External-Boundary-----------------//
             count = internalBoundaries.Count;
 
-            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve || y is Ellipse) || externalBoundary.IIsContaining(x)).ToList();
+            internalBoundaries = internalBoundaries.Where(x => x.ISubParts().Any(y => y is NurbsCurve || y is Ellipse) || externalBoundary.IIsContaining(x, true, tolerance)).ToList();
 
             if (internalBoundaries.Count != count)
             {
@@ -151,14 +158,21 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        [Description("Distributes the edge curve and creates a set of boundary planar surfaces")]
-        [Input("boundaryCurves", "Boundary curves to be used. Non-planar and non-closed curves are ignored")]
-        [Output("PlanarSurface", "List of planar surfaces created")]
-        public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves)
+        
+        [Description("Distributes the edge curve and creates a set of boundary planar surfaces.")]
+        [Input("boundaryCurves", "Boundary curves to be used. Non-planar and non-closed curves are ignored.")]
+        [Output("PlanarSurface", "List of planar surfaces created.")]
+        [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(System.Collections.Generic.List<BH.oM.Geometry.ICurve)")]
+        public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves, double tolerance = Tolerance.Distance)
         {
-            List<ICurve> checkedCurves = boundaryCurves.Where(x => x.IIsClosed() && x.IIsPlanar()).ToList();
-            List<List<ICurve>> distributed = Compute.DistributeOutlines(checkedCurves);
+            if (boundaryCurves == null || boundaryCurves.Where(x => x != null).Count() == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from null curves.");
+                return null;
+            }
+
+            List<ICurve> checkedCurves = boundaryCurves.Where(x => x.IIsClosed(tolerance) && x.IIsPlanar(tolerance)).ToList();
+            List<List<ICurve>> distributed = Compute.DistributeOutlines(checkedCurves, tolerance);
 
             List<PlanarSurface> surfaces = new List<PlanarSurface>();
 

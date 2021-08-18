@@ -41,10 +41,14 @@ namespace BH.Engine.Environment
 
         [Description("Returns the sides, top and bottom of a given environment object.")]
         [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have geometrical sides, top and bottom.")]
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("angleTolerance", "Angle tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Angle.")]
+        [Input("numericTolerance", "Tolerance for determining whether a calulated number is within a range defined by the tolerance, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
         [MultiOutput(0, "bottom", "An ICurve representation of the bottom of the object.")]
         [MultiOutput(1, "sides", "ICurve representations of the sides of the object.")]
         [MultiOutput(2, "top", "An ICurve representation of the top of the object.")]
-        public static Output<List<ICurve>, List<ICurve>, List<ICurve>> ExplodeToParts(this IEnvironmentObject environmentObject)
+        [PreviousVersion("4.3", "BH.Engine.Environment.Query.ExplodeToParts(BH.oM.Environment.IEnvironmentObject)")]
+        public static Output<List<ICurve>, List<ICurve>, List<ICurve>> ExplodeToParts(this IEnvironmentObject environmentObject, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double numericTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             Output<List<ICurve>, List<ICurve>, List<ICurve>> finalParts = new Output<List<ICurve>, List<ICurve>, List<ICurve>>()
             {
@@ -56,9 +60,9 @@ namespace BH.Engine.Environment
             if (environmentObject == null) 
                 return finalParts;
 
-            finalParts.Item1.Add(environmentObject.Bottom());
-            finalParts.Item2.AddRange(environmentObject.Sides());
-            finalParts.Item3.Add(environmentObject.Top());
+            finalParts.Item1.Add(environmentObject.Bottom(distanceTolerance, angleTolerance, numericTolerance));
+            finalParts.Item2.AddRange(environmentObject.Sides(distanceTolerance, angleTolerance, numericTolerance));
+            finalParts.Item3.Add(environmentObject.Top(distanceTolerance, angleTolerance, numericTolerance));
             return finalParts;
         }
     }

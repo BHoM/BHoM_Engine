@@ -19,33 +19,36 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-using BH.oM.Humans.ViewQuality;
+
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
+using System;
 using System.ComponentModel;
 
-namespace BH.Engine.Humans.ViewQuality
+namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****         Public Methods - Vectors          ****/
         /***************************************************/
-        [Description("Define the method used to set the ViewConen")]
-        [Input("typeNum", "0 = StaticConeArea,1 = DynamicConeArea,2  = ViewFrameArea,3 = Undefined")]
-        public static ViewConeEnum ViewConeType(int typeNum)
+        
+        [Description("Queries whether a vector is orthogonal in relation to global X, Y or Z axis.")]
+        [Input("vector", "The vector to evaluate.")]
+        [Input("angleTolerance", "Optional, the angle discrepancy in radians from the global axis to consider as tolerance.")]
+        [Output("isOrthogonal", "The boolean value of whether the vector is orthogonal or not.")]
+        public static bool IsOrthogonal(this Vector vector, double angleTolerance = Tolerance.Angle)
         {
-            var enumCount = ViewConeEnum.GetNames(typeof(ViewConeEnum)).Length;
+            if (vector == null || angleTolerance == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("One or more of the inputs is empty or null.");
+                return false;
+            }
 
-            //last name is undefined so total possible types is enumCount-2
-            if (typeNum > enumCount - 2) typeNum = 0;
-
-            ViewConeEnum value = (ViewConeEnum)typeNum;
-
-            return value;
+            return (vector.IsParallel(Vector.XAxis, angleTolerance) != 0 || vector.IsParallel(Vector.YAxis, angleTolerance) != 0 || vector.IsParallel(Vector.ZAxis, angleTolerance) != 0);
         }
 
         /***************************************************/
+
     }
 }
-
-

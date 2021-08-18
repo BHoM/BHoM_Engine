@@ -46,21 +46,22 @@ namespace BH.Engine.Facade
         [Input("element", "Element to find adjacencies at.")]
         [Input("referenceElements", "Elements to use to find element adjacencies.")]
         [Output("adjacentElements", "Adjacents elements to the provided element.")]
-        public static List<IElement2D> AdjacentElements(this IElement2D element, List<IElement2D> referenceElements)
+        public static List<IElement2D> AdjacentElements(this IElement2D element, IEnumerable<IElement2D> referenceElements)
         {          
             List<IElement2D> adjacentElements = new List<IElement2D>();
 
             if (element == null || referenceElements == null)
-                return adjacentElements;
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
+                return null;
+            }
 
             PolyCurve outline = element.OutlineCurve();
 
             foreach (IElement2D refElem in referenceElements)
             {
                 PolyCurve refOutline = refElem.OutlineCurve();
-                BH.oM.Reflection.Output<Point, Point> results = outline.CurveProximity(refOutline);
-                double distance = results.Item1.Distance(results.Item2);
-                if (distance < Tolerance.Distance)
+                if (refOutline.IIsAdjacent(outline))
                     adjacentElements.Add(refElem);
             }
 
@@ -74,21 +75,22 @@ namespace BH.Engine.Facade
         [Input("element", "Element to find adjacencies at.")]
         [Input("referenceElements", "Elements to use to find element adjacencies.")]
         [Output("adjacentElements", "Adjacents elements to the provided element.")]
-        public static List<IElement2D> AdjacentElements(this IElement1D element, List<IElement2D> referenceElements)
+        public static List<IElement2D> AdjacentElements(this IElement1D element, IEnumerable<IElement2D> referenceElements)
         {
             List<IElement2D> adjacentElements = new List<IElement2D>();
 
             if (element == null || referenceElements == null)
-                return adjacentElements;
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
+                return null;
+            }
 
             PolyCurve outline = element.ElementCurves().IJoin()[0];
 
             foreach (IElement2D refElem in referenceElements)
             {
                 PolyCurve refOutline = refElem.OutlineCurve();
-                BH.oM.Reflection.Output<Point, Point> results = refOutline.CurveProximity(outline);
-                double distance = results.Item1.Distance(results.Item2);
-                if (distance < Tolerance.Distance)
+                if (refOutline.IIsAdjacent(outline))
                     adjacentElements.Add(refElem);
             }
 
@@ -102,11 +104,14 @@ namespace BH.Engine.Facade
         [Input("element", "Element to find adjacencies at.")]
         [Input("referenceElements", "Elements to use to find element adjacencies.")]
         [Output("adjacentElements", "Adjacent elements to the provided element.")]
-        public static List<IElement1D> AdjacentElements(this IElement1D element, List<IElement1D> referenceElements)
+        public static List<IElement1D> AdjacentElements(this IElement1D element, IEnumerable<IElement1D> referenceElements)
 
         {
             if (element == null || referenceElements == null)
-                return new List<IElement1D>(); 
+            {
+                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
+                return null;
+            }
 
             return referenceElements.Where(x => x.IIsAdjacent(element)).ToList();
         }
