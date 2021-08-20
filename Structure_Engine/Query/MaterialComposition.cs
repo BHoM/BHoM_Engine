@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns an ConcreteSection's homogeneous MaterialComposition.")]
+        [Description("Returns a ConcreteSection's MaterialComposition, taking into account any LongitudinalReinforcement.")]
         public static MaterialComposition MaterialComposition(this ConcreteSection sectionProperty)
         {
             if (sectionProperty.IsNull())
