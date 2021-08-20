@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a AreaElement's homogeneous MaterialComposition.")]
+        [Description("Returns an AreaElement's homogeneous MaterialComposition.")]
         [Input("areaElement", "The AreaElement to material from.")]
         [Output("materialComposition", "The kind of matter the AreaElement is composed of.")]
         public static MaterialComposition MaterialComposition(this IAreaElement areaElement)
@@ -80,6 +80,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Returns a SectionProperty's homogeneous MaterialComposition.")]
         public static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
         {
             return sectionProperty.IsNull() ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
@@ -87,6 +88,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Returns an ConcreteSection's homogeneous MaterialComposition.")]
         public static MaterialComposition MaterialComposition(this ConcreteSection sectionProperty)
         {
             if (sectionProperty.IsNull())
