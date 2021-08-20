@@ -530,7 +530,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a BarRebarIntent is null and outputs relevant error message.")]
-        [Input("barRebarIntent", "The BarRebarIntent to test for null.")]
+        [Input("rebarIntent", "The BarRebarIntent to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the BarRebarIntent is null.")]
@@ -546,7 +546,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a PanelRebarIntent is null and outputs relevant error message.")]
-        [Input("panelRebarIntent", "The PanelRebarIntent to test for null.")]
+        [Input("rebarIntent", "The PanelRebarIntent to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the PanelRebarIntent is null.")]
