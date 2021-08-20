@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Structure.Reinforcement;
 using BH.oM.Structure.Elements;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Geometry;

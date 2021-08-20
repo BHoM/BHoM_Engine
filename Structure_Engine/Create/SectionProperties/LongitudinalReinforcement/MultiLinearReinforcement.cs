@@ -25,10 +25,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Structure.Reinforcement;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Structure.MaterialFragments;
-using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
 
