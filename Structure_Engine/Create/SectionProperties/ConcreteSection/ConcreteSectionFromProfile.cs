@@ -59,11 +59,7 @@ namespace BH.Engine.Structure
             ConcreteSection section = new ConcreteSection(profile,
                 constants["Area"], constants["Rgy"], constants["Rgz"], constants["J"], constants["Iy"], constants["Iz"], constants["Iw"],
                 constants["Wely"], constants["Welz"], constants["Wply"], constants["Wplz"], constants["CentreZ"], constants["CentreY"], constants["Vz"],
-                constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
-
-            //Set reinforcement if any provided
-            if (rebarIntent != null)
-                section.RebarIntent = rebarIntent;
+                constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"], rebarIntent);
 
             return PostProcessSectionCreate(section, name, material, MaterialType.Concrete);
         }
