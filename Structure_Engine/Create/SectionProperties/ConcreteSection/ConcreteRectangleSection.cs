@@ -23,15 +23,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using BH.oM.Structure.SectionProperties;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Structure.SectionProperties.Reinforcement;
-using BH.oM.Geometry;
-using BH.oM.Reflection;
+using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Structure.MaterialFragments;
-using System.Linq;
-using BH.oM.Quantities.Attributes;
+using BH.oM.Structure.Reinforcement;
+using BH.oM.Structure.SectionProperties;
 
 namespace BH.Engine.Structure
 {

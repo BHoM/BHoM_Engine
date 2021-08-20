@@ -28,7 +28,7 @@ using System.Linq;
 using System;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Structure.SectionProperties.Reinforcement;
+using BH.oM.Structure.Reinforcement;
 using System.ComponentModel;
 using BH.Engine.Analytical;
 
