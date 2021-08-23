@@ -80,14 +80,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a SectionProperty's homogeneous MaterialComposition.")]
-        public static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
-        {
-            return sectionProperty.IsNull() ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
-        }
-
-        /***************************************************/
-
         [Description("Returns a ConcreteSection's MaterialComposition, taking into account any LongitudinalReinforcement.")]
         public static MaterialComposition MaterialComposition(this ConcreteSection sectionProperty)
         {
@@ -133,6 +125,27 @@ namespace BH.Engine.Structure
 
                 return Engine.Matter.Compute.AggregateMaterialComposition(materials.Select(x => (MaterialComposition)x), areas);
             }
+        }
+
+        /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        [PreviousVersion("4.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SectionProperties.ISectionProperty)")]
+        [Description("Returns a SectionProperty's homogeneous MaterialComposition.")]
+        public static MaterialComposition IMaterialComposition(this ISectionProperty sectionProperty)
+        {
+            return sectionProperty.IsNull() ? null : MaterialComposition(sectionProperty as dynamic);
+        }
+
+        /***************************************************/
+        /**** Private methods - Default                 ****/
+        /***************************************************/
+
+        [Description("Returns a SectionProperty's homogeneous MaterialComposition.")]
+        private static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
+        {
+            return sectionProperty.IsNull() ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
         }
 
         /***************************************************/
