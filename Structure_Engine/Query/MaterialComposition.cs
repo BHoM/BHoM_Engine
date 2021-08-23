@@ -56,7 +56,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            return MaterialComposition(bar.SectionProperty as dynamic);
+            return bar.SectionProperty.IMaterialComposition();
         }
 
         /***************************************************/
