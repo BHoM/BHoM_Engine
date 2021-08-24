@@ -33,6 +33,8 @@ using System;
 using System.Linq;
 using BH.oM.Physical.Materials;
 using BH.Engine.Spatial;
+using BH.oM.Structure.Fragments;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -56,7 +58,14 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            return bar.SectionProperty.IMaterialComposition();
+            ReinforcementDensity reinfDensity = bar.FindFragment<ReinforcementDensity>();
+
+            if (reinfDensity == null)
+                return bar.SectionProperty.IMaterialComposition();
+            else
+            {
+                return bar.SectionProperty.Material.MaterialComposition(reinfDensity);
+            }
         }
 
         /***************************************************/
@@ -74,8 +83,18 @@ namespace BH.Engine.Structure
                 Engine.Reflection.Compute.RecordError("The areaElements MaterialComposition could not be calculated as no Material has been assigned.");
                 return null;
             }
-            Material mat = Physical.Create.Material(areaElement.Property.Material);
-            return (MaterialComposition)mat;
+
+            ReinforcementDensity reinfDensity = areaElement.FindFragment<ReinforcementDensity>();
+
+            if (reinfDensity == null)
+            {
+                Material mat = Physical.Create.Material(areaElement.Property.Material);
+                return (MaterialComposition)mat;
+            }
+            else
+            {
+                return areaElement.Property.Material.MaterialComposition(reinfDensity);
+            }
         }
 
         /***************************************************/
@@ -146,6 +165,27 @@ namespace BH.Engine.Structure
         private static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
         {
             return sectionProperty.IsNull() ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
+        }
+
+        /***************************************************/
+        /**** Private methods                           ****/
+        /***************************************************/
+
+        private static MaterialComposition MaterialComposition(this IMaterialFragment baseMaterial, ReinforcementDensity reinforcementDesity)
+        {
+            if(reinforcementDesity.Material == null || reinforcementDesity.Material.Density == 0 || reinforcementDesity.Density == 0)
+                return (MaterialComposition)Physical.Create.Material(baseMaterial);
+
+            //Calculate volume of reinforcement per unit area
+            double reinfVolume = reinforcementDesity.Density / reinforcementDesity.Material.Density;
+
+            //Remaining volume to base material
+            double baseVolume = 1 - reinfVolume;
+
+            return new MaterialComposition(
+                new List<Material> { Physical.Create.Material(baseMaterial), Physical.Create.Material(reinforcementDesity.Material) },
+                new List<double> { baseVolume, reinfVolume }
+                );
         }
 
         /***************************************************/
