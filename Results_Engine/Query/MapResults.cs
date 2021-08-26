@@ -45,7 +45,7 @@ namespace BH.Engine.Results
         [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
         public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) 
-            where TResult : ICasedResult
+            where TResult : IResult
             where TObject : IBHoMObject
         {
             if (objects == null || objects.Count() < 1)
@@ -67,7 +67,7 @@ namespace BH.Engine.Results
             if (caseFilter != null && caseFilter.Count > 0)
             {
                 HashSet<string> caseHash = new HashSet<string>(caseFilter); //Turn to hashset for performance boost
-                filteredRes = results.Where(x => caseHash.Contains(x.ResultCase.ToString()));
+                filteredRes = results.OfType<ICasedResult>().Where(x => caseHash.Contains(x.ResultCase.ToString())).OfType<TResult>();
             }
             else
                 filteredRes = results;
