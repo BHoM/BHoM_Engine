@@ -44,50 +44,48 @@ namespace BH.Engine.Results
         [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) 
-            where TResult : ICasedResult
-            where TObject : IBHoMObject
+        public static List<List<IResult>> MapResults(this IEnumerable<IBHoMObject> objects, IEnumerable<IResult> results, string whichId = "ObjectId", Type identifier = null, List<string> caseFilter = null) 
         {
             if (objects == null || objects.Count() < 1)
             {
                 Engine.Reflection.Compute.RecordError("No objects found. Make sure that your objects are input correctly.");
-                return new List<List<TResult>>();
+                return new List<List<IResult>>();
             }
             if (results == null || results.Count() < 1)
             {
                 Engine.Reflection.Compute.RecordError("No results found. Make sure that your results are input correctly.");
-                return new List<List<TResult>>();
+                return new List<List<IResult>>();
             }
 
             //Check if no identifier has been provided. If this is the case, identifiers are searched for on the obejcts
             identifier = objects.First().FindIdentifier(identifier);
 
             //Filter the results based on case
-            IEnumerable<TResult> filteredRes;
+            IEnumerable<IResult> filteredRes;
             if (caseFilter != null && caseFilter.Count > 0)
             {
                 HashSet<string> caseHash = new HashSet<string>(caseFilter); //Turn to hashset for performance boost
-                filteredRes = results.Where(x => caseHash.Contains(x.ResultCase.ToString()));
+                filteredRes = results.OfType<ICasedResult>().Where(x => caseHash.Contains(x.ResultCase.ToString())).OfType<IResult>();
             }
             else
                 filteredRes = results;
 
-            Dictionary<string, IGrouping<string, TResult>> resGroups;
+            Dictionary<string, IGrouping<string, IResult>> resGroups;
 
             //Group results by Id and turn to dictionary
             // Add null check for when the property of the name in whichId does not exist?
             resGroups = filteredRes.GroupBy(x => Reflection.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
 
-            List<List<TResult>> result = new List<List<TResult>>();
+            List<List<IResult>> result = new List<List<IResult>>();
 
             //Run through and put results in List corresponding to objects
-            foreach (TObject o in objects)
+            foreach (IBHoMObject o in objects)
             {
-                IGrouping<string, TResult> outVal;
+                IGrouping<string, IResult> outVal;
                 if (resGroups.TryGetValue(o.IdMatch(identifier), out outVal))
                     result.Add(outVal.ToList());
                 else
-                    result.Add(new List<TResult>());
+                    result.Add(new List<IResult>());
             }
 
             return result;
