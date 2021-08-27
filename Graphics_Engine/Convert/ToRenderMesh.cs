@@ -40,7 +40,7 @@ namespace BH.Engine.Graphics
                 return null;
             }
 
-            return new RenderMesh { Vertices = mesh.Vertices.Select(x => (Vertex)x).ToList(), Faces = mesh.Faces };
+            return new RenderMesh { Vertices = mesh.Vertices.Select(x => (RenderPoint)x).ToList(), Faces = mesh.Faces };
         }
 
         /***************************************************/
