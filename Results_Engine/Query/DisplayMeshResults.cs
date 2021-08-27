@@ -153,7 +153,7 @@ namespace BH.Engine.Results
             List<List<TMeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, "NodeId", identifier);
             // Get the relevant values into a list
 
-            List<Vertex> verts = new List<Vertex>();
+            List<RenderPoint> verts = new List<RenderPoint>();
             List<Face> faces;
 
             object smoothing = Reflection.Query.PropertyValue(meshResult, "Smoothing");
@@ -176,10 +176,10 @@ namespace BH.Engine.Results
                     {
                         foreach (KeyValuePair<IComparable, double> FaceRelatedValue in nodeValuePairs[k])
                         {
-                            verts.Add(new Vertex()
+                            verts.Add(new RenderPoint()
                             {
                                 Point = mesh.Nodes[k].Position,
-                                Color = gradient.Color(FaceRelatedValue.Value, from, to)
+                                Colour = gradient.Color(FaceRelatedValue.Value, from, to)
                             });
                             // Face management, faceResult points to verts and faceReference points to mesh.Nodes
                             Face faceResult = faceDictionaryResult[FaceRelatedValue.Key];
@@ -204,10 +204,10 @@ namespace BH.Engine.Results
                     // Add all verticies to a list with their colour
                     for (int k = 0; k < mesh.Nodes.Count; k++)
                     {
-                        verts.Add(new Vertex()
+                        verts.Add(new RenderPoint()
                         {
                             Point = mesh.Nodes[k].Position,
-                            Color = gradient.Color(nodeValues[k], from, to)
+                            Colour = gradient.Color(nodeValues[k], from, to)
                         });
                     }
                     faces = mesh.Faces.Geometry().ToList();
