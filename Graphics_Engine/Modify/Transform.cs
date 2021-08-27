@@ -41,7 +41,7 @@ namespace BH.Engine.Graphics
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Vertex with unchanged properties, but transformed location.")]
-        public static Vertex Transform(this Vertex vertex, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        public static RenderPoint Transform(this RenderPoint vertex, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
@@ -49,7 +49,7 @@ namespace BH.Engine.Graphics
                 return null;
             }
 
-            Vertex result = vertex.DeepClone();
+            RenderPoint result = vertex.DeepClone();
             result.Point = result.Point.Transform(transform);
             return result;
         }
