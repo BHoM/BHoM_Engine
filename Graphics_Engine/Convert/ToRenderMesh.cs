@@ -22,6 +22,8 @@
 
 using BH.oM.Geometry;
 using BH.oM.Graphics;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Graphics
@@ -32,6 +34,9 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Graphics                 ****/
         /***************************************************/
 
+        [Description("Converts a Geometrical Mesh to a RenderMesh.")]
+        [Input("mesh", "Mesh to be converted to RenderMesh.")]
+        [Output("renderMesh", "RenderMesh converted from the input mesh.")]
         public static RenderMesh ToRenderMesh(this Mesh mesh)
         {
             if(mesh == null)

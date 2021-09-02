@@ -22,7 +22,9 @@
 
 using BH.oM.Geometry;
 using BH.oM.Graphics;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Graphics
 {
@@ -32,6 +34,9 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Query the geometry that define the input RenderPoint.")]
+        [Input("obj", "RenderPoint to get the geometry of.")]
+        [Output("geom", "Geometry obtained from the RenderPoint.")]
         public static IGeometry Geometry(this RenderPoint obj)
         {
             return obj.Point;

@@ -23,7 +23,9 @@
 using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Graphics;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Graphics
 {
@@ -33,7 +35,11 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IGeometry SetGeometry(this RenderPoint obj, Point point)
+        [Description("Sets the geometrical point defining the RenderPoint.")]
+        [Input("obj", "RenderPoint to set the point of.")]
+        [Input("point", "Point to set to the RenderPoint.")]
+        [Output("renderPoint", "Object with the newly set Geometry.")]
+        public static RenderPoint SetGeometry(this RenderPoint obj, Point point)
         {
             if (obj == null)
             {
