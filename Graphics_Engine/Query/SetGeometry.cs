@@ -27,7 +27,7 @@ using System.Collections.Generic;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -41,14 +41,8 @@ namespace BH.Engine.Graphics
                 return obj;
             }
 
-            if (point == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError($"Cannot set null geometry to a {nameof(RenderPoint)}.");
-                return obj;
-            }
-
             var clone = obj.ShallowClone();
-            clone.Point = point.DeepClone();
+            clone.Point = point;
 
             return clone;
         }
