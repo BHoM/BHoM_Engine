@@ -81,7 +81,7 @@
     <Compile Include="Convert\ColourFromObject.cs" />
     <Compile Include="Modify\Transform.cs" />
     <Compile Include="Modify\View\View.cs" />
-    <Compile Include="Query\SetGeometry.cs" />
+    <Compile Include="Modify\SetGeometry.cs" />
     <Compile Include="Query\Geometry.cs" />
     <Compile Include="Query\Color.cs" />
     <Compile Include="Query\Bounds.cs" />
