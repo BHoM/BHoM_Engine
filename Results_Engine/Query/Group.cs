@@ -22,10 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Analytical.Results;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Results
 {
@@ -35,6 +37,10 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
+
+        [Description("Group results by ResultCase.")]
+        [Input("results", "Results to group.")]
+        [Output("groupedResults", "Results grouped as List of Lists.")]
         public static List<List<T>> GroupByCase<T>(this IEnumerable<T> results) where T : ICasedResult
         {
             return results.GroupBy(x => x.ResultCase).Select(x => x.ToList()).ToList();
@@ -42,6 +48,9 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
+        [Description("Group results by ObjectID.")]
+        [Input("results", "Results to group.")]
+        [Output("groupedResults", "Results grouped as List of Lists.")]
         public static List<List<T>> GroupByObjectId<T>(this IEnumerable<T> results) where T : IObjectIdResult
         {
             return results.GroupBy(x => x.ObjectId).Select(x => x.ToList()).ToList();
@@ -49,6 +58,9 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
+        [Description("Group results by TimeStep.")]
+        [Input("results", "Results to group.")]
+        [Output("groupedResults", "Results grouped as List of Lists.")]
         public static List<List<T>> GroupByTimeStep<T>(this IEnumerable<T> results) where T : ITimeStepResult
         {
             return results.GroupBy(x => x.TimeStep).Select(x => x.ToList()).ToList();
