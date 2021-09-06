@@ -171,20 +171,31 @@ namespace BH.Engine.Structure
         /**** Private methods                           ****/
         /***************************************************/
 
-        private static MaterialComposition MaterialComposition(this IMaterialFragment baseMaterial, ReinforcementDensity reinforcementDesity)
+        private static MaterialComposition MaterialComposition(this IMaterialFragment baseMaterial, ReinforcementDensity reinforcementDensity)
         {
-            if(reinforcementDesity.Material == null || reinforcementDesity.Material.Density == 0 || reinforcementDesity.Density == 0)
+            if(reinforcementDensity.Material == null || reinforcementDensity.Material.Density == 0 || reinforcementDensity.Density == 0)
                 return (MaterialComposition)Physical.Create.Material(baseMaterial);
+      
+            if(reinforcementDensity.Material.Density < 0)
+                Engine.Reflection.Compute.RecordWarning("The Density of the Material of the ReinforcementDensity is less than 0. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
 
-            //Calculate volume of reinforcement per unit area
-            double reinfVolume = reinforcementDesity.Density / reinforcementDesity.Material.Density;
+            if (reinforcementDensity.Density < 0)
+                Engine.Reflection.Compute.RecordWarning("The Density of the ReinforcementDensity is less than 0. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
+
+            //Calculate volume ratio of reinforcement
+            double reinfRatio = reinforcementDensity.Density / reinforcementDensity.Material.Density;
+
+            if (reinfRatio > 1)
+            {
+                Engine.Reflection.Compute.RecordWarning("The ReinforcementDensity fragment on an object gives a volume ratio larger than 1. This means the volume of reinforcement exceeds the volume of the host object. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
+            }
 
             //Remaining volume to base material
-            double baseVolume = 1 - reinfVolume;
+            double baseVolume = 1 - reinfRatio;
 
             return new MaterialComposition(
-                new List<Material> { Physical.Create.Material(baseMaterial), Physical.Create.Material(reinforcementDesity.Material) },
-                new List<double> { baseVolume, reinfVolume }
+                new List<Material> { Physical.Create.Material(baseMaterial), Physical.Create.Material(reinforcementDensity.Material) },
+                new List<double> { baseVolume, reinfRatio }
                 );
         }
 
