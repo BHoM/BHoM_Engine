@@ -35,21 +35,19 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the minimum scheduling radius based on the diameter of the reinforcement bar using the values given in BS 8666:2020 Table 2.")]
+        [Description("Gets the minimum end projection for general bends (bobs) or links where the bend is greater than or equal to 150 degrees." +
+            "This is based on the diameter of the reinforcement bar using the values given in BS 8666:2020 Table 2.")]
         [Input("diameter", "The diameter of the reinforcement bar to determine the minimum scheduling radius.")]
-        [Output("radius", "The minimum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
-        public static double SchedulingRadius(this double diameter)
+        [Output("endProjection", "The minimum end projection based on the diameter of the reinforcement bar", typeof(Length))]
+        public static double GeneralEndProjection(this double diameter)
         {
-            if(diameter <= 0)
+            if (diameter <= 0)
             {
                 Reflection.Compute.RecordError("The diameter must be greater than 0. The scheduling radius cannot be provided.");
                 return 0;
             }
 
-            if (diameter < 20)
-                return 2 * diameter;
-            else
-                return 3.5 * diameter;
+            return Math.Max(5 * diameter, 90) + diameter + diameter.SchedulingRadius();
         }
 
         /***************************************************/
