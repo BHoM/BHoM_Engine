@@ -695,7 +695,7 @@ namespace BH.Engine.Structure
             switch (dof)
             {
                 case DOFType.Free:
-                    return "f";
+                    return "o";
                 case DOFType.Fixed:
                     return "x";
                 case DOFType.FixedNegative:
