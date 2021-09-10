@@ -1,159 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{338E9DA8-8AAF-4F51-B4AD-264B5F329A5F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine.Architecture</RootNamespace>
-    <AssemblyName>Architecture_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
+    <ProjectReference Include="..\Humans_Engine\Humans_Engine.csproj" />
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Architecture_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Architecture_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Architecture_oM.dll</HintPath>
     </Reference>
     <Reference Include="BHoM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Dimensional_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
     </Reference>
     <Reference Include="Humans_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
     </Reference>
     <Reference Include="Quantities_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
     </Reference>
     <Reference Include="Spatial_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Compute\CeilingTiles.cs" />
-    <Compile Include="Create\BuildersWork\Opening.cs" />
-    <Compile Include="Create\Theatron\TheatronPlan\CircularPlan.cs" />
-    <Compile Include="Create\Theatron\TheatronPlan\EightArcPlan.cs" />
-    <Compile Include="Create\Theatron\TheatronPlan\FourArcPlan.cs" />
-    <Compile Include="Create\Theatron\TheatronPlan\NoCornersPlan.cs" />
-    <Compile Include="Create\Theatron\TheatronPlan\OrthogonalPlan.cs" />
-    <Compile Include="Create\Grid.cs" />
-    <Compile Include="Create\Level.cs" />
-    <Compile Include="Create\Theatron\ActivityArea.cs" />
-    <Compile Include="Create\Theatron\ProfileOrigin.cs" />
-    <Compile Include="Create\Theatron\ProfileParameters.cs" />
-    <Compile Include="Create\Theatron\SeatingBlock.cs" />
-    <Compile Include="Create\Theatron\StadiaParameters.cs" />
-    <Compile Include="Create\Theatron\StadiaType.cs" />
-    <Compile Include="Create\Theatron\SuperRiserParameters.cs" />
-    <Compile Include="Create\Theatron\TheatronGeometry.cs" />
-    <Compile Include="Create\Theatron\TheatronFullProfile.cs" />
-    <Compile Include="Create\Theatron\TheatronPlan.cs" />
-    <Compile Include="Create\Theatron\Tier.cs" />
-    <Compile Include="Create\Theatron\TierProfile.cs" />
-    <Compile Include="Create\Theatron\VomitoryParameters.cs" />
-    <Compile Include="Modify\CleanRoom.cs" />
-    <Compile Include="Modify\SetGeometry.cs" />
-    <Compile Include="Modify\SetOutlineElements1D.cs" />
-    <Compile Include="Modify\Transform.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\DistanceInPlane.cs" />
-    <Compile Include="Query\Geometry.cs" />
-    <Compile Include="Query\HasMergeablePropertiesWith.cs" />
-    <Compile Include="Query\IsValidForInPlaneDistanceCheck.cs" />
-    <Compile Include="Query\NewElement1D.cs" />
-    <Compile Include="Query\OutlineElements1D.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
-      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
-      <Name>BHoM_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
-      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
-      <Name>Geometry_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Humans_Engine\Humans_Engine.csproj">
-      <Project>{f17df4d6-d155-4ffa-9917-ef1487faa978}</Project>
-      <Name>Humans_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
-      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
-      <Name>Reflection_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
-      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
-      <Name>Spatial_Engine</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Convert\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

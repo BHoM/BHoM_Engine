@@ -1,171 +1,30 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8082CA2A-AC5C-4690-9F09-960E0D3E4102}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine.Data</RootNamespace>
-    <AssemblyName>Data_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Data_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Quantities_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Quantities_oM">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Compute\DomainTreeClusters.cs" />
-    <Compile Include="Compute\ClusterDBSCAN.cs" />
-    <Compile Include="Compute\Series.cs" />
-    <Compile Include="Compute\FilterData.cs" />
-    <Compile Include="Compute\RelatedPairs.cs" />
-    <Compile Include="Compute\Path.cs" />
-    <Compile Include="Compute\SplitRequestTreeByType.cs" />
-    <Compile Include="Create\DomainTreeLeaf.cs" />
-    <Compile Include="Create\DomainTree.cs" />
-    <Compile Include="Create\DomainBox.cs" />
-    <Compile Include="Create\Domain.cs" />
-    <Compile Include="Create\LogicalNotRequest.cs" />
-    <Compile Include="Create\Node.cs" />
-    <Compile Include="Create\BatchRequest.cs" />
-    <Compile Include="Create\CustomRequest.cs" />
-    <Compile Include="Create\Dataset.cs" />
-    <Compile Include="Create\DBSCANObject.cs" />
-    <Compile Include="Create\FilterRequest.cs" />
-    <Compile Include="Create\LogicalAndRequest.cs" />
-    <Compile Include="Create\LogicalOrRequest.cs" />
-    <Compile Include="Create\PointMatrix.cs" />
-    <Compile Include="Create\LocalData.cs" />
-    <Compile Include="Create\DiscretePoint.cs" />
-    <Compile Include="Create\PriorityQueue.cs" />
-    <Compile Include="Create\SelectionRequest.cs" />
-    <Compile Include="Create\Table.cs" />
-    <Compile Include="Create\Tree.cs" />
-    <Compile Include="Create\VennDiagram.cs" />
-    <Compile Include="Create\Graph.cs" />
-    <Compile Include="Create\GraphLink.cs" />
-    <Compile Include="Create\GraphNode.cs" />
-    <Compile Include="Modify\Add.cs" />
-    <Compile Include="Modify\SimplifyRequestTree.cs" />
-    <Compile Include="Modify\GroupByName.cs" />
-    <Compile Include="Modify\ShortenBranches.cs" />
-    <Compile Include="Modify\Pop.cs" />
-    <Compile Include="Modify\RemoveLink.cs" />
-    <Compile Include="Modify\AddLink.cs" />
-    <Compile Include="Modify\AddNode.cs" />
-    <Compile Include="Modify\RemoveNode.cs" />
-    <Compile Include="Modify\TransposeRectangularCollection.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\AdjacencyDictionary.cs" />
-    <Compile Include="Query\AllRequestsOfType.cs" />
-    <Compile Include="Query\Axes.cs" />
-    <Compile Include="Query\AxisExists.cs" />
-    <Compile Include="Query\Children.cs" />
-    <Compile Include="Query\IsPotentialOverlap.cs" />
-    <Compile Include="Query\Linq\GroupBy.cs" />
-    <Compile Include="Query\RemoveNulls.cs" />
-    <Compile Include="Query\DepthDictionary.cs" />
-    <Compile Include="Query\ChunkBy.cs" />
-    <Compile Include="Query\ItemsInRange.cs" />
-    <Compile Include="Query\IsInRange.cs" />
-    <Compile Include="Query\FurthestSquareDistance.cs" />
-    <Compile Include="Query\GraphNodes.cs" />
-    <Compile Include="Query\FirstValueAbove.cs" />
-    <Compile Include="Query\FirstValueAt.cs" />
-    <Compile Include="Query\LeafNodes.cs" />
-    <Compile Include="Query\Linq\FilterBy.cs" />
-    <Compile Include="Query\Linq\OrderBy.cs" />
-    <Compile Include="Query\CloseToPoint.cs" />
-    <Compile Include="Query\ClosestData.cs" />
-    <Compile Include="Query\ClosestNode.cs" />
-    <Compile Include="Query\Count.cs" />
-    <Compile Include="Query\Filter.cs" />
-    <Compile Include="Query\FolderContent.cs" />
-    <Compile Include="Query\Neighbours.cs" />
-    <Compile Include="Query\OppositeNode.cs" />
-    <Compile Include="Query\Peek.cs" />
-    <Compile Include="Query\Requests.cs" />
-    <Compile Include="Query\SquareDistance.cs" />
-    <Compile Include="Query\SubMatrixData.cs" />
-    <Compile Include="Query\ValuesAbove.cs" />
-    <Compile Include="Query\ValuesAt.cs" />
-    <Compile Include="Query\Values.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
-      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
-      <Name>BHoM_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
-      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
-      <Name>Reflection_Engine</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

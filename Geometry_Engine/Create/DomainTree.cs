@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Data;
 using BH.oM.Geometry;
 using System;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace BH.Engine.Geometry
         [Output("domainTree", "A spatial data tree containing all the provvided geometries in its leaves.")]
         public static DomainTree<T> DomainTree<T>(this IEnumerable<T> geometries, int treeDegree = 16, int leafSize = 16, int sampleSize = 60) where T : IGeometry
         {
-            return Data.Create.DomainTree(geometries, x => x.IBounds().DomainBox(), treeDegree, leafSize, sampleSize);
+            return BH.Engine.Data.Create.DomainTree(geometries, x => x.IBounds().DomainBox(), treeDegree, leafSize, sampleSize);
         }
 
         /***************************************************/

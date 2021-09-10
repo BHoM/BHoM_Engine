@@ -1,169 +1,38 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A84FDFE5-C267-430E-8FEC-AF4F4BF5B745}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine.Spatial</RootNamespace>
-    <AssemblyName>Spatial_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Data_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Dimensional_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
     </Reference>
     <Reference Include="Quantities_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
     </Reference>
     <Reference Include="Spatial_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Compute\DistributeOutlines.cs" />
-    <Compile Include="Compute\FitPlane.cs" />
-    <Compile Include="Compute\InterpolateProfile.cs" />
-    <Compile Include="Compute\MapDomain.cs" />
-    <Compile Include="Compute\OrientationAngleLinear.cs" />
-    <Compile Include="Create\DomainTree.cs" />
-    <Compile Include="Create\ExplicitCurveLayout.cs" />
-    <Compile Include="Create\OffsetCurveLayout.cs" />
-    <Compile Include="Create\ExplicitLayout.cs" />
-    <Compile Include="Create\LinearLayout.cs" />
-    <Compile Include="Create\MultiLinearLayout.cs" />
-    <Compile Include="Create\ShapeProfiles\AngleProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\BoxProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\ChannelProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\CircleProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\FabricatedBoxProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\FabricatedISectionProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\FreeFormProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\GeneralisedFabricatedBoxProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\GeneralisedTSectionProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\ISectionProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\KiteProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\RectangleProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\ShapeProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\TaperedProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\TSectionProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\TubeProfile.cs" />
-    <Compile Include="Create\ShapeProfiles\ZSectionProfile.cs" />
-    <Compile Include="Modify\MapPositionDomain.cs" />
-    <Compile Include="Modify\RoundCoordinates.cs" />
-    <Compile Include="Modify\Transform.cs" />
-    <Compile Include="Query\DominantVector.cs" />
-    <Compile Include="Query\HasMergeablePropertiesWith.cs" />
-    <Compile Include="Query\InternalOutlineCurves.cs" />
-    <Compile Include="Create\NewElement0D.cs" />
-    <Compile Include="Create\NewElement1D.cs" />
-    <Compile Include="Create\NewInternalElement2D.cs" />
-    <Compile Include="Modify\SetElements0D.cs" />
-    <Compile Include="Modify\SetGeometry.cs" />
-    <Compile Include="Modify\SetInternalElements2D.cs" />
-    <Compile Include="Modify\SetOutlineElements1D.cs" />
-    <Compile Include="Modify\Translate.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\Area.cs" />
-    <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\Centroid.cs" />
-    <Compile Include="Query\ControlPoints.cs" />
-    <Compile Include="Query\ElementCurves.cs" />
-    <Compile Include="Query\Elements0D.cs" />
-    <Compile Include="Query\ElementVertices.cs" />
-    <Compile Include="Query\InternalElements2D.cs" />
-    <Compile Include="Query\IsFullyOnGrid.cs" />
-    <Compile Include="Query\IsNearGrid.cs" />
-    <Compile Include="Query\IsFullyOnLevel.cs" />
-    <Compile Include="Query\IsNearLevel.cs" />
-    <Compile Include="Query\IsNull.cs" />
-    <Compile Include="Query\IsPlanar.cs" />
-    <Compile Include="Query\IsSelfIntersecting.cs" />
-    <Compile Include="Query\Length.cs" />
-    <Compile Include="Query\Normal.cs" />
-    <Compile Include="Query\Thickness.cs" />
-    <Compile Include="Query\OutlineCurve.cs" />
-    <Compile Include="Query\OutlineElements1D.cs" />
-    <Compile Include="Query\Geometry.cs" />
-    <Compile Include="Query\PointLayout.cs" />
-    <Compile Include="Query\CurveLayout.cs" />
-    <Compile Include="Query\VoidArea.cs" />
-    <None Include="Versioning_32.json" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
-      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
-      <Name>BHoM_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
-      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
-      <Name>Data_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
-      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
-      <Name>Geometry_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
-      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
-      <Name>Reflection_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
-    </PostBuildEvent>
-  </PropertyGroup>
+
 </Project>

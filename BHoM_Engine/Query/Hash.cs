@@ -92,7 +92,7 @@ namespace BH.Engine.Base
             //cc.PropertyExceptions = cc.PropertyExceptions.Select(pe => pe = pe.Contains('.') ? pe : "*" + pe).ToList();
 
             // Convert from the Numeric Tolerance to fractionalDigits (required for the hash).
-            int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
+            int fractionalDigits = Math.Abs(System.Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
 
             // ----- SET UP OF INPUT OBJECT -----
 

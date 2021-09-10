@@ -1,209 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B0154405-9390-472D-9B5C-A2280823B18D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine.Reflection</RootNamespace>
-    <AssemblyName>Reflection_Engine</AssemblyName>
-    <PackageId>BH.Engine.Reflection</PackageId>
-    <PackageVersion>10.0.0</PackageVersion>
-    <Author>BuroHappold</Author>
-    <Description>BHoM Engine - Reflection Engine</Description>
-    <ProjectUrl>https://github.com/BuroHappoldEngineering/BHoM_Engine</ProjectUrl>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.2.0" />
+    <PackageReference Include="ICSharpCode.Decompiler" Version="3.1.0.3652" />
+    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
+    <PackageReference Include="Mono.Reflection" Version="1.1.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ICSharpCode.Decompiler, Version=3.1.0.3652, Culture=neutral, PublicKeyToken=d4bfe873e7598c49, processorArchitecture=MSIL">
-      <HintPath>..\packages\ICSharpCode.Decompiler.3.1.0.3652\lib\net45\ICSharpCode.Decompiler.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Mono.Reflection, Version=1.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Reflection.1.1.0.0\lib\Mono.Reflection.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Quantities_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Compute\MakeGenericFromInputs.cs" />
-    <Compile Include="Compute\DeepDependencies.cs" />
-    <Compile Include="Compute\OpenHelpPage.cs" />
-    <Compile Include="Compute\RecordError.cs" />
-    <Compile Include="Compute\TryRunExtensionMethod.cs" />
-    <Compile Include="Compute\RemoveEvent.cs" />
-    <Compile Include="Compute\RecordEvent.cs" />
-    <Compile Include="Compute\LoadAllAssemblies.cs" />
-    <Compile Include="Compute\RecordNote.cs" />
-    <Compile Include="Compute\RecordWarning.cs" />
-    <Compile Include="Compute\RunExtensionMethod.cs" />
-    <Compile Include="Compute\SplitByIndicies.cs" />
-    <Compile Include="Convert\ToFunc.cs" />
-    <Compile Include="Convert\ToText.cs" />
-    <Compile Include="Create\MethodBase.cs" />
-    <Compile Include="Create\MethodInfo.cs" />
-    <Compile Include="Create\Output.cs" />
-    <Compile Include="Modify\Cast.cs" />
-    <Compile Include="Modify\MakeFromGeneric.cs" />
-    <Compile Include="Modify\SortExtensionMethods.cs" />
-    <Compile Include="Query\IsPrototype.cs" />
-    <Compile Include="Query\BHoMVersion.cs" />
-    <Compile Include="Query\CurrentAssemblyFolder.cs" />
-    <Compile Include="Query\BHoMFolder.cs" />
-    <Compile Include="Query\EnumValues.cs" />
-    <Compile Include="Query\ExtensionMethodToCall.cs" />
-    <Compile Include="Query\GenericTypeConstraint.cs" />
-    <Compile Include="Query\ImplementingTypes.cs" />
-    <Compile Include="Query\Count.cs" />
-    <Compile Include="Query\IsAssignableFromIncludeGenerics.cs" />
-    <Compile Include="Query\IsAssignableToGenericType.cs" />
-    <Compile Include="Query\DefaultValueWarning.cs" />
-    <Compile Include="Query\IsRequired.cs" />
-    <Compile Include="Query\IsAutoConstructorAllowed.cs" />
-    <Compile Include="Query\IsExposed.cs" />
-    <Compile Include="Query\Item.cs" />
-    <Compile Include="Query\NestedMethods.cs" />
-    <Compile Include="Query\OutputCount.cs" />
-    <Compile Include="Query\AssemblyPath.cs" />
-    <Compile Include="Query\OutputType.cs" />
-    <Compile Include="Query\OutputAttributes.cs" />
-    <Compile Include="Query\IsAutoGenerated.cs" />
-    <Compile Include="Query\AssemblyList.cs" />
-    <Compile Include="Query\IsReleased.cs" />
-    <Compile Include="Query\IsNotImplemented.cs" />
-    <Compile Include="Query\IsInterfaceMethod.cs" />
-    <Compile Include="Query\IsDeprecated.cs" />
-    <Compile Include="Query\IsMultipleOutputs.cs" />
-    <Compile Include="Query\OutputName.cs" />
-    <Compile Include="Query\ParametersWithConstraints.cs" />
-    <Compile Include="Query\PropertyAbbreviation.cs" />
-    <Compile Include="Query\UnderlyingType.cs" />
-    <Compile Include="Query\Url.cs" />
-    <Compile Include="Query\UsedAssemblies.cs" />
-    <Compile Include="Query\UsedNamespaces.cs" />
-    <Compile Include="Query\InheritedTypes.cs" />
-    <Compile Include="Compute\UnqualifiedName.cs" />
-    <Compile Include="Query\UsedTypes.cs" />
-    <Compile Include="Query\Events.cs" />
-    <Compile Include="Query\DebugLog.cs" />
-    <Compile Include="Create\Type.cs" />
-    <Compile Include="Compute\ClearCurrentEvents.cs" />
-    <Compile Include="Query\UsedMethods.cs" />
-    <Compile Include="Query\OutputDescription.cs" />
-    <Compile Include="Query\InputDescriptions.cs" />
-    <Compile Include="Query\DistinctProperties.cs" />
-    <Compile Include="Query\IsLegal.cs" />
-    <Compile Include="Query\Path.cs" />
-    <Compile Include="Query\ExtensionMethods.cs" />
-    <Compile Include="Query\MethodList.cs" />
-    <Compile Include="Query\EnumList.cs" />
-    <Compile Include="Query\Description.cs" />
-    <Compile Include="Query\TypeList.cs" />
-    <Compile Include="Query\TypeDictionary.cs" />
-    <Compile Include="Query\PropertyDictionary.cs" />
-    <Compile Include="Query\PropertyNames.cs" />
-    <Compile Include="Query\PropertyObjects.cs" />
-    <Compile Include="Query\PropertyTypes.cs" />
-    <Compile Include="Query\PropertyValue.cs" />
-    <Compile Include="Query\ObjectsByType.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modify\SetPropertyValue.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
 
-xcopy "$(TargetDir)Humanizer.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-xcopy "$(TargetDir)ICSharpCode.Decompiler.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-
-xcopy "$(TargetDir)Mono.Cecil.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-xcopy "$(TargetDir)Mono.Cecil.Mdb.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-xcopy "$(TargetDir)Mono.Cecil.Pdb.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-xcopy "$(TargetDir)Mono.Cecil.Rocks.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-xcopy "$(TargetDir)Mono.Reflection.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-
-xcopy "$(TargetDir)System.Collections.Immutable.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
-xcopy "$(TargetDir)System.ValueTuple.dll"  "C:\ProgramData\BHoM\Assemblies" /Y</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
