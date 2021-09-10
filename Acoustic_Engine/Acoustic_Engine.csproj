@@ -25,14 +25,14 @@
 
   <ItemGroup>
     <Reference Include="Acoustic_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Acoustic_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Acoustic_oM.dll</HintPath>
     </Reference>
     <Reference Include="BHoM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Geometry_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
     </Reference>
   </ItemGroup>
 

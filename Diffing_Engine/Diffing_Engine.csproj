@@ -31,16 +31,16 @@
 
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Data_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Diffing_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -27,25 +27,25 @@
 
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Data_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Dimensional_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
     </Reference>
     <Reference Include="Quantities_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
     </Reference>
     <Reference Include="Spatial_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
     </Reference>
   </ItemGroup>
 

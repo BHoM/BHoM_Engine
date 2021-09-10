@@ -29,13 +29,13 @@
 
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_oM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
     </Reference>
     <Reference Include="System.Management.Automation">
       <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
