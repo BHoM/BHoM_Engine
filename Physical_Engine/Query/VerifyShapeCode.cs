@@ -88,6 +88,48 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Input("bendingRadius", "The bending radius for the reinforcement bar, this is used as an override for the minimum.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode11 shapeCode, double diameter, double bendingRadius)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.B < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The A and B parameters must be greater than the minimum general end projection.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Input("bendingRadius", "The bending radius for the reinforcement bar, this is used as an override for the minimum.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode12 shapeCode, double diameter, double bendingRadius)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < shapeCode.R + diameter + Math.Max(5*diameter, 0.09) || shapeCode.B < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09))
+            {
+                Reflection.Compute.RecordError("The A and B parameters must be greater than the minimum general end projection.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
         /****    Private Fallback Method            ********/
         /***************************************************/
 
