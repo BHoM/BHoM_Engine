@@ -2,7 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.3.0.0</FileVersion>
+    <PackageProjectUrl>https://github.com/BHoM/BHoM_Engine</PackageProjectUrl>
+    <Copyright>Copyright © https://github.com/BHoM</Copyright>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Build\</OutputPath>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\Build\</OutputPath>
+  </PropertyGroup>
+
 
   <ItemGroup>
     <ProjectReference Include="..\Analytical_Engine\Analytical_Engine.csproj" />
@@ -50,5 +64,9 @@
       <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+<Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+  </Target>
 
 </Project>
