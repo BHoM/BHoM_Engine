@@ -44,7 +44,7 @@ namespace BH.Engine.Physical
             if (reinforcement.IsNull())
                 return false;
 
-            return ICompliantShapeCode(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius);
+            return ICompliantShapeCode(reinforcement.ShapeCode, reinforcement.Diameter);
 
 
         }
@@ -54,14 +54,13 @@ namespace BH.Engine.Physical
         [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
         [Input("shapeCode", "The ShapeCode to be verified.")]
         [Input("diameter", "The diameter of the reinforcement bar.")]
-        [Input("bendingRadius", "The bending radius for the reinforcement bar, this is used as an override for the minimum.")]
         [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
-        public static bool ICompliantShapeCode(IShapeCode shapeCode, double diameter, double bendingRadius)
+        public static bool ICompliantShapeCode(IShapeCode shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
 
-            return CompliantShapeCode(shapeCode as dynamic, diameter, bendingRadius);
+            return CompliantShapeCode(shapeCode as dynamic, diameter);
 
 
         }
@@ -71,14 +70,13 @@ namespace BH.Engine.Physical
         [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
         [Input("shapeCode", "The ShapeCode to be verified.")]
         [Input("diameter", "The diameter of the reinforcement bar.")]
-        [Input("bendingRadius", "The bending radius for the reinforcement bar, this is used as an override for the minimum.")]
         [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
-        public static bool CompliantShapeCode(ShapeCode00 shapeCode, double diameter, double bendingRadius)
+        public static bool CompliantShapeCode(ShapeCode00 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
 
-            if(shapeCode.A <= 0)
+            if (shapeCode.A <= 0)
             {
                 Reflection.Compute.RecordError("The A parameter must be greater than 0.");
                 return false;
@@ -92,9 +90,8 @@ namespace BH.Engine.Physical
         [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
         [Input("shapeCode", "The ShapeCode to be verified.")]
         [Input("diameter", "The diameter of the reinforcement bar.")]
-        [Input("bendingRadius", "The bending radius for the reinforcement bar, this is used as an override for the minimum.")]
         [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
-        public static bool CompliantShapeCode(ShapeCode11 shapeCode, double diameter, double bendingRadius)
+        public static bool CompliantShapeCode(ShapeCode11 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -113,16 +110,751 @@ namespace BH.Engine.Physical
         [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
         [Input("shapeCode", "The ShapeCode to be verified.")]
         [Input("diameter", "The diameter of the reinforcement bar.")]
-        [Input("bendingRadius", "The bending radius for the reinforcement bar, this is used as an override for the minimum.")]
         [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
-        public static bool CompliantShapeCode(ShapeCode12 shapeCode, double diameter, double bendingRadius)
+        public static bool CompliantShapeCode(ShapeCode12 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
 
-            if (shapeCode.A < shapeCode.R + diameter + Math.Max(5*diameter, 0.09) || shapeCode.B < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09))
+            if (shapeCode.A < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09) || shapeCode.B < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09))
             {
-                Reflection.Compute.RecordError("The A and B parameters must be greater than the minimum general end projection.");
+                Reflection.Compute.RecordError("The parameters A and B must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode13 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.B < HookDiameter(diameter))
+            {
+                Reflection.Compute.RecordError("The parameter B must be at least the hook diameter in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.B > 0.4 + 2 * diameter)
+            {
+                Reflection.Compute.RecordError("The parameter B shall not exceed 0.4 + 2d.");
+                return false;
+            }
+            else if (shapeCode.A < shapeCode.B / 2 + Math.Max(5 * diameter, 0.09)
+                || shapeCode.C < shapeCode.B / 2 + Math.Max(5 * diameter, 0.09))
+            {
+                Reflection.Compute.RecordError("The parametrs A and C shall not be less than B/2 + the greater of 5d or 0.09.");
+            }
+
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode14 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode15 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode21 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode22 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.C < HookDiameter(diameter))
+            {
+                Reflection.Compute.RecordError("The parameter C must be at least the hook diameter in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C > 0.4 + 2 * diameter)
+            {
+                Reflection.Compute.RecordError("The parameter C shall not exceed 0.4 + 2d.");
+                return false;
+            }
+            else if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and D must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.D < shapeCode.C / 2 + Math.Max(5 * diameter, 0.09))
+            {
+                Reflection.Compute.RecordError("The parametrs D shall not be less than C/2 + the greater of 5d or 0.09.");
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode23 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode24 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode25 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.B < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and B must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            if (Math.Asin(shapeCode.C / shapeCode.A) / Math.PI * 180 > 89 ||
+                Math.Asin(shapeCode.D / shapeCode.B) / Math.PI * 180 > 89)
+            {
+                Reflection.Compute.RecordError("The bends are close to 90 degrees, schedule a ShapeCode99 bar" +
+                    "with horizontal offers as per BS 8666:2020 Table 2.");
+            }
+
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode26 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode27 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode28 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode29 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode31 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and D must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode32 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and D must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode33 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.B < HookDiameter(diameter))
+            {
+                Reflection.Compute.RecordError("The parameter B must be at least the hook diameter in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.B > 0.4 + 2 * diameter)
+            {
+                Reflection.Compute.RecordError("The parameter B shall not exceed 0.4 + 2d.");
+                return false;
+            }
+            else if (shapeCode.C < shapeCode.B + Math.Max(5 * diameter, 0.09))
+            {
+                Reflection.Compute.RecordError("The parameter C must not be less B/2 plus the greater of 5d or 0.09.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode34 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and E must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode35 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and E must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode36 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and D must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode41 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and E must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode44 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and E must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode46 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and E must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode47 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.C != shapeCode.D)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be equal as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C > shapeCode.A)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be greater than the parameter A.");
+                return false;
+            }
+            else if (shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be greater than the minimum link end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.B < 2 * diameter.HookDiameter())
+            {
+                Reflection.Compute.RecordError("The parameter B must be greater than two times the anticipated hook diameter (for segments C and D).");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode48 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.C != shapeCode.D)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be equal as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C > shapeCode.A)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be less than the parameter A defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C < diameter.LinksEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be greater than the minimum link end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode51 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.C != shapeCode.D)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be equal as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C > shapeCode.A || shapeCode.D > shapeCode.B)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be less than the parameters A and B respectively as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            if (shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be greater than the link end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode52 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.C != shapeCode.D)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be equal as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C > shapeCode.B)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be less than the parameter B as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C < diameter.LinksEndProjection() || shapeCode.D < diameter.LinksEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode56 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.E != shapeCode.F)
+            {
+                Reflection.Compute.RecordError("The parameters E and F must be equal as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.E > shapeCode.A || shapeCode.F > shapeCode.B)
+            {
+                Reflection.Compute.RecordError("The parameters E and F must be less than the parameter B as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode63 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.C != shapeCode.D)
+            {
+                Reflection.Compute.RecordError("The parameters E and F must be equal as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C > shapeCode.A || shapeCode.D > shapeCode.A)
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be less than the parameter A as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (shapeCode.C < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode64 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.F < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters A and F must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode67 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            //Table 10
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode75 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode77 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode98 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+
+            if (shapeCode.C < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
+            {
+                Reflection.Compute.RecordError("The parameters C and D must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
                 return false;
             }
 
@@ -142,7 +874,7 @@ namespace BH.Engine.Physical
                 return false;
 
             Reflection.Compute.RecordError("The ShapeCode is not recognised.");
-                return false;
+            return false;
         }
 
         /***************************************************/
