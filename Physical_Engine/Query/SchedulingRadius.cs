@@ -46,7 +46,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
 
-            if (diameter < 20)
+            if (diameter < 0.020)
                 return 2 * diameter;
             else
                 return 3.5 * diameter;

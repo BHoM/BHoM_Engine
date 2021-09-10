@@ -42,10 +42,10 @@ namespace BH.Engine.Physical
         [Output("diameter", "The anticipated hook dianeter based on the diameter of the reinforcement bar", typeof(Length))]
         public static double HookDiameter(this double diameter, double bendingRadius = 0)
         {
-            if (diameter > 50)
+            if (diameter > 0.050)
                 Reflection.Compute.RecordWarning("Bars that are greater than 50mm cannot be bent using a standard mandrel.");
             
-            return Math.Ceiling((3 * diameter + 2 * bendingRadius == 0 ? diameter.SchedulingRadius() : bendingRadius) / 5) * 5;
+            return Math.Ceiling((3 * diameter + 2 * bendingRadius == 0 ? diameter.SchedulingRadius() : bendingRadius) / 0.005) * 0.005;
         }
 
         /***************************************************/

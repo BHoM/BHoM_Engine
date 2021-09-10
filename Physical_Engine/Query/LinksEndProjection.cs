@@ -47,7 +47,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
 
-            return Math.Max(10 * diameter, 90) + diameter + diameter.SchedulingRadius();
+            return Math.Max(10 * diameter, 0.090) + diameter + diameter.SchedulingRadius();
         }
 
         /***************************************************/
