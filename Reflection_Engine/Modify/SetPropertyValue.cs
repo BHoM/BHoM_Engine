@@ -117,6 +117,14 @@ namespace BH.Engine.Reflection
                 if (propType == typeof(Type) && value is string)
                     value = Create.Type(value as string);
 
+                if (propType == typeof(FragmentSet))
+                {
+                    if (value is IFragment)
+                        value = new FragmentSet { value as IFragment };
+                    else if (value is IEnumerable && !(value is FragmentSet))
+                        value = new FragmentSet(((IEnumerable)value).OfType<IFragment>().ToList());
+                }
+
                 if (value != null)
                 {
                     if (value.GetType() != propType && value.GetType().GenericTypeArguments.Length > 0 && propType.GenericTypeArguments.Length > 0)
