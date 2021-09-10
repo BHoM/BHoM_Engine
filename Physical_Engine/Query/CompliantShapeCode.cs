@@ -865,7 +865,7 @@ namespace BH.Engine.Physical
         /****    Private Fallback Method            ********/
         /***************************************************/
 
-        [Description("Verifies the dimensions of the ShapeCode to verify their compliance with BS 8666:2020.")]
+        [Description("Verifies  the dimensions of the ShapeCode to verify their compliance with BS 8666:2020.")]
         [Input("shapeCode", "The reinforcement containing the ShapeCode, reinforcement and bending radius to be verified.")]
         [Output("diameter", "The anticipated hook dianeter based on the diameter of the reinforcement bar", typeof(Length))]
         private static bool CompliantShapeCode(IShapeCode shapeCode, double diameter, double bendingRadius)
