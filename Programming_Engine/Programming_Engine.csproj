@@ -13,6 +13,9 @@
     <Reference Include="BHoM">
       <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
+    <Reference Include="Programming_oM">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Programming_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Reflection_oM">
       <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
     </Reference>
