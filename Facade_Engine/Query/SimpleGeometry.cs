@@ -65,8 +65,11 @@ namespace BH.Engine.Facade
 
             foreach (ConstantFramingProperty prop in frameEdgeProp.SectionProperties)
             {
-                List<ICurve> crv = new List<ICurve>(prop.Profile.Edges);
-                profileOutlines.AddRange(crv);
+               if (prop.Profile != null)
+                {
+                    List<ICurve> crv = new List<ICurve>(prop.Profile.Edges);
+                    profileOutlines.AddRange(crv);
+                }
             }
 
             if (profileOutlines.Count == 0)
