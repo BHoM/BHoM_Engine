@@ -59,6 +59,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             return CompliantShapeCode(shapeCode as dynamic, diameter);
 
@@ -75,6 +80,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A <= 0)
             {
@@ -95,6 +105,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.B < diameter.GeneralEndProjection())
             {
@@ -115,6 +130,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09) || shapeCode.B < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09))
             {
@@ -135,6 +155,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.B < HookDiameter(diameter))
             {
@@ -166,6 +191,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -187,6 +217,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -208,6 +243,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -229,6 +269,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.C < HookDiameter(diameter))
             {
@@ -263,6 +308,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -284,6 +334,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -305,6 +360,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.B < diameter.GeneralEndProjection())
             {
@@ -332,6 +392,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -352,6 +417,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -372,6 +442,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -392,6 +467,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.C < diameter.GeneralEndProjection())
             {
@@ -412,6 +492,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
             {
@@ -432,6 +517,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
             {
@@ -452,6 +542,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.B < HookDiameter(diameter))
             {
@@ -482,6 +577,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
             {
@@ -502,6 +602,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
             {
@@ -522,6 +627,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
             {
@@ -542,6 +652,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
             {
@@ -562,6 +677,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
             {
@@ -582,6 +702,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
             {
@@ -602,6 +727,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.C != shapeCode.D)
             {
@@ -637,6 +767,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.C != shapeCode.D)
             {
@@ -667,6 +802,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.C != shapeCode.D)
             {
@@ -697,6 +837,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.C != shapeCode.D)
             {
@@ -727,6 +872,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.E != shapeCode.F)
             {
@@ -757,6 +907,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.C != shapeCode.D)
             {
@@ -787,6 +942,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.F < diameter.GeneralEndProjection())
             {
@@ -807,6 +967,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             //Table 10
 
@@ -823,6 +988,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             return true;
         }
@@ -837,6 +1007,11 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             return true;
         }
@@ -851,10 +1026,34 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
 
             if (shapeCode.C < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters C and D must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to be verified.")]
+        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        public static bool CompliantShapeCode(ShapeCode99 shapeCode, double diameter)
+        {
+            if (shapeCode.IsNull())
+                return false;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return false;
             }
 
