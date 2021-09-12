@@ -28,10 +28,11 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Physical
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -55,7 +56,80 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(IShapeCode shapeCode, double diameter, double bendRadius)
+        public static ICurve ICentreline(IShapeCode shapeCode, double diameter, double bendRadius = 0)
+        {
+            if (shapeCode.IsNull())
+                return null;
+            else if(diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+
+            return Centreline(shapeCode as dynamic, diameter);
+        }
+
+        /***************************************************/
+
+        [Description("Computes the centreline for the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to determine the curve parameters.")]
+        [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
+        [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
+        [Output("curve", "The centreline curve of the shape code provided.")]
+        public static ICurve Centreline(ShapeCode00 shapeCode, double diameter, double bendRadius = 0)
+        {
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+
+            return new Line() { Start = new Point() { X = -shapeCode.A / 2 }, End = new Point() { X = shapeCode.A / 2 } };
+        }
+
+        /***************************************************/
+
+        [Description("Computes the centreline for the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to determine the curve parameters.")]
+        [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
+        [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
+        [Output("curve", "The centreline curve of the shape code provided.")]
+        public static ICurve Centreline(ShapeCode11 shapeCode, double diameter, double bendRadius = 0)
+        {
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+
+            if (bendRadius == 0)
+                bendRadius = diameter.SchedulingRadius();
+
+            Point bEnd = new Point() { X = shapeCode.B };
+            Point circleEnd = bEnd.Translate(new Vector() { X = bendRadius, Y = bendRadius });
+
+            Line b = new Line() { Start = new Point(), End = bEnd };
+
+            Circle circle = new Circle() { Centre = bEnd.Translate(new Vector() { Y = bendRadius })};
+            ICurve arc = circle.ISplitAtPoints(new List<Point>() { bEnd, circleEnd })[0];
+
+            Line a = new Line() { Start = circleEnd, End = circleEnd.Translate(new Vector { Y = shapeCode.A - bendRadius }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { b, arc, a } };
+        }
+
+        /***************************************************/
+
+        [Description("Computes the centreline for the ShapeCode to BS 8666:2020.")]
+        [Input("shapeCode", "The ShapeCode to determine the curve parameters.")]
+        [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
+        [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
+        [Output("curve", "The centreline curve of the shape code provided.")]
+        public static ICurve Centreline(ShapeCode12 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -67,7 +141,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode00 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode13 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -79,7 +153,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode11 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode14 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -91,7 +165,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode12 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode15 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -103,7 +177,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode13 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode21 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -115,7 +189,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode14 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode22 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -127,7 +201,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode15 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode23 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -139,43 +213,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode21 shapeCode, double diameter, double bendRadius)
-        {
-            return null;
-        }
-
-        /***************************************************/
-
-        [Description("Computes the centreline for the ShapeCode to BS 8666:2020.")]
-        [Input("shapeCode", "The ShapeCode to determine the curve parameters.")]
-        [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
-        [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
-        [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode22 shapeCode, double diameter, double bendRadius)
-        {
-            return null;
-        }
-
-        /***************************************************/
-
-        [Description("Computes the centreline for the ShapeCode to BS 8666:2020.")]
-        [Input("shapeCode", "The ShapeCode to determine the curve parameters.")]
-        [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
-        [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
-        [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode23 shapeCode, double diameter, double bendRadius)
-        {
-            return null;
-        }
-
-        /***************************************************/
-
-        [Description("Computes the centreline for the ShapeCode to BS 8666:2020.")]
-        [Input("shapeCode", "The ShapeCode to determine the curve parameters.")]
-        [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
-        [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
-        [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode24 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode24 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -199,7 +237,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode26 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode26 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -211,7 +249,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode27 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode27 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -223,7 +261,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode28 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode28 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -235,7 +273,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode29 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode29 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -247,7 +285,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode31 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode31 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -259,7 +297,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode32 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode32 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -271,7 +309,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode33 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode33 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -283,7 +321,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode34 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode34 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -295,7 +333,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode35 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode35 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -307,7 +345,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode36 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode36 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -319,7 +357,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode41 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode41 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -331,7 +369,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode44 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode44 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -343,7 +381,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode46 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode46 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -355,7 +393,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode47 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode47 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -367,7 +405,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode48 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode48 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -379,7 +417,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode51 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode51 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -391,7 +429,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode52 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode52 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -403,7 +441,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode56 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode56 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -415,7 +453,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode63 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode63 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -427,7 +465,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode64 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode64 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -439,7 +477,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode67 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode67 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -451,7 +489,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode75 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode75 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -463,7 +501,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode77 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode77 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -475,7 +513,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode98 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode98 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }
@@ -487,7 +525,7 @@ namespace BH.Engine.Physical
         [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
         [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
-        public static ICurve ICentreline(ShapeCode99 shapeCode, double diameter, double bendRadius)
+        public static ICurve Centreline(ShapeCode99 shapeCode, double diameter, double bendRadius)
         {
             return null;
         }

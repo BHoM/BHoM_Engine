@@ -46,7 +46,6 @@ namespace BH.Engine.Physical
 
             return ICompliantShapeCode(reinforcement.ShapeCode, reinforcement.Diameter);
 
-
         }
 
         /***************************************************/
@@ -203,7 +202,6 @@ namespace BH.Engine.Physical
                 return false;
             }
 
-
             return true;
         }
 
@@ -229,7 +227,6 @@ namespace BH.Engine.Physical
                 return false;
             }
 
-
             return true;
         }
 
@@ -254,7 +251,6 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
-
 
             return true;
         }
@@ -320,7 +316,6 @@ namespace BH.Engine.Physical
                 return false;
             }
 
-
             return true;
         }
 
@@ -345,7 +340,6 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters A and C must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
-
 
             return true;
         }
@@ -377,7 +371,6 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The bends are close to 90 degrees, schedule a ShapeCode99 bar" +
                     "with horizontal offers as per BS 8666:2020 Table 2.");
             }
-
 
             return true;
         }
