@@ -153,10 +153,15 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            if (opening.OpeningConstruction == null && opening.Edges == null)
+            if (opening.OpeningConstruction == null)
             {
-                Engine.Reflection.Compute.RecordError("Opening " + opening.BHoM_Guid + " does not have any constructions assigned");
-                return null;
+                if (opening.Edges == null || !opening.Edges.Any(x => x.FrameEdgeProperty != null))
+                {
+                    Engine.Reflection.Compute.RecordError("Opening " + opening.BHoM_Guid + " does not have any constructions assigned");
+                    return null;
+                }
+                else
+                    Engine.Reflection.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have an opening construction assigned. Material Composition is being calculated based on frame edges only.");
             }
 
             List<Layer> layers = (List<Layer>)Reflection.Query.PropertyValue(opening.OpeningConstruction, "Layers");
@@ -231,10 +236,10 @@ namespace BH.Engine.Facade
             List<MaterialComposition> matComps = new List<MaterialComposition>();
             List<double> vols = new List<double>();
 
-            if (frameEdge.FrameEdgeProperty == null)
+            if (frameEdge.FrameEdgeProperty == null || frameEdge.FrameEdgeProperty.SectionProperties.Count() == 0)
             {
-                Engine.Reflection.Compute.RecordWarning("The frame edge does not have a frame edge property assigned to get material composition from, material composition returned is empty.");
-                return null;
+                Engine.Reflection.Compute.RecordWarning("The frame edge does not have a frame edge property assigned to get material composition from, so the material composition returned is empty.");
+                return new MaterialComposition(new List<Material>() { new Material() }, new List<double> { 1 } ); ;
             }
 
             if (frameEdge.FrameEdgeProperty.SectionProperties.Any(x => x.Material == null))
