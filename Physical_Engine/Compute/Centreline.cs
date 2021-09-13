@@ -25,6 +25,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
@@ -40,13 +41,13 @@ namespace BH.Engine.Physical
 
         [Description("Computes the centreline for a Reinforcement using the ShapeCode provided according to Bs 8666:2020.")]
         [Input("reinforcement", "The reinforcement containing the ShapeCode, reinforcement and bending radius to generate the centreline.")]
-        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(Reinforcement reinforcement)
         {
             if (reinforcement.IsNull())
                 return null;
 
-            return ICentreline(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius);
+            return ICentreline(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius).Orient(new Cartesian(), reinforcement.CoordinateSystem);
         }
 
         /***************************************************/
@@ -66,7 +67,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            return Centreline(shapeCode as dynamic, diameter);
+            return Centreline(shapeCode as dynamic, diameter, bendRadius);
         }
 
         /***************************************************/
@@ -105,19 +106,15 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return null;
             }
-
-            if (bendRadius == 0)
+            else if (bendRadius < diameter.SchedulingRadius())
                 bendRadius = diameter.SchedulingRadius();
 
-            Point bEnd = new Point() { X = shapeCode.B };
-            Point circleEnd = bEnd.Translate(new Vector() { X = bendRadius, Y = bendRadius });
-
+            Point bEnd = new Point() { X = shapeCode.B - bendRadius};
+            Point arcCentre = bEnd.Translate(new Vector() { Y = bendRadius });
+            Point aStart = arcCentre.Translate(new Vector() { X = bendRadius });
             Line b = new Line() { Start = new Point(), End = bEnd };
-
-            Circle circle = new Circle() { Centre = bEnd.Translate(new Vector() { Y = bendRadius })};
-            ICurve arc = circle.ISplitAtPoints(new List<Point>() { bEnd, circleEnd })[0];
-
-            Line a = new Line() { Start = circleEnd, End = circleEnd.Translate(new Vector { Y = shapeCode.A - bendRadius }) };
+            Arc arc = Geometry.Create.ArcByCentre(arcCentre, bEnd, aStart);
+            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector { Y = shapeCode.A - bendRadius }) };
 
             return new PolyCurve() { Curves = new List<ICurve>() { b, arc, a } };
         }
@@ -131,7 +128,24 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(ShapeCode12 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+            else if (shapeCode.R < diameter.SchedulingRadius())
+                shapeCode.R = diameter.SchedulingRadius();
+
+            Point bEnd = new Point() { X = shapeCode.B - shapeCode.R };
+            Point arcCentre = bEnd.Translate(new Vector() { Y = shapeCode.R });
+            Point aStart = arcCentre.Translate(new Vector() { X = shapeCode.R });
+            Line b = new Line() { Start = new Point(), End = bEnd };
+            Arc arc = Geometry.Create.ArcByCentre(arcCentre, bEnd, aStart);
+            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector { Y = shapeCode.A - shapeCode.R }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { b, arc, a } };
         }
 
         /***************************************************/
@@ -143,7 +157,22 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(ShapeCode13 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+
+            Point aEnd = new Point() { X = shapeCode.A - shapeCode.B/2 };
+            Point arcCentre = aEnd.Translate(new Vector() { Y = shapeCode.B/2 });
+            Point cStart = aEnd.Translate(new Vector() { Y = shapeCode.B });
+            Line a = new Line() { Start = new Point(), End = aEnd };
+            Arc b = Geometry.Create.ArcByCentre(arcCentre, aEnd, cStart);
+            Line c = new Line() { Start = cStart, End = cStart.Translate(new Vector { Y = - shapeCode.C + shapeCode.B/2 }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { a, b, c } };
         }
 
         /***************************************************/
@@ -155,7 +184,31 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(ShapeCode14 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+            else if (bendRadius< diameter.SchedulingRadius())
+                bendRadius = diameter.SchedulingRadius();
+
+            double angle = Math.PI / 2 - Math.Asin(shapeCode.D / shapeCode.A);
+
+            Point cEnd = new Point() { X = shapeCode.C - bendRadius };
+            Point arcCentre = cEnd.Translate(new Vector() { Y = bendRadius });
+
+            Circle circle = new Circle() { Centre = arcCentre, Radius = bendRadius };
+            Line radius = new Line() { Start = arcCentre, End = arcCentre.Translate(new Vector() { X = bendRadius }) };
+            Line transformedRadius = radius.Rotate(arcCentre, Vector.ZAxis, angle);
+            Point aStart = circle.ClosestPoint(transformedRadius.End);
+
+            Line c = new Line() { Start = new Point(), End = cEnd };
+            Arc arc = Geometry.Create.ArcByCentre(arcCentre, cEnd, aStart);
+            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector() { X = shapeCode.D - bendRadius, Y = shapeCode.B - bendRadius }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { c, arc, a } };
         }
 
         /***************************************************/
@@ -167,7 +220,31 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(ShapeCode15 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+            else if (bendRadius < diameter.SchedulingRadius())
+                bendRadius = diameter.SchedulingRadius();
+
+            double angle = Math.PI / 2 - Math.Asin(shapeCode.D / shapeCode.A);
+
+            Point cEnd = new Point() { X = - shapeCode.C + bendRadius };
+            Point arcCentre = cEnd.Translate(new Vector() { Y = bendRadius });
+
+            Circle circle = new Circle() { Centre = arcCentre, Radius = bendRadius };
+            Line radius = new Line() { Start = arcCentre, End = arcCentre.Translate(new Vector() { X = - bendRadius }) };
+            Line transformedRadius = radius.Rotate(arcCentre, Vector.ZAxis, -angle);
+            Point aStart = circle.ClosestPoint(transformedRadius.End);
+
+            Line c = new Line() { Start = new Point(), End = cEnd };
+            Arc arc = Geometry.Create.ArcByCentre(arcCentre, cEnd, aStart);
+            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector { X = -shapeCode.A })}.Rotate(aStart, Vector.ZAxis, angle);
+
+            return new PolyCurve() { Curves = new List<ICurve>() { c, arc, a } };
         }
 
         /***************************************************/
@@ -179,7 +256,30 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(ShapeCode21 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+            else if (bendRadius < diameter.SchedulingRadius())
+                bendRadius = diameter.SchedulingRadius();
+
+            Point aEnd = new Point() { Y = - shapeCode.A + bendRadius };
+            Point abArcCentre = aEnd.Translate(new Vector() { X = bendRadius });
+            Point bStart = abArcCentre.Translate(new Vector() { Y = -bendRadius });
+            Point bEnd = bStart.Translate(new Vector() { X = shapeCode.B - 2 * bendRadius });
+            Point bcArcCentre = bEnd.Translate(new Vector() { Y = bendRadius });
+            Point cStart = bcArcCentre.Translate(new Vector() { X = bendRadius });
+
+            Line a = new Line() { Start = new Point(), End = aEnd };
+            Arc abArc = Geometry.Create.ArcByCentre(abArcCentre, aEnd, bStart);
+            Line b = new Line() { Start = bStart, End = bEnd };
+            Arc bcArc = Geometry.Create.ArcByCentre(bcArcCentre, bEnd, cStart);
+            Line c = new Line() { Start = cStart, End = cStart.Translate(new Vector() { Y = shapeCode.C }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c} };
         }
 
         /***************************************************/
@@ -191,7 +291,30 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(ShapeCode22 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+            else if (bendRadius < diameter.SchedulingRadius())
+                bendRadius = diameter.SchedulingRadius();
+
+            Point aEnd = new Point() { Y = shapeCode.A - bendRadius };
+            Point abArcCentre = aEnd.Translate(new Vector() { X = bendRadius });
+            Point bStart = abArcCentre.Translate(new Vector() { Y = bendRadius });
+            Point bEnd = bStart.Translate(new Vector() { X = shapeCode.B - 2 * bendRadius });
+            Point bcArcCentre = bEnd.Translate(new Vector() { Y = -shapeCode.C / 2 });
+            Point dStart = bcArcCentre.Translate(new Vector() { Y = -shapeCode.C / 2 });
+
+            Line a = new Line() { Start = new Point(), End = aEnd };
+            Arc abArc = Geometry.Create.ArcByCentre(abArcCentre, aEnd, bStart);
+            Line b = new Line() { Start = bStart, End = bEnd };
+            Arc bcArc = Geometry.Create.ArcByCentre(bcArcCentre, bEnd, dStart);
+            Line d = new Line() { Start = dStart, End = dStart.Translate(new Vector() { X = -shapeCode.D + shapeCode.C / 2 }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, d } };
         }
 
         /***************************************************/
