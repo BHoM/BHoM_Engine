@@ -41,12 +41,13 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical Beam element. To generate elements compatible with structural packages, have a look at the Bar class")]
-        [Input("diameter", "The centre line geometry of the beam")]
-        [Input("bendRadius", "The property of the beam, containing its profile, orientation and materiality")]
+        [Description("Creates a Reinforcement object storing the ShapeCode, diameter, bend radius and coordinate system.")]
+        [Input("diameter", "The diameter of the reinforcement.")]
         [Input("coordinateSystem", "The name of the beam, default empty string")]
         [Input("shapeCode", "The name of the beam, default empty string")]
-        [Output("Beam", "The created physical beam")]
+        [Input("bendRadius", "The bend radius of the reinforcement. This will be calculated based on the diameter if the provided value " +
+            "is less than the the minimum scheduling radius defined in BS 8666:2020.")]
+        [Output("reinforcement", "The reinforcement object with a compliant shape code in accordance with BS 8666:2020.")]
         public static Reinforcement Reinforcement(double diameter, Cartesian coordinateSystem, IShapeCode shapeCode, double bendRadius = 0)
         {
             if (shapeCode.IsNull())
@@ -60,7 +61,12 @@ namespace BH.Engine.Physical
             }
             else if (coordinateSystem.IsNull())
                 return null;
-
+            else if (bendRadius < diameter.SchedulingRadius())
+            {
+                bendRadius = diameter.SchedulingRadius();
+                Reflection.Compute.RecordWarning("The bend radius is less than the minimum scheduling radius and has been assigned the " +
+                    "minimum value.");
+            }
 
             return new Reinforcement()
             {
@@ -74,5 +80,3 @@ namespace BH.Engine.Physical
         /***************************************************/
     }
 }
-
-
