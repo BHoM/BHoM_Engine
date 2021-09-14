@@ -61,7 +61,7 @@ namespace BH.Engine.Physical
         {
             if (shapeCode.IsNull())
                 return null;
-            else if(diameter <= 0)
+            else if (diameter <= 0)
             {
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return null;
@@ -109,7 +109,7 @@ namespace BH.Engine.Physical
             else if (bendRadius < diameter.SchedulingRadius())
                 bendRadius = diameter.SchedulingRadius();
 
-            Point bEnd = new Point() { X = shapeCode.B - bendRadius};
+            Point bEnd = new Point() { X = shapeCode.B - bendRadius };
             Point arcCentre = bEnd.Translate(new Vector() { Y = bendRadius });
             Point aStart = arcCentre.Translate(new Vector() { X = bendRadius });
             Line b = new Line() { Start = new Point(), End = bEnd };
@@ -165,12 +165,12 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            Point aEnd = new Point() { X = shapeCode.A - shapeCode.B/2 };
-            Point arcCentre = aEnd.Translate(new Vector() { Y = shapeCode.B/2 });
+            Point aEnd = new Point() { X = shapeCode.A - shapeCode.B / 2 };
+            Point arcCentre = aEnd.Translate(new Vector() { Y = shapeCode.B / 2 });
             Point cStart = aEnd.Translate(new Vector() { Y = shapeCode.B });
             Line a = new Line() { Start = new Point(), End = aEnd };
             Arc b = Geometry.Create.ArcByCentre(arcCentre, aEnd, cStart);
-            Line c = new Line() { Start = cStart, End = cStart.Translate(new Vector { Y = - shapeCode.C + shapeCode.B/2 }) };
+            Line c = new Line() { Start = cStart, End = cStart.Translate(new Vector { Y = -shapeCode.C + shapeCode.B / 2 }) };
 
             return new PolyCurve() { Curves = new List<ICurve>() { a, b, c } };
         }
@@ -191,7 +191,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return null;
             }
-            else if (bendRadius< diameter.SchedulingRadius())
+            else if (bendRadius < diameter.SchedulingRadius())
                 bendRadius = diameter.SchedulingRadius();
 
             double angle = Math.PI / 2 - Math.Asin(shapeCode.D / shapeCode.A);
@@ -232,17 +232,17 @@ namespace BH.Engine.Physical
 
             double angle = Math.PI / 2 - Math.Asin(shapeCode.D / shapeCode.A);
 
-            Point cEnd = new Point() { X = - shapeCode.C + bendRadius };
+            Point cEnd = new Point() { X = -shapeCode.C + bendRadius };
             Point arcCentre = cEnd.Translate(new Vector() { Y = bendRadius });
 
             Circle circle = new Circle() { Centre = arcCentre, Radius = bendRadius };
-            Line radius = new Line() { Start = arcCentre, End = arcCentre.Translate(new Vector() { X = - bendRadius }) };
+            Line radius = new Line() { Start = arcCentre, End = arcCentre.Translate(new Vector() { X = -bendRadius }) };
             Line transformedRadius = radius.Rotate(arcCentre, Vector.ZAxis, -angle);
             Point aStart = circle.ClosestPoint(transformedRadius.End);
 
             Line c = new Line() { Start = new Point(), End = cEnd };
             Arc arc = Geometry.Create.ArcByCentre(arcCentre, cEnd, aStart);
-            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector { X = -shapeCode.A })}.Rotate(aStart, Vector.ZAxis, angle);
+            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector { X = -shapeCode.A }) }.Rotate(aStart, Vector.ZAxis, angle);
 
             return new PolyCurve() { Curves = new List<ICurve>() { c, arc, a } };
         }
@@ -266,7 +266,7 @@ namespace BH.Engine.Physical
             else if (bendRadius < diameter.SchedulingRadius())
                 bendRadius = diameter.SchedulingRadius();
 
-            Point aEnd = new Point() { Y = - shapeCode.A + bendRadius };
+            Point aEnd = new Point() { Y = -shapeCode.A + bendRadius };
             Point abArcCentre = aEnd.Translate(new Vector() { X = bendRadius });
             Point bStart = abArcCentre.Translate(new Vector() { Y = -bendRadius });
             Point bEnd = bStart.Translate(new Vector() { X = shapeCode.B - 2 * bendRadius });
@@ -279,7 +279,7 @@ namespace BH.Engine.Physical
             Arc bcArc = Geometry.Create.ArcByCentre(bcArcCentre, bEnd, cStart);
             Line c = new Line() { Start = cStart, End = cStart.Translate(new Vector() { Y = shapeCode.C }) };
 
-            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c} };
+            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c } };
         }
 
         /***************************************************/
@@ -326,7 +326,32 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(ShapeCode23 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            if (shapeCode.IsNull())
+                return null;
+            else if (diameter <= 0)
+            {
+                Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return null;
+            }
+            else if (bendRadius < diameter.SchedulingRadius())
+                bendRadius = diameter.SchedulingRadius();
+
+            Point aEnd = new Point() { Y = shapeCode.A };
+            Point abCentre = aEnd.Translate(new Vector() { X = bendRadius });
+            Point bStart = abCentre.Translate(new Vector() { Y = bendRadius });
+            Point bEnd = bStart.Translate(new Vector() { X = shapeCode.B - 2 * bendRadius });
+            Point bcCentre = bEnd.Translate(new Vector() { Y = bendRadius });
+            Point cStart = bcCentre.Translate(new Vector() { X = bendRadius });
+
+            Line a = new Line() { Start = new Point(), End = aEnd };
+            Arc abArc = Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
+            Line b = new Line() { Start = bStart, End = bEnd };
+            Arc bcArc = Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
+            Line c = new Line() { Start = cStart, End = cStart.Translate(new Vector() { Y = -shapeCode.C }) };
+
+            PolyCurve polyCurve = new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c } };
+
+            return shapeCode.ZBar ? polyCurve.Rotate(new Point(), Vector.ZAxis, Math.PI / 2) : polyCurve;
         }
 
         /***************************************************/
