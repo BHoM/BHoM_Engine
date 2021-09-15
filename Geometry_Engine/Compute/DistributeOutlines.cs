@@ -55,20 +55,19 @@ namespace BH.Engine.Geometry
                 return new List<List<Polyline>>();
             }
 
-            List<Point> controlPoints = outlines.SelectMany(x => x.IControlPoints()).ToList();
-            if (!controlPoints.IsCoplanar(tolerance))
-            {
-                BH.Engine.Reflection.Compute.RecordError("The input outline curves are not coplanar, therefore they could not be distributed. Please try changing the tolerance if this behaviour is not expected.");
-                return new List<List<Polyline>>();
-            }
-
             if (outlines.Any(p => !p.IsClosed(tolerance)))
             {
                 BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is not closed within the input tolerance. Please try changing the tolerance if this behaviour is not expected.");
                 return new List<List<Polyline>>();
             }
 
-            if (outlines.Any(p => p.IsSelfIntersecting(tolerance)))
+            if (outlines.Any(p => !p.IsPlanar(tolerance)))
+            {
+                BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is not planar within the input tolerance. Please try changing the tolerance if this behaviour is not expected.");
+                return new List<List<Polyline>>();
+            }
+
+            if (outlines.Any(p => !p.IsSelfIntersecting(tolerance)))
             {
                 BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is self-intersecting.");
                 return new List<List<Polyline>>();
@@ -129,16 +128,15 @@ namespace BH.Engine.Geometry
                 return new List<List<ICurve>>();
             }
 
-            List<Point> controlPoints = outlines.SelectMany(x => x.IControlPoints()).ToList();
-            if (!controlPoints.IsCoplanar(tolerance))
-            {
-                BH.Engine.Reflection.Compute.RecordError("The input outline curves are not coplanar, therefore they could not be distributed. Please try changing the tolerance if this behaviour is not expected.");
-                return new List<List<ICurve>>();
-            }
-
             if (outlines.Any(p => !p.IIsClosed(tolerance)))
             {
                 BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is not closed within the input tolerance. Please try changing the tolerance if this behaviour is not expected.");
+                return new List<List<ICurve>>();
+            }
+
+            if (outlines.Any(p => !p.IIsPlanar(tolerance)))
+            {
+                BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is not planar within the input tolerance. Please try changing the tolerance if this behaviour is not expected.");
                 return new List<List<ICurve>>();
             }
 

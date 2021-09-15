@@ -170,10 +170,12 @@ namespace BH.Engine.Geometry
                 BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from null curves.");
                 return null;
             }
-            
-            List<List<ICurve>> distributed = Compute.DistributeOutlines(boundaryCurves, tolerance);
 
             List<PlanarSurface> surfaces = new List<PlanarSurface>();
+            List<List<ICurve>> distributed = Compute.DistributeOutlines(boundaryCurves, tolerance);
+            if (distributed == null || distributed.Count == 0)
+                return surfaces;
+
             for (int i = 0; i < distributed.Count; i++)
             {
                 PlanarSurface srf = new PlanarSurface(
@@ -183,7 +185,7 @@ namespace BH.Engine.Geometry
 
                 surfaces.Add(srf);
             }
-
+            
             return surfaces;
         }
         
