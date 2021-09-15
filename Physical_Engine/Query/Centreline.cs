@@ -353,7 +353,7 @@ namespace BH.Engine.Physical
 
             Line a = new Line() { Start = new Point(), End = aEnd };
             Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
-            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcRadius.Start, bEnd, cStart);
+            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcRadius.End, bEnd, cStart);
             Line c = new Line() { Start = cStart, End = cStart.Translate(new Vector() { X = shapeCode.C - bendRadius }) };
 
             return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c } };
@@ -429,7 +429,7 @@ namespace BH.Engine.Physical
             Point aEnd = new Point() { X = shapeCode.A - diameter - bendRadius };
             Point abCentre = aEnd.Translate(new Vector() { Y = bendRadius + diameter / 2 });
             Line abRadius = new Line() { Start = abCentre, End = aEnd }.Rotate(abCentre, Vector.ZAxis, Math.PI - angle);
-            Point bStart = abRadius.Start;
+            Point bStart = abRadius.End;
             Line b = new Line() { Start = bStart, End = bStart.Translate(new Vector() { Y = shapeCode.B - 2 * bendRadius - 2 * diameter }) }.Rotate(bStart, Vector.ZAxis, angle);
             Point bEnd = b.End;
             Line bcRadius = new Line() { Start = bEnd, End = bEnd.Translate(new Vector() { X = -bendRadius - diameter / 2 }) }.Rotate(bEnd, Vector.ZAxis, Math.PI/2 - angle);
@@ -629,7 +629,7 @@ namespace BH.Engine.Physical
             Arc cbArc = Engine.Geometry.Create.ArcByCentre(cbCentre, cEnd, bStart);
             Line b = new Line() { Start = bStart, End = bEnd };
             Arc baArc = Engine.Geometry.Create.ArcByCentre(baCentre, bEnd, aStart);
-            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector() { Y = shapeCode.A - bendRadius - diameter }) }.Rotate(aStart,Vector.ZAxis,angle);
+            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector() { X = shapeCode.A - bendRadius - diameter }) }.Rotate(aStart,Vector.ZAxis,angle);
 
             return new PolyCurve() { Curves = new List<ICurve>() { d, dcArc, c, cbArc, b, baArc, a  } };
         }
