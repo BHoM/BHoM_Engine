@@ -165,9 +165,9 @@ namespace BH.Engine.Geometry
         [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(System.Collections.Generic.List<BH.oM.Geometry.ICurve)")]
         public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves, double tolerance = Tolerance.Distance)
         {
-            if (boundaryCurves == null)
+            if (boundaryCurves == null || boundaryCurves.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from null curves.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from a null or empty collection of boundary curves.");
                 return null;
             }
 
