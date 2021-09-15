@@ -453,10 +453,10 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         private static ICurve Centreline(this ShapeCode31 shapeCode, double diameter, double bendRadius)
         {
-            Point aEnd = new Point() { X = -shapeCode.A + bendRadius + diameter / 2 };
+            Point aEnd = new Point() { X = -shapeCode.A + bendRadius + diameter };
             Point abCentre = aEnd.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
             Point bStart = abCentre.Translate(new Vector() { X = -bendRadius - diameter / 2 });
-            Point bEnd = bStart.Translate(new Vector() {Y = -shapeCode.B + 2*bendRadius - diameter });
+            Point bEnd = bStart.Translate(new Vector() {Y = -shapeCode.B + 2*bendRadius - 2*diameter });
             Point bcCentre = bEnd.Translate(new Vector() { X = bendRadius + diameter / 2 });
             Point cStart = bcCentre.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
             Point cEnd = cStart.Translate(new Vector() { X = shapeCode.C - 2 * bendRadius - 2 * diameter });
@@ -610,25 +610,28 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         private static ICurve Centreline(this ShapeCode36 shapeCode, double diameter, double bendRadius)
         {
-            Point aEnd = new Point() { X = -shapeCode.A + bendRadius + diameter / 2 };
-            Point abCentre = aEnd.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
-            Point bStart = abCentre.Translate(new Vector() { X = -bendRadius - diameter / 2 });
-            Point bEnd = bStart.Translate(new Vector() { Y = -shapeCode.B + 2 * bendRadius - diameter });
-            Point bcCentre = bEnd.Translate(new Vector() { X = bendRadius + diameter / 2 });
-            Point cStart = bcCentre.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
-            Point cEnd = cStart.Translate(new Vector() { X = shapeCode.C - 2 * bendRadius - 2 * diameter });
-            Point cdCentre = cEnd.Translate(new Vector() { Y = bendRadius + diameter / 2 });
-            Point dStart = cdCentre.Translate(new Vector() { X = bendRadius + diameter / 2 });
+            double angle = Math.Asin(shapeCode.E / shapeCode.A);
 
-            Line a = new Line() { Start = new Point(), End = aEnd };
-            Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
-            Line b = new Line() { Start = bStart, End = bEnd };
-            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
+            Point dEnd = new Point() { X = -shapeCode.D + bendRadius + diameter };
+            Point dcCentre = dEnd.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
+            Point cStart = dcCentre.Translate(new Vector() { X = -bendRadius - diameter / 2 });
+            Point cEnd = cStart.Translate(new Vector() { Y = -shapeCode.C + 2 * bendRadius - 2*diameter });
+            Point cbCentre = cEnd.Translate(new Vector() { X = bendRadius + diameter / 2 });
+            Point bStart = cbCentre.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
+            Point bEnd = bStart.Translate(new Vector() { X = shapeCode.B - 2 * bendRadius - 2 * diameter });
+            Point baCentre = bEnd.Translate(new Vector() { Y = bendRadius + diameter / 2 });
+            Line baRadius = new Line() { Start = baCentre, End = bEnd }.Rotate(baCentre, Vector.ZAxis, Math.PI / 2 - angle);
+            Point aStart = baRadius.End;
+
+            Line d = new Line() { Start = new Point(), End = dEnd };
+            Arc dcArc = Engine.Geometry.Create.ArcByCentre(dcCentre, dEnd, cStart);
             Line c = new Line() { Start = cStart, End = cEnd };
-            Arc cdArc = Engine.Geometry.Create.ArcByCentre(cdCentre, cEnd, dStart);
-            Line d = new Line() { Start = dStart, End = dStart.Translate(new Vector() { Y = shapeCode.D - bendRadius - diameter / 2 }) };
+            Arc cbArc = Engine.Geometry.Create.ArcByCentre(cbCentre, cEnd, bStart);
+            Line b = new Line() { Start = bStart, End = bEnd };
+            Arc baArc = Engine.Geometry.Create.ArcByCentre(baCentre, bEnd, aStart);
+            Line a = new Line() { Start = aStart, End = aStart.Translate(new Vector() { Y = shapeCode.A - bendRadius - diameter }) }.Rotate(aStart,Vector.ZAxis,angle);
 
-            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c, cdArc, d } };
+            return new PolyCurve() { Curves = new List<ICurve>() { d, dcArc, c, cbArc, b, baArc, a  } };
         }
 
         /***************************************************/
@@ -640,7 +643,30 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         private static ICurve Centreline(this ShapeCode41 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            Point aEnd = new Point() { X = -shapeCode.A + bendRadius + diameter };
+            Point abCentre = aEnd.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
+            Point bStart = abCentre.Translate(new Vector() { X = -bendRadius - diameter / 2 });
+            Point bEnd = bStart.Translate(new Vector() { Y = -shapeCode.B + 2 * bendRadius - 2*diameter });
+            Point bcCentre = bEnd.Translate(new Vector() { X = bendRadius + diameter / 2 });
+            Point cStart = bcCentre.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
+            Point cEnd = cStart.Translate(new Vector() { X = shapeCode.C - 2 * bendRadius - 2 * diameter });
+            Point cdCentre = cEnd.Translate(new Vector() { Y = bendRadius + diameter / 2 });
+            Point dStart = cdCentre.Translate(new Vector() { X = bendRadius + diameter / 2 });
+            Point dEnd = dStart.Translate(new Vector() { Y = shapeCode.D - 2 * bendRadius - 2 * diameter });
+            Point deCentre = dEnd.Translate(new Vector() { X = -bendRadius - diameter / 2 });
+            Point eStart = deCentre.Translate(new Vector() { Y = bendRadius + diameter / 2 });
+
+            Line a = new Line() { Start = new Point(), End = aEnd };
+            Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
+            Line b = new Line() { Start = bStart, End = bEnd };
+            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
+            Line c = new Line() { Start = cStart, End = cEnd };
+            Arc cdArc = Engine.Geometry.Create.ArcByCentre(cdCentre, cEnd, dStart);
+            Line d = new Line() { Start = dStart, End = dEnd };
+            Arc deArc = Engine.Geometry.Create.ArcByCentre(deCentre, dEnd, eStart);
+            Line e = new Line() { Start = eStart, End = eStart.Translate( new Vector{ X = -shapeCode.E + diameter + bendRadius }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c, cdArc, d, deArc, e } };
         }
 
         /***************************************************/
@@ -652,7 +678,30 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         private static ICurve Centreline(this ShapeCode44 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            Point aEnd = new Point() { X = shapeCode.A - diameter - bendRadius };
+            Point abCentre = new Point() { Y = -bendRadius - diameter / 2 };
+            Point bStart = abCentre.Translate(new Vector() { X = diameter / 2 + bendRadius });
+            Point bEnd = bStart.Translate(new Vector() { Y = -shapeCode.B + 2 * diameter + 2 * bendRadius });
+            Point bcCentre = bEnd.Translate(new Vector() { X = bendRadius + diameter / 2 });
+            Point cStart = bcCentre.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
+            Point cEnd = cStart.Translate(new Vector() { X = shapeCode.C - 2 * diameter - 2 * bendRadius });
+            Point cdCentre = cEnd.Translate(new Vector() { Y = bendRadius + diameter / 2 });
+            Point dStart = cdCentre.Translate(new Vector() { X = bendRadius + diameter / 2 });
+            Point dEnd = dStart.Translate(new Vector() { Y = shapeCode.D - 2 * diameter - 2 * bendRadius });
+            Point deCentre = dEnd.Translate(new Vector() { X = bendRadius + diameter / 2 });
+            Point eStart = deCentre.Translate(new Vector() { Y = bendRadius + diameter / 2 });
+
+            Line a = new Line() { Start = new Point(), End = aEnd };
+            Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
+            Line b = new Line() { Start = bStart, End = bEnd };
+            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
+            Line c = new Line() { Start = cStart, End = cEnd };
+            Arc cdArc = Engine.Geometry.Create.ArcByCentre(cdCentre, cEnd, dStart);
+            Line d = new Line() { Start = dStart, End = dEnd };
+            Arc deArc = Engine.Geometry.Create.ArcByCentre(deCentre, dEnd, eStart);
+            Line e = new Line() { Start = eStart, End = eStart.Translate(new Vector { X = shapeCode.E - diameter - bendRadius }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c, cdArc, d, deArc, e } };
         }
 
         /***************************************************/
@@ -664,7 +713,36 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         private static ICurve Centreline(this ShapeCode46 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            double angle = Math.Asin(shapeCode.D / shapeCode.B);
+
+            Point aEnd = new Point() { X = shapeCode.A - diameter - bendRadius };
+            Point abCentre = new Point() { Y = -bendRadius - diameter / 2 };
+            Line abRadius = new Line() { Start = abCentre, End = aEnd }.Rotate(abCentre, Vector.ZAxis, -angle);
+            Point bStart = abRadius.End;
+            Line b = new Line() { Start = bStart, End = bStart.Translate(new Vector() { X = shapeCode.B - 2 * diameter - 2 * bendRadius }) }.Rotate(bStart, Vector.ZAxis, -angle);
+            Point bEnd = b.End;
+            Line bcRadius = new Line() { Start = bEnd, End = bEnd.Translate(new Vector() { X = bendRadius + diameter / 2 }) }.Rotate(bEnd, Vector.ZAxis, angle);
+            Point bcCentre = bcRadius.End;
+            Point cStart = bcCentre.Translate(new Vector() { Y = -bendRadius - diameter / 2 });
+            Point cEnd = cStart.Translate(new Vector() { X = shapeCode.C - 2 * diameter - 2 * bendRadius });
+            Point cdCentre = cEnd.Translate(new Vector() { Y = bendRadius + diameter / 2 });
+            Line cdRadius = new Line() { Start = cdCentre, End = cEnd }.Rotate(cdCentre, Vector.ZAxis, Math.PI / 2 - angle);
+            Point dStart = cdRadius.End;
+            Line d = new Line() { Start = dStart, End = dStart.Translate(new Vector() { X = shapeCode.B - 2 * diameter - 2 * bendRadius }) }.Rotate(dStart, Vector.ZAxis, angle);
+            Point dEnd = d.End;
+            Line deRadius = new Line() { Start = dEnd, End = dEnd.Translate(new Vector() { X = bendRadius + diameter / 2 }) }.Rotate(dEnd, Vector.ZAxis, -Math.PI / 2 + angle);
+            Point deCentre = deRadius.End;
+            Point eStart = deCentre.Translate(new Vector() { Y = bendRadius + diameter / 2 });
+
+            Line a = new Line() { Start = new Point(), End = aEnd };
+            Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
+            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
+            Line c = new Line() { Start = cStart, End = cEnd };
+            Arc cdArc = Engine.Geometry.Create.ArcByCentre(cdCentre, cEnd, dStart);
+            Arc deArc = Engine.Geometry.Create.ArcByCentre(deCentre, dEnd, eStart);
+            Line e = new Line() { Start = eStart, End = eStart.Translate(new Vector { X = shapeCode.E - diameter - bendRadius }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c, cdArc, d, deArc, e } };
         }
 
         /***************************************************/
@@ -822,7 +900,7 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         private static ICurve Centreline(IShapeCode shapeCode, double diameter, double bendRadius)
         {
-            Engine.Reflection.Compute.RecordError("ShapeCode not recognised or supported.");
+            Reflection.Compute.RecordError("ShapeCode not recognised or supported.");
             return null;
         }
 
