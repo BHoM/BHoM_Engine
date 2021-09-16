@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
                 return new List<List<Polyline>>();
             }
 
-            if (outlines.Any(p => !p.IsSelfIntersecting(tolerance)))
+            if (outlines.Any(p => p.IsSelfIntersecting(tolerance)))
             {
                 BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is self-intersecting.");
                 return new List<List<Polyline>>();
