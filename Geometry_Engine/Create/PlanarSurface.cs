@@ -165,17 +165,15 @@ namespace BH.Engine.Geometry
         [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(System.Collections.Generic.List<BH.oM.Geometry.ICurve)")]
         public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves, double tolerance = Tolerance.Distance)
         {
-            if (boundaryCurves == null || boundaryCurves.Count == 0)
+            if (boundaryCurves == null || boundaryCurves.Count(x => x != null) == 0)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from a null or empty collection of boundary curves.");
                 return null;
             }
 
-            List<PlanarSurface> surfaces = new List<PlanarSurface>();
             List<List<ICurve>> distributed = Compute.DistributeOutlines(boundaryCurves, tolerance);
-            if (distributed == null || distributed.Count == 0)
-                return surfaces;
 
+            List<PlanarSurface> surfaces = new List<PlanarSurface>();
             for (int i = 0; i < distributed.Count; i++)
             {
                 PlanarSurface srf = new PlanarSurface(
