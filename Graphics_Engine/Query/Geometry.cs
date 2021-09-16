@@ -39,6 +39,9 @@ namespace BH.Engine.Graphics
         [Output("geom", "Geometry obtained from the RenderPoint.")]
         public static IGeometry Geometry(this RenderPoint obj)
         {
+            if (obj == null)
+                return null;
+
             return obj.Point;
         }
 
