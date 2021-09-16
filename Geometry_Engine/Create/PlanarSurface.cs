@@ -197,7 +197,7 @@ namespace BH.Engine.Geometry
 
             if (checkedCurves.Count == 0)
             {
-                Reflection.Compute.RecordError("Planar surface could not be created because all input boundary curves turned to be invalid (null, unsupported type, non-planar, not closed within the tolerance).");
+                Reflection.Compute.RecordError("Planar surface could not be created because all input boundary curves are invalid (null, unsupported type, non-planar, not closed within the tolerance).");
                 return new List<PlanarSurface>();
             }
 
