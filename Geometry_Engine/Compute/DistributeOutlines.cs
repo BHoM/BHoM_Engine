@@ -67,12 +67,6 @@ namespace BH.Engine.Geometry
                 return new List<List<Polyline>>();
             }
 
-            if (outlines.Any(p => p.IsSelfIntersecting(tolerance)))
-            {
-                BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is self-intersecting.");
-                return new List<List<Polyline>>();
-            }
-
             outlines.Sort(delegate (Polyline p1, Polyline p2)
             {
                 return p1.Area().CompareTo(p2.Area());
@@ -137,12 +131,6 @@ namespace BH.Engine.Geometry
             if (outlines.Any(p => !p.IIsPlanar(tolerance)))
             {
                 BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is not planar within the input tolerance. Please try changing the tolerance if this behaviour is not expected.");
-                return new List<List<ICurve>>();
-            }
-
-            if (outlines.Any(p => p.IIsSelfIntersecting(tolerance)))
-            {
-                BH.Engine.Reflection.Compute.RecordError("At least one of the input outlines is self-intersecting.");
                 return new List<List<ICurve>>();
             }
 
