@@ -529,7 +529,7 @@ namespace BH.Engine.Physical
             Circle leftCircle = new Circle() { Centre = leftCentre, Radius = shapeCode.B / 2 - diameter / 2 };
             ICurve leftArc = leftCircle.SplitAtPoints(new List<Point>() { aTopEnd, aBotStart })[0];
             Line aBot = new Line() { Start = aBotStart, End = cBotEnd.Translate(new Vector() { Z = -diameter }) };
-            Line cTop = new Line() { Start = aTopStart.Translate(new Vector() { Z = -diameter }), End = cTopEnd }.Translate(new Vector() { Z = -diameter });
+            Line cTop = new Line() { Start = aTopStart.Translate(new Vector() { Z = -diameter }), End = cTopEnd };
 
             return new PolyCurve() { Curves = new List<ICurve>() { cBot, rightArc, aTop, leftArc, aBot, rightArc.ITranslate(new Vector() { Z = -diameter }), cTop } };
         }
