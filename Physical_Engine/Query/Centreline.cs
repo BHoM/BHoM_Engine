@@ -1090,19 +1090,9 @@ namespace BH.Engine.Physical
             Arc lap = Engine.Geometry.Create.ArcByCentre(new Point(), bStart, bEnd);
             ICurve arc = new Circle() { Centre = new Point(), Normal = Vector.ZAxis, Radius = shapeCode.A / 2 - diameter / 2 }.SplitAtPoints(new List<Point>() { bStart, bEnd })[1];
 
-            IEnumerable<double> parameters = Enumerable.Range(1, 100).Cast<double>().Select(x => x/100);
-
-            List<Point> points = new List<Point>();
-
-            foreach(double parameter in parameters)
-            {
-                points.Add(arc.IPointAtParameter(parameter).Translate(new Vector() {Z = -parameter*diameter }));
-            }
-
-            Polyline polyline = new Polyline() { ControlPoints = points };
+            Polyline polyline = VerticalOffsetCurve(arc, 100, diameter);
 
             return new PolyCurve() { Curves = new List<ICurve>() { lap, polyline, lap.Translate(new Vector() { Z = -diameter }) } };
-
         }
 
         /***************************************************/
@@ -1114,7 +1104,30 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         private static ICurve Centreline(this ShapeCode77 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            Point origin = new Point();
+            Point lapStart = new Point() { X = (-shapeCode.A/2 + diameter / 2) * Math.Cos(Math.PI / 4), Y = (shapeCode.A/2 - diameter / 2) * Math.Sin(Math.PI / 4) };
+            Point lapEnd = lapStart.Rotate(origin, Vector.ZAxis, -Math.PI);
+            Point barStart = lapStart.Rotate(origin, Vector.ZAxis, -Math.PI/2);
+
+            List<ICurve> laps = new Circle() { Centre = origin, Normal = Vector.ZAxis, Radius = shapeCode.A/2 - diameter / 2 }.SplitAtPoints(new List<Point>() { lapStart, barStart, lapEnd });
+
+            ICurve topLap = laps[0].VerticalOffsetCurve(25, shapeCode.B/4);
+            ICurve bottomLap = laps[1].ITranslate(new Vector() {Z = - shapeCode.B*(shapeCode.C + 0.25)}).VerticalOffsetCurve(25, shapeCode.B / 4); // 0.25 is to account for the 1/4 turn of the topLap
+
+            List<ICurve> curves = new List<ICurve>() { topLap };
+
+            Point barOrigin = origin.Translate(new Vector() { Z = -shapeCode.B / 4 });
+            for (int i = 0; i < shapeCode.C; i++)
+            {
+                Circle circle = new Circle() { Centre = barOrigin, Normal = Vector.ZAxis, Radius = shapeCode.A - diameter / 2 };
+                Polyline polyline = circle.VerticalOffsetCurve(100, shapeCode.B);
+                curves.Add(polyline);
+                barOrigin.Translate(new Vector() { Z = -shapeCode.B });
+            }
+
+            curves.Add(bottomLap);
+
+            return new PolyCurve() { Curves = curves };
         }
 
         /***************************************************/
@@ -1126,7 +1139,32 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         private static ICurve Centreline(this ShapeCode98 shapeCode, double diameter, double bendRadius)
         {
-            return null;
+            double bendOffset = bendRadius + diameter / 2;
+
+            Point cEnd = new Point() { Z = shapeCode.C - diameter - bendRadius };
+            Point cbCentre = cEnd.Translate(new Vector(){ Y = bendOffset });
+            Point bLeftStart = cbCentre.Translate(new Vector() { Z = bendOffset });
+            Point bLeftEnd = bLeftStart.Translate(new Vector() { Y = shapeCode.B - 2 * diameter - 2 * bendRadius });
+            Point baCentre = bLeftEnd.Translate(new Vector() { X = bendOffset });
+            Point aStart = baCentre.Translate(new Vector() { Y = bendOffset });
+            Point aEnd = aStart.Translate(new Vector() { X = shapeCode.A - 2 * diameter - 2 * bendRadius });
+            Point abCentre = aEnd.Translate(new Vector() { Y = -bendOffset });
+            Point bRightStart = abCentre.Translate(new Vector() { X = bendOffset });
+            Point bRightEnd = bRightStart.Translate(new Vector() { Y = -shapeCode.B + 2 * diameter + 2 * bendRadius });
+            Point bdCentre = bRightEnd.Translate(new Vector() { Z = bendOffset });
+            Point dStart = bdCentre.Translate(new Vector() { Y = -bendOffset });
+
+            Line c = new Line() { Start = new Point(), End = cEnd };
+            Arc cb = Engine.Geometry.Create.ArcByCentre(cbCentre, cEnd, bLeftStart);
+            Line bLeft = new Line() { Start = bLeftStart, End = bLeftEnd };
+            Arc ba = Engine.Geometry.Create.ArcByCentre(baCentre, bLeftEnd, aStart);
+            Line a = new Line() { Start = aStart, End = aEnd };
+            Arc ab = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bRightStart);
+            Line bRight = new Line() { Start = bRightStart, End = bRightEnd };
+            Arc bd = Engine.Geometry.Create.ArcByCentre(bdCentre, bRightEnd, dStart);
+            Line d = new Line() { Start = dStart, End = dStart.Translate(new Vector() { Z = shapeCode.D - diameter - bendRadius }) };
+
+            return new PolyCurve() { Curves = new List<ICurve>() { c, cb, bLeft, ba, a, ab, bRight, bd, d } };
         }
 
         /***************************************************/
@@ -1139,6 +1177,20 @@ namespace BH.Engine.Physical
         private static ICurve Centreline(this ShapeCode99 shapeCode, double diameter, double bendRadius)
         {
             return null;
+        }
+
+        private static Polyline VerticalOffsetCurve(this ICurve curve, int divisions, double offset )
+        {
+            IEnumerable<double> parameters = Enumerable.Range(1, divisions).Cast<double>().Select(x => x / divisions);
+
+            List<Point> points = new List<Point>();
+
+            foreach (double parameter in parameters)
+            {
+                points.Add(curve.IPointAtParameter(parameter).Translate(new Vector() { Z = -parameter * offset }));
+            }
+
+            return new Polyline() { ControlPoints = points };
         }
 
         /***************************************************/
