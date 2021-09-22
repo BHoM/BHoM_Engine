@@ -277,7 +277,7 @@ namespace BH.Engine.Physical
             double bendOffset = bendRadius + diameter / 2;
             double aeAngle = Math.Acos(shapeCode.C / shapeCode.A);
             double ebAngle = Math.Asin(shapeCode.D / shapeCode.B);
-            double lengthReductionLeft = ((bendRadius + diameter) * aeAngle) / 2;
+            double lengthReductionLeft = ((bendRadius + diameter) * (Math.PI/2 - aeAngle)) / 2;
             double lengthReductionRight = ((bendRadius + diameter) * ebAngle) / 2;
 
             Line a = new Line() { Start = new Point(), End = new Point() { Y = -shapeCode.A + lengthReductionLeft } }.Rotate(new Point(), Vector.ZAxis, aeAngle);
@@ -303,7 +303,7 @@ namespace BH.Engine.Physical
             double bendOffset = bendRadius + diameter / 2;
             double angle = Math.Asin(shapeCode.D / shapeCode.B);
             double lengthReductionLeft = ((bendRadius + diameter) * angle) / 2;
-            double lengthReductionRight = ((bendRadius + diameter) * (Math.PI/2 - angle)) / 2;
+            double lengthReductionRight = ((bendRadius + diameter) * angle) / 2;
 
             Point aEnd = new Point() { X = shapeCode.A - lengthReductionLeft };
             Point abCentre = aEnd + new Vector() { Y = bendOffset };
@@ -333,7 +333,7 @@ namespace BH.Engine.Physical
 
             Line a = new Line() { Start = new Point(), End = new Point() { X = shapeCode.A - lengthReduction } }.Rotate(new Point(), Vector.ZAxis, angle);
             Point aEnd = a.End;
-            Line abRadius = new Line() { Start = aEnd, End = aEnd + new Vector() { Y = bendOffset } }.Rotate(aEnd, Vector.ZAxis, angle);
+            Line abRadius = new Line() { Start = aEnd, End = aEnd + new Vector() { Y = -bendOffset } }.Rotate(aEnd, Vector.ZAxis, angle);
             Point bStart = abRadius.End + new Vector() { Y = bendOffset };
             Point bEnd = bStart + new Vector() { X = shapeCode.B - lengthReduction - bendOffset - diameter/2 };
             Line b = new Line() { Start = bStart, End = bEnd };
@@ -358,7 +358,7 @@ namespace BH.Engine.Physical
 
             Line a = new Line() { Start = new Point(), End = new Point() { X = shapeCode.A - lengthReduction } }.Rotate(new Point(), Vector.ZAxis, angle);
             Point aEnd = a.End;
-            Line abRadius = new Line() { Start = aEnd, End = aEnd + new Vector() { Y = bendOffset } }.Rotate(aEnd, Vector.ZAxis, angle);
+            Line abRadius = new Line() { Start = aEnd, End = aEnd + new Vector() { Y = -bendOffset } }.Rotate(aEnd, Vector.ZAxis, angle);
             Point bStart = abRadius.End + new Vector() { Y = bendOffset };
             Point bEnd = bStart + new Vector() { X = shapeCode.B - lengthReduction - bendOffset - diameter/2 };
             Line b = new Line() { Start = bStart, End = bEnd };
@@ -383,11 +383,11 @@ namespace BH.Engine.Physical
 
             Point aEnd = new Point() { X = shapeCode.A - bendOffset - diameter / 2 };
             Point abCentre = aEnd + new Vector() { Y = bendOffset };
-            Line abRadius = new Line() { Start = abCentre, End = aEnd }.Rotate(abCentre, Vector.ZAxis, Math.PI + angle);
+            Line abRadius = new Line() { Start = abCentre, End = aEnd }.Rotate(abCentre, Vector.ZAxis, Math.PI/2 + angle);
             Point bStart = abRadius.End;
             Line b = new Line() { Start = bStart, End = bStart + new Vector() { Y = shapeCode.B - 2 * bendRadius - 2 * diameter } }.Rotate(bStart, Vector.ZAxis, angle);
             Point bEnd = b.End;
-            Line bcRadius = new Line() { Start = bEnd, End = bEnd + new Vector() { X = -bendOffset } }.Rotate(bEnd, Vector.ZAxis, - angle);
+            Line bcRadius = new Line() { Start = bEnd, End = bEnd + new Vector() { X = -bendOffset } }.Rotate(bEnd, Vector.ZAxis,angle);
             Point bcCentre = bcRadius.End;
             Point cStart = bcCentre + new Vector() { Y = bendOffset };
 
