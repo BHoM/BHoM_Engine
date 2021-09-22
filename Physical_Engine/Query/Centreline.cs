@@ -643,37 +643,37 @@ namespace BH.Engine.Physical
         private static ICurve Centreline(this ShapeCode46 shapeCode, double diameter, double bendRadius)
         {
             double bendOffset = bendRadius + diameter / 2;
-            double angle = Math.Asin(shapeCode.D / shapeCode.B);
+            double angle = Math.Acos(shapeCode.F / shapeCode.B);
             double lengthReduction = ((bendRadius + diameter) * angle) / 2;
 
             Point aEnd = new Point() { X = shapeCode.A - lengthReduction};
             Point abCentre = aEnd + new Vector() { Y = -bendOffset };
             Line abRadius = new Line() { Start = abCentre, End = aEnd }.Rotate(abCentre, Vector.ZAxis, -angle);
-            Point bStart = abRadius.End;
-            Line b = new Line() { Start = bStart, End = bStart + new Vector() { X = shapeCode.B - 2*lengthReduction } }.Rotate(bStart, Vector.ZAxis, Math.PI/2 - angle);
-            Point bEnd = b.End;
-            Line bcRadius = new Line() { Start = bEnd, End = bEnd + new Vector() { X = bendOffset } }.Rotate(bEnd, Vector.ZAxis, angle);
+            Point bLeftStart = abRadius.End;
+            Line bLeft = new Line() { Start = bLeftStart, End = bLeftStart + new Vector() { X = shapeCode.B - 2*lengthReduction } }.Rotate(bLeftStart, Vector.ZAxis, -angle);
+            Point bLeftEnd = bLeft.End;
+            Line bcRadius = new Line() { Start = bLeftEnd, End = bLeftEnd + new Vector() { X = bendOffset } }.Rotate(bLeftEnd, Vector.ZAxis, Math.PI/2 - angle);
             Point bcCentre = bcRadius.End;
             Point cStart = bcCentre + new Vector() { Y = -bendOffset };
             Point cEnd = cStart + new Vector() { X = shapeCode.C - 2 * lengthReduction };
-            Point cdCentre = cEnd + new Vector() { Y = bendOffset };
-            Line cdRadius = new Line() { Start = cdCentre, End = cEnd }.Rotate(cdCentre, Vector.ZAxis, angle);
-            Point dStart = cdRadius.End;
-            Line d = new Line() { Start = dStart, End = dStart + new Vector() { X = shapeCode.D - lengthReduction } }.Rotate(dStart, Vector.ZAxis, angle);
-            Point dEnd = d.End;
-            Line deRadius = new Line() { Start = dEnd, End = dEnd + new Vector() { X = bendOffset } }.Rotate(dEnd, Vector.ZAxis, -Math.PI / 2 + angle);
+            Point cbCentre = cEnd + new Vector() { Y = bendOffset };
+            Line cbRadius = new Line() { Start = cbCentre, End = cEnd }.Rotate(cbCentre, Vector.ZAxis, angle);
+            Point bRightStart = cbRadius.End;
+            Line bRight = new Line() { Start = bRightStart, End = bRightStart + new Vector() { X = shapeCode.B - lengthReduction } }.Rotate(bRightStart, Vector.ZAxis, angle);
+            Point bRightEnd = bRight.End;
+            Line deRadius = new Line() { Start = bRightEnd, End = bRightEnd + new Vector() { X = bendOffset } }.Rotate(bRightEnd, Vector.ZAxis, -Math.PI / 2 + angle);
             Point deCentre = deRadius.End;
             Point eStart = deCentre + new Vector() { Y = bendOffset };
 
             Line a = new Line() { Start = new Point(), End = aEnd };
-            Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
-            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
+            Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bLeftStart);
+            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bLeftEnd, cStart);
             Line c = new Line() { Start = cStart, End = cEnd };
-            Arc cdArc = Engine.Geometry.Create.ArcByCentre(cdCentre, cEnd, dStart);
-            Arc deArc = Engine.Geometry.Create.ArcByCentre(deCentre, dEnd, eStart);
+            Arc cdArc = Engine.Geometry.Create.ArcByCentre(cbCentre, cEnd, bRightStart);
+            Arc deArc = Engine.Geometry.Create.ArcByCentre(deCentre, bRightEnd, eStart);
             Line e = new Line() { Start = eStart, End = eStart + new Vector { X = shapeCode.E - lengthReduction } };
 
-            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c, cdArc, d, deArc, e } };
+            return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, bLeft, bcArc, c, cdArc, bRight, deArc, e } };
         }
 
         /***************************************************/
@@ -686,7 +686,7 @@ namespace BH.Engine.Physical
 
             Point cStart = new Point()
             {
-                X = -shapeCode.B / 2 + diameter.HookDiameter() - diameter / 2,
+                X = -shapeCode.B / 2 + diameter.HookDiameter(bendRadius) - diameter / 2,
                 Y = shapeCode.A / 2 - shapeCode.C
             };
 
@@ -723,7 +723,7 @@ namespace BH.Engine.Physical
 
         private static ICurve Centreline(this ShapeCode48 shapeCode, double diameter, double bendRadius)
         {
-            double hookDiameter = diameter.HookDiameter();
+            double hookDiameter = diameter.HookDiameter(bendRadius);
             double hookOffset = hookDiameter / 2 - diameter / 2;
             double bendOffset = bendRadius + diameter / 2;
 
