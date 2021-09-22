@@ -86,6 +86,9 @@ namespace BH.Engine.Physical
 
         private static double Length(this ShapeCode15 shapeCode, double diameter, double bendingRadius)
         {
+            if (Math.Acos(shapeCode.D / shapeCode.A) > Math.PI / 4)
+                Engine.Reflection.Compute.RecordWarning("Bend angle is greater than 45 degrees, please use the Centreline method and measure the length of the curve instead.");
+            
             return shapeCode.IsNull() ? 0 : shapeCode.A + shapeCode.C;
         }
 
