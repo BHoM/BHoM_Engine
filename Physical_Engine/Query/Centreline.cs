@@ -978,14 +978,18 @@ namespace BH.Engine.Physical
         {
             //Work out angle on outer circle for B start point as a proportion of the circumference
             double bAngle = shapeCode.B / shapeCode.A;
-            Point bStart = new Point() { X = (shapeCode.A / 2 - diameter / 2) * Math.Sin(bAngle), Y = -(shapeCode.A / 2 - diameter / 2) * Math.Cos(bAngle) };
+            double radius = shapeCode.A / 2 - diameter / 2;
+
+            Point origin = new Point();
+            Point bStart = new Point() { X = radius * Math.Sin(bAngle), Y = -radius * Math.Cos(bAngle) };
             Point bEnd = bStart.Mirror(Plane.YZ);
-            Arc lap = Engine.Geometry.Create.ArcByCentre(new Point(), bStart, bEnd);
-            ICurve arc = new Circle() { Centre = new Point(), Normal = Vector.ZAxis, Radius = shapeCode.A / 2 - diameter / 2 }.SplitAtPoints(new List<Point>() { bStart, bEnd })[1];
+            List<ICurve> splitCircle = new Circle() { Centre = origin, Normal = Vector.ZAxis, Radius = radius }.SplitAtPoints(new List<Point>() { bStart, bEnd });
+            ICurve lap = splitCircle[0];
+            ICurve arc = splitCircle[1];
 
             Polyline polyline = VerticalOffsetCurve(arc, 100, diameter);
 
-            return new PolyCurve() { Curves = new List<ICurve>() { lap, polyline, lap.Translate(new Vector() { Z = -diameter }) } };
+            return new PolyCurve() { Curves = new List<ICurve>() { lap, polyline, lap.ITranslate(new Vector() { Z = -diameter }) } };
         }
 
         /***************************************************/
@@ -993,24 +997,26 @@ namespace BH.Engine.Physical
         private static ICurve Centreline(this ShapeCode77 shapeCode, double diameter, double bendRadius)
         {
             Point origin = new Point();
-            Point lapStart = new Point() { X = (-shapeCode.A / 2 + diameter / 2) * Math.Cos(Math.PI / 4), Y = (shapeCode.A / 2 - diameter / 2) * Math.Sin(Math.PI / 4) };
+            double radius = shapeCode.A / 2 - diameter / 2;
+
+            Point lapStart = new Point() { X = -radius * Math.Cos(Math.PI / 4), Y = radius * Math.Sin(Math.PI / 4) };
             Point lapEnd = lapStart.Rotate(origin, Vector.ZAxis, -Math.PI);
             Point barStart = lapStart.Rotate(origin, Vector.ZAxis, -Math.PI / 2);
 
-            List<ICurve> laps = new Circle() { Centre = origin, Normal = Vector.ZAxis, Radius = shapeCode.A / 2 - diameter / 2 }.SplitAtPoints(new List<Point>() { lapStart, barStart, lapEnd });
+            List<ICurve> laps = new Circle() { Centre = origin, Normal = Vector.ZAxis, Radius = radius }.SplitAtPoints(new List<Point>() { lapStart, barStart, lapEnd });
 
-            ICurve topLap = laps[0].VerticalOffsetCurve(25, shapeCode.B / 4);
-            ICurve bottomLap = laps[1].ITranslate(new Vector() { Z = -shapeCode.B * (shapeCode.C + 0.25) }).VerticalOffsetCurve(25, shapeCode.B / 4); // 0.25 is to account for the 1/4 turn of the topLap
+            ICurve topLap = laps[2].IFlip().VerticalOffsetCurve(25, -shapeCode.B / 4);
+            ICurve bottomLap = laps[1].IFlip().ITranslate(new Vector() { Z = -shapeCode.B * (shapeCode.C + 0.25) }).VerticalOffsetCurve(25, -shapeCode.B / 4); // 0.25 is to account for the 1/4 turn of the topLap
 
             List<ICurve> curves = new List<ICurve>() { topLap };
 
             Point barOrigin = origin + new Vector() { Z = -shapeCode.B / 4 };
             for (int i = 0; i < shapeCode.C; i++)
             {
-                Circle circle = new Circle() { Centre = barOrigin, Normal = Vector.ZAxis, Radius = shapeCode.A - diameter / 2 };
-                Polyline polyline = circle.VerticalOffsetCurve(100, shapeCode.B);
+                ICurve circle = new Circle() { Centre = barOrigin, Normal = Vector.ZAxis, Radius = radius }.SplitAtPoints(new List<Point>() {barOrigin + new Vector() {X = radius * Math.Cos(Math.PI / 4), Y = radius * Math.Sin(Math.PI / 4) } })[0].IFlip();
+                Polyline polyline = circle.VerticalOffsetCurve(100, -shapeCode.B);
                 curves.Add(polyline);
-                barOrigin.Translate(new Vector() { Z = -shapeCode.B });
+                barOrigin = barOrigin.Translate(new Vector() { Z = -shapeCode.B });
             }
 
             curves.Add(bottomLap);
@@ -1059,13 +1065,13 @@ namespace BH.Engine.Physical
 
         private static Polyline VerticalOffsetCurve(this ICurve curve, int divisions, double offset)
         {
-            IEnumerable<double> parameters = Enumerable.Range(1, divisions).Cast<double>().Select(x => x / divisions);
+            var parameters = Enumerable.Range(0, divisions + 1).Select(x => (double)x / (divisions));
 
             List<Point> points = new List<Point>();
 
             foreach (double parameter in parameters)
             {
-                points.Add(curve.IPointAtParameter(parameter) + new Vector() { Z = -parameter * offset });
+                points.Add(curve.IPointAtParameter(parameter) + new Vector() { Z = parameter * offset });
             }
 
             return new Polyline() { ControlPoints = points };
