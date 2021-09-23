@@ -866,6 +866,17 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return false;
             }
+            else if(Math.Abs(shapeCode.A - 2*shapeCode.R*Math.Asin(shapeCode.B/(2*shapeCode.R))) > Tolerance.Distance)
+            {
+                Reflection.Compute.RecordError("The parameter A must be equal to the arc length formed by the segment constructed from the width B and centre R.");
+                return false;
+            }
+            else if(shapeCode.R > diameter.MaximumRadius())
+            {
+                Reflection.Compute.RecordError("The parameter R must be less than the maximum preformed radius defined in BS 8666:2020 Table 8.");
+                return false;
+            }
+
 
             //Table 10
 
