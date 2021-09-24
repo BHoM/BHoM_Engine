@@ -67,7 +67,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordWarning("The bend radius is less than the minimum scheduling radius and has been assigned the " +
                     "minimum value.");
             }
-            else if (!shapeCode.ICompliantShapeCode(diameter))
+            else if (!shapeCode.IIsShapeCodeCompliant(diameter))
                 return null;
 
             return new Reinforcement()
