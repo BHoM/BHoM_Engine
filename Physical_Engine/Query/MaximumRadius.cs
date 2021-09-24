@@ -36,13 +36,13 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the maximum radius based on the diameter of the reinforcement bar using the values given in BS 8666:2020 Table 8.")]
-        [Input("diameter", "The diameter of the reinforcement bar to determine the maximum bending radius.")]
+        [Input("diameter", "The diameter of the reinforcement bar to determine the maximum bending radius.", typeof(Length))]
         [Output("radius", "The maximum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
         public static double MaximumRadius(this double diameter)
         {
             if(diameter <= 0)
             {
-                Reflection.Compute.RecordError("The diameter must be greater than 0. The scheduling radius cannot be provided.");
+                Reflection.Compute.RecordError("The diameter must be greater than 0. The maximum radius cannot be calculated.");
                 return 0;
             }
 
@@ -55,10 +55,10 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Private Methods                            ****/
         /***************************************************/
 
-        public static double LinearInterpolate(this Dictionary<double, double> reference, double x )
+        private static double LinearInterpolate(this Dictionary<double, double> reference, double x )
         {
             double y = 0;
 

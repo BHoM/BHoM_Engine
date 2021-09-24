@@ -36,13 +36,13 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the minimum scheduling radius based on the diameter of the reinforcement bar using the values given in BS 8666:2020 Table 2.")]
-        [Input("diameter", "The diameter of the reinforcement bar to determine the minimum scheduling radius.")]
+        [Input("diameter", "The diameter of the reinforcement bar to determine the minimum scheduling radius.", typeof(Length))]
         [Output("radius", "The minimum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
         public static double SchedulingRadius(this double diameter)
         {
             if(diameter <= 0)
             {
-                Reflection.Compute.RecordError("The diameter must be greater than 0. The scheduling radius cannot be provided.");
+                Reflection.Compute.RecordError("The diameter must be greater than 0. The scheduling radius cannot be calculated.");
                 return 0;
             }
 
