@@ -28,6 +28,7 @@ using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Physical.Reinforcement;
+using BH.oM.Physical.Reinforcement.BS8666;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Geometry;
 
