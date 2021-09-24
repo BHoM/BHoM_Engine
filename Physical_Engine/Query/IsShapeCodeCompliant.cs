@@ -43,10 +43,7 @@ namespace BH.Engine.Physical
         [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
         public static bool IsShapeCodeCompliant(this Reinforcement reinforcement)
         {
-            if (reinforcement.IsNull())
-                return false;
-
-            return IIsShapeCodeCompliant(reinforcement.ShapeCode, reinforcement.Diameter);
+            return reinforcement.IsNull() ? false : IIsShapeCodeCompliant(reinforcement.ShapeCode, reinforcement.Diameter);
 
         }
 
@@ -54,7 +51,7 @@ namespace BH.Engine.Physical
 
         [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
         [Input("shapeCode", "The ShapeCode to be verified.")]
-        [Input("diameter", "The diameter of the reinforcement bar.")]
+        [Input("diameter", "The diameter of the reinforcement bar.", typeof(Length))]
         [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
         public static bool IIsShapeCodeCompliant(this IShapeCode shapeCode, double diameter)
         {

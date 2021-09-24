@@ -37,16 +37,17 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the hook diameter based on the diameter of the reinforcement bar using the anticipated values given in BS 8666:2020 Table 2.")]
-        [Input("diameter", "The diameter of the reinforcement bar to determine the hook diameter.")]
-        [Input("bendingRadius", "The bending radius of the bar used to override the SchedulingRadius method that looks up the value in BS 8666:2020 Table 2.")]
+        [Input("diameter", "The diameter of the reinforcement bar to determine the hook diameter.", typeof(Length))]
+        [Input("bendingRadius", "The bending radius of the bar used to override the SchedulingRadius method that looks up the value in BS 8666:2020 Table 2.", typeof(Length))]
         [Output("diameter", "The anticipated hook dianeter based on the diameter of the reinforcement bar", typeof(Length))]
         public static double HookDiameter(this double diameter, double bendingRadius = 0)
         {
             if (diameter > 0.050)
+            {
                 Reflection.Compute.RecordWarning("Bars that are greater than 50mm cannot be bent using a standard mandrel.");
+            }
 
-            if (bendingRadius == 0)
-                diameter.SchedulingRadius();
+            bendingRadius = bendingRadius < diameter.SchedulingRadius() ? diameter.SchedulingRadius() : bendingRadius;
 
             return Math.Ceiling((3 * diameter + 2 * bendingRadius)/ 0.005) * 0.005;
         }
