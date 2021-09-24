@@ -45,18 +45,15 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(this Reinforcement reinforcement)
         {
-            if (reinforcement.IsNull())
-                return null;
-
-            return ICentreline(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius).Orient(new Cartesian(), reinforcement.CoordinateSystem);
+            return reinforcement.IsNull() ? null : ICentreline(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius).Orient(new Cartesian(), reinforcement.CoordinateSystem);
         }
 
         /***************************************************/
 
         [Description("Computes the centreline for the ShapeCode to BS 8666:2020.")]
         [Input("shapeCode", "The ShapeCode to determine the curve parameters.")]
-        [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.")]
-        [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.")]
+        [Input("diameter", "The diameter of the reinforcement bar used to caclulate minimum scheduling radii, hook diameters and end projection lengths.", typeof(Length))]
+        [Input("bendRadius", "The bending radius provided, if zero then the minimum bend radius will be used.", typeof(Length))]
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve ICentreline(this IShapeCode shapeCode, double diameter, double bendRadius = 0)
         {
