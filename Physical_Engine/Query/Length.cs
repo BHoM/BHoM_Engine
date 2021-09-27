@@ -223,7 +223,7 @@ namespace BH.Engine.Physical
 
         private static double Length(this ShapeCode47 shapeCode, double diameter, double bendingRadius)
         {
-            return shapeCode.IsNull() ? 0 : 2 * shapeCode.A + shapeCode.B + 2 * shapeCode.C + 2 * diameter.HookDiameter(bendingRadius) - 3 * bendingRadius - 6 * diameter;
+            return shapeCode.IsNull() ? 0 : 2 * shapeCode.A + shapeCode.B + 2 * shapeCode.C + 2 * shapeCode.HookDiameter(diameter, bendingRadius) - 3 * bendingRadius - 6 * diameter;
         }
 
         /***************************************************/

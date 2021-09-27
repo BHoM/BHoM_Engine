@@ -51,9 +51,9 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return false;
             }
-            else if (reinforcement.BendRadius < reinforcement.Diameter.SchedulingRadius())
+            else if (reinforcement.BendRadius < reinforcement.SchedulingRadius())
             {
-                reinforcement.BendRadius = reinforcement.Diameter.SchedulingRadius();
+                reinforcement.BendRadius = reinforcement.SchedulingRadius();
                 Reflection.Compute.RecordWarning("The bend radius is less than the minimum scheduling radius and has been assigned the minimum value.");
             }
             else if (!reinforcement.ShapeCode.IIsShapeCodeCompliant(reinforcement.Diameter))
