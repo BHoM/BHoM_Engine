@@ -126,7 +126,7 @@ namespace BH.Engine.Physical
 
             if (shapeCode.A < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09) || shapeCode.B < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09))
             {
-                Reflection.Compute.RecordError("The parameters A and B of ShapeCode12 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                Reflection.Compute.RecordError("The parameters A and B of ShapeCode12 must be greater than (R + d) + Max(5d, 90).");
                 return false;
             }
 
@@ -158,7 +158,7 @@ namespace BH.Engine.Physical
             else if (shapeCode.A < shapeCode.B / 2 + Math.Max(5 * diameter, 0.09)
                 || shapeCode.C < shapeCode.B / 2 + Math.Max(5 * diameter, 0.09))
             {
-                Reflection.Compute.RecordError("The parametrs A and C of ShapeCode13 shall not be less than B/2 + the greater of 5d or 0.09.");
+                Reflection.Compute.RecordError("The parameters A and C of ShapeCode13 shall not be less than B/2 + the greater of 5d or 0.09.");
             }
 
 
@@ -334,7 +334,7 @@ namespace BH.Engine.Physical
             if (Math.Asin(shapeCode.C / shapeCode.A) / Math.PI * 180 > 89 ||
                 Math.Asin(shapeCode.D / shapeCode.B) / Math.PI * 180 > 89)
             {
-                Reflection.Compute.RecordError("The bends are close to 90 degrees, consider scheduling a ShapeCode99 bar" +
+                Reflection.Compute.RecordWarning("The bends are close to 90 degrees, consider scheduling a ShapeCode99 bar" +
                     "with horizontal offers as per BS 8666:2020 Table 2.");
             }
 
@@ -532,6 +532,11 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters A and E of ShapeCode34 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
+            else if (Math.Abs(Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.F, 2)) > Tolerance.MacroDistance)
+            {
+                Reflection.Compute.RecordError("The parameters B, D and F of ShapeCode34 do not form a right angled triangle within tolerance.");
+                return false;
+            }
 
             return true;
         }
@@ -553,6 +558,11 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters A and E of ShapeCode35 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
+            else if (Math.Abs(Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.F, 2)) > Tolerance.MacroDistance)
+            {
+                Reflection.Compute.RecordError("The parameters B, D and F of ShapeCode35 do not form a right angled triangle within tolerance.");
+                return false;
+            }
 
             return true;
         }
@@ -572,6 +582,11 @@ namespace BH.Engine.Physical
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and D of ShapeCode36 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.E, 2) - Math.Pow(shapeCode.F, 2)) > Tolerance.MacroDistance)
+            {
+                Reflection.Compute.RecordError("The parameters A, E and F of ShapeCode36 do not form a right angled triangle within tolerance.");
                 return false;
             }
 
@@ -635,6 +650,11 @@ namespace BH.Engine.Physical
             if (shapeCode.A < diameter.GeneralEndProjection() || shapeCode.E < diameter.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and E of ShapeCode46 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
+                return false;
+            }
+            else if (Math.Abs(Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.F, 2)) > Tolerance.MacroDistance)
+            {
+                Reflection.Compute.RecordError("The parameters A, E and F of ShapeCode36 do not form a right angled triangle within tolerance.");
                 return false;
             }
 
@@ -792,9 +812,9 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters E and F of ShapeCode56 must be less than the parameter B as defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.C < diameter.GeneralEndProjection() || shapeCode.D < diameter.GeneralEndProjection())
+            else if (shapeCode.E < diameter.GeneralEndProjection() || shapeCode.F < diameter.GeneralEndProjection())
             {
-                Reflection.Compute.RecordError("The parameters C and D of ShapeCode56 must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
+                Reflection.Compute.RecordError("The parameters E and F of ShapeCode56 must be greater than the general end projection as defined in BS 8666:2020 Table 2.");
                 return false;
             }
 
@@ -874,9 +894,6 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameter R of ShapeCode67 must be less than the maximum preformed radius defined in BS 8666:2020 Table 8.");
                 return false;
             }
-
-
-            //Table 10
 
             return true;
         }
