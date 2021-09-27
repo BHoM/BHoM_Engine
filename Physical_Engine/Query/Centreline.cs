@@ -45,7 +45,7 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(this Reinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? null : ICentreline(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius).Orient(new Cartesian(), reinforcement.CoordinateSystem);
+            return reinforcement.IsReinforcementValid() ? ICentreline(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius).Orient(new Cartesian(), reinforcement.CoordinateSystem) : null;
         }
 
         /***************************************************/
@@ -64,8 +64,6 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return null;
             }
-            else if (bendRadius < diameter.SchedulingRadius())
-                bendRadius = diameter.SchedulingRadius();
 
             return Centreline(shapeCode as dynamic, diameter, bendRadius);
         }
@@ -678,7 +676,7 @@ namespace BH.Engine.Physical
 
         private static ICurve Centreline(this ShapeCode47 shapeCode, double diameter, double bendRadius)
         {
-            double hookDiameter = diameter.HookDiameter(bendRadius);
+            double hookDiameter = shapeCode.HookDiameter(diameter, bendRadius);
             double hookOffset = hookDiameter / 2 - diameter / 2;
             double bendOffset = bendRadius + diameter / 2;
 
@@ -721,7 +719,7 @@ namespace BH.Engine.Physical
 
         private static ICurve Centreline(this ShapeCode48 shapeCode, double diameter, double bendRadius)
         {
-            double hookDiameter = diameter.HookDiameter(bendRadius);
+            double hookDiameter = shapeCode.HookDiameter(diameter, bendRadius);
             double hookOffset = hookDiameter / 2 - diameter / 2;
             double bendOffset = bendRadius + diameter / 2;
 
@@ -844,9 +842,9 @@ namespace BH.Engine.Physical
         {
             double bendOffset = bendRadius + diameter / 2;
             double angle = Math.Acos((shapeCode.A - shapeCode.C) / shapeCode.D);
-            double lengthReduction = (bendRadius + diameter) * Math.Sin(angle);
+            double lengthReduction = (bendRadius + diameter) * Math.Sin(angle)/2l;
 
-            Point fStart = new Point() { X = -shapeCode.A / 2 + diameter / 2, Y = -shapeCode.B / 2 + shapeCode.F };
+            Point fStart = new Point(); //{ X = -shapeCode.A / 2 + diameter / 2, Y = -shapeCode.B / 2 + shapeCode.F };
             Point fEnd = fStart + new Vector() { Y = -shapeCode.F + diameter + bendRadius };
             Point faCentre = fEnd + new Vector() { X = bendOffset };
             Point aStart = faCentre + new Vector() { Y = -bendOffset };
@@ -854,7 +852,7 @@ namespace BH.Engine.Physical
             Point adCentre = aEnd + new Vector() { Y = bendOffset };
             Line adRadius = new Line() { Start = adCentre, End = adCentre + new Vector() { Y = -bendOffset } }.Rotate(adCentre, Vector.ZAxis, Math.PI - angle);
             Point dStart = adRadius.End;
-            Line d = new Line() { Start = dStart, End = dStart + new Vector() { X = -shapeCode.D + diameter + bendRadius  } }.Rotate(dStart, Vector.ZAxis, -angle);
+            Line d = new Line() { Start = dStart, End = dStart + new Vector() { X = -shapeCode.D + diameter + bendRadius + lengthReduction  } }.Rotate(dStart, Vector.ZAxis, -angle);
             Point dEnd = d.End;
             Line dcRadius = new Line() { Start = dEnd, End = dEnd + new Vector() { Y = -bendOffset } }.Rotate(dEnd, Vector.ZAxis, -angle);
             Point dcCentre = dcRadius.End;

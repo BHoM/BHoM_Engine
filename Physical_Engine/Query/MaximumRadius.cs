@@ -24,8 +24,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -37,21 +38,42 @@ namespace BH.Engine.Physical
 
         [Description("Gets the maximum radius based on the diameter of the reinforcement bar using the values given in BS 8666:2020 Table 8.")]
         [Input("diameter", "The diameter of the reinforcement bar to determine the maximum bending radius.", typeof(Length))]
-        [Output("radius", "The maximum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
-        public static double MaximumRadius(this double diameter)
+        [Output("maximumRadius", "The maximum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
+        public static double MaximumRadius(this Reinforcement reinforcement)
         {
-            if(diameter <= 0)
+            return reinforcement.IsNull() ? 0 : MaximumRadius(reinforcement.ShapeCode, reinforcement.Diameter);
+        }
+
+        /***************************************************/
+
+        [Description("Gets the maximum radius based on the diameter of the reinforcement bar using the values given in BS 8666:2020 Table 8.")]
+        [Input("diameter", "The diameter of the reinforcement bar to determine the maximum bending radius.", typeof(Length))]
+        [Output("maximumRadius", "The maximum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
+        public static double MaximumRadius(this IShapeCode shapeCode, double diameter)
+        {
+            if (diameter <= 0)
             {
                 Reflection.Compute.RecordError("The diameter must be greater than 0. The maximum radius cannot be calculated.");
                 return 0;
             }
 
-            List<double> diameters = new List<double>() { 6, 8, 10, 12, 16, 20, 25, 32, 40 }.Select(x => x / 1000).ToList();
-            List<double> radii = new List<double>() { 2.5, 2.75, 3.5, 4.25, 7.5, 14, 30, 43, 58 };
+            string fullNamespace = shapeCode.GetType().Namespace;
+            int position = shapeCode.GetType().Namespace.LastIndexOf(".") + 1;
+            string standard = fullNamespace.Substring(position, fullNamespace.Length - position);
 
-            Dictionary<double, double> maximumBendingRadius = diameters.Zip(radii, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
+            switch (standard)
+            {
+                case "BS8666":
+                    List<double> diameters = new List<double>() { 6, 8, 10, 12, 16, 20, 25, 32, 40 }.Select(x => x / 1000).ToList();
+                    List<double> radii = new List<double>() { 2.5, 2.75, 3.5, 4.25, 7.5, 14, 30, 43, 58 };
 
-            return maximumBendingRadius.LinearInterpolate(diameter);
+                    Dictionary<double, double> maximumBendingRadius = diameters.Zip(radii, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
+
+                    return maximumBendingRadius.LinearInterpolate(diameter);
+                default:
+                    Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
+                    return 0;
+            }
         }
 
         /***************************************************/
