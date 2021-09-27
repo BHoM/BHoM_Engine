@@ -69,7 +69,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The value is less than the lowest reference key and therefore cannot be interpolated.");
                 return 0;
             }
-            if (y > reference.ElementAt(reference.Count-1).Key)
+            if (x > reference.ElementAt(reference.Count-1).Key)
             {
                 Reflection.Compute.RecordError("The value is greater than the largest reference key and therefore cannot be interpolated.");
                 return 0;
