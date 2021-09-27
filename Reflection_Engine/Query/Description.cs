@@ -54,7 +54,7 @@ namespace BH.Engine.Reflection
             if (descriptionAttribute != null && !string.IsNullOrWhiteSpace(descriptionAttribute.Description))
                 desc = descriptionAttribute.Description + Environment.NewLine;
 
-            if (addTypeDescription && member is PropertyInfo && (typeof(IObject).IsAssignableFrom(((PropertyInfo)member).PropertyType)))
+            if (addTypeDescription && member is PropertyInfo && (typeof(IObject).IsAssignableFrom(((PropertyInfo)member).PropertyType) || classification != null))
             {
                 desc += ((PropertyInfo)member).PropertyType.Description(classification) + Environment.NewLine;
             }
