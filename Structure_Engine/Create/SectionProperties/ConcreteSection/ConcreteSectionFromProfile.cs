@@ -38,7 +38,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.3", "BH.Engine.Structure.Create.ConcreteSectionFromProfile(BH.oM.Spatial.ShapeProfiles.IProfile, BH.oM.Structure.MaterialFragments.Concrete, System.String, System.Collections.Generic.List<BH.oM.Structure.SectionProperties.Reinforcement.IBarReinforcement>, System.Double)")]
         [Description("Generates a concrete section based on a Profile and a material. \n This is the main create method for concrete sections, responsible for calculating section constants etc. and is being called from all other create methods for concrete sections.")]
         [Input("profile", "The section profile the concrete section. All section constants are derived based on the dimensions of this.")]
         [Input("material", "concrete material to be applied to the section. If null a default material will be extracted from the database.")]
