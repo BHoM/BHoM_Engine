@@ -43,7 +43,6 @@ namespace BH.Engine.Environment
         [Input("numericTolerance", "Tolerance for determining whether a calulated number is within a range defined by the tolerance, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
         [Input("autoFixPanelOrientations", "Whether or not the panels should be flipped away from space")]
         [Output("panels", "A collection of modified Environment Panels with overlapping panels split and merged.")]
-        [PreviousVersion("4.3", "BH.Engine.Environment.Compute.TidyPanels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
         public static List<Panel> TidyPanels(this List<Panel> panels, bool autoFixPanelOrientations = true, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double numericTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panels == null)

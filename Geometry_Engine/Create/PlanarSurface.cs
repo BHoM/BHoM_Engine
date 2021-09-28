@@ -39,7 +39,6 @@ namespace BH.Engine.Geometry
         [Input("externalBoundary", "The outer boundary curve of the surface. Needs to be closed and planar.")]
         [Input("internalBoundaries", "Optional internal boundary curves descibing any openings inside the external. All internal edges need to be closed and co-planar with the external edge.")]
         [Output("PlanarSurface", "Planar surface corresponding to the provided edge curves.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>)")]
         public static PlanarSurface PlanarSurface(ICurve externalBoundary, List<ICurve> internalBoundaries = null, double tolerance = Tolerance.Distance)
         {
             if (externalBoundary == null)
@@ -162,7 +161,6 @@ namespace BH.Engine.Geometry
         [Description("Distributes the edge curve and creates a set of boundary planar surfaces.")]
         [Input("boundaryCurves", "Boundary curves to be used. Non-planar and non-closed curves are ignored.")]
         [Output("PlanarSurface", "List of planar surfaces created.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(System.Collections.Generic.List<BH.oM.Geometry.ICurve)")]
         public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves, double tolerance = Tolerance.Distance)
         {
             if (boundaryCurves == null || boundaryCurves.Count == 0 || boundaryCurves.All(x => x == null))

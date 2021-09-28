@@ -47,7 +47,6 @@ namespace BH.Engine.Environment
         [MultiOutput(0, "bottom", "An ICurve representation of the bottom of the object.")]
         [MultiOutput(1, "sides", "ICurve representations of the sides of the object.")]
         [MultiOutput(2, "top", "An ICurve representation of the top of the object.")]
-        [PreviousVersion("4.3", "BH.Engine.Environment.Query.ExplodeToParts(BH.oM.Environment.IEnvironmentObject)")]
         public static Output<List<ICurve>, List<ICurve>, List<ICurve>> ExplodeToParts(this IEnvironmentObject environmentObject, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double numericTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             Output<List<ICurve>, List<ICurve>, List<ICurve>> finalParts = new Output<List<ICurve>, List<ICurve>, List<ICurve>>()

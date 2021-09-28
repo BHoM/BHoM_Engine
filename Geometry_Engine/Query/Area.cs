@@ -40,7 +40,6 @@ namespace BH.Engine.Geometry
         [Input("geometry", "Geometry to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.IArea(BH.oM.Geometry.IGeometry)")]
         public static double IArea(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
             if (geometry == null)
@@ -61,7 +60,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Arc to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Arc)")]
         
         public static double Area(this Arc curve, double tolerance = Tolerance.Distance)
         {
@@ -86,7 +84,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Circle to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Circle)")]
 
         public static double Area(this Circle curve, double tolerance = Tolerance.Distance)
         {
@@ -106,7 +103,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Line to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Line)")]
 
         public static double Area(this Line curve, double tolerance = Tolerance.Distance)
         {
@@ -120,7 +116,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The PolyCurve to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.PolyCurve)")]
         
         public static double Area(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
@@ -182,7 +177,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Polyline to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Polyline)")]
 
         public static double Area(this Polyline curve, double tolerance = Tolerance.Distance)
         {
@@ -229,7 +223,6 @@ namespace BH.Engine.Geometry
         [Input("mesh", "The mesh to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Mesh)")]
         
         public static double Area(this Mesh mesh, double tolerance = Tolerance.Distance)
         {
@@ -263,7 +256,6 @@ namespace BH.Engine.Geometry
         [Input("pSurf", "The PolySurface to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.PolySurface)")]
         
         public static double Area(this PolySurface pSurf, double tolerance = Tolerance.Distance)
         {
@@ -282,7 +274,6 @@ namespace BH.Engine.Geometry
         [Input("pSurf", "The PlanarSurface to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.PlanarSurface)")]
         
         public static double Area(this PlanarSurface pSurf, double tolerance = Tolerance.Distance)
         {
@@ -312,7 +303,6 @@ namespace BH.Engine.Geometry
         [Input("v2", "Second vector to use for vector-based area calculation.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Vector, BH.oM.Geometry.Vector)")]
         
         public static double Area(this Vector v1, Vector v2, double tolerance = Tolerance.Distance)
         {
@@ -337,7 +327,6 @@ namespace BH.Engine.Geometry
         [Input("geometry", "Geometry to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.IGeometry)")]
         
         private static double Area(this IGeometry geometry, double tolerance = Tolerance.Distance)
         {
