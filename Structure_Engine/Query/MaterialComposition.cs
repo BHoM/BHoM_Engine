@@ -150,7 +150,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [PreviousVersion("4.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SectionProperties.ISectionProperty)")]
+        [PreviousVersion("5.0", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SectionProperties.ISectionProperty)")]
         [Description("Returns a SectionProperty's MaterialComposition.")]
         public static MaterialComposition IMaterialComposition(this ISectionProperty sectionProperty)
         {
