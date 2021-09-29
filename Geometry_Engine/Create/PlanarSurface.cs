@@ -39,7 +39,6 @@ namespace BH.Engine.Geometry
         [Input("externalBoundary", "The outer boundary curve of the surface. Needs to be closed and planar.")]
         [Input("internalBoundaries", "Optional internal boundary curves descibing any openings inside the external. All internal edges need to be closed and co-planar with the external edge.")]
         [Output("PlanarSurface", "Planar surface corresponding to the provided edge curves.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>)")]
         public static PlanarSurface PlanarSurface(ICurve externalBoundary, List<ICurve> internalBoundaries = null, double tolerance = Tolerance.Distance)
         {
             if (externalBoundary == null)
@@ -162,20 +161,47 @@ namespace BH.Engine.Geometry
         [Description("Distributes the edge curve and creates a set of boundary planar surfaces.")]
         [Input("boundaryCurves", "Boundary curves to be used. Non-planar and non-closed curves are ignored.")]
         [Output("PlanarSurface", "List of planar surfaces created.")]
-        [PreviousVersion("4.3", "BH.Engine.Geometry.Create.PlanarSurface(System.Collections.Generic.List<BH.oM.Geometry.ICurve)")]
         public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves, double tolerance = Tolerance.Distance)
         {
-            if (boundaryCurves == null || boundaryCurves.Where(x => x != null).Count() == 0)
+            if (boundaryCurves == null || boundaryCurves.Count == 0 || boundaryCurves.All(x => x == null))
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from null curves.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from a null or empty collection of boundary curves.");
                 return null;
             }
 
-            List<ICurve> checkedCurves = boundaryCurves.Where(x => x.IIsClosed(tolerance) && x.IIsPlanar(tolerance)).ToList();
+            //--------------Null-Boundary-Curves-----------------------//
+            int count = boundaryCurves.Count;
+            List<ICurve> checkedCurves = boundaryCurves.Where(x => x != null).ToList();
+            if (checkedCurves.Count != count)
+                Reflection.Compute.RecordWarning("Some of the input boundary curves were null and have been ignored on planar surface creation. Please make sure if the output is correct.");
+
+            //--------------Unsupported-Boundary-Curves-----------------------//
+            count = checkedCurves.Count;
+            checkedCurves = checkedCurves.Where(x => !(x is NurbsCurve) && !(x is Ellipse)).ToList();
+            if (checkedCurves.Count != count)
+                Reflection.Compute.RecordWarning("Some of the input boundary curves were nurbs curves or ellipses, which are unsupported, and have been ignored on planar surface creation. Please make sure if the output is correct.");
+
+            //--------------Planar-Boundary-Curves-----------------------//
+            count = checkedCurves.Count;
+            checkedCurves = checkedCurves.Where(x => x.IIsPlanar(tolerance)).ToList();
+            if (checkedCurves.Count != count)
+                Reflection.Compute.RecordWarning("Some of the input boundary curves were not planar within the tolerance and have been ignored on planar surface creation. Please make sure if the output is correct and tweak the input tolerance if needed.");
+
+            //--------------Closed-Boundary-Curves-----------------------//
+            count = checkedCurves.Count;
+            checkedCurves = checkedCurves.Where(x => x.IIsClosed(tolerance)).ToList();
+            if (checkedCurves.Count != count)
+                Reflection.Compute.RecordWarning("Some of the input boundary curves were not closed within the tolerance and have been ignored on planar surface creation. Please make sure if the output is correct and tweak the input tolerance if needed.");
+
+            if (checkedCurves.Count == 0)
+            {
+                Reflection.Compute.RecordError("Planar surface could not be created because all input boundary curves are invalid (null, unsupported type, non-planar, not closed within the tolerance).");
+                return new List<PlanarSurface>();
+            }
+
             List<List<ICurve>> distributed = Compute.DistributeOutlines(checkedCurves, tolerance);
 
             List<PlanarSurface> surfaces = new List<PlanarSurface>();
-
             for (int i = 0; i < distributed.Count; i++)
             {
                 PlanarSurface srf = new PlanarSurface(
@@ -185,11 +211,10 @@ namespace BH.Engine.Geometry
 
                 surfaces.Add(srf);
             }
-
+            
             return surfaces;
         }
         
-
         /***************************************************/
     }
 }

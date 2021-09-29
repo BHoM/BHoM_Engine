@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Input("results", "The list of results to filter.")]
         [Input("loadcase", "The case or combination to filter by. Should either be a string/int as identifier of the case or a Loadcase/LoadCombination where the number will be used as the identifier. If identifier can be extracted, all results are returned.")]
         [Output("results", "The filtered results. If no filtering param could be extracted, all results are returned.")]
-        public static List<T> SelectCase<T>(this List<T> results, object loadcase) where T : IResult
+        public static List<T> SelectCase<T>(this List<T> results, object loadcase) where T : ICasedResult
         {
             if (results.IsNullOrEmpty())
                 return null;

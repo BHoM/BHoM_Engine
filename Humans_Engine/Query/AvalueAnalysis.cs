@@ -42,7 +42,6 @@ namespace BH.Engine.Humans.ViewQuality
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("4.3", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(BH.oM.Humans.ViewQuality.Audience, BH.oM.Humans.ViewQuality.AvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
         [Description("Evaluate Avalues for a single Audience.")]
         [Input("audience", "Audience to evaluate.")]
         [Input("playingArea", "Polyline defining the playing area to use in the evaluation. For football stadia this would be the boundary of the pitch but could also be a stage or screen for alternative venue types.")]
@@ -63,7 +62,6 @@ namespace BH.Engine.Humans.ViewQuality
 
         /***************************************************/
 
-        [PreviousVersion("4.3", "BH.Engine.Humans.ViewQuality.Query.AvalueAnalysis(System.Collections.Generic.List<BH.oM.Humans.ViewQuality.Audience>, BH.oM.Humans.ViewQuality.AvalueSettings, BH.oM.Architecture.Theatron.ActivityArea)")]
         [Description("Evaluate Avalues for a List of Audience.")]
         [Input("audience", "Audience to evaluate.")]
         [Input("playingArea", "Polyline defining the playing area to use in the evaluation. For football stadia this would be the boundary of the pitch but could also be a stage or screen for alternative venue types.")]
