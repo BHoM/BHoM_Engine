@@ -51,7 +51,7 @@ namespace BH.Engine.Base
         [Input("hashFromFragment", "If true, if the object is a BHoMObject storing a HashFragment, retrieve the hash from it instead of computing the hash.")]
         public static string Hash(this IObject iObj, ComparisonConfig comparisonConfig = null, bool hashFromFragment = false)
         {
-            if(iObj == null)
+            if (iObj == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot query the hash of a null object.");
                 return "";
@@ -75,16 +75,6 @@ namespace BH.Engine.Base
             cc.PropertyExceptions = cc.PropertyExceptions ?? new List<string>();
             if (!cc.PropertyExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
                 cc.PropertyExceptions.Add(nameof(BHoMObject.BHoM_Guid));
-
-            // Process the "PropertiesToInclude" property.
-            if (cc.PropertiesToConsider?.Any() ?? false)
-            {
-                // The hash computation can only consider "exceptions".
-                // We need to retrieve all the object properties, intersect them with PropertiesToInclude, and treat all those remaining as "exceptions".
-                // Works only for top-level properties.
-                IEnumerable<string> exceptions = BH.Engine.Reflection.Query.PropertyNames(iObj).Except(cc.PropertiesToConsider);
-                cc.PropertyExceptions.AddRange(exceptions);
-            }
 
             // Make sure that the single Property exceptions are either:
             // - explicitly referring to a property in its "property path": e.g. Bar.StartNode.Point.X
@@ -152,12 +142,23 @@ namespace BH.Engine.Base
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
         [Input("propertyPath", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
-        private static string DefiningString(object obj, ComparisonConfig cc, int fractionalDigits, int nestingLevel, string propertyPath = null)
+        private static string DefiningString(object obj, ComparisonConfig cc, int fractionalDigits, int nestingLevel, string currentPropertyPath = null)
         {
             string composedString = "";
             string tabs = new String('\t', nestingLevel);
 
             Type type = obj?.GetType();
+
+            currentPropertyPath = currentPropertyPath.IsNullOrEmpty() ? type.FullName : currentPropertyPath;
+            List<string> currentPropertyPathComponents = currentPropertyPath?.Split('.').ToList();
+            string currentParentTypePath = "";
+            string currentPropertyName = "";
+            if (currentPropertyPathComponents != null)
+            {
+                currentParentTypePath = string.Join(".", currentPropertyPathComponents.Take(currentPropertyPathComponents.Count - 1));
+                currentPropertyName = currentPropertyPathComponents?.Last();
+            }
+
 
             if (type == null
                 || (cc.TypeExceptions != null && cc.TypeExceptions.Contains(type))
@@ -176,26 +177,41 @@ namespace BH.Engine.Base
             else if (type.IsArray)
             {
                 foreach (var element in (obj as dynamic))
-                    composedString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, propertyPath);
+                    composedString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, currentPropertyPath);
             }
             else if (typeof(IDictionary).IsAssignableFrom(type))
             {
                 IDictionary dic = obj as IDictionary;
 
-                bool isCustomDataDic = propertyPath.EndsWith("CustomData");
+                bool isCustomDataDic = currentPropertyPath.EndsWith("CustomData") && obj is Dictionary<string,object>;
+
+                List<string> customDataKeysToExcludeOnThisObject = new List<string>();
+
+                if (isCustomDataDic && cc.CustomdataKeysToInclude.Any())
+                {
+                    Dictionary<string, object> customDataDict = obj as Dictionary<string, object>;
+                    List<string> allCustomDataKeys = customDataDict.Keys.ToList();
+
+                    var allCustomDataExceptToInclude = allCustomDataKeys.Except(cc.CustomdataKeysToInclude).ToList();
+
+                    bool customDataToIncludeFound = allCustomDataExceptToInclude.Count() < allCustomDataKeys.Count();
+
+                    if (customDataToIncludeFound)
+                        customDataKeysToExcludeOnThisObject.AddRange(allCustomDataExceptToInclude);
+                }
 
                 foreach (DictionaryEntry entry in dic)
                 {
-                    if (isCustomDataDic && cc.CustomdataKeysExceptions.Contains(entry.Key))
+                    if (isCustomDataDic && ((cc.CustomdataKeysExceptions.Contains(entry.Key)) || customDataKeysToExcludeOnThisObject.Contains(entry.Key)))
                         continue;
 
-                    composedString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, fractionalDigits, nestingLevel + 1, propertyPath)}";
+                    composedString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, fractionalDigits, nestingLevel + 1, currentPropertyPath)}";
                 }
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type) || typeof(IList).IsAssignableFrom(type) || typeof(ICollection).IsAssignableFrom(type))
             {
                 foreach (var element in (obj as dynamic))
-                    composedString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, propertyPath);
+                    composedString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, currentPropertyPath);
             }
             else if (type.FullName.Contains("System.Collections.Generic.ObjectEqualityComparer`1"))
             {
@@ -204,57 +220,156 @@ namespace BH.Engine.Base
             else if (type == typeof(System.Data.DataTable))
             {
                 DataTable dt = obj as DataTable;
-                return composedString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + DefiningString(dt.AsEnumerable(), cc, fractionalDigits, nestingLevel + 1, propertyPath);
+                return composedString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + DefiningString(dt.AsEnumerable(), cc, fractionalDigits, nestingLevel + 1, currentPropertyPath);
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
-                PropertyInfo[] properties = type.GetProperties();
+                // If it's an IObject (= a BHoM class), let's look at its properties. 
+                // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible type.
 
+                PropertyInfo[] properties = type.GetProperties();
+                List<string> allDeclaredPropertyNames = BH.Engine.Reflection.Query.PropertyNames(type);
+                List<string> allDeclaredPropertyPaths = allDeclaredPropertyNames.Select(pn => $"{currentPropertyPath}.{pn}").ToList();
+
+                if (cc.PropertiesToConsider?.Any() ?? false)
+                {
+                    // The user specified some PropertiesToConsider.
+
+                    // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
+                    List<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel).ToList();
+
+                    //List<string> currentLevelPropertiesExceptions = cc.PropertiesToConsider.Where(ptc => ptc.Contains('.')).Select(ptc => )
+
+                    // Get the declaredPropertiesToConsider, which are the currentLevelPropertiesToConsider for which there is a match among this object's properties.
+                    List<string> declaredPropertiesToConsider = allDeclaredPropertyPaths.Where(pPath => currentLevelPropertiesToConsider.Any(ptc => pPath.EndsWith(ptc))).ToList();
+
+                    if (declaredPropertiesToConsider.Any())
+                    {
+                        // All the remaining declaredProperties are to be added to the Exceptions.
+                        List<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(declaredPropertiesToConsider).ToList();
+                        cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
+                    }
+
+
+                    //bool propertiesToConsiderFoundInCustomData = false;
+
+                    //if (currentLevelPropertiesToConsider.Any() && !declaredPropertiesToConsider.Any())
+                    //{
+                        // We know that the user specified some currentLevelPropertiesToConsider, but no corresponding declaredPropertiesToConsider were found for this object.
+                        // (a) Look in customdata for a key named like that.
+                        //IBHoMObject bHoMObject = obj as IBHoMObject;
+                        //if (bHoMObject != null)
+                        //{
+                        //    List<KeyValuePair<string, object>> customDataToInclude = bHoMObject.CustomData.Where(kv => declaredPropertiesToConsider.Any(dptc => dptc.EndsWith(kv.Key))).ToList();
+                        //    List<KeyValuePair<string, object>> customDataToExclude = bHoMObject.CustomData.Except(customDataToInclude).ToList();
+
+                        //    foreach (var kv in bHoMObject.CustomData)
+                        //    {
+                        //        string customDataKeyPath = $"{currentPropertyPath}.CustomData[{kv.Key}]";
+                        //        bool isInCustomDataExceptions = cc.PropertyExceptions.Any(pe => pe.EndsWith(customDataKeyPath) || pe.EndsWith(kv.Key));
+                        //        bool isCustomDataToBeConsidered = (declaredPropertiesToConsider.Any(dptc => dptc.EndsWith(kv.Key) || dptc.EndsWith(customDataKeyPath)));
+
+                        //        if (!isInCustomDataExceptions && isCustomDataToBeConsidered)
+                        //        {
+                        //            propertiesToConsiderFoundInCustomData = true;
+
+                        //            string customDataDefiningString = DefiningString(kv.Value, cc, fractionalDigits, nestingLevel + 1, customDataKeyPath);
+                        //            if (!string.IsNullOrWhiteSpace(composedString))
+                        //                composedString += $"\n{tabs}" + $"{type.FullName}.{customDataDefiningString}:\n{tabs}{customDataDefiningString} ";
+                        //        }
+                        //        else
+                        //            cc.PropertyExceptions.Add(customDataKeyPath);
+                        //    }
+          
+
+                        //    if (propertiesToConsiderFoundInCustomData)
+                        //    {
+                        //        // Add all declaredProperties to the exceptions.
+                        //        List<string> declaredPropertiesExceptions = allPropertyPaths.Except(declaredPropertiesToConsider).ToList();
+                        //        cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
+                        //    }
+                        //}
+
+                        // (b) (not currently doable) there is an extension method named like a propertyToConsider that we can run onto the object to get a value to hash.
+                        //     This is currently not doable because RunExtensionMethod sits in reflection.
+                        // (c) If we formalize some other concept like a Fragment that should own KeyValue pairs, this is the place to look for it.
+                    //}
+
+                }
+
+                // Iterate all properties
                 foreach (PropertyInfo prop in properties)
                 {
-                    bool isInPropertyExceptions = cc.PropertyExceptions?.Count > 0 && cc.PropertyExceptions.Where(ex => prop.Name == ex).Any();
+                    string propertyHashString = "";
+                    string propertyName = prop.Name;
+                    string propertyPath = $"{currentPropertyPath}.{propertyName}";
+
+                    bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propertyPath.EndsWith(ex)) || cc.PropertyExceptions.Any(ex => currentPropertyPath.EndsWith(ex));
+                    bool isInPropertiesToConsider = cc.PropertiesToConsider.Any(pTc => propertyPath.EndsWith(pTc));
+
                     if (isInPropertyExceptions)
                         continue;
 
-                    //if (cc.PropertyNamesToConsider?.Count() > 0 && !cc.PropertyNamesToConsider.Any(pn => (propertyPath).Contains(pn))) //!cc.PropertyNamesToConsider.Contains(prop.Name))
-                    //    continue;
+                    //// Process the "PropertiesToConsider" config option.
+                    // if (cc.PropertiesToConsider?.Any() ?? false)
+                    // {
+                    //    // The hash computation can only consider "exceptions".
+                    //    // We need to retrieve all the type's properties, intersect them with PropertiesToInclude, and treat all those remaining as "exceptions".
+                    //    // Works only for top-level properties.
 
-                    object propValue = prop.GetValue(obj);
-                    if (propValue != null)
+
+
+                    //    if (isInPropertiesToConsider)
+                    //    {
+                    //        // Some propertyToInclude matches were found for this object. 
+                    //        // Add all other properties of this object to propertyExceptions (do not consider them).
+
+                    //        // This ensures that all the exceptions are noted as "property paths" e.g. if `StartNode` was specified, this returns `BH.oM.Structure.Elements.Bar.StartNode`
+                    //        List<string> exceptionsPropertyPaths = allPropertyPaths.Where(pp => propertiesToConsider.Any(pi => !pp.EndsWith(pi))).ToList();
+
+                    //        // Add them to the exceptions.
+                    //        cc.PropertyExceptions.AddRange(exceptionsPropertyPaths);
+                    //    }
+                    //    else
+                    //    {
+                    //        // The PropertiesToConsider includes only property names that were not found on this type.
+                    //        // We could:
+                    //        // (a) Iterate the PropertiesToConsider and look for extension method(s) called like that for this object. If so, recurse for each of them.
+                    //        //     This is currently not doable because RunExtensionMethod sits in reflection.
+                    //        // (b) Check if the currently iterated property (prop) is a "INamedValue" object. If so, iterate the PropertiesToConsider to check if the INamedValue.Name == propertyToConsider.
+                    //        // (c) If all the above failed, assume that the PropertiesToConsider may be names of some of this object's sub-property. Do not add them to the PropertyExceptions, do nothing.
+                    //    }
+                    //}
+
+
+
+                    object propertyValue = prop.GetValue(obj);
+                    if (propertyValue != null)
                     {
-                        if (string.IsNullOrWhiteSpace(propertyPath))
-                            propertyPath = type.FullName + "." + prop.Name;
-                        else
-                            propertyPath += "." + prop.Name;
-
-                        string outString = "";
-
+                        // Take care of fractional digits config option.
+                        int propertyFracionalDigits = fractionalDigits;
                         if (cc.FractionalDigitsPerProperty != null &&
                             prop.PropertyType == typeof(double) || prop.PropertyType == typeof(decimal) || prop.PropertyType == typeof(float))
                         {
                             Dictionary<string, int> matches = new Dictionary<string, int>();
 
-                            string path = propertyPath + "." + prop.Name;
-
                             foreach (var kv in cc.FractionalDigitsPerProperty)
                             {
-                                if (path.Contains(kv.Key) ||
-                                new WildcardPattern(kv.Key).IsMatch(path))
+                                if (propertyPath.Contains(kv.Key) ||
+                                new WildcardPattern(kv.Key).IsMatch(propertyPath))
                                     matches.Add(kv.Key, kv.Value);
                             }
 
                             if (matches.Count() > 1)
                                 throw new ArgumentException($"Too many matching results obtained with specified {nameof(cc.FractionalDigitsPerProperty)}.");
 
-                            int fracDigits = matches.Count() == 1 ? matches.FirstOrDefault().Value : fractionalDigits;
-
-                            outString = DefiningString(propValue, cc, fracDigits, nestingLevel + 1, path) ?? "";
+                            propertyFracionalDigits = matches.Count() == 1 ? matches.FirstOrDefault().Value : fractionalDigits;
                         }
-                        else
-                            outString = DefiningString(propValue, cc, fractionalDigits, nestingLevel + 1, propertyPath) ?? "";
 
-                        if (!string.IsNullOrWhiteSpace(outString))
-                            composedString += $"\n{tabs}" + $"{type.FullName}.{prop.Name}:\n{tabs}{outString} ";
+                        // Recurse for this property.
+                        propertyHashString = DefiningString(propertyValue, cc, propertyFracionalDigits, nestingLevel + 1, propertyPath) ?? "";
+                        if (!string.IsNullOrWhiteSpace(propertyHashString))
+                            composedString += $"\n{tabs}" + $"{type.FullName}.{propertyName}:\n{tabs}{propertyHashString} ";
                     }
                 }
             }

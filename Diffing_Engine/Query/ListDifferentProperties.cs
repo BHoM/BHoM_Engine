@@ -36,6 +36,8 @@ namespace BH.Engine.Diffing
 {
     public static partial class Query
     {
+        [Description("Can be used to 'explode' the result of the method called `DifferentProperties`.")]
+        [Input("diffProps", "Result of the method `DifferentProperties`. A dictionary whose key is the name of the property, and value is a tuple with the different values found in obj1 and obj2.")]
         [MultiOutput(0, "propNames", "List of properties changed per each object.")]
         [MultiOutput(1, "value_obj1", "List of current values of the properties.")]
         [MultiOutput(2, "value_obj2", "List of past values of the properties.")]
