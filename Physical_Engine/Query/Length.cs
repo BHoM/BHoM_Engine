@@ -305,7 +305,7 @@ namespace BH.Engine.Physical
 
         private static double Length(this ShapeCode99 shapeCode, double diameter, double bendingRadius)
         {
-            return shapeCode.CentreCurve.ILength();
+            return shapeCode.Curve.ILength();
         }
 
         /***************************************************/

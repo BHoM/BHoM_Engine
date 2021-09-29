@@ -59,9 +59,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
 
-            string fullNamespace = shapeCode.GetType().Namespace;
-            int position = shapeCode.GetType().Namespace.LastIndexOf(".") + 1;
-            string standard = fullNamespace.Substring(position, fullNamespace.Length - position);
+            string standard = ReinforcementStandard(shapeCode);
 
             switch (standard)
             {

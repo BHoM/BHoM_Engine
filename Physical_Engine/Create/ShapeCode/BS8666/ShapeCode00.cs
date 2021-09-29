@@ -24,43 +24,26 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Physical.Reinforcement;
-using BH.Engine.Geometry;
+using BH.oM.Physical.Reinforcement.BS8666;
 
 namespace BH.Engine.Physical
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Verifies whether the reinforcement is valid by performing null checks, checking the bend radius and shape code compliance.")]
-        [Input("reinforcement", "The reinforcement containing the ShapeCode, reinforcement and bending radius to be verified.")]
-        [Output("bool", "True if the shape code is valid.")]
-        public static bool IsReinforcementValid(this Reinforcement reinforcement)
+        [Description("Creates a ShapeCode object using the parameters provided. Refer to the object descriptions for alignment.")]
+        [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
+        public static ShapeCode00 ShapeCode00(double a)
         {
-            if (reinforcement.IsNull())
-                return false;
-            else if (reinforcement.CoordinateSystem.IsNull())
-                return false;
-            else if (reinforcement.Diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-            else if (reinforcement.BendRadius < reinforcement.SchedulingRadius())
-            {
-                reinforcement.BendRadius = reinforcement.SchedulingRadius();
-                Reflection.Compute.RecordWarning("The bend radius is less than the minimum scheduling radius and has been assigned the minimum value.");
-            }
-            else if (!reinforcement.ShapeCode.IIsShapeCodeCompliant(reinforcement.Diameter))
-                return false;
-
-            return true;
+            return new ShapeCode00(a);
         }
 
+        /***************************************************/
     }
 }
+
+
