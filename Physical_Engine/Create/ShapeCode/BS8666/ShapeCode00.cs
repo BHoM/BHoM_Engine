@@ -24,8 +24,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Geometry;
 using BH.oM.Physical.Reinforcement.BS8666;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -39,6 +40,12 @@ namespace BH.Engine.Physical
         [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
         public static ShapeCode00 ShapeCode00(double a)
         {
+            if(a < Tolerance.Distance)
+            {
+                Reflection.Compute.RecordError("One or more of the parameters given is zero and therefore the ShapeCode cannot be created.");
+                return null;
+            }
+
             return new ShapeCode00(a);
         }
 

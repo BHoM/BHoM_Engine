@@ -62,12 +62,7 @@ namespace BH.Engine.Physical
             switch (standard)
             {
                 case "BS8666":
-                    List<double> diameters = new List<double>() { 6, 8, 10, 12, 16, 20, 25, 32, 40 }.Select(x => x / 1000).ToList();
-                    List<double> radii = new List<double>() { 2.5, 2.75, 3.5, 4.25, 7.5, 14, 30, 43, 58 };
-
-                    Dictionary<double, double> maximumBendingRadius = diameters.Zip(radii, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
-
-                    return maximumBendingRadius.LinearInterpolate(diameter);
+                    return m_BS8666MaximumRadiusBendingRadius.LinearInterpolate(diameter);
                 default:
                     Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;
@@ -114,6 +109,13 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static readonly Dictionary<double, double> m_BS8666MaximumRadiusBendingRadius = new Dictionary<double, double>
+        {
+            { 0.006,2.6 },{0.008, 2.75}, {0.01,3.5}, {0.012,4.25}, {0.016, 7.5}, {0.020, 14},{0.025, 30}, {0.032, 43}, {0.040, 58}
+        };
 
     }
 }
