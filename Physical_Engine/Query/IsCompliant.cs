@@ -41,9 +41,9 @@ namespace BH.Engine.Physical
         [Description("Verifies the dimensions of the ShapeCode to verify their compliance with BS 8666:2020.")]
         [Input("reinforcement", "The reinforcement containing the ShapeCode, reinforcement and bending radius to be verified.")]
         [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
-        public static bool IsShapeCodeCompliant(this Reinforcement reinforcement)
+        public static bool IsCompliant(this Reinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? false : IIsShapeCodeCompliant(reinforcement.ShapeCode, reinforcement.Diameter);
+            return reinforcement.IsNull() ? false : IIsCompliant(reinforcement.ShapeCode, reinforcement.Diameter);
 
         }
 
@@ -53,7 +53,7 @@ namespace BH.Engine.Physical
         [Input("shapeCode", "The ShapeCode to be verified.")]
         [Input("diameter", "The diameter of the reinforcement bar.", typeof(Length))]
         [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
-        public static bool IIsShapeCodeCompliant(this IShapeCode shapeCode, double diameter)
+        public static bool IIsCompliant(this IShapeCode shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -63,14 +63,14 @@ namespace BH.Engine.Physical
                 return false;
             }
 
-            return IsShapeCodeCompliant(shapeCode as dynamic, diameter);
+            return IsCompliant(shapeCode as dynamic, diameter);
         }
 
         /***************************************************/
         /****    Private Methods                    ********/
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode00 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode00 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -91,7 +91,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode11 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode11 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -112,7 +112,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode12 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode12 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -133,7 +133,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode13 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode13 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -165,7 +165,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode14 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode14 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -186,7 +186,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode15 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode15 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -211,7 +211,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode21 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode21 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -232,7 +232,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode22 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode22 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -267,7 +267,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode23 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode23 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -288,7 +288,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode24 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode24 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -314,7 +314,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode25 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode25 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -341,7 +341,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode26 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode26 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -367,7 +367,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode27 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode27 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -392,7 +392,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode28 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode28 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -417,7 +417,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode29 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode29 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -442,7 +442,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode31 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode31 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -463,7 +463,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode32 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode32 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -484,7 +484,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode33 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode33 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -515,7 +515,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode34 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode34 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -541,7 +541,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode35 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode35 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -567,7 +567,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode36 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode36 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -593,7 +593,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode41 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode41 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -614,7 +614,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode44 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode44 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -635,7 +635,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode46 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode46 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -661,7 +661,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode47 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode47 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -697,7 +697,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode48 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode48 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -728,7 +728,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode51 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode51 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -759,7 +759,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode52 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode52 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -790,7 +790,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode56 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode56 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -821,7 +821,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode63 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode63 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -852,7 +852,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode64 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode64 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -873,7 +873,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode67 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode67 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -898,7 +898,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode75 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode75 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -913,7 +913,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode77 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode77 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -928,7 +928,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode98 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode98 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -949,7 +949,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(this ShapeCode99 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode99 shapeCode, double diameter)
         {
             if (shapeCode.IsNull())
                 return false;
@@ -966,7 +966,7 @@ namespace BH.Engine.Physical
         /****    Private Fallback Method            ********/
         /***************************************************/
 
-        private static bool IsShapeCodeCompliant(IShapeCode shapeCode, double diameter, double bendingRadius)
+        private static bool IsCompliant(IShapeCode shapeCode, double diameter, double bendingRadius)
         {
             if (shapeCode.IsNull())
                 return false;

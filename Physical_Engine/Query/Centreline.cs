@@ -45,7 +45,7 @@ namespace BH.Engine.Physical
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(this Reinforcement reinforcement)
         {
-            return reinforcement.IsReinforcementValid() ? ICentreline(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius).Orient(new Cartesian(), reinforcement.CoordinateSystem) : null;
+            return reinforcement.IsValid() ? ICentreline(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius).Orient(new Cartesian(), reinforcement.CoordinateSystem) : null;
         }
 
         /***************************************************/

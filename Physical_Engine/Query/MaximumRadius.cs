@@ -36,7 +36,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the maximum radius based on the diameter of the reinforcement bar using the values given in BS 8666:2020 Table 8.")]
+        [Description("Gets the maximum radius based on the diameter of the reinforcement bar. The standard is determined from the namespace of the ShapeCode.")]
         [Input("diameter", "The diameter of the reinforcement bar to determine the maximum bending radius.", typeof(Length))]
         [Output("maximumRadius", "The maximum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
         public static double MaximumRadius(this Reinforcement reinforcement)
@@ -46,7 +46,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets the maximum radius based on the diameter of the reinforcement bar using the values given in BS 8666:2020 Table 8.")]
+        [Description("Gets the maximum radius based on the diameter of the reinforcement bar. The standard is determined from the namespace of the ShapeCode.")]
         [Input("diameter", "The diameter of the reinforcement bar to determine the maximum bending radius.", typeof(Length))]
         [Output("maximumRadius", "The maximum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
         public static double MaximumRadius(this IShapeCode shapeCode, double diameter)
@@ -57,9 +57,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
 
-            string fullNamespace = shapeCode.GetType().Namespace;
-            int position = shapeCode.GetType().Namespace.LastIndexOf(".") + 1;
-            string standard = fullNamespace.Substring(position, fullNamespace.Length - position);
+            string standard = ReinforcementStandard(shapeCode);
 
             switch (standard)
             {

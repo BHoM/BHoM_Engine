@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -24,37 +24,32 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.Engine.Geometry;
-using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Physical.Reinforcement;
-
-
-
 
 namespace BH.Engine.Physical
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Reinforcement object storing the ShapeCode, diameter, bend radius and coordinate system.")]
-        [Input("diameter", "The diameter of the reinforcement.")]
-        [Input("coordinateSystem", "The name of the beam, default empty string")]
-        [Input("shapeCode", "The name of the beam, default empty string")]
-        [Input("bendRadius", "The bend radius of the reinforcement. This will be calculated based on the diameter if the provided value " +
-            "is less than the the minimum scheduling radius defined in BS 8666:2020.")]
-        [Output("reinforcement", "The reinforcement object with a compliant shape code in accordance with BS 8666:2020.")]
-        public static Reinforcement Reinforcement(double diameter, Cartesian coordinateSystem, IShapeCode shapeCode, double bendRadius = 0)
+        [Description("Gets the standard for reinforcement (e.g. BS 8666) based on the namespace of the ShapeCode.")]
+        [Input("shapeCode", "The ShapeCode used to determine the reinforcement standard.")]
+        [Output("standard", "The standard for reinforcement (e.g. BS 8666).")]
+        public static string ReinforcementStandard(this IShapeCode shapeCode)
         {
-            Reinforcement reinforcement = new Reinforcement(){Diameter = diameter, BendRadius = bendRadius, CoordinateSystem = coordinateSystem, ShapeCode = shapeCode};
+            if (shapeCode.IsNull())
+                return "";
 
-            return reinforcement.IsValid() ? reinforcement : null;
+            string fullNamespace = shapeCode.GetType().Namespace;
+            int position = shapeCode.GetType().Namespace.LastIndexOf(".") + 1;
+            string standard = fullNamespace.Substring(position, fullNamespace.Length - position);
+
+            return standard;
         }
 
-        /***************************************************/
     }
 }
