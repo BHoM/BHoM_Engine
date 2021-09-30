@@ -56,7 +56,7 @@ namespace BH.Engine.Physical
             }
             else if (reinforcement.CoordinateSystem.IsNull())
             {
-                ErrorMessage(methodName, "Reinforcement ShapeCode", msg);
+                ErrorMessage(methodName, "Reinforcement CoordinateSystem", msg);
                 return true;
             }
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Physical
         {
             if (shapeCode == null)
             {
-                ErrorMessage(methodName, "Reinforcement", msg);
+                ErrorMessage(methodName, "ShapeCode", msg);
                 return true;
             }
 
