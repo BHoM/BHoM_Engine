@@ -41,32 +41,28 @@ namespace BH.Engine.Physical
         [Output("schedulingRadius", "The minimum scheduling radius based on the diameter of the reinforcement bar to the standard of the ShapeCode.", typeof(Length))]
         public static double SchedulingRadius(this Reinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? 0 : SchedulingRadius(reinforcement.ShapeCode, reinforcement.Diameter);
+            return reinforcement.IsNull() ? 0 : SchedulingRadius(reinforcement.ShapeCode);
         }
 
         /***************************************************/
 
         [Description("Gets the minimum scheduling radius based on the diameter of the reinforcement bar. The standard is determined from the namespace of the ShapeCode.")]
         [Input("shapeCode", "The ShapeCode used to determine the standard to calculate the scheduling radius.")]
-        [Input("diameter", "The diameter of the reinforcement bar to determine the scheduling radius.", typeof(Length))]
         [Output("schedulingRadius", "The minimum scheduling radius based on the diameter of the reinforcement bar to the standard of the ShapeCode.", typeof(Length))]
-        public static double SchedulingRadius(this IShapeCode shapeCode, double diameter)
+        public static double SchedulingRadius(this IShapeCode shapeCode)
         {
-            if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than 0. The scheduling radius cannot be calculated.");
+            if (shapeCode.IsNull())
                 return 0;
-            }
 
             string standard = ReinforcementStandard(shapeCode);
 
             switch (standard)
             {
                 case "BS8666":
-                    if (diameter < 0.020)
-                        return 2 * diameter;
+                    if (shapeCode.Diameter < 0.020)
+                        return 2 * shapeCode.Diameter;
                     else
-                        return 3.5 * diameter;
+                        return 3.5 * shapeCode.Diameter;
                 default:
                     Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;

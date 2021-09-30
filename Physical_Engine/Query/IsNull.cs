@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using BH.Engine.Geometry;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Reflection.Attributes;
 
@@ -53,6 +54,11 @@ namespace BH.Engine.Physical
                 ErrorMessage(methodName, "Reinforcement ShapeCode", msg);
                 return true;
             }
+            else if (reinforcement.CoordinateSystem.IsNull())
+            {
+                ErrorMessage(methodName, "Reinforcement ShapeCode", msg);
+                return true;
+            }
 
             return false;
         }
@@ -74,8 +80,6 @@ namespace BH.Engine.Physical
 
             return false;
         }
-
-        /***************************************************/
 
         /***************************************************/
         /**** Private Methods                           ****/

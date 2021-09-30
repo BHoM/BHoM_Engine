@@ -37,7 +37,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Verifies whether the reinforcement is valid by performing null checks, checking the bend radius and shape code compliance.")]
+        [Description("Verifies whether the reinforcement is valid by performing null checks.")]
         [Input("reinforcement", "The reinforcement containing the ShapeCode, reinforcement and bending radius to be verified.")]
         [Output("bool", "True if the shape code is valid.")]
         public static bool IsValid(this Reinforcement reinforcement)
@@ -46,17 +46,7 @@ namespace BH.Engine.Physical
                 return false;
             else if (reinforcement.CoordinateSystem.IsNull())
                 return false;
-            else if (reinforcement.Diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The Reinforcement is invalid because the diameter is less than zero.");
-                return false;
-            }
-            else if (reinforcement.BendRadius < reinforcement.SchedulingRadius())
-            {
-                reinforcement.BendRadius = reinforcement.SchedulingRadius();
-                Reflection.Compute.RecordWarning("The bend radius of the Reinforcement is less than the minimum scheduling radius and has been assigned the minimum value.");
-            }
-            else if (!reinforcement.ShapeCode.IIsCompliant(reinforcement.Diameter))
+            else if (!reinforcement.ShapeCode.IIsCompliant())
                 return false;
 
             return true;
