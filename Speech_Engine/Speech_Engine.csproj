@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
   </ItemGroup>
 
