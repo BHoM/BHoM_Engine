@@ -42,29 +42,26 @@ namespace BH.Engine.Physical
         [Output("endProjection", "The minimum end projection based on the diameter of the reinforcement bar.", typeof(Length))]
         public static double LinksEndProjection(this Reinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? 0 : LinksEndProjection(reinforcement.ShapeCode, reinforcement.Diameter);
+            return reinforcement.IsNull() ? 0 : LinksEndProjection(reinforcement.ShapeCode);
         }
 
         /***************************************************/
 
         [Description("Gets the minimum end projection for links where the bend is less than 150 degrees." +
             "This is based on the diameter of the reinforcement bar and the standard is determined from the ShapeCode namespace.")]
-        [Input("reinforcement", "The reinforcement that contains the diameter and the ShapeCode.")]
+        [Input("shapeCode", "The ShapeCode that contains the diameter and the bend radius.")]
         [Output("endProjection", "The minimum end projection based on the diameter of the reinforcement bar.", typeof(Length))]
-        public static double LinksEndProjection(this IShapeCode shapeCode, double diameter)
+        public static double LinksEndProjection(this IShapeCode shapeCode)
         {
-            if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than 0. The scheduling radius cannot be calculated.");
+            if (shapeCode.IsNull())
                 return 0;
-            }
 
             string standard = ReinforcementStandard(shapeCode);
 
             switch (standard)
             {
                 case "BS8666":
-                    return Math.Max(10 * diameter, 0.090) + diameter + shapeCode.SchedulingRadius(diameter);
+                    return Math.Max(10 * shapeCode.Diameter, 0.090) + shapeCode.Diameter + shapeCode.SchedulingRadius();
                 default:
                     Reflection.Compute.RecordError("Standard not recognised or supported, the end projection could not be calculated.");
                     return 0;

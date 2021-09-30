@@ -39,9 +39,9 @@ namespace BH.Engine.Physical
 
         [Description("Creates a ShapeCode object using the parameters provided. Refer to the object descriptions for alignment.")]
         [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
-        public static ShapeCode99 ShapeCode99(ICurve curve)
+        public static ShapeCode99 ShapeCode99(ICurve curve, double diameter, double bendRadius)
         {
-            return curve.IsNull() ? null : new ShapeCode99(curve);
+            return curve.IsNull() ? null : new ShapeCode99(curve, diameter, bendRadius);
         }
 
         /***************************************************/

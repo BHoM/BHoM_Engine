@@ -37,32 +37,29 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the maximum radius based on the diameter of the reinforcement bar. The standard is determined from the namespace of the ShapeCode.")]
-        [Input("diameter", "The diameter of the reinforcement bar to determine the maximum bending radius.", typeof(Length))]
+        [Input("reinforcement", "The reinforcement bar to determine the maximum bending radius.", typeof(Length))]
         [Output("maximumRadius", "The maximum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
         public static double MaximumRadius(this Reinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? 0 : MaximumRadius(reinforcement.ShapeCode, reinforcement.Diameter);
+            return reinforcement.IsNull() ? 0 : MaximumRadius(reinforcement.ShapeCode);
         }
 
         /***************************************************/
 
         [Description("Gets the maximum radius based on the diameter of the reinforcement bar. The standard is determined from the namespace of the ShapeCode.")]
-        [Input("diameter", "The diameter of the reinforcement bar to determine the maximum bending radius.", typeof(Length))]
+        [Input("shapeCode", "The shape code to determine the maximum bending radius.", typeof(Length))]
         [Output("maximumRadius", "The maximum scheduling radius based on the diameter of the reinforcement bar", typeof(Length))]
-        public static double MaximumRadius(this IShapeCode shapeCode, double diameter)
+        public static double MaximumRadius(this IShapeCode shapeCode)
         {
-            if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than 0. The maximum radius cannot be calculated.");
+            if (shapeCode.IsNull())
                 return 0;
-            }
 
             string standard = ReinforcementStandard(shapeCode);
 
             switch (standard)
             {
                 case "BS8666":
-                    return m_BS8666MaximumRadiusBendingRadius.LinearInterpolate(diameter);
+                    return m_BS8666MaximumRadiusBendingRadius.LinearInterpolate(shapeCode.Diameter);
                 default:
                     Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;
