@@ -60,7 +60,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return false;
             }
-            else if (shapeCode.BendRadius < shapeCode.BendRadius)
+            else if (shapeCode.BendRadius < shapeCode.SchedulingRadius())
             {
                 Reflection.Compute.RecordError("The bend radius must be greater than the minimum scheduling radius.");
                 return false;
@@ -639,7 +639,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameter C must be less than or equal to the parameter R.");
                 return false;
             }
-            else if(Math.Abs(shapeCode.A - 2*shapeCode.R*Math.Asin(shapeCode.B/(2*shapeCode.R))) > Tolerance.Distance)
+            else if(Math.Abs(shapeCode.A - 2*shapeCode.R*Math.Asin(shapeCode.B/(2*(shapeCode.R + shapeCode.Diameter)))) > Tolerance.Distance)
             {
                 Reflection.Compute.RecordError("The parameter A of ShapeCode67 must be equal to the arc length formed by the segment constructed from the width B and centre R.");
                 return false;

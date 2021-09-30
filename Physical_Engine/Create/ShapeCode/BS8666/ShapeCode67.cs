@@ -46,7 +46,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            double a = r * Math.Asin(b / (2 * (r - c)));
+            double a = 2* r * Math.Asin(b / (2 * (r + diameter)));
 
             ShapeCode67 shapeCode = new ShapeCode67(a, b, c, r, diameter, bendRadius);
 
