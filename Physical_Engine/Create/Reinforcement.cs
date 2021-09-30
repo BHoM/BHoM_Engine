@@ -41,14 +41,11 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Reinforcement object storing the ShapeCode, diameter, bend radius and coordinate system.")]
-        [Input("diameter", "The diameter of the reinforcement.")]
-        [Input("coordinateSystem", "The name of the beam, default empty string")]
+        [Description("Creates a Reinforcement object storing the ShapeCode and coordinate system.")]
+        [Input("coordinateSystem", "Position and orientation of the Reinforcement in Space.Refer to the description of the shape codes for how they relate to the coordinate system.")]
         [Input("shapeCode", "The name of the beam, default empty string")]
-        [Input("bendRadius", "The bend radius of the reinforcement. This will be calculated based on the diameter if the provided value " +
-            "is less than the the minimum scheduling radius defined in BS 8666:2020.")]
         [Output("reinforcement", "The reinforcement object with a compliant shape code in accordance with BS 8666:2020.")]
-        public static Reinforcement Reinforcement(double diameter, Cartesian coordinateSystem, IShapeCode shapeCode, double bendRadius = 0)
+        public static Reinforcement Reinforcement(Cartesian coordinateSystem, IShapeCode shapeCode)
         {
             Reinforcement reinforcement = new Reinforcement(){CoordinateSystem = coordinateSystem, ShapeCode = shapeCode};
 
