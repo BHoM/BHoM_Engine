@@ -40,7 +40,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Computes the centreline for a Reinforcement using the ShapeCode provided according to Bs 8666:2020.")]
+        [Description("Computes the centreline for a Reinforcement using the standard as determined by the ShapeCode namespace. The curve will be oriented to the coordinate system.")]
         [Input("reinforcement", "The reinforcement containing the ShapeCode, reinforcement and bending radius to generate the centreline.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve Centreline(this Reinforcement reinforcement)
@@ -50,14 +50,15 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Computes the centreline for the ShapeCode to BS 8666:2020.")]
+        [Description("Computes the centreline for a Reinforcement using the standard as determined by the ShapeCode namespace. The curve will be in the XY Plane - refer to the ShapeCode description for " +
+            "specifics on the orientation.")]
         [Input("shapeCode", "The ShapeCode to determine the curve parameters.")]
         [Output("curve", "The centreline curve of the shape code provided.")]
         public static ICurve ICentreline(this IShapeCode shapeCode)
         {
             if (shapeCode.IsNull())
                 return null;
-            else if (shapeCode.IIsCompliant())
+            else if (!shapeCode.IIsCompliant())
                 return null;
 
             return Centreline(shapeCode as dynamic);
@@ -1064,8 +1065,10 @@ namespace BH.Engine.Physical
 
         private static ICurve Centreline(this ShapeCode99 shapeCode)
         {
-            return null;
+            return shapeCode.Curve;
         }
+
+        /***************************************************/
 
         private static Polyline VerticalOffsetCurve(this ICurve curve, int divisions, double offset)
         {

@@ -38,7 +38,7 @@ namespace BH.Engine.Physical
 
         [Description("Creates a ShapeCode object using the parameters provided. Refer to the object descriptions for alignment.")]
         [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
-        public static ShapeCode26 ShapeCode26(double a, double c, double d, double e, double diameter, double bendRadius = 0)
+        public static ShapeCode26 ShapeCode26(double a, double c, double d, double e, double diameter, double bendRadius)
         {
             if (a < Tolerance.Distance || c < Tolerance.Distance || d < Tolerance.Distance || e < Tolerance.Distance)
             {
