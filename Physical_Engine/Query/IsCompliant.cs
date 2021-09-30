@@ -799,7 +799,6 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return false;
             }
-
             if (shapeCode.E != shapeCode.F)
             {
                 Reflection.Compute.RecordError("The parameters E and F of ShapeCode56 must be equal as defined in BS 8666:2020 Table 2.");
@@ -880,6 +879,11 @@ namespace BH.Engine.Physical
             else if (diameter <= 0)
             {
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
+                return false;
+            }
+            else if(shapeCode.C > shapeCode.R)
+            {
+                Reflection.Compute.RecordError("The parameter C must be less than or equal to the parameter R.");
                 return false;
             }
             else if(Math.Abs(shapeCode.A - 2*shapeCode.R*Math.Asin(shapeCode.B/(2*shapeCode.R))) > Tolerance.Distance)

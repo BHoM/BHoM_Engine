@@ -38,13 +38,15 @@ namespace BH.Engine.Physical
 
         [Description("Creates a ShapeCode object using the parameters provided. Refer to the object descriptions for alignment.")]
         [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
-        public static ShapeCode67 ShapeCode67(double a, double b, double c, double r)
+        public static ShapeCode67 ShapeCode67(double b, double c, double r)
         {
-            if (a < Tolerance.Distance || b < Tolerance.Distance || c < Tolerance.Distance || r < Tolerance.Distance)
+            if (b < Tolerance.Distance || c < Tolerance.Distance || r < Tolerance.Distance)
             {
                 Reflection.Compute.RecordError("One or more of the parameters given is zero and therefore the ShapeCode cannot be created.");
                 return null;
             }
+
+            double a = r * Math.Asin(b / (2 * (r - c)));
 
             return new ShapeCode67(a, b, c, r);
         }
