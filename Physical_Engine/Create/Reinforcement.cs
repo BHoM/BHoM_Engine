@@ -50,7 +50,7 @@ namespace BH.Engine.Physical
         [Output("reinforcement", "The reinforcement object with a compliant shape code in accordance with BS 8666:2020.")]
         public static Reinforcement Reinforcement(double diameter, Cartesian coordinateSystem, IShapeCode shapeCode, double bendRadius = 0)
         {
-            Reinforcement reinforcement = new Reinforcement(){Diameter = diameter, BendRadius = bendRadius, CoordinateSystem = coordinateSystem, ShapeCode = shapeCode};
+            Reinforcement reinforcement = new Reinforcement(){CoordinateSystem = coordinateSystem, ShapeCode = shapeCode};
 
             return reinforcement.IsValid() ? reinforcement : null;
         }

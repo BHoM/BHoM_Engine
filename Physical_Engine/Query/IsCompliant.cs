@@ -38,48 +38,43 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Verifies the dimensions of the ShapeCode to verify their compliance with BS 8666:2020.")]
+        [Description("Verifies the dimensions to the standard as determined by the ShapeCode namespace.")]
         [Input("reinforcement", "The reinforcement containing the ShapeCode, reinforcement and bending radius to be verified.")]
-        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
+        [Output("bool", "True if the shape code is compliant with the relevant standard as determined by the ShapeCode namespace.")]
         public static bool IsCompliant(this Reinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? false : IIsCompliant(reinforcement.ShapeCode, reinforcement.Diameter);
-
+            return reinforcement.IsNull() ? false : IIsCompliant(reinforcement.ShapeCode);
         }
 
         /***************************************************/
 
-        [Description("Verifies the dimensions of the ShapeCode to BS 8666:2020.")]
+        [Description("Verifies the dimensions to the standard as determined by the ShapeCode namespace.")]
         [Input("shapeCode", "The ShapeCode to be verified.")]
-        [Input("diameter", "The diameter of the reinforcement bar.", typeof(Length))]
-        [Output("bool", "True if the shape code is compliant with BS 8666:2020.")]
-        public static bool IIsCompliant(this IShapeCode shapeCode, double diameter)
+        [Output("bool", "True if the shape code is compliant with the relevant standard as determined by the ShapeCode namespace.")]
+        public static bool IIsCompliant(this IShapeCode shapeCode)
         {
             if (shapeCode.IsNull())
                 return false;
-            else if (diameter <= 0)
+            else if (shapeCode.Diameter <= Tolerance.Distance)
             {
                 Reflection.Compute.RecordError("The diameter must be greater than zero.");
                 return false;
             }
+            else if (shapeCode.BendRadius < shapeCode.BendRadius)
+            {
+                Reflection.Compute.RecordError("The bend radius must be greater than the minimum scheduling radius.");
+                return false;
+            }
 
-            return IsCompliant(shapeCode as dynamic, diameter);
+            return IsCompliant(shapeCode as dynamic);
         }
 
         /***************************************************/
         /****    Private Methods                    ********/
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode00 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode00 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             if (shapeCode.A <= 0)
             {
                 Reflection.Compute.RecordError("The A parameter must be greater than 0 for ShapeCode00.");
@@ -91,17 +86,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode11 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode11 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.B < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.B < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The A and B parameters of ShapeCode11 must be greater than the minimum general end projection.");
                 return false;
@@ -112,17 +99,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode12 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode12 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09) || shapeCode.B < shapeCode.R + diameter + Math.Max(5 * diameter, 0.09))
+            if (shapeCode.A < shapeCode.R + shapeCode.Diameter + Math.Max(5 * shapeCode.Diameter, 0.09) || shapeCode.B < shapeCode.R + shapeCode.Diameter + Math.Max(5 * shapeCode.Diameter, 0.09))
             {
                 Reflection.Compute.RecordError("The parameters A and B of ShapeCode12 must be greater than (R + d) + Max(5d, 90).");
                 return false;
@@ -133,28 +112,20 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode13 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode13 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.B < shapeCode.HookDiameter(diameter))
+            if (shapeCode.B < shapeCode.HookDiameter())
             {
                 Reflection.Compute.RecordError("The parameter B of ShapeCode13 must be at least the hook diameter in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.B > 0.4 + 2 * diameter)
+            else if (shapeCode.B > 0.4 + 2 * shapeCode.Diameter)
             {
                 Reflection.Compute.RecordError("The parameter B of ShapeCode13 shall not exceed 0.4 + 2d.");
                 return false;
             }
-            else if (shapeCode.A < shapeCode.B / 2 + Math.Max(5 * diameter, 0.09)
-                || shapeCode.C < shapeCode.B / 2 + Math.Max(5 * diameter, 0.09))
+            else if (shapeCode.A < shapeCode.B / 2 + Math.Max(5 * shapeCode.Diameter, 0.09)
+                || shapeCode.C < shapeCode.B / 2 + Math.Max(5 * shapeCode.Diameter, 0.09))
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode13 shall not be less than B/2 + the greater of 5d or 0.09.");
             }
@@ -165,17 +136,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode14 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode14 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode14 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -186,21 +149,14 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode15 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode15 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-            else if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2)) > Tolerance.MacroDistance)
+            if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2)) > Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The parameters A, B and D of ShapeCode15 do not form a right angled triangle within tolerance.");
                 return false;
             }
-            else if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            else if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode15 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -211,17 +167,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode21 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode21 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode21 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -232,32 +180,24 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode22 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode22 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.C < shapeCode.HookDiameter(diameter))
+            if (shapeCode.C < shapeCode.HookDiameter())
             {
                 Reflection.Compute.RecordError("The parameter C of ShapeCode22 must be at least the hook diameter in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.C > 0.4 + 2 * diameter)
+            else if (shapeCode.C > 0.4 + 2 * shapeCode.Diameter)
             {
                 Reflection.Compute.RecordError("The parameter C of ShapeCode22 shall not exceed 0.4 + 2d.");
                 return false;
             }
-            else if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.D < shapeCode.GeneralEndProjection(diameter))
+            else if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.D < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and D of ShapeCode22 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.D < shapeCode.C / 2 + Math.Max(5 * diameter, 0.09))
+            else if (shapeCode.D < shapeCode.C / 2 + Math.Max(5 * shapeCode.Diameter, 0.09))
             {
                 Reflection.Compute.RecordError("The parametrs D of ShapeCode22 shall not be less than C/2 + the greater of 5d or 0.09.");
             }
@@ -267,17 +207,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode23 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode23 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode23 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -288,17 +220,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode24 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode24 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode24 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -314,17 +238,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode25 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode25 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.B < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.B < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and B of ShapeCode25 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -341,17 +257,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode26 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode26 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode26 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -367,21 +275,14 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode27 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode27 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-            else if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
+            if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The parameters A, D and E of ShapeCode27 do not form a right angled triangle within tolerance.");
                 return false;
             }
-            else if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            else if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode27 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -392,21 +293,14 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode28 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode28 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-            else if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
+            if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The parameters A, D and E of ShapeCode28 do not form a right angled triangle within tolerance.");
                 return false;
             }
-            else if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            else if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode28 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -417,21 +311,14 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode29 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode29 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-            else if (Math.Abs(Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
+            if (Math.Abs(Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The parameters B, D and Eof ShapeCode29 do not form a right angled triangle within tolerance.");
                 return false;
             }
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode29 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -442,17 +329,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode31 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode31 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.D < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.D < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and D of ShapeCode31 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -463,17 +342,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode32 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode32 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.D < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.D < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and D of ShapeCode32 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -484,27 +355,19 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode33 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode33 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.B < shapeCode.HookDiameter(diameter))
+            if (shapeCode.B < shapeCode.HookDiameter())
             {
                 Reflection.Compute.RecordError("The parameter B of ShapeCode33 must be at least the hook diameter in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.B > 0.4 + 2 * diameter)
+            else if (shapeCode.B > 0.4 + 2 * shapeCode.Diameter)
             {
                 Reflection.Compute.RecordError("The parameter B of ShapeCode33 shall not exceed 0.4 + 2d.");
                 return false;
             }
-            else if (shapeCode.C < shapeCode.B + Math.Max(5 * diameter, 0.09))
+            else if (shapeCode.C < shapeCode.B + Math.Max(5 * shapeCode.Diameter, 0.09))
             {
                 Reflection.Compute.RecordError("The parameter C of ShapeCode33 must not be less B/2 plus the greater of 5d or 0.09.");
                 return false;
@@ -515,17 +378,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode34 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode34 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.E < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.E < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and E of ShapeCode34 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -541,17 +396,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode35 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode35 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.E < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.E < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and E of ShapeCode35 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -567,17 +414,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode36 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode36 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.D < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.D < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and D of ShapeCode36 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -593,17 +432,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode41 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode41 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.E < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.E < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and E of ShapeCode41 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -614,17 +445,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode44 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode44 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.E < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.E < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and E of ShapeCode44 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -635,17 +458,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode46 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode46 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.E < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.E < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and E of ShapeCode46 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -661,16 +476,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode47 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode47 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             if (shapeCode.C != shapeCode.D)
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode47 must be equal as defined in BS 8666:2020 Table 2.");
@@ -681,12 +488,12 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode47 must be greater than the parameter A.");
                 return false;
             }
-            else if (shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            else if (shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode47 must be greater than the minimum link end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.B < 2 * shapeCode.HookDiameter(diameter))
+            else if (shapeCode.B < 2 * shapeCode.HookDiameter())
             {
                 Reflection.Compute.RecordError("The parameter B of ShapeCode47 must be greater than two times the anticipated hook diameter (for segments C and D).");
                 return false;
@@ -697,16 +504,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode48 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode48 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             if (shapeCode.C != shapeCode.D)
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode48 must be equal as defined in BS 8666:2020 Table 2.");
@@ -717,7 +516,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode48 must be less than the parameter A defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.C < shapeCode.LinksEndProjection(diameter))
+            else if (shapeCode.C < shapeCode.LinksEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode48 must be greater than the minimum link end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -728,16 +527,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode51 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode51 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             if (shapeCode.C != shapeCode.D)
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode51 must be equal as defined in BS 8666:2020 Table 2.");
@@ -748,7 +539,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode51 must be less than the parameters A and B respectively as defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            if (shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode51 must be greater than the link end projection defined in BS 8666:2020 Table 2.");
                 return false;
@@ -759,16 +550,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode52 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode52 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             if (shapeCode.C != shapeCode.D)
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode52 must be equal as defined in BS 8666:2020 Table 2.");
@@ -779,7 +562,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode52 must be less than the parameter B as defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.C < shapeCode.LinksEndProjection(diameter) || shapeCode.D < shapeCode.LinksEndProjection(diameter))
+            else if (shapeCode.C < shapeCode.LinksEndProjection() || shapeCode.D < shapeCode.LinksEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode52 must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
                 return false;
@@ -790,15 +573,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode56 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode56 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
             if (shapeCode.E != shapeCode.F)
             {
                 Reflection.Compute.RecordError("The parameters E and F of ShapeCode56 must be equal as defined in BS 8666:2020 Table 2.");
@@ -809,7 +585,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters E and F of ShapeCode56 must be less than the parameter B as defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.E < shapeCode.GeneralEndProjection(diameter) || shapeCode.F < shapeCode.GeneralEndProjection(diameter))
+            else if (shapeCode.E < shapeCode.GeneralEndProjection() || shapeCode.F < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters E and F of ShapeCode56 must be greater than the general end projection as defined in BS 8666:2020 Table 2.");
                 return false;
@@ -820,16 +596,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode63 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode63 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             if (shapeCode.C != shapeCode.D)
             {
                 Reflection.Compute.RecordError("The parameters E and F of ShapeCode63 must be equal as defined in BS 8666:2020 Table 2.");
@@ -840,7 +608,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode63 must be less than the parameter A as defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if (shapeCode.C < shapeCode.GeneralEndProjection(diameter))
+            else if (shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters C and D of ShapeCode63 must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
                 return false;
@@ -851,17 +619,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode64 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode64 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.A < shapeCode.GeneralEndProjection(diameter) || shapeCode.F < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.F < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters A and F of ShapeCode64 must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
                 return false;
@@ -872,16 +632,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode67 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode67 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-            else if(shapeCode.C > shapeCode.R)
+            if(shapeCode.C > shapeCode.R)
             {
                 Reflection.Compute.RecordError("The parameter C must be less than or equal to the parameter R.");
                 return false;
@@ -891,7 +644,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameter A of ShapeCode67 must be equal to the arc length formed by the segment constructed from the width B and centre R.");
                 return false;
             }
-            else if(shapeCode.R > shapeCode.MaximumRadius(diameter))
+            else if(shapeCode.R > shapeCode.MaximumRadius())
             {
                 Reflection.Compute.RecordError("The parameter R of ShapeCode67 must be less than the maximum preformed radius defined in BS 8666:2020 Table 8.");
                 return false;
@@ -902,47 +655,23 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode75 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode75 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             return true;
         }
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode77 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode77 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             return true;
         }
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode98 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode98 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
-            if (shapeCode.C < shapeCode.GeneralEndProjection(diameter) || shapeCode.D < shapeCode.GeneralEndProjection(diameter))
+            if (shapeCode.C < shapeCode.GeneralEndProjection() || shapeCode.D < shapeCode.GeneralEndProjection())
             {
                 Reflection.Compute.RecordError("The parameters C and D  of ShapeCode98 must be greater than the link end projection as defined in BS 8666:2020 Table 2.");
                 return false;
@@ -953,16 +682,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        private static bool IsCompliant(this ShapeCode99 shapeCode, double diameter)
+        private static bool IsCompliant(this ShapeCode99 shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-            else if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than zero.");
-                return false;
-            }
-
             return true;
         }
 
@@ -970,11 +691,8 @@ namespace BH.Engine.Physical
         /****    Private Fallback Method            ********/
         /***************************************************/
 
-        private static bool IsCompliant(IShapeCode shapeCode, double diameter, double bendingRadius)
+        private static bool IsCompliant(IShapeCode shapeCode)
         {
-            if (shapeCode.IsNull())
-                return false;
-
             Reflection.Compute.RecordError("The ShapeCode is not recognised.");
             return false;
         }

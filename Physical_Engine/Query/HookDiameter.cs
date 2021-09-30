@@ -41,37 +41,30 @@ namespace BH.Engine.Physical
         [Output("hookDiameter", "The anticipated hook diameter based on the diameter of the reinforcement bar", typeof(Length))]
         public static double HookDiameter(this Reinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? 0 : HookDiameter(reinforcement.ShapeCode, reinforcement.Diameter, reinforcement.BendRadius);
+            return reinforcement.IsNull() ? 0 : HookDiameter(reinforcement.ShapeCode);
         }
 
         /***************************************************/
 
         [Description("Gets the hook diameter based on the diameter of the reinforcement bar, the shape code and the bend radius.")]
         [Input("shapeCode", "The ShapeCode used to determine the standard to calculate the scheduling radius.")]
-        [Input("diameter", "The diameter of the reinforcement bar to determine the hook diameter.", typeof(Length))]
-        [Input("bendingRadius", "The bending radius of the bar used to override the SchedulingRadius method that looks up the value in BS 8666:2020 Table 2.", typeof(Length))]
         [Output("hookDiameter", "The anticipated hook diameter based on the diameter of the reinforcement bar", typeof(Length))]
-        public static double HookDiameter(this IShapeCode shapeCode, double diameter, double bendRadius = 0)
+        public static double HookDiameter(this IShapeCode shapeCode)
         {
-            if (diameter <= 0)
-            {
-                Reflection.Compute.RecordError("The diameter must be greater than 0. The scheduling radius cannot be calculated.");
+            if (shapeCode.IsNull())
                 return 0;
-            }
 
             string standard = ReinforcementStandard(shapeCode);
 
             switch (standard)
             {
                 case "BS8666":
-                    if (diameter > 0.050)
+                    if (shapeCode.Diameter > 0.050)
                     {
                         Reflection.Compute.RecordWarning("Bars that are greater than 50mm cannot be bent using a standard mandrel.");
                     }
 
-                    bendRadius = bendRadius < shapeCode.SchedulingRadius(diameter) ? shapeCode.SchedulingRadius(diameter) : bendRadius;
-
-                    return Math.Ceiling((3 * diameter + 2 * bendRadius) / 0.005) * 0.005;
+                    return Math.Ceiling((3 * shapeCode.Diameter + 2 * shapeCode.BendRadius) / 0.005) * 0.005;
                 default:
                     Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;
