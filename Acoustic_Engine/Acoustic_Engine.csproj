@@ -1,115 +1,35 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{68300030-BC17-49BD-A363-CFCD3828E812}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Acoustic_Engine</RootNamespace>
-    <AssemblyName>Acoustic_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>5.0.0</Version>
+    <Authors>BHoM</Authors>
+    <Copyright>Copyright © https://github.com/BHoM</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Acoustic_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Acoustic_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Acoustic_oM.dll</HintPath>
     </Reference>
     <Reference Include="BHoM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Create\Panel.cs" />
-    <Compile Include="Create\Rasti.cs" />
-    <Compile Include="Create\Ray.cs" />
-    <Compile Include="Create\Receiver.cs" />
-    <Compile Include="Create\Room.cs" />
-    <Compile Include="Create\RT60.cs" />
-    <Compile Include="Create\SnRatio.cs" />
-    <Compile Include="Create\SoundLevel.cs" />
-    <Compile Include="Create\Speaker.cs" />
-    <Compile Include="Query\DirectRays.cs" />
-    <Compile Include="Query\DirectSound.cs" />
-    <Compile Include="Modify\FilterRays.cs" />
-    <Compile Include="Query\GainFactor.cs" />
-    <Compile Include="Query\Length.cs" />
-    <Compile Include="Query\Order.cs" />
-    <Compile Include="Query\Plane.cs" />
-    <Compile Include="Query\TravelTime.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\Rasti.cs" />
-    <Compile Include="Query\ReverbDistance.cs" />
-    <Compile Include="Query\RoomConstant.cs" />
-    <Compile Include="Query\SabineTime.cs" />
-    <Compile Include="Query\SignalToNoise.cs" />
-    <Compile Include="Query\SoundLevel.cs" />
-    <Compile Include="Query\SoundLevelsSum.cs" />
-    <Compile Include="Query\TimeConstant.cs" />
-    <Compile Include="Modify\FilterVisibleRays.cs" />
-    <Compile Include="Query\IsObstructed.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
-      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
-      <Name>Geometry_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
-      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
-      <Name>Reflection_Engine</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
