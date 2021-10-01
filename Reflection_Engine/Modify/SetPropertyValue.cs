@@ -92,7 +92,7 @@ namespace BH.Engine.Reflection
                     string enumName = (value as string).Split('.').Last();
                     try
                     {
-                        object enumValue = Enum.Parse(propType, enumName);
+                        object enumValue = Reflection.Compute.ParseEnum(propType, enumName);
                         if (enumValue != null)
                             value = enumValue;
                     }
@@ -100,6 +100,11 @@ namespace BH.Engine.Reflection
                     {
                         Engine.Reflection.Compute.RecordError($"An enum of type {propType.ToText(true)} does not have a value of {enumName}");
                     }   
+                }
+
+                if (value is string && typeof(IEnum).IsAssignableFrom(propType))
+                {
+                    value = BH.Engine.Base.Create.Enumeration(propType, value as string);
                 }
 
                 if (propType == typeof(DateTime))
@@ -144,7 +149,15 @@ namespace BH.Engine.Reflection
                     }
                 }
                 
-                prop.SetValue(toChange, value);
+                try
+                {
+                    prop.SetValue(toChange, value);
+                    
+                }
+                catch (Exception e)
+                {
+                    Compute.RecordError($"Failed to set the property {propName} of {obj.GetType().ToString()} to {value.ToString()}");
+                }
                 return obj;
             }
             else 
