@@ -143,6 +143,11 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters A and C of ShapeCode14 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
+            else if(Math.Abs(Math.Pow(shapeCode.A,2) - Math.Pow(shapeCode.D,2) - Math.Pow(shapeCode.B - shapeCode.BendRadius,2)) > Tolerance.Distance)
+            {
+                Reflection.Compute.RecordError("The parameters A, D and (B - 2*BendRadius) must form a right angled triangle.");
+                return false;
+            }
 
             return true;
         }
