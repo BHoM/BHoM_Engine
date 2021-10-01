@@ -56,13 +56,31 @@ namespace BH.Engine.Physical
 
             string standard = ReinforcementStandard(shapeCode);
 
+            return SchedulingRadius(shapeCode.Diameter, standard);
+        }
+
+        /***************************************************/
+
+        [Description("Gets the minimum scheduling radius based on the diameter of the reinforcement bar. The standard is determined from the namespace of the ShapeCode.")]
+        [Input("shapeCode", "The ShapeCode used to determine the standard to calculate the scheduling radius.")]
+        [Output("schedulingRadius", "The minimum scheduling radius based on the diameter of the reinforcement bar to the standard of the ShapeCode.", typeof(Length))]
+        public static double SchedulingRadius<T>(this double diameter) where T : IShapeCode
+        {
+            string standard = ReinforcementStandard(typeof(T));
+
+            return SchedulingRadius(diameter, standard);
+        }
+
+        /***************************************************/
+        private static double SchedulingRadius(this double diameter, string standard)
+        {
             switch (standard)
             {
                 case "BS8666":
-                    if (shapeCode.Diameter < 0.020)
-                        return 2 * shapeCode.Diameter;
+                    if (diameter < 0.020)
+                        return 2 * diameter;
                     else
-                        return 3.5 * shapeCode.Diameter;
+                        return 3.5 * diameter;
                 default:
                     Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;
