@@ -65,6 +65,49 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static double Length(this Ellipse curve)
+        {
+            double a = Math.Max(curve.Radius1, curve.Radius2);
+            double b = Math.Min(curve.Radius1, curve.Radius2);
+
+            //Special case circle
+            if (a == b)
+                return 2 * Math.PI * a;
+
+            //Special case line
+            if (b == 0)
+                return 4 * a;
+
+            double h = (a - b)/ (a + b);
+            h *= h;
+
+            double p = 0;
+
+            //Ratio of ellipse to calculate number of series to evaluate
+            int nbSeries = (int)Math.Round(Math.Min(a / b * 5, 1000));
+
+            //"Infinite" series evaluated
+            List<double> binomialCooefs = SquareBinomialCoefficientsEllipse();
+            for (int i = 0; i < nbSeries; i++)
+            {
+                p += Math.Pow(h, i) * binomialCooefs[i];
+            }
+
+            double length = Math.PI * (a + b) * p;
+
+            //For ellipses with a very high (over 1:1000) ratio of a and b, the calculated length will be to low
+            //The check bellow checks that the returned length is at least that
+            if (length < 4 * a)
+            {
+                Engine.Reflection.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times largest radius returned.");
+                return 4 * a;
+            }
+
+            return length; 
+        }
+
+        /***************************************************/
+
         public static double Length(this Line curve)
         {
             return (curve.Start - curve.End).Length();
@@ -117,6 +160,37 @@ namespace BH.Engine.Geometry
             Reflection.Compute.RecordError($"Length is not implemented for ICurves of type: {curve.GetType().Name}.");
             return double.NaN;
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<double> SquareBinomialCoefficientsEllipse()
+        {
+            if (m_ellipseCoeficients == null)
+            {
+
+                m_ellipseCoeficients = new List<double>();
+
+                for (double i = 0; i < 1000; i++)
+                {
+                    double binomialCoef = 1;
+                    for (double j = 1; j <= i; j++)
+                    {
+                        binomialCoef *= 0.5 - (i - j);
+                        binomialCoef /= j;
+                    }
+                    binomialCoef *= binomialCoef;
+
+                    m_ellipseCoeficients.Add(binomialCoef);
+                }
+            }
+            return m_ellipseCoeficients;
+        }
+
+        /***************************************************/
+
+        private static List<double> m_ellipseCoeficients = null;
 
         /***************************************************/
     }
