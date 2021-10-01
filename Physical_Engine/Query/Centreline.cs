@@ -129,18 +129,21 @@ namespace BH.Engine.Physical
 
         private static ICurve Centreline(this ShapeCode14 shapeCode)
         {
-            double angle = Math.Asin(shapeCode.D / shapeCode.A);
+            double angle = Math.Atan((shapeCode.B - shapeCode.BendRadius) / (shapeCode.D));
             double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
 
             Point cEnd = new Point() { X = shapeCode.C - bendOffset - shapeCode.Diameter / 2 };
             Point arcCentre = cEnd + new Vector() { Y = bendOffset };
+            Circle circle = new Circle() { Centre = arcCentre, Normal = Vector.ZAxis, Radius = bendOffset };
+            Point aEnd = new Point() { X = shapeCode.C - shapeCode.D + shapeCode.Diameter/2*Math.Cos(angle), Y = shapeCode.B - shapeCode.Diameter/2 - shapeCode.Diameter/2*Math.Sin(angle) };
+            Point aStart = circle.ClosestPoint(aEnd).Rotate(arcCentre, Vector.ZAxis, -Math.PI / 2);
 
-            Line radius = new Line() { Start = arcCentre, End = cEnd }.Rotate(arcCentre, Vector.ZAxis, Math.PI - angle);
-            Point aStart = radius.End;
+            //Line radius = new Line() { Start = arcCentre, End = cEnd }.Rotate(arcCentre, Vector.ZAxis, Math.PI - angle);
+            //Point aStart = radius.End;
 
             Line c = new Line() { Start = new Point(), End = cEnd };
-            Arc arc = Engine.Geometry.Create.ArcByCentre(arcCentre, cEnd, aStart);
-            Line a = new Line() { Start = aStart, End = aStart + new Vector() { X = -shapeCode.A + bendOffset + shapeCode.Diameter / 2 } }.Rotate(aStart, Vector.ZAxis, -angle);
+            ICurve arc = circle.SplitAtPoints(new List<Point>() { cEnd, aStart })[0];
+            Line a = new Line() { Start = aStart, End = aEnd };
 
             return new PolyCurve() { Curves = new List<ICurve>() { c, arc, a } };
         }
@@ -838,7 +841,7 @@ namespace BH.Engine.Physical
         {
             double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
             double angle = Math.Acos((shapeCode.A - shapeCode.C) / shapeCode.D);
-            double lengthReduction = (shapeCode.BendRadius + shapeCode.Diameter) * Math.Sin(angle)/2l;
+            double lengthReduction = (shapeCode.BendRadius + shapeCode.Diameter) * Math.Sin(angle)/2;
 
             Point fStart = new Point(); //{ X = -shapeCode.A / 2 + shapeCode.Diameter / 2, Y = -shapeCode.B / 2 + shapeCode.F };
             Point fEnd = fStart + new Vector() { Y = -shapeCode.F + shapeCode.Diameter + shapeCode.BendRadius };
