@@ -5,6 +5,7 @@
     <Version>5.0.0</Version>
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
+	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -12,7 +13,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)KellermanSoftware.Compare-NET-Objects.dll&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
 
   <ItemGroup>
