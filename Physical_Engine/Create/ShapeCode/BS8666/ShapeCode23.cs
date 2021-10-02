@@ -25,6 +25,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Geometry;
+using BH.oM.Physical.Reinforcement;
 using BH.oM.Physical.Reinforcement.BS8666;
 using BH.oM.Reflection.Attributes;
 
@@ -44,6 +45,14 @@ namespace BH.Engine.Physical
             {
                 Reflection.Compute.RecordError("One or more of the parameters given is zero and therefore the ShapeCode cannot be created.");
                 return null;
+            }
+
+            double minimumBendRadius = Query.SchedulingRadius<ShapeCode23>(diameter);
+
+            if (bendRadius < minimumBendRadius)
+            {
+                Reflection.Compute.RecordWarning("BendRadius provided was less than the minimum scheduling radius. This has been set based on the standard which is determined from the ShapeCode namespace.");
+                bendRadius = minimumBendRadius;
             }
 
             ShapeCode23 shapeCode = new ShapeCode23(a, b, c, zBar, diameter, bendRadius);
