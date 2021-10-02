@@ -46,7 +46,7 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            double a = Math.Pow(Math.Pow(d, 2) + Math.Pow(e, 2), 0.5);
+            double a = Math.Pow(Math.Pow(d - diameter, 2) + Math.Pow(e, 2), 0.5);
 
             ShapeCode27 shapeCode = new ShapeCode27(a, b, c, d, e, diameter, bendRadius);
 
