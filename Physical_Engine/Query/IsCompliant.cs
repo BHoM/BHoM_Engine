@@ -156,7 +156,7 @@ namespace BH.Engine.Physical
 
         private static bool IsCompliant(this ShapeCode15 shapeCode)
         {
-            if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2)) > Tolerance.MacroDistance)
+            if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.B - shapeCode.Diameter, 2) - Math.Pow(shapeCode.D, 2)) > Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The parameters A, B and D of ShapeCode15 do not form a right angled triangle within tolerance.");
                 return false;
@@ -250,8 +250,8 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameters A and B of ShapeCode25 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            if (Math.Asin(shapeCode.C / shapeCode.A) / Math.PI * 180 > 89 ||
-                Math.Asin(shapeCode.D / shapeCode.B) / Math.PI * 180 > 89)
+            if (Math.Asin((shapeCode.C - shapeCode.Diameter) / shapeCode.A) / Math.PI * 180 > 89 ||
+                Math.Asin((shapeCode.D - shapeCode.Diameter) / shapeCode.B) / Math.PI * 180 > 89)
             {
                 Reflection.Compute.RecordWarning("The bends are close to 90 degrees, consider scheduling a ShapeCode99 bar" +
                     "with horizontal offers as per BS 8666:2020 Table 2.");
@@ -282,7 +282,7 @@ namespace BH.Engine.Physical
 
         private static bool IsCompliant(this ShapeCode27 shapeCode)
         {
-            if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
+            if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.D - shapeCode.Diameter, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The parameters A, D and E of ShapeCode27 do not form a right angled triangle within tolerance.");
                 return false;
