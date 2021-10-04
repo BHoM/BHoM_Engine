@@ -36,9 +36,9 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Extract the level of confidence of the library. If the provided library name returns multiple levels of confidence, the lowest level is returned.")]
+        [Input("libraryName", "Name of the library to extract confidence from.")]
+        [Output("confidence", "The lowest level of confidence found in any opf the libraries matching the provided library name.")]
         public static Confidence Confidence(string libraryName)
         {
             if (string.IsNullOrWhiteSpace(libraryName))
