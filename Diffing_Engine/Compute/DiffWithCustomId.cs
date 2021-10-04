@@ -93,10 +93,12 @@ namespace BH.Engine.Diffing
                 }
 
                 // Otherwise, the current object existed in the past set.
-
+                // Let's see if it was modified or not.
                 if (diffConfig.EnablePropertyDiffing)
                 {
-                    // Determine changed properties
+                    // If we are also asking for what properties changed, let's rely on DifferentProperties to see whether the object changed or not.
+                    
+                    // Determine the changed properties.
                     var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffConfigCopy);
 
                     if (differentProps != null && differentProps.Count > 0)
@@ -112,6 +114,26 @@ namespace BH.Engine.Diffing
                         if (diffConfigCopy.IncludeUnchangedObjects)
                             unChanged.Add(currentObj);
                     }
+                }
+                else
+                {
+                    // Rely on the objects hash to see if they are different.
+
+                    string currentObjHash = currentObj.Hash(diffConfigCopy.ComparisonConfig);
+                    string correspondingObjHash = correspondingObj.Hash(diffConfigCopy.ComparisonConfig);
+
+                    if (currentObjHash != correspondingObjHash)
+                    {
+                        // It's been modified
+                        modifiedObjs.Add(currentObj);
+                    }
+                    else
+                    {
+                        // It's NOT been modified
+                        if (diffConfigCopy.IncludeUnchangedObjects)
+                            unChanged.Add(currentObj);
+                    }
+
                 }
             }
 
