@@ -1,320 +1,66 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3E563667-E18A-4057-B183-6C758B8EF823}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine.Environment</RootNamespace>
-    <AssemblyName>Environment_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>5.0.0</Version>
+    <Authors>BHoM</Authors>
+    <Copyright>Copyright © https://github.com/BHoM</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
+    <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj" />
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
+    <ProjectReference Include="..\Library_Engine\Library_Engine.csproj" />
+    <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj" />
+    <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj" />
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Analytical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Analytical_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Architecture_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Architecture_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="BHoM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Diffing_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Diffing_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Environment_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Environment_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Physical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Quantities_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Spatial_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Compute\AssignSpaceTypeByPoint.cs" />
-    <Compile Include="Compute\BooleanIntersect.cs" />
-    <Compile Include="Compute\RegionNameMapping.cs" />
-    <Compile Include="Create\Opening.cs" />
-    <Compile Include="Modify\UpdateSpaceNameByType.cs" />
-    <Compile Include="Modify\FlipPanels.cs" />
-    <Compile Include="Modify\SetPanelTypeByIntersectingLines.cs" />
-    <Compile Include="Compute\TidyPanels.cs" />
-    <Compile Include="Modify\Transform.cs" />
-    <Compile Include="Create\Levels.cs" />
-    <Compile Include="Modify\UpdateZones.cs" />
-    <Compile Include="Compute\EquipmentGain.cs" />
-    <Compile Include="Compute\ExportEPW.cs" />
-    <Compile Include="Compute\ExtrudeToVolume.cs" />
-    <Compile Include="Compute\GenerateCylindricalFarfield.cs" />
-    <Compile Include="Compute\ImportEPW.cs" />
-    <Compile Include="Compute\JulianDay.cs" />
-    <Compile Include="Compute\LightingGain.cs" />
-    <Compile Include="Compute\MapRegions.cs" />
-    <Compile Include="Compute\MapToLevel.cs" />
-    <Compile Include="Compute\Occupancy.cs" />
-    <Compile Include="Compute\PeopleGain.cs" />
-    <Compile Include="Compute\PlugGain.cs" />
-    <Compile Include="Compute\SolarPosition.cs" />
-    <Compile Include="Compute\ThirdOrderPolynomial.cs" />
-    <Compile Include="Convert\Edge.cs" />
-    <Compile Include="Create\AnalysisGrid.cs" />
-    <Compile Include="Modify\AssignGenericConstructions.cs" />
-    <Compile Include="Modify\ChangeAdjacentSpace.cs" />
-    <Compile Include="Modify\CleanPanel.cs" />
-    <Compile Include="Modify\FixNormal.cs" />
-    <Compile Include="Modify\OffsetOpenings.cs" />
-    <Compile Include="Modify\RemoveOpening.cs" />
-    <Compile Include="Modify\RemovePanel.cs" />
-    <Compile Include="Modify\RemoveOpeningsByName.cs" />
-    <Compile Include="Modify\RemovePanels.cs" />
-    <Compile Include="Modify\SetAdjacentSpaces.cs" />
-    <Compile Include="Modify\SetFloorPanels.cs" />
-    <Compile Include="Modify\SetOpeningConstruction.cs" />
-    <Compile Include="Modify\SetOpeningType.cs" />
-    <Compile Include="Modify\SetPanelConstructionByType.cs" />
-    <Compile Include="Modify\SetPanelTypeByAdjacencies.cs" />
-    <Compile Include="Modify\SetRoofPanels.cs" />
-    <Compile Include="Modify\SetShadePanels.cs" />
-    <Compile Include="Modify\SetWallPanels.cs" />
-    <Compile Include="Modify\Split.cs" />
-    <Compile Include="Modify\SplitOpeningByGeometry.cs" />
-    <Compile Include="Modify\SplitPanelByGeometry.cs" />
-    <Compile Include="Modify\SplitPanelsByPoints.cs" />
-    <Compile Include="Query\Absorptance.cs" />
-    <Compile Include="Query\BottomLeft.cs" />
-    <Compile Include="Query\BottomRight.cs" />
-    <Compile Include="Query\ClosedSpaces.cs" />
-    <Compile Include="Query\ConnectedSpaceName.cs" />
-    <Compile Include="Query\ExplodeToParts.cs" />
-    <Compile Include="Query\FilterByAdjacencies.cs" />
-    <Compile Include="Query\FilterOpenings.cs" />
-    <Compile Include="Query\FilterPanels.cs" />
-    <Compile Include="Query\FilterResults.cs" />
-    <Compile Include="Query\FloorHeights.cs" />
-    <Compile Include="Query\FrameFactor.cs" />
-    <Compile Include="Query\Geometry.cs" />
-    <Compile Include="Query\Group.cs" />
-    <Compile Include="Query\HasMergeablePropertiesWith.cs" />
-    <Compile Include="Query\IsLeft.cs" />
-    <Compile Include="Query\IsOnLevel.cs" />
-    <Compile Include="Query\MaterialComposition.cs" />
-    <Compile Include="Query\NewElement1D.cs" />
-    <Compile Include="Query\NewInternalElement2D.cs" />
-    <Compile Include="Query\NotClosedSpaces.cs" />
-    <Compile Include="Query\Cardinality.cs" />
-    <Compile Include="Query\PointsInSpaces.cs" />
-    <Compile Include="Modify\CullOverlaps.cs" />
-    <Compile Include="Query\FindDuplicatePanels.cs" />
-    <Compile Include="Query\IsValidLocation.cs" />
-    <Compile Include="Query\DateTime.cs" />
-    <Compile Include="Compute\DateTimeList.cs" />
-    <Compile Include="Query\Level.cs" />
-    <Compile Include="Query\MaximumLevel.cs" />
-    <Compile Include="Query\MinimumLevel.cs" />
-    <Compile Include="Query\OpeningsFromElements.cs" />
-    <Compile Include="Query\OpeningsFromPhysical.cs" />
-    <Compile Include="Query\PanelByGuid.cs" />
-    <Compile Include="Query\PanelsContainingPoint.cs" />
-    <Compile Include="Query\PanelsFromPhysical.cs" />
-    <Compile Include="Query\RegionLevel.cs" />
-    <Compile Include="Query\Sides.cs" />
-    <Compile Include="Query\SolidVolume.cs" />
-    <Compile Include="Query\SpaceByName.cs" />
-    <Compile Include="Query\SpacesByElementID.cs" />
-    <Compile Include="Query\ToEdges.cs" />
-    <Compile Include="Query\InvalidPanels.cs" />
-    <Compile Include="Query\IsTransparent.cs" />
-    <Compile Include="Query\ToLines.cs" />
-    <Compile Include="Query\Polyline.cs" />
-    <Compile Include="Query\Top.cs" />
-    <Compile Include="Query\TopRight.cs" />
-    <Compile Include="Query\ToSpace.cs" />
-    <Compile Include="Create\Panel.cs" />
-    <Compile Include="Create\IElement1D\NewElement1D.cs" />
-    <Compile Include="Create\IElement2D\NewInternalElement2D.cs" />
-    <Compile Include="Modify\AddAdjacentSpace.cs" />
-    <Compile Include="Modify\AddOpening.cs" />
-    <Compile Include="Compute\MergePanels.cs" />
-    <Compile Include="Modify\Copy.cs" />
-    <Compile Include="Modify\SetConstructions.cs" />
-    <Compile Include="Modify\SetPanelType.cs" />
-    <Compile Include="Modify\AddFragment.cs" />
-    <Compile Include="Modify\SetInternalElements2D.cs" />
-    <Compile Include="Modify\SetOutlineElements1D.cs" />
-    <Compile Include="Modify\SplitPanelsByOverlap.cs" />
-    <Compile Include="Query\Buildings.cs" />
-    <Compile Include="Query\Roughness.cs" />
-    <Compile Include="Query\FindFragment.cs" />
-    <Compile Include="Query\MatchPointOn2Of3.cs" />
-    <Compile Include="Query\FindMaterial.cs" />
-    <Compile Include="Query\ObjectsByFragment.cs" />
-    <Compile Include="Query\Openings.cs" />
-    <Compile Include="Query\Panels.cs" />
-    <Compile Include="Query\RValue.cs" />
-    <Compile Include="Query\UniqueConstructionName.cs" />
-    <Compile Include="Query\UniqueObjectIDs.cs" />
-    <Compile Include="Query\UniqueResultCases.cs" />
-    <Compile Include="Query\UniqueSpaceNames.cs" />
-    <Compile Include="Query\AdjacentSpaces.cs" />
-    <Compile Include="Query\Area.cs" />
-    <Compile Include="Query\Spaces.cs" />
-    <Compile Include="Query\CleanSpace.cs" />
-    <Compile Include="Query\ClosedShellGeometry.cs" />
-    <Compile Include="Query\ConstructionByName.cs" />
-    <Compile Include="Query\CullDuplicates.cs" />
-    <Compile Include="Modify\SetGeometry.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\Bottom.cs" />
-    <Compile Include="Query\AltitudeRange.cs" />
-    <Compile Include="Query\Altitude.cs" />
-    <Compile Include="Query\Thickness.cs" />
-    <Compile Include="Query\UnconnectedEdges.cs" />
-    <Compile Include="Query\ElementsNotMatched.cs" />
-    <Compile Include="Query\ExposedToSun.cs" />
-    <Compile Include="Query\FloorGeometry.cs" />
-    <Compile Include="Query\Height.cs" />
-    <Compile Include="Query\IsCoPlanar.cs" />
-    <Compile Include="Query\UniqueConstructions.cs" />
-    <Compile Include="Query\UniqueMaterials.cs" />
-    <Compile Include="Query\UniqueOpeningInstances.cs" />
-    <Compile Include="Query\UniquePanelInstances.cs" />
-    <Compile Include="Query\UniquePanels.cs" />
-    <Compile Include="Query\UValue.cs" />
-    <Compile Include="Query\Vertices.cs" />
-    <Compile Include="Query\InternalElements2D.cs" />
-    <Compile Include="Query\OutlineElements1D.cs" />
-    <Compile Include="Query\IdentifyOverlaps.cs" />
-    <Compile Include="Query\Inclination.cs" />
-    <Compile Include="Query\IsClosed.cs" />
-    <Compile Include="Query\IsContaining.cs" />
-    <Compile Include="Query\IsExternal.cs" />
-    <Compile Include="Query\IsIdentical.cs" />
-    <Compile Include="Query\IsInternal.cs" />
-    <Compile Include="Query\NormalAwayFromSpace.cs" />
-    <Compile Include="Query\Orientation.cs" />
-    <Compile Include="Query\PointsMatch.cs" />
-    <Compile Include="Query\PointInSpace.cs" />
-    <Compile Include="Query\StoreyGeometry.cs" />
-    <Compile Include="Query\Volume.cs" />
-    <Compile Include="Query\Azimuth.cs" />
-    <Compile Include="Query\Tilt.cs" />
-    <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\Width.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
-      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
-      <Name>BHoM_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
-      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
-      <Name>Data_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj">
-      <Project>{073dfd36-0829-4792-8c32-67bf692a9413}</Project>
-      <Name>Diffing_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
-      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
-      <Name>Geometry_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Library_Engine\Library_Engine.csproj">
-      <Project>{fb4ed5c8-e7cc-44b3-95eb-95c304d54e5d}</Project>
-      <Name>Library_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj">
-      <Project>{65198eea-b572-418f-b77d-b348082ec92e}</Project>
-      <Name>Matter_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
-      <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
-      <Name>Physical_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
-      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
-      <Name>Reflection_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
-      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
-      <Name>Spatial_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

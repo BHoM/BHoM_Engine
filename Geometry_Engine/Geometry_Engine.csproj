@@ -1,283 +1,45 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{89AB2DCB-EF87-4CBA-B59C-C16A8A71D333}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine.Geometry</RootNamespace>
-    <AssemblyName>Geometry_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>5.0.0</Version>
+    <Authors>BHoM</Authors>
+    <Copyright>Copyright © https://github.com/BHoM</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Dimensional_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Data_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
-      <Private>False</Private>
+    </Reference>
+    <Reference Include="Dimensional_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Quantities_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Compute\BooleanDifference.cs" />
-    <Compile Include="Compute\BooleanIntersection.cs" />
-    <Compile Include="Compute\BooleanUnion.cs" />
-    <Compile Include="Compute\ClusterCollinear.cs" />
-    <Compile Include="Compute\FibonacciSphere.cs" />
-    <Compile Include="Compute\ClusterCoplanar.cs" />
-    <Compile Include="Compute\ConvexHull.cs" />
-    <Compile Include="Compute\CullDuplicates.cs" />
-    <Compile Include="Compute\CollapseToScaledPolyline.cs" />
-    <Compile Include="Compute\DistributeOutlines.cs" />
-    <Compile Include="Compute\MarchingCubes.cs" />
-    <Compile Include="Query\IsNull.cs" />
-    <Compile Include="Compute\Split.cs" />
-    <Compile Include="Compute\SubMesh.cs" />
-    <Compile Include="Compute\MarchingSquares.cs" />
-    <Compile Include="Compute\WetBlanketInterpretation.cs" />
-    <Compile Include="Compute\IntegrateRegion.cs" />
-    <Compile Include="Compute\Eigenvalues.cs" />
-    <Compile Include="Compute\Eigenvectors.cs" />
-    <Compile Include="Compute\FitLine.cs" />
-    <Compile Include="Compute\Join.cs" />
-    <Compile Include="Compute\PointClustersDBSCAN.cs" />
-    <Compile Include="Compute\RowEchelonForm.cs" />
-    <Compile Include="Compute\SkewLineProximity.cs" />
-    <Compile Include="Compute\SortAlongCurve.cs" />
-    <Compile Include="Compute\SortCollinear.cs" />
-    <Compile Include="Convert\DomainBox.cs" />
-    <Compile Include="Convert\Mesh.cs" />
-    <Compile Include="Convert\Polyline.cs" />
-    <Compile Include="Create\Basis.cs" />
-    <Compile Include="Create\Cone.cs" />
-    <Compile Include="Create\CartesianCoordinateSystem.cs" />
-    <Compile Include="Create\Cuboid.cs" />
-    <Compile Include="Create\Cylinder.cs" />
-    <Compile Include="Create\DomainTree.cs" />
-    <Compile Include="Create\Geometry.cs" />
-    <Compile Include="Create\Mesh3D.cs" />
-    <Compile Include="Create\SettingOut\Grid.cs" />
-    <Compile Include="Create\SettingOut\Level.cs" />
-    <Compile Include="Create\PlanarSurface.cs" />
-    <Compile Include="Create\Sphere.cs" />
-    <Compile Include="Create\Surface.cs" />
-    <Compile Include="Create\Curve.cs" />
-    <Compile Include="Create\Torus.cs" />
-    <Compile Include="Create\Vector.cs" />
-    <Compile Include="Create\Point.cs" />
-    <Compile Include="Create\PolySurface.cs" />
-    <Compile Include="Create\Pipe.cs" />
-    <Compile Include="Create\NurbsSurface.cs" />
-    <Compile Include="Create\Loft.cs" />
-    <Compile Include="Create\Extrusion.cs" />
-    <Compile Include="Create\CompositeGeometry.cs" />
-    <Compile Include="Create\BoundingBox.cs" />
-    <Compile Include="Create\Mesh.cs" />
-    <Compile Include="Create\Face.cs" />
-    <Compile Include="Create\Polyline.cs" />
-    <Compile Include="Create\PolyCurve.cs" />
-    <Compile Include="Create\NurbsCurve.cs" />
-    <Compile Include="Create\Line.cs" />
-    <Compile Include="Create\Ellipse.cs" />
-    <Compile Include="Create\IntegrationSlice.cs" />
-    <Compile Include="Modify\CleanPolyline.cs" />
-    <Compile Include="Modify\CollapseToPolyline.cs" />
-    <Compile Include="Modify\CullDuplicate.cs" />
-    <Compile Include="Modify\RemoveLeastSignificantVertices.cs" />
-    <Compile Include="Modify\RemoveShortSegments.cs" />
-    <Compile Include="Modify\RoundCoordinates.cs" />
-    <Compile Include="Modify\RoundPoint.cs" />
-    <Compile Include="Modify\SetGeometry.cs" />
-    <Compile Include="Modify\Simplify.cs" />
-    <Compile Include="Modify\Extend.cs" />
-    <Compile Include="Modify\Offset.cs" />
-    <Compile Include="Modify\ProjectAlong.cs" />
-    <Compile Include="Modify\Reverse.cs" />
-    <Compile Include="Modify\Scale.cs" />
-    <Compile Include="Modify\SplitAtPoints.cs" />
-    <Compile Include="Query\DerivativeFunction.cs" />
-    <Compile Include="Query\BasisFunction.cs" />
-    <Compile Include="Objects\LineTree.cs" />
-    <Compile Include="Query\Cells.cs" />
-    <Compile Include="Query\Centroid.cs" />
-    <Compile Include="Query\ClosestPoints.cs" />
-    <Compile Include="Query\IsOrthogonal.cs" />
-    <Compile Include="Query\IsRigidTransformation.cs" />
-    <Compile Include="Query\PrincipalCurvatureAtParameter.cs" />
-    <Compile Include="Query\CurveIntersections.cs" />
-    <Compile Include="Compute\CurveProximity.cs" />
-    <Compile Include="Query\CurvatureAtParameter.cs" />
-    <Compile Include="Query\DerivativeAtParameter.cs" />
-    <Compile Include="Query\ExternalFaceMesh.cs" />
-    <Compile Include="Query\Geometry.cs" />
-    <Compile Include="Query\GetLineSegment.cs" />
-    <Compile Include="Query\IsPartiallyContaining.cs" />
-    <Compile Include="Query\IsEqual.cs" />
-    <Compile Include="Convert\NurbsForm.cs" />
-    <Compile Include="Create\Arc.cs" />
-    <Compile Include="Create\Circle.cs" />
-    <Compile Include="Create\Plane.cs" />
-    <Compile Include="Create\Quaternion.cs" />
-    <Compile Include="Create\TransformMatrix.cs" />
-    <Compile Include="Modify\MergeVertices.cs" />
-    <Compile Include="Modify\SortCurves.cs" />
-    <Compile Include="Query\Angle.cs" />
-    <Compile Include="Query\Area.cs" />
-    <Compile Include="Query\Average.cs" />
-    <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\Centre.cs" />
-    <Compile Include="Query\ClosestDistance.cs" />
-    <Compile Include="Query\ClosestPoint.cs" />
-    <Compile Include="Query\ControlPoints.cs" />
-    <Compile Include="Query\IsClockwise.cs" />
-    <Compile Include="Query\IsCollinear.cs" />
-    <Compile Include="Query\IsCoplanar.cs" />
-    <Compile Include="Query\IsNurbsCurve.cs" />
-    <Compile Include="Query\IsLinear.cs" />
-    <Compile Include="Query\IsOnCurve.cs" />
-    <Compile Include="Query\IsPeriodic.cs" />
-    <Compile Include="Query\IsPlanar.cs" />
-    <Compile Include="Query\IsPolylinear.cs" />
-    <Compile Include="Query\IsQuad.cs" />
-    <Compile Include="Query\IsSelfIntersecting.cs" />
-    <Compile Include="Query\IsVertical.cs" />
-    <Compile Include="Query\LongestSegmentLength.cs" />
-    <Compile Include="Query\MeshIntersections.cs" />
-    <Compile Include="Query\LineIntersections.cs" />
-    <Compile Include="Query\Degree.cs" />
-    <Compile Include="Query\Determinant.cs" />
-    <Compile Include="Query\Direction.cs" />
-    <Compile Include="Query\DiscontinuityPoints.cs" />
-    <Compile Include="Query\Distance.cs" />
-    <Compile Include="Query\Edges.cs" />
-    <Compile Include="Query\EndDir.cs" />
-    <Compile Include="Query\EndPoint.cs" />
-    <Compile Include="Query\Extents.cs" />
-    <Compile Include="Query\ExternalEdges.cs" />
-    <Compile Include="Query\Integration.cs" />
-    <Compile Include="Query\InternalEdges.cs" />
-    <Compile Include="Query\Length.cs" />
-    <Compile Include="Query\ElementNormal.cs" />
-    <Compile Include="Query\Normal.cs" />
-    <Compile Include="Compute\FitPlane.cs" />
-    <Compile Include="Query\ParameterAtPoint.cs" />
-    <Compile Include="Query\PlaneIntersection.cs" />
-    <Compile Include="Query\PointAtLength.cs" />
-    <Compile Include="Query\PointAtParameter.cs" />
-    <Compile Include="Query\PointInRegion.cs" />
-    <Compile Include="Query\Product.cs" />
-    <Compile Include="Query\Radius.cs" />
-    <Compile Include="Query\SliceAt.cs" />
-    <Compile Include="Query\StartDir.cs" />
-    <Compile Include="Query\StartPoint.cs" />
-    <Compile Include="Query\TangentAtLength.cs" />
-    <Compile Include="Query\PlaneAtParameter.cs" />
-    <Compile Include="Query\TangentAtParameter.cs" />
-    <Compile Include="Query\TangentAtPoint.cs" />
-    <Compile Include="Query\Vertices.cs" />
-    <Compile Include="Query\UVCount.cs" />
-    <Compile Include="Query\SamplePoints.cs" />
-    <Compile Include="Query\SubParts.cs" />
-    <Compile Include="Modify\Flip.cs" />
-    <Compile Include="Modify\Inflate.cs" />
-    <Compile Include="Modify\Invert.cs" />
-    <Compile Include="Modify\Mirror.cs" />
-    <Compile Include="Modify\Normalise.cs" />
-    <Compile Include="Modify\Project.cs" />
-    <Compile Include="Modify\Rotate.cs" />
-    <Compile Include="Modify\Transform.cs" />
-    <Compile Include="Modify\Translate.cs" />
-    <Compile Include="Modify\Transpose.cs" />
-    <Compile Include="Modify\Triangulate.cs" />
-    <Compile Include="Query\IsClosed.cs" />
-    <Compile Include="Query\IsContaining.cs" />
-    <Compile Include="Query\IsInPlane.cs" />
-    <Compile Include="Query\IsInRange.cs" />
-    <Compile Include="Query\IsParallel.cs" />
-    <Compile Include="Query\Side.cs" />
-    <Compile Include="Query\IsSameSide.cs" />
-    <Compile Include="Query\IsValid.cs" />
-    <Compile Include="Modify\Orient.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\PointAtX.cs" />
-    <Compile Include="Query\Volume.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
-      <Project>{1AD45C88-DD54-48E5-951F-55EDFEB70E35}</Project>
-      <Name>BHoM_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj">
-      <Project>{8082ca2a-ac5c-4690-9f09-960e0d3e4102}</Project>
-      <Name>Data_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
-      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
-      <Name>Reflection_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

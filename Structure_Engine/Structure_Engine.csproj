@@ -1,330 +1,62 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{52A31A0A-E340-4909-AAD6-228045B07BF3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Engine.Structure</RootNamespace>
-    <AssemblyName>Structure_Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>5.0.0</Version>
+    <Authors>BHoM</Authors>
+    <Copyright>Copyright © https://github.com/BHoM</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Analytical_Engine\Analytical_Engine.csproj" />
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
+    <ProjectReference Include="..\Library_Engine\Library_Engine.csproj" />
+    <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj" />
+    <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj" />
+    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Analytical_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Analytical_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="BHoM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Data_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Dimensional_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Physical_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Quantities_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Spatial_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Structure_oM">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Structure_oM.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Compute\ReinforcementDensity.cs" />
-    <Compile Include="Compute\SumRequiredArea.cs" />
-    <Compile Include="Convert\FEMeshToPanel.cs" />
-    <Compile Include="Compute\MapTaperedProfile.cs" />
-    <Compile Include="Compute\IntegrateSection.cs" />
-    <Compile Include="Create\Constraints\BarRelease\BarReleasePinSlip.cs" />
-    <Compile Include="Create\Constraints\BarRelease\BarReleasePinPin.cs" />
-    <Compile Include="Create\Constraints\BarRelease\BarReleaseFixFix.cs" />
-    <Compile Include="Create\Constraints\Constraint6DOF\FixConstraint6DOF.cs" />
-    <Compile Include="Create\Constraints\Constraint6DOF\FullReleaseConstraint6DOF.cs" />
-    <Compile Include="Create\Constraints\Constraint6DOF\PinConstraint6DOF.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintZPlatePin.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintYPlatePin.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintXPlatePin.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintYPlateZPlate.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintYPlate.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintXPlate.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintZXPlanePin.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintYZPlanePin.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintXYPlanePin.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintZXPlane.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintYZPlane.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintXYPlane.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintPinned.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraintFixed.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelISection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelRectangleSection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelCircularSection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelTSection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelAngleSection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelFreeFormSection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelSectionFromProfile.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelTubeSection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelFabricatedISection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\SteelBoxSection.cs" />
-    <Compile Include="Create\SectionProperties\SteelSection\FabricatedSteelBoxSection.cs" />
-    <Compile Include="Create\SectionProperties\TimberSection\TimberRectangleSection.cs" />
-    <Compile Include="Query\IsNull.cs" />
-    <Compile Include="Compute\OrientationAngle.cs" />
-    <Compile Include="Convert\PanelToFEMesh.cs" />
-    <Compile Include="Compute\PlasticModulus.cs" />
-    <Compile Include="Compute\ShearAreaPolyline.cs" />
-    <Compile Include="Compute\Integrate.cs" />
-    <Compile Include="Create\Loads\AreaDifferentialTemperatureLoad.cs" />
-    <Compile Include="Create\Loads\AreaUniformTemperatureLoad.cs" />
-    <Compile Include="Create\Loads\AreaUniformlyDistributedLoad.cs" />
-    <Compile Include="Create\Loads\BarPointLoad.cs" />
-    <Compile Include="Create\Loads\BarPrestressLoad.cs" />
-    <Compile Include="Create\Loads\BarDifferentialTemperatureLoad.cs" />
-    <Compile Include="Create\Loads\BarUniformTemperatureLoad.cs" />
-    <Compile Include="Create\Loads\BarUniformlyDistributedLoad.cs" />
-    <Compile Include="Create\Loads\BarVaryingDistributedLoad\BarVaryingDistributedLoadDistanceBothEnds.cs" />
-    <Compile Include="Create\Loads\BarVaryingDistributedLoad\BarVaryingDistributedLoad.cs" />
-    <Compile Include="Create\Loads\ContourLoad.cs" />
-    <Compile Include="Create\Loads\GeometricalLineLoad.cs" />
-    <Compile Include="Create\Loads\GravityLoad.cs" />
-    <Compile Include="Create\Loads\PointVelocity.cs" />
-    <Compile Include="Create\Loads\PointLoad.cs" />
-    <Compile Include="Create\Loads\PointDisplacement.cs" />
-    <Compile Include="Create\Loads\PointAcceleration.cs" />
-    <Compile Include="Create\MaterialFragments\Aluminium.cs" />
-    <Compile Include="Create\MaterialFragments\Concrete.cs" />
-    <Compile Include="Create\MaterialFragments\Steel.cs" />
-    <Compile Include="Create\Requests\BarResultRequest.cs" />
-    <Compile Include="Create\Requests\GlobalResultRequest.cs" />
-    <Compile Include="Create\Requests\MeshResultRequest.cs" />
-    <Compile Include="Create\Requests\NodeResultRequest.cs" />
-    <Compile Include="Create\SectionProperties\AluminiumSection\AluminiumSectionFromProfile.cs" />
-    <Compile Include="Create\Framing\ConstantFramingProperty.cs" />
-    <Compile Include="Create\Elements\FEMesh.cs" />
-    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteCircularSection.cs" />
-    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteFreeFormSection.cs" />
-    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteRectangleSection.cs" />
-    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteSectionFromProfile.cs" />
-    <Compile Include="Create\SectionProperties\ConcreteSection\ConcreteTSection.cs" />
-    <Compile Include="Create\SectionProperties\GenericSection\GenericSectionFromProfile.cs" />
-    <Compile Include="Create\Requests\IResultRequest.cs" />
-    <Compile Include="Create\MaterialFragments\Timber.cs" />
-    <Compile Include="Create\SectionProperties\GeometricalSection\SectionPropertyFromProfile.cs" />
-    <Compile Include="Create\Reinforcement\LongitudinalReinforcement\BottomReinforcement.cs" />
-    <Compile Include="Create\Reinforcement\LongitudinalReinforcement\LayerReinforcement.cs" />
-    <Compile Include="Create\Reinforcement\LongitudinalReinforcement\LongitudinalReinforcement.cs" />
-    <Compile Include="Create\Reinforcement\LongitudinalReinforcement\MultiLinearReinforcement.cs" />
-    <Compile Include="Create\Reinforcement\LongitudinalReinforcement\PerimiterReinforcement.cs" />
-    <Compile Include="Create\Reinforcement\LongitudinalReinforcement\TopReinforcement.cs" />
-    <Compile Include="Create\Reinforcement\TransverseReinforcement\TransverseReinforcement.cs" />
-    <Compile Include="Create\SectionProperties\TimberSection\TimberSectionFromProfile.cs" />
-    <Compile Include="Modify\AddReinforcement.cs" />
-    <Compile Include="Modify\OrientTowards.cs" />
-    <Compile Include="Modify\SetLocalOrientation.cs" />
-    <Compile Include="Modify\SetMaterial.cs" />
-    <Compile Include="Modify\SetNormal.cs" />
-    <Compile Include="Modify\SetStructuralFragment.cs" />
-    <Compile Include="Modify\Transform.cs" />
-    <Compile Include="Objects\EqualityComparers\CaseNumberComaprer.cs" />
-    <Compile Include="Objects\EqualityComparers\Constraint4DOFComparer.cs" />
-    <Compile Include="Objects\EqualityComparers\Constraint6DOFComparer.cs" />
-    <Compile Include="Objects\EqualityComparers\NameOrDescriptionComparer.cs" />
-    <Compile Include="Query\AverageThickness.cs" />
-    <Compile Include="Query\CoordinateSystem.cs" />
-    <Compile Include="Query\DescriptionOrName.cs" />
-    <Compile Include="Query\Description.cs" />
-    <Compile Include="Query\EmbodiedCarbon.cs" />
-    <Compile Include="Query\Fixities.cs" />
-    <Compile Include="Query\Geometry3D.cs" />
-    <Compile Include="Query\HasAssignedObjectIds.cs" />
-    <Compile Include="Query\HasMergeablePropertiesWith.cs" />
-    <Compile Include="Query\HasModifiers.cs" />
-    <Compile Include="Query\IsNumericallyDependent.cs" />
-    <Compile Include="Query\LocalOrientation.cs" />
-    <Compile Include="Query\MaterialComposition.cs" />
-    <Compile Include="Query\MaterialType.cs" />
-    <Compile Include="Create\Requests\FilterRequest.cs" />
-    <Compile Include="Create\Elements\Edge.cs" />
-    <Compile Include="Create\SurfaceProperties\LoadingPanelProperty.cs" />
-    <Compile Include="Create\Offsets\Offset.cs" />
-    <Compile Include="Create\Reinforcement\Reinforcement.cs" />
-    <Compile Include="Create\SurfaceProperties\ConstantThickness.cs" />
-    <Compile Include="Create\SurfaceProperties\Waffle.cs" />
-    <Compile Include="Create\SurfaceProperties\Ribbed.cs" />
-    <Compile Include="Create\Constraints\BarRelease\BarRelease.cs" />
-    <Compile Include="Create\Constraints\Constraint3DOF.cs" />
-    <Compile Include="Create\Constraints\Constraint6DOF\Constraint6DOF.cs" />
-    <Compile Include="Create\Constraints\Constraint4DOF.cs" />
-    <Compile Include="Create\Loads\Load.cs" />
-    <Compile Include="Create\Loads\LoadCombination.cs" />
-    <Compile Include="Create\Loads\Loadcase.cs" />
-    <Compile Include="Create\Elements\RigidLink.cs" />
-    <Compile Include="Create\Framing\FramingElement.cs" />
-    <Compile Include="Create\Elements\Panel.cs" />
-    <Compile Include="Create\Elements\Node.cs" />
-    <Compile Include="Create\Elements\Bar.cs" />
-    <Compile Include="Create\Constraints\LinkConstraint\LinkConstraint.cs" />
-    <Compile Include="Create\Elements\Opening.cs" />
-    <Compile Include="Create\Elements\Surface.cs" />
-    <Compile Include="Modify\ApplyModifiers.cs" />
-    <Compile Include="Modify\SetElements0D.cs" />
-    <Compile Include="Query\AnalyticalBars.cs" />
-    <Compile Include="Query\Area.cs" />
-    <Compile Include="Query\DampingRatio.cs" />
-    <Compile Include="Query\Default.cs" />
-    <Compile Include="Query\DeformedShape.cs" />
-    <Compile Include="Query\DistributedPoints.cs" />
-    <Compile Include="Query\Extrude.cs" />
-    <Compile Include="Query\CaseType.cs" />
-    <Compile Include="Query\Centreline.cs" />
-    <Compile Include="Query\IsValidStructural.cs" />
-    <Compile Include="Query\IsVertical.cs" />
-    <Compile Include="Query\LoadType.cs" />
-    <Compile Include="Query\Edges.cs" />
-    <Compile Include="Query\Geometry.cs" />
-    <Compile Include="Query\Mass.cs" />
-    <Compile Include="Query\MassPerArea.cs" />
-    <Compile Include="Query\MassPerMetre.cs" />
-    <Compile Include="Query\Modifiers.cs" />
-    <Compile Include="Query\Normal.cs" />
-    <Compile Include="Query\OppositeNode.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Objects\EqualityComparers\BarEndNodesDistanceComparer.cs" />
-    <Compile Include="Objects\EqualityComparers\NodeDistanceComparer.cs" />
-    <Compile Include="Query\ElasticValues.cs" />
-    <Compile Include="Query\DepthAt.cs" />
-    <Compile Include="Query\PlotBarForce.cs" />
-    <Compile Include="Query\PointGrid.cs" />
-    <Compile Include="Query\Position.cs" />
-    <Compile Include="Query\BarSectionTranformation.cs" />
-    <Compile Include="Query\ReinforcementLayout.cs" />
-    <Compile Include="Query\ReinforcementTransitionPoints.cs" />
-    <Compile Include="Query\ReinforcingBarCount.cs" />
-    <Compile Include="Query\ReinforcingBars.cs" />
-    <Compile Include="Query\SelectCase.cs" />
-    <Compile Include="Query\ShearArea.cs" />
-    <Compile Include="Query\ShearModulus.cs" />
-    <Compile Include="Query\SolidVolume.cs" />
-    <Compile Include="Query\StructuralMaterialFragment.cs" />
-    <Compile Include="Query\Tangent.cs" />
-    <Compile Include="Query\Visualize.cs" />
-    <Compile Include="Query\WidthAt.cs" />
-    <Compile Include="Query\IsLongitudinal.cs" />
-    <Compile Include="Query\TieDiameter.cs" />
-    <Compile Include="Query\TorsionalConstant.cs" />
-    <Compile Include="Query\WarpingConstant.cs" />
-    <Compile Include="Modify\Flip.cs" />
-    <Compile Include="Query\AverageElement.cs" />
-    <Compile Include="Modify\SetReinforcement.cs" />
-    <Compile Include="Query\IsConstrained.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Analytical_Engine\Analytical_Engine.csproj">
-      <Project>{b3342b93-fdbc-465b-b2e7-da463589c96b}</Project>
-      <Name>Analytical_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj">
-      <Project>{1ad45c88-dd54-48e5-951f-55edfeb70e35}</Project>
-      <Name>BHoM_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj">
-      <Project>{89ab2dcb-ef87-4cba-b59c-c16a8a71d333}</Project>
-      <Name>Geometry_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Library_Engine\Library_Engine.csproj">
-      <Project>{fb4ed5c8-e7cc-44b3-95eb-95c304d54e5d}</Project>
-      <Name>Library_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj">
-      <Project>{65198eea-b572-418f-b77d-b348082ec92e}</Project>
-      <Name>Matter_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Physical_Engine\Physical_Engine.csproj">
-      <Project>{f2073888-9bd8-4d8f-9b3c-27577b388530}</Project>
-      <Name>Physical_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj">
-      <Project>{b0154405-9390-472d-9b5c-a2280823b18d}</Project>
-      <Name>Reflection_Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj">
-      <Project>{a84fdfe5-c267-430e-8fec-af4f4bf5b745}</Project>
-      <Name>Spatial_Engine</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
