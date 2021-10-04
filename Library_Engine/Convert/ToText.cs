@@ -63,7 +63,7 @@ namespace BH.Engine.Library
             string confidenceDesc = source.Confidence.GetType()?.GetField(source.Confidence.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description;
 
             if(confidenceDesc != null)
-                sourceDesc += "Confidence: " + source.Confidence.ToString() + " - " + confidenceDesc;
+                sourceDesc += Environment.NewLine + "Confidence: " + source.Confidence.ToString() + " - " + confidenceDesc + Environment.NewLine;
 
             return sourceDesc;
         }
