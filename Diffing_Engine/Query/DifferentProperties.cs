@@ -121,6 +121,9 @@ namespace BH.Engine.Diffing
             //    commonTypePropertyNames.AddRange(BH.Engine.Reflection.Query.PropertyNames(commonType));
             //}
 
+            if (result.Differences.Count == dc.MaxPropertyDifferences)
+                BH.Engine.Reflection.Compute.RecordWarning($"Hit the limit of {nameof(DiffingConfig.MaxPropertyDifferences)} specified in the {nameof(DiffingConfig)}.");
+
             // Parse and store the differnces as appropriate.
             foreach (var difference in result.Differences)
             {
