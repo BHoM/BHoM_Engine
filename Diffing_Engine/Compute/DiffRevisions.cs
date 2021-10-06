@@ -48,13 +48,13 @@ namespace BH.Engine.Diffing
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         public static Diff DiffRevisions(Revision pastRevision, Revision followingRevision, DiffingConfig diffingConfig = null)
         {
-            if(pastRevision == null)
+            if (pastRevision == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot compute the diff between revisions when the past revision is null.");
                 return null;
             }
 
-            if(followingRevision == null)
+            if (followingRevision == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot compute the diff between revisions when the following revision is null.");
                 return null;
@@ -185,10 +185,10 @@ namespace BH.Engine.Diffing
         private static bool AllHaveRevisionFragment(this IEnumerable<IBHoMObject> bHoMObjects)
         {
             // Check if objects have hashfragment.
-            if (bHoMObjects == null 
-                || bHoMObjects.Count() == 0 
+            if (bHoMObjects == null
+                || bHoMObjects.Count() == 0
                 || bHoMObjects.Select(o => o.RevisionFragment()).Where(o => o != null).Count() < bHoMObjects.Count())
-                    return false;
+                return false;
 
             return true;
         }
@@ -198,13 +198,69 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> output = new List<IBHoMObject>();
             reminder = new List<object>();
 
+            Dictionary<Type, List<IBHoMObject>> persistentIdFragmentTypesFound = new Dictionary<Type, List<IBHoMObject>>();
+
             foreach (var obj in objects)
             {
-                IBHoMObject ibhomobject  = obj as IBHoMObject;
-                if (ibhomobject != null && ibhomobject.FindFragment<IPersistentAdapterId>()?.PersistentId != null)
-                    output.Add(ibhomobject);
+                IBHoMObject ibhomobject = obj as IBHoMObject;
+                if (ibhomobject != null)
+                {
+                    var persistentIdFragments = ibhomobject.GetAllFragments(typeof(IPersistentAdapterId));
+
+                    if (persistentIdFragments.Count == 1) // output may have multiple IPersistentAdapterId fragments
+                        output.Add(ibhomobject);
+                    else if (persistentIdFragments.Count > 1)
+                    {
+                        foreach (var fr in persistentIdFragments)
+                        {
+                            Type frType = fr.GetType();
+
+                            if (!persistentIdFragmentTypesFound.ContainsKey(frType))
+                            {
+                                persistentIdFragmentTypesFound[frType] = new List<IBHoMObject>();
+                                persistentIdFragmentTypesFound[frType].Add(ibhomobject);
+                            }
+                            else
+                                persistentIdFragmentTypesFound[frType].Add(ibhomobject);
+                        }
+
+                        output.Add(ibhomobject);
+                    }
+                    else
+                        reminder.Add(obj);
+                }
                 else
                     reminder.Add(obj);
+            }
+
+            // Check if multiple persistentIds were found on the objects.
+            if (persistentIdFragmentTypesFound.Count > 1)
+            {
+                // If so, check if we can find the exactly one PersistentId fragment of the same type across all objects.
+                // (in case some PersistentId Fragment is not present across all objects, we can use the one that is present consistently on all).
+                Type samePersistentId = null;
+                List<IBHoMObject> objectsWithAllSamePersistentId = null;
+                foreach (var kv in persistentIdFragmentTypesFound)
+                {
+                    if (kv.Value.Count == output.Count)
+                    {
+                        if (objectsWithAllSamePersistentId == null)
+                        {
+                            objectsWithAllSamePersistentId = kv.Value;
+                            samePersistentId = kv.Key;
+                        }
+                        else
+                        {
+                            BH.Engine.Reflection.Compute.RecordError($"Input objects have multiple {nameof(IPersistentAdapterId)} fragments assigned.");
+                            reminder = null;
+                            return null;
+                        }
+                    }
+                }
+
+                BH.Engine.Reflection.Compute.RecordWarning($"Input objects have multiple {nameof(IPersistentAdapterId)} fragments assigned, but {samePersistentId.FullName} was found to be the only one consistently present on all objects, so it was selected." +
+                    $"\nMake sure you did not intend to use some of the other {nameof(IPersistentAdapterId)} fragment that was found, i.e.: `{string.Join("`, `", persistentIdFragmentTypesFound.Keys)}`.");
+                output = objectsWithAllSamePersistentId;
             }
 
             return output;
