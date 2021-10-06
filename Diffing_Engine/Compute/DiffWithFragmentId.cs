@@ -69,8 +69,8 @@ namespace BH.Engine.Diffing
             }
 
             // Clone for immutability
-            List<IBHoMObject> currentObjs = currentObjects.ToList();
-            List<IBHoMObject> pastObjs = pastObjects.ToList();
+            List<IBHoMObject> currentObjs = currentObjects.DeepClone().ToList();
+            List<IBHoMObject> pastObjs = pastObjects.DeepClone().ToList();
 
             string customDataIdKey = fragmentType.Name + "_fragmentId";
 
@@ -95,7 +95,16 @@ namespace BH.Engine.Diffing
                 return null;
             }
 
-            IFragment idFragm = obj.FindFragment<IFragment>(fragmentType);
+            IFragment idFragm = null;
+            var idFragments = obj.GetAllFragments(fragmentType);
+            if (idFragments.Count > 1)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} contains more than one fragment of the provided Fragment type {fragmentType}. Unable to decide which one to pick.");
+                return null;
+            }
+            else
+                idFragm = idFragments?.FirstOrDefault();
+
             if (idFragm == null)
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} does not contain a fragment of the provided Fragment type {fragmentType}.");
