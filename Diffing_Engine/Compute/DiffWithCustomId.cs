@@ -97,7 +97,7 @@ namespace BH.Engine.Diffing
                 if (diffConfig.EnablePropertyDiffing)
                 {
                     // If we are also asking for what properties changed, let's rely on DifferentProperties to see whether the object changed or not.
-                    
+
                     // Determine the changed properties.
                     var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffConfigCopy);
 
@@ -106,7 +106,6 @@ namespace BH.Engine.Diffing
                         // It's been modified
                         modifiedObjs.Add(currentObj);
                         objModifiedProps.Add(currentObjID, differentProps);
-
                     }
                     else
                     {
@@ -119,6 +118,7 @@ namespace BH.Engine.Diffing
                 {
                     // Rely on the objects hash to see if they are different.
 
+                    // Compute the hash of both objects and compare them.
                     string currentObjHash = currentObj.Hash(diffConfigCopy.ComparisonConfig);
                     string correspondingObjHash = correspondingObj.Hash(diffConfigCopy.ComparisonConfig);
 
@@ -133,27 +133,34 @@ namespace BH.Engine.Diffing
                         if (diffConfigCopy.IncludeUnchangedObjects)
                             unChanged.Add(currentObj);
                     }
-
                 }
             }
 
-            // If no modified property was found, set the field to null (otherwise will get empty list)
-            objModifiedProps = objModifiedProps.Count == 0 ? null : objModifiedProps;
+            // If no modifed property was found, set the field to null (otherwise will get empty list)
+            objModifiedProps = !objModifiedProps.Any() ? null : objModifiedProps;
 
             // All PastObjects that cannot be found by id in the CurrentObjs are old.
             deletedObjs = pastObjs_dict.Keys.Except(currObjs_dict.Keys)
                 .Select(k => pastObjs_dict[k]).ToList();
 
-            if (!newObjs.Any() && !deletedObjs.Any() && !modifiedObjs.Any())
+            // Add user warnings/notes for specific usage scenarios.
+            if (!currObjs_dict.Keys.Intersect(pastObjs_dict.Keys).Any())
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"No difference could be found." +
-                    $"\nThe provided Id of the objects were completely different between {nameof(pastObjects)} and {nameof(currentObjects)}." +
+                // If there is no overlap in the keys between the two sets, add a warning.
+                BH.Engine.Reflection.Compute.RecordWarning($"No comparison could be done:" +
+                    $"\nthe provided Id of the objects were completely different between {nameof(pastObjects)} and {nameof(currentObjects)}." +
                     $"\nPlease make sure that:" +
                     $"\n\t * The input objects constitute the entirety of the model that changed between revisions;" +
-                    $"\n\t * the input objects come from models that were not completely re-created between revisions.");
+                    $"\n\t * the input objects come from models that were not completely re-created between revisions." +
+                    $"\nConsequently, the objects of the {nameof(currentObjects)} set were identified as all {(newObjs.Any() ? "New" : "Deleted")}.");
             }
-            else if (!diffConfig.EnablePropertyDiffing)
-                BH.Engine.Reflection.Compute.RecordWarning($"For this Diffing method to detect modified/unchanged objects, you need to set '{nameof(DiffingConfig.EnablePropertyDiffing)}' to true in the DiffingConfig.");
+
+            if (currObjs_dict.Keys.Intersect(pastObjs_dict.Keys).Any() && diffConfigCopy.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
+            {
+                // If no modified object was found and some PropertiesToConsider was specified,
+                // add a Note to remind the user that if no differences were found it's probably because of that.
+                BH.Engine.Reflection.Compute.RecordNote($"No modified objects/property differences were found. Make sure that the specified `{nameof(DiffingConfig)}.{nameof(DiffingConfig.ComparisonConfig)}.{nameof(DiffingConfig.ComparisonConfig.PropertiesToConsider)}` is set correctly.");
+            }
 
             return new Diff(newObjs, deletedObjs, modifiedObjs, diffConfigCopy, objModifiedProps, unChanged);
         }
