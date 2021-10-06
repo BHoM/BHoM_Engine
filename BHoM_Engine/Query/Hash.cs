@@ -247,47 +247,7 @@ namespace BH.Engine.Base
                 if (cc.PropertiesToConsider?.Any() ?? false)
                 {
                     // The user specified some PropertiesToConsider.
-
-                    // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
-                    List<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel).ToList();
-
-                    List<string> subPropsToConsider = cc.PropertiesToConsider
-                        .Where(pTc => pTc.Count(c => c == '.') > nestingLevel)
-                        .Where(ptc => currentPropertyFullName.EndsWith(string.Join(".", ptc.Take(nestingLevel))))// ptc.Split('.').ToList().ElementAtOrDefault(nestingLevel) == currentPropertyName)
-                        .ToList();
-
-                    // Get the declaredPropertiesToConsider, which are the currentLevelPropertiesToConsider for which there is a match among this object's properties.
-                    List<string> declaredPropertiesToConsider = allDeclaredPropertyPaths.Where(pPath => currentLevelPropertiesToConsider.Any(ptc => pPath.EndsWith(ptc))).ToList();
-
-                    if (declaredPropertiesToConsider.Any())
-                    {
-                        // All the remaining declaredProperties are to be added to the Exceptions.
-                        List<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(declaredPropertiesToConsider).ToList();
-                        cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
-                    }
-
-                    if (subPropsToConsider.Any())
-                    {
-                        // If we found sub-properties to consider, we need to make sure to add all declared properties of the "parent type" (= the current object) as exceptions.
-
-                        // Find the current object PropertiesToConsider from the subpropertiesToConsider, by splitting their path at dots, and taking the property name at the current nesting level.
-                        List<string> currentObjectPropertiesToConsiderFromSubProps = subPropsToConsider.Select(ptc => ptc.Split('.').ElementAtOrDefault(nestingLevel)).ToList();
-
-                        // If we wrote e.g. *.Name, this allows to keep recursing until we find all properties called `Name`.
-                        currentObjectPropertiesToConsiderFromSubProps.RemoveAll(s => s == "*" || string.IsNullOrWhiteSpace(s));
-
-                        if (currentObjectPropertiesToConsiderFromSubProps.Any())
-                        {
-                            // If we found "parent type" (= current object) properties to consider from the SubPropertiesToConsider, add them to the exceptions.
-
-                            // This is to ensure we record the "property path" form rather than "property name".
-                            List<string> currentObjectPropertypathsToConsiderFromSubProps = allDeclaredPropertyPaths.Where(pp => currentObjectPropertiesToConsiderFromSubProps.Any(ptc => pp.EndsWith(ptc))).ToList();
-
-                            // Obtain the exceptions and add them.
-                            List<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(currentObjectPropertypathsToConsiderFromSubProps).ToList();
-                            cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
-                        }
-                    }
+                    PopulateExceptionsFromPropertiesToConsider(cc, nestingLevel, currentParentPropertyFullName, allDeclaredPropertyPaths);
                 }
 
                 // Iterate all properties
@@ -298,7 +258,6 @@ namespace BH.Engine.Base
                     string propertyPath = $"{currentPropertyFullName}.{propertyName}";
 
                     bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propertyPath.EndsWith(ex)) || cc.PropertyExceptions.Any(ex => currentPropertyFullName.EndsWith(ex));
-                    bool isInPropertiesToConsider = cc.PropertiesToConsider.Any(pTc => propertyPath.EndsWith(pTc));
 
                     if (isInPropertyExceptions)
                         continue;
@@ -345,6 +304,50 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        public static void PopulateExceptionsFromPropertiesToConsider(ComparisonConfig cc, int nestingLevel, string currentPropertyFullName, IEnumerable<string> allDeclaredPropertyPaths)
+        {
+            // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
+            List<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel).ToList();
+
+            List<string> subPropsToConsider = cc.PropertiesToConsider
+                .Where(pTc => pTc.Count(c => c == '.') > nestingLevel)
+                .Where(ptc => currentPropertyFullName.EndsWith(string.Join(".", ptc.Take(nestingLevel))))
+                .ToList();
+
+            // Get the declaredPropertiesToConsider, which are the currentLevelPropertiesToConsider for which there is a match among this object's properties.
+            List<string> declaredPropertiesToConsider = allDeclaredPropertyPaths.Where(pPath => currentLevelPropertiesToConsider.Any(ptc => pPath.EndsWith(ptc))).ToList();
+
+            if (declaredPropertiesToConsider.Any())
+            {
+                // All the remaining declaredProperties are to be added to the Exceptions.
+                List<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(declaredPropertiesToConsider).ToList();
+                cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
+            }
+
+            if (subPropsToConsider.Any())
+            {
+                // If we found sub-properties to consider, we need to make sure to add all declared properties of the "parent type" (= the current object) as exceptions.
+
+                // Find the current object PropertiesToConsider from the subpropertiesToConsider, by splitting their path at dots, and taking the property name at the current nesting level.
+                List<string> currentObjectPropertiesToConsiderFromSubProps = subPropsToConsider.Select(ptc => ptc.Split('.').ElementAtOrDefault(nestingLevel)).ToList();
+
+                // If we wrote e.g. *.Name, this allows to keep recursing until we find all properties called `Name`.
+                currentObjectPropertiesToConsiderFromSubProps.RemoveAll(s => s == "*" || string.IsNullOrWhiteSpace(s));
+
+                if (currentObjectPropertiesToConsiderFromSubProps.Any())
+                {
+                    // If we found "parent type" (= current object) properties to consider from the SubPropertiesToConsider, add them to the exceptions.
+
+                    // This is to ensure we record the "property path" form rather than "property name".
+                    List<string> currentObjectPropertypathsToConsiderFromSubProps = allDeclaredPropertyPaths.Where(pp => currentObjectPropertiesToConsiderFromSubProps.Any(ptc => pp.EndsWith(ptc))).ToList();
+
+                    // Obtain the exceptions and add them.
+                    List<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(currentObjectPropertypathsToConsiderFromSubProps).ToList();
+                    cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
+                }
+            }
+        }
     }
 }
 
