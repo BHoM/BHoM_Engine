@@ -35,15 +35,15 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<MethodInfo> AdaptersDiffingMethods()
+        public static List<MethodBase> AdaptersDiffingMethods()
         {
             if (m_AdaptersDiffingMethods != null)
                 return m_AdaptersDiffingMethods;
 
-            List<MethodInfo> adaptersDiffingMethods = new List<MethodInfo>();
+            List<MethodBase> adaptersDiffingMethods = new List<MethodBase>();
 
-            List<MethodInfo> diffingMethods = BH.Engine.Reflection.Query.BHoMMethodList()
-                .Where(x => x.Name == "Diffing")
+            List<MethodBase> diffingMethods = BH.Engine.Reflection.Query.AllMethodList()
+                .Where(x => x.Name.EndsWith("Diffing"))
                 .Where(mi => mi.DeclaringType.Module.Name != typeof(BH.Engine.Diffing.Query).Module.Name)
                 .ToList();
 
@@ -84,9 +84,9 @@ namespace BH.Engine.Diffing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        internal static Dictionary<string, MethodInfo> AdaptersDiffingMethods_perNamespace()
+        internal static Dictionary<string, MethodBase> AdaptersDiffingMethods_perNamespace()
         {
-            List<MethodInfo> adaptersDiffingMethods = AdaptersDiffingMethods();
+            List<MethodBase> adaptersDiffingMethods = AdaptersDiffingMethods();
 
             var AdaptersDiffingMethods_GroupedPerNamespace = adaptersDiffingMethods.GroupBy(m => m.DeclaringType.Namespace);
 
@@ -105,7 +105,7 @@ namespace BH.Engine.Diffing
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static List<MethodInfo> m_AdaptersDiffingMethods = null;
+        private static List<MethodBase> m_AdaptersDiffingMethods = null;
     }
 }
 
