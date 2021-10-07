@@ -156,7 +156,12 @@ namespace BH.Engine.Base
             // If the currentPropertyFullName is empty, it means we are at the top level of the object. We can consider the object type name as the currentPropertyFullName.
             currentPropertyFullName = string.IsNullOrWhiteSpace(currentPropertyFullName) ? type.FullName : currentPropertyFullName;
 
-            // Get the parent propert's full name and the current property name.
+            // Invoke the PropertyFullNameFilter, if specified.
+            if (cc.ComparisonFunctions?.PropertyFullNameFilter != null)
+                if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(currentPropertyFullName, obj))
+                    return definingString;
+
+            // Get the parent property's full name and the current property name.
             List<string> currentPropertyFullNameComponents = currentPropertyFullName?.Split('.').ToList();
             string currentParentPropertyFullName = "";
             string currentPropertyName = "";
@@ -217,6 +222,11 @@ namespace BH.Engine.Base
                 {
                     if (isCustomDataDic && ((cc.CustomdataKeysExceptions.Contains(entry.Key)) || customDataKeysToExcludeOnThisObject.Contains(entry.Key)))
                         continue;
+
+                    // Invoke the CustomDataKeyFilter, if specified.
+                    if (isCustomDataDic && cc.ComparisonFunctions?.CustomDataKeyFilter != null)
+                        if (cc.ComparisonFunctions.CustomDataKeyFilter.Invoke(entry.Key as string, obj))
+                            return definingString;
 
                     definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, fractionalDigits, nestingLevel + 1, currentPropertyFullName)}";
                 }
