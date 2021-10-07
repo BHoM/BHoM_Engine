@@ -47,10 +47,7 @@ namespace BH.Engine.Diffing
         {
             Diff outputDiff = null;
             if (!pastObjs.Any() && !followingObjs.Any())
-            {
-                BH.Engine.Reflection.Compute.RecordWarning("No input objects provided.");
                 return null;
-            }
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffingConfig dc = diffConfig == null ? new DiffingConfig() : diffConfig.DeepClone();
@@ -70,7 +67,7 @@ namespace BH.Engine.Diffing
             Dictionary<string, List<IBHoMObject>> pastBHoMObjs_perNamespace = pastObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
             Dictionary<string, List<IBHoMObject>> followingBHoMObjs_perNamespace = followingObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
 
-            Dictionary<string, MethodInfo> adaptersDiffingMethods_perNamespace = Query.AdaptersDiffingMethods_perNamespace();
+            Dictionary<string, MethodBase> adaptersDiffingMethods_perNamespace = Query.AdaptersDiffingMethods_perNamespace();
             List<string> adaptersDiffingMethods_modifiedNamespaces = adaptersDiffingMethods_perNamespace.Keys.Select(k => k.Replace("Engine", "oM")).ToList();
 
             List<string> commonOmNameSpaces = pastBHoMObjs_perNamespace.Keys.Intersect(followingBHoMObjs_perNamespace.Keys).ToList();
@@ -84,14 +81,9 @@ namespace BH.Engine.Diffing
                     string adapterDiffMethodNamespace = adaptersDiffingMethods_perNamespace.Keys.Where(k => commonOmNameSpace.Replace("oM", "Engine").StartsWith(k)).FirstOrDefault();
 
                     if (adapterDiffMethodNamespace.IsNullOrEmpty())
-                    {
-                        // No Diffing method found. Remove objects from the dictionary, so when we do Except() later, we obtain those that still need to be diffed.
-                        pastBHoMObjs_perNamespace.Remove(commonOmNameSpace);
-                        followingBHoMObjs_perNamespace.Remove(commonOmNameSpace);
                         continue;
-                    }
 
-                    MethodInfo adapterDiffMethodToInvoke = adaptersDiffingMethods_perNamespace[adapterDiffMethodNamespace];
+                    MethodBase adapterDiffMethodToInvoke = adaptersDiffingMethods_perNamespace[adapterDiffMethodNamespace];
                     List<ParameterInfo> parameterInfos = adapterDiffMethodToInvoke.GetParameters().ToList();
                     int numberOfOptionalParams = parameterInfos.Where(p => p.IsOptional).Count();
                     int indexOfDiffConfigParam = parameterInfos.IndexOf(parameterInfos.First(pi => pi.ParameterType == typeof(DiffingConfig)));
@@ -103,12 +95,12 @@ namespace BH.Engine.Diffing
 
                     Diff result = adapterDiffMethodToInvoke.Invoke(null, parameters.ToArray()) as Diff;
                     outputDiff = outputDiff.CombineDiffs(result);
+
+                    // Remove all objs that were found in common namespace. The remaining have still to be diffed.
+                    pastObjs = pastObjs.Except(pastBHoMObjs_perNamespace[commonOmNameSpace]);
+                    followingObjs = followingObjs.Except(followingBHoMObjs_perNamespace[commonOmNameSpace]);
                 }
             }
-
-            // Remove all objs that were found in common namespace. The remaining have still to be diffed.
-            pastObjs = pastObjs.Except(pastBHoMObjs_perNamespace.SelectMany(kv => kv.Value));
-            followingObjs = followingObjs.Except(followingBHoMObjs_perNamespace.SelectMany(kv => kv.Value));
 
             if (!pastObjs.Any() && !followingObjs.Any())
                 return outputDiff;
@@ -182,21 +174,18 @@ namespace BH.Engine.Diffing
             if (diffingType == DiffingType.Automatic || diffingType == DiffingType.PersistentId)
             {
                 if (bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
-
+                {
                     BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithFragmentId)}'.");
-                fragmentDiff = DiffWithFragmentId(bHoMObjects_past_persistId, bHoMObjects_following_persistId, typeof(IPersistentAdapterId), nameof(IPersistentAdapterId.PersistentId), dc);
+                    fragmentDiff = DiffWithFragmentId(bHoMObjects_past_persistId, bHoMObjects_following_persistId, typeof(IPersistentAdapterId), nameof(IPersistentAdapterId.PersistentId), dc);
+                }
             }
 
             if (reminder_past.Any() || reminder_following.Any())
             {
                 // For the remaining objects (= all objects that are not BHoMObjects, and all BHoMObjects not having a PersistentId) we can Diff using the Hash.
                 BH.Engine.Reflection.Compute.RecordNote($"Calling the most generic Diffing method, '{nameof(DiffWithHash)}'.");
-
                 diffGeneric = DiffWithHash(pastObjs as dynamic, followingObjs as dynamic, dc);
             }
-
-            if (fragmentDiff == null)
-                return diffGeneric;
 
             return outputDiff.CombineDiffs(fragmentDiff.CombineDiffs(diffGeneric));
         }
