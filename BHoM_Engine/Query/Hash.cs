@@ -154,7 +154,7 @@ namespace BH.Engine.Base
                 currentPropertyFullName = cc.ComparisonFunctions.PropertyFullNameModifier.Invoke(currentPropertyFullName, obj);
 
             // If the currentPropertyFullName is empty, it means we are at the top level of the object. We can consider the object type name as the currentPropertyFullName.
-            currentPropertyFullName = currentPropertyFullName.IsNullOrEmpty() ? type.FullName : currentPropertyFullName;
+            currentPropertyFullName = string.IsNullOrWhiteSpace(currentPropertyFullName) ? type.FullName : currentPropertyFullName;
 
             // Get the parent propert's full name and the current property name.
             List<string> currentPropertyFullNameComponents = currentPropertyFullName?.Split('.').ToList();
