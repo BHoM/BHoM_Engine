@@ -74,6 +74,7 @@ namespace BH.Engine.Diffing
             commonOmNameSpaces = commonOmNameSpaces
                 .Where(cns => adaptersDiffingMethods_modifiedNamespaces.Any(n => cns.Contains(n))).ToList();
 
+            bool performedToolkitDiffing = false;
             if (commonOmNameSpaces?.Any() ?? false)
             {
                 foreach (string commonOmNameSpace in commonOmNameSpaces)
@@ -99,11 +100,16 @@ namespace BH.Engine.Diffing
                     // Remove all objs that were found in common namespace. The remaining have still to be diffed.
                     pastObjs = pastObjs.Except(pastBHoMObjs_perNamespace[commonOmNameSpace]);
                     followingObjs = followingObjs.Except(followingBHoMObjs_perNamespace[commonOmNameSpace]);
+
+                    performedToolkitDiffing = true;
                 }
             }
 
             if (!pastObjs.Any() && !followingObjs.Any())
                 return outputDiff;
+
+            if (performedToolkitDiffing)
+                BH.Engine.Reflection.Compute.RecordNote("Continuing the Diffing procedure with the remaining objects.");
 
             // Check if the inputs specified are Revisions. In that case, use the Diffing-Revision workflow.
             if (diffingType == DiffingType.Automatic || diffingType == DiffingType.Revision)
