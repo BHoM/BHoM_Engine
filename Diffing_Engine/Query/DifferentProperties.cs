@@ -94,32 +94,23 @@ namespace BH.Engine.Diffing
             comparer.Config.TypesToIgnore.Add(typeof(RevisionFragment));
             comparer.Config.TypesToIgnore.AddRange(dc.ComparisonConfig.TypeExceptions);
 
-
             // Deal with CustomDataKeys to Include.
             if (dc.ComparisonConfig.CustomdataKeysToInclude.Any())
             {
                 // If any specified CustomdataKeysToInclude is found on the object...
-                bool foundCustomDataToInclude_obj1 = dc.ComparisonConfig.CustomdataKeysToInclude.Intersect((obj1 as IBHoMObject).CustomData.Keys).Any();
-                bool foundCustomDataToInclude_obj2 = dc.ComparisonConfig.CustomdataKeysToInclude.Intersect((obj2 as IBHoMObject).CustomData.Keys).Any();
+                bool foundCustomDataToInclude_obj1 = bhomobj1 != null && dc.ComparisonConfig.CustomdataKeysToInclude.Intersect(bhomobj1.CustomData.Keys).Any();
+                bool foundCustomDataToInclude_obj2 = bhomobj2 != null && dc.ComparisonConfig.CustomdataKeysToInclude.Intersect(bhomobj2.CustomData.Keys).Any();
 
                 // ...add all the other CustomData keys as exceptions.
                 if (foundCustomDataToInclude_obj1)
-                    dc.ComparisonConfig.CustomdataKeysExceptions.AddRange((obj1 as IBHoMObject).CustomData.Keys.Except(dc.ComparisonConfig.CustomdataKeysToInclude));
+                    dc.ComparisonConfig.CustomdataKeysExceptions.AddRange(bhomobj1.CustomData.Keys.Except(dc.ComparisonConfig.CustomdataKeysToInclude));
 
                 if (foundCustomDataToInclude_obj2)
-                    dc.ComparisonConfig.CustomdataKeysExceptions.AddRange((obj2 as IBHoMObject).CustomData.Keys.Except(dc.ComparisonConfig.CustomdataKeysToInclude));
+                    dc.ComparisonConfig.CustomdataKeysExceptions.AddRange(bhomobj2.CustomData.Keys.Except(dc.ComparisonConfig.CustomdataKeysToInclude));
             }
 
             // Perform the comparison.
             ComparisonResult result = comparer.Compare(obj1Copy, obj2Copy);
-
-            // TODO: PropertiesToConsider requires implementation.
-            //List<string> commonTypePropertyNames = new List<string>();
-            //if (dc.ComparisonConfig.PropertiesToConsider.Any())// && !dc.ComparisonConfig.PropertiesToConsider.Any(ptc => propertyPath_noIndexes.EndsWith(ptc)))
-            //{
-            //    BH.Engine.Reflection.Compute.RecordWarning($"Currently, {nameof(dc.ComparisonConfig)}.{nameof(dc.ComparisonConfig.PropertiesToConsider)} requires implementation.");
-            //    commonTypePropertyNames.AddRange(BH.Engine.Reflection.Query.PropertyNames(commonType));
-            //}
 
             if (result.Differences.Count == dc.MaxPropertyDifferences)
                 BH.Engine.Reflection.Compute.RecordWarning($"Hit the limit of {nameof(DiffingConfig.MaxPropertyDifferences)} specified in the {nameof(DiffingConfig)}.");
@@ -134,20 +125,34 @@ namespace BH.Engine.Diffing
                 // E.g. Bar.Fragments[1].Parameters[5].Name becomes Bar.Fragments.Parameters.Name, so we can check that against exceptions like `Parameters.Name`.
                 string propertyFullName_noIndexes = propertyFullName.RemoveSquareIndexing();
 
-
+                // If there is a PropertyFullNameModifier, invoke it to modify the property full name.
                 if (dc.ComparisonConfig.ComparisonFunctions?.PropertyFullNameModifier != null)
                 {
                     propertyFullName = dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyFullName, obj2);
                     propertyFullName_noIndexes = propertyFullName;
                 }
 
+                // If there is a PropertyFullNameFilter, invoke it to see if we should discard this property difference.
+                if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter != null)
+                    if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyFullName_noIndexes, obj2))
+                        continue;
+
+                // Skip if the property is among the PropertyExceptions.
+                if (dc.ComparisonConfig.PropertyExceptions.Any() && dc.ComparisonConfig.PropertyExceptions.Any(pe => propertyFullName_noIndexes.EndsWith(pe)))
+                    continue;
+
+                // Check if this difference is a difference in terms of CustomData.
                 if (propertyFullName.Contains("CustomData") && propertyFullName.Contains("Value"))
                 {
                     // Get the custom data Key, so we can check if it belongs to the exceptions.
                     int keyStart = propertyFullName.IndexOf('[') + 1;
                     int keyEnd = propertyFullName.IndexOf(']');
-
                     string customDataKey = propertyFullName.Substring(keyStart, keyEnd - keyStart);
+
+                    // If there is a CustomDataKeyFilter, invoke it to see if we should discard this CustomData difference.
+                    if (dc.ComparisonConfig.ComparisonFunctions.CustomDataKeyFilter != null)
+                        if (dc.ComparisonConfig.ComparisonFunctions.CustomDataKeyFilter.Invoke(customDataKey, obj2))
+                            continue;
 
                     // Skip this custom data if the key belongs to the exceptions.
                     if (dc.ComparisonConfig.CustomdataKeysExceptions.Contains(customDataKey))
@@ -164,16 +169,6 @@ namespace BH.Engine.Diffing
                         continue; // no match found, skip this property.
                 }
 
-                // Skip if the property is among the PropertyExceptions.
-                if (dc.ComparisonConfig.PropertyExceptions.Any() && dc.ComparisonConfig.PropertyExceptions.Any(pe => propertyFullName_noIndexes.EndsWith(pe)))
-                    continue;
-
-                if (dc.ComparisonConfig.ComparisonFunctions?.PropertyFullNameFilter != null)
-                {
-                    if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyFullName_noIndexes, obj2))
-                        continue;
-                }
-
                 // Add to the final result.
                 dict[propertyFullName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
@@ -183,8 +178,6 @@ namespace BH.Engine.Diffing
 
             return dict; // this Dictionary may be exploded in the UI by using the method "ListDifferentProperties".
         }
-
-     
 
         [Description("Removes square bracket indexing from property paths, e.g. `Bar.Fragments[0].Something` is returned as `Bar.Fragments.Something`.")]
         private static string RemoveSquareIndexing(this string propertyPath)
