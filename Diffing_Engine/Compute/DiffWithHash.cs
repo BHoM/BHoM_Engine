@@ -49,8 +49,8 @@ namespace BH.Engine.Diffing
         [Input("useExistingHash", "Advanced setting. If the objects already have an HashFragment assigned, but that only has the 'currentHash' populated. Can be used to avoid recomputing hash in some scenarios.")]
         public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null, bool useExistingHash = false)
         {
-            BH.Engine.Reflection.Compute.RecordNote("This diffing method cannot track modified objects between different revisions." +
-                "\nIt will simply return the objects that appear exclusively in the past set, in the following set, and in both." +
+            BH.Engine.Reflection.Compute.RecordNote($"This diffing method cannot track modified objects between different revisions." +
+                $"\nIt will simply return the objects that appear exclusively in the past set (`{nameof(Diff.RemovedObjects)}`), in the following set (`{nameof(Diff.AddedObjects)}`), and in both (`{nameof(Diff.UnchangedObjects)}`)." +
                 $"\nConsider using '{nameof(DiffWithCustomId)}', '{nameof(DiffWithFragmentId)}' or '{nameof(DiffRevisions)}' if this feature is needed.");
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
