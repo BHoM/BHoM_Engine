@@ -142,7 +142,7 @@ namespace BH.Engine.Library
         {
             //Check that libraries has been loaded
             if (m_libraryStrings.Count < 1)
-                RefreshLibraries();
+                InitialiseLibraries();
 
             return m_libraryStrings;
         }
@@ -152,7 +152,7 @@ namespace BH.Engine.Library
         private static Dictionary<string, HashSet<string>> LibraryPaths()
         {
             if (m_libraryPaths.Count < 1)
-                RefreshLibraries();
+                InitialiseLibraries();
             return m_libraryPaths;
         }
 
@@ -179,6 +179,18 @@ namespace BH.Engine.Library
                 GetPathsAndLoadLibraries(path, "", "");
             }
 
+        }
+
+        /***************************************************/
+
+        private static void InitialiseLibraries()
+        {
+            m_libraryPaths = new Dictionary<string, HashSet<string>>();
+            m_libraryStrings = new Dictionary<string, string[]>();
+            m_datasets = new Dictionary<string, Dataset>();
+            m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();
+            m_dbTree = new Tree<string>();
+            GetPathsAndLoadLibraries();
         }
 
         /***************************************************/
