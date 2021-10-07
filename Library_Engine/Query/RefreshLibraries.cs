@@ -39,15 +39,14 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Resets all extracted Dataset paths and extracted Libraries.")]
         public static void RefreshLibraries()
         {
-            m_libraryPaths = new Dictionary<string, HashSet<string>>();
-            m_libraryStrings = new Dictionary<string, string[]>();
-            m_datasets = new Dictionary<string, Dataset>();
-            m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Reflection.Debugging.EventType, string>>>();
-            m_dbTree = new Tree<string>();
-            GetPathsAndLoadLibraries();
+            InitialiseLibraries();
+            Engine.Reflection.Compute.RecordWarning("Libraries have been refreshed and any changes will have an impact on the work of the methods in the Library_Engine. Any changes might not reflect in any loaded UI and a restart might be required.");
         }
+
+        /***************************************************/
     }
 }
 
