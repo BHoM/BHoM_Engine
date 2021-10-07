@@ -170,24 +170,40 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        private static void GetPathsAndLoadLibraries(string folderPath = "", string basePath = "")
+        private static void GetPathsAndLoadLibraries()
+        {
+            GetPathsAndLoadLibraries(m_sourceFolder, "", "");
+
+            foreach (string path in UserPaths())
+            {
+                GetPathsAndLoadLibraries(path, "", "");
+            }
+
+        }
+
+        /***************************************************/
+
+        private static void GetPathsAndLoadLibraries(string sourceFolder, string folderPath, string basePath)
         {
             string internalPath = Path.Combine(basePath, folderPath);
-            string folder = Path.Combine(m_sourceFolder, internalPath);
+            string folder = Path.Combine(sourceFolder, internalPath);
 
             if (!Directory.Exists(folder))
                 return;
 
             foreach (string path in Directory.GetFiles(folder))
             {
-                string filePathName = Path.Combine(internalPath, Path.GetFileNameWithoutExtension(path));
-                AddToPathDictionary(filePathName, filePathName);
-                m_libraryStrings[filePathName] = File.ReadAllLines(path);
+                if (Path.HasExtension(path) && Path.GetExtension(path).ToLower() == ".json")
+                {
+                    string filePathName = Path.Combine(internalPath, Path.GetFileNameWithoutExtension(path));
+                    AddToPathDictionary(filePathName, filePathName);
+                    m_libraryStrings[filePathName] = File.ReadAllLines(path);
+                }
             }
 
             foreach (string dictPath in Directory.GetDirectories(folder))
             {
-                GetPathsAndLoadLibraries(Path.GetFileName(dictPath), internalPath);
+                GetPathsAndLoadLibraries(sourceFolder, Path.GetFileName(dictPath), internalPath);
             }
         }
 
