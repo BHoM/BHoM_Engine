@@ -220,7 +220,7 @@ namespace BH.Engine.Base
                     definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, fractionalDigits, nestingLevel + 1, currentPropertyFullName)}";
                 }
             }
-            else if (typeof(IEnumerable).IsAssignableFrom(type) || typeof(IList).IsAssignableFrom(type) || typeof(ICollection).IsAssignableFrom(type))
+            else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 foreach (var element in (obj as dynamic))
                     definingString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, currentPropertyFullName);
