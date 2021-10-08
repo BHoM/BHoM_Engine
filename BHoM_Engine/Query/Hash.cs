@@ -197,27 +197,20 @@ namespace BH.Engine.Base
             {
                 IDictionary dic = obj as IDictionary;
 
-                bool isCustomDataDic = currentPropertyFullName.EndsWith("CustomData") && obj is Dictionary<string,object>;
-
-                List<string> customDataKeysToExcludeOnThisObject = new List<string>();
-
-                if (isCustomDataDic && cc.CustomdataKeysToInclude.Any())
-                {
-                    Dictionary<string, object> customDataDict = obj as Dictionary<string, object>;
-                    List<string> allCustomDataKeys = customDataDict.Keys.ToList();
-
-                    var allCustomDataExceptToInclude = allCustomDataKeys.Except(cc.CustomdataKeysToInclude).ToList();
-
-                    bool customDataToIncludeFound = allCustomDataExceptToInclude.Count() < allCustomDataKeys.Count();
-
-                    if (customDataToIncludeFound)
-                        customDataKeysToExcludeOnThisObject.AddRange(allCustomDataExceptToInclude);
-                }
+                bool isCustomDataDic = currentPropertyFullName.EndsWith("CustomData") && obj is Dictionary<string, object>;
 
                 foreach (DictionaryEntry entry in dic)
                 {
-                    if (isCustomDataDic && ((cc.CustomdataKeysExceptions.Contains(entry.Key)) || customDataKeysToExcludeOnThisObject.Contains(entry.Key)))
-                        continue;
+                    if (isCustomDataDic)
+                    {
+                        // If the CustomDataKey is among the exceptions, skip it.
+                        if (cc.CustomdataKeysExceptions?.Contains(entry.Key) ?? false)
+                            continue;
+
+                        // If there are CustomdataKeysToInclude specified and CustomDataKey is not among them, skip it.
+                        if ((cc.CustomdataKeysToInclude?.Any() ?? false) && !cc.CustomdataKeysToInclude.Contains(entry.Key))
+                            continue;
+                    }
 
                     // Invoke the CustomDataKeyFilter, if specified.
                     if (isCustomDataDic && cc.ComparisonFunctions?.CustomDataKeyFilter != null)
