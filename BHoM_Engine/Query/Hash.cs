@@ -256,7 +256,7 @@ namespace BH.Engine.Base
                     string propertyName = prop.Name;
                     string propertyPath = $"{currentPropertyFullName}.{propertyName}";
 
-                    bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propertyPath.EndsWith(ex)) || cc.PropertyExceptions.Any(ex => currentPropertyFullName.EndsWith(ex));
+                    bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propertyPath.EndsWith(ex) ||  currentPropertyFullName.EndsWith(ex));
 
                     if (isInPropertyExceptions)
                         continue;
