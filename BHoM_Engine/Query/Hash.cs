@@ -306,9 +306,9 @@ namespace BH.Engine.Base
         public static void PopulateExceptionsFromPropertiesToConsider(ComparisonConfig cc, int nestingLevel, string currentPropertyFullName, IEnumerable<string> allDeclaredPropertyPaths)
         {
             // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
-            IEnumerable<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel);
+            List<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel).ToList();
 
-            IEnumerable<string> subPropsToConsider = cc.PropertiesToConsider
+            List<string> subPropsToConsider = cc.PropertiesToConsider
                 .Where(pTc => pTc.Count(c => c == '.') > nestingLevel)
                 .Where(ptc => currentPropertyFullName.EndsWith(string.Join(".", ptc.Take(nestingLevel))))
                 .ToList();
