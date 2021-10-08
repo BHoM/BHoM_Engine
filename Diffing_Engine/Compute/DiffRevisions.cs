@@ -216,12 +216,9 @@ namespace BH.Engine.Diffing
                             Type frType = fr.GetType();
 
                             if (!persistentIdFragmentTypesFound.ContainsKey(frType))
-                            {
                                 persistentIdFragmentTypesFound[frType] = new List<IBHoMObject>();
-                                persistentIdFragmentTypesFound[frType].Add(ibhomobject);
-                            }
-                            else
-                                persistentIdFragmentTypesFound[frType].Add(ibhomobject);
+                            
+                            persistentIdFragmentTypesFound[frType].Add(ibhomobject);
                         }
 
                         output.Add(ibhomobject);
