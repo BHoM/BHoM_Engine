@@ -193,10 +193,10 @@ namespace BH.Engine.Diffing
             return true;
         }
 
-        private static List<IBHoMObject> WithNonNullPersistentAdapterId(this IEnumerable<object> objects, out List<object> reminder)
+        private static List<IBHoMObject> WithNonNullPersistentAdapterId(this IEnumerable<object> objects, out List<object> remainder)
         {
             List<IBHoMObject> output = new List<IBHoMObject>();
-            reminder = new List<object>();
+            remainder = new List<object>();
 
             Dictionary<Type, List<IBHoMObject>> persistentIdFragmentTypesFound = new Dictionary<Type, List<IBHoMObject>>();
 
@@ -224,10 +224,10 @@ namespace BH.Engine.Diffing
                         output.Add(ibhomobject);
                     }
                     else
-                        reminder.Add(obj);
+                        remainder.Add(obj);
                 }
                 else
-                    reminder.Add(obj);
+                    remainder.Add(obj);
             }
 
             // Check if multiple persistentIds were found on the objects.
@@ -249,7 +249,7 @@ namespace BH.Engine.Diffing
                         else
                         {
                             BH.Engine.Reflection.Compute.RecordError($"Input objects have multiple {nameof(IPersistentAdapterId)} fragments assigned.");
-                            reminder = null;
+                            remainder = null;
                             return null;
                         }
                     }

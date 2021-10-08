@@ -169,10 +169,10 @@ namespace BH.Engine.Diffing
             }
 
             // Check if the bhomObjects have a persistentId assigned.
-            List<object> reminder_past;
-            List<object> reminder_following;
-            List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithNonNullPersistentAdapterId(out reminder_past);
-            List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithNonNullPersistentAdapterId(out reminder_following);
+            List<object> remainder_past;
+            List<object> remainder_following;
+            List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithNonNullPersistentAdapterId(out remainder_past);
+            List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithNonNullPersistentAdapterId(out remainder_following);
             Diff diffGeneric = null;
             Diff fragmentDiff = null;
 
@@ -186,7 +186,7 @@ namespace BH.Engine.Diffing
                 }
             }
 
-            if (reminder_past.Any() || reminder_following.Any())
+            if (remainder_past.Any() || remainder_following.Any())
             {
                 // For the remaining objects (= all objects that are not BHoMObjects, and all BHoMObjects not having a PersistentId) we can Diff using the Hash.
                 BH.Engine.Reflection.Compute.RecordNote($"Calling the most generic Diffing method, '{nameof(DiffWithHash)}'.");
