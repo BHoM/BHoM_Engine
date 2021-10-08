@@ -70,16 +70,16 @@ namespace BH.Engine.Diffing
             Dictionary<string, MethodBase> adaptersDiffingMethods_perNamespace = Query.AdaptersDiffingMethods_perNamespace();
             List<string> adaptersDiffingMethods_modifiedNamespaces = adaptersDiffingMethods_perNamespace.Keys.Select(k => k.Replace("Engine", "oM")).ToList();
 
-            List<string> commonOmNameSpaces = pastBHoMObjs_perNamespace.Keys.Intersect(followingBHoMObjs_perNamespace.Keys).ToList();
-            commonOmNameSpaces = commonOmNameSpaces
+            List<string> commonObjectNameSpaces = pastBHoMObjs_perNamespace.Keys.Intersect(followingBHoMObjs_perNamespace.Keys).ToList();
+            commonObjectNameSpaces = commonObjectNameSpaces
                 .Where(cns => adaptersDiffingMethods_modifiedNamespaces.Any(n => cns.Contains(n))).ToList();
 
             bool performedToolkitDiffing = false;
-            if (commonOmNameSpaces?.Any() ?? false)
+            if (commonObjectNameSpaces?.Any() ?? false)
             {
-                foreach (string commonOmNameSpace in commonOmNameSpaces)
+                foreach (string commonObjectNameSpace in commonObjectNameSpaces)
                 {
-                    string adapterDiffMethodNamespace = adaptersDiffingMethods_perNamespace.Keys.Where(k => commonOmNameSpace.Replace("oM", "Engine").StartsWith(k)).FirstOrDefault();
+                    string adapterDiffMethodNamespace = adaptersDiffingMethods_perNamespace.Keys.Where(k => commonObjectNameSpace.Replace("oM", "Engine").StartsWith(k)).FirstOrDefault();
 
                     if (adapterDiffMethodNamespace.IsNullOrEmpty())
                         continue;
@@ -88,18 +88,18 @@ namespace BH.Engine.Diffing
                     List<ParameterInfo> parameterInfos = adapterDiffMethodToInvoke.GetParameters().ToList();
                     int numberOfOptionalParams = parameterInfos.Where(p => p.IsOptional).Count();
                     int indexOfDiffConfigParam = parameterInfos.IndexOf(parameterInfos.First(pi => pi.ParameterType == typeof(DiffingConfig)));
-                    var parameters = new List<object>() { pastBHoMObjs_perNamespace[commonOmNameSpace], followingBHoMObjs_perNamespace[commonOmNameSpace] };
+                    var parameters = new List<object>() { pastBHoMObjs_perNamespace[commonObjectNameSpace], followingBHoMObjs_perNamespace[commonObjectNameSpace] };
                     parameters.AddRange(Enumerable.Repeat(Type.Missing, numberOfOptionalParams - 1));
                     parameters.Insert(indexOfDiffConfigParam, dc);
 
-                    BH.Engine.Reflection.Compute.RecordNote($"Invoking Diffing method `{adapterDiffMethodToInvoke.DeclaringType.FullName}.{adapterDiffMethodToInvoke.Name}` on the input objects belonging to namespace {commonOmNameSpace}.");
+                    BH.Engine.Reflection.Compute.RecordNote($"Invoking Diffing method `{adapterDiffMethodToInvoke.DeclaringType.FullName}.{adapterDiffMethodToInvoke.Name}` on the input objects belonging to namespace {commonObjectNameSpace}.");
 
                     Diff result = adapterDiffMethodToInvoke.Invoke(null, parameters.ToArray()) as Diff;
                     outputDiff = outputDiff.CombineDiffs(result);
 
                     // Remove all objs that were found in common namespace. The remaining have still to be diffed.
-                    pastObjs = pastObjs.Except(pastBHoMObjs_perNamespace[commonOmNameSpace]);
-                    followingObjs = followingObjs.Except(followingBHoMObjs_perNamespace[commonOmNameSpace]);
+                    pastObjs = pastObjs.Except(pastBHoMObjs_perNamespace[commonObjectNameSpace]);
+                    followingObjs = followingObjs.Except(followingBHoMObjs_perNamespace[commonObjectNameSpace]);
 
                     performedToolkitDiffing = true;
                 }
