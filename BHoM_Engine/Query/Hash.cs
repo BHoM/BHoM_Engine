@@ -188,18 +188,18 @@ namespace BH.Engine.Base
                     // Take care of fractional digits config option.
                     if (cc.FractionalDigitsPerProperty?.Any() ?? false) 
                     {
-                        Dictionary<string, int> matches = new Dictionary<string, int>();
+                        int digitsToLimit = -1;
 
                         foreach (var kv in cc.FractionalDigitsPerProperty)
                         {
                             if (currentPropertyFullName.Contains(kv.Key) || new WildcardPattern(kv.Key).IsMatch(currentPropertyFullName))
-                                matches.Add(kv.Key, kv.Value);
+                                if (digitsToLimit == -1)
+                                    digitsToLimit = kv.Value;
+                                else
+                                    BH.Engine.Reflection.Compute.RecordError($"Too many matching results obtained with specified {nameof(cc.FractionalDigitsPerProperty)} `{kv.Key}`.");
                         }
 
-                        if (matches.Count() > 1)
-                            BH.Engine.Reflection.Compute.RecordError($"Too many matching results obtained with specified {nameof(cc.FractionalDigitsPerProperty)}.");
-
-                        fractionalDigits = matches.Count() == 1 ? matches.FirstOrDefault().Value : fractionalDigits;
+                        fractionalDigits = digitsToLimit != -1 ? digitsToLimit : fractionalDigits;
                     }
 
                     obj = Math.Round(obj as dynamic, fractionalDigits);
