@@ -80,26 +80,6 @@ namespace BH.Engine.Diffing
             return adaptersDiffingMethods;
         }
 
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        internal static Dictionary<string, MethodBase> AdaptersDiffingMethods_perNamespace()
-        {
-            List<MethodBase> adaptersDiffingMethods = AdaptersDiffingMethods();
-
-            var AdaptersDiffingMethods_GroupedPerNamespace = adaptersDiffingMethods.GroupBy(m => m.DeclaringType.Namespace);
-
-            foreach (var g in AdaptersDiffingMethods_GroupedPerNamespace)
-            {
-                if (g.Count() > 1) {
-                    BH.Engine.Reflection.Compute.RecordError($"{g.Count()} Diffing methods found in namespace {g.Key}. Only one is allowed. Returning only the first one.");
-                }
-            }
-
-            return AdaptersDiffingMethods_GroupedPerNamespace.ToDictionary(g => g.Key, g => g.FirstOrDefault());
-        }
-
 
         /***************************************************/
         /**** Private Fields                            ****/
