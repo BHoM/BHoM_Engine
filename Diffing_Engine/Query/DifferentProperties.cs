@@ -123,8 +123,8 @@ namespace BH.Engine.Diffing
                         if (dc.ComparisonConfig.ComparisonFunctions.CustomDataKeyFilter.Invoke(customDataKey, obj2))
                             continue;
 
-                    // If the customDataKey is not in the CustomdataKeysToInclude, skip this CustomData difference.
-                    if (!dc.ComparisonConfig.CustomdataKeysToInclude.Contains(customDataKey))
+                    // If there are CustomdataKeysToInclude specified and this customDataKey is not among them, skip it.
+                    if ((dc.ComparisonConfig.CustomdataKeysToInclude?.Any() ?? false) && !dc.ComparisonConfig.CustomdataKeysToInclude.Contains(customDataKey))
                         continue;
 
                     // Skip this custom data if the key belongs to the exceptions.
