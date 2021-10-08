@@ -73,41 +73,10 @@ namespace BH.Engine.Diffing
 
             comparer.Config.MembersToIgnore = dc.ComparisonConfig.PropertyExceptions;
 
-            // Removes the CustomData to be ignored.
-            var bhomobj1 = (obj1Copy as IBHoMObject);
-            var bhomobj2 = (obj2Copy as IBHoMObject);
-
-            if (bhomobj1 != null)
-            {
-                dc.ComparisonConfig.CustomdataKeysExceptions.ForEach(k => bhomobj1.CustomData.Remove(k));
-                obj1Copy = bhomobj1;
-            }
-
-            if (bhomobj2 != null)
-            {
-                dc.ComparisonConfig.CustomdataKeysExceptions.ForEach(k => bhomobj2.CustomData.Remove(k));
-                obj2Copy = bhomobj2;
-            }
-
             // Never include the changes in HashFragment.
             comparer.Config.TypesToIgnore.Add(typeof(HashFragment));
             comparer.Config.TypesToIgnore.Add(typeof(RevisionFragment));
             comparer.Config.TypesToIgnore.AddRange(dc.ComparisonConfig.TypeExceptions);
-
-            // Deal with CustomDataKeys to Include.
-            if (dc.ComparisonConfig.CustomdataKeysToInclude.Any())
-            {
-                // If any specified CustomdataKeysToInclude is found on the object...
-                bool foundCustomDataToInclude_obj1 = bhomobj1 != null && dc.ComparisonConfig.CustomdataKeysToInclude.Intersect(bhomobj1.CustomData.Keys).Any();
-                bool foundCustomDataToInclude_obj2 = bhomobj2 != null && dc.ComparisonConfig.CustomdataKeysToInclude.Intersect(bhomobj2.CustomData.Keys).Any();
-
-                // ...add all the other CustomData keys as exceptions.
-                if (foundCustomDataToInclude_obj1)
-                    dc.ComparisonConfig.CustomdataKeysExceptions.AddRange(bhomobj1.CustomData.Keys.Except(dc.ComparisonConfig.CustomdataKeysToInclude));
-
-                if (foundCustomDataToInclude_obj2)
-                    dc.ComparisonConfig.CustomdataKeysExceptions.AddRange(bhomobj2.CustomData.Keys.Except(dc.ComparisonConfig.CustomdataKeysToInclude));
-            }
 
             // Perform the comparison.
             ComparisonResult result = comparer.Compare(obj1Copy, obj2Copy);
@@ -153,6 +122,10 @@ namespace BH.Engine.Diffing
                     if (dc.ComparisonConfig.ComparisonFunctions.CustomDataKeyFilter != null)
                         if (dc.ComparisonConfig.ComparisonFunctions.CustomDataKeyFilter.Invoke(customDataKey, obj2))
                             continue;
+
+                    // If the customDataKey is not in the CustomdataKeysToInclude, skip this CustomData difference.
+                    if (!dc.ComparisonConfig.CustomdataKeysToInclude.Contains(customDataKey))
+                        continue;
 
                     // Skip this custom data if the key belongs to the exceptions.
                     if (dc.ComparisonConfig.CustomdataKeysExceptions.Contains(customDataKey))
