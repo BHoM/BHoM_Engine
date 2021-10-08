@@ -320,7 +320,7 @@ namespace BH.Engine.Base
             if (declaredPropertiesToConsider.Any())
             {
                 // All the remaining declaredProperties are to be added to the Exceptions.
-                List<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(declaredPropertiesToConsider).ToList();
+                IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(declaredPropertiesToConsider);
                 cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
             }
 
