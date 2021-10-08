@@ -20,9 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -35,6 +37,11 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Return the Diffing methods found in all Toolkits (i.e. not in the BHoM_Engine)." +
+            "\nA diffing method is a method whose name ends with 'Diffing' and that has these parameters:" +
+            "\nan IEnumerable<objects> for the past set; an IEnumerable<objects> for the following set;" +
+            "\nany number of other optional parameters; and one DiffingConfig parameter.")]
+        [Output("Diffing methods found in all Toolkits (i.e. not in the BHoM_Engine).")]
         public static List<MethodBase> AdaptersDiffingMethods()
         {
             if (m_AdaptersDiffingMethods != null)
