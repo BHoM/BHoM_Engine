@@ -159,7 +159,7 @@ namespace BH.Engine.Base
             // Invoke the PropertyFullNameFilter, if specified.
             if (cc.ComparisonFunctions?.PropertyFullNameFilter != null)
                 if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(currentPropertyFullName, obj))
-                    return definingString;
+                    return "";
 
             // Get the parent property's full name and the current property name.
             List<string> currentPropertyFullNameComponents = currentPropertyFullName?.Split('.').ToList();
