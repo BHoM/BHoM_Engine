@@ -16,7 +16,11 @@ namespace BH.Engine.Reflection
 
         public static T ParseEnum<T>(string value)
         {
-            return (T)ParseEnum(typeof(T), value);
+            object result = ParseEnum(typeof(T), value);
+            if (result == null)
+                return default(T);
+            else
+                return (T)result;
         }
 
         /*******************************************/
