@@ -171,12 +171,12 @@ namespace BH.Engine.Diffing
             // Check if the bhomObjects have a persistentId assigned.
             List<object> remainder_past;
             List<object> remainder_following;
-            List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithNonNullPersistentAdapterId(out remainder_past);
-            List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithNonNullPersistentAdapterId(out remainder_following);
+            List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithCommonPersistentAdapterId(out remainder_past);
+            List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithCommonPersistentAdapterId(out remainder_following);
             Diff diffGeneric = null;
             Diff fragmentDiff = null;
 
-            // For the BHoMObjects we can compute the Diff with the persistentId.
+            // For the BHoMObjects having a common PeristentAdapterId we can compute the Diff by using it.
             if (diffingType == DiffingType.Automatic || diffingType == DiffingType.PersistentId)
             {
                 if (bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
@@ -205,6 +205,74 @@ namespace BH.Engine.Diffing
         {
             BH.Engine.Reflection.Compute.RecordError($"Invalid inputs for the selected DiffingType `{diffingType}`.");
             return null;
+        }
+
+        /***************************************************/
+
+        // Finds what objects in the given collection are BHoMObjects and own a PersistentAdapterId fragment of the same type.
+        // This is useful to automate the IDiffing.
+        private static List<IBHoMObject> WithCommonPersistentAdapterId(this IEnumerable<object> objects, out List<object> remainder)
+        {
+            IEnumerable<IBHoMObject> allBHoMObjects = objects.OfType<IBHoMObject>();
+            remainder = new List<object>();
+
+            Dictionary<Type, List<IBHoMObject>> persistentIdFragmentTypesFound = new Dictionary<Type, List<IBHoMObject>>();
+
+            foreach (var bhomObj in allBHoMObjects)
+            {
+                var persistentIdFragments = bhomObj.GetAllFragments(typeof(IPersistentAdapterId));
+
+                if (persistentIdFragments.Any())
+                    foreach (var fr in persistentIdFragments)
+                    {
+                        Type frType = fr.GetType();
+
+                        if (!persistentIdFragmentTypesFound.ContainsKey(frType))
+                            persistentIdFragmentTypesFound[frType] = new List<IBHoMObject>();
+
+                        persistentIdFragmentTypesFound[frType].Add(bhomObj);
+                    }
+            }
+
+            // If one or zero persistentId were found on the objects, we can return.
+            if (persistentIdFragmentTypesFound.Count <= 1)
+            {
+                remainder = objects.Except(persistentIdFragmentTypesFound.Values.FirstOrDefault()).ToList();
+                return persistentIdFragmentTypesFound.Values.FirstOrDefault();
+            }
+
+            // If multiple PersistentId were found on the objects overall,
+            // check if we can find exactly one PersistentId fragment of a common type across all BHoMObjects.
+            // (in case some PersistentId Fragment is not present across all objects, we can use the one that is present consistently on all).
+            Type commonPersistentId = null;
+            foreach (var kv in persistentIdFragmentTypesFound)
+            {
+                Type persistentIdFragment = kv.Key;
+                List<IBHoMObject> bhomObjectsWithThisPersistentId = kv.Value;
+                if (bhomObjectsWithThisPersistentId.Count == allBHoMObjects.Count())
+                {
+                    // All BHoMObjects share this same persistentIdFragment.
+                    if (commonPersistentId == null)
+                    {
+                        // If the commonPersistentId was not already set, we can now set it.
+                        commonPersistentId = persistentIdFragment;
+                    }
+                    else
+                    {
+                        // If a commonPersistentId was already found (it was not null), 
+                        // it means that there is more than one PersistentAdapterId fragment type on all of the BHoMObjects.
+                        // This brings us to an undefined situation where it is not possible to automate the Diffing:
+                        // the user must manually specify what PersistentAdapterId they want to Diff with.
+                        BH.Engine.Reflection.Compute.RecordWarning($"Input objects have multiple {nameof(IPersistentAdapterId)} fragments assigned: `{string.Join("`, ", persistentIdFragmentTypesFound.Keys.Select(t => t.FullName))}`." +
+                            $"\nWhich one should be used for Diffing? Use the method {nameof(DiffWithFragmentId)} to manually specify it.");
+                        remainder = objects.ToList();
+                        return new List<IBHoMObject>();
+                    }
+                }
+            }
+
+            remainder = objects.Except(persistentIdFragmentTypesFound[commonPersistentId]).ToList();
+            return persistentIdFragmentTypesFound[commonPersistentId];
         }
     }
 }
