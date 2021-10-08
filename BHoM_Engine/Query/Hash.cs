@@ -161,15 +161,11 @@ namespace BH.Engine.Base
                 if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(currentPropertyFullName, obj))
                     return "";
 
-            // Get the parent property's full name and the current property name.
+            // Get the parent property's full name.
             List<string> currentPropertyFullNameComponents = currentPropertyFullName?.Split('.').ToList();
             string currentParentPropertyFullName = "";
-            string currentPropertyName = "";
             if (currentPropertyFullNameComponents != null)
-            {
                 currentParentPropertyFullName = string.Join(".", currentPropertyFullNameComponents.Take(currentPropertyFullNameComponents.Count - 1));
-                currentPropertyName = currentPropertyFullNameComponents?.Last();
-            }
 
             // Determine the number of tabs that should precede the current property's definingString. Useful for visualizing the definingString e.g. in Notepad.
             string tabs = new String('\t', nestingLevel);
