@@ -307,20 +307,20 @@ namespace BH.Engine.Base
         public static void PopulateExceptionsFromPropertiesToConsider(ComparisonConfig cc, int nestingLevel, string currentPropertyFullName, IEnumerable<string> allDeclaredPropertyPaths)
         {
             // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
-            List<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel).ToList();
+            IEnumerable<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel);
 
-            List<string> subPropsToConsider = cc.PropertiesToConsider
+            IEnumerable<string> subPropsToConsider = cc.PropertiesToConsider
                 .Where(pTc => pTc.Count(c => c == '.') > nestingLevel)
                 .Where(ptc => currentPropertyFullName.EndsWith(string.Join(".", ptc.Take(nestingLevel))))
                 .ToList();
 
             // Get the declaredPropertiesToConsider, which are the currentLevelPropertiesToConsider for which there is a match among this object's properties.
-            List<string> declaredPropertiesToConsider = allDeclaredPropertyPaths.Where(pPath => currentLevelPropertiesToConsider.Any(ptc => pPath.EndsWith(ptc))).ToList();
+            IEnumerable<string> declaredPropertiesToConsider = allDeclaredPropertyPaths.Where(pPath => currentLevelPropertiesToConsider.Any(ptc => pPath.EndsWith(ptc)));
 
             if (declaredPropertiesToConsider.Any())
             {
                 // All the remaining declaredProperties are to be added to the Exceptions.
-                List<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(declaredPropertiesToConsider).ToList();
+                IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(declaredPropertiesToConsider);
                 cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
             }
 
@@ -339,10 +339,10 @@ namespace BH.Engine.Base
                     // If we found "parent type" (= current object) properties to consider from the SubPropertiesToConsider, add them to the exceptions.
 
                     // This is to ensure we record the "property path" form rather than "property name".
-                    List<string> currentObjectPropertypathsToConsiderFromSubProps = allDeclaredPropertyPaths.Where(pp => currentObjectPropertiesToConsiderFromSubProps.Any(ptc => pp.EndsWith(ptc))).ToList();
+                    IEnumerable<string> currentObjectPropertypathsToConsiderFromSubProps = allDeclaredPropertyPaths.Where(pp => currentObjectPropertiesToConsiderFromSubProps.Any(ptc => pp.EndsWith(ptc)));
 
                     // Obtain the exceptions and add them.
-                    List<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(currentObjectPropertypathsToConsiderFromSubProps).ToList();
+                    IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(currentObjectPropertypathsToConsiderFromSubProps);
                     cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
                 }
             }
