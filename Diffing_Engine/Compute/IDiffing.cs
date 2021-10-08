@@ -75,34 +75,32 @@ namespace BH.Engine.Diffing
                 .Where(cns => adaptersDiffingMethods_modifiedNamespaces.Any(n => cns.Contains(n))).ToList();
 
             bool performedToolkitDiffing = false;
-            if (commonObjectNameSpaces?.Any() ?? false)
+
+            foreach (string commonObjectNameSpace in commonObjectNameSpaces)
             {
-                foreach (string commonObjectNameSpace in commonObjectNameSpaces)
-                {
-                    string adapterDiffMethodNamespace = adaptersDiffingMethods_perNamespace.Keys.Where(k => commonObjectNameSpace.Replace("oM", "Engine").StartsWith(k)).FirstOrDefault();
+                string adapterDiffMethodNamespace = adaptersDiffingMethods_perNamespace.Keys.Where(k => commonObjectNameSpace.Replace("oM", "Engine").StartsWith(k)).FirstOrDefault();
 
-                    if (adapterDiffMethodNamespace.IsNullOrEmpty())
-                        continue;
+                if (adapterDiffMethodNamespace.IsNullOrEmpty())
+                    continue;
 
-                    MethodBase adapterDiffMethodToInvoke = adaptersDiffingMethods_perNamespace[adapterDiffMethodNamespace];
-                    List<ParameterInfo> parameterInfos = adapterDiffMethodToInvoke.GetParameters().ToList();
-                    int numberOfOptionalParams = parameterInfos.Where(p => p.IsOptional).Count();
-                    int indexOfDiffConfigParam = parameterInfos.IndexOf(parameterInfos.First(pi => pi.ParameterType == typeof(DiffingConfig)));
-                    var parameters = new List<object>() { pastBHoMObjs_perNamespace[commonObjectNameSpace], followingBHoMObjs_perNamespace[commonObjectNameSpace] };
-                    parameters.AddRange(Enumerable.Repeat(Type.Missing, numberOfOptionalParams - 1));
-                    parameters.Insert(indexOfDiffConfigParam, dc);
+                MethodBase adapterDiffMethodToInvoke = adaptersDiffingMethods_perNamespace[adapterDiffMethodNamespace];
+                List<ParameterInfo> parameterInfos = adapterDiffMethodToInvoke.GetParameters().ToList();
+                int numberOfOptionalParams = parameterInfos.Where(p => p.IsOptional).Count();
+                int indexOfDiffConfigParam = parameterInfos.IndexOf(parameterInfos.First(pi => pi.ParameterType == typeof(DiffingConfig)));
+                var parameters = new List<object>() { pastBHoMObjs_perNamespace[commonObjectNameSpace], followingBHoMObjs_perNamespace[commonObjectNameSpace] };
+                parameters.AddRange(Enumerable.Repeat(Type.Missing, numberOfOptionalParams - 1));
+                parameters.Insert(indexOfDiffConfigParam, dc);
 
-                    BH.Engine.Reflection.Compute.RecordNote($"Invoking Diffing method `{adapterDiffMethodToInvoke.DeclaringType.FullName}.{adapterDiffMethodToInvoke.Name}` on the input objects belonging to namespace {commonObjectNameSpace}.");
+                BH.Engine.Reflection.Compute.RecordNote($"Invoking Diffing method `{adapterDiffMethodToInvoke.DeclaringType.FullName}.{adapterDiffMethodToInvoke.Name}` on the input objects belonging to namespace {commonObjectNameSpace}.");
 
-                    Diff result = adapterDiffMethodToInvoke.Invoke(null, parameters.ToArray()) as Diff;
-                    outputDiff = outputDiff.CombineDiffs(result);
+                Diff result = adapterDiffMethodToInvoke.Invoke(null, parameters.ToArray()) as Diff;
+                outputDiff = outputDiff.CombineDiffs(result);
 
-                    // Remove all objs that were found in common namespace. The remaining have still to be diffed.
-                    pastObjs = pastObjs.Except(pastBHoMObjs_perNamespace[commonObjectNameSpace]);
-                    followingObjs = followingObjs.Except(followingBHoMObjs_perNamespace[commonObjectNameSpace]);
+                // Remove all objs that were found in common namespace. The remaining have still to be diffed.
+                pastObjs = pastObjs.Except(pastBHoMObjs_perNamespace[commonObjectNameSpace]);
+                followingObjs = followingObjs.Except(followingBHoMObjs_perNamespace[commonObjectNameSpace]);
 
-                    performedToolkitDiffing = true;
-                }
+                performedToolkitDiffing = true;
             }
 
             if (!pastObjs.Any() && !followingObjs.Any())
