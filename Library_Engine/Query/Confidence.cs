@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -24,51 +24,34 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Data.Library;
 using BH.oM.Base;
+using BH.oM.Data.Library;
 
 namespace BH.Engine.Library
 {
-    public static partial class Convert
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extract all set properties from a source and generates a line separated string of the information.")]
-        [Input("source", "Source to turn to text information.")]
-        [Output("sourceText", "Text representation of the source.")]
-        public static string ToText(this Source source)
+        [Description("Extract the level of confidence of the library. If the provided library name returns multiple levels of confidence, the lowest level is returned.")]
+        [Input("libraryName", "Name of the library to extract confidence from.")]
+        [Output("confidence", "The lowest level of confidence found in any opf the libraries matching the provided library name.")]
+        public static Confidence Confidence(this string libraryName)
         {
-            if(source == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null source object to a string.");
-                return "";
-            }
+            if (string.IsNullOrWhiteSpace(libraryName))
+                return oM.Data.Library.Confidence.Undefined;
 
-            string sourceDesc = "";
-            IEnumerable<PropertyInfo> properties = source.GetType().GetProperties().Where(x => x.PropertyType == typeof(string));
+            List<Source> sources = Source(libraryName);
 
-            foreach (PropertyInfo prop in properties)
-            {
-                string sourceText = prop.GetGetMethod().Invoke(source, null) as string;
-                if (string.IsNullOrWhiteSpace(sourceText))
-                    continue;
+            if (sources == null || sources.Count == 0 || sources.Any(x => x == null))
+                return oM.Data.Library.Confidence.Undefined;
 
-                sourceDesc += prop.Name + ": " + sourceText + Environment.NewLine;
-            }
-
-            string confidenceDesc = source.Confidence.GetType()?.GetField(source.Confidence.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description;
-
-            if(confidenceDesc != null)
-                sourceDesc += Environment.NewLine + "Confidence: " + source.Confidence.ToString() + " - " + confidenceDesc + Environment.NewLine;
-
-            return sourceDesc;
+            return sources.Select(x => x.Confidence).OrderBy(x => x).First();
         }
 
         /***************************************************/
     }
 }
-
