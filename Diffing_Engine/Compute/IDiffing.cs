@@ -254,8 +254,8 @@ namespace BH.Engine.Diffing
             // If one or zero persistentId were found on the objects, we can return.
             if (persistentIdFragmentTypesFound.Count <= 1)
             {
-                remainder = objects.Except(persistentIdFragmentTypesFound.Values.FirstOrDefault()).ToList();
-                return persistentIdFragmentTypesFound.Values.FirstOrDefault();
+                remainder = objects.Except(persistentIdFragmentTypesFound.Values.FirstOrDefault() ?? new List<IBHoMObject>()).ToList();
+                return persistentIdFragmentTypesFound.Values.FirstOrDefault() ?? new List<IBHoMObject>();
             }
 
             // If multiple PersistentId were found on the objects overall,
