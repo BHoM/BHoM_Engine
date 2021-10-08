@@ -67,7 +67,7 @@ namespace BH.Engine.Diffing
             Dictionary<string, List<IBHoMObject>> pastBHoMObjs_perNamespace = pastObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
             Dictionary<string, List<IBHoMObject>> followingBHoMObjs_perNamespace = followingObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
 
-            Dictionary<string, MethodBase> adaptersDiffingMethods_perNamespace = Query.AdaptersDiffingMethods_perNamespace();
+            Dictionary<string, MethodBase> adaptersDiffingMethods_perNamespace = AdaptersDiffingMethods_perNamespace();
             List<string> adaptersDiffingMethods_modifiedNamespaces = adaptersDiffingMethods_perNamespace.Keys.Select(k => k.Replace("Engine", "oM")).ToList();
 
             List<string> commonObjectNameSpaces = pastBHoMObjs_perNamespace.Keys.Intersect(followingBHoMObjs_perNamespace.Keys).ToList();
@@ -203,6 +203,25 @@ namespace BH.Engine.Diffing
         {
             BH.Engine.Reflection.Compute.RecordError($"Invalid inputs for the selected DiffingType `{diffingType}`.");
             return null;
+        }
+
+        /***************************************************/
+
+        private static Dictionary<string, MethodBase> AdaptersDiffingMethods_perNamespace()
+        {
+            List<MethodBase> adaptersDiffingMethods = Query.AdaptersDiffingMethods();
+
+            var AdaptersDiffingMethods_GroupedPerNamespace = adaptersDiffingMethods.GroupBy(m => m.DeclaringType.Namespace);
+
+            foreach (var g in AdaptersDiffingMethods_GroupedPerNamespace)
+            {
+                if (g.Count() > 1)
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"{g.Count()} Diffing methods found in namespace {g.Key}. Only one is allowed. Returning only the first one.");
+                }
+            }
+
+            return AdaptersDiffingMethods_GroupedPerNamespace.ToDictionary(g => g.Key, g => g.FirstOrDefault());
         }
 
         /***************************************************/
