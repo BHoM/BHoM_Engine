@@ -97,13 +97,13 @@ namespace BH.Engine.Diffing
                 // If there is a PropertyFullNameModifier, invoke it to modify the property full name.
                 if (dc.ComparisonConfig.ComparisonFunctions?.PropertyFullNameModifier != null)
                 {
-                    propertyFullName = dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyFullName, obj2);
+                    propertyFullName = dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyFullName, difference.ParentObject2);
                     propertyFullName_noIndexes = propertyFullName;
                 }
 
                 // If there is a PropertyFullNameFilter, invoke it to see if we should discard this property difference.
                 if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter != null)
-                    if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyFullName_noIndexes, obj2))
+                    if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyFullName_noIndexes, difference.ParentObject2))
                         continue;
 
                 // Skip if the property is among the PropertyExceptions.
@@ -120,7 +120,7 @@ namespace BH.Engine.Diffing
 
                     // If there is a CustomDataKeyFilter, invoke it to see if we should discard this CustomData difference.
                     if (dc.ComparisonConfig.ComparisonFunctions.CustomDataKeyFilter != null)
-                        if (dc.ComparisonConfig.ComparisonFunctions.CustomDataKeyFilter.Invoke(customDataKey, obj2))
+                        if (dc.ComparisonConfig.ComparisonFunctions.CustomDataKeyFilter.Invoke(customDataKey, difference.ParentObject2))
                             continue;
 
                     // If there are CustomdataKeysToInclude specified and this customDataKey is not among them, skip it.
