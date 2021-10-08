@@ -184,7 +184,26 @@ namespace BH.Engine.Base
             else if (type.IsPrimitive || type == typeof(decimal) || type == typeof(String))
             {
                 if (type == typeof(double) || type == typeof(decimal) || type == typeof(float))
+                {
+                    // Take care of fractional digits config option.
+                    if (cc.FractionalDigitsPerProperty?.Any() ?? false) 
+                    {
+                        Dictionary<string, int> matches = new Dictionary<string, int>();
+
+                        foreach (var kv in cc.FractionalDigitsPerProperty)
+                        {
+                            if (currentPropertyFullName.Contains(kv.Key) || new WildcardPattern(kv.Key).IsMatch(currentPropertyFullName))
+                                matches.Add(kv.Key, kv.Value);
+                        }
+
+                        if (matches.Count() > 1)
+                            BH.Engine.Reflection.Compute.RecordError($"Too many matching results obtained with specified {nameof(cc.FractionalDigitsPerProperty)}.");
+
+                        fractionalDigits = matches.Count() == 1 ? matches.FirstOrDefault().Value : fractionalDigits;
+                    }
+
                     obj = Math.Round(obj as dynamic, fractionalDigits);
+                }
 
                 definingString += $"\n{tabs}" + obj?.ToString() ?? "";
             }
@@ -256,7 +275,7 @@ namespace BH.Engine.Base
                     string propertyName = prop.Name;
                     string propertyPath = $"{currentPropertyFullName}.{propertyName}";
 
-                    bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propertyPath.EndsWith(ex) ||  currentPropertyFullName.EndsWith(ex));
+                    bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propertyPath.EndsWith(ex) || currentPropertyFullName.EndsWith(ex));
 
                     if (isInPropertyExceptions)
                         continue;
@@ -264,28 +283,8 @@ namespace BH.Engine.Base
                     object propertyValue = prop.GetValue(obj);
                     if (propertyValue != null)
                     {
-                        // Take care of fractional digits config option.
-                        int propertyFracionalDigits = fractionalDigits;
-                        if (cc.FractionalDigitsPerProperty != null &&
-                            prop.PropertyType == typeof(double) || prop.PropertyType == typeof(decimal) || prop.PropertyType == typeof(float))
-                        {
-                            Dictionary<string, int> matches = new Dictionary<string, int>();
-
-                            foreach (var kv in cc.FractionalDigitsPerProperty)
-                            {
-                                if (propertyPath.Contains(kv.Key) ||
-                                new WildcardPattern(kv.Key).IsMatch(propertyPath))
-                                    matches.Add(kv.Key, kv.Value);
-                            }
-
-                            if (matches.Count() > 1)
-                                throw new ArgumentException($"Too many matching results obtained with specified {nameof(cc.FractionalDigitsPerProperty)}.");
-
-                            propertyFracionalDigits = matches.Count() == 1 ? matches.FirstOrDefault().Value : fractionalDigits;
-                        }
-
                         // Recurse for this property.
-                        propertyHashString = DefiningString(propertyValue, cc, propertyFracionalDigits, nestingLevel + 1, propertyPath) ?? "";
+                        propertyHashString = DefiningString(propertyValue, cc, fractionalDigits, nestingLevel + 1, propertyPath) ?? "";
                         if (!string.IsNullOrWhiteSpace(propertyHashString))
                             definingString += $"\n{tabs}" + $"{type.FullName}.{propertyName}:\n{tabs}{propertyHashString} ";
                     }
