@@ -43,7 +43,7 @@ namespace BH.Engine.Reflection
 
         public static bool IsEngineAssembly(this string assemblyName)
         {
-            return assemblyName.EndsWith("_Engine") || regexEngineAssembly.IsMatch(assemblyName);
+            return assemblyName != null && (assemblyName.EndsWith("_Engine") || regexEngineAssembly.IsMatch(assemblyName));
         }
 
 

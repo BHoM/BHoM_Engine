@@ -43,7 +43,7 @@ namespace BH.Engine.Reflection
 
         public static bool IsAdapterAssembly(this string assemblyName)
         {
-            return assemblyName.EndsWith("_Adapter") || regexAdapterAssembly.IsMatch(assemblyName);
+            return assemblyName != null && (assemblyName.EndsWith("_Adapter") || regexAdapterAssembly.IsMatch(assemblyName));
         }
 
 
