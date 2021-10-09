@@ -52,19 +52,13 @@ namespace BH.Engine.Reflection
 
             try
             {
-                lock (m_GetAssembliesLock)
+                if (goDeep)
+                    return DeepDependencies(new List<Assembly> { assembly }, onlyBHoM);
+                else
                 {
-                    if (m_AllAssemblies == null || m_AllAssemblies.Count == 0)
-                        ExtractAllAssemblies();
-
-                    if (goDeep)
-                        return DeepDependencies(new List<Assembly> { assembly }, onlyBHoM);
-                    else
-                    {
-                        IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
-                        Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
-                        return assemblyNames.Where(x => dic.ContainsKey(x.FullName)).Select(x => dic[x.FullName]).ToList();
-                    }  
+                    IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
+                    List<Assembly> loaded = onlyBHoM ? BHoMAssemblyList() : AllAssemblyList();
+                    return loaded.Where(x => assemblyNames.Any(y => x.GetName().FullName == y.FullName)).ToList();
                 }
             }
             catch (Exception e)
@@ -90,8 +84,8 @@ namespace BH.Engine.Reflection
             }
 
             AllAssemblyList();
-            Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
-            List<Assembly> assemblies = assemblyNames.Where(x => dic.ContainsKey(x)).Select(x => dic[x]).ToList();
+            List<Assembly> loaded = onlyBHoM ? BHoMAssemblyList() : AllAssemblyList();
+            List<Assembly> assemblies = loaded.Where(x => assemblyNames.Any(y => x.GetName().FullName == y)).ToList();
 
             if (goDeep)
                 return DeepDependencies(assemblies, onlyBHoM).Select(x => x.Location).ToList();
@@ -112,14 +106,13 @@ namespace BH.Engine.Reflection
             if (depth > 20)
                 return new List<Assembly>();
 
-            Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
+            List<Assembly> loaded = onlyBHoM ? BHoMAssemblyList() : AllAssemblyList();
 
             IEnumerable<AssemblyName> assemblyNames = assemblies.SelectMany(x => x.GetReferencedAssemblies())
                 .GroupBy(x => x.FullName).Select(x => x.First())
                 .ToList();
             
-            List<Assembly> dependencies = assemblyNames.Where(x => dic.ContainsKey(x.FullName))
-                .Select(x => dic[x.FullName])
+            List<Assembly> dependencies = loaded.Where(x => assemblyNames.Any(y => x.GetName().FullName == y.FullName))
                 .Except(collected)
                 .ToList();
 

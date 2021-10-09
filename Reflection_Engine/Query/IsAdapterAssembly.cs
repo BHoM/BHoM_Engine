@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,54 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Method               ****/
         /***************************************************/
 
-        public static List<Assembly> BHoMAssemblyList()
+        public static bool IsAdapterAssembly(this Assembly assembly)
         {
-            lock (m_GetAssembliesLock)
-            {
-                return AllAssemblyList().Where(x => x.IsBHoM()).ToList();
-            }
+            return assembly.GetName().Name.IsAdapterAssembly();
         }
 
         /***************************************************/
 
-        public static List<Assembly> AllAssemblyList()
+        public static bool IsAdapterAssembly(this string assemblyName)
         {
-            lock (m_GetAssembliesLock)
-            {
-                return AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First()).ToList();
-            }
+            return assemblyName.EndsWith("_Adapter") || regexAdapterAssembly.IsMatch(assemblyName);
         }
 
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /****               Private Fields              ****/
         /***************************************************/
 
-        private static bool IsBHoM(this Assembly assembly)
-        {
-            string name = assembly.GetName().Name;
-            return name.IsOmAssembly() || name.IsEngineAssembly() || name.IsAdapterAssembly() || name.IsUiAssembly();
-        }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static readonly object m_GetAssembliesLock = new object();
+        private static Regex regexAdapterAssembly = new Regex(@".*_Adapter_\d{4}$");
 
         /***************************************************/
     }

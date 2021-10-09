@@ -25,8 +25,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BH.Engine.Reflection
 {
@@ -36,55 +34,66 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        //TODO: remove this?
         public static void LoadAllAssemblies(string folder = "")
         {
+            LoadAssemblies();
+        }
+
+        public static List<Assembly> LoadAssemblies(string folder = "", string suffix = "")
+        {
+            List<Assembly> result = new List<Assembly>();
             lock (m_LoadAssembliesLock)
             {
-                if (!m_AssemblyAlreadyLoaded)
+                if (string.IsNullOrEmpty(folder))
+                    folder = Query.BHoMFolder();
+
+                if (!Directory.Exists(folder))
                 {
-                    m_AssemblyAlreadyLoaded = true;
-                    HashSet<string> loaded = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName.Split(',').First()));
+                    RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
+                    return result;
+                }
 
-                    if (string.IsNullOrEmpty(folder))
-                        folder = Query.BHoMFolder();
+                foreach (string file in Directory.GetFiles(folder))
+                {
+                    if (!file.EndsWith(".dll"))
+                        continue;
 
-                    if (!Directory.Exists(folder))
+                    string[] parts = file.Split(new char[] { '.', '\\' });
+                    if (parts.Length < 2)
+                        continue;
+
+                    string name = parts[parts.Length - 2];
+                    if (m_LoadedAssemblies.Contains(name))
+                        continue;
+
+                    string[] suffixes = { "oM", "_Engine", "_Adapter" };
+                    if (!string.IsNullOrWhiteSpace(suffix))
+                        suffixes = suffixes.Select(x => $"x{suffix}").ToArray();
+
+                    if (suffixes.Any(x => name.EndsWith(x)))
                     {
-                        RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
-                        return;
-                    }
-
-                    foreach (string file in Directory.GetFiles(folder))
-                    {
-                        string[] parts = file.Split(new char[] { '.', '\\' });
-                        if (parts.Length >= 2)
+                        try
                         {
-                            string name = parts[parts.Length - 2];
-                            if (loaded.Contains(name))
-                                continue;
+                            Assembly.LoadFrom(file);
+                            m_LoadedAssemblies.Add(name);
                         }
-
-                        if (file.EndsWith("oM.dll") || file.EndsWith("_Engine.dll") || file.EndsWith("_Adapter.dll") || file.EndsWith("_Test.dll"))
+                        catch
                         {
-                            try
-                            {
-                                Assembly.LoadFrom(file);
-                            }
-                            catch
-                            {
-                                RecordWarning("Failed to load assembly " + file);
-                            }
+                            RecordWarning("Failed to load assembly " + file);
                         }
                     }
                 }
             }
+
+            return result;
         }
 
         /***************************************************/
         /**** Private Static Fields                     ****/
         /***************************************************/
 
-        private static bool m_AssemblyAlreadyLoaded = false;
+        private static List<string> m_LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetName().Name).ToList();
         private static readonly object m_LoadAssembliesLock = new object();
 
         /***************************************************/

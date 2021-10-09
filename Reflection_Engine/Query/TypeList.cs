@@ -23,7 +23,9 @@
 using BH.oM.Base;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Reflection
 {
@@ -37,13 +39,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_InterfaceList != null && m_InterfaceList.Count > 0)
-                    return m_InterfaceList;
-
-                // Otherwise, create it
-                ExtractAllTypes();
-
+                ExtractTypesFromNewAssemblies();
                 return m_InterfaceList;
             }
         }
@@ -54,13 +50,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_BHoMTypeList != null && m_BHoMTypeList.Count > 0)
-                    return m_BHoMTypeList;
-
-                // Otherwise, create it
-                ExtractAllTypes();
-
+                ExtractTypesFromNewAssemblies();
                 return m_BHoMTypeList;
             }
         }
@@ -71,13 +61,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_AdapterTypeList != null && m_AdapterTypeList.Count > 0)
-                    return m_AdapterTypeList;
-
-                // Otherwise, create it
-                ExtractAllTypes();
-
+                ExtractTypesFromNewAssemblies();
                 return m_AdapterTypeList;
             }
         }
@@ -88,13 +72,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_AllTypeList != null && m_AllTypeList.Count > 0)
-                    return m_AllTypeList;
-
-                // Otherwise, create it
-                ExtractAllTypes();
-
+                ExtractTypesFromNewAssemblies();
                 return m_AllTypeList;
             }
         }
@@ -103,15 +81,9 @@ namespace BH.Engine.Reflection
 
         public static List<Type> EngineTypeList()
         {
-            lock (m_GetMethodsLock)
+            lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_EngineTypeList != null && m_EngineTypeList.Count > 0)
-                    return m_EngineTypeList;
-
-                // Otherwise, create it
-                ExtractAllMethods();
-
+                ExtractTypesFromNewAssemblies();
                 return m_EngineTypeList;
             }
         }
@@ -121,19 +93,16 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ExtractAllTypes()
+        private static void ExtractTypesFromNewAssemblies()
         {
-            m_BHoMTypeList = new List<Type>();
-            m_AdapterTypeList = new List<Type>();
-            m_InterfaceList = new List<Type>();
+            List<Assembly> assembliesToLoad = BHoMAssemblyList().Where(x => m_AssembliesWithLoadedTypes.All(y => x.GetName().Name != y)).ToList();
 
-            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly asm in assembliesToLoad)
             {
                 try
                 {
                     // Save BHoM objects only
-                    string name = asm.GetName().Name;
-                    if (name == "BHoM" || name.EndsWith("_oM"))
+                    if (asm.IsOmAssembly())
                     {
                         foreach (Type type in asm.GetTypes())
                         {
@@ -150,7 +119,7 @@ namespace BH.Engine.Reflection
                         }
                     }
                     // Save adapters
-                    else if (name.EndsWith("_Adapter"))
+                    else if (asm.IsAdapterAssembly())
                     {
                         foreach (Type type in asm.GetTypes())
                         {
@@ -161,7 +130,18 @@ namespace BH.Engine.Reflection
 
                                 m_AllTypeList.Add(type);
                             }
-                                
+
+                        }
+                    }
+                    // Save engine
+                    else if (asm.IsEngineAssembly())
+                    {
+                        foreach (Type type in asm.GetTypes())
+                        {
+                            if (regexEngineNamespace.IsMatch(type.Namespace))
+                                m_EngineTypeList.Add(type);
+
+                            m_AllTypeList.Add(type);
                         }
                     }
                     else
@@ -177,6 +157,8 @@ namespace BH.Engine.Reflection
                 {
                     Compute.RecordWarning("Cannot load types from assembly " + asm.GetName().Name);
                 }
+
+                m_AssembliesWithLoadedTypes.Add(asm.GetName().Name);
             }
         }
 
@@ -198,10 +180,14 @@ namespace BH.Engine.Reflection
         /**** Private Fields                            ****/
         /***************************************************/
 
+        private static Regex regexOmNamespace = new Regex(@"BH.*.oM.");
+        private static Regex regexEngineNamespace = new Regex(@"BH.*.Engine.");
+        private static List<string> m_AssembliesWithLoadedTypes = new List<string>();
         private static List<Type> m_BHoMTypeList = new List<Type>();
         private static List<Type> m_AdapterTypeList = new List<Type>();
         private static List<Type> m_AllTypeList = new List<Type>();
         private static List<Type> m_InterfaceList = new List<Type>();
+        private static List<Type> m_EngineTypeList = new List<Type>();
         private static readonly object m_GetTypesLock = new object();
 
         /***************************************************/

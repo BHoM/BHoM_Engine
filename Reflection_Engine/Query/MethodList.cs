@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Reflection
 {
@@ -37,13 +38,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                // If the dictionary exists already return it
-                if (m_BHoMMethodList != null && m_BHoMMethodList.Count > 0)
-                    return m_BHoMMethodList;
-
-                // Otherwise, create it
-                ExtractAllMethods();
-
+                ExtractMethodsFromNewAssemblies();
                 return m_BHoMMethodList;
             }
         }
@@ -54,13 +49,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                // If the dictionary exists already return it
-                if (m_AllMethodList != null && m_AllMethodList.Count > 0)
-                    return m_AllMethodList;
-
-                // Otherwise, create it
-                ExtractAllMethods();
-
+                ExtractMethodsFromNewAssemblies();
                 return m_AllMethodList;
             }
         }
@@ -71,11 +60,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                // Checking for an empty list may be dangerous, we should give different meaning to null and empty lists
-                // What if m_ExternalMethodList is empty after calling ExtractAllMethods() ?
-                if (m_ExternalMethodList == null || m_ExternalMethodList.Count <= 0)
-                    ExtractAllMethods();
-
+                ExtractMethodsFromNewAssemblies();
                 return m_ExternalMethodList;
             }
         }
@@ -85,23 +70,17 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ExtractAllMethods()
+        private static void ExtractMethodsFromNewAssemblies()
         {
-            Compute.LoadAllAssemblies();
-
-            m_BHoMMethodList = new List<MethodInfo>();
-            m_AllMethodList = new List<MethodBase>();
-            m_EngineTypeList = new List<Type>();
+            List<Assembly> assembliesToLoad = BHoMAssemblyList().Where(x => m_AssembliesWithLoadedMethods.All(y => x.GetName().Name != y)).ToList();
 
             BindingFlags bindingBHoM = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static;
-
-            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly asm in assembliesToLoad)
             {
                 try
                 {
                     // Save BHoM objects only
-                    string name = asm.GetName().Name;
-                    if (name.EndsWith("_Engine"))
+                    if (asm.IsEngineAssembly())
                     {
                         foreach (Type type in asm.GetTypes())
                         {
@@ -125,7 +104,7 @@ namespace BH.Engine.Reflection
                             StoreAllMethods(type);
                         }
                     }
-                    else if (name.EndsWith("oM") || name.EndsWith("_Adapter") || name.EndsWith("_UI") || name.EndsWith("_Test"))
+                    else if (asm.IsOmAssembly() || asm.IsAdapterAssembly() || asm.IsUiAssembly())
                     {
                         foreach (Type type in asm.GetTypes())
                         {
@@ -145,6 +124,8 @@ namespace BH.Engine.Reflection
 
                     Compute.RecordWarning(message);
                 }
+
+                m_AssembliesWithLoadedMethods.Add(asm.GetName().Name);
             }
         }
 
@@ -178,20 +159,18 @@ namespace BH.Engine.Reflection
                         Compute.RecordWarning(message);
                     }
                 }
-
-                if (type.Namespace.StartsWith("BH.Engine"))
-                    m_EngineTypeList.Add(type);
             }
         }
+
 
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
+        private static List<string> m_AssembliesWithLoadedMethods = new List<string>();
         private static List<MethodInfo> m_BHoMMethodList = new List<MethodInfo>();
         private static List<MethodBase> m_AllMethodList = new List<MethodBase>();
         private static List<MethodBase> m_ExternalMethodList = new List<MethodBase>();
-        private static List<Type> m_EngineTypeList = new List<Type>();
         private static readonly object m_GetMethodsLock = new object();
 
         /***************************************************/
