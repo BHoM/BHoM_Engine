@@ -43,7 +43,7 @@ namespace BH.Engine.Reflection
 
         public static bool IsUiAssembly(this string assemblyName)
         {
-            return assemblyName != null && (assemblyName.EndsWith("_UI") || regexUiAssembly.IsMatch(assemblyName));
+            return assemblyName != null && (assemblyName.StartsWith("BH.UI.") || assemblyName.EndsWith("_UI") || regexUiAssembly.IsMatch(assemblyName));
         }
 
 
