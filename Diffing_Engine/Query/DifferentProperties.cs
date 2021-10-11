@@ -142,6 +142,13 @@ namespace BH.Engine.Diffing
                         continue; // no match found, skip this property.
                 }
 
+                // If there is a PropertyDisplayNameModifier, invoke it to modify the property full name.
+                if (dc.ComparisonConfig.ComparisonFunctions?.PropertyDisplayNameModifier != null)
+                {
+                    propertyFullName = dc.ComparisonConfig.ComparisonFunctions.PropertyDisplayNameModifier.Invoke(propertyFullName, difference.ParentObject2);
+                    propertyFullName_noIndexes = propertyFullName;
+                }
+
                 // Add to the final result.
                 dict[propertyFullName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
