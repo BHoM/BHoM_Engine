@@ -47,7 +47,7 @@ namespace BH.Engine.Diffing
         {
             return objects.GroupBy(obj =>
                  obj.Hash(comparisonConfig, useExistingHash)
-            ).Select(gr => gr.First()).ToList();
+            ).Select(gr => gr.First());
         }
     }
 }
