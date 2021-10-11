@@ -209,8 +209,8 @@ namespace BH.Engine.Diffing
         public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, List<string> propertiesToConsider = null)
         {
             DiffingConfig dc = null;
-            if (toConsider?.Any() ?? false)
-                dc = new DiffingConfig() { ComparisonConfig = new ComparisonConfig { PropertiesToConsider = toConsider } };
+            if (propertiesToConsider?.Any() ?? false)
+                dc = new DiffingConfig() { ComparisonConfig = new ComparisonConfig { PropertiesToConsider = propertiesToConsider } };
 
             return IDiffing(pastObjs, followingObjs, DiffingType.Automatic, dc);
         }
