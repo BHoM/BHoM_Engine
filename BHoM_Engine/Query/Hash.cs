@@ -150,17 +150,8 @@ namespace BH.Engine.Base
             // Get the considered object type.
             Type type = obj?.GetType();
 
-            // Invoke the PropertyFullNameModifier, if specified.
-            if (cc.ComparisonFunctions?.PropertyFullNameModifier != null)
-                currentPropertyFullName = cc.ComparisonFunctions.PropertyFullNameModifier.Invoke(currentPropertyFullName, obj);
-
             // If the currentPropertyFullName is empty, it means we are at the top level of the object. We can consider the object type name as the currentPropertyFullName.
             currentPropertyFullName = string.IsNullOrWhiteSpace(currentPropertyFullName) ? type.FullName : currentPropertyFullName;
-
-            // Invoke the PropertyFullNameFilter, if specified.
-            if (cc.ComparisonFunctions?.PropertyFullNameFilter != null)
-                if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(currentPropertyFullName, obj))
-                    return "";
 
             // Determine the number of tabs that should precede the current property's definingString. Useful for visualizing the definingString e.g. in Notepad.
             string tabs = new String('\t', nestingLevel);
@@ -276,6 +267,15 @@ namespace BH.Engine.Base
                     object propertyValue = prop.GetValue(obj);
                     if (propertyValue != null)
                     {
+                        // Invoke the PropertyFullNameModifier, if specified.
+                        if (cc.ComparisonFunctions?.PropertyFullNameModifier != null)
+                            propertyPath = cc.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyPath, obj);
+
+                        // Invoke the PropertyFullNameFilter, if specified.
+                        if (cc.ComparisonFunctions?.PropertyFullNameFilter != null)
+                            if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyPath, obj))
+                                return "";
+
                         // Recurse for this property.
                         propertyHashString = DefiningString(propertyValue, cc, fractionalDigits, nestingLevel + 1, propertyPath) ?? "";
                         if (!string.IsNullOrWhiteSpace(propertyHashString))
