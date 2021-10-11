@@ -6,6 +6,7 @@
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	<RootNamespace>BH.Engine.Humans</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
