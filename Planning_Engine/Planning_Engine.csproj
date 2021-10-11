@@ -19,9 +19,13 @@
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Planning_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Planning_oM.dll</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
 
