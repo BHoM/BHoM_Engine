@@ -138,7 +138,7 @@ namespace BH.Engine.Diffing
                 // Check if the property Full name matches any of the specified PropertiesToConsider.
                 if (dc.ComparisonConfig.PropertiesToConsider.Any())
                 {
-                    if (!dc.ComparisonConfig.PropertiesToConsider.Any(ptc => propertyFullName == ptc || (propertyFullName.Contains(".") && propertyFullName.EndsWith(ptc))))
+                    if (!dc.ComparisonConfig.PropertiesToConsider.Any(ptc => propertyFullName == ptc || propertyFullName.EndsWith($".{ptc}")))
                         continue; // no match found, skip this property.
                 }
 
