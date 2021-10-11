@@ -43,6 +43,11 @@ namespace BH.Engine.Diffing
     public static partial class Compute
     {
         [Description("Dispatches to the most appropriate Diffing method, depending on the provided inputs.")]
+        [Input("pastObjs", "Set of objects belonging to a past (previous) revision.")]
+        [Input("followingObjs", "Set of objects belonging to a following revision.")]
+        [Input("diffingType", "(Optional) Defaults to Automatic. Allows to choose between different kinds of Diffing.")]
+        [Input("diffConfig", "(Optional) Additional settings for the Diffing.")]
+        [Output("diff", "Object holding the detected changes.")]
         public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingType diffingType = DiffingType.Automatic, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
@@ -192,6 +197,22 @@ namespace BH.Engine.Diffing
             }
 
             return outputDiff.CombineDiffs(fragmentDiff.CombineDiffs(diffGeneric));
+        }
+
+        /***************************************************/
+
+        [Description("Dispatches to the most appropriate Diffing method, depending on the provided inputs.")]
+        [Input("pastObjs", "Set of objects belonging to a past (previous) revision.")]
+        [Input("followingObjs", "Set of objects belonging to a following revision.")]
+        [Input("propertiesToConsider", "(Optional) Properties to be considered by the Diffing when determining what objects changed. See the DiffingConfig tooltip for more info.")]
+        [Output("diff", "Object holding the detected changes.")]
+        public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, List<string> toConsider = null)
+        {
+            DiffingConfig dc = null;
+            if (toConsider?.Any() ?? false)
+                dc = new DiffingConfig() { ComparisonConfig = new ComparisonConfig { PropertiesToConsider = toConsider } };
+
+            return IDiffing(pastObjs, followingObjs, DiffingType.Automatic, dc);
         }
 
 
