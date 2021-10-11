@@ -93,8 +93,9 @@ namespace BH.Engine.Base
             IBHoMObject bhomobj = iObj_copy as IBHoMObject;
             if (bhomobj != null)
             {
-                List<IHashFragment> hashFragments = bhomobj.GetAllFragments(typeof(IHashFragment)).OfType<IHashFragment>().ToList();
-                hashFragments.ForEach(f => bhomobj.Fragments.Remove(f.GetType()));
+                IEnumerable<IHashFragment> hashFragments = bhomobj.GetAllFragments(typeof(IHashFragment)).OfType<IHashFragment>();
+                if (hashFragments.Any())
+                    hashFragments.ToList().ForEach(f => bhomobj.Fragments.Remove(f.GetType()));
                 iObj_copy = bhomobj;
             }
 
@@ -161,12 +162,6 @@ namespace BH.Engine.Base
                 if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(currentPropertyFullName, obj))
                     return "";
 
-            // Get the parent property's full name.
-            List<string> currentPropertyFullNameComponents = currentPropertyFullName?.Split('.').ToList();
-            string currentParentPropertyFullName = "";
-            if (currentPropertyFullNameComponents != null)
-                currentParentPropertyFullName = string.Join(".", currentPropertyFullNameComponents.Take(currentPropertyFullNameComponents.Count - 1));
-
             // Determine the number of tabs that should precede the current property's definingString. Useful for visualizing the definingString e.g. in Notepad.
             string tabs = new String('\t', nestingLevel);
 
@@ -179,14 +174,14 @@ namespace BH.Engine.Base
                 || (cc.NamespaceExceptions != null && cc.NamespaceExceptions.Where(ex => type.Namespace.Contains(ex)).Any())
                 || nestingLevel >= cc.MaxNesting)
             {
-                return definingString;
+                return "";
             }
             else if (type.IsPrimitive || type == typeof(decimal) || type == typeof(String))
             {
                 if (type == typeof(double) || type == typeof(decimal) || type == typeof(float))
                 {
                     // Take care of fractional digits config option.
-                    if (cc.FractionalDigitsPerProperty?.Any() ?? false) 
+                    if (cc.FractionalDigitsPerProperty?.Any() ?? false)
                     {
                         int digitsToLimit = -1;
 
@@ -259,13 +254,11 @@ namespace BH.Engine.Base
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
 
                 PropertyInfo[] properties = type.GetProperties();
-                List<string> allDeclaredPropertyNames = BH.Engine.Reflection.Query.PropertyNames(type);
-                List<string> allDeclaredPropertyPaths = allDeclaredPropertyNames.Select(pn => $"{currentPropertyFullName}.{pn}").ToList();
 
                 if (cc.PropertiesToConsider?.Any() ?? false)
                 {
                     // The user specified some PropertiesToConsider.
-                    PopulateExceptionsFromPropertiesToConsider(cc, nestingLevel, currentParentPropertyFullName, allDeclaredPropertyPaths);
+                    PopulateExceptionsFromPropertiesToConsider(cc, nestingLevel, currentPropertyFullName, type);
                 }
 
                 // Iterate all properties
@@ -303,23 +296,34 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        public static void PopulateExceptionsFromPropertiesToConsider(ComparisonConfig cc, int nestingLevel, string currentPropertyFullName, IEnumerable<string> allDeclaredPropertyPaths)
+        // Populates the properties exceptions from the properties to consider.
+        private static void PopulateExceptionsFromPropertiesToConsider(ComparisonConfig cc, int nestingLevel, string currentPropertyFullName, Type currentObjType)
         {
+            // Get the current object's declared properties full names.
+            List<string> allDeclaredPropertyNames = BH.Engine.Reflection.Query.PropertyNames(currentObjType);
+            IEnumerable<string> allDeclaredPropertyFullNames = allDeclaredPropertyNames.Select(pn => $"{currentPropertyFullName}.{pn}");
+
+            // Get the parent property's full name.
+            string[] currentPropertyFullNameComponents = currentPropertyFullName?.Split('.');
+            string currentParentPropertyFullName = "";
+            if (currentPropertyFullNameComponents != null)
+                currentParentPropertyFullName = string.Join(".", currentPropertyFullNameComponents.Take(currentPropertyFullNameComponents.Count() - 1));
+
             // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
             List<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel).ToList();
 
             List<string> subPropsToConsider = cc.PropertiesToConsider
                 .Where(pTc => pTc.Count(c => c == '.') > nestingLevel)
-                .Where(ptc => currentPropertyFullName.EndsWith(string.Join(".", ptc.Take(nestingLevel))))
+                .Where(ptc => currentParentPropertyFullName.EndsWith(string.Join(".", ptc.Take(nestingLevel))))
                 .ToList();
 
             // Get the declaredPropertiesToConsider, which are the currentLevelPropertiesToConsider for which there is a match among this object's properties.
-            IEnumerable<string> declaredPropertiesToConsider = allDeclaredPropertyPaths.Where(pPath => currentLevelPropertiesToConsider.Any(ptc => pPath.EndsWith(ptc)));
+            IEnumerable<string> declaredPropertiesToConsider = allDeclaredPropertyFullNames.Where(pPath => currentLevelPropertiesToConsider.Any(ptc => pPath.EndsWith(ptc)));
 
             if (declaredPropertiesToConsider.Any())
             {
                 // All the remaining declaredProperties are to be added to the Exceptions.
-                IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(declaredPropertiesToConsider);
+                IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyFullNames.Except(declaredPropertiesToConsider);
                 cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
             }
 
@@ -338,10 +342,10 @@ namespace BH.Engine.Base
                     // If we found "parent type" (= current object) properties to consider from the SubPropertiesToConsider, add them to the exceptions.
 
                     // This is to ensure we record the "property path" form rather than "property name".
-                    IEnumerable<string> currentObjectPropertypathsToConsiderFromSubProps = allDeclaredPropertyPaths.Where(pp => currentObjectPropertiesToConsiderFromSubProps.Any(ptc => pp.EndsWith(ptc)));
+                    IEnumerable<string> currentObjectPropertypathsToConsiderFromSubProps = allDeclaredPropertyFullNames.Where(pp => currentObjectPropertiesToConsiderFromSubProps.Any(ptc => pp.EndsWith(ptc)));
 
                     // Obtain the exceptions and add them.
-                    IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyPaths.Except(currentObjectPropertypathsToConsiderFromSubProps);
+                    IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyFullNames.Except(currentObjectPropertypathsToConsiderFromSubProps);
                     cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
                 }
             }
