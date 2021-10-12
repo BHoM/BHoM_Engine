@@ -23,6 +23,7 @@
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -35,6 +36,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String)")]
         public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
         {
             List<Assembly> result = new List<Assembly>();
