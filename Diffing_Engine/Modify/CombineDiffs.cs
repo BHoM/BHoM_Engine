@@ -40,6 +40,9 @@ namespace BH.Engine.Diffing
     public static partial class Modify
     {
         [Description("Combines two given diffs into one, appending objects of the second to the first.")]
+        [Input("diff", "First diff object.")]
+        [Input("toAdd", "Second diff object.")]
+        [Output("diff", "Merged Diff object.")]
         public static Diff CombineDiffs(this Diff diff, Diff toAdd)
         {
             if (diff == null)
