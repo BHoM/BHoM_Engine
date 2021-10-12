@@ -52,7 +52,7 @@ namespace BH.Engine.Diffing
         public static Diff DiffWithFragmentId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjs, Type fragmentType = null, string fragmentIdProperty = null, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
-            if (DiffNullCheck(pastObjects, followingObjs, out outputDiff, diffConfig))
+            if (AnyInputNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffConfig))
                 return outputDiff;
 
             if (fragmentType == null || string.IsNullOrWhiteSpace(fragmentIdProperty))

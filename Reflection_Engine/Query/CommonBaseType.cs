@@ -41,10 +41,11 @@ namespace BH.Engine.Reflection
         {
             if (types == null || !types.Any())
                 return default(Type);
-            else if (types.Count == 1)
-                return types.First();
 
-            types = types.ToList();
+            types = types.Where(t => t != null).ToList();
+
+            if (types.Count <= 1)
+                return types.FirstOrDefault();
 
             bool foundCommonBaseType = false;
 

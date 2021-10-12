@@ -51,7 +51,7 @@ namespace BH.Engine.Diffing
         public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, DiffingConfig diffConfig = null, bool useExistingHash = false)
         {
             Diff outputDiff = null;
-            if (DiffNullCheck(pastObjects, followingObjs, out outputDiff, diffConfig))
+            if (AnyInputNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffConfig))
                 return outputDiff;
 
             BH.Engine.Reflection.Compute.RecordNote($"DiffWithHash cannot track modified objects between different revisions." +
