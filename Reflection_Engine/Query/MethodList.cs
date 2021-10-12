@@ -38,7 +38,9 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                ExtractAllMethods();
+                if (m_BHoMMethodList == null)
+                    ExtractAllMethods();
+
                 return m_BHoMMethodList;
             }
         }
@@ -49,7 +51,9 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                ExtractAllMethods();
+                if (m_AllMethodList == null)
+                    ExtractAllMethods();
+
                 return m_AllMethodList;
             }
         }
@@ -60,7 +64,9 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                ExtractAllMethods();
+                if (m_ExternalMethodList == null)
+                    ExtractAllMethods();
+
                 return m_ExternalMethodList;
             }
         }
@@ -149,7 +155,7 @@ namespace BH.Engine.Reflection
                     }
                     catch(Exception e)
                     {
-                        string message = "Cannot load method" + method.Name + " from type  " + type.Name + ". Exception message: " + e.Message;
+                        string message = "Cannot load method " + method.Name + " from type  " + type.Name + ". Exception message: " + e.Message;
 
                         if (!string.IsNullOrEmpty(e.InnerException?.Message))
                         {
