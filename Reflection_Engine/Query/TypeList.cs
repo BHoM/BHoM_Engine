@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,8 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<Type> BHoMInterfaceList()
+        [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
+        public static List<Type> BHoMInterfaceTypeList()
         {
             lock (m_GetTypesLock)
             {
