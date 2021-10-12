@@ -56,6 +56,10 @@ namespace BH.Engine.Reflection
                     return result;
                 }
 
+                string[] suffixes = { "oM", "_Engine", "_Adapter" };
+                if (!string.IsNullOrWhiteSpace(suffix))
+                    suffixes = suffixes.Select(x => x + suffix).ToArray();
+
                 foreach (string file in Directory.GetFiles(folder))
                 {
                     if (!file.EndsWith(".dll"))
@@ -68,10 +72,6 @@ namespace BH.Engine.Reflection
                     string name = parts[parts.Length - 2];
                     if (m_LoadedAssemblies.Contains(name))
                         continue;
-
-                    string[] suffixes = { "oM", "_Engine", "_Adapter" };
-                    if (!string.IsNullOrWhiteSpace(suffix))
-                        suffixes = suffixes.Select(x => $"x{suffix}").ToArray();
 
                     if (suffixes.Any(x => name.EndsWith(x)))
                     {
