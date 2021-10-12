@@ -37,8 +37,10 @@ namespace BH.Engine.Diffing
 {
     public static partial class Query
     {
-        [Description("Checks two BHoMObjects property by property and returns the differences")]
-        [Input("DiffingConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored")]
+        [Description("Checks two BHoMObjects property by property and returns the differences.")]
+        [Input("obj1", "First object to compare for differences.")]
+        [Input("obj2", "Second object to compare for differences.")]
+        [Input("diffingConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored.")]
         [Output("Dictionary whose key is the name of the property, and value is a tuple with the different values found in obj1 and obj2.\n" +
             "This dictionary can be 'exploded' in the UI by using `ListDifferentProperties` method.")]
         public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffingConfig diffingConfig = null)
