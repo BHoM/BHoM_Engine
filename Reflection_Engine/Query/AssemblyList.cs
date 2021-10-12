@@ -37,7 +37,10 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetAssembliesLock)
             {
-                return AllAssemblyList().Where(x => x.IsBHoM()).ToList();
+                if (m_BHoMAssemblies == null)
+                    ExtractAllAssemblies();
+
+                return m_BHoMAssemblies;
             }
         }
 
@@ -47,13 +50,32 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetAssembliesLock)
             {
-                return AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First()).ToList();
+                if (m_AllAssemblies == null)
+                    ExtractAllAssemblies();
+
+                return m_AllAssemblies;
             }
         }
 
+        /***************************************************/
+
+        public static void RefreshAssemblyList()
+        {
+            ExtractAllAssemblies();
+            ExtractAllTypes();
+            ExtractAllMethods();
+        }
 
         /***************************************************/
         /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ExtractAllAssemblies()
+        {
+            m_AllAssemblies = AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First()).ToList();
+            m_BHoMAssemblies = m_AllAssemblies.Where(x => x.IsBHoM()).ToList();
+        }
+
         /***************************************************/
 
         private static bool IsBHoM(this Assembly assembly)
@@ -67,6 +89,8 @@ namespace BH.Engine.Reflection
         /**** Private Fields                            ****/
         /***************************************************/
 
+        private static List<Assembly> m_BHoMAssemblies = null;
+        private static List<Assembly> m_AllAssemblies = null;
         private static readonly object m_GetAssembliesLock = new object();
 
         /***************************************************/

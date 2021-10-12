@@ -41,7 +41,7 @@ namespace BH.Engine.Reflection
 
                 // Otherwise, create it
                 m_BHoMTypeDictionary = new Dictionary<string, List<Type>>();
-                ExtractTypesFromNewAssemblies();
+                ExtractAllTypes();
 
                 return m_BHoMTypeDictionary;
             }

@@ -38,7 +38,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                ExtractMethodsFromNewAssemblies();
+                ExtractAllMethods();
                 return m_BHoMMethodList;
             }
         }
@@ -49,7 +49,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                ExtractMethodsFromNewAssemblies();
+                ExtractAllMethods();
                 return m_AllMethodList;
             }
         }
@@ -60,7 +60,7 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetMethodsLock)
             {
-                ExtractMethodsFromNewAssemblies();
+                ExtractAllMethods();
                 return m_ExternalMethodList;
             }
         }
@@ -70,12 +70,14 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ExtractMethodsFromNewAssemblies()
+        private static void ExtractAllMethods()
         {
-            List<Assembly> assembliesToLoad = BHoMAssemblyList().Where(x => m_AssembliesWithLoadedMethods.All(y => x.GetName().Name != y)).ToList();
+            m_BHoMMethodList = new List<MethodInfo>();
+            m_AllMethodList = new List<MethodBase>();
+            m_ExternalMethodList = new List<MethodBase>();
 
             BindingFlags bindingBHoM = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static;
-            foreach (Assembly asm in assembliesToLoad)
+            foreach (Assembly asm in BHoMAssemblyList())
             {
                 try
                 {
@@ -124,8 +126,6 @@ namespace BH.Engine.Reflection
 
                     Compute.RecordWarning(message);
                 }
-
-                m_AssembliesWithLoadedMethods.Add(asm.GetName().Name);
             }
         }
 
@@ -167,10 +167,9 @@ namespace BH.Engine.Reflection
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static List<string> m_AssembliesWithLoadedMethods = new List<string>();
-        private static List<MethodInfo> m_BHoMMethodList = new List<MethodInfo>();
-        private static List<MethodBase> m_AllMethodList = new List<MethodBase>();
-        private static List<MethodBase> m_ExternalMethodList = new List<MethodBase>();
+        private static List<MethodInfo> m_BHoMMethodList = null;
+        private static List<MethodBase> m_AllMethodList = null;
+        private static List<MethodBase> m_ExternalMethodList = null;
         private static readonly object m_GetMethodsLock = new object();
 
         /***************************************************/

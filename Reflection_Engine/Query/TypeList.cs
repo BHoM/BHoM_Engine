@@ -39,7 +39,9 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                ExtractTypesFromNewAssemblies();
+                if (m_InterfaceList == null)
+                    ExtractAllTypes();
+
                 return m_InterfaceList;
             }
         }
@@ -50,7 +52,9 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                ExtractTypesFromNewAssemblies();
+                if (m_BHoMTypeList == null)
+                    ExtractAllTypes();
+
                 return m_BHoMTypeList;
             }
         }
@@ -61,7 +65,9 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                ExtractTypesFromNewAssemblies();
+                if (m_AdapterTypeList == null)
+                    ExtractAllTypes();
+
                 return m_AdapterTypeList;
             }
         }
@@ -72,7 +78,9 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                ExtractTypesFromNewAssemblies();
+                if (m_AllTypeList == null)
+                    ExtractAllTypes();
+
                 return m_AllTypeList;
             }
         }
@@ -83,7 +91,9 @@ namespace BH.Engine.Reflection
         {
             lock (m_GetTypesLock)
             {
-                ExtractTypesFromNewAssemblies();
+                if (m_EngineTypeList == null)
+                    ExtractAllTypes();
+
                 return m_EngineTypeList;
             }
         }
@@ -93,11 +103,15 @@ namespace BH.Engine.Reflection
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ExtractTypesFromNewAssemblies()
+        private static void ExtractAllTypes()
         {
-            List<Assembly> assembliesToLoad = BHoMAssemblyList().Where(x => m_AssembliesWithLoadedTypes.All(y => x.GetName().Name != y)).ToList();
+            m_BHoMTypeList = new List<Type>();
+            m_AdapterTypeList = new List<Type>();
+            m_AllTypeList = new List<Type>();
+            m_InterfaceList = new List<Type>();
+            m_EngineTypeList = new List<Type>();
 
-            foreach (Assembly asm in assembliesToLoad)
+            foreach (Assembly asm in BHoMAssemblyList())
             {
                 try
                 {
@@ -162,8 +176,6 @@ namespace BH.Engine.Reflection
                 {
                     Compute.RecordWarning("Cannot load types from assembly " + asm.GetName().Name);
                 }
-
-                m_AssembliesWithLoadedTypes.Add(asm.GetName().Name);
             }
         }
 
@@ -185,15 +197,14 @@ namespace BH.Engine.Reflection
         /**** Private Fields                            ****/
         /***************************************************/
 
+        private static List<Type> m_BHoMTypeList = null;
+        private static List<Type> m_AdapterTypeList = null;
+        private static List<Type> m_AllTypeList = null;
+        private static List<Type> m_InterfaceList = null;
+        private static List<Type> m_EngineTypeList = null;
+        private static readonly object m_GetTypesLock = new object();
         private static Regex regexOmNamespace = new Regex(@"BH.*.oM.");
         private static Regex regexEngineNamespace = new Regex(@"BH.*.Engine.");
-        private static List<string> m_AssembliesWithLoadedTypes = new List<string>();
-        private static List<Type> m_BHoMTypeList = new List<Type>();
-        private static List<Type> m_AdapterTypeList = new List<Type>();
-        private static List<Type> m_AllTypeList = new List<Type>();
-        private static List<Type> m_InterfaceList = new List<Type>();
-        private static List<Type> m_EngineTypeList = new List<Type>();
-        private static readonly object m_GetTypesLock = new object();
 
         /***************************************************/
     }

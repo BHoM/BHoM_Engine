@@ -75,7 +75,8 @@ namespace BH.Engine.Reflection
                     {
                         try
                         {
-                            Assembly.LoadFrom(file);
+                            Assembly loaded = Assembly.LoadFrom(file);
+                            result.Add(loaded);
                             m_LoadedAssemblies.Add(name);
                         }
                         catch
@@ -85,6 +86,9 @@ namespace BH.Engine.Reflection
                     }
                 }
             }
+
+            if (result.Count != 0)
+                Query.RefreshAssemblyList();
 
             return result;
         }
