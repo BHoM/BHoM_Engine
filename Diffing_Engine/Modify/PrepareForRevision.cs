@@ -38,6 +38,10 @@ namespace BH.Engine.Diffing
 {
     public static partial class Modify
     {
+        [Description("Prepare a list of objects to be included in a Revision: sets the revision fragment with the object's hash, and removes any duplicates by hash.")]
+        [Input("objects", "Objects to be prepared for revision.")]
+        [Input("diffConfig", "(Optional) Additional options for the Diffing that will be used by the Revision. The DiffingConfig.ComparisonConfig will be used to compute the object's hash which will then be stored in the RevisionFragment.")]
+        [Output("The distinct (duplicates removed by hash) objects with a RevisionFragment assigned.")]
         public static IEnumerable<T> PrepareForRevision<T>(this IEnumerable<T> objects, DiffingConfig diffConfig = null) where T : IBHoMObject
         {
             if (!objects?.Any() ?? true)
