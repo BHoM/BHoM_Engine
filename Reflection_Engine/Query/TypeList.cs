@@ -24,7 +24,7 @@ using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -35,8 +35,10 @@ namespace BH.Engine.Reflection
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        
         [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
+        [Description("Returns all BHoM interface types loaded in the current domain.")]
+        [Output("types", "List of BHoM interface types loaded in the current domain.")]
         public static List<Type> BHoMInterfaceTypeList()
         {
             lock (m_GetTypesLock)
@@ -50,6 +52,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all BHoM types loaded in the current domain.")]
+        [Output("types", "List of BHoM types loaded in the current domain.")]
         public static List<Type> BHoMTypeList()
         {
             lock (m_GetTypesLock)
@@ -63,6 +67,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all BHoM adapter types loaded in the current domain.")]
+        [Output("types", "List of BHoM adapter types loaded in the current domain.")]
         public static List<Type> AdapterTypeList()
         {
             lock (m_GetTypesLock)
@@ -76,6 +82,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all types loaded in the current domain.")]
+        [Output("types", "List of all types loaded in the current domain.")]
         public static List<Type> AllTypeList()
         {
             lock (m_GetTypesLock)
@@ -89,6 +97,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all BHoM engine types loaded in the current domain.")]
+        [Output("types", "List of BHoM engine types loaded in the current domain.")]
         public static List<Type> EngineTypeList()
         {
             lock (m_GetTypesLock)

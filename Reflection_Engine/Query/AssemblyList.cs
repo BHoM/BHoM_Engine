@@ -20,10 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
@@ -33,6 +35,8 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns all BHoM assemblies loaded in the current domain.")]
+        [Output("assemblies", "List of BHoM assemblies loaded in the current domain.")]
         public static List<Assembly> BHoMAssemblyList()
         {
             lock (m_GetAssembliesLock)
@@ -46,6 +50,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all assemblies loaded in the current domain.")]
+        [Output("assemblies", "List of all assemblies loaded in the current domain.")]
         public static List<Assembly> AllAssemblyList()
         {
             lock (m_GetAssembliesLock)
@@ -59,6 +65,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Refreshes the lists of loaded assemblies and, in consequence, loaded types and methods.")]
         public static void RefreshAssemblyList()
         {
             ExtractAllAssemblies();

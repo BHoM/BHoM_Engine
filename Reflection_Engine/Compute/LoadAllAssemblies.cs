@@ -37,6 +37,11 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String)")]
+        [Description("Loads all .dll assemblies with names ending with oM, _Engine and _Adapter (with optional suffixes) from a given folder.")]
+        [Input("folder", "Folder to load the assemblies from. If left empty, default BHoM assemblies folder will be used.")]
+        [Input("suffix", "Suffix to be added to the standard BHoM library endings (oM, _Engine, _Adapter) when parsing the folder.\n"+
+               "For example, if this value is equal to '_2018', assemblies ending with oM_2018, _Engine_2018 or _Adapter_2018 will be loaded.")]
+        [Output("assemblies", "Assemblies loaded in this method call.")]
         public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
         {
             List<Assembly> result = new List<Assembly>();

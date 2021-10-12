@@ -20,11 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using System;
-using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace BH.Engine.Reflection
 {
@@ -34,6 +32,9 @@ namespace BH.Engine.Reflection
         /****               Public Method               ****/
         /***************************************************/
 
+        [Description("Checks whether a given assembly is a BHoM adapter assembly.")]
+        [Input("assembly", "Assembly to be checked whether it is a BHoM adapter assembly.")]
+        [Output("isAdapter", "True if the input assembly is a BHoM adapter assembly.")]
         public static bool IsAdapterAssembly(this Assembly assembly)
         {
             return assembly.GetName().Name.IsAdapterAssembly();
@@ -41,6 +42,9 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Checks whether a given assembly name follows the BHoM adapter assembly naming convention.")]
+        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM adapter assembly naming convention.")]
+        [Output("isAdapter", "True if the input assembly name follows the BHoM adapter assembly naming convention.")]
         public static bool IsAdapterAssembly(this string assemblyName)
         {
             return assemblyName != null && (assemblyName.EndsWith("_Adapter") || assemblyName.Contains("_Adapter_"));
