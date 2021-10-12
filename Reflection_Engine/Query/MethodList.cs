@@ -20,11 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
@@ -34,6 +35,8 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns all BHoM methods loaded in the current domain.")]
+        [Output("methods", "List of BHoM methods loaded in the current domain.")]
         public static List<MethodInfo> BHoMMethodList()
         {
             lock (m_GetMethodsLock)
@@ -47,6 +50,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all methods loaded in the current domain.")]
+        [Output("methods", "List of all methods loaded in the current domain.")]
         public static List<MethodBase> AllMethodList()
         {
             lock (m_GetMethodsLock)
@@ -60,6 +65,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all external methods loaded in the current domain.")]
+        [Output("methods", "List of external methods loaded in the current domain.")]
         public static List<MethodBase> ExternalMethodList()
         {
             lock (m_GetMethodsLock)

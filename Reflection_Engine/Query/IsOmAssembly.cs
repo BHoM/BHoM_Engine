@@ -20,11 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using System;
-using System.Collections.Generic;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace BH.Engine.Reflection
 {
@@ -34,13 +32,19 @@ namespace BH.Engine.Reflection
         /****               Public Method               ****/
         /***************************************************/
 
+        [Description("Checks whether a given assembly is a BHoM oM assembly.")]
+        [Input("assembly", "Assembly to be checked whether it is a BHoM oM assembly.")]
+        [Output("isOm", "True if the input assembly is a BHoM oM assembly.")]
         public static bool IsOmAssembly(this Assembly assembly)
         {
-            return assembly.GetName().Name.IsOmAssembly();
+            return assembly != null && assembly.GetName().Name.IsOmAssembly();
         }
 
         /***************************************************/
 
+        [Description("Checks whether a given assembly name follows the BHoM oM assembly naming convention.")]
+        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM oM assembly naming convention.")]
+        [Output("isOm", "True if the input assembly name follows the BHoM oM assembly naming convention.")]
         public static bool IsOmAssembly(this string assemblyName)
         {
             return assemblyName != null && (assemblyName == "BHoM" || assemblyName.EndsWith("_oM") || assemblyName.Contains("_oM_"));
