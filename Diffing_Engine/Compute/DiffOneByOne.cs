@@ -52,7 +52,7 @@ namespace BH.Engine.Diffing
         public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
-            if (DiffNullCheck(pastObjects, currentObjects, out outputDiff, diffConfig))
+            if (AnyInputNullOrEmpty(pastObjects, currentObjects, out outputDiff, diffConfig))
                 return outputDiff;
 
             if (pastObjects.Count() != currentObjects.Count())
@@ -88,7 +88,7 @@ namespace BH.Engine.Diffing
                     modifiedObjects.Add(currentObjects_cloned[i]);
                     anyChangeDetected = true;
                 }
-                else if (diffConfig.IncludeUnchangedObjects)
+                else if (diffConfigCopy.IncludeUnchangedObjects)
                     unchangedObjects.Add(currentObjects_cloned[i]);
 
                 allModifiedProps[$"Object #{i}"] = modifiedProps ?? new Dictionary<string, Tuple<object, object>>();

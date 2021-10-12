@@ -71,7 +71,7 @@ namespace BH.Engine.Diffing
         private static Diff DiffRevisionObjects(IEnumerable<object> pastRevisionObjs, IEnumerable<object> followingRevisionObjs, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
-            if (DiffNullCheck(pastRevisionObjs, followingRevisionObjs, out outputDiff, diffingConfig))
+            if (AnyInputNullOrEmpty(pastRevisionObjs, followingRevisionObjs, out outputDiff, diffingConfig))
                 return outputDiff;
 
             // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.
@@ -115,7 +115,7 @@ namespace BH.Engine.Diffing
         private static Diff DiffRevisionObjects(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
-            if (DiffNullCheck(pastObjects, currentObjects, out outputDiff, diffingConfig))
+            if (AnyInputNullOrEmpty(pastObjects, currentObjects, out outputDiff, diffingConfig))
                 return outputDiff;
 
             // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.

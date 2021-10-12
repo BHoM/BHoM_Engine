@@ -103,7 +103,7 @@ namespace BH.Engine.Diffing
             if (iObj != null)
                 return iObj.Hash(ComparisonConfig).GetHashCode();
 
-            return obj.GetHashCode();
+            return obj?.GetHashCode() ?? 0;
         }
 
         /***************************************************/

@@ -46,11 +46,11 @@ namespace BH.Engine.Diffing
         public static Dictionary<string, Tuple<object, object>> DifferentProperties(this object obj1, object obj2, DiffingConfig diffingConfig = null)
         {
             bool differentTypes = false;
-            Type commonType = obj1.GetType();
-            if (commonType != obj2.GetType())
+            Type commonType = obj1?.GetType();
+            if (commonType != obj2?.GetType())
             {
                 differentTypes = true;
-                commonType = BH.Engine.Reflection.Query.CommonBaseType(new List<Type>() { obj1.GetType(), obj2.GetType() });
+                commonType = BH.Engine.Reflection.Query.CommonBaseType(new List<Type>() { obj1?.GetType(), obj2?.GetType() });
             }
 
             // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.

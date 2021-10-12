@@ -51,7 +51,7 @@ namespace BH.Engine.Diffing
         public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingType diffingType = DiffingType.Automatic, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
-            if (DiffNullCheck(pastObjs, followingObjs, out outputDiff, diffConfig))
+            if (AnyInputNullOrEmpty(pastObjs, followingObjs, out outputDiff, diffConfig))
                 return outputDiff;
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
@@ -222,23 +222,18 @@ namespace BH.Engine.Diffing
 
         // Returns true if one or both the input collections are empty or null,
         // in which case the `out Diff` parameter is assigned with a Diff populated with the information provided.
-        private static bool DiffNullCheck(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, out Diff diff, DiffingConfig diffingConfig = null)
+        private static bool AnyInputNullOrEmpty(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, out Diff diff, DiffingConfig diffingConfig = null)
         {
             diff = null;
 
             bool nullOrEmpty_pastObjects = !pastObjects?.Any() ?? true;
             bool nullOrEmpty_followingObjs = !pastObjects?.Any() ?? true;
 
-            // Check for null or empty pastObjects
-            if (nullOrEmpty_pastObjects)
-                diff = new Diff(followingObjs, new List<object>(), new List<object>(), diffingConfig ?? new DiffingConfig());
+            pastObjects = nullOrEmpty_pastObjects ? new List<object>() : pastObjects;
+            followingObjs = nullOrEmpty_followingObjs ? new List<object>() : followingObjs;
 
-            // Check for null or empty followingObjs
-            if (nullOrEmpty_followingObjs)
-                diff = new Diff(new List<object>(), pastObjects, new List<object>(), diffingConfig ?? new DiffingConfig());
-
-            if (nullOrEmpty_pastObjects && nullOrEmpty_followingObjs)
-                diff = new Diff(new List<object>(), new List<object>(), new List<object>(), diffingConfig ?? new DiffingConfig());
+            if (nullOrEmpty_pastObjects || nullOrEmpty_followingObjs)
+                diff = new Diff(followingObjs, pastObjects, new List<object>(), diffingConfig ?? new DiffingConfig());
 
             return nullOrEmpty_pastObjects || nullOrEmpty_followingObjs;
         }

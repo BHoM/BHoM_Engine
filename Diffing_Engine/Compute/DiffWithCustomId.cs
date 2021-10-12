@@ -52,7 +52,7 @@ namespace BH.Engine.Diffing
         public static Diff DiffWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjs, string customdataIdKey, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
-            if (DiffNullCheck(pastObjects, followingObjs, out outputDiff, diffConfig))
+            if (AnyInputNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffConfig))
                 return outputDiff;
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
