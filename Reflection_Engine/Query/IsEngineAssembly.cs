@@ -43,15 +43,8 @@ namespace BH.Engine.Reflection
 
         public static bool IsEngineAssembly(this string assemblyName)
         {
-            return assemblyName != null && (assemblyName.EndsWith("_Engine") || regexEngineAssembly.IsMatch(assemblyName));
+            return assemblyName != null && (assemblyName.EndsWith("_Engine") || assemblyName.Contains("_Engine_"));
         }
-
-
-        /***************************************************/
-        /****               Private Fields              ****/
-        /***************************************************/
-
-        private static Regex regexEngineAssembly = new Regex(@".*_Engine_\d{4}$");
 
         /***************************************************/
     }

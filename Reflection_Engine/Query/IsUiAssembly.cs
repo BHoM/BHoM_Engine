@@ -43,15 +43,8 @@ namespace BH.Engine.Reflection
 
         public static bool IsUiAssembly(this string assemblyName)
         {
-            return assemblyName != null && (assemblyName.StartsWith("BH.UI.") || assemblyName.EndsWith("_UI") || regexUiAssembly.IsMatch(assemblyName));
+            return assemblyName != null && (assemblyName.StartsWith("BH.UI.") || assemblyName.EndsWith("_UI") || assemblyName.Contains("_UI_"));
         }
-
-
-        /***************************************************/
-        /****               Private Fields              ****/
-        /***************************************************/
-
-        private static Regex regexUiAssembly = new Regex(@".*_UI_\d{4}$");
 
         /***************************************************/
     }

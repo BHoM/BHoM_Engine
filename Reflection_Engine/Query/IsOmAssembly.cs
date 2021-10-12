@@ -43,15 +43,8 @@ namespace BH.Engine.Reflection
 
         public static bool IsOmAssembly(this string assemblyName)
         {
-            return assemblyName != null && (assemblyName == "BHoM" || assemblyName.EndsWith("_oM") || regexOmAssembly.IsMatch(assemblyName));
+            return assemblyName != null && (assemblyName == "BHoM" || assemblyName.EndsWith("_oM") || assemblyName.Contains("_oM_"));
         }
-
-
-        /***************************************************/
-        /****               Private Fields              ****/
-        /***************************************************/
-
-        private static Regex regexOmAssembly = new Regex(@".*_oM_\d{4}$");
 
         /***************************************************/
     }

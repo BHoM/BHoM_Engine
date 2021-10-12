@@ -43,15 +43,8 @@ namespace BH.Engine.Reflection
 
         public static bool IsAdapterAssembly(this string assemblyName)
         {
-            return assemblyName != null && (assemblyName.EndsWith("_Adapter") || regexAdapterAssembly.IsMatch(assemblyName));
+            return assemblyName != null && (assemblyName.EndsWith("_Adapter") || assemblyName.Contains("_Adapter_"));
         }
-
-
-        /***************************************************/
-        /****               Private Fields              ****/
-        /***************************************************/
-
-        private static Regex regexAdapterAssembly = new Regex(@".*_Adapter_\d{4}$");
 
         /***************************************************/
     }
