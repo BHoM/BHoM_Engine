@@ -75,7 +75,7 @@ namespace BH.Engine.Reflection
         [Input("onlyBHoM", "Only return referenced assemblies that are part of the BHoM.")]
         [Input("goDeep", "Recursively collect all references so that indirect references are also returned.")]
         [Output("assemblies", "List of assemblies referenced by the input assemblies.")]
-        public static List<string> UsedAssemblies(List<string> assemblyNames, bool onlyBHoM = false, bool goDeep = false)
+        public static List<string> UsedAssemblies(this List<string> assemblyNames, bool onlyBHoM = false, bool goDeep = false)
         {
             if (assemblyNames == null)
             {

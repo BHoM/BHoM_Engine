@@ -34,71 +34,10 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //TODO: remove this?
         public static void LoadAllAssemblies(string folder = "")
         {
             LoadAssemblies();
         }
-
-        public static List<Assembly> LoadAssemblies(string folder = "", string suffix = "")
-        {
-            List<Assembly> result = new List<Assembly>();
-            lock (m_LoadAssembliesLock)
-            {
-                if (string.IsNullOrEmpty(folder))
-                    folder = Query.BHoMFolder();
-
-                if (!Directory.Exists(folder))
-                {
-                    RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
-                    return result;
-                }
-
-                foreach (string file in Directory.GetFiles(folder))
-                {
-                    if (!file.EndsWith(".dll"))
-                        continue;
-
-                    string[] parts = file.Split(new char[] { '.', '\\' });
-                    if (parts.Length < 2)
-                        continue;
-
-                    string name = parts[parts.Length - 2];
-                    if (m_LoadedAssemblies.Contains(name))
-                        continue;
-
-                    string[] suffixes = { "oM", "_Engine", "_Adapter" };
-                    if (!string.IsNullOrWhiteSpace(suffix))
-                        suffixes = suffixes.Select(x => $"x{suffix}").ToArray();
-
-                    if (suffixes.Any(x => name.EndsWith(x)))
-                    {
-                        try
-                        {
-                            Assembly loaded = Assembly.LoadFrom(file);
-                            result.Add(loaded);
-                            m_LoadedAssemblies.Add(name);
-                        }
-                        catch
-                        {
-                            RecordWarning("Failed to load assembly " + file);
-                        }
-                    }
-                }
-            }
-
-            if (result.Count != 0)
-                Query.RefreshAssemblyList();
-
-            return result;
-        }
-
-        /***************************************************/
-        /**** Private Static Fields                     ****/
-        /***************************************************/
-
-        private static List<string> m_LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetName().Name).ToList();
-        private static readonly object m_LoadAssembliesLock = new object();
 
         /***************************************************/
     }
