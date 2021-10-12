@@ -48,6 +48,7 @@ namespace BH.Engine.Diffing
         [Input("fragmentType", "(Optional - defaults to the `IPersistentId` fragment)\nFragment Type where the Id of the objects may be found in the BHoMObjects. The diff will be attempted using the Ids found there.")]
         [Input("fragmentIdProperty", "(Optional - defaults to `PersistentId`)\nName of the property of the Fragment where the Id is stored.")]
         [Input("diffConfig", "(Optional) Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        [Output("diff", "Object holding the detected changes.")]
         public static Diff DiffWithFragmentId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, Type fragmentType = null, string fragmentIdProperty = null, DiffingConfig diffConfig = null)
         {
             if (fragmentType == null || string.IsNullOrWhiteSpace(fragmentIdProperty))

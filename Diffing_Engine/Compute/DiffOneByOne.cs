@@ -48,6 +48,7 @@ namespace BH.Engine.Diffing
         [Input("pastObjects", "Past objects. Objects whose creation precedes 'currentObjects'.")]
         [Input("currentObjects", "Following objects. Objects that were created after 'pastObjects'.")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        [Output("diff", "Object holding the detected changes.")]
         public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null)
         {
             if (pastObjects.Count() != currentObjects.Count())

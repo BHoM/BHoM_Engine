@@ -45,7 +45,8 @@ namespace BH.Engine.Diffing
         [Description("Computes the diffing for Revisions containing objects of any type (also non-BHoMObjects).")]
         [Input("pastRevision", "A past Revision. It must have been created before the 'followingRevision'.")]
         [Input("followingRevision", "A following Revision. It must have been created after 'pastRevision'.")]
-        [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        [Input("diffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        [Output("diff", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         public static Diff DiffRevisions(Revision pastRevision, Revision followingRevision, DiffingConfig diffingConfig = null)
         {
             if (pastRevision == null)

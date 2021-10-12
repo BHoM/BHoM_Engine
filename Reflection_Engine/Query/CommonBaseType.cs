@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
         [Description("Returns the base type that is common to all types in the input list.")]
         [Input("types", "List of types to search for a common base type.")]
         [Output("commonBaseType", "Base type that is common to all types in the input list. If none is found, there is always System.Object.")]
-        public static Type CommonBaseType(List<Type> types)
+        public static Type CommonBaseType(this List<Type> types)
         {
             if (types == null || !types.Any())
                 return default(Type);
