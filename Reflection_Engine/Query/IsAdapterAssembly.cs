@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
         [Output("isAdapter", "True if the input assembly is a BHoM adapter assembly.")]
         public static bool IsAdapterAssembly(this Assembly assembly)
         {
-            return assembly.GetName().Name.IsAdapterAssembly();
+            return assembly != null && assembly.GetName().Name.IsAdapterAssembly();
         }
 
         /***************************************************/

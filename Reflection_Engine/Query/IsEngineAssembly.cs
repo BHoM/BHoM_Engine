@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
         [Output("isEngine", "True if the input assembly is a BHoM engine assembly.")]
         public static bool IsEngineAssembly(this Assembly assembly)
         {
-            return assembly.GetName().Name.IsEngineAssembly();
+            return assembly != null && assembly.GetName().Name.IsEngineAssembly();
         }
 
         /***************************************************/

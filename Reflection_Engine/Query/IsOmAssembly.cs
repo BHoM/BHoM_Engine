@@ -20,13 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace BH.Engine.Reflection
 {
@@ -41,7 +37,7 @@ namespace BH.Engine.Reflection
         [Output("isOm", "True if the input assembly is a BHoM oM assembly.")]
         public static bool IsOmAssembly(this Assembly assembly)
         {
-            return assembly.GetName().Name.IsOmAssembly();
+            return assembly != null && assembly.GetName().Name.IsOmAssembly();
         }
 
         /***************************************************/

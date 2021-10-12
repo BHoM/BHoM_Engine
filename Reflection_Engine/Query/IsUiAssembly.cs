@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
         [Output("isUi", "True if the input assembly is a BHoM UI assembly.")]
         public static bool IsUiAssembly(this Assembly assembly)
         {
-            return assembly.GetName().Name.IsUiAssembly();
+            return assembly != null && assembly.GetName().Name.IsUiAssembly();
         }
 
         /***************************************************/
