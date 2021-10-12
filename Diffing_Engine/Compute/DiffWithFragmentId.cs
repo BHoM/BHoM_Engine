@@ -44,13 +44,17 @@ namespace BH.Engine.Diffing
     {
         [Description("Computes the Diffing for BHoMObjects based on an id stored in a Fragment.")]
         [Input("pastObjects", "A set of objects coming from a past revision")]
-        [Input("currentObjects", "A set of objects coming from a following Revision")]
+        [Input("followingObjs", "A set of objects coming from a following Revision")]
         [Input("fragmentType", "(Optional - defaults to the `IPersistentId` fragment)\nFragment Type where the Id of the objects may be found in the BHoMObjects. The diff will be attempted using the Ids found there.")]
         [Input("fragmentIdProperty", "(Optional - defaults to `PersistentId`)\nName of the property of the Fragment where the Id is stored.")]
         [Input("diffConfig", "(Optional) Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         [Output("diff", "Object holding the detected changes.")]
-        public static Diff DiffWithFragmentId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, Type fragmentType = null, string fragmentIdProperty = null, DiffingConfig diffConfig = null)
+        public static Diff DiffWithFragmentId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjs, Type fragmentType = null, string fragmentIdProperty = null, DiffingConfig diffConfig = null)
         {
+            Diff outputDiff = null;
+            if (DiffNullCheck(pastObjects, followingObjs, out outputDiff, diffConfig))
+                return outputDiff;
+
             if (fragmentType == null || string.IsNullOrWhiteSpace(fragmentIdProperty))
             {
                 fragmentType = typeof(IPersistentAdapterId);
@@ -70,7 +74,7 @@ namespace BH.Engine.Diffing
             }
 
             // Clone for immutability
-            List<IBHoMObject> currentObjs = currentObjects.DeepClone().ToList();
+            List<IBHoMObject> currentObjs = followingObjs.DeepClone().ToList();
             List<IBHoMObject> pastObjs = pastObjects.DeepClone().ToList();
 
             string customDataIdKey = fragmentType.Name + "_fragmentId";

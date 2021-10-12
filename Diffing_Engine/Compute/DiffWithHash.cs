@@ -44,12 +44,16 @@ namespace BH.Engine.Diffing
     {
         [Description("Computes the diffing using the Hash of the specified objects. If objects do not have an hash, compute it.")]
         [Input("pastObjects", "Objects whose creation predates 'currentObjects'.")]
-        [Input("currentObjects", "Following objects. Objects that were created after 'pastObjects'.")]
+        [Input("followingObjs", "Following objects. Objects that were created after 'pastObjects'.")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-level diffing.")]
         [Input("useExistingHash", "Advanced setting. If the objects already have an HashFragment assigned, but that only has the 'currentHash' populated. Can be used to avoid recomputing hash in some scenarios.")]
         [Output("diff", "Object holding the detected changes.")]
-        public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null, bool useExistingHash = false)
+        public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, DiffingConfig diffConfig = null, bool useExistingHash = false)
         {
+            Diff outputDiff = null;
+            if (DiffNullCheck(pastObjects, followingObjs, out outputDiff, diffConfig))
+                return outputDiff;
+
             BH.Engine.Reflection.Compute.RecordNote($"DiffWithHash cannot track modified objects between different revisions." +
                 $"\nIt will simply return the objects that appear exclusively in the past set (`{nameof(Diff.RemovedObjects)}`), in the following set (`{nameof(Diff.AddedObjects)}`), and in both (`{nameof(Diff.UnchangedObjects)}`)." +
                 $"\nConsider using '{nameof(DiffWithCustomId)}', '{nameof(DiffWithFragmentId)}' or '{nameof(DiffRevisions)}' if this feature is needed.");
@@ -59,7 +63,7 @@ namespace BH.Engine.Diffing
 
             // Clone objects for immutability in the UI.
             List<object> pastObjects_cloned = BH.Engine.Base.Query.DeepClone(pastObjects).ToList();
-            List<object> currentObjects_cloned = BH.Engine.Base.Query.DeepClone(currentObjects).ToList();
+            List<object> currentObjects_cloned = BH.Engine.Base.Query.DeepClone(followingObjs).ToList();
 
             if (!useExistingHash)
             {

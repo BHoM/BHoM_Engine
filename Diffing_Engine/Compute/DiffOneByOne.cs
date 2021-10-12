@@ -51,6 +51,10 @@ namespace BH.Engine.Diffing
         [Output("diff", "Object holding the detected changes.")]
         public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null)
         {
+            Diff outputDiff = null;
+            if (DiffNullCheck(pastObjects, currentObjects, out outputDiff, diffConfig))
+                return outputDiff;
+
             if (pastObjects.Count() != currentObjects.Count())
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Input collections must be of the same length for '{nameof(DiffOneByOne)}' to work.");

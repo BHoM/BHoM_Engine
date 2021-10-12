@@ -44,13 +44,17 @@ namespace BH.Engine.Diffing
     {
         [Description("Computes the Diffing for BHoMObjects based on an id stored in their CustomData.")]
         [Input("pastObjects", "A set of objects coming from a past revision")]
-        [Input("currentObjects", "A set of objects coming from a following Revision")]
+        [Input("followingObjs", "A set of objects coming from a following Revision")]
         [Input("customdataIdKey", "Name of the key where the Id of the objects may be found in the BHoMObjects' CustomData. The diff will be attempted using the Ids found there." +
             "\nE.g. 'Revit_UniqueId' may be used; an id must be stored under object.CustomData['Revit_UniqueId'].")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         [Output("diff", "Object holding the detected changes.")]
-        public static Diff DiffWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdKey, DiffingConfig diffConfig = null)
+        public static Diff DiffWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjs, string customdataIdKey, DiffingConfig diffConfig = null)
         {
+            Diff outputDiff = null;
+            if (DiffNullCheck(pastObjects, followingObjs, out outputDiff, diffConfig))
+                return outputDiff;
+
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffingConfig diffConfigCopy = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();
 
@@ -58,11 +62,11 @@ namespace BH.Engine.Diffing
             HashSet<string> pastObjectsIds = new HashSet<string>();
 
             // Verifies inputs and populates the id lists.
-            ProcessObjectsForDiffing(pastObjects, currentObjects, customdataIdKey, out currentObjectsIds, out pastObjectsIds);
+            ProcessObjectsForDiffing(pastObjects, followingObjs, customdataIdKey, out currentObjectsIds, out pastObjectsIds);
 
             // Actual diffing
             // Clone for immutability in the UI
-            List<IBHoMObject> currentObjs = currentObjects.ToList();
+            List<IBHoMObject> currentObjs = followingObjs.ToList();
             List<IBHoMObject> pastObjs = pastObjects.ToList();
 
             // Make dictionary with object ids to speed up the next lookups
@@ -149,11 +153,11 @@ namespace BH.Engine.Diffing
             {
                 // If there is no overlap in the keys between the two sets, add a warning.
                 BH.Engine.Reflection.Compute.RecordWarning($"No comparison could be done:" +
-                    $"\nthe provided Id of the objects were completely different between {nameof(pastObjects)} and {nameof(currentObjects)}." +
+                    $"\nthe provided Id of the objects were completely different between {nameof(pastObjects)} and {nameof(followingObjs)}." +
                     $"\nPlease make sure that:" +
                     $"\n\t * The input objects constitute the entirety of the model that changed between revisions;" +
                     $"\n\t * the input objects come from models that were not completely re-created between revisions." +
-                    $"\nConsequently, the objects of the {nameof(currentObjects)} set were identified as all {(newObjs.Any() ? "New" : "Deleted")}.");
+                    $"\nConsequently, the objects of the {nameof(followingObjs)} set were identified as all {(newObjs.Any() ? "New" : "Deleted")}.");
             }
 
             if (currObjs_dict.Keys.Intersect(pastObjs_dict.Keys).Any() && diffConfigCopy.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())

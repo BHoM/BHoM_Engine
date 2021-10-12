@@ -40,6 +40,9 @@ namespace BH.Engine.Diffing
     {
         public static IEnumerable<T> PrepareForRevision<T>(this IEnumerable<T> objects, DiffingConfig diffConfig = null) where T : IBHoMObject
         {
+            if (!objects?.Any() ?? true)
+                return null;
+
             // Clone the current objects to preserve immutability; calculate and set the hash fragment
             IEnumerable<T> objs_cloned = Modify.SetRevisionFragment(objects, diffConfig);
 
