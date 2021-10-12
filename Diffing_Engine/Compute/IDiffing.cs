@@ -51,8 +51,8 @@ namespace BH.Engine.Diffing
         public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingType diffingType = DiffingType.Automatic, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
-            if (!pastObjs.Any() && !followingObjs.Any())
-                return null;
+            if (DiffNullCheck(pastObjs, followingObjs, out outputDiff, diffConfig))
+                return outputDiff;
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffingConfig dc = diffConfig == null ? new DiffingConfig() : diffConfig.DeepClone();
@@ -218,6 +218,31 @@ namespace BH.Engine.Diffing
 
         /***************************************************/
         /**** Private Methods                           ****/
+        /***************************************************/
+
+        // Returns true if one or both the input collections are empty or null,
+        // in which case the `out Diff` parameter is assigned with a Diff populated with the information provided.
+        private static bool DiffNullCheck(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, out Diff diff, DiffingConfig diffingConfig = null)
+        {
+            diff = null;
+
+            bool nullOrEmpty_pastObjects = !pastObjects?.Any() ?? true;
+            bool nullOrEmpty_followingObjs = !pastObjects?.Any() ?? true;
+
+            // Check for null or empty pastObjects
+            if (nullOrEmpty_pastObjects)
+                diff = new Diff(followingObjs, new List<object>(), new List<object>(), diffingConfig ?? new DiffingConfig());
+
+            // Check for null or empty followingObjs
+            if (nullOrEmpty_followingObjs)
+                diff = new Diff(new List<object>(), pastObjects, new List<object>(), diffingConfig ?? new DiffingConfig());
+
+            if (nullOrEmpty_pastObjects && nullOrEmpty_followingObjs)
+                diff = new Diff(new List<object>(), new List<object>(), new List<object>(), diffingConfig ?? new DiffingConfig());
+
+            return nullOrEmpty_pastObjects || nullOrEmpty_followingObjs;
+        }
+
         /***************************************************/
 
         private static Diff DiffingError(DiffingType diffingType)

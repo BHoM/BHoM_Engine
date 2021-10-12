@@ -70,6 +70,10 @@ namespace BH.Engine.Diffing
         // Results for BHoMObjects and non are concatenated.
         private static Diff DiffRevisionObjects(IEnumerable<object> pastRevisionObjs, IEnumerable<object> followingRevisionObjs, DiffingConfig diffingConfig = null)
         {
+            Diff outputDiff = null;
+            if (DiffNullCheck(pastRevisionObjs, followingRevisionObjs, out outputDiff, diffingConfig))
+                return outputDiff;
+
             // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.
             DiffingConfig diffConfigCopy = diffingConfig == null ? new DiffingConfig() : diffingConfig.DeepClone() as DiffingConfig;
 
@@ -110,6 +114,10 @@ namespace BH.Engine.Diffing
         // Computes the Diffing for BHoMObjects that all have a HashFragment assigned (like when they have been passed through a Revision).
         private static Diff DiffRevisionObjects(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffingConfig diffingConfig = null)
         {
+            Diff outputDiff = null;
+            if (DiffNullCheck(pastObjects, currentObjects, out outputDiff, diffingConfig))
+                return outputDiff;
+
             // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.
             DiffingConfig dc = diffingConfig == null ? new DiffingConfig() : diffingConfig.DeepClone() as DiffingConfig;
 
