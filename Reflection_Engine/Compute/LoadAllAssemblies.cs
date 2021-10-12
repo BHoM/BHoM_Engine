@@ -35,8 +35,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String)")]
-        public static List<Assembly> LoadAssemblies(string folder = "", string suffix = "")
+        public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
         {
             List<Assembly> result = new List<Assembly>();
             lock (m_LoadAssembliesLock)
