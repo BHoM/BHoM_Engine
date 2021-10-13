@@ -122,6 +122,7 @@ namespace BH.Engine.Reflection
             m_AllTypeList = new List<Type>();
             m_InterfaceList = new List<Type>();
             m_EngineTypeList = new List<Type>();
+            m_BHoMTypeDictionary = new Dictionary<string, List<Type>>();
 
             foreach (Assembly asm in BHoMAssemblyList())
             {
