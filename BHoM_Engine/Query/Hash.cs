@@ -299,6 +299,10 @@ namespace BH.Engine.Base
         // Populates the properties exceptions from the properties to consider.
         private static void PopulateExceptionsFromPropertiesToConsider(ComparisonConfig cc, int nestingLevel, string currentPropertyFullName, Type currentObjType)
         {
+            // Null check on PropertiesToConsider and its elements.
+            if (!cc?.PropertiesToConsider?.Where(ptc => ptc != null).Any() ?? true)
+                return;
+
             // Get the current object's declared properties full names.
             List<string> allDeclaredPropertyNames = BH.Engine.Reflection.Query.PropertyNames(currentObjType);
             IEnumerable<string> allDeclaredPropertyFullNames = allDeclaredPropertyNames.Select(pn => $"{currentPropertyFullName}.{pn}");
