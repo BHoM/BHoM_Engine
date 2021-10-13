@@ -152,12 +152,24 @@ namespace BH.Engine.Diffing
             if (!currObjs_dict.Keys.Intersect(pastObjs_dict.Keys).Any())
             {
                 // If there is no overlap in the keys between the two sets, add a warning.
-                BH.Engine.Reflection.Compute.RecordWarning($"No comparison could be done:" +
-                    $"\nthe provided Id of the objects were completely different between {nameof(pastObjects)} and {nameof(followingObjs)}." +
-                    $"\nPlease make sure that:" +
-                    $"\n\t * The input objects constitute the entirety of the model that changed between revisions;" +
-                    $"\n\t * the input objects come from models that were not completely re-created between revisions." +
-                    $"\nConsequently, the objects of the {nameof(followingObjs)} set were identified as all {(newObjs.Any() ? "New" : "Deleted")}.");
+
+                if (!newObjs.Any() && !deletedObjs.Any() && !modifiedObjs.Any())
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"No comparison was done:" +
+                        $"\nthe input objects had no valid ID/Key usable for diffing." +
+                        $"\nPlease make sure that:" +
+                        $"\n\t * you specified a valid ID/Key to be used for Diffing, and input objects have that;" +
+                        $"\n\t * all the objects that changed between revisions were input");
+
+                    return null;
+                }
+                else
+                    BH.Engine.Reflection.Compute.RecordWarning($"No comparison was done:" +
+                        $"\nthe {nameof(pastObjects)} and {nameof(followingObjs)} were either identical or completely different." +
+                        $"\nPlease make sure that:" +
+                        $"\n\t * you specified a valid ID/Key to be used for Diffing, and input objects have that;" +
+                        $"\n\t * all the objects that changed between revisions were input;" +
+                        $"\nIf the input objects come from models that were completely re-created between revisions, you can ignore this message.");
             }
 
             if (currObjs_dict.Keys.Intersect(pastObjs_dict.Keys).Any() && diffConfigCopy.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
@@ -170,7 +182,7 @@ namespace BH.Engine.Diffing
             return new Diff(newObjs, deletedObjs, modifiedObjs, diffConfigCopy, objModifiedProps, unChanged);
         }
 
-        private static bool ProcessObjectsForDiffing(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, string customdataIdKey, out HashSet<string> out_currentObjectsIds, out HashSet<string> out_pastObjectsIds)
+        private static bool ProcessObjectsForDiffing(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjects, string customdataIdKey, out HashSet<string> out_currentObjectsIds, out HashSet<string> out_pastObjectsIds)
         {
             // Output ids
             out_currentObjectsIds = new HashSet<string>();
@@ -191,20 +203,23 @@ namespace BH.Engine.Diffing
             bool noDuplicates = true;
 
             // Retrieve Id from CustomData for current objects
-            currentObjects.ToList().ForEach(o =>
+            followingObjects.ToList().ForEach(o =>
             {
                 object id = null;
-                allRetrieved &= o.CustomData.TryGetValue(customdataIdKey, out id);
-                currentObjectsIds.Add(id?.ToString());
+                o.CustomData.TryGetValue(customdataIdKey, out id);
+                if (!string.IsNullOrEmpty(id?.ToString()))
+                    currentObjectsIds.Add(id.ToString());
+                else
+                    allRetrieved = false;
             });
 
             // Checks on current Objects
             if (!allRetrieved)
-                BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(currentObjects)}' CustomData do not contain a key `{customdataIdKey}`.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(followingObjects)}' do not have a valid ID/Key usable for Diffing.");
 
-            if (allRetrieved && currentObjectsIds.Count != currentObjects.Count())
+            if (allRetrieved && currentObjectsIds.Count != followingObjects.Count())
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"Some of the {nameof(currentObjects)} have duplicate Id.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Some of the {nameof(followingObjects)} have duplicate Id.");
                 noDuplicates = false;
             }
 
@@ -212,17 +227,20 @@ namespace BH.Engine.Diffing
             pastObjects.ToList().ForEach(o =>
             {
                 object id = null;
-                allRetrieved &= o.CustomData.TryGetValue(customdataIdKey, out id);
-                pastObjectsIds.Add(id?.ToString());
+                o.CustomData.TryGetValue(customdataIdKey, out id);
+                if (!string.IsNullOrEmpty(id?.ToString()))
+                    pastObjectsIds.Add(id.ToString());
+                else
+                    allRetrieved = false;
             });
 
             // Checks on past Objects
             if (!allRetrieved)
-                BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(pastObjects)}' CustomData do not contain a key `{customdataIdKey}`.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(pastObjects)}' do not have a valid ID/Key usable for Diffing.");
 
             if (allRetrieved && pastObjectsIds.Count != pastObjects.Count())
             {
-                BH.Engine.Reflection.Compute.RecordError($"Some of the {nameof(pastObjects)} have duplicate Id.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Some of the {nameof(pastObjects)} have duplicate Id.");
                 noDuplicates = false;
             }
 
