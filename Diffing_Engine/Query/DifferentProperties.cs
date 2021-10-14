@@ -91,22 +91,37 @@ namespace BH.Engine.Diffing
             {
                 string propertyName = difference.PropertyName;
                 string propertyFullName = differentTypes ? commonType + "." + propertyName : propertyName; // propertyPath does not need to record the base common type if the types are equal.
+                string propertyDisplayName = propertyFullName;
 
                 // The property path without indexes in square brackets is useful to check if it matches with any property exception.
                 // E.g. Bar.Fragments[1].Parameters[5].Name becomes Bar.Fragments.Parameters.Name, so we can check that against exceptions like `Parameters.Name`.
                 string propertyFullName_noIndexes = propertyFullName.RemoveSquareIndexing();
 
-                // If there is a PropertyFullNameModifier, invoke it to modify the property full name.
-                if (dc.ComparisonConfig.ComparisonFunctions?.PropertyFullNameModifier != null)
+                object comparisonInclusionResult = null;
+                object[] parameters = new object[] { propertyFullName, dc.ComparisonConfig, "propertyDisplayName" };
+                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(difference.ParentObject2, "ComparisonInclusion", parameters, out comparisonInclusionResult))
                 {
-                    propertyFullName = dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyFullName, difference.ParentObject2);
-                    propertyFullName_noIndexes = propertyFullName;
+                    bool shouldSkip = (comparisonInclusionResult as bool?) ?? false;
+
+                    if (shouldSkip)
+                        continue;
+
+                    propertyDisplayName = parameters?.ToList()?.LastOrDefault().ToString();
                 }
 
-                // If there is a PropertyFullNameFilter, invoke it to see if we should discard this property difference.
-                if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter != null)
-                    if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyFullName_noIndexes, difference.ParentObject2))
-                        continue;
+
+                //// If there is a PropertyFullNameModifier, invoke it to modify the property full name.
+                //if (dc.ComparisonConfig.ComparisonFunctions?.PropertyFullNameModifier != null)
+                //{
+                //    propertyFullName = dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyFullName, difference.ParentObject2);
+                //    propertyFullName_noIndexes = propertyFullName;
+                //    propertyDisplayName = propertyFullName;
+                //}
+
+                //// If there is a PropertyFullNameFilter, invoke it to see if we should discard this property difference.
+                //if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter != null)
+                //    if (dc.ComparisonConfig.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyFullName_noIndexes, difference.ParentObject2))
+                //        continue;
 
                 // Skip if the property is among the PropertyExceptions.
                 if (dc.ComparisonConfig.PropertyExceptions.Any() && dc.ComparisonConfig.PropertyExceptions.Any(pe => propertyFullName_noIndexes.EndsWith(pe)))
@@ -134,7 +149,7 @@ namespace BH.Engine.Diffing
                         continue;
 
                     // Just for aesthetic reasons, remove the first dot in the name between CustomData.[keyname].etc
-                    propertyFullName = propertyFullName.Remove(propertyFullName.IndexOf('.'), 1);
+                    propertyDisplayName = propertyFullName.Remove(propertyFullName.IndexOf('.'), 1);
                 }
 
                 // Check if the property Full name matches any of the specified PropertiesToConsider.
@@ -144,15 +159,14 @@ namespace BH.Engine.Diffing
                         continue; // no match found, skip this property.
                 }
 
-                // If there is a PropertyDisplayNameModifier, invoke it to modify the property full name.
-                if (dc.ComparisonConfig.ComparisonFunctions?.PropertyDisplayNameModifier != null)
-                {
-                    propertyFullName = dc.ComparisonConfig.ComparisonFunctions.PropertyDisplayNameModifier.Invoke(propertyFullName, difference.ParentObject2);
-                    propertyFullName_noIndexes = propertyFullName;
-                }
+                //// If there is a PropertyDisplayNameModifier, invoke it to modify the property full name.
+                //if (dc.ComparisonConfig.ComparisonFunctions?.PropertyDisplayNameModifier != null)
+                //{
+                //    propertyDisplayName = dc.ComparisonConfig.ComparisonFunctions.PropertyDisplayNameModifier.Invoke(propertyFullName, difference.ParentObject2);
+                //}
 
                 // Add to the final result.
-                dict[propertyFullName] = new Tuple<object, object>(difference.Object1, difference.Object2);
+                dict[propertyDisplayName] = new Tuple<object, object>(difference.Object1, difference.Object2);
             }
 
             if (dict.Count == 0)
