@@ -72,33 +72,31 @@ namespace BH.Engine.Diffing
             Dictionary<string, List<IBHoMObject>> pastBHoMObjs_perNamespace = pastObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
             Dictionary<string, List<IBHoMObject>> followingBHoMObjs_perNamespace = followingObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
 
+            // Get all the Toolkit-specific ("Adapter") DiffingMethods, grouped per namespace (e.g. BH.Engine.Adapters.Revit)
             Dictionary<string, MethodBase> adaptersDiffingMethods_perNamespace = AdaptersDiffingMethods_perNamespace();
-            List<string> adaptersDiffingMethods_modifiedNamespaces = adaptersDiffingMethods_perNamespace.Keys.Select(k => k.Replace("Engine", "oM")).ToList();
+            // Change the grouping so we replace "Engine" with "oM" for easier matching with objects from the same namespace.
+            Dictionary<string, MethodBase> adaptersDiffingMethods_modifiedNamespaces = adaptersDiffingMethods_perNamespace.ToDictionary(kv => kv.Key.Replace("Engine", "oM"), kv => kv.Value);
 
+            // Check what oM namespace is in common between the retrieved Diffing methods and the input objects.
             List<string> commonObjectNameSpaces = pastBHoMObjs_perNamespace.Keys.Intersect(followingBHoMObjs_perNamespace.Keys).ToList();
             commonObjectNameSpaces = commonObjectNameSpaces
-                .Where(cns => adaptersDiffingMethods_modifiedNamespaces.Any(n => cns.Contains(n))).ToList();
+                .Where(cns => adaptersDiffingMethods_modifiedNamespaces.Keys.Any(n => cns.Contains(n))).ToList();
 
             bool performedToolkitDiffing = false;
 
+            // Iterate each of the common namespaces between the retrieved Diffing methods and the input objects.
             foreach (string commonObjectNameSpace in commonObjectNameSpaces)
             {
-                string adapterDiffMethodNamespace = adaptersDiffingMethods_perNamespace.Keys.Where(k => commonObjectNameSpace.Replace("oM", "Engine").StartsWith(k)).FirstOrDefault();
+                string adapterDiffMethodNamespace = adaptersDiffingMethods_modifiedNamespaces.Keys.Where(k => k.StartsWith(k)).FirstOrDefault();
 
                 if (adapterDiffMethodNamespace.IsNullOrEmpty())
                     continue;
 
-                MethodBase adapterDiffMethodToInvoke = adaptersDiffingMethods_perNamespace[adapterDiffMethodNamespace];
-                List<ParameterInfo> parameterInfos = adapterDiffMethodToInvoke.GetParameters().ToList();
-                int numberOfOptionalParams = parameterInfos.Where(p => p.IsOptional).Count();
-                int indexOfDiffConfigParam = parameterInfos.IndexOf(parameterInfos.First(pi => pi.ParameterType == typeof(DiffingConfig)));
-                var parameters = new List<object>() { pastBHoMObjs_perNamespace[commonObjectNameSpace], followingBHoMObjs_perNamespace[commonObjectNameSpace] };
-                parameters.AddRange(Enumerable.Repeat(Type.Missing, numberOfOptionalParams - 1));
-                parameters.Insert(indexOfDiffConfigParam, dc);
-
+                // Invoke the Toolkit-specific ("Adapter") DiffingMethod on the objects of the corresponding oM namespace.
+                MethodBase adapterDiffMethodToInvoke = adaptersDiffingMethods_modifiedNamespaces[adapterDiffMethodNamespace];
                 BH.Engine.Reflection.Compute.RecordNote($"Invoking Diffing method `{adapterDiffMethodToInvoke.DeclaringType.FullName}.{adapterDiffMethodToInvoke.Name}` on the input objects belonging to namespace {commonObjectNameSpace}.");
+                Diff result = InvokeAdapterDiffing(adapterDiffMethodToInvoke, pastBHoMObjs_perNamespace[commonObjectNameSpace], followingBHoMObjs_perNamespace[commonObjectNameSpace], dc);
 
-                Diff result = adapterDiffMethodToInvoke.Invoke(null, parameters.ToArray()) as Diff;
                 outputDiff = outputDiff.CombineDiffs(result);
 
                 // Remove all objs that were found in common namespace. The remaining have still to be diffed.
@@ -174,15 +172,29 @@ namespace BH.Engine.Diffing
             // Check if the bhomObjects have a persistentId assigned.
             List<object> remainder_past;
             List<object> remainder_following;
-            List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithCommonPersistentAdapterId(out remainder_past);
-            List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithCommonPersistentAdapterId(out remainder_following);
+            Type commonPersistentId_past;
+            Type commonPersistentId_following;
+            List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithCommonPersistentAdapterId(out remainder_past, out commonPersistentId_past);
+            List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithCommonPersistentAdapterId(out remainder_following, out commonPersistentId_following);
             Diff diffGeneric = null;
             Diff fragmentDiff = null;
 
             // For the BHoMObjects having a common PeristentAdapterId we can compute the Diff by using it.
-            if (diffingType == DiffingType.Automatic || diffingType == DiffingType.PersistentId)
+            if (diffingType == DiffingType.Automatic || diffingType == DiffingType.PersistentId
+                && commonPersistentId_past == commonPersistentId_following
+                && bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
             {
-                if (bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
+                // Check if there is a Toolkit-specific Diffing method that accepts the specific IPersistentAdapterId type.
+                MethodBase adapterDiffingMethod = null;
+                adaptersDiffingMethods_modifiedNamespaces.TryGetValue(commonPersistentId_past.Namespace, out adapterDiffingMethod);
+
+                if (adapterDiffingMethod != null)
+                {
+                    // Invoke the Toolkit-specific ("Adapter") DiffingMethod on the objects of the corresponding oM namespace.
+                    BH.Engine.Reflection.Compute.RecordNote($"Invoking Diffing method `{adapterDiffingMethod.DeclaringType.FullName}.{adapterDiffingMethod.Name}` on the input objects that have a common `{nameof(IPersistentAdapterId)}` fragment: `{commonPersistentId_past.FullName}`.");
+                    fragmentDiff = InvokeAdapterDiffing(adapterDiffingMethod, bHoMObjects_past_persistId, bHoMObjects_following_persistId, dc);
+                }
+                else
                 {
                     BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithFragmentId)}'.");
                     fragmentDiff = DiffWithFragmentId(bHoMObjects_past_persistId, bHoMObjects_following_persistId, typeof(IPersistentAdapterId), nameof(IPersistentAdapterId.PersistentId), dc);
@@ -269,10 +281,11 @@ namespace BH.Engine.Diffing
 
         // Finds what objects in the given collection are BHoMObjects and own a PersistentAdapterId fragment of the same type.
         // This is useful to automate the IDiffing.
-        private static List<IBHoMObject> WithCommonPersistentAdapterId(this IEnumerable<object> objects, out List<object> remainder)
+        private static List<IBHoMObject> WithCommonPersistentAdapterId(this IEnumerable<object> objects, out List<object> remainder, out Type commonPersistentId)
         {
             IEnumerable<IBHoMObject> allBHoMObjects = objects.OfType<IBHoMObject>();
             remainder = new List<object>();
+            commonPersistentId = null;
 
             Dictionary<Type, List<IBHoMObject>> persistentIdFragmentTypesFound = new Dictionary<Type, List<IBHoMObject>>();
 
@@ -302,7 +315,6 @@ namespace BH.Engine.Diffing
             // If multiple PersistentId were found on the objects overall,
             // check if we can find exactly one PersistentId fragment of a common type across all BHoMObjects.
             // (in case some PersistentId Fragment is not present across all objects, we can use the one that is present consistently on all).
-            Type commonPersistentId = null;
             foreach (var kv in persistentIdFragmentTypesFound)
             {
                 Type persistentIdFragment = kv.Key;
@@ -322,7 +334,7 @@ namespace BH.Engine.Diffing
                         // This brings us to an undefined situation where it is not possible to automate the Diffing:
                         // the user must manually specify what PersistentAdapterId they want to Diff with.
                         BH.Engine.Reflection.Compute.RecordWarning($"Input objects have multiple {nameof(IPersistentAdapterId)} fragments assigned: `{string.Join("`, ", persistentIdFragmentTypesFound.Keys.Select(t => t.FullName))}`." +
-                            $"\nWhich one should be used for Diffing? Use the method {nameof(DiffWithFragmentId)} to manually specify it.");
+                            $"\nWhich one should be used for Diffing? Use the method {nameof(DiffWithFragmentId)} or a Toolkit-specific Diffing method (e.g. RevitDiffing) to manually specify it.");
                         remainder = objects.ToList();
                         return new List<IBHoMObject>();
                     }
@@ -331,6 +343,30 @@ namespace BH.Engine.Diffing
 
             remainder = objects.Except(persistentIdFragmentTypesFound[commonPersistentId]).ToList();
             return persistentIdFragmentTypesFound[commonPersistentId];
+        }
+
+        /***************************************************/
+        // Invoke a Toolkit-specific ("Adapter") Diffing method.
+        private static Diff InvokeAdapterDiffing(MethodBase adapterDiffingMethod, IEnumerable<object> pastObjects, IEnumerable<object> followingObjects, DiffingConfig dc)
+        {
+            Diff result = null;
+
+            try
+            {
+                List<ParameterInfo> parameterInfos = adapterDiffingMethod.GetParameters().ToList();
+                int numberOfOptionalParams = parameterInfos.Where(p => p.IsOptional).Count();
+                int indexOfDiffConfigParam = parameterInfos.IndexOf(parameterInfos.First(pi => pi.ParameterType == typeof(DiffingConfig)));
+                var parameters = new List<object>() { pastObjects, followingObjects };
+                parameters.AddRange(Enumerable.Repeat(Type.Missing, numberOfOptionalParams - 1));
+                parameters.Insert(indexOfDiffConfigParam, dc);
+
+                result = adapterDiffingMethod.Invoke(null, parameters.ToArray()) as Diff;
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Error invoking Toolkit-specific Diffing method. Error:\n\t{e.ToString()}");
+            }
+            return result;
         }
     }
 }
