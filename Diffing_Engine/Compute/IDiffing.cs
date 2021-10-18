@@ -185,10 +185,10 @@ namespace BH.Engine.Diffing
                 && bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
             {
                 // Check if there is a Toolkit-specific Diffing method that accepts the specific IPersistentAdapterId type.
-                MethodBase adapterDiffingMethod = null;
-                adaptersDiffingMethods_modifiedNamespaces.TryGetValue(commonPersistentId_past.Namespace, out adapterDiffingMethod);
+                var adapterDiffingMethods = adaptersDiffingMethods_modifiedNamespaces.Where(kv => commonPersistentId_past.Namespace.StartsWith(kv.Key)).Select(kv => kv.Value);
+                MethodBase adapterDiffingMethod = adapterDiffingMethods.FirstOrDefault();
 
-                if (adapterDiffingMethod != null)
+                if (adapterDiffingMethods.Count() == 1 && adapterDiffingMethod != null)
                 {
                     // Invoke the Toolkit-specific ("Adapter") DiffingMethod on the objects of the corresponding oM namespace.
                     BH.Engine.Reflection.Compute.RecordNote($"Invoking Diffing method `{adapterDiffingMethod.DeclaringType.FullName}.{adapterDiffingMethod.Name}` on the input objects that have a common `{nameof(IPersistentAdapterId)}` fragment: `{commonPersistentId_past.FullName}`.");
@@ -281,11 +281,11 @@ namespace BH.Engine.Diffing
 
         // Finds what objects in the given collection are BHoMObjects and own a PersistentAdapterId fragment of the same type.
         // This is useful to automate the IDiffing.
-        private static List<IBHoMObject> WithCommonPersistentAdapterId(this IEnumerable<object> objects, out List<object> remainder, out Type commonPersistentId)
+        private static List<IBHoMObject> WithCommonPersistentAdapterId(this IEnumerable<object> objects, out List<object> remainder, out Type commonPersistentIdType)
         {
             IEnumerable<IBHoMObject> allBHoMObjects = objects.OfType<IBHoMObject>();
             remainder = new List<object>();
-            commonPersistentId = null;
+            commonPersistentIdType = null;
 
             Dictionary<Type, List<IBHoMObject>> persistentIdFragmentTypesFound = new Dictionary<Type, List<IBHoMObject>>();
 
@@ -308,6 +308,7 @@ namespace BH.Engine.Diffing
             // If one or zero persistentId were found on the objects, we can return.
             if (persistentIdFragmentTypesFound.Count <= 1)
             {
+                commonPersistentIdType = persistentIdFragmentTypesFound.Keys.FirstOrDefault();
                 remainder = objects.Except(persistentIdFragmentTypesFound.Values.FirstOrDefault() ?? new List<IBHoMObject>()).ToList();
                 return persistentIdFragmentTypesFound.Values.FirstOrDefault() ?? new List<IBHoMObject>();
             }
@@ -322,10 +323,10 @@ namespace BH.Engine.Diffing
                 if (bhomObjectsWithThisPersistentId.Count == allBHoMObjects.Count())
                 {
                     // All BHoMObjects share this same persistentIdFragment.
-                    if (commonPersistentId == null)
+                    if (commonPersistentIdType == null)
                     {
                         // If the commonPersistentId was not already set, we can now set it.
-                        commonPersistentId = persistentIdFragment;
+                        commonPersistentIdType = persistentIdFragment;
                     }
                     else
                     {
@@ -341,15 +342,19 @@ namespace BH.Engine.Diffing
                 }
             }
 
-            remainder = objects.Except(persistentIdFragmentTypesFound[commonPersistentId]).ToList();
-            return persistentIdFragmentTypesFound[commonPersistentId];
+            remainder = objects.Except(persistentIdFragmentTypesFound[commonPersistentIdType]).ToList();
+            return persistentIdFragmentTypesFound[commonPersistentIdType];
         }
 
         /***************************************************/
+
         // Invoke a Toolkit-specific ("Adapter") Diffing method.
         private static Diff InvokeAdapterDiffing(MethodBase adapterDiffingMethod, IEnumerable<object> pastObjects, IEnumerable<object> followingObjects, DiffingConfig dc)
         {
             Diff result = null;
+
+            if (adapterDiffingMethod == null || (!pastObjects?.Any() ?? true) || (!followingObjects?.Any() ?? true))
+                return null;
 
             try
             {
@@ -366,6 +371,7 @@ namespace BH.Engine.Diffing
             {
                 BH.Engine.Reflection.Compute.RecordError($"Error invoking Toolkit-specific Diffing method. Error:\n\t{e.ToString()}");
             }
+
             return result;
         }
     }
