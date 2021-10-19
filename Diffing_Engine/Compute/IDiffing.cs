@@ -180,7 +180,8 @@ namespace BH.Engine.Diffing
             Diff fragmentDiff = null;
 
             // For the BHoMObjects having a common PeristentAdapterId we can compute the Diff by using it.
-            if (diffingType == DiffingType.Automatic || diffingType == DiffingType.PersistentId
+            if ((diffingType == DiffingType.Automatic || diffingType == DiffingType.PersistentId)
+                && commonPersistentId_past != null
                 && commonPersistentId_past == commonPersistentId_following
                 && bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
             {
