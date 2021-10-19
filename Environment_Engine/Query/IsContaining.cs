@@ -85,7 +85,7 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels to check with")]
         [Input("point", "The point being checked to see if it is contained within the bounds of the panels")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
-        [Output("isContaining", "True if the point is contained within at least one of the panels, false if it is not")]
+        [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not")]
         public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false)
         {
             if(panels == null)
@@ -164,6 +164,18 @@ namespace BH.Engine.Environment
             }
 
             return isContained; //If the number of intersections is odd the point is outsde the space
+        }
+
+        [Description("Defines whether an Environment Space contains a provided point.")]
+        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
+        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
+        [Input("point", "The point being checked to see if it is contained within the bounds of the 3D volume.")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the space, default false.")]
+        [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
+        public static bool IsContaining(this Space space, double spaceHeight, Point point, bool acceptOnEdges = false)
+        {
+            List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
+            return panelsFromSpace.IsContaining(point, acceptOnEdges);
         }
     }
 }
