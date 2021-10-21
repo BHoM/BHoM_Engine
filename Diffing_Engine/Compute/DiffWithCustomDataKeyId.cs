@@ -49,7 +49,7 @@ namespace BH.Engine.Diffing
             "\nE.g. 'Revit_UniqueId' may be used; an id must be stored under object.CustomData['Revit_UniqueId'].")]
         [Input("diffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         [Output("diff", "Object holding the detected changes.")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.DiffWithCustomId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjs, string customdataIdKey, DiffingConfig diffConfig = null)")]
+        [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.DiffWithCustomId(System.Collections.Generic.IEnumerable<IBHoMObject>, System.Collections.Generic.IEnumerable<IBHoMObject>, System.String, BH.oM.Diffing.DiffingConfig)")]
         public static Diff DiffWithCustomDataKeyId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjects, string customdataIdKey, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
