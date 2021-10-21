@@ -45,17 +45,17 @@ namespace BH.Engine.Diffing
         [Description("Dispatches to the most appropriate Diffing method, depending on the provided inputs.")]
         [Input("pastObjs", "Set of objects belonging to a past (previous) revision.")]
         [Input("followingObjs", "Set of objects belonging to a following revision.")]
-        [Input("diffConfig", "(Optional) Additional settings for the Diffing.")]
+        [Input("diffingConfig", "(Optional) Additional settings for the Diffing.")]
         [Output("diff", "Object holding the detected changes.")]
         [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingType diffingType, DiffingConfig diffConfig)")]
-        public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingConfig diffConfig = null)
+        public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
-            if (InputObjectsNullOrEmpty(pastObjs, followingObjs, out outputDiff, diffConfig))
+            if (InputObjectsNullOrEmpty(pastObjs, followingObjs, out outputDiff, diffingConfig))
                 return outputDiff;
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffingConfig dc = diffConfig == null ? new DiffingConfig() : diffConfig.DeepClone();
+            DiffingConfig dc = diffingConfig == null ? new DiffingConfig() : diffingConfig.DeepClone();
 
             Dictionary<string, List<IBHoMObject>> pastBHoMObjs_perNamespace = pastObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
             Dictionary<string, List<IBHoMObject>> followingBHoMObjs_perNamespace = followingObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
