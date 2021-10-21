@@ -197,7 +197,6 @@ namespace BH.Engine.Diffing
 
             return new Diff(newObjs, oldObjs, modifiedObjs, diffingConfig, objModifiedProps, unChanged);
         }
-
     }
 }
 
