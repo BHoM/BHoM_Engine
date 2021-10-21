@@ -52,7 +52,7 @@ namespace BH.Engine.Diffing
         public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
-            if (AnyInputNullOrEmpty(pastObjects, currentObjects, out outputDiff, diffConfig))
+            if (InputObjectsNullOrEmpty(pastObjects, currentObjects, out outputDiff, diffConfig))
                 return outputDiff;
 
             if (pastObjects.Count() != currentObjects.Count())
