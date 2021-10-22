@@ -47,7 +47,7 @@ namespace BH.Engine.Diffing
         [Input("followingObjs", "Set of objects belonging to a following revision.")]
         [Input("diffingConfig", "(Optional) Additional settings for the Diffing.")]
         [Output("diff", "Object holding the detected changes.")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.IDiffing(System.Collections.Generic.IEnumerable<object>, System.Collections.Generic.IEnumerable<object>, BH.oM.Diffing.DiffingType, BH.oM.Diffing.DiffingConfig)")]
+        [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.IDiffing(System.Collections.Generic.IEnumerable<System.Object>, System.Collections.Generic.IEnumerable<System.Object>, BH.oM.Diffing.DiffingType, BH.oM.Diffing.DiffingConfig)")]
         public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
