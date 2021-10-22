@@ -45,16 +45,20 @@ namespace BH.Engine.Diffing
         [Description("Computes the Diffing for BHoMObjects based on an id stored in a Fragment.")]
         [Input("pastObjects", "A set of objects coming from a past revision")]
         [Input("followingObjs", "A set of objects coming from a following Revision")]
-        [Input("fragmentType", "(Optional - defaults to the `IPersistentId` fragment)\nFragment Type where the Id of the objects may be found in the BHoMObjects. The diff will be attempted using the Ids found there.")]
+        [Input("fragmentType", "(Optional - defaults to the `IPersistentAdapterId` fragment)\nFragment Type where the Id of the objects may be found in the BHoMObjects. The diff will be attempted using the Ids found there.")]
         [Input("fragmentIdProperty", "(Optional - defaults to `PersistentId`)\nName of the property of the Fragment where the Id is stored.")]
         [Input("diffConfig", "(Optional) Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         [Output("diff", "Object holding the detected changes.")]
         public static Diff DiffWithFragmentId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjs, Type fragmentType = null, string fragmentIdProperty = null, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
-            if (AnyInputNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffConfig))
+            if (InputObjectsNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffConfig))
                 return outputDiff;
 
+            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
+            DiffingConfig diffConfigCopy = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();
+
+            // If null, set the default fragmentType/fragmentIdProperty.
             if (fragmentType == null || string.IsNullOrWhiteSpace(fragmentIdProperty))
             {
                 fragmentType = typeof(IPersistentAdapterId);
@@ -64,25 +68,25 @@ namespace BH.Engine.Diffing
                     $"\nDefaulted to `{typeof(IPersistentAdapterId).FullName}.{nameof(IPersistentAdapterId.PersistentId)}`.");
             }
 
-            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffingConfig diffConfigCopy = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();
-
             if (string.IsNullOrWhiteSpace(fragmentIdProperty))
             {
-                BH.Engine.Reflection.Compute.RecordError($"The DiffingConfig must specify a valid {nameof(fragmentIdProperty)}.");
+                BH.Engine.Reflection.Compute.RecordError($"No {nameof(fragmentIdProperty)} specified.");
                 return null;
             }
 
-            // Clone for immutability
-            List<IBHoMObject> currentObjs = followingObjs.DeepClone().ToList();
-            List<IBHoMObject> pastObjs = pastObjects.DeepClone().ToList();
+            // Checks on the specified fragmentType/fragmentIdProperty combination.
+            var propertiesOnFragment = fragmentType.GetProperties().Where(pi => pi.Name == fragmentIdProperty);
+            int propertiesOnFragmentCount = propertiesOnFragment.Count();
+            if (propertiesOnFragmentCount == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"No property named `{fragmentIdProperty}` was found on the specified {nameof(fragmentType)} `{fragmentType.FullName}`.");
+                return null;
+            }
 
-            string customDataIdKey = fragmentType.Name + "_fragmentId";
+            IEnumerable<string> pastObjsIds = pastObjects.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty));
+            IEnumerable<string> follObjsIds = followingObjs.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty));
 
-            currentObjs.ForEach(o => o.CustomData[customDataIdKey] = o.GetIdFromFragment(fragmentType, fragmentIdProperty));
-            pastObjs.ForEach(o => o.CustomData[customDataIdKey] = o.GetIdFromFragment(fragmentType, fragmentIdProperty));
-
-            return DiffWithCustomId(pastObjs, currentObjs, customDataIdKey, diffConfigCopy);
+            return Diffing(pastObjects, pastObjsIds, followingObjs, follObjsIds, diffConfigCopy);
         }
 
         private static string GetIdFromFragment(this IBHoMObject obj, Type fragmentType, string fragmentIdProperty)

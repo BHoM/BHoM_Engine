@@ -64,14 +64,18 @@ namespace BH.Engine.Diffing
             return DiffRevisionObjects(pastRevision.Objects, followingRevision.Objects, diffingConfig);
         }
 
-        // Computes the diffing for IEnumerable<object>.
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        // Computes the diffing for IEnumerable<object> that were belonging to a BH.oM.Diffing.Revision.
         // For BHoMObjects, it assumes that they all have a HashFragment assigned (like when they have been passed through a Revision).
         // For non-BHoMObjects, it performs the VennDiagram comparision with a HashComparer. 
-        // Results for BHoMObjects and non are concatenated.
+        // Results for BHoMObjects and non-BHoMObjects are concatenated.
         private static Diff DiffRevisionObjects(IEnumerable<object> pastRevisionObjs, IEnumerable<object> followingRevisionObjs, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
-            if (AnyInputNullOrEmpty(pastRevisionObjs, followingRevisionObjs, out outputDiff, diffingConfig))
+            if (InputObjectsNullOrEmpty(pastRevisionObjs, followingRevisionObjs, out outputDiff, diffingConfig))
                 return outputDiff;
 
             // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.
@@ -111,11 +115,14 @@ namespace BH.Engine.Diffing
             return finalDiff;
         }
 
-        // Computes the Diffing for BHoMObjects that all have a HashFragment assigned (like when they have been passed through a Revision).
+        /***************************************************/
+
+        // Computes the Diffing for BHoMObjects that were belonging to a BH.oM.Diffing.Revision
+        // and that all have a HashFragment assigned (a condition ensured when they were passed through a Revision).
         private static Diff DiffRevisionObjects(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> currentObjects, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
-            if (AnyInputNullOrEmpty(pastObjects, currentObjects, out outputDiff, diffingConfig))
+            if (InputObjectsNullOrEmpty(pastObjects, currentObjects, out outputDiff, diffingConfig))
                 return outputDiff;
 
             // Set configurations if DiffingConfig is null. Clone it for immutability in the UI.
@@ -190,18 +197,6 @@ namespace BH.Engine.Diffing
 
             return new Diff(newObjs, oldObjs, modifiedObjs, diffingConfig, objModifiedProps, unChanged);
         }
-
-        private static bool AllHaveRevisionFragment(this IEnumerable<IBHoMObject> bHoMObjects)
-        {
-            // Check if objects have hashfragment.
-            if (bHoMObjects == null
-                || bHoMObjects.Count() == 0
-                || bHoMObjects.Select(o => o.RevisionFragment()).Where(o => o != null).Count() < bHoMObjects.Count())
-                return false;
-
-            return true;
-        }
-
     }
 }
 

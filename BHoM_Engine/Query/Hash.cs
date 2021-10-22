@@ -258,6 +258,10 @@ namespace BH.Engine.Base
                     string propertyHashString = "";
                     string propertyName = prop.Name;
                     string propertyPath = $"{currentPropertyFullName}.{propertyName}";
+                    
+                    // Invoke the PropertyFullNameModifier, if specified.
+                    if (cc.ComparisonFunctions?.PropertyFullNameModifier != null)
+                        propertyPath = cc.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyPath, obj);
 
                     bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propertyPath.EndsWith(ex) || currentPropertyFullName.EndsWith(ex));
 
@@ -267,10 +271,6 @@ namespace BH.Engine.Base
                     object propertyValue = prop.GetValue(obj);
                     if (propertyValue != null)
                     {
-                        // Invoke the PropertyFullNameModifier, if specified.
-                        if (cc.ComparisonFunctions?.PropertyFullNameModifier != null)
-                            propertyPath = cc.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyPath, obj);
-
                         // Invoke the PropertyFullNameFilter, if specified.
                         if (cc.ComparisonFunctions?.PropertyFullNameFilter != null)
                             if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyPath, obj))

@@ -51,12 +51,12 @@ namespace BH.Engine.Diffing
         public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, DiffingConfig diffConfig = null, bool useExistingHash = false)
         {
             Diff outputDiff = null;
-            if (AnyInputNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffConfig))
+            if (InputObjectsNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffConfig))
                 return outputDiff;
 
             BH.Engine.Reflection.Compute.RecordNote($"DiffWithHash cannot track modified objects between different revisions." +
                 $"\nIt will simply return the objects that appear exclusively in the past set (`{nameof(Diff.RemovedObjects)}`), in the following set (`{nameof(Diff.AddedObjects)}`), and in both (`{nameof(Diff.UnchangedObjects)}`)." +
-                $"\nConsider using '{nameof(DiffWithCustomId)}', '{nameof(DiffWithFragmentId)}' or '{nameof(DiffRevisions)}' if this feature is needed.");
+                $"\nConsider using '{nameof(DiffWithCustomIds)}','{nameof(DiffWithCustomDataKeyId)}', '{nameof(DiffWithFragmentId)}' or '{nameof(DiffRevisions)}' if this feature is needed.");
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffingConfig dc = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();
