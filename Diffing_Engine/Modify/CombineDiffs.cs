@@ -56,11 +56,8 @@ namespace BH.Engine.Diffing
                 diff.RemovedObjects != null ? diff.RemovedObjects.Concat(toAdd.RemovedObjects ?? new List<object>()) : toAdd.RemovedObjects ?? new List<object>(),
                 diff.ModifiedObjects != null ? diff.ModifiedObjects.Concat(toAdd.ModifiedObjects ?? new List<object>()) : toAdd.ModifiedObjects ?? new List<object>(),
                 diff?.DiffingConfig ?? new DiffingConfig(),
-                diff.ModifiedPropsPerObject != null ?
-                        diff.ModifiedPropsPerObject
-                        .Concat(toAdd.ModifiedPropsPerObject ?? new Dictionary<string, Dictionary<string, Tuple<object, object>>>())
-                        .ToDictionary(x => x.Key, x => x.Value)
-                        : toAdd.ModifiedPropsPerObject ?? new Dictionary<string, Dictionary<string, Tuple<object, object>>>(),
+                diff.ModifiedObjectsDifferences != null ? diff.ModifiedObjectsDifferences.Concat(toAdd.ModifiedObjectsDifferences ?? new List<ObjectDifferences>())
+                        : toAdd.ModifiedObjectsDifferences ?? new List<ObjectDifferences>(),
                 diff.UnchangedObjects != null ? diff.UnchangedObjects.Concat(toAdd.UnchangedObjects ?? new List<object>()) : toAdd.UnchangedObjects ?? new List<object>()
                 );
         }

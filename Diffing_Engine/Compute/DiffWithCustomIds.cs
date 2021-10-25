@@ -121,21 +121,21 @@ namespace BH.Engine.Diffing
             List<object> modifiedObjs = new List<object>();
             List<object> removedObjs = new List<object>();
             List<object> unchangedObjs = new List<object>();
-            Dictionary<string, Dictionary<string, Tuple<object, object>>> objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
+            List<ObjectDifferences> modifiedObjectsDifferences = new List<ObjectDifferences>();
 
-            foreach (var kv_curr in follObjs_dict)
+            foreach (var kv_foll in follObjs_dict)
             {
-                object currentObj = kv_curr.Value;
-                string currentObjID = kv_curr.Key;
+                object follObj = kv_foll.Value;
+                string follObjID = kv_foll.Key;
 
                 // Try to find an object between the pastObjs that has the same ID of the current one.
-                object correspondingObj = null;
-                pastObjs_dict.TryGetValue(kv_curr.Key, out correspondingObj);
+                object correspondingPastObj = null;
+                pastObjs_dict.TryGetValue(kv_foll.Key, out correspondingPastObj);
 
                 // If none is found, the current object is new.
-                if (correspondingObj == null)
+                if (correspondingPastObj == null)
                 {
-                    addedObjs.Add(kv_curr.Value);
+                    addedObjs.Add(kv_foll.Value);
                     continue;
                 }
 
@@ -146,19 +146,19 @@ namespace BH.Engine.Diffing
                     // If we are also asking for what properties changed, let's rely on DifferentProperties to see whether the object changed or not.
 
                     // Determine the changed properties.
-                    var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffingConfigCopy);
+                    ObjectDifferences objectDifferences = Query.ObjectDifferences(correspondingPastObj, follObj, diffingConfigCopy.ComparisonConfig);
 
-                    if (differentProps != null && differentProps.Count > 0)
+                    if (objectDifferences != null && (objectDifferences.Differences?.Any() ?? false))
                     {
                         // It's been modified
-                        modifiedObjs.Add(currentObj);
-                        objModifiedProps.Add(currentObjID, differentProps);
+                        modifiedObjs.Add(follObj);
+                        modifiedObjectsDifferences.Add(objectDifferences);
                     }
                     else
                     {
                         // It's NOT been modified
                         if (diffingConfigCopy.IncludeUnchangedObjects)
-                            unchangedObjs.Add(currentObj);
+                            unchangedObjs.Add(follObj);
                     }
                 }
                 else
@@ -166,48 +166,48 @@ namespace BH.Engine.Diffing
                     // If they are BHoMObjects, let's first rely on the BHoMobject hash to see if they are different.
                     // Relying on the Hashes first allows to use the same ComparisonConfig in both the Hash Computation and the DifferentProperties() method.
                     // This way, users can control how the hash is computed, and therefore effectively what properties need to be included, ignored, etc (all the settings in ComparisonConfig).
-                    IBHoMObject currentBHoMObj = currentObj as IBHoMObject;
-                    IBHoMObject correspondingBHoMObj = correspondingObj as IBHoMObject;
+                    IBHoMObject follBHoMObj = follObj as IBHoMObject;
+                    IBHoMObject correspondingPastBHoMObj = correspondingPastObj as IBHoMObject;
                     string currentObjHash, correspondingObjHash;
 
-                    if (currentBHoMObj != null && correspondingBHoMObj != null)
+                    if (follBHoMObj != null && correspondingPastBHoMObj != null)
                     {
                         // Compute the hash of both objects and compare them.
-                        currentObjHash = currentBHoMObj.Hash(diffingConfigCopy.ComparisonConfig);
-                        correspondingObjHash = correspondingBHoMObj.Hash(diffingConfigCopy.ComparisonConfig);
+                        currentObjHash = follBHoMObj.Hash(diffingConfigCopy.ComparisonConfig);
+                        correspondingObjHash = correspondingPastBHoMObj.Hash(diffingConfigCopy.ComparisonConfig);
 
                         if (currentObjHash != correspondingObjHash)
                         {
                             // It's been modified
-                            modifiedObjs.Add(currentObj);
+                            modifiedObjs.Add(follObj);
                         }
                         else
                         {
                             // It's NOT been modified
                             if (diffingConfigCopy.IncludeUnchangedObjects)
-                                unchangedObjs.Add(currentObj);
+                                unchangedObjs.Add(follObj);
                         }
                     }
                     else
                     {
                         // If the objects are non-BHoMObjects, we cannot use the Hash, but we can always rely on the object comparison to see if they are different.
-                        if (currentObj != correspondingObj)
+                        if (follObj != correspondingPastObj)
                         {
                             // It's been modified
-                            modifiedObjs.Add(currentObj);
+                            modifiedObjs.Add(follObj);
                         }
                         else
                         {
                             // It's NOT been modified
                             if (diffingConfigCopy.IncludeUnchangedObjects)
-                                unchangedObjs.Add(currentObj);
+                                unchangedObjs.Add(follObj);
                         }
                     }
                 }
             }
 
             // If no modifed property was found, set the field to null (otherwise will get empty list)
-            objModifiedProps = !objModifiedProps.Any() ? null : objModifiedProps;
+            modifiedObjectsDifferences = !modifiedObjectsDifferences.Any() ? null : modifiedObjectsDifferences;
 
             // All PastObjects that cannot be found by id in the CurrentObjs are old.
             removedObjs = pastObjs_dict.Keys.Except(follObjs_dict.Keys)
@@ -247,7 +247,7 @@ namespace BH.Engine.Diffing
                     $"No {nameof(BH.oM.Diffing.Diff.ModifiedObjects)} were found. Make sure that the specified `{nameof(DiffingConfig)}.{nameof(DiffingConfig.ComparisonConfig)}.{nameof(DiffingConfig.ComparisonConfig.PropertiesToConsider)}` is set correctly.");
             }
 
-            return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfigCopy, objModifiedProps, unchangedObjs);
+            return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfigCopy, modifiedObjectsDifferences, unchangedObjs);
         }
     }
 }

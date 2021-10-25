@@ -2,7 +2,7 @@
   "profiles": {
     "Diffing_Engine": {
       "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\Rhinoceros 5 (64-bit)\\System\\Rhino.exe",
+      "executablePath": "C:\\Program Files\\Rhino 6\\System\\Rhino.exe",
       "commandLineArgs": "/nosplash"
     }
   }

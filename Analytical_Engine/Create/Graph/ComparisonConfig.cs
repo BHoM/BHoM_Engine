@@ -47,7 +47,7 @@ namespace BH.Engine.Analytical
             "\nE.g., if you input 'Name' only the differences in terms of name will be returned.")]
         public static ComparisonConfig ComparisonConfig(double numericTolerance = oM.Geometry.Tolerance.Distance, List<string> propertyNamesToConsider = null)
         {
-            ComparisonConfig cc = new ComparisonConfig()
+            ComparisonConfig cc = new BaseComparisonConfig()
             {
                 NumericTolerance = numericTolerance,
                 PropertiesToConsider = propertyNamesToConsider ?? new List<string>(),

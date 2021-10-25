@@ -32,6 +32,7 @@ using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.oM.Diffing;
 using BH.Engine.Geometry;
+using BH.oM.Base;
 
 namespace BH.Engine.Physical
 {
@@ -78,7 +79,7 @@ namespace BH.Engine.Physical
             if (element.Property.Name != other.Property.Name)
                 return false;
 
-            return Diffing.Query.DifferentProperties(element.Property, other.Property, new DiffingConfig()) == null;
+            return Diffing.Query.ObjectDifferences(element.Property, other.Property, new BaseComparisonConfig()) == null;
         }
         
 
@@ -108,7 +109,7 @@ namespace BH.Engine.Physical
             if (element.Construction.Name != other.Construction.Name)
                 return false;
 
-            return Diffing.Query.DifferentProperties(element.Construction, other.Construction, new DiffingConfig()) == null;
+            return Diffing.Query.ObjectDifferences(element.Construction, other.Construction, new BaseComparisonConfig()) == null;
         }
 
         /***************************************************/

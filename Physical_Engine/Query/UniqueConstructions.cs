@@ -44,7 +44,7 @@ namespace BH.Engine.Physical
         [Output("uniqueConstructions", "A collection of unique Construction objects")]
         public static List<Construction> UniqueConstructions(this List<Construction> constructions, bool includeConstructionName = false)
         {
-            ComparisonConfig dc = new ComparisonConfig()
+            ComparisonConfig cc = new BaseComparisonConfig()
             {
                 PropertyExceptions = new List<string>
                 {
@@ -54,10 +54,10 @@ namespace BH.Engine.Physical
             };
 
             if (!includeConstructionName)
-                dc.PropertyExceptions.Add("Name");
+                cc.PropertyExceptions.Add("Name");
 
             List<Construction> allConstructions = constructions.Where(x => x != null).ToList();
-            List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(allConstructions, dc).ToList();
+            List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(allConstructions, cc).ToList();
 
             return uniqueConstructions;
         }

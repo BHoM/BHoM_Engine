@@ -47,7 +47,7 @@ namespace BH.Engine.Analytical
         [Output("replacementMap", "A Dictionary replacement map of the entities where the keys are the Guid of the original entity and the Values the matching IBHoMObject entity.")]
         public static Dictionary<Guid, IBHoMObject> UniqueEntitiesReplacementMap(this List<IBHoMObject> entities, ComparisonConfig comparisonConfig = null)
         {
-            ComparisonConfig cc = comparisonConfig ?? new ComparisonConfig();
+            ComparisonConfig cc = comparisonConfig ?? new BaseComparisonConfig();
 
             Dictionary<Guid, IBHoMObject> replaceMap = new Dictionary<Guid, IBHoMObject>();
             Dictionary<IBHoMObject, string> entitiesHash = new Dictionary<IBHoMObject, string>();
