@@ -36,9 +36,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("TotalThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "the total thickness, including any ribs or waffling", typeof(Length))]
         public static double TotalThickness(this ConstantThickness property)
         {
             return property.IsNull() ? 0 : property.Thickness;
@@ -46,9 +46,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("TotalThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "the total thickness, including any ribs or waffling", typeof(Length))]
         public static double TotalThickness(this Ribbed property)
         {
             return property.IsNull() ? 0 : property.TotalDepth;
@@ -56,9 +56,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("TotalThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "the total thickness, including any ribs or waffling", typeof(Length))]
         public static double TotalThickness(this Waffle property)
         {
             return property.IsNull() ? 0 : Math.Max(property.TotalDepthX, property.TotalDepthY);
@@ -66,9 +66,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("TotalThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "the total thickness, including any ribs or waffling", typeof(Length))]
         public static double TotalThickness(this LoadingPanelProperty property)
         {
             Reflection.Compute.RecordWarning("Structural IAreaElements are defined without volume.");
@@ -80,9 +80,9 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("TotalThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "the total thickness, including any ribs or waffling", typeof(Length))]
         public static double ITotalThickness(this ISurfaceProperty property)
         {
             return property.IsNull() ? 0 : TotalThickness(property as dynamic);
