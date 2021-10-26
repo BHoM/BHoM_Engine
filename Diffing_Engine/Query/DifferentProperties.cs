@@ -48,11 +48,16 @@ namespace BH.Engine.Diffing
         [PreviousVersion("5.0", "BH.Engine.Diffing.DifferentProperties(System.Object, System.Object, BH.oM.Diffing.DiffingConfig)")]
         public static Dictionary<string, Tuple<object,object>> DifferentProperties(this object obj1, object obj2, ComparisonConfig comparisonConfig = null)
         {
+            // Call Query.ObjectDifferences(). 
+            // This method returns an object `ObjectDifferences`, which stores differences in a "temporal" manner (e.g. pastValue, followingValue, etc.),
+            // because it is used for change control purposes.
+            // Instead, the purpose of this current method `DifferentProperties()` is to return a similar result, but without the "temporal" qualification.
             ObjectDifferences objectDifferences = Query.ObjectDifferences(obj1, obj2, comparisonConfig);
 
             if (objectDifferences == null)
                 return null;
 
+            // Group the `ObjectDifferences` in a Dictionary.
             Dictionary<string, Tuple<object, object>> result = objectDifferences.Differences.GroupBy(d => d.FullName)
                 .ToDictionary(
                 g => g.Key,
