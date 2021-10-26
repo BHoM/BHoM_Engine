@@ -37,11 +37,11 @@ namespace BH.Engine.Diffing
 {
     public static partial class Query
     {
-        [Description("Checks two BHoMObjects property by property and returns the differences.")]
-        [Input("pastObject", "First object to compare for differences.")]
-        [Input("followingObject", "Second object to compare for differences.")]
-        [Input("diffingConfig", "Config to be used for the comparison. Can set numeric tolerance, wheter to check the guid, if custom data should be ignored and if any additional properties should be ignored.")]
-        [Output("If differences were found between `previousObject` and `followingObject`, returns an `ObjectDifferences` object storing all the found differences." +
+        [Description("Compare two versions of the same object that sustained some modification over time, and returns differences.")]
+        [Input("pastObject", "Past version of the object (created before `followingObject`).")]
+        [Input("followingObject", "Following version of the object (modified or created after `pastObject`).")]
+        [Input("comparisonConfig", "Additional configurations to be used for the comparison.")]
+        [Output("Returns an `ObjectDifferences` object storing all the found differences between `previousObject` and `followingObject`." +
             "\nIf no difference was found, returns null.")]
         [PreviousVersion("5.0", "BH.Engine.Diffing.DifferentProperties(System.Object, System.Object, BH.oM.Base.ComparisonConfig)")]
         public static ObjectDifferences ObjectDifferences(this object pastObject, object followingObject, ComparisonConfig comparisonConfig = null)

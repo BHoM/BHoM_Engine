@@ -70,7 +70,7 @@ namespace BH.Engine.Environment
                 NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
-            return Diffing.Query.ObjectDifferences(element, other, cc) == null;
+            return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
         }
 
         [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object")]
@@ -93,7 +93,7 @@ namespace BH.Engine.Environment
                 NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
-            return Diffing.Query.ObjectDifferences(element, other, cc) == null;
+            return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
         }
 
         [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object. Environment Nodes are checked for their ID only")]
@@ -127,7 +127,7 @@ namespace BH.Engine.Environment
 
             };
 
-            return Diffing.Query.ObjectDifferences(element, other, cc) == null;
+            return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
         }
     }
 }
