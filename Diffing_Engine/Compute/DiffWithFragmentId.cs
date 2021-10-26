@@ -83,8 +83,24 @@ namespace BH.Engine.Diffing
                 return null;
             }
 
-            IEnumerable<string> pastObjsIds = pastObjects.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty));
-            IEnumerable<string> follObjsIds = followingObjs.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty));
+            IEnumerable<string> pastObjsIds = pastObjects.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !s.IsNullOrEmpty());
+            IEnumerable<string> follObjsIds = followingObjs.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !s.IsNullOrEmpty());
+
+            bool missingIds = false;
+            if (pastObjsIds.Count() != pastObjects.Count())
+            {
+                missingIds = true;
+                BH.Engine.Reflection.Compute.RecordError($"Could not find the Id in some of the input {nameof(pastObjects)} within the specified fragment property `{fragmentType.Name}.{fragmentIdProperty}`.");
+            }
+
+            if (follObjsIds.Count() != followingObjs.Count())
+            {
+                missingIds = true;
+                BH.Engine.Reflection.Compute.RecordError($"Could not find the Id in some of the input {nameof(followingObjs)} within the specified fragment property `{fragmentType.Name}.{fragmentIdProperty}`.");
+            }
+
+            if (missingIds)
+                return null;
 
             return Diffing(pastObjects, pastObjsIds, followingObjs, follObjsIds, diffConfigCopy);
         }
