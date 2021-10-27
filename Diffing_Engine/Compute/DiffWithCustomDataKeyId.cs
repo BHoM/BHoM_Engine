@@ -56,18 +56,14 @@ namespace BH.Engine.Diffing
             if (InputObjectsNullOrEmpty(pastObjects, followingObjects, out outputDiff, diffingConfig))
                 return outputDiff;
 
-            // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffingConfig diffConfigCopy = diffingConfig == null ? new DiffingConfig() : (DiffingConfig)diffingConfig.DeepClone();
-
             HashSet<string> pastObjectsIds = new HashSet<string>();
             HashSet<string> followingObjectsIds = new HashSet<string>();
 
-            // Verifies inputs and populates the id lists.
-            ExtractIdFromCustomData(pastObjects, followingObjects, customdataIdKey, out followingObjectsIds, out pastObjectsIds);
+            // Verifies inputs and populates the id lists, then if successfull perform the Diffing.
+            if (ExtractIdFromCustomData(pastObjects, followingObjects, customdataIdKey, out followingObjectsIds, out pastObjectsIds))
+                return Diffing(pastObjects.OfType<object>(), pastObjectsIds, followingObjects.OfType<object>(), followingObjectsIds, diffingConfig);
 
-            Diff diff = Diffing(pastObjects.OfType<object>(), pastObjectsIds, followingObjects.OfType<object>(), followingObjectsIds, diffConfigCopy);
-
-            return diff;
+            return null;
         }
 
         /***************************************************/
@@ -80,7 +76,7 @@ namespace BH.Engine.Diffing
             out_currentObjectsIds = new HashSet<string>();
             out_pastObjectsIds = new HashSet<string>();
 
-            HashSet<string> currentObjectsIds = new HashSet<string>();
+            HashSet<string> followingObjectsIds = new HashSet<string>();
             HashSet<string> pastObjectsIds = new HashSet<string>();
 
             // Check on customDataKey
@@ -100,7 +96,7 @@ namespace BH.Engine.Diffing
                 object id = null;
                 o.CustomData.TryGetValue(customdataIdKey, out id);
                 if (!string.IsNullOrEmpty(id?.ToString()))
-                    currentObjectsIds.Add(id.ToString());
+                    followingObjectsIds.Add(id.ToString());
                 else
                     allRetrieved = false;
             });
@@ -109,7 +105,7 @@ namespace BH.Engine.Diffing
             if (!allRetrieved)
                 BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(followingObjects)}' do not have a valid ID/Key usable for Diffing.");
 
-            if (allRetrieved && currentObjectsIds.Count != followingObjects.Count())
+            if (followingObjectsIds.Count != followingObjectsIds.Distinct().Count())
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Some of the {nameof(followingObjects)} have duplicate Id.");
                 noDuplicates = false;
@@ -130,7 +126,7 @@ namespace BH.Engine.Diffing
             if (!allRetrieved)
                 BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(pastObjects)}' do not have a valid ID/Key usable for Diffing.");
 
-            if (allRetrieved && pastObjectsIds.Count != pastObjects.Count())
+            if (pastObjectsIds.Count != pastObjectsIds.Distinct().Count())
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Some of the {nameof(pastObjects)} have duplicate Id.");
                 noDuplicates = false;
@@ -139,7 +135,7 @@ namespace BH.Engine.Diffing
             if (!allRetrieved || !noDuplicates)
                 return false;
 
-            out_currentObjectsIds = currentObjectsIds;
+            out_currentObjectsIds = followingObjectsIds;
             out_pastObjectsIds = pastObjectsIds;
 
             return true;
