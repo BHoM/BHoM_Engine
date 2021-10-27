@@ -217,11 +217,6 @@ namespace BH.Engine.Base
                             continue;
                     }
 
-                    // Invoke the CustomDataKeyFilter, if specified.
-                    if (isCustomDataDic && cc.ComparisonFunctions?.CustomDataKeyFilter != null)
-                        if (cc.ComparisonFunctions.CustomDataKeyFilter.Invoke(entry.Key as string, obj))
-                            return definingString;
-
                     definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, fractionalDigits, nestingLevel + 1, currentPropertyFullName)}";
                 }
             }
@@ -241,9 +236,19 @@ namespace BH.Engine.Base
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
+                // If the object is an IObject (= a BHoM class), check if there is a `ComparisonInclusion()` extension method available for this IObject.
+                object propCompIncl = null;
+                object[] parameters = new object[] { currentPropertyFullName, cc };
+                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(obj, "ComparisonInclusion", parameters, out propCompIncl))
+                {
+                    ComparisonInclusion comparisonInclusion = propCompIncl as ComparisonInclusion;
+
+                    if (!comparisonInclusion.Include)
+                        return ""; // do not include this in the Hash.
+                }
+
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
-
                 PropertyInfo[] properties = type.GetProperties();
 
                 if (cc.PropertiesToConsider?.Any() ?? false)
@@ -255,15 +260,11 @@ namespace BH.Engine.Base
                 // Iterate all properties
                 foreach (PropertyInfo prop in properties)
                 {
-                    string propertyHashString = "";
-                    string propertyName = prop.Name;
-                    string propertyPath = $"{currentPropertyFullName}.{propertyName}";
-                    
-                    // Invoke the PropertyFullNameModifier, if specified.
-                    if (cc.ComparisonFunctions?.PropertyFullNameModifier != null)
-                        propertyPath = cc.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyPath, obj);
+                    string propHashString = "";
+                    string propName = prop.Name;
+                    string propFullName = $"{currentPropertyFullName}.{propName}";
 
-                    bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propertyPath.EndsWith(ex) || currentPropertyFullName.EndsWith(ex));
+                    bool isInPropertyExceptions = cc.PropertyExceptions.Any(ex => propFullName.EndsWith(ex) || currentPropertyFullName.EndsWith(ex));
 
                     if (isInPropertyExceptions)
                         continue;
@@ -271,15 +272,10 @@ namespace BH.Engine.Base
                     object propertyValue = prop.GetValue(obj);
                     if (propertyValue != null)
                     {
-                        // Invoke the PropertyFullNameFilter, if specified.
-                        if (cc.ComparisonFunctions?.PropertyFullNameFilter != null)
-                            if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyPath, obj))
-                                return "";
-
                         // Recurse for this property.
-                        propertyHashString = DefiningString(propertyValue, cc, fractionalDigits, nestingLevel + 1, propertyPath) ?? "";
-                        if (!string.IsNullOrWhiteSpace(propertyHashString))
-                            definingString += $"\n{tabs}" + $"{type.FullName}.{propertyName}:\n{tabs}{propertyHashString} ";
+                        propHashString = DefiningString(propertyValue, cc, fractionalDigits, nestingLevel + 1, propFullName) ?? "";
+                        if (!string.IsNullOrWhiteSpace(propHashString))
+                            definingString += $"\n{tabs}" + $"{type.FullName}.{propName}:\n{tabs}{propHashString} ";
                     }
                 }
             }
