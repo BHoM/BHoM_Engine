@@ -83,20 +83,31 @@ namespace BH.Engine.Diffing
             if (followingObjectsIds == null) followingObjectsIds = new List<string>();
             if (diffingConfig == null) diffingConfig = new DiffingConfig();
 
-            if (!diffingConfigCopy.AllowDuplicateIds)
+            // Check if we do not allow duplicate Ids
+            // (we do not allow duplicate Ids by default – it may make sense in rare cases with Ids imported from some software that allows duplicates).
+            if (!diffingConfig.AllowDuplicateIds)
             {
+                // Take precautions if duplicate Ids are found.
+                bool duplicateIdsFound = false;
+
                 // Get the distinct Ids from the input Id lists (do not admit duplicates).
                 HashSet<string> pastObjsIdsDistinct = new HashSet<string>(pastObjectsIds);
                 HashSet<string> follObjsIdsDistinct = new HashSet<string>(followingObjectsIds);
+
                 if (pastObjsIdsDistinct.Count() != pastObjectsIds.Count())
+                {
                     if (recordEvents) BH.Engine.Reflection.Compute.RecordWarning($"Some of the input {pastObjectsIds} were duplicate.");
+                    duplicateIdsFound = true;
+                }
 
                 if (follObjsIdsDistinct.Count() != followingObjectsIds.Count())
+                {
                     if (recordEvents) BH.Engine.Reflection.Compute.RecordWarning($"Some of the input {followingObjectsIds} were duplicate.");
+                    duplicateIdsFound = true;
+                }
 
-                // Replace the input Id collections with their distinct version.
-                pastObjectsIds = pastObjsIdsDistinct.ToList();
-                followingObjectsIds = follObjsIdsDistinct.ToList();
+                if (duplicateIdsFound)
+                    return null;
             }
 
             // Check if input objects and correspondent Id lists are of equal size.
@@ -141,12 +152,12 @@ namespace BH.Engine.Diffing
 
                 // Otherwise, the current object existed in the past set.
                 // Let's see if it was modified or not.
-                if (diffingConfigCopy.EnablePropertyDiffing)
+                if (diffingConfig.EnablePropertyDiffing)
                 {
                     // If we are also asking for what properties changed, let's rely on DifferentProperties to see whether the object changed or not.
 
                     // Determine the changed properties.
-                    var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffingConfigCopy);
+                    var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffingConfig);
 
                     if (differentProps != null && differentProps.Count > 0)
                     {
@@ -157,7 +168,7 @@ namespace BH.Engine.Diffing
                     else
                     {
                         // It's NOT been modified
-                        if (diffingConfigCopy.IncludeUnchangedObjects)
+                        if (diffingConfig.IncludeUnchangedObjects)
                             unchangedObjs.Add(currentObj);
                     }
                 }
@@ -173,8 +184,8 @@ namespace BH.Engine.Diffing
                     if (currentBHoMObj != null && correspondingBHoMObj != null)
                     {
                         // Compute the hash of both objects and compare them.
-                        currentObjHash = currentBHoMObj.Hash(diffingConfigCopy.ComparisonConfig);
-                        correspondingObjHash = correspondingBHoMObj.Hash(diffingConfigCopy.ComparisonConfig);
+                        currentObjHash = currentBHoMObj.Hash(diffingConfig.ComparisonConfig);
+                        correspondingObjHash = correspondingBHoMObj.Hash(diffingConfig.ComparisonConfig);
 
                         if (currentObjHash != correspondingObjHash)
                         {
@@ -184,7 +195,7 @@ namespace BH.Engine.Diffing
                         else
                         {
                             // It's NOT been modified
-                            if (diffingConfigCopy.IncludeUnchangedObjects)
+                            if (diffingConfig.IncludeUnchangedObjects)
                                 unchangedObjs.Add(currentObj);
                         }
                     }
@@ -199,7 +210,7 @@ namespace BH.Engine.Diffing
                         else
                         {
                             // It's NOT been modified
-                            if (diffingConfigCopy.IncludeUnchangedObjects)
+                            if (diffingConfig.IncludeUnchangedObjects)
                                 unchangedObjs.Add(currentObj);
                         }
                     }
@@ -239,7 +250,7 @@ namespace BH.Engine.Diffing
                         $"\nThis can also happen if the input objects come from models that were completely re-created between revisions (i.e. their IDs are completely different). In this latter case, the Diffing worked successfully but you may want to use a different ID.");
             }
 
-            if (followingObjectsIds.Intersect(pastObjectsIds).Any() && diffingConfigCopy.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
+            if (followingObjectsIds.Intersect(pastObjectsIds).Any() && diffingConfig.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
             {
                 // If no modified object was found and some PropertiesToConsider was specified,
                 // add a Note to remind the user that if no differences were found it's probably because of that.
@@ -247,7 +258,7 @@ namespace BH.Engine.Diffing
                     $"No {nameof(BH.oM.Diffing.Diff.ModifiedObjects)} were found. Make sure that the specified `{nameof(DiffingConfig)}.{nameof(DiffingConfig.ComparisonConfig)}.{nameof(DiffingConfig.ComparisonConfig.PropertiesToConsider)}` is set correctly.");
             }
 
-            return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfigCopy, objModifiedProps, unchangedObjs);
+            return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfig, objModifiedProps, unchangedObjs);
         }
     }
 }
