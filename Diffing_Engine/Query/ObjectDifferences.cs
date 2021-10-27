@@ -89,18 +89,16 @@ namespace BH.Engine.Diffing
                 // Check if there is a `PropertyComparisonInclusion()` extension method available for this property difference.
                 object propCompIncl = null;
                 object[] parameters = new object[] { propertyFullName, cc };
-                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(kellermanPropertyDifference.ParentObject2, "PropertyComparisonInclusion", parameters, out propCompIncl))
+                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(kellermanPropertyDifference.ParentObject2, "ComparisonInclusion", parameters, out propCompIncl))
                 {
-                    PropertyComparisonInclusion propertyComparisonInclusion = propCompIncl as PropertyComparisonInclusion;
+                    ComparisonInclusion propComparisonInclusion = propCompIncl as ComparisonInclusion;
 
-                    propertyDisplayName = propertyComparisonInclusion.PropertyDisplayName;
-
-                    if (propertyComparisonInclusion.IncludeProperty)
+                    if (propComparisonInclusion.Include)
                     {
                         // Add to the final result.
                         result.Differences.Add(new PropertyDifference()
                         {
-                            DisplayName = propertyDisplayName,
+                            DisplayName = propComparisonInclusion.DisplayName,
                             PastValue = kellermanPropertyDifference.Object1,
                             FollowingValue = kellermanPropertyDifference.Object2,
                             FullName = propertyFullName
@@ -116,19 +114,6 @@ namespace BH.Engine.Diffing
                 // E.g. Bar.Fragments[1].Parameters[5].Name becomes Bar.Fragments.Parameters.Name, so we can check that against exceptions like `Parameters.Name`.
                 string propertyFullName_noIndexes = propertyFullName.RemoveSquareIndexing();
 
-                // If there is a PropertyFullNameModifier, invoke it to modify the property full name.
-                if (cc.ComparisonFunctions?.PropertyFullNameModifier != null)
-                {
-                    propertyFullName = cc.ComparisonFunctions.PropertyFullNameModifier.Invoke(propertyFullName, kellermanPropertyDifference.ParentObject2);
-                    propertyFullName_noIndexes = propertyFullName;
-                    propertyDisplayName = propertyFullName;
-                }
-
-                // If there is a PropertyFullNameFilter, invoke it to see if we should discard this property difference.
-                if (cc.ComparisonFunctions?.PropertyFullNameFilter != null)
-                    if (cc.ComparisonFunctions.PropertyFullNameFilter.Invoke(propertyFullName_noIndexes, kellermanPropertyDifference.ParentObject2))
-                        continue;
-
                 // Skip if the property is among the PropertyExceptions.
                 if (cc.PropertyExceptions?.Any() ?? false && cc.PropertyExceptions.Any(pe => propertyFullName_noIndexes.EndsWith(pe)))
                     continue;
@@ -140,11 +125,6 @@ namespace BH.Engine.Diffing
                     int keyStart = propertyFullName.IndexOf('[') + 1;
                     int keyEnd = propertyFullName.IndexOf(']');
                     string customDataKey = propertyFullName.Substring(keyStart, keyEnd - keyStart);
-
-                    // If there is a CustomDataKeyFilter, invoke it to see if we should discard this CustomData difference.
-                    if (cc.ComparisonFunctions?.CustomDataKeyFilter != null)
-                        if (cc.ComparisonFunctions.CustomDataKeyFilter.Invoke(customDataKey, kellermanPropertyDifference.ParentObject2))
-                            continue;
 
                     // If there are CustomdataKeysToInclude specified and this customDataKey is not among them, skip it.
                     if ((cc.CustomdataKeysToInclude?.Any() ?? false) && !cc.CustomdataKeysToInclude.Contains(customDataKey))
@@ -162,10 +142,6 @@ namespace BH.Engine.Diffing
                 if (cc.PropertiesToConsider?.Any() ?? false)
                     if (!cc.PropertiesToConsider.Any(ptc => propertyFullName == ptc || propertyFullName.EndsWith($".{ptc}")))
                         continue; // no match found, skip this property.
-
-                // If there is a PropertyDisplayNameModifier, invoke it to modify the property full name.
-                if (cc.ComparisonFunctions?.PropertyDisplayNameModifier != null)
-                    propertyDisplayName = cc.ComparisonFunctions.PropertyDisplayNameModifier.Invoke(propertyFullName, kellermanPropertyDifference.ParentObject2);
 
                 // Add to the final result.
                 result.Differences.Add(new PropertyDifference()
