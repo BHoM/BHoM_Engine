@@ -78,7 +78,7 @@ namespace BH.Engine.Diffing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        public static Diff DiffingWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, DiffingConfig diffingConfig = null, bool storeHash = false, bool retrieveStoredHash = false)
+        private static Diff DiffingWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, DiffingConfig diffingConfig = null, bool storeHash = false, bool retrieveStoredHash = false)
         {
             Diff outputDiff = null;
             if (InputObjectsNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffingConfig))
