@@ -191,7 +191,7 @@ namespace BH.Engine.Diffing
                     else
                     {
                         // If the objects are non-BHoMObjects, we cannot use the Hash, but we can always rely on the object comparison to see if they are different.
-                        if (currentObj != correspondingObj)
+                        if (!currentObj.Equals(correspondingObj))
                         {
                             // It's been modified
                             modifiedObjs.Add(currentObj);
