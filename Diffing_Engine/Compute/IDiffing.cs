@@ -75,7 +75,7 @@ namespace BH.Engine.Diffing
 
                     Diff result = DiffRevisions(pastRev, follRev, dc);
 
-                    return outputDiff.CombineDiffs(result);
+                    return outputDiff.CombinedDiff(result);
                 }
             }
 
@@ -99,13 +99,13 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithCommonPersistentAdapterId(out remainder_past, out commonPersistentId_past);
             List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithCommonPersistentAdapterId(out remainder_following, out commonPersistentId_following);
 
-            // For the BHoMObjects having a common PeristentAdapterId we can compute the Diff by using it.
+            // For the BHoMObjects having a common PersistentAdapterId in their fragments, we can compute the Diff by using it.
             if (commonPersistentId_past != null && commonPersistentId_past == commonPersistentId_following
                 && bHoMObjects_past_persistId.Count != 0 && bHoMObjects_following_persistId.Count != 0)
             {
                 // Get all the Toolkit-specific ("Adapter") DiffingMethods, grouped per namespace (e.g. BH.Engine.Adapters.Revit)
                 Dictionary<string, MethodBase> adaptersDiffingMethods_perNamespace = AdaptersDiffingMethods_perNamespace();
-                
+
                 // Modify the namespace grouping replacing "Engine" with "oM" for easier matching with objects from the same namespace.
                 Dictionary<string, MethodBase> adaptersDiffingMethods_modifiedNamespaces = adaptersDiffingMethods_perNamespace.ToDictionary(kv => kv.Key.Replace("Engine", "oM"), kv => kv.Value);
 
@@ -126,15 +126,19 @@ namespace BH.Engine.Diffing
                     fragmentDiff = DiffWithFragmentId(bHoMObjects_past_persistId, bHoMObjects_following_persistId, typeof(IPersistentAdapterId), nameof(IPersistentAdapterId.PersistentId), dc);
                 }
 
-                outputDiff = outputDiff.CombineDiffs(fragmentDiff);
+                outputDiff = outputDiff.CombinedDiff(fragmentDiff);
             }
 
+            // For the remaining objects (= all objects that are not BHoMObjects, and all BHoMObjects not having a PersistentId) we can Diff using the Hash.
             if (remainder_past.Any() || remainder_following.Any())
             {
-                // For the remaining objects (= all objects that are not BHoMObjects, and all BHoMObjects not having a PersistentId) we can Diff using the Hash.
-                BH.Engine.Reflection.Compute.RecordNote($"Calling the most generic Diffing method, '{nameof(DiffWithHash)}'.");
-                Diff diffGeneric = DiffWithHash(pastObjs as dynamic, followingObjs as dynamic, dc);
-                outputDiff = outputDiff.CombineDiffs(diffGeneric);
+                if (outputDiff != null)
+                    BH.Engine.Reflection.Compute.RecordNote($"Continuing the Diffing for the remaining objects with '{nameof(DiffWithHash)}'.");
+                else
+                    BH.Engine.Reflection.Compute.RecordNote($"Previous conditions were not satisfied. Executing Diffing with the most generic method, '{nameof(DiffWithHash)}'.");
+
+                Diff diffGeneric = DiffingWithHash(remainder_past, remainder_following, dc);
+                outputDiff = outputDiff.CombinedDiff(diffGeneric);
             }
 
             return outputDiff;

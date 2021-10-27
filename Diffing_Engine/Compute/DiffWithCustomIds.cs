@@ -81,22 +81,33 @@ namespace BH.Engine.Diffing
             if (pastObjectsIds == null) pastObjectsIds = new List<string>();
             if (followingObjects == null) followingObjects = new List<object>();
             if (followingObjectsIds == null) followingObjectsIds = new List<string>();
-            DiffingConfig diffingConfigCopy = diffingConfig == null ? new DiffingConfig() : diffingConfig;
+            if (diffingConfig == null) diffingConfig = new DiffingConfig();
 
-            if (!diffingConfigCopy.AllowDuplicateIds)
+            // Check if we do not allow duplicate Ids
+            // (we do not allow duplicate Ids by default – it may make sense in rare cases with Ids imported from some software that allows duplicates).
+            if (!diffingConfig.AllowDuplicateIds)
             {
+                // Take precautions if duplicate Ids are found.
+                bool duplicateIdsFound = false;
+
                 // Get the distinct Ids from the input Id lists (do not admit duplicates).
                 HashSet<string> pastObjsIdsDistinct = new HashSet<string>(pastObjectsIds);
                 HashSet<string> follObjsIdsDistinct = new HashSet<string>(followingObjectsIds);
+
                 if (pastObjsIdsDistinct.Count() != pastObjectsIds.Count())
+                {
                     if (recordEvents) BH.Engine.Reflection.Compute.RecordWarning($"Some of the input {pastObjectsIds} were duplicate.");
+                    duplicateIdsFound = true;
+                }
 
                 if (follObjsIdsDistinct.Count() != followingObjectsIds.Count())
+                {
                     if (recordEvents) BH.Engine.Reflection.Compute.RecordWarning($"Some of the input {followingObjectsIds} were duplicate.");
+                    duplicateIdsFound = true;
+                }
 
-                // Replace the input Id collections with their distinct version.
-                pastObjectsIds = pastObjsIdsDistinct.ToList();
-                followingObjectsIds = follObjsIdsDistinct.ToList();
+                if (duplicateIdsFound)
+                    return null;
             }
 
             // Check if input objects and correspondent Id lists are of equal size.
@@ -141,7 +152,7 @@ namespace BH.Engine.Diffing
 
                 // Otherwise, the current object existed in the past set.
                 // Let's see if it was modified or not.
-                if (diffingConfigCopy.EnablePropertyDiffing)
+                if (diffingConfig.EnablePropertyDiffing)
                 {
                     // If we are also asking for what properties changed, let's rely on DifferentProperties to see whether the object changed or not.
 
@@ -157,7 +168,7 @@ namespace BH.Engine.Diffing
                     else
                     {
                         // It's NOT been modified
-                        if (diffingConfigCopy.IncludeUnchangedObjects)
+                        if (diffingConfig.IncludeUnchangedObjects)
                             unchangedObjs.Add(followingObj);
                     }
                 }
@@ -173,8 +184,8 @@ namespace BH.Engine.Diffing
                     if (followingBHoMObj != null && correspondingPastBHoMObj != null)
                     {
                         // Compute the hash of both objects and compare them.
-                        followingObjHash = followingBHoMObj.Hash(diffingConfigCopy.ComparisonConfig);
-                        correspondingPastObjHash = correspondingPastBHoMObj.Hash(diffingConfigCopy.ComparisonConfig);
+                        followingObjHash = followingBHoMObj.Hash(diffingConfig.ComparisonConfig);
+                        correspondingPastObjHash = correspondingPastBHoMObj.Hash(diffingConfig.ComparisonConfig);
 
                         if (followingObjHash != correspondingPastObjHash)
                         {
@@ -184,14 +195,14 @@ namespace BH.Engine.Diffing
                         else
                         {
                             // It's NOT been modified
-                            if (diffingConfigCopy.IncludeUnchangedObjects)
+                            if (diffingConfig.IncludeUnchangedObjects)
                                 unchangedObjs.Add(followingObj);
                         }
                     }
                     else
                     {
                         // If the objects are non-BHoMObjects, we cannot use the Hash, but we can always rely on the object comparison to see if they are different.
-                        if (followingObj != correspondingPastObj)
+                        if (!followingObj.Equals(correspondingPastObj))
                         {
                             // It's been modified
                             modifiedObjs.Add(followingObj);
@@ -199,7 +210,7 @@ namespace BH.Engine.Diffing
                         else
                         {
                             // It's NOT been modified
-                            if (diffingConfigCopy.IncludeUnchangedObjects)
+                            if (diffingConfig.IncludeUnchangedObjects)
                                 unchangedObjs.Add(followingObj);
                         }
                     }
@@ -239,7 +250,7 @@ namespace BH.Engine.Diffing
                         $"\nThis can also happen if the input objects come from models that were completely re-created between revisions (i.e. their IDs are completely different). In this latter case, the Diffing worked successfully but you may want to use a different ID.");
             }
 
-            if (followingObjectsIds.Intersect(pastObjectsIds).Any() && diffingConfigCopy.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
+            if (followingObjectsIds.Intersect(pastObjectsIds).Any() && diffingConfig.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
             {
                 // If no modified object was found and some PropertiesToConsider was specified,
                 // add a Note to remind the user that if no differences were found it's probably because of that.
@@ -247,7 +258,7 @@ namespace BH.Engine.Diffing
                     $"No {nameof(BH.oM.Diffing.Diff.ModifiedObjects)} were found. Make sure that the specified `{nameof(DiffingConfig)}.{nameof(DiffingConfig.ComparisonConfig)}.{nameof(DiffingConfig.ComparisonConfig.PropertiesToConsider)}` is set correctly.");
             }
 
-            return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfigCopy, modifiedObjectsDifferences, unchangedObjs);
+            return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfig, modifiedObjectsDifferences, unchangedObjs);
         }
     }
 }
