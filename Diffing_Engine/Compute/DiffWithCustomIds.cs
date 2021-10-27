@@ -157,7 +157,7 @@ namespace BH.Engine.Diffing
                     // If we are also asking for what properties changed, let's rely on DifferentProperties to see whether the object changed or not.
 
                     // Determine the changed properties.
-                    ObjectDifferences objectDifferences = Query.ObjectDifferences(correspondingPastObj, followingObj, diffingConfigCopy.ComparisonConfig);
+                    ObjectDifferences objectDifferences = Query.ObjectDifferences(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
 
                     if (objectDifferences != null && (objectDifferences.Differences?.Any() ?? false))
                     {
