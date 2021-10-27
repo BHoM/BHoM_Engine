@@ -81,7 +81,7 @@ namespace BH.Engine.Diffing
             if (pastObjectsIds == null) pastObjectsIds = new List<string>();
             if (followingObjects == null) followingObjects = new List<object>();
             if (followingObjectsIds == null) followingObjectsIds = new List<string>();
-            DiffingConfig diffingConfigCopy = diffingConfig == null ? new DiffingConfig() : diffingConfig;
+            if (diffingConfig == null) diffingConfig = new DiffingConfig();
 
             if (!diffingConfigCopy.AllowDuplicateIds)
             {
