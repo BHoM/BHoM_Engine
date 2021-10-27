@@ -56,7 +56,7 @@ namespace BH.Engine.Diffing
                 return outputDiff;
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
-            DiffingConfig diffConfigCopy = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();
+            DiffingConfig diffConfigCopy = diffConfig == null ? new DiffingConfig() : diffConfig.DeepClone();
 
             // If null, set the default fragmentType/fragmentIdProperty.
             if (fragmentType == null || string.IsNullOrWhiteSpace(fragmentIdProperty))
