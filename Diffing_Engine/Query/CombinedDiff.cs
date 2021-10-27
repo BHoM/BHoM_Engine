@@ -37,13 +37,14 @@ using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Modify
+    public static partial class Query
     {
         [Description("Combines two given diffs into one, appending objects of the second to the first.")]
         [Input("diff", "First diff object.")]
         [Input("toAdd", "Second diff object.")]
         [Output("diff", "Merged Diff object.")]
-        public static Diff CombineDiffs(this Diff diff, Diff toAdd)
+        [PreviousVersion("5.0", "BH.Engine.Diffing.Modify.CombineDiffs(BH.oM.Diffing.Diff, BH.oM.Diffing.Diff")]
+        public static Diff CombinedDiff(this Diff diff, Diff toAdd)
         {
             if (diff == null)
                 return toAdd;
