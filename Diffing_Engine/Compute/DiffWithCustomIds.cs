@@ -177,17 +177,17 @@ namespace BH.Engine.Diffing
                     // If they are BHoMObjects, let's first rely on the BHoMobject hash to see if they are different.
                     // Relying on the Hashes first allows to use the same ComparisonConfig in both the Hash Computation and the DifferentProperties() method.
                     // This way, users can control how the hash is computed, and therefore effectively what properties need to be included, ignored, etc (all the settings in ComparisonConfig).
-                    IBHoMObject currentBHoMObj = followingObj as IBHoMObject;
-                    IBHoMObject correspondingBHoMObj = correspondingPastObj as IBHoMObject;
-                    string currentObjHash, correspondingObjHash;
+                    IBHoMObject followingBHoMObj = followingObj as IBHoMObject;
+                    IBHoMObject correspondingPastBHoMObj = correspondingPastObj as IBHoMObject;
+                    string followingObjHash, correspondingPastObjHash;
 
-                    if (currentBHoMObj != null && correspondingBHoMObj != null)
+                    if (followingBHoMObj != null && correspondingPastBHoMObj != null)
                     {
                         // Compute the hash of both objects and compare them.
-                        currentObjHash = currentBHoMObj.Hash(diffingConfig.ComparisonConfig);
-                        correspondingObjHash = correspondingBHoMObj.Hash(diffingConfig.ComparisonConfig);
+                        followingObjHash = followingBHoMObj.Hash(diffingConfig.ComparisonConfig);
+                        correspondingPastObjHash = correspondingPastBHoMObj.Hash(diffingConfig.ComparisonConfig);
 
-                        if (currentObjHash != correspondingObjHash)
+                        if (followingObjHash != correspondingPastObjHash)
                         {
                             // It's been modified
                             modifiedObjs.Add(followingObj);
