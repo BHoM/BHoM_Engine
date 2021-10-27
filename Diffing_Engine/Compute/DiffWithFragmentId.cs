@@ -76,8 +76,7 @@ namespace BH.Engine.Diffing
 
             // Checks on the specified fragmentType/fragmentIdProperty combination.
             var propertiesOnFragment = fragmentType.GetProperties().Where(pi => pi.Name == fragmentIdProperty);
-            int propertiesOnFragmentCount = propertiesOnFragment.Count();
-            if (propertiesOnFragmentCount == 0)
+            if (!propertiesOnFragment.Any())
             {
                 BH.Engine.Reflection.Compute.RecordError($"No property named `{fragmentIdProperty}` was found on the specified {nameof(fragmentType)} `{fragmentType.FullName}`.");
                 return null;
