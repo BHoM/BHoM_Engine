@@ -134,19 +134,19 @@ namespace BH.Engine.Diffing
             List<object> unchangedObjs = new List<object>();
             Dictionary<string, Dictionary<string, Tuple<object, object>>> objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
 
-            foreach (var kv_curr in follObjs_dict)
+            foreach (var kv_foll in follObjs_dict)
             {
-                object currentObj = kv_curr.Value;
-                string currentObjID = kv_curr.Key;
+                object followingObj = kv_foll.Value;
+                string followingObjID = kv_foll.Key;
 
                 // Try to find an object between the pastObjs that has the same ID of the current one.
-                object correspondingObj = null;
-                pastObjs_dict.TryGetValue(kv_curr.Key, out correspondingObj);
+                object correspondingPastObj = null;
+                pastObjs_dict.TryGetValue(kv_foll.Key, out correspondingPastObj);
 
                 // If none is found, the current object is new.
-                if (correspondingObj == null)
+                if (correspondingPastObj == null)
                 {
-                    addedObjs.Add(kv_curr.Value);
+                    addedObjs.Add(kv_foll.Value);
                     continue;
                 }
 
@@ -157,19 +157,19 @@ namespace BH.Engine.Diffing
                     // If we are also asking for what properties changed, let's rely on DifferentProperties to see whether the object changed or not.
 
                     // Determine the changed properties.
-                    var differentProps = Query.DifferentProperties(currentObj, correspondingObj, diffingConfig);
+                    var differentProps = Query.DifferentProperties(followingObj, correspondingPastObj, diffingConfig);
 
                     if (differentProps != null && differentProps.Count > 0)
                     {
                         // It's been modified
-                        modifiedObjs.Add(currentObj);
-                        objModifiedProps.Add(currentObjID, differentProps);
+                        modifiedObjs.Add(followingObj);
+                        objModifiedProps.Add(followingObjID, differentProps);
                     }
                     else
                     {
                         // It's NOT been modified
                         if (diffingConfig.IncludeUnchangedObjects)
-                            unchangedObjs.Add(currentObj);
+                            unchangedObjs.Add(followingObj);
                     }
                 }
                 else
@@ -177,8 +177,8 @@ namespace BH.Engine.Diffing
                     // If they are BHoMObjects, let's first rely on the BHoMobject hash to see if they are different.
                     // Relying on the Hashes first allows to use the same ComparisonConfig in both the Hash Computation and the DifferentProperties() method.
                     // This way, users can control how the hash is computed, and therefore effectively what properties need to be included, ignored, etc (all the settings in ComparisonConfig).
-                    IBHoMObject currentBHoMObj = currentObj as IBHoMObject;
-                    IBHoMObject correspondingBHoMObj = correspondingObj as IBHoMObject;
+                    IBHoMObject currentBHoMObj = followingObj as IBHoMObject;
+                    IBHoMObject correspondingBHoMObj = correspondingPastObj as IBHoMObject;
                     string currentObjHash, correspondingObjHash;
 
                     if (currentBHoMObj != null && correspondingBHoMObj != null)
@@ -190,28 +190,28 @@ namespace BH.Engine.Diffing
                         if (currentObjHash != correspondingObjHash)
                         {
                             // It's been modified
-                            modifiedObjs.Add(currentObj);
+                            modifiedObjs.Add(followingObj);
                         }
                         else
                         {
                             // It's NOT been modified
                             if (diffingConfig.IncludeUnchangedObjects)
-                                unchangedObjs.Add(currentObj);
+                                unchangedObjs.Add(followingObj);
                         }
                     }
                     else
                     {
                         // If the objects are non-BHoMObjects, we cannot use the Hash, but we can always rely on the object comparison to see if they are different.
-                        if (!currentObj.Equals(correspondingObj))
+                        if (!followingObj.Equals(correspondingPastObj))
                         {
                             // It's been modified
-                            modifiedObjs.Add(currentObj);
+                            modifiedObjs.Add(followingObj);
                         }
                         else
                         {
                             // It's NOT been modified
                             if (diffingConfig.IncludeUnchangedObjects)
-                                unchangedObjs.Add(currentObj);
+                                unchangedObjs.Add(followingObj);
                         }
                     }
                 }
