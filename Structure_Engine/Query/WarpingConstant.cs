@@ -197,9 +197,9 @@ namespace BH.Engine.Structure
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
             double b = profile.Width;
-            double h = profile.Height - tf / 2;
+            double hSubTf = profile.Height - tf / 2;
 
-            return tf * tf * tf * b * b * b / 144 + h * h * h * tw * tw * tw / 36;
+            return tf * tf * tf * b * b * b / 144 + hSubTf * hSubTf * hSubTf * tw * tw * tw / 36;
         }
 
         /***************************************************/
