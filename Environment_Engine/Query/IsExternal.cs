@@ -41,21 +41,6 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        /*[Description("Determines whether the Environment Panel is externally facing")]
-        [Input("panel", "An Environment Panel")]
-        [Output("isExternal", "True if the panel is externally facing, false otherwise")]
-        public static bool IsExternal(this Panel panel)
-        {
-            if(panel == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a panel is external or not if it is null.");
-                return false;
-            }
-
-            return panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal; //TODO: Put a more robust check of whether the element is external or not in...
-        }
-        */
-
          [Description("Determines which Environment Panels are externally facing")]
          [Input("Panels", "List of Environment Panels")]
          [MultiOutput(0, "externalPanels", "List of external panels")]
