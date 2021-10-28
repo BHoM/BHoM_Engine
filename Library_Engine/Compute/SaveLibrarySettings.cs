@@ -25,30 +25,53 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Base;
 using BH.oM.Data.Library;
+using System.IO;
 
 namespace BH.Engine.Library
 {
-    public static partial class Modify
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Adds a custom folderpath to the User libraries accessed by the Library_Engine.")]
-        [Input("customPath", "Path to folder with custom libraries to be extracted from the Library_Engine.", typeof(FolderPathAttribute))]
+        [Description("Updates the LibrarySetting used for extraction of datasets to the one provided and stores it in the settings folder.")]
+        [Input("settings", "The LibrarySettings object to store on the system.")]
+        [Input("replacePreexisting", "If true, any preexisting settings file will be replaced. If false, LibrarySettings will only be updated if no settings already exists.")]
         [Input("refreshLibraries", "If true, all loaded libraries will be refreshed and reloaded, making use of the provided LibrarySettings object.")]
         [Output("sucess", "Returns true of the settings was successfully updated.")]
-        public static bool AddUserPath(string customPath, bool refreshLibraries = true)
+        public static bool SaveLibrarySettings(LibrarySettings settings, bool replacePreexisting = false, bool refreshLibraries = true)
         {
-            if (string.IsNullOrWhiteSpace(customPath))
+            if (settings == null)
             {
-                Engine.Reflection.Compute.RecordError($"Provided {nameof(customPath)} is null and was not added to the User libraries.");
+                Engine.Reflection.Compute.RecordError("Settings object is null and can not be stored.");
                 return false;
             }
-            LibrarySettings settings = Query.LibrarySettings() ?? new LibrarySettings();
-            settings.UserLibraryPaths.Add(customPath);
-            return SaveLibrarySettings(settings, true, refreshLibraries);
+
+            if (File.Exists(Query.m_settingsPath))
+            {
+                if (!replacePreexisting)
+                {
+                    Engine.Reflection.Compute.RecordError($"A LibrarySettings object already exists. To replace it, toggle replacePreexisting to true. \nTo add a new path to the old set of Paths, try using the {nameof(AddUserPath)} method.");
+                    return false;
+                }
+                else
+                {
+                    File.Delete(Query.m_settingsPath);
+                }
+            }
+
+            if (!Directory.Exists(Path.GetDirectoryName(Query.m_settingsPath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(Query.m_settingsPath));
+
+            File.WriteAllText(Query.m_settingsPath, Engine.Serialiser.Convert.ToJson(settings));
+
+            if (refreshLibraries)
+                Query.RefreshLibraries();
+
+            return true;
         }
 
         /***************************************************/

@@ -29,41 +29,25 @@ using BH.oM.Data.Library;
 
 namespace BH.Engine.Library
 {
-    public static partial class Modify
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Removes a custom folder path from the User libraries accessed by the Library_Engine.")]
-        [Input("customPath", "Path to folder to be excluded from the custom libraries.", typeof(FolderPathAttribute))]
+        [Description("Adds a custom folderpath to the User libraries accessed by the Library_Engine.")]
+        [Input("customPath", "Path to folder with custom libraries to be extracted from the Library_Engine.", typeof(FolderPathAttribute))]
         [Input("refreshLibraries", "If true, all loaded libraries will be refreshed and reloaded, making use of the provided LibrarySettings object.")]
-        [Output("success", "Returns true of the settings was successfully updated.")]
-        public static bool RemoveUserPath(string customPath, bool refreshLibraries = true)
+        [Output("sucess", "Returns true of the settings was successfully updated.")]
+        public static bool AddUserPath(string customPath, bool refreshLibraries = true)
         {
-            if (string.IsNullOrEmpty(customPath))
+            if (string.IsNullOrWhiteSpace(customPath))
             {
-                Engine.Reflection.Compute.RecordError($"Provided {nameof(customPath)} is null. Can not remove from library settings.");
+                Engine.Reflection.Compute.RecordError($"Provided {nameof(customPath)} is null and was not added to the User libraries.");
                 return false;
             }
-
             LibrarySettings settings = Query.LibrarySettings() ?? new LibrarySettings();
-
-            if (settings == null)
-            {
-                Engine.Reflection.Compute.RecordError("No library settings available. Unable to remove path.");
-                return false;
-            }
-
-
-            if (settings.UserLibraryPaths.Contains(customPath))
-                settings.UserLibraryPaths.Remove(customPath);
-            else
-            {
-                Engine.Reflection.Compute.RecordWarning($"Library settings does not contain provided {nameof(customPath)}.");
-                return false;
-            }
-
+            settings.UserLibraryPaths.Add(customPath);
             return SaveLibrarySettings(settings, true, refreshLibraries);
         }
 

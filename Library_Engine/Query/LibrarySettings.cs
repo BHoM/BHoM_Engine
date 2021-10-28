@@ -27,6 +27,8 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Data.Library;
 using System.IO;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Library
 {
@@ -36,6 +38,8 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Get the Library settings object currently used by the Library_Engine.")]
+        [Output("settings", "The settings used by the Library_Engine. If not settings exists, null will be returned.")]
         public static LibrarySettings LibrarySettings()
         {
             if (File.Exists(m_settingsPath))
