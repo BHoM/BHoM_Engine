@@ -41,12 +41,12 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-         [Description("Determines which Environment Panels are externally facing")]
-         [Input("Panels", "List of Environment Panels")]
-         [MultiOutput(0, "externalPanels", "List of external panels")]
-         [MultiOutput(1,"internalPanels","List of internal panels")]
+         [Description("Determines which Environment Panels are externally facing.")]
+         [Input("panels", "List of Environment Panels.")]
+         [MultiOutput(0, "externalPanels", "List of external panels.")]
+         [MultiOutput(1,"internalPanels","List of internal panels.")]
          [PreviousVersion("5.0", "BH.Engine.Environment.Query.IsExternal(BH.oM.Environment.Panel)")]
-        public static Output<List<Panel>, List<Panel>> IsExternal(List<Panel> panels)
+        public static Output<List<Panel>, List<Panel>> IsExternal(this List<Panel> panels)
          {
              List<List<Panel>> definedSpaces = panels.ToSpaces();
              List<Panel> internalPanels = new List<Panel>();
