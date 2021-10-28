@@ -43,7 +43,7 @@ namespace BH.Engine.Diffing
         [Input("diff", "First diff object.")]
         [Input("toAdd", "Second diff object.")]
         [Output("diff", "Merged Diff object, with the objects of the second input concatenated after the objects of the first input")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.Modify.CombineDiffs(BH.oM.Diffing.Diff, BH.oM.Diffing.Diff")]
+        [PreviousVersion("5.0", "BH.Engine.Diffing.Modify.CombineDiffs(BH.oM.Diffing.Diff, BH.oM.Diffing.Diff)")]
         public static Diff CombinedDiff(this Diff diff, Diff toAdd)
         {
             if (diff == null)
