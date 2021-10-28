@@ -54,6 +54,8 @@ namespace BH.Engine.Diffing
 
         public HashComparer() { }
 
+        public HashComparer() { }
+
         [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
         public HashComparer(ComparisonConfig comparisonConfig)
         {

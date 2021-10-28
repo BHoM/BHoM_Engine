@@ -21,11 +21,15 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
 using System.ComponentModel;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -106,13 +110,17 @@ namespace BH.Engine.Structure
             if (profile.IsNull())
                 return 0;
 
-            double width = profile.Width;
-            double height = profile.Height;
+
+            //Calculated according to https://www.steelforlifebluebook.co.uk/explanatory-notes/ec3-ukna/properties/
+
+            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(profile.Edges.ToList());
+
+            double iz = curvesZ.Sum(x => x.IIntegrateRegion(2));
+
             double tf = profile.FlangeThickness;
-            double tw = profile.WebThickness;
+            double hs = profile.Height - tf;
 
-
-            return tf * Math.Pow(height - tf, 2) * Math.Pow(width, 3) / 24;
+            return iz * hs * hs / 4;
 
         }
 
@@ -154,14 +162,44 @@ namespace BH.Engine.Structure
             if (profile.IsNull())
                 return 0;
 
-            double width = profile.FlangeWidth;
-            double height = profile.Height;
+            //Calculated according to https://www.steelforlifebluebook.co.uk/explanatory-notes/ec3-ukna/properties/
+
+            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(profile.Edges.ToList());
+            List<PolyCurve> curvesY = curvesZ.Select(x => x.Rotate(Point.Origin, Vector.ZAxis, -Math.PI / 2)).ToList();
+
+            double a = curvesZ.Sum(x => x.IIntegrateRegion(0));
+            double iy = curvesY.Sum(x => x.IIntegrateRegion(2));
+            double iz = curvesZ.Sum(x => x.IIntegrateRegion(2));
+
+            double h = profile.Height;
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
 
+            double cz = Math.Abs(curvesZ.Bounds().Min.X);
 
-            return tf * Math.Pow(height, 2) / 12 * (3 * width * tf + 2 * height * tw / (6 * width * tf + height * tw));
+            double hSubTf2 = (h - tf) * (h - tf);
 
+            return hSubTf2 / 4 * (iz - a * Math.Pow(cz - tw / 2, 2) * (hSubTf2 * a / (4 * iy) - 1));
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
+        public static double WarpingConstant(this TSectionProfile profile)
+        {
+            if (profile.IsNull())
+                return 0;
+
+            //Calculated according to https://www.steelforlifebluebook.co.uk/explanatory-notes/ec3-ukna/properties/
+
+            double tf = profile.FlangeThickness;
+            double tw = profile.WebThickness;
+            double b = profile.Width;
+            double hSubTf = profile.Height - tf / 2;
+
+            return tf * tf * tf * b * b * b / 144 + hSubTf * hSubTf * hSubTf * tw * tw * tw / 36;
         }
 
         /***************************************************/
