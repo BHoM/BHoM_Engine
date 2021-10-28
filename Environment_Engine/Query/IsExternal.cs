@@ -45,7 +45,8 @@ namespace BH.Engine.Environment
          [Input("Panels", "List of Environment Panels")]
          [MultiOutput(0, "externalPanels", "List of external panels")]
          [MultiOutput(1,"internalPanels","List of internal panels")]
-         public static Output<List<Panel>, List<Panel>> IsExternal(List<Panel> panels)
+         [PreviousVersion("5.0", "BH.Engine.Environment.Query.IsExternal(BH.oM.Environment.Panel)")]
+        public static Output<List<Panel>, List<Panel>> IsExternal(List<Panel> panels)
          {
              List<List<Panel>> definedSpaces = panels.ToSpaces();
              List<Panel> internalPanels = new List<Panel>();
@@ -65,13 +66,9 @@ namespace BH.Engine.Environment
                      boolContains.Add(space.IsContaining(negNormalPt));
                  }
                  if (boolContains.Where(x => x).Count() > 1)
-                 {
                      internalPanels.Add(p);
-                 }
                  else 
-                 {
                      externalPanels.Add(p);
-                 }
              }
              return new Output<List<Panel>, List<Panel>>() { Item1 = externalPanels, Item2 = internalPanels };
         }
