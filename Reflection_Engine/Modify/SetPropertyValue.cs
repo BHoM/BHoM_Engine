@@ -104,7 +104,7 @@ namespace BH.Engine.Reflection
 
                 if (value is string && typeof(IEnum).IsAssignableFrom(propType))
                 {
-                    value = BH.Engine.Base.Create.Enumeration(propType, value as string);
+                    value = CreateEnumeration(propType, value as string);
                 }
 
                 if (propType == typeof(DateTime))
@@ -217,6 +217,32 @@ namespace BH.Engine.Reflection
         {
             Compute.RecordWarning("The objects does not contain any property with the name " + propName + ".");
             return false;
+        }
+
+        /***************************************************/
+
+        private static Enumeration CreateEnumeration(Type type, string value)
+        {
+            if (type == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create an enumeration from a null type");
+                return null;
+            }
+
+            List<Enumeration> test = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                     .Select(f => f.GetValue(null))
+                     .OfType<Enumeration>().ToList();
+
+            Enumeration result = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                     .Select(f => f.GetValue(null))
+                     .OfType<Enumeration>()
+                     .Where(x => x.Value == value || x.Description == value)
+                     .FirstOrDefault();
+
+            if (result == null)
+                BH.Engine.Reflection.Compute.RecordError($"Cannot create an enumeration from type {type.ToString()} and value {value}");
+
+            return result;
         }
 
         /***************************************************/
