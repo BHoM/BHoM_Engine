@@ -25,53 +25,46 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
 using BH.oM.Data.Library;
-using System.IO;
 
 namespace BH.Engine.Library
 {
-    public static partial class Modify
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Updates the LibrarySetting used for extraction of datasets to the one provided and stores it in the settings folder.")]
-        [Input("settings", "The LibrarySettings object to store on the system.")]
-        [Input("replacePreexisting", "If true, any preexisting settings file will be replaced. If false, LibrarySettings will only be updated if no settings already exists.")]
+        [Description("Removes a custom folder path from the User libraries accessed by the Library_Engine.")]
+        [Input("customPath", "Path to folder to be excluded from the custom libraries.", typeof(FolderPathAttribute))]
         [Input("refreshLibraries", "If true, all loaded libraries will be refreshed and reloaded, making use of the provided LibrarySettings object.")]
-        [Output("sucess", "Returns true of the settings was successfully updated.")]
-        public static bool SaveLibrarySettings(LibrarySettings settings, bool replacePreexisting = false, bool refreshLibraries = true)
+        [Output("success", "Returns true of the settings was successfully updated.")]
+        public static bool RemoveUserPath(string customPath, bool refreshLibraries = true)
         {
-            if (settings == null)
+            if (string.IsNullOrEmpty(customPath))
             {
-                Engine.Reflection.Compute.RecordError("Settings object is null and can not be stored.");
+                Engine.Reflection.Compute.RecordError($"Provided {nameof(customPath)} is null. Can not remove from library settings.");
                 return false;
             }
 
-            if (File.Exists(Query.m_settingsPath))
+            LibrarySettings settings = Query.LibrarySettings() ?? new LibrarySettings();
+
+            if (settings == null)
             {
-                if (!replacePreexisting)
-                {
-                    Engine.Reflection.Compute.RecordError($"A LibrarySettings object already exists. To replace it, toggle replacePreexisting to true. \nTo add a new path to the old set of Paths, try using the {nameof(AddUserPath)} method.");
-                    return false;
-                }
-                else
-                {
-                    File.Delete(Query.m_settingsPath);
-                }
+                Engine.Reflection.Compute.RecordError("No library settings available. Unable to remove path.");
+                return false;
             }
 
-            if (!Directory.Exists(Path.GetDirectoryName(Query.m_settingsPath)))
-                Directory.CreateDirectory(Path.GetDirectoryName(Query.m_settingsPath));
 
-            File.WriteAllText(Query.m_settingsPath, Engine.Serialiser.Convert.ToJson(settings));
+            if (settings.UserLibraryPaths.Contains(customPath))
+                settings.UserLibraryPaths.Remove(customPath);
+            else
+            {
+                Engine.Reflection.Compute.RecordWarning($"Library settings does not contain provided {nameof(customPath)}.");
+                return false;
+            }
 
-            if (refreshLibraries)
-                Query.RefreshLibraries();
-
-            return true;
+            return SaveLibrarySettings(settings, true, refreshLibraries);
         }
 
         /***************************************************/
