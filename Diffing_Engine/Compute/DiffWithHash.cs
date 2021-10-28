@@ -80,6 +80,8 @@ namespace BH.Engine.Diffing
 
         private static Diff DiffingWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, DiffingConfig diffingConfig = null, bool storeHash = false, bool retrieveStoredHash = false)
         {
+            diffingConfig = diffingConfig ?? new DiffingConfig();
+
             Diff outputDiff = null;
             if (InputObjectsNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffingConfig))
                 return outputDiff;
