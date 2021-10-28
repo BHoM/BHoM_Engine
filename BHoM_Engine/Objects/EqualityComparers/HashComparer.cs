@@ -46,17 +46,33 @@ namespace BH.Engine.Diffing
         [Description("If true, stores the computed hash for input BHoMObjects as a new HashFragment. False by default.")]
         public bool StoreHash { get; set; } = false;
 
+        [Description("If true, attempts to retrieve a hash stored in the object's Fragments instead of computing it. False by default.")]
+        public bool RetrieveStoredHash { get; set; } = false;
+
         [Description("If the objects are IObjects, computes the BHoM Hash using these configurations.")]
         public ComparisonConfig ComparisonConfig { get; set; } = new ComparisonConfig();
 
-        [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
-        [Input("storeHash", "If true, stores the computed hash for input BHoMObjects as a new HashFragment.")]
-        public HashComparer(ComparisonConfig comparisonConfig = null, bool storeHash = false)
-        {
-            if (comparisonConfig != null)
-                ComparisonConfig = comparisonConfig;
+        public HashComparer() { }
 
+        [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
+        public HashComparer(ComparisonConfig comparisonConfig)
+        {
+            ComparisonConfig = comparisonConfig;
+        }
+
+        [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
+        [Input("storeHash", "If true, stores the computed hash for input BHoMObjects as a new HashFragment. False by default.")]
+        public HashComparer(ComparisonConfig comparisonConfig, bool storeHash) : this(comparisonConfig)
+        {
             StoreHash = storeHash;
+        }
+
+        [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
+        [Input("storeHash", "If true, stores the computed hash for input BHoMObjects as a new HashFragment. False by default.")]
+        [Input("retrieveStoredHash", "If true, attempts to retrieve a hash stored in the object's Fragments instead of computing it. False by default.")]
+        public HashComparer(ComparisonConfig comparisonConfig, bool storeHash, bool retrieveStoredHash) : this(comparisonConfig, storeHash)
+        {
+            RetrieveStoredHash = retrieveStoredHash;
         }
 
         /***************************************************/
@@ -75,13 +91,13 @@ namespace BH.Engine.Diffing
 
                 if (xbHoM != null && ybHoM != null)
                 {
-                    xHash = xbHoM.Hash(ComparisonConfig);
-                    yHash = ybHoM.Hash(ComparisonConfig);
+                    xHash = xbHoM.Hash(ComparisonConfig, RetrieveStoredHash);
+                    yHash = ybHoM.Hash(ComparisonConfig, RetrieveStoredHash);
 
-                    if (xbHoM is IBHoMObject && StoreHash)
+                    if (StoreHash && xbHoM is IBHoMObject)
                         x = (T)SetHashFragment(xbHoM as IBHoMObject, xHash);
 
-                    if (ybHoM is IBHoMObject && StoreHash)
+                    if (StoreHash && ybHoM is IBHoMObject)
                         y = (T)SetHashFragment(ybHoM as IBHoMObject, yHash);
 
                     return xHash == yHash;
@@ -103,7 +119,7 @@ namespace BH.Engine.Diffing
             if (iObj != null)
                 return iObj.Hash(ComparisonConfig).GetHashCode();
 
-            return obj.GetHashCode();
+            return obj?.GetHashCode() ?? 0;
         }
 
         /***************************************************/

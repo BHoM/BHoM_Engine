@@ -88,7 +88,7 @@ namespace BH.Engine.Facade
                 Reflection.Compute.RecordError("Outline not closed. Could not create Panel.");
                 return null;
             }
-            List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(new List<ICurve> {o}, openingConstruction, frameEdgeProperty)).Where(x => x != null).ToList() : new List<Opening>();
+            List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(new List<ICurve> {o}, openingConstruction, openingFrameEdgeProperty)).Where(x => x != null).ToList() : new List<Opening>();
             List<FrameEdge> externalEdges = outline.ISubParts().Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList();
 
             return Create.Panel(externalEdges, pOpenings, construction, panelType, name);
