@@ -31,6 +31,8 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.oM.Reflection;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -39,7 +41,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether the Environment Panel is externally facing")]
+        /*[Description("Determines whether the Environment Panel is externally facing")]
         [Input("panel", "An Environment Panel")]
         [Output("isExternal", "True if the panel is externally facing, false otherwise")]
         public static bool IsExternal(this Panel panel)
@@ -51,6 +53,42 @@ namespace BH.Engine.Environment
             }
 
             return panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal; //TODO: Put a more robust check of whether the element is external or not in...
+        }
+        */
+
+         [Description("Determines which Environment Panels are externally facing")]
+         [Input("Panels", "List of Environment Panels")]
+         [MultiOutput(0, "externalPanels", "List of external panels")]
+         [MultiOutput(1,"internalPanels","List of internal panels")]
+         public static Output<List<Panel>, List<Panel>> IsExternal(List<Panel> panels)
+         {
+             List<List<Panel>> definedSpaces = panels.ToSpaces();
+             List<Panel> internalPanels = new List<Panel>();
+             List<Panel> externalPanels = new List<Panel>();
+
+            foreach (Panel p in panels)
+             {      
+                 Vector panelNormal = p.Polyline().Normal();
+                 Point panelCentre = p.Polyline().Centroid();
+                 Point normalPt = panelCentre + (0.01 * panelNormal);
+                 Point negNormalPt = panelCentre - (0.01 * panelNormal);
+                 List<bool> boolContains = new List<bool>();
+
+                foreach (List<Panel> space in definedSpaces)
+                 {
+                     boolContains.Add(space.IsContaining(normalPt));
+                     boolContains.Add(space.IsContaining(negNormalPt));
+                 }
+                 if (boolContains.Where(x => x).Count() > 1)
+                 {
+                     internalPanels.Add(p);
+                 }
+                 else 
+                 {
+                     externalPanels.Add(p);
+                 }
+             }
+             return new Output<List<Panel>, List<Panel>>() { Item1 = externalPanels, Item2 = internalPanels };
         }
     }
 }
