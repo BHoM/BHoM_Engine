@@ -58,18 +58,27 @@ namespace BH.Engine.Environment
                  Point panelCentre = p.Polyline().Centroid();
                  Point normalPt = panelCentre + (0.01 * panelNormal);
                  Point negNormalPt = panelCentre - (0.01 * panelNormal);
-                 List<bool> boolContains = new List<bool>();
-
+                int insideCounter = 0;
                 foreach (List<Panel> space in definedSpaces)
-                 {
-                     boolContains.Add(space.IsContaining(normalPt));
-                     boolContains.Add(space.IsContaining(negNormalPt));
-                 }
-                 if (boolContains.Where(x => x).Count() > 1)
-                     internalPanels.Add(p);
-                 else 
-                     externalPanels.Add(p);
-             }
+                {
+                    if (space.IsContaining(normalPt))
+                    {
+                        insideCounter++;
+                        if (insideCounter > 1)
+                            break;
+                    }
+                    if (space.IsContaining(negNormalPt))
+                    {
+                        insideCounter++;
+                        if (insideCounter > 1)
+                            break;
+                    }
+                }
+                if (insideCounter > 1)
+                    internalPanels.Add(p);
+                else
+                    externalPanels.Add(p);
+            }
              return new Output<List<Panel>, List<Panel>>() { Item1 = externalPanels, Item2 = internalPanels };
         }
     }
