@@ -105,11 +105,9 @@ namespace BH.Engine.Spatial
 
             Line l1 = new Line { Start = p, End = p = p + yAxis * (bft - bfw / 4 * Math.Tan(slope)) };
             Line l2 = new Line { Start = p, End = p = p - xAxis * (bfw - wt) / 2 + yAxis * ((bfw - wt) / 2 * Math.Tan(slope)) };
-            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + bfw/4 * Math.Tan(slope)) - (tft + tfw / 4 * Math.Tan(slope)))};
+            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + (bfw/4 - wt/2) * Math.Tan(slope)) - (tft + (tfw/4 - wt/2) * Math.Tan(slope)))};
             Line l4 = new Line { Start = p, End = p = p + xAxis * (tfw - wt) / 2 + yAxis * ((tfw - wt) / 2 * Math.Tan(slope)) };
             Line l5 = new Line { Start = p, End = p = p + yAxis * (tft - tfw / 4 * Math.Tan(slope)) };
-
-            //perimeter = new List<ICurve> { l1, l2, l3, l4, l5 };
 
             List<ICurve> fillet = Fillet(l1, l2, r2);
             perimeter.AddRange(fillet.GetRange(0, fillet.Count - 1));
@@ -127,7 +125,6 @@ namespace BH.Engine.Spatial
             }
             perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
             perimeter.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
-
 
             return perimeter;
         }
