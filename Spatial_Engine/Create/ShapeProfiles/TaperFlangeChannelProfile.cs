@@ -62,6 +62,7 @@ namespace BH.Engine.Spatial
                 InvalidRatioError("width", "webthickness, toeRadius and rootRadius");
                 return null;
             }
+
             if (flangeSlope < 0)
             {
                 Reflection.Compute.RecordError("Flange slope must be positive. Suggest approximately 0.16 radians");
@@ -74,7 +75,7 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (flangeThickness < toeRadius)
+            if (toeRadius > flangeThickness - flangeWidth/2 * Math.Tan(flangeSlope) )
             {
                 InvalidRatioError("flangeThickness", "toeRadius");
                 return null;
