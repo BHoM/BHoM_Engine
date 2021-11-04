@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -21,58 +21,34 @@
  */
 
 using BH.oM.Reflection.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Method               ****/
         /***************************************************/
 
-        [Description("Returns a dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
-        [Output("typeDictionary", "Dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
-        public static Dictionary<string, List<Type>> BHoMTypeDictionary()
+        [Description("Checks whether a given assembly is a BHoM UI assembly.")]
+        [Input("assembly", "Assembly to be checked whether it is a BHoM UI assembly.")]
+        [Output("isUi", "True if the input assembly is a BHoM UI assembly.")]
+        public static bool IsUiAssembly(this Assembly assembly)
         {
-            lock (m_GetTypesLock)
-            {
-                if (m_BHoMTypeDictionary == null)
-                    ExtractAllTypes();
-
-                return m_BHoMTypeDictionary;
-            }
+            return assembly != null && assembly.GetName().Name.IsUiAssembly();
         }
 
-
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void AddBHoMTypeToDictionary(string name, Type type)
+        [Description("Checks whether a given assembly name follows the BHoM UI assembly naming convention.")]
+        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM UI assembly naming convention.")]
+        [Output("isUi", "True if the input assembly name follows the BHoM UI assembly naming convention.")]
+        public static bool IsUiAssembly(this string assemblyName)
         {
-            if (m_BHoMTypeDictionary.ContainsKey(name))
-                m_BHoMTypeDictionary[name].Add(type);
-            else
-            {
-                List<Type> list = new List<Type>();
-                list.Add(type);
-                m_BHoMTypeDictionary[name] = list;
-            }
-
-            int firstDot = name.IndexOf('.');
-            if (firstDot >= 0)
-                AddBHoMTypeToDictionary(name.Substring(firstDot + 1), type);
+            return assemblyName != null && (assemblyName.StartsWith("BH.UI.") || assemblyName.EndsWith("_UI") || assemblyName.Contains("_UI_"));
         }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static Dictionary<string, List<Type>> m_BHoMTypeDictionary = null;
 
         /***************************************************/
     }

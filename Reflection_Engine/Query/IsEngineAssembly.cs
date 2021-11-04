@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -21,58 +21,34 @@
  */
 
 using BH.oM.Reflection.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Method               ****/
         /***************************************************/
 
-        [Description("Returns a dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
-        [Output("typeDictionary", "Dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
-        public static Dictionary<string, List<Type>> BHoMTypeDictionary()
+        [Description("Checks whether a given assembly is a BHoM engine assembly.")]
+        [Input("assembly", "Assembly to be checked whether it is a BHoM engine assembly.")]
+        [Output("isEngine", "True if the input assembly is a BHoM engine assembly.")]
+        public static bool IsEngineAssembly(this Assembly assembly)
         {
-            lock (m_GetTypesLock)
-            {
-                if (m_BHoMTypeDictionary == null)
-                    ExtractAllTypes();
-
-                return m_BHoMTypeDictionary;
-            }
+            return assembly != null && assembly.GetName().Name.IsEngineAssembly();
         }
 
-
-        /***************************************************/
-        /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void AddBHoMTypeToDictionary(string name, Type type)
+        [Description("Checks whether a given assembly name follows the BHoM engine assembly naming convention.")]
+        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM engine assembly naming convention.")]
+        [Output("isEngine", "True if the input assembly name follows the BHoM engine assembly naming convention.")]
+        public static bool IsEngineAssembly(this string assemblyName)
         {
-            if (m_BHoMTypeDictionary.ContainsKey(name))
-                m_BHoMTypeDictionary[name].Add(type);
-            else
-            {
-                List<Type> list = new List<Type>();
-                list.Add(type);
-                m_BHoMTypeDictionary[name] = list;
-            }
-
-            int firstDot = name.IndexOf('.');
-            if (firstDot >= 0)
-                AddBHoMTypeToDictionary(name.Substring(firstDot + 1), type);
+            return assemblyName != null && (assemblyName.EndsWith("_Engine") || assemblyName.Contains("_Engine_"));
         }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static Dictionary<string, List<Type>> m_BHoMTypeDictionary = null;
 
         /***************************************************/
     }
