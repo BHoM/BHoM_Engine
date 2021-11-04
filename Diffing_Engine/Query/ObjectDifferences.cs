@@ -44,10 +44,10 @@ namespace BH.Engine.Diffing
         [Output("Returns an `ObjectDifferences` object storing all the found differences between `previousObject` and `followingObject`." +
             "\nIf no difference was found, returns null.")]
         [PreviousVersion("5.0", "BH.Engine.Diffing.DifferentProperties(System.Object, System.Object, BH.oM.Base.ComparisonConfig)")]
-        public static ObjectDifferences ObjectDifferences(this object pastObject, object followingObject, ComparisonConfig comparisonConfig = null)
+        public static ObjectDifferences ObjectDifferences(this object pastObject, object followingObject, BaseComparisonConfig comparisonConfig = null)
         {
             // Set ComparisonConfig if null. Clone it for immutability in the UI.
-            ComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
+            BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
             ObjectDifferences result = new ObjectDifferences() { PastObject = pastObject, FollowingObject = followingObject };
 
