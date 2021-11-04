@@ -86,6 +86,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
         public override MethodBase Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             var bsonReader = context.Reader;
+            if (bsonReader.CurrentBsonType == BsonType.Null)
+            {
+                context.Reader.ReadNull();
+                return null;
+            }
+
             bsonReader.ReadStartDocument();
 
             string text = bsonReader.ReadName();
