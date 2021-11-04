@@ -57,9 +57,6 @@ namespace BH.Engine.Diffing
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffingConfig dc = diffingConfig == null ? new DiffingConfig() : diffingConfig.DeepClone();
 
-            Dictionary<string, List<IBHoMObject>> pastBHoMObjs_perNamespace = pastObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
-            Dictionary<string, List<IBHoMObject>> followingBHoMObjs_perNamespace = followingObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
-
             if (!pastObjs.Any() && !followingObjs.Any())
                 return outputDiff;
 
