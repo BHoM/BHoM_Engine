@@ -90,7 +90,7 @@ namespace BH.Engine.Reflection
             }
 
             if (result.Count != 0)
-                Query.RefreshAssemblyList();
+                Global.ExtractAssembliesTypesAndMethods();
 
             return result;
         }
