@@ -21,10 +21,8 @@
  */
 
 using BH.oM.Reflection.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -39,13 +37,7 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "List of BHoM assemblies loaded in the current domain.")]
         public static List<Assembly> BHoMAssemblyList()
         {
-            lock (m_GetAssembliesLock)
-            {
-                if (m_BHoMAssemblies == null)
-                    ExtractAllAssemblies();
-
-                return m_BHoMAssemblies;
-            }
+            return Global.BHoMAssemblies;
         }
 
         /***************************************************/
@@ -54,51 +46,8 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "List of all assemblies loaded in the current domain.")]
         public static List<Assembly> AllAssemblyList()
         {
-            lock (m_GetAssembliesLock)
-            {
-                if (m_AllAssemblies == null)
-                    ExtractAllAssemblies();
-
-                return m_AllAssemblies;
-            }
+            return Global.AllAssemblies;
         }
-
-        /***************************************************/
-
-        [Description("Refreshes the lists of loaded assemblies and, in consequence, loaded types and methods.")]
-        public static void RefreshAssemblyList()
-        {
-            ExtractAllAssemblies();
-            ExtractAllTypes();
-            ExtractAllMethods();
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void ExtractAllAssemblies()
-        {
-            m_AllAssemblies = AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First()).ToList();
-            m_BHoMAssemblies = m_AllAssemblies.Where(x => x.IsBHoM()).ToList();
-        }
-
-        /***************************************************/
-
-        private static bool IsBHoM(this Assembly assembly)
-        {
-            string name = assembly.GetName().Name;
-            return name.IsOmAssembly() || name.IsEngineAssembly() || name.IsAdapterAssembly() || name.IsUiAssembly();
-        }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static List<Assembly> m_BHoMAssemblies = null;
-        private static List<Assembly> m_AllAssemblies = null;
-        private static readonly object m_GetAssembliesLock = new object();
 
         /***************************************************/
     }
