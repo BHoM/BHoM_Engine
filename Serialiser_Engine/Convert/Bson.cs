@@ -177,6 +177,7 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(object), new BH_ObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(System.Drawing.Color), new ColourSerializer());
                 BsonSerializer.RegisterSerializer(typeof(MethodBase), new MethodBaseSerializer());
+                BsonSerializer.RegisterSerializer(typeof(MethodInfo), new MethodBaseSerializer());
                 BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(BsonType.String));
                 BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(FragmentSet), new BHoMCollectionSerializer<FragmentSet, IFragment>());
