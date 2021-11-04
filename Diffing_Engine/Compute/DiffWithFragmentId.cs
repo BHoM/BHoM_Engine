@@ -82,8 +82,8 @@ namespace BH.Engine.Diffing
                 return null;
             }
 
-            IEnumerable<string> pastObjsIds = pastObjects.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !s.IsNullOrEmpty());
-            IEnumerable<string> follObjsIds = followingObjs.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !s.IsNullOrEmpty());
+            IEnumerable<string> pastObjsIds = pastObjects.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !string.IsNullOrWhiteSpace(s));
+            IEnumerable<string> follObjsIds = followingObjs.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !string.IsNullOrWhiteSpace(s));
 
             bool missingIds = false;
             if (pastObjsIds.Count() != pastObjects.Count())
