@@ -37,42 +37,8 @@ namespace BH.Engine.Reflection
         [Output("typeDictionary", "Dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
         public static Dictionary<string, List<Type>> BHoMTypeDictionary()
         {
-            lock (m_GetTypesLock)
-            {
-                if (m_BHoMTypeDictionary == null)
-                    ExtractAllTypes();
-
-                return m_BHoMTypeDictionary;
-            }
+            return Global.BHoMTypeDictionary;
         }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void AddBHoMTypeToDictionary(string name, Type type)
-        {
-            if (m_BHoMTypeDictionary.ContainsKey(name))
-                m_BHoMTypeDictionary[name].Add(type);
-            else
-            {
-                List<Type> list = new List<Type>();
-                list.Add(type);
-                m_BHoMTypeDictionary[name] = list;
-            }
-
-            int firstDot = name.IndexOf('.');
-            if (firstDot >= 0)
-                AddBHoMTypeToDictionary(name.Substring(firstDot + 1), type);
-        }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static Dictionary<string, List<Type>> m_BHoMTypeDictionary = null;
 
         /***************************************************/
     }

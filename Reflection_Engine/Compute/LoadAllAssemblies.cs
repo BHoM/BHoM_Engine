@@ -45,7 +45,7 @@ namespace BH.Engine.Reflection
         public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
         {
             List<Assembly> result = new List<Assembly>();
-            lock (m_LoadAssembliesLock)
+            lock (Global.LoadAssembliesLock)
             {
                 if (string.IsNullOrEmpty(folder))
                     folder = Query.BHoMFolder();
@@ -70,7 +70,7 @@ namespace BH.Engine.Reflection
                         continue;
 
                     string name = parts[parts.Length - 2];
-                    if (m_LoadedAssemblies.Contains(name))
+                    if (Global.LoadedAssemblies.Contains(name))
                         continue;
 
                     if (suffixes.Any(x => name.EndsWith(x)))
@@ -79,7 +79,7 @@ namespace BH.Engine.Reflection
                         {
                             Assembly loaded = Assembly.LoadFrom(file);
                             result.Add(loaded);
-                            m_LoadedAssemblies.Add(name);
+                            Global.LoadedAssemblies.Add(name);
                         }
                         catch
                         {
@@ -94,13 +94,6 @@ namespace BH.Engine.Reflection
 
             return result;
         }
-
-        /***************************************************/
-        /**** Private Static Fields                     ****/
-        /***************************************************/
-
-        private static List<string> m_LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetName().Name).ToList();
-        private static readonly object m_LoadAssembliesLock = new object();
 
         /***************************************************/
     }
