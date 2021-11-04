@@ -47,7 +47,7 @@ namespace BH.Engine.Diffing
         public static ObjectDifferences ObjectDifferences(this object pastObject, object followingObject, ComparisonConfig comparisonConfig = null)
         {
             // Set ComparisonConfig if null. Clone it for immutability in the UI.
-            ComparisonConfig cc = comparisonConfig == null ? new BaseComparisonConfig() : comparisonConfig.DeepClone();
+            ComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
             ObjectDifferences result = new ObjectDifferences() { PastObject = pastObject, FollowingObject = followingObject };
 

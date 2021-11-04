@@ -49,19 +49,19 @@ namespace BH.Engine.Base.Objects
         public bool RetrieveStoredHash { get; set; } = false;
 
         [Description("If the objects are IObjects, computes the BHoM Hash using these configurations.")]
-        public ComparisonConfig ComparisonConfig { get; set; } = new BaseComparisonConfig();
+        public BaseComparisonConfig ComparisonConfig { get; set; } = new ComparisonConfig();
 
         public HashComparer() { }
 
         [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
-        public HashComparer(ComparisonConfig comparisonConfig)
+        public HashComparer(BaseComparisonConfig comparisonConfig)
         {
             ComparisonConfig = comparisonConfig;
         }
 
         [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
         [Input("storeHash", "If true, stores the computed hash for input BHoMObjects as a new HashFragment. False by default.")]
-        public HashComparer(ComparisonConfig comparisonConfig, bool storeHash) : this(comparisonConfig)
+        public HashComparer(BaseComparisonConfig comparisonConfig, bool storeHash) : this(comparisonConfig)
         {
             StoreHash = storeHash;
         }
@@ -69,7 +69,7 @@ namespace BH.Engine.Base.Objects
         [Input("comparisonConfig", "If the objects are IObjects, computes the BHoM Hash using these configurations.")]
         [Input("storeHash", "If true, stores the computed hash for input BHoMObjects as a new HashFragment. False by default.")]
         [Input("retrieveStoredHash", "If true, attempts to retrieve a hash stored in the object's Fragments instead of computing it. False by default.")]
-        public HashComparer(ComparisonConfig comparisonConfig, bool storeHash, bool retrieveStoredHash) : this(comparisonConfig, storeHash)
+        public HashComparer(BaseComparisonConfig comparisonConfig, bool storeHash, bool retrieveStoredHash) : this(comparisonConfig, storeHash)
         {
             RetrieveStoredHash = retrieveStoredHash;
         }

@@ -79,7 +79,7 @@ namespace BH.Engine.Physical
             if (element.Property.Name != other.Property.Name)
                 return false;
 
-            return !Diffing.Query.DifferentProperties(element.Property, other.Property, new BaseComparisonConfig())?.Any() ?? true;
+            return !Diffing.Query.DifferentProperties(element.Property, other.Property, new ComparisonConfig())?.Any() ?? true;
         }
         
 
@@ -109,7 +109,7 @@ namespace BH.Engine.Physical
             if (element.Construction.Name != other.Construction.Name)
                 return false;
 
-            return !Diffing.Query.DifferentProperties(element.Construction, other.Construction, new BaseComparisonConfig())?.Any() ?? true;
+            return !Diffing.Query.DifferentProperties(element.Construction, other.Construction, new ComparisonConfig())?.Any() ?? true;
         }
 
         /***************************************************/

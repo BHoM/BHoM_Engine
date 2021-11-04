@@ -56,7 +56,7 @@ namespace BH.Engine.Environment
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
         public static bool HasMergeablePropertiesWith(Panel element, Panel other)
         {
-            ComparisonConfig cc = new BaseComparisonConfig()
+            ComparisonConfig cc = new ComparisonConfig()
             {
                 PropertyExceptions = new List<string>
                     {
@@ -79,7 +79,7 @@ namespace BH.Engine.Environment
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
         public static bool HasMergeablePropertiesWith(Opening element, Opening other)
         {
-            ComparisonConfig cc = new BaseComparisonConfig()
+            ComparisonConfig cc = new ComparisonConfig()
             {
                 PropertyExceptions = new List<string>
                     {
@@ -114,7 +114,7 @@ namespace BH.Engine.Environment
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
         public static bool HasMergeablePropertiesWith(Space element, Space other)
         {
-            ComparisonConfig cc = new BaseComparisonConfig()
+            ComparisonConfig cc = new ComparisonConfig()
             {
                 PropertyExceptions = new List<string>
                     {

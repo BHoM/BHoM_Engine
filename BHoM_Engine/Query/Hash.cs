@@ -49,7 +49,7 @@ namespace BH.Engine.Base
         [Input("iObj", "iObject the hash code should be calculated for.")]
         [Input("comparisonConfig", "Configure how the hash is computed.")]
         [Input("hashFromFragment", "If true, if the object is a BHoMObject storing a HashFragment, retrieve the hash from it instead of computing the hash.")]
-        public static string Hash(this IObject iObj, ComparisonConfig comparisonConfig = null, bool hashFromFragment = false)
+        public static string Hash(this IObject iObj, BaseComparisonConfig comparisonConfig = null, bool hashFromFragment = false)
         {
             if (iObj == null)
             {
@@ -69,7 +69,7 @@ namespace BH.Engine.Base
             // ------ SET UP OF CONFIGURATION ------
 
             // Make sure we always have a config object. Clone for immutability.
-            ComparisonConfig cc = comparisonConfig == null ? new BaseComparisonConfig() : comparisonConfig.DeepClone();
+            BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
             // Make sure that "BHoM_Guid" is added to the PropertyExceptions of the config.
             cc.PropertyExceptions = cc.PropertyExceptions ?? new List<string>();
@@ -143,7 +143,7 @@ namespace BH.Engine.Base
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
         [Input("propertyPath", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
-        private static string DefiningString(object obj, ComparisonConfig cc, int fractionalDigits, int nestingLevel, string currentPropertyFullName = null)
+        private static string DefiningString(object obj, BaseComparisonConfig cc, int fractionalDigits, int nestingLevel, string currentPropertyFullName = null)
         {
             string definingString = "";
 
@@ -297,7 +297,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         // Populates the properties exceptions from the properties to consider.
-        private static void PopulateExceptionsFromPropertiesToConsider(ComparisonConfig cc, int nestingLevel, string currentPropertyFullName, Type currentObjType)
+        private static void PopulateExceptionsFromPropertiesToConsider(BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName, Type currentObjType)
         {
             // Null check on PropertiesToConsider and its elements.
             if (!cc?.PropertiesToConsider?.Where(ptc => ptc != null).Any() ?? true)

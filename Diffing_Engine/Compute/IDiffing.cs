@@ -153,7 +153,7 @@ namespace BH.Engine.Diffing
         {
             DiffingConfig dc = null;
             if (propertiesToConsider?.Any() ?? false)
-                dc = new DiffingConfig() { ComparisonConfig = new BaseComparisonConfig { PropertiesToConsider = propertiesToConsider } };
+                dc = new DiffingConfig() { ComparisonConfig = new ComparisonConfig { PropertiesToConsider = propertiesToConsider } };
 
             return IDiffing(pastObjs, followingObjs, dc);
         }
