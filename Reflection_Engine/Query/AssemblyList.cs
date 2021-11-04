@@ -20,10 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
@@ -33,30 +35,43 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns all BHoM assemblies loaded in the current domain.")]
+        [Output("assemblies", "List of BHoM assemblies loaded in the current domain.")]
         public static List<Assembly> BHoMAssemblyList()
         {
             lock (m_GetAssembliesLock)
             {
-                if (m_BHoMAssemblies == null || m_BHoMAssemblies.Count == 0)
+                if (m_BHoMAssemblies == null)
                     ExtractAllAssemblies();
 
-                return m_BHoMAssemblies.Values.ToList();
+                return m_BHoMAssemblies;
             }
         }
 
         /***************************************************/
 
+        [Description("Returns all assemblies loaded in the current domain.")]
+        [Output("assemblies", "List of all assemblies loaded in the current domain.")]
         public static List<Assembly> AllAssemblyList()
         {
             lock (m_GetAssembliesLock)
             {
-                if (m_AllAssemblies == null || m_AllAssemblies.Count == 0)
+                if (m_AllAssemblies == null)
                     ExtractAllAssemblies();
 
-                return m_AllAssemblies.Values.ToList();
+                return m_AllAssemblies;
             }
         }
 
+        /***************************************************/
+
+        [Description("Refreshes the lists of loaded assemblies and, in consequence, loaded types and methods.")]
+        public static void RefreshAssemblyList()
+        {
+            ExtractAllAssemblies();
+            ExtractAllTypes();
+            ExtractAllMethods();
+        }
 
         /***************************************************/
         /**** Private Methods                           ****/
@@ -64,9 +79,8 @@ namespace BH.Engine.Reflection
 
         private static void ExtractAllAssemblies()
         {
-            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First());
-            m_BHoMAssemblies = assemblies.Where(x => x.IsBHoM()).ToDictionary(x => x.FullName);
-            m_AllAssemblies = assemblies.ToDictionary(x => x.FullName);
+            m_AllAssemblies = AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First()).ToList();
+            m_BHoMAssemblies = m_AllAssemblies.Where(x => x.IsBHoM()).ToList();
         }
 
         /***************************************************/
@@ -74,7 +88,7 @@ namespace BH.Engine.Reflection
         private static bool IsBHoM(this Assembly assembly)
         {
             string name = assembly.GetName().Name;
-            return name.EndsWith("oM") || name.EndsWith("_Engine") || name.EndsWith("_Adapter") || name.EndsWith("_UI") || name.EndsWith("_Test");
+            return name.IsOmAssembly() || name.IsEngineAssembly() || name.IsAdapterAssembly() || name.IsUiAssembly();
         }
 
 
@@ -82,8 +96,8 @@ namespace BH.Engine.Reflection
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static Dictionary<string, Assembly> m_BHoMAssemblies = null;
-        private static Dictionary<string, Assembly> m_AllAssemblies = null;
+        private static List<Assembly> m_BHoMAssemblies = null;
+        private static List<Assembly> m_AllAssemblies = null;
         private static readonly object m_GetAssembliesLock = new object();
 
         /***************************************************/

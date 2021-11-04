@@ -21,9 +21,12 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Reflection
 {
@@ -32,17 +35,16 @@ namespace BH.Engine.Reflection
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        public static List<Type> BHoMInterfaceList()
+        
+        [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
+        [Description("Returns all BHoM interface types loaded in the current domain.")]
+        [Output("types", "List of BHoM interface types loaded in the current domain.")]
+        public static List<Type> BHoMInterfaceTypeList()
         {
             lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_InterfaceList != null && m_InterfaceList.Count > 0)
-                    return m_InterfaceList;
-
-                // Otherwise, create it
-                ExtractAllTypes();
+                if (m_InterfaceList == null)
+                    ExtractAllTypes();
 
                 return m_InterfaceList;
             }
@@ -50,16 +52,14 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all BHoM types loaded in the current domain.")]
+        [Output("types", "List of BHoM types loaded in the current domain.")]
         public static List<Type> BHoMTypeList()
         {
             lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_BHoMTypeList != null && m_BHoMTypeList.Count > 0)
-                    return m_BHoMTypeList;
-
-                // Otherwise, create it
-                ExtractAllTypes();
+                if (m_BHoMTypeList == null)
+                    ExtractAllTypes();
 
                 return m_BHoMTypeList;
             }
@@ -67,16 +67,14 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all BHoM adapter types loaded in the current domain.")]
+        [Output("types", "List of BHoM adapter types loaded in the current domain.")]
         public static List<Type> AdapterTypeList()
         {
             lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_AdapterTypeList != null && m_AdapterTypeList.Count > 0)
-                    return m_AdapterTypeList;
-
-                // Otherwise, create it
-                ExtractAllTypes();
+                if (m_AdapterTypeList == null)
+                    ExtractAllTypes();
 
                 return m_AdapterTypeList;
             }
@@ -84,16 +82,14 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all types loaded in the current domain.")]
+        [Output("types", "List of all types loaded in the current domain.")]
         public static List<Type> AllTypeList()
         {
             lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_AllTypeList != null && m_AllTypeList.Count > 0)
-                    return m_AllTypeList;
-
-                // Otherwise, create it
-                ExtractAllTypes();
+                if (m_AllTypeList == null)
+                    ExtractAllTypes();
 
                 return m_AllTypeList;
             }
@@ -101,16 +97,14 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all BHoM engine types loaded in the current domain.")]
+        [Output("types", "List of BHoM engine types loaded in the current domain.")]
         public static List<Type> EngineTypeList()
         {
-            lock (m_GetMethodsLock)
+            lock (m_GetTypesLock)
             {
-                // If the dictionary exists already return it
-                if (m_EngineTypeList != null && m_EngineTypeList.Count > 0)
-                    return m_EngineTypeList;
-
-                // Otherwise, create it
-                ExtractAllMethods();
+                if (m_EngineTypeList == null)
+                    ExtractAllTypes();
 
                 return m_EngineTypeList;
             }
@@ -125,19 +119,21 @@ namespace BH.Engine.Reflection
         {
             m_BHoMTypeList = new List<Type>();
             m_AdapterTypeList = new List<Type>();
+            m_AllTypeList = new List<Type>();
             m_InterfaceList = new List<Type>();
+            m_EngineTypeList = new List<Type>();
+            m_BHoMTypeDictionary = new Dictionary<string, List<Type>>();
 
-            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly asm in BHoMAssemblyList())
             {
                 try
                 {
                     // Save BHoM objects only
-                    string name = asm.GetName().Name;
-                    if (name == "BHoM" || name.EndsWith("_oM"))
+                    if (asm.IsOmAssembly())
                     {
                         foreach (Type type in asm.GetTypes())
                         {
-                            if (type.Namespace != null && type.Namespace.StartsWith("BH.oM"))
+                            if (type.Namespace != null && regexOmNamespace.IsMatch(type.Namespace))
                             {
                                 AddBHoMTypeToDictionary(type.FullName, type);
                                 if (type.IsInterface)
@@ -145,12 +141,12 @@ namespace BH.Engine.Reflection
                                 else if (!(type.IsAbstract && type.IsSealed) && (type.IsEnum || typeof(IObject).IsAssignableFrom(type)))
                                     m_BHoMTypeList.Add(type);
                             }
-                            if (!type.IsAutoGenerated())
+                            if (type.Namespace != null && !type.IsAutoGenerated())
                                 m_AllTypeList.Add(type);
                         }
                     }
                     // Save adapters
-                    else if (name.EndsWith("_Adapter"))
+                    else if (asm.IsAdapterAssembly())
                     {
                         foreach (Type type in asm.GetTypes())
                         {
@@ -159,9 +155,25 @@ namespace BH.Engine.Reflection
                                 if (!type.IsInterface && type.IsLegal() && type.IsOfType("BHoMAdapter"))
                                     m_AdapterTypeList.Add(type);
 
-                                m_AllTypeList.Add(type);
+                                if (type.Namespace != null)
+                                    m_AllTypeList.Add(type);
                             }
-                                
+
+                        }
+                    }
+                    // Save engine
+                    else if (asm.IsEngineAssembly())
+                    {
+                        foreach (Type type in asm.GetTypes())
+                        {
+                            if (!type.IsAutoGenerated())
+                            {
+                                if (type.Namespace != null && regexEngineNamespace.IsMatch(type.Namespace))
+                                    m_EngineTypeList.Add(type);
+
+                                if (type.Namespace != null)
+                                    m_AllTypeList.Add(type);
+                            }
                         }
                     }
                     else
@@ -170,7 +182,7 @@ namespace BH.Engine.Reflection
                         {
                             if (type.Namespace != null && type.Namespace.StartsWith("BH.") && !type.IsAutoGenerated())
                                 m_AllTypeList.Add(type);
-                        }   
+                        }
                     }
                 }
                 catch (Exception)
@@ -198,11 +210,14 @@ namespace BH.Engine.Reflection
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static List<Type> m_BHoMTypeList = new List<Type>();
-        private static List<Type> m_AdapterTypeList = new List<Type>();
-        private static List<Type> m_AllTypeList = new List<Type>();
-        private static List<Type> m_InterfaceList = new List<Type>();
+        private static List<Type> m_BHoMTypeList = null;
+        private static List<Type> m_AdapterTypeList = null;
+        private static List<Type> m_AllTypeList = null;
+        private static List<Type> m_InterfaceList = null;
+        private static List<Type> m_EngineTypeList = null;
         private static readonly object m_GetTypesLock = new object();
+        private static Regex regexOmNamespace = new Regex(@"BH.*.oM.");
+        private static Regex regexEngineNamespace = new Regex(@"BH.*.Engine.");
 
         /***************************************************/
     }

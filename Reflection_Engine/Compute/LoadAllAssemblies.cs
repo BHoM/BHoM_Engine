@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,71 +20,86 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Compute 
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static void LoadAllAssemblies(string folder = "")
+        [PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String)")]
+        [Description("Loads all .dll assemblies with names ending with oM, _Engine and _Adapter (with optional suffixes) from a given folder.")]
+        [Input("folder", "Folder to load the assemblies from. If left empty, default BHoM assemblies folder will be used.")]
+        [Input("suffix", "Suffix to be added to the standard BHoM library endings (oM, _Engine, _Adapter) when parsing the folder.\n"+
+               "For example, if this value is equal to '_2018', assemblies ending with oM_2018, _Engine_2018 or _Adapter_2018 will be loaded.")]
+        [Output("assemblies", "Assemblies loaded in this method call.")]
+        public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
         {
+            List<Assembly> result = new List<Assembly>();
             lock (m_LoadAssembliesLock)
             {
-                if (!m_AssemblyAlreadyLoaded)
+                if (string.IsNullOrEmpty(folder))
+                    folder = Query.BHoMFolder();
+
+                if (!Directory.Exists(folder))
                 {
-                    m_AssemblyAlreadyLoaded = true;
-                    HashSet<string> loaded = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName.Split(',').First()));
+                    RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
+                    return result;
+                }
 
-                    if (string.IsNullOrEmpty(folder))
-                        folder = Query.BHoMFolder();
+                string[] suffixes = { "oM", "_Engine", "_Adapter" };
+                if (!string.IsNullOrWhiteSpace(suffix))
+                    suffixes = suffixes.Select(x => x + suffix).ToArray();
 
-                    if (!Directory.Exists(folder))
+                foreach (string file in Directory.GetFiles(folder))
+                {
+                    if (!file.EndsWith(".dll"))
+                        continue;
+
+                    string[] parts = file.Split(new char[] { '.', '\\' });
+                    if (parts.Length < 2)
+                        continue;
+
+                    string name = parts[parts.Length - 2];
+                    if (m_LoadedAssemblies.Contains(name))
+                        continue;
+
+                    if (suffixes.Any(x => name.EndsWith(x)))
                     {
-                        RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
-                        return;
-                    }
-
-                    foreach (string file in Directory.GetFiles(folder))
-                    {
-                        string[] parts = file.Split(new char[] { '.', '\\' });
-                        if (parts.Length >= 2)
+                        try
                         {
-                            string name = parts[parts.Length - 2];
-                            if (loaded.Contains(name))
-                                continue;
+                            Assembly loaded = Assembly.LoadFrom(file);
+                            result.Add(loaded);
+                            m_LoadedAssemblies.Add(name);
                         }
-
-                        if (file.EndsWith("oM.dll") || file.EndsWith("_Engine.dll") || file.EndsWith("_Adapter.dll") || file.EndsWith("_Test.dll"))
+                        catch
                         {
-                            try
-                            {
-                                Assembly.LoadFrom(file);
-                            }
-                            catch
-                            {
-                                RecordWarning("Failed to load assembly " + file);
-                            }
+                            RecordWarning("Failed to load assembly " + file);
                         }
                     }
                 }
             }
+
+            if (result.Count != 0)
+                Query.RefreshAssemblyList();
+
+            return result;
         }
 
         /***************************************************/
         /**** Private Static Fields                     ****/
         /***************************************************/
 
-        private static bool m_AssemblyAlreadyLoaded = false;
+        private static List<string> m_LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetName().Name).ToList();
         private static readonly object m_LoadAssembliesLock = new object();
 
         /***************************************************/

@@ -20,10 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
@@ -33,16 +35,14 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns all BHoM methods loaded in the current domain.")]
+        [Output("methods", "List of BHoM methods loaded in the current domain.")]
         public static List<MethodInfo> BHoMMethodList()
         {
             lock (m_GetMethodsLock)
             {
-                // If the dictionary exists already return it
-                if (m_BHoMMethodList != null && m_BHoMMethodList.Count > 0)
-                    return m_BHoMMethodList;
-
-                // Otherwise, create it
-                ExtractAllMethods();
+                if (m_BHoMMethodList == null)
+                    ExtractAllMethods();
 
                 return m_BHoMMethodList;
             }
@@ -50,16 +50,14 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all methods loaded in the current domain.")]
+        [Output("methods", "List of all methods loaded in the current domain.")]
         public static List<MethodBase> AllMethodList()
         {
             lock (m_GetMethodsLock)
             {
-                // If the dictionary exists already return it
-                if (m_AllMethodList != null && m_AllMethodList.Count > 0)
-                    return m_AllMethodList;
-
-                // Otherwise, create it
-                ExtractAllMethods();
+                if (m_AllMethodList == null)
+                    ExtractAllMethods();
 
                 return m_AllMethodList;
             }
@@ -67,13 +65,13 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Returns all external methods loaded in the current domain.")]
+        [Output("methods", "List of external methods loaded in the current domain.")]
         public static List<MethodBase> ExternalMethodList()
         {
             lock (m_GetMethodsLock)
             {
-                // Checking for an empty list may be dangerous, we should give different meaning to null and empty lists
-                // What if m_ExternalMethodList is empty after calling ExtractAllMethods() ?
-                if (m_ExternalMethodList == null || m_ExternalMethodList.Count <= 0)
+                if (m_ExternalMethodList == null)
                     ExtractAllMethods();
 
                 return m_ExternalMethodList;
@@ -87,21 +85,17 @@ namespace BH.Engine.Reflection
 
         private static void ExtractAllMethods()
         {
-            Compute.LoadAllAssemblies();
-
             m_BHoMMethodList = new List<MethodInfo>();
             m_AllMethodList = new List<MethodBase>();
-            m_EngineTypeList = new List<Type>();
+            m_ExternalMethodList = new List<MethodBase>();
 
             BindingFlags bindingBHoM = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static;
-
-            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly asm in BHoMAssemblyList())
             {
                 try
                 {
                     // Save BHoM objects only
-                    string name = asm.GetName().Name;
-                    if (name.EndsWith("_Engine"))
+                    if (asm.IsEngineAssembly())
                     {
                         foreach (Type type in asm.GetTypes())
                         {
@@ -125,7 +119,7 @@ namespace BH.Engine.Reflection
                             StoreAllMethods(type);
                         }
                     }
-                    else if (name.EndsWith("oM") || name.EndsWith("_Adapter") || name.EndsWith("_UI") || name.EndsWith("_Test"))
+                    else if (asm.IsOmAssembly() || asm.IsAdapterAssembly() || asm.IsUiAssembly())
                     {
                         foreach (Type type in asm.GetTypes())
                         {
@@ -168,7 +162,7 @@ namespace BH.Engine.Reflection
                     }
                     catch(Exception e)
                     {
-                        string message = "Cannot load method" + method.Name + " from type  " + type.Name + ". Exception message: " + e.Message;
+                        string message = "Cannot load method " + method.Name + " from type  " + type.Name + ". Exception message: " + e.Message;
 
                         if (!string.IsNullOrEmpty(e.InnerException?.Message))
                         {
@@ -178,20 +172,17 @@ namespace BH.Engine.Reflection
                         Compute.RecordWarning(message);
                     }
                 }
-
-                if (type.Namespace.StartsWith("BH.Engine"))
-                    m_EngineTypeList.Add(type);
             }
         }
+
 
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static List<MethodInfo> m_BHoMMethodList = new List<MethodInfo>();
-        private static List<MethodBase> m_AllMethodList = new List<MethodBase>();
-        private static List<MethodBase> m_ExternalMethodList = new List<MethodBase>();
-        private static List<Type> m_EngineTypeList = new List<Type>();
+        private static List<MethodInfo> m_BHoMMethodList = null;
+        private static List<MethodBase> m_AllMethodList = null;
+        private static List<MethodBase> m_ExternalMethodList = null;
         private static readonly object m_GetMethodsLock = new object();
 
         /***************************************************/
