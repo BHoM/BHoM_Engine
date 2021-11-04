@@ -30,11 +30,10 @@ using BH.Engine.Serialiser;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
-using BH.Engine.Diffing;
 using System.Collections;
 using BH.Engine.Base;
 
-namespace BH.Engine.Diffing
+namespace BH.Engine.Base.Objects
 {
     [Description("Computes and compares the Hash of the given Objects.")]
     public class HashComparer<T> : IEqualityComparer<T>
