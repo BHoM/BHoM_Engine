@@ -194,7 +194,7 @@ namespace BH.Engine.Diffing
             {
                 if (g.Count() > 1)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"{g.Count()} Diffing methods found in namespace {g.Key}. Only one is allowed. Returning only the first one.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{g.Count()} Diffing methods found in namespace {g.Key}. Only one is allowed. Returning only the first one.");
                 }
             }
 
