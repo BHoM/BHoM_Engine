@@ -104,7 +104,10 @@ namespace BH.Engine.Diffing
                 // Modify the namespace grouping replacing "Engine" with "oM" for easier matching with objects from the same namespace.
                 Dictionary<string, MethodBase> adaptersDiffingMethods_modifiedNamespaces = adaptersDiffingMethods_perNamespace.ToDictionary(kv => kv.Key.Replace("Engine", "oM"), kv => kv.Value);
 
-                // Check if there is a Toolkit-specific Diffing method that accepts the specific IPersistentAdapterId type.
+                // Check if there is a Toolkit-specific Diffing method in the same namespace of the IPersistentAdapterId type's namespace. E.g.:
+                // (1) IPersistentAdapterId for Revit: BH.oM.Adapters.Revit.Parameters.RevitIdentifiers ==> its namespace is BH.oM.Adapters.Revit.Parameters
+                // (2) A Revit-specific Diffing method is: BH.Engine.Adapters.Revit.Compute.Diffing ==> its modified namespace is BH.oM.Adapters.Revit
+                // We can find a match by checking when the PersistentId namespace (1) starts with the modified namespace (2).
                 var adapterDiffingMethods = adaptersDiffingMethods_modifiedNamespaces.Where(kv => commonPersistentId_past.Namespace.StartsWith(kv.Key)).Select(kv => kv.Value);
                 MethodBase adapterDiffingMethod = adapterDiffingMethods.FirstOrDefault();
 
