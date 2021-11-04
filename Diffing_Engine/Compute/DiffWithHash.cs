@@ -37,6 +37,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using System.Collections;
 using BH.Engine.Base;
+using BH.Engine.Base.Objects;
 
 namespace BH.Engine.Diffing
 {
