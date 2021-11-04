@@ -44,6 +44,7 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "Assemblies loaded in this method call.")]
         public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
         {
+            //TODO: add an internal method bool LoadAssembly(Assembly) and manage locks there?
             List<Assembly> result = new List<Assembly>();
             lock (Global.LoadAssembliesLock)
             {
