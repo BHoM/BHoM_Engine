@@ -92,7 +92,7 @@ namespace BH.Engine.Diffing
             Diff diff = Compute.DiffRevisionObjects(prevObjs_BHoM, currObjs_BHoM, diffConfigCopy);
 
             // If all objects are BHoMObjects, we are done.
-            if (pastRevisionObjs.Count() != 0 && pastRevisionObjs.Count() == prevObjs_BHoM.Count() && followingRevisionObjs.Count() == currObjs_BHoM.Count())
+            if (!prevObjs_nonBHoM.Any() && !currObjs_nonBHoM.Any())
                 return diff;
 
             // Compute the generic Diffing for the other objects.
