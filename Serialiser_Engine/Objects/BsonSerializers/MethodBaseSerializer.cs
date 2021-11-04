@@ -51,6 +51,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, MethodBase value)
         {
             var bsonWriter = context.Writer;
+            if (value == null)
+            {
+                bsonWriter.WriteNull();
+                return;
+            }
+
             bsonWriter.WriteStartDocument();
 
             var discriminator = m_DiscriminatorConvention.GetDiscriminator(typeof(object), typeof(MethodBase));
