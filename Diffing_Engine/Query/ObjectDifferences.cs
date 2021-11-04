@@ -115,7 +115,7 @@ namespace BH.Engine.Diffing
                 string propertyFullName_noIndexes = propertyFullName.RemoveSquareIndexing();
 
                 // Skip if the property is among the PropertyExceptions.
-                if (cc.PropertyExceptions?.Any() ?? false && cc.PropertyExceptions.Any(pe => propertyFullName_noIndexes.EndsWith($".{pe}")))
+                if ((cc.PropertyExceptions?.Any() ?? false) && cc.PropertyExceptions.Any(pe => !string.IsNullOrWhiteSpace(pe) && propertyFullName_noIndexes.EndsWith($".{pe}")))
                     continue;
 
                 // Check if this difference is a difference in terms of CustomData.
