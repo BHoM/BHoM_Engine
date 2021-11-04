@@ -121,7 +121,7 @@ namespace BH.Engine.Diffing
 
             IFragment idFragm = null;
             var idFragments = obj.GetAllFragments(fragmentType);
-            if (idFragments.Count > 1)
+            if (idFragments != null && idFragments.Count > 1)
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} contains more than one fragment of the provided Fragment type {fragmentType}. Unable to decide which one to pick.");
                 return null;
