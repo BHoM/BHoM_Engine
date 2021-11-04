@@ -70,9 +70,7 @@ namespace BH.Engine.Diffing
                 {
                     BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisions)}'.");
 
-                    Diff result = DiffRevisions(pastRev, follRev, dc);
-
-                    return outputDiff.CombinedDiff(result);
+                    return DiffRevisions(pastRev, follRev, dc);
                 }
             }
 
