@@ -81,7 +81,6 @@ namespace BH.Engine.Reflection
                 return new List<string>();
             }
 
-            AllAssemblyList();
             List<Assembly> loaded = onlyBHoM ? BHoMAssemblyList() : AllAssemblyList();
             List<Assembly> assemblies = loaded.Where(x => assemblyNames.Any(y => x.GetName().FullName == y)).ToList();
 
