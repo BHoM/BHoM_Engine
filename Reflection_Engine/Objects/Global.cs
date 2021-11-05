@@ -32,27 +32,54 @@ namespace BH.Engine.Reflection
         /****     Internal properties - collections     ****/
         /***************************************************/
 
-        internal static Dictionary<string, Assembly> BHoMAssemblies { get; set; } = null;
+        internal static Dictionary<string, Assembly> BHoMAssemblies { get; set; } = new Dictionary<string, Assembly>();
 
-        internal static Dictionary<string, Assembly> AllAssemblies { get; set; } = null;
+        internal static Dictionary<string, Assembly> AllAssemblies { get; set; } = new Dictionary<string, Assembly>();
 
-        internal static List<Type> BHoMTypeList { get; set; } = null;
+        internal static List<Type> BHoMTypeList { get; set; } = new List<Type>();
 
-        internal static List<Type> AdapterTypeList { get; set; } = null;
+        internal static List<Type> AdapterTypeList { get; set; } = new List<Type>();
 
-        internal static List<Type> AllTypeList { get; set; } = null;
+        internal static List<Type> AllTypeList { get; set; } = new List<Type>();
 
-        internal static List<Type> InterfaceList { get; set; } = null;
+        internal static List<Type> InterfaceList { get; set; } = new List<Type>();
 
-        internal static List<Type> EngineTypeList { get; set; } = null;
+        internal static List<Type> EngineTypeList { get; set; } = new List<Type>();
 
-        internal static Dictionary<string, List<Type>> BHoMTypeDictionary { get; set; } = null;
+        internal static Dictionary<string, List<Type>> BHoMTypeDictionary { get; set; } = new Dictionary<string, List<Type>>();
 
-        internal static List<MethodInfo> BHoMMethodList { get; set; } = null;
+        internal static List<MethodInfo> BHoMMethodList { get; set; } = new List<MethodInfo>();
 
-        internal static List<MethodBase> AllMethodList { get; set; } = null;
+        internal static List<MethodBase> AllMethodList { get; set; } = new List<MethodBase>();
 
-        internal static List<MethodBase> ExternalMethodList { get; set; } = null;
+        internal static List<MethodBase> ExternalMethodList { get; set; } = new List<MethodBase>();
+
+
+        /***************************************************/
+        /****            Static constructor             ****/
+        /***************************************************/
+
+        static Global()
+        {
+            // Subscribe to the assembly load event.
+            AppDomain.CurrentDomain.AssemblyLoad += ReflectAssemblyOnLoad;
+
+            // Reflect the assemblies that have already been loaded.
+            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Compute.ReflectAssembly(asm);
+            }
+        }
+
+
+        /***************************************************/
+        /****              Private methods              ****/
+        /***************************************************/
+
+        private static void ReflectAssemblyOnLoad(object sender, AssemblyLoadEventArgs args)
+        {
+            Compute.ReflectAssembly(args.LoadedAssembly);
+        }
 
         /***************************************************/
     }
