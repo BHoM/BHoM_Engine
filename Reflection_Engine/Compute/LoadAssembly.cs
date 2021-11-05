@@ -21,11 +21,8 @@
  */
 
 using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -68,9 +65,14 @@ namespace BH.Engine.Reflection
                             Global.BHoMAssemblies.Add(loaded.FullName, loaded);
                             ExtractTypesAndMethods(loaded);
                         }
-                    }
 
-                    return loaded;
+                        return loaded;
+                    }
+                    else
+                    {
+                        RecordWarning($"Assembly {loaded.GetName().Name} has already been loaded.");
+                        return null;
+                    }
                 }
                 catch
                 {
@@ -84,7 +86,6 @@ namespace BH.Engine.Reflection
         /***************************************************/
         /****              Private methods              ****/
         /***************************************************/
-
 
         private static void ExtractTypesAndMethods(Assembly asm)
         {

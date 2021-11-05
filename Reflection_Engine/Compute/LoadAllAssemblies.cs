@@ -48,6 +48,15 @@ namespace BH.Engine.Reflection
             if (string.IsNullOrEmpty(folder))
                 folder = Query.BHoMFolder();
 
+            if (suffix == null)
+                suffix = "";
+
+            string key = folder + "%" + suffix;
+            if (m_AlreadyLoaded.Contains(key))
+                return result;
+
+            m_AlreadyLoaded.Add(key);
+
             if (!Directory.Exists(folder))
             {
                 RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
@@ -78,6 +87,13 @@ namespace BH.Engine.Reflection
 
             return result;
         }
+
+
+        /***************************************************/
+        /****              Private fields               ****/
+        /***************************************************/
+
+        private static HashSet<string> m_AlreadyLoaded = new HashSet<string>();
 
         /***************************************************/
     }
