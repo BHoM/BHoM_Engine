@@ -43,8 +43,8 @@ namespace BH.Engine.Reflection
                 if (Global.AllAssemblies == null)
                 {
                     List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First()).ToList();
-                    Global.AllAssemblies = assemblies.Where(x => x.IsBHoM()).ToDictionary(x => x.FullName);
-                    Global.BHoMAssemblies = assemblies.ToDictionary(x => x.FullName);
+                    Global.BHoMAssemblies = assemblies.Where(x => x.IsBHoM()).ToDictionary(x => x.FullName);
+                    Global.AllAssemblies = assemblies.ToDictionary(x => x.FullName);
 
                     InitialiseGlobalCollections();
 
