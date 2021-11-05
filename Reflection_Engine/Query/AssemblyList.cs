@@ -23,6 +23,7 @@
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -37,7 +38,7 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "List of BHoM assemblies loaded in the current domain.")]
         public static List<Assembly> BHoMAssemblyList()
         {
-            return Global.BHoMAssemblies;
+            return Global.BHoMAssemblies.Values.ToList();
         }
 
         /***************************************************/
@@ -46,7 +47,7 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "List of all assemblies loaded in the current domain.")]
         public static List<Assembly> AllAssemblyList()
         {
-            return Global.AllAssemblies;
+            return Global.AllAssemblies.Values.ToList();
         }
 
         /***************************************************/
