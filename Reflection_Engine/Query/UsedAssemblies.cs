@@ -55,8 +55,8 @@ namespace BH.Engine.Reflection
                 else
                 {
                     IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
-                    List<Assembly> loaded = onlyBHoM ? BHoMAssemblyList() : AllAssemblyList();
-                    return loaded.Where(x => assemblyNames.Any(y => x.GetName().FullName == y.FullName)).ToList();
+                    Dictionary<string, Assembly> dic = onlyBHoM ? Global.BHoMAssemblies : Global.AllAssemblies;
+                    return assemblyNames.Where(x => dic.ContainsKey(x.FullName)).Select(x => dic[x.FullName]).ToList();
                 }
             }
             catch (Exception e)
