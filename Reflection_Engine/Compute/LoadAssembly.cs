@@ -38,7 +38,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool LoadAssembly(string assemblyPath)
+        public static Assembly LoadAssembly(string assemblyPath)
         {
             lock (m_LoadAssembliesLock)
             {
@@ -60,13 +60,22 @@ namespace BH.Engine.Reflection
                 try
                 {
                     Assembly loaded = Assembly.LoadFrom(assemblyPath);
-                    ExtractTypesAndMethods(loaded);
-                    return true;
+                    if (!Global.AllAssemblies.ContainsKey(loaded.FullName))
+                    {
+                        Global.AllAssemblies.Add(loaded.FullName, loaded);
+                        if (loaded.IsBHoM())
+                        {
+                            Global.BHoMAssemblies.Add(loaded.FullName, loaded);
+                            ExtractTypesAndMethods(loaded);
+                        }
+                    }
+
+                    return loaded;
                 }
                 catch
                 {
                     RecordWarning("Failed to load assembly " + assemblyPath);
-                    return false;
+                    return null;
                 }
             }
         }

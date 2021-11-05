@@ -39,61 +39,42 @@ namespace BH.Engine.Reflection
         [PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String)")]
         [Description("Loads all .dll assemblies with names ending with oM, _Engine and _Adapter (with optional suffixes) from a given folder.")]
         [Input("folder", "Folder to load the assemblies from. If left empty, default BHoM assemblies folder will be used.")]
-        [Input("suffix", "Suffix to be added to the standard BHoM library endings (oM, _Engine, _Adapter) when parsing the folder.\n"+
+        [Input("suffix", "Suffix to be added to the standard BHoM library endings (oM, _Engine, _Adapter) when parsing the folder.\n" +
                "For example, if this value is equal to '_2018', assemblies ending with oM_2018, _Engine_2018 or _Adapter_2018 will be loaded.")]
         [Output("assemblies", "Assemblies loaded in this method call.")]
         public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
         {
-            //TODO: add allowed namespaces as a method parameter
-            //TODO: alternatively, a method to load extra types and methods from the input namespace
-            //TODO: add an internal method bool LoadAssembly(Assembly) and manage locks there?
             List<Assembly> result = new List<Assembly>();
-            lock (Global.LoadAssembliesLock)
+            if (string.IsNullOrEmpty(folder))
+                folder = Query.BHoMFolder();
+
+            if (!Directory.Exists(folder))
             {
-                if (string.IsNullOrEmpty(folder))
-                    folder = Query.BHoMFolder();
-
-                if (!Directory.Exists(folder))
-                {
-                    RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
-                    return result;
-                }
-
-                string[] suffixes = { "oM", "_Engine", "_Adapter" };
-                if (!string.IsNullOrWhiteSpace(suffix))
-                    suffixes = suffixes.Select(x => x + suffix).ToArray();
-
-                foreach (string file in Directory.GetFiles(folder))
-                {
-                    if (!file.EndsWith(".dll"))
-                        continue;
-
-                    string[] parts = file.Split(new char[] { '.', '\\' });
-                    if (parts.Length < 2)
-                        continue;
-
-                    string name = parts[parts.Length - 2];
-                    if (Global.LoadedAssemblies.Contains(name))
-                        continue;
-
-                    if (suffixes.Any(x => name.EndsWith(x)))
-                    {
-                        try
-                        {
-                            Assembly loaded = Assembly.LoadFrom(file);
-                            result.Add(loaded);
-                            Global.LoadedAssemblies.Add(name);
-                        }
-                        catch
-                        {
-                            RecordWarning("Failed to load assembly " + file);
-                        }
-                    }
-                }
+                RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
+                return result;
             }
 
-            if (result.Count != 0)
-                Global.ExtractAssembliesTypesAndMethods();
+            string[] suffixes = { "oM", "_Engine", "_Adapter" };
+            if (!string.IsNullOrWhiteSpace(suffix))
+                suffixes = suffixes.Select(x => x + suffix).ToArray();
+
+            foreach (string file in Directory.GetFiles(folder))
+            {
+                if (!file.EndsWith(".dll"))
+                    continue;
+
+                string[] parts = file.Split(new char[] { '.', '\\' });
+                if (parts.Length < 2)
+                    continue;
+
+                string name = parts[parts.Length - 2];
+                if (suffixes.Any(x => name.EndsWith(x)))
+                {
+                    Assembly loaded = LoadAssembly(file);
+                    if (loaded != null)
+                        result.Add(loaded);
+                }
+            }
 
             return result;
         }
