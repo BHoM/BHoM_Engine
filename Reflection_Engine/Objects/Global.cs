@@ -78,7 +78,7 @@ namespace BH.Engine.Reflection
 
         private static void ReflectAssemblyOnLoad(object sender, AssemblyLoadEventArgs args)
         {
-            Compute.ReflectAssembly(args.LoadedAssembly);
+            Compute.ReflectAssembly(args?.LoadedAssembly);
         }
 
         /***************************************************/
