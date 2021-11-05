@@ -23,6 +23,7 @@
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -37,7 +38,7 @@ namespace BH.Engine.Reflection
         [Output("methods", "List of BHoM methods loaded in the current domain.")]
         public static List<MethodInfo> BHoMMethodList()
         {
-            return Global.BHoMMethodList;
+            return Global.BHoMMethodList.ToList();
         }
 
         /***************************************************/
@@ -46,7 +47,7 @@ namespace BH.Engine.Reflection
         [Output("methods", "List of all methods loaded in the current domain.")]
         public static List<MethodBase> AllMethodList()
         {
-            return Global.AllMethodList;
+            return Global.AllMethodList.ToList();
         }
 
         /***************************************************/
@@ -55,7 +56,7 @@ namespace BH.Engine.Reflection
         [Output("methods", "List of external methods loaded in the current domain.")]
         public static List<MethodBase> ExternalMethodList()
         {
-            return Global.ExternalMethodList;
+            return Global.ExternalMethodList.ToList();
         }
 
         /***************************************************/

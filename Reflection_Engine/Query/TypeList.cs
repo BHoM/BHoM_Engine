@@ -24,6 +24,7 @@ using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Reflection
 {
@@ -38,7 +39,7 @@ namespace BH.Engine.Reflection
         [Output("types", "List of BHoM interface types loaded in the current domain.")]
         public static List<Type> BHoMInterfaceTypeList()
         {
-            return Global.InterfaceList;
+            return Global.InterfaceList.ToList();
         }
 
         /***************************************************/
@@ -47,7 +48,7 @@ namespace BH.Engine.Reflection
         [Output("types", "List of BHoM types loaded in the current domain.")]
         public static List<Type> BHoMTypeList()
         {
-            return Global.BHoMTypeList;
+            return Global.BHoMTypeList.ToList();
         }
 
         /***************************************************/
@@ -56,7 +57,7 @@ namespace BH.Engine.Reflection
         [Output("types", "List of BHoM adapter types loaded in the current domain.")]
         public static List<Type> AdapterTypeList()
         {
-            return Global.AdapterTypeList;
+            return Global.AdapterTypeList.ToList();
         }
 
         /***************************************************/
@@ -65,7 +66,7 @@ namespace BH.Engine.Reflection
         [Output("types", "List of all types loaded in the current domain.")]
         public static List<Type> AllTypeList()
         {
-            return Global.AllTypeList;
+            return Global.AllTypeList.ToList();
         }
 
         /***************************************************/
@@ -74,7 +75,7 @@ namespace BH.Engine.Reflection
         [Output("types", "List of BHoM engine types loaded in the current domain.")]
         public static List<Type> EngineTypeList()
         {
-            return Global.EngineTypeList;
+            return Global.EngineTypeList.ToList();
         }
 
         /***************************************************/
