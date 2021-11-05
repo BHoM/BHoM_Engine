@@ -32,11 +32,9 @@ namespace BH.Engine.Reflection
         /****     Internal properties - collections     ****/
         /***************************************************/
 
-        //internal static List<string> LoadedAssemblies { get; set; } = null;
+        internal static Dictionary<string, Assembly> BHoMAssemblies { get; set; } = null;
 
-        internal static List<Assembly> BHoMAssemblies { get; set; } = null;
-
-        internal static List<Assembly> AllAssemblies { get; set; } = null;
+        internal static Dictionary<string, Assembly> AllAssemblies { get; set; } = null;
 
         internal static List<Type> BHoMTypeList { get; set; } = null;
 

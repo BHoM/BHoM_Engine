@@ -45,12 +45,13 @@ namespace BH.Engine.Reflection
                 // On the 1st run, load all assemblies
                 if (Global.AllAssemblies == null)
                 {
-                    Global.AllAssemblies = AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First()).ToList();
-                    Global.BHoMAssemblies = Global.AllAssemblies.Where(x => x.IsBHoM()).ToList();
+                    List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().GroupBy(x => x.FullName).Select(g => g.First()).ToList();
+                    Global.AllAssemblies = assemblies.Where(x => x.IsBHoM()).ToDictionary(x => x.FullName);
+                    Global.BHoMAssemblies = assemblies.ToDictionary(x => x.FullName);
 
                     InitialiseGlobalCollections();
 
-                    foreach (Assembly asm in Global.BHoMAssemblies)
+                    foreach (Assembly asm in Global.BHoMAssemblies.Values)
                     {
                         ExtractTypesAndMethods(asm);
                     }
