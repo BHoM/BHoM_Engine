@@ -44,6 +44,8 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "Assemblies loaded in this method call.")]
         public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
         {
+            //TODO: add allowed namespaces as a method parameter
+            //TODO: alternatively, a method to load extra types and methods from the input namespace
             //TODO: add an internal method bool LoadAssembly(Assembly) and manage locks there?
             List<Assembly> result = new List<Assembly>();
             lock (Global.LoadAssembliesLock)
