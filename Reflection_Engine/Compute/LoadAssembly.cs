@@ -315,8 +315,8 @@ namespace BH.Engine.Reflection
         /****          Private fields - regex           ****/
         /***************************************************/
 
-        private static Regex m_RegexOmNamespace = new Regex(@"BH.*.oM.");
-        private static Regex m_RegexEngineNamespace = new Regex(@"BH.*.Engine.");
+        private static Regex m_RegexOmNamespace = new Regex(@"BH.(\w+.)?oM.");
+        private static Regex m_RegexEngineNamespace = new Regex(@"BH.(\w+.)?Engine.");
 
         /***************************************************/
     }
