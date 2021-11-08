@@ -40,7 +40,7 @@ namespace BH.Engine.Diffing
         [MultiOutput(1, "propNames", "List of properties changed per each object.")]
         [MultiOutput(2, "value_current", "List of current values of the properties.")]
         [MultiOutput(3, "value_past", "List of past values of the properties.")]
-        [Deprecated("5.0", "Deprecated due to the new Diff object structure.")]
+        [ToBeRemoved("5.0", "Deprecated due to the new Diff object structure.")]
         public static Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>> ListModifiedProperties(this Dictionary<string, Dictionary<string, Tuple<object, object>>> modProps, List<string> filterNames = null)
         {
             var output = new Output<List<List<string>>, List<List<string>>, List<List<object>>, List<List<object>>>();
