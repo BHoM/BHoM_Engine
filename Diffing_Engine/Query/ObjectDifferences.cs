@@ -57,10 +57,15 @@ namespace BH.Engine.Diffing
             // General Kellerman configurations.
             kellerman.CompareLogic kellermanComparer = new kellerman.CompareLogic();
             kellermanComparer.Config.MaxDifferences = cc.MaxPropertyDifferences;
-            kellermanComparer.Config.DoublePrecision = cc.NumericTolerance;
             kellermanComparer.Config.TypesToIgnore.Add(typeof(HashFragment)); // Never include the changes in HashFragment.
             kellermanComparer.Config.TypesToIgnore.Add(typeof(RevisionFragment)); // Never include the changes in RevisionFragment.
             kellermanComparer.Config.TypesToIgnore.AddRange(cc.TypeExceptions);
+
+            // Kellerman configuration for tolerance.
+            // Setting Custom Tolerance for specific properties is complex with Kellerman. 
+            // So instead, we set the tolerance to be the smallest (most precise) of any CustomTolerance specified (or to the general tolerance if none is).
+            // Then, when we iterate all found property differences below, we apply the specific CustomTolerances and filter out differences as required.
+            kellermanComparer.Config.DoublePrecision = cc.SmallestToleranceFromConfig();
 
             // Make sure that `BHoM_Guid` will NOT be considered amongst the property differences.
             if (!cc.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
@@ -146,6 +151,23 @@ namespace BH.Engine.Diffing
                     if (!cc.PropertiesToConsider.Any(ptc => propertyFullName == ptc || propertyFullName.EndsWith($".{ptc}")))
                         continue; // no match found, skip this property.
 
+                // Check if we specified CustomTolerances and if this difference is a floating-point number difference.
+                if (comparisonConfig.CustomTolerances.Any() && kellermanPropertyDifference.Object1.IsFloatingPointNumber() && kellermanPropertyDifference.Object2.IsFloatingPointNumber())
+                {
+                    // Retrieve the numeric Tolerance to be used for this property.
+                    double tolerance = cc.ToleranceFromConfig(propertyFullName_noIndexes);
+
+                    // Convert from the Numeric Tolerance to fractionalDigits (required for rounding).
+                    int fractionalDigits = Math.Abs(System.Convert.ToInt32(Math.Log10(tolerance)));
+
+                    var number1 = Math.Round(kellermanPropertyDifference.Object1 as dynamic, fractionalDigits);
+                    var number2 = Math.Round(kellermanPropertyDifference.Object1 as dynamic, fractionalDigits);
+
+                    // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
+                    if (number1.Equals(number2))
+                        continue;
+                }
+
                 // Add to the final result.
                 result.Differences.Add(new PropertyDifference()
                 {
@@ -162,10 +184,21 @@ namespace BH.Engine.Diffing
             return result;
         }
 
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
         [Description("Removes square bracket indexing from property paths, e.g. `Bar.Fragments[0].Something` is returned as `Bar.Fragments.Something`.")]
         private static string RemoveSquareIndexing(this string propertyPath)
         {
             return System.Text.RegularExpressions.Regex.Replace(propertyPath, @"\[(.*?)\]", string.Empty);
+        }
+
+        /***************************************************/
+
+        private static bool IsFloatingPointNumber(this object obj)
+        {
+            return obj is double || obj is float || obj is decimal;
         }
     }
 }
