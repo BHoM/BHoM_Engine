@@ -87,7 +87,7 @@ namespace BH.Engine.Diffing
             {
                 string propertyName = kellermanPropertyDifference.PropertyName;
                 string propertyFullName = sameType ? commonType.FullName + "." + propertyName : propertyName; // if the objects are of the same type, add the object Type fullname to the propertyName.
-                string propertyDisplayName = propertyFullName;
+                string propertyDisplayName = propertyName;
 
                 // Check if there is a `PropertyComparisonInclusion()` extension method available for this property difference.
                 object propCompIncl = null;
