@@ -21,8 +21,10 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -35,22 +37,24 @@ namespace BH.Engine.Reflection
         /****               Public methods              ****/
         /***************************************************/
 
-        public static void ReflectAssembly(Assembly asm)
+        [Description("Records the given assembly in the Global collection of loaded assemblies, then extracts types and methods from it and adds them to relevant collections in the Global class.")]
+        [Input("assembly", "Assembly to be reflected.")]
+        public static void ReflectAssembly(Assembly assembly)
         {
-            if (asm == null || asm.ReflectionOnly)
+            if (assembly == null || assembly.ReflectionOnly)
                 return;
 
             lock (m_ReflectAssemblyLock)
             {
-                if (Global.AllAssemblies.ContainsKey(asm.FullName))
+                if (Global.AllAssemblies.ContainsKey(assembly.FullName))
                     return;
 
-                Global.AllAssemblies.Add(asm.FullName, asm);
-                if (asm.IsBHoM())
-                    Global.BHoMAssemblies.Add(asm.FullName, asm);
+                Global.AllAssemblies.Add(assembly.FullName, assembly);
+                if (assembly.IsBHoM())
+                    Global.BHoMAssemblies.Add(assembly.FullName, assembly);
 
-                ExtractTypes(asm);
-                ExtractMethods(asm);
+                ExtractTypes(assembly);
+                ExtractMethods(assembly);
             }
         }
 
