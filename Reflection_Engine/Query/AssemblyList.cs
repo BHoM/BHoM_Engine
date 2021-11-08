@@ -47,7 +47,6 @@ namespace BH.Engine.Reflection
         [Output("assemblies", "List of all assemblies loaded in the current domain.")]
         public static List<Assembly> AllAssemblyList()
         {
-            Assembly[] ass = System.AppDomain.CurrentDomain.GetAssemblies();
             return Global.AllAssemblies.Values.ToList();
         }
 
