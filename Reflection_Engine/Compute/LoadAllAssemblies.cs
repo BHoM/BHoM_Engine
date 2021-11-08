@@ -40,28 +40,27 @@ namespace BH.Engine.Reflection
         [Description("Loads all .dll assemblies with names ending with oM, _Engine and _Adapter (with optional suffixes) from a given folder.")]
         [Input("folder", "Folder to load the assemblies from. If left empty, default BHoM assemblies folder will be used.")]
         [Input("suffix", "Suffix to be added to the standard BHoM library endings (oM, _Engine, _Adapter) when parsing the folder.\n" +
-               "For example, if this value is equal to '_2018', assemblies ending with oM_2018, _Engine_2018 or _Adapter_2018 will be loaded.")]
+                         "For example, if this value is equal to '_2018', assemblies ending with oM_2018, _Engine_2018 or _Adapter_2018 will be loaded.")]
+        [Input("forceParseFolder", "If false, the method will execute only once per lifetime of the process per each combination of folder and suffix values (every attempt after the first will be skipped).\n" +
+                                   "If true, the given folder will be parsed for assemblies with given suffix on every call of this method.")]
         [Output("assemblies", "Assemblies loaded in this method call.")]
-        public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "")
+        public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "", bool forceParseFolder = false)
         {
             List<Assembly> result = new List<Assembly>();
             if (string.IsNullOrEmpty(folder))
                 folder = Query.BHoMFolder();
-
-            if (suffix == null)
-                suffix = "";
-
-            string key = folder + "%" + suffix;
-            if (m_AlreadyLoaded.Contains(key))
-                return result;
-
-            m_AlreadyLoaded.Add(key);
 
             if (!Directory.Exists(folder))
             {
                 RecordWarning("The folder provided to load the assemblies from does not exist: " + folder);
                 return result;
             }
+
+            string key = folder + "%" + suffix;
+            if (!forceParseFolder && m_AlreadyLoaded.Contains(key))
+                return result;
+
+            m_AlreadyLoaded.Add(key);
 
             string[] suffixes = { "oM", "_Engine", "_Adapter" };
             if (!string.IsNullOrWhiteSpace(suffix))
