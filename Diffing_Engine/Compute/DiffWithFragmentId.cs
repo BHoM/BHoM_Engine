@@ -68,12 +68,6 @@ namespace BH.Engine.Diffing
                     $"\nDefaulted to `{typeof(IPersistentAdapterId).FullName}.{nameof(IPersistentAdapterId.PersistentId)}`.");
             }
 
-            if (string.IsNullOrWhiteSpace(fragmentIdProperty))
-            {
-                BH.Engine.Reflection.Compute.RecordError($"No {nameof(fragmentIdProperty)} specified.");
-                return null;
-            }
-
             // Checks on the specified fragmentType/fragmentIdProperty combination.
             var propertiesOnFragment = fragmentType.GetProperties().Where(pi => pi.Name == fragmentIdProperty);
             if (!propertiesOnFragment.Any())
