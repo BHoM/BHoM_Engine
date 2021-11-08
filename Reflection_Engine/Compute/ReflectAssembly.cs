@@ -40,7 +40,7 @@ namespace BH.Engine.Reflection
             if (asm == null || asm.ReflectionOnly)
                 return;
 
-            lock (m_LoadAssembliesLock)
+            lock (m_ReflectAssemblyLock)
             {
                 if (Global.AllAssemblies.ContainsKey(asm.FullName))
                     return;
@@ -257,7 +257,7 @@ namespace BH.Engine.Reflection
         /****          Private fields - locks           ****/
         /***************************************************/
 
-        private static readonly object m_LoadAssembliesLock = new object();
+        private static readonly object m_ReflectAssemblyLock = new object();
 
 
         /***************************************************/
