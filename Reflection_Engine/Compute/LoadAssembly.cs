@@ -20,6 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
@@ -30,6 +32,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Attempts to load an assembly under the given path.")]
+        [Input("assemblyPath", "Path from which the assembly is meant to be loaded.")]
+        [Output("assembly", "The assembly under the given path, if it exists and has been loaded to BHoM (at any point in time), otherwise null.")]
         public static Assembly LoadAssembly(string assemblyPath)
         {
             try
