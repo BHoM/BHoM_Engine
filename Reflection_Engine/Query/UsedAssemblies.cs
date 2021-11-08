@@ -103,13 +103,14 @@ namespace BH.Engine.Reflection
             if (depth > 20)
                 return new List<Assembly>();
 
-            List<Assembly> loaded = onlyBHoM ? BHoMAssemblyList() : AllAssemblyList();
+            Dictionary<string, Assembly> dic = onlyBHoM ? Global.BHoMAssemblies : Global.AllAssemblies;
 
             IEnumerable<AssemblyName> assemblyNames = assemblies.SelectMany(x => x.GetReferencedAssemblies())
                 .GroupBy(x => x.FullName).Select(x => x.First())
                 .ToList();
-            
-            List<Assembly> dependencies = loaded.Where(x => assemblyNames.Any(y => x.GetName().FullName == y.FullName))
+
+            List<Assembly> dependencies = assemblyNames.Where(x => dic.ContainsKey(x.FullName))
+                .Select(x => dic[x.FullName])
                 .Except(collected)
                 .ToList();
 
