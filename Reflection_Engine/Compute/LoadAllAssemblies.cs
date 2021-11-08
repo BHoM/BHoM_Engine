@@ -56,35 +56,38 @@ namespace BH.Engine.Reflection
                 return result;
             }
 
-            string key = folder + "%" + suffix;
-            if (!forceParseFolder && m_AlreadyLoaded.Contains(key))
-                return result;
-
-            m_AlreadyLoaded.Add(key);
-
-            string[] suffixes = { "oM", "_Engine", "_Adapter" };
-            if (!string.IsNullOrWhiteSpace(suffix))
-                suffixes = suffixes.Select(x => x + suffix).ToArray();
-
-            foreach (string file in Directory.GetFiles(folder))
+            lock (m_LoadAllAssembliesLock)
             {
-                if (!file.EndsWith(".dll"))
-                    continue;
+                string key = folder + "%" + suffix;
+                if (!forceParseFolder && m_AlreadyLoaded.Contains(key))
+                    return result;
 
-                string[] parts = file.Split(new char[] { '.', '\\' });
-                if (parts.Length < 2)
-                    continue;
+                m_AlreadyLoaded.Add(key);
 
-                string name = parts[parts.Length - 2];
-                if (suffixes.Any(x => name.EndsWith(x)))
+                string[] suffixes = { "oM", "_Engine", "_Adapter" };
+                if (!string.IsNullOrWhiteSpace(suffix))
+                    suffixes = suffixes.Select(x => x + suffix).ToArray();
+
+                foreach (string file in Directory.GetFiles(folder))
                 {
-                    Assembly loaded = LoadAssembly(file);
-                    if (loaded != null)
-                        result.Add(loaded);
-                }
-            }
+                    if (!file.EndsWith(".dll"))
+                        continue;
 
-            return result;
+                    string[] parts = file.Split(new char[] { '.', '\\' });
+                    if (parts.Length < 2)
+                        continue;
+
+                    string name = parts[parts.Length - 2];
+                    if (suffixes.Any(x => name.EndsWith(x)))
+                    {
+                        Assembly loaded = LoadAssembly(file);
+                        if (loaded != null)
+                            result.Add(loaded);
+                    }
+                }
+
+                return result;
+            }
         }
 
 
@@ -93,6 +96,8 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         private static HashSet<string> m_AlreadyLoaded = new HashSet<string>();
+
+        private static readonly object m_LoadAllAssembliesLock = new object();
 
         /***************************************************/
     }
