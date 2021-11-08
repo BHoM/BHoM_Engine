@@ -43,7 +43,7 @@ namespace BH.Engine.Reflection
                          "For example, if this value is equal to '_2018', assemblies ending with oM_2018, _Engine_2018 or _Adapter_2018 will be loaded.")]
         [Input("forceParseFolder", "If false, the method will execute only once per lifetime of the process per each combination of folder and suffix values (every attempt after the first will be skipped).\n" +
                                    "If true, the given folder will be parsed for assemblies with given suffix on every call of this method.")]
-        [Output("assemblies", "Assemblies loaded in this method call.")]
+        [Output("assemblies", "Assemblies that meet folder and suffix requirements and are loaded to BHoM.")]
         public static List<Assembly> LoadAllAssemblies(string folder = "", string suffix = "", bool forceParseFolder = false)
         {
             List<Assembly> result = new List<Assembly>();
