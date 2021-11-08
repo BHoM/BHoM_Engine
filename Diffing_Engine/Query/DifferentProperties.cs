@@ -45,7 +45,7 @@ namespace BH.Engine.Diffing
             "and whose Value is a Tuple: Item1 is the value of the property in obj1, Item2 the value in obj2." +
             "\nThis dictionary can be 'exploded' in the UI by using the `ListDifferentProperties()` method." +
             "\nIf no difference was found, returns null.")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.DifferentProperties(System.Object, System.Object, BH.oM.Diffing.DiffingConfig)")]
+        [PreviousVersion("5.0", "BH.Engine.Diffing.Query.DifferentProperties(System.Object, System.Object, BH.oM.Diffing.DiffingConfig)")]
         public static Dictionary<string, Tuple<object,object>> DifferentProperties(this object obj1, object obj2, ComparisonConfig comparisonConfig = null)
         {
             // Call Query.ObjectDifferences(). 
