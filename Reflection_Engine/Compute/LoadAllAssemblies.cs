@@ -59,10 +59,8 @@ namespace BH.Engine.Reflection
             lock (m_LoadAllAssembliesLock)
             {
                 string key = folder + "%" + suffix;
-                if (!forceParseFolder && m_AlreadyLoaded.Contains(key))
-                    return result;
-
-                m_AlreadyLoaded.Add(key);
+                if (!forceParseFolder && m_AlreadyLoaded.ContainsKey(key))
+                    return m_AlreadyLoaded[key];
 
                 string[] suffixes = { "oM", "_Engine", "_Adapter" };
                 if (!string.IsNullOrWhiteSpace(suffix))
@@ -86,6 +84,7 @@ namespace BH.Engine.Reflection
                     }
                 }
 
+                m_AlreadyLoaded[key] = result;
                 return result;
             }
         }
@@ -95,7 +94,7 @@ namespace BH.Engine.Reflection
         /****              Private fields               ****/
         /***************************************************/
 
-        private static HashSet<string> m_AlreadyLoaded = new HashSet<string>();
+        private static Dictionary<string, List<Assembly>> m_AlreadyLoaded = new Dictionary<string, List<Assembly>>();
 
         private static readonly object m_LoadAllAssembliesLock = new object();
 
