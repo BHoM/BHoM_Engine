@@ -51,6 +51,9 @@ namespace BH.Engine.Diffing
 
             ObjectDifferences result = new ObjectDifferences() { PastObject = pastObject, FollowingObject = followingObject };
 
+            if (pastObject == null && followingObject == null)
+                return result;
+
             // General Kellerman configurations.
             kellerman.CompareLogic kellermanComparer = new kellerman.CompareLogic();
             kellermanComparer.Config.MaxDifferences = cc.MaxPropertyDifferences;
