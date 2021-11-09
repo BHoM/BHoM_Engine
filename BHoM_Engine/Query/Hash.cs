@@ -240,11 +240,8 @@ namespace BH.Engine.Base
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
                 PropertyInfo[] properties = type.GetProperties();
 
-                if (cc.PropertiesToConsider?.Any() ?? false)
-                {
-                    // The user specified some PropertiesToConsider.
-                    PopulateExceptionsFromPropertiesToConsider(cc, nestingLevel, currentPropertyFullName, type);
-                }
+                // Make sure we cover the PropertiesToConsider.
+                cc.AddExceptionsFromPropertiesToConsider(currentPropertyFullName, type, nestingLevel);
 
                 // Iterate all properties
                 foreach (PropertyInfo prop in properties)
@@ -295,11 +292,17 @@ namespace BH.Engine.Base
         /***************************************************/
 
         // Populates the properties exceptions from the properties to consider.
-        private static void PopulateExceptionsFromPropertiesToConsider(BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName, Type currentObjType)
+        // To compute the hash, this is the simplest way of covering all possible use cases.
+        private static void AddExceptionsFromPropertiesToConsider(this BaseComparisonConfig cc, string currentPropertyFullName, Type currentObjType, int nestingLevel = -1)
         {
-            // Null check on PropertiesToConsider and its elements.
-            if (!cc?.PropertiesToConsider?.Where(ptc => ptc != null).Any() ?? true)
-                return;
+            // Null checks
+            if (cc == null) return;
+            if (!cc?.PropertiesToConsider?.Where(ptc => !string.IsNullOrWhiteSpace(ptc)).Any() ?? true) return;
+            if (string.IsNullOrEmpty(currentPropertyFullName)) return;
+
+            // Set nestingLevel if missing
+            if (nestingLevel == -1)
+                nestingLevel = currentPropertyFullName.Replace(currentObjType.FullName, "").Count(c => c == '.');
 
             // Get the current object's declared properties full names.
             List<string> allDeclaredPropertyNames = BH.Engine.Reflection.Query.PropertyNames(currentObjType);

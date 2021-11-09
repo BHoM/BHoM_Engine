@@ -32,6 +32,7 @@ using BH.oM.Base;
 using kellerman = KellermanSoftware.CompareNetObjects;
 using System.Reflection;
 using BH.Engine.Base;
+using System.Management.Automation;
 
 namespace BH.Engine.Diffing
 {
@@ -143,7 +144,7 @@ namespace BH.Engine.Diffing
 
                 // Check if the property Full name matches any of the specified PropertiesToConsider.
                 if (cc.PropertiesToConsider?.Any() ?? false)
-                    if (!cc.PropertiesToConsider.Any(ptc => propertyFullName == ptc || propertyFullName.EndsWith($".{ptc}")))
+                    if (!cc.PropertiesToConsider.Any(ptc => propertyFullName_noIndexes == ptc || propertyFullName_noIndexes.EndsWith($".{ptc}") || new WildcardPattern(ptc).IsMatch(propertyFullName_noIndexes)))
                         continue; // no match found, skip this property.
 
                 // Add to the final result.
