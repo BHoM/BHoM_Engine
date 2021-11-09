@@ -39,14 +39,9 @@ namespace BH.Engine.Base
 
         [Description("Returns whether a property Name is included in the ComparisonConfig exceptions. Useful when Diffing or Hashing.")]
         [Input("comparisonConfig", "The comparisonConfig containing the exceptions to scan.")]
-        [Input("propertyNameOrFullName", "The property Name (e.g. `StartNode`), or FullName (e.g. `BH.oM.Structure.Elements.Bar.StartNode`). The function will check if this is included in the Exceptions.")]
-        [Input("parentPropertyFullName", "(Optional, defaults to empty string) The Full Name of the parent property. It can be used in scenarios where we have the property Name available separately from the parent full name.")]
-        public static bool PropertyInExceptions(this BaseComparisonConfig comparisonConfig, string propertyNameOrFullName, string parentPropertyFullName = "")
+        [Input("objectFullName", "The object Full Name (e.g. `BH.oM.Structure.Elements.Bar.StartNode`). The function will check if this is included in the Exceptions.")]
+        public static bool IsInPropertyExceptions(this BaseComparisonConfig comparisonConfig, string objectFullName)
         {
-            // If the specified propertyName contains a dot, we can assume it's a property full name, otherwise it's just a name. E.g. `BH.oM.Structure.Elements.Bar.StartNode` VS `StartNode`
-            bool isPropertyFullName = propertyNameOrFullName.Contains(".");
-            bool providedParentProperty = !string.IsNullOrEmpty(parentPropertyFullName);
-
             if (comparisonConfig.PropertyExceptions?.Any() ?? false)
             {
                 foreach (string pe in comparisonConfig.PropertyExceptions)
@@ -54,15 +49,20 @@ namespace BH.Engine.Base
                     if (string.IsNullOrEmpty(pe))
                         continue;
 
-                    // If the provided property name is a FullName, check if it ends for `.SomeException` for all exceptions.
-                    if (isPropertyFullName)
+                    // If the specified exception contains a dot, we can assume it's a property full name, otherwise it's just a name. E.g. `BH.oM.Structure.Elements.Bar.StartNode` VS `StartNode`
+                    bool isExceptionFullName = pe.Contains(".");
+
+                    if (isExceptionFullName)
                     {
-                        if (propertyNameOrFullName.EndsWith($".{pe}") || (providedParentProperty && parentPropertyFullName.EndsWith($".{pe}")))
+                        // If the exception is a FullName, check if the objectFullName starts with the exception.
+                        // E.g. we need to return true if the objectFullName is `BH.oM.Structure.Elements.Bar.StartNode.Position.X` and the exception is `BH.oM.Structure.Elements.Bar.StartNode`.
+                        if (objectFullName.StartsWith($"{pe}"))
                             return true;
                     }
 
-                    // If the provided property name is a simple Name, check if it ends for `SomeException` for all exceptions.
-                    if (propertyNameOrFullName.EndsWith($"{pe}"))
+                    // If the exception is a simple Name, check if the objectFullName ends with the exception.
+                    // E.g. we need to return true if the objectFullName is `BH.oM.Structure.Elements.Bar.StartNode` and the exception is `StartNode`.
+                    if (objectFullName.EndsWith($".{pe}"))
                         return true;
                 }
             }

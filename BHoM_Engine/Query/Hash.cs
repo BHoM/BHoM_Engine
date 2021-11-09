@@ -267,7 +267,7 @@ namespace BH.Engine.Base
                     else
                     {
                         // If no ComparisonInclusion() extension method was found, check the Exceptions to check if this property is to be skipped.
-                        if (cc.PropertyInExceptions(propFullName, currentPropertyFullName))
+                        if (cc.IsInPropertyExceptions(propFullName))
                             continue;
                     }
 
