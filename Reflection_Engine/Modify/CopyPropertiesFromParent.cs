@@ -40,7 +40,7 @@ namespace BH.Engine.Reflection
         [Description("Copy the properties from an object of a parent Type to an object of a child Type.")]
         [Input("childObject", "Object whose properties in common with `parentObject` will be copied from there.")]
         [Input("parentObject", "Object of a Type that is a super (parent) type of the type of childObject.")]
-        public static void CopyPropertiesFromParent<P, C>(this C childObject, P parentObject) where C : class, P
+        public static void CopyPropertiesFromParent<P, C>(this C childObject, P parentObject) where C : IObject, P
         {
             if (childObject == null || parentObject == null)
                 return;
