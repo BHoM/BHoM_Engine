@@ -51,10 +51,11 @@ namespace BH.Engine.Reflection
 
                 Global.AllAssemblies[assembly.FullName] = assembly;
                 if (assembly.IsBHoM())
+                {
                     Global.BHoMAssemblies[assembly.FullName] = assembly;
-
-                ExtractTypes(assembly);
-                ExtractMethods(assembly);
+                    ExtractTypes(assembly);
+                    ExtractMethods(assembly);
+                }
             }
         }
 
