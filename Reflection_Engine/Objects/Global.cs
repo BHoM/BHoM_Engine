@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -32,27 +33,27 @@ namespace BH.Engine.Reflection
         /****     Internal properties - collections     ****/
         /***************************************************/
 
-        internal static Dictionary<string, Assembly> BHoMAssemblies { get; set; } = new Dictionary<string, Assembly>();
+        internal static ConcurrentDictionary<string, Assembly> BHoMAssemblies { get; set; } = new ConcurrentDictionary<string, Assembly>();
 
-        internal static Dictionary<string, Assembly> AllAssemblies { get; set; } = new Dictionary<string, Assembly>();
+        internal static ConcurrentDictionary<string, Assembly> AllAssemblies { get; set; } = new ConcurrentDictionary<string, Assembly>();
 
-        internal static List<Type> BHoMTypeList { get; set; } = new List<Type>();
+        internal static ConcurrentBag<Type> BHoMTypeList { get; set; } = new ConcurrentBag<Type>();
 
-        internal static List<Type> AdapterTypeList { get; set; } = new List<Type>();
+        internal static ConcurrentBag<Type> AdapterTypeList { get; set; } = new ConcurrentBag<Type>();
 
-        internal static List<Type> AllTypeList { get; set; } = new List<Type>();
+        internal static ConcurrentBag<Type> AllTypeList { get; set; } = new ConcurrentBag<Type>();
 
-        internal static List<Type> InterfaceList { get; set; } = new List<Type>();
+        internal static ConcurrentBag<Type> InterfaceList { get; set; } = new ConcurrentBag<Type>();
 
-        internal static List<Type> EngineTypeList { get; set; } = new List<Type>();
+        internal static ConcurrentBag<Type> EngineTypeList { get; set; } = new ConcurrentBag<Type>();
 
-        internal static Dictionary<string, List<Type>> BHoMTypeDictionary { get; set; } = new Dictionary<string, List<Type>>();
+        internal static ConcurrentDictionary<string, List<Type>> BHoMTypeDictionary { get; set; } = new ConcurrentDictionary<string, List<Type>>();
 
-        internal static List<MethodInfo> BHoMMethodList { get; set; } = new List<MethodInfo>();
+        internal static ConcurrentBag<MethodInfo> BHoMMethodList { get; set; } = new ConcurrentBag<MethodInfo>();
 
-        internal static List<MethodBase> AllMethodList { get; set; } = new List<MethodBase>();
+        internal static ConcurrentBag<MethodBase> AllMethodList { get; set; } = new ConcurrentBag<MethodBase>();
 
-        internal static List<MethodBase> ExternalMethodList { get; set; } = new List<MethodBase>();
+        internal static ConcurrentBag<MethodBase> ExternalMethodList { get; set; } = new ConcurrentBag<MethodBase>();
 
 
         /***************************************************/

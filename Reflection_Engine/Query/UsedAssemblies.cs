@@ -55,7 +55,7 @@ namespace BH.Engine.Reflection
                 else
                 {
                     IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
-                    Dictionary<string, Assembly> dic = onlyBHoM ? Global.BHoMAssemblies : Global.AllAssemblies;
+                    IDictionary<string, Assembly> dic = onlyBHoM ? Global.BHoMAssemblies : Global.AllAssemblies;
                     return assemblyNames.Where(x => dic.ContainsKey(x.FullName)).Select(x => dic[x.FullName]).ToList();
                 }
             }
@@ -103,7 +103,7 @@ namespace BH.Engine.Reflection
             if (depth > 20)
                 return new List<Assembly>();
 
-            Dictionary<string, Assembly> dic = onlyBHoM ? Global.BHoMAssemblies : Global.AllAssemblies;
+            IDictionary<string, Assembly> dic = onlyBHoM ? Global.BHoMAssemblies : Global.AllAssemblies;
 
             IEnumerable<AssemblyName> assemblyNames = assemblies.SelectMany(x => x.GetReferencedAssemblies())
                 .GroupBy(x => x.FullName).Select(x => x.First())
