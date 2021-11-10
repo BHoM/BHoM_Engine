@@ -68,8 +68,9 @@ namespace BH.Engine.Reflection
         {
             try
             {
+                string name = asm.GetName().Name;
                 // Save BHoM objects only
-                if (asm.IsOmAssembly())
+                if (name.IsOmAssembly())
                 {
                     foreach (Type type in asm.GetTypes())
                     {
@@ -86,7 +87,7 @@ namespace BH.Engine.Reflection
                     }
                 }
                 // Save adapters
-                else if (asm.IsAdapterAssembly())
+                else if (name.IsAdapterAssembly())
                 {
                     foreach (Type type in asm.GetTypes())
                     {
@@ -102,7 +103,7 @@ namespace BH.Engine.Reflection
                     }
                 }
                 // Save engine
-                else if (asm.IsEngineAssembly())
+                else if (name.IsEngineAssembly())
                 {
                     foreach (Type type in asm.GetTypes())
                     {
@@ -194,7 +195,7 @@ namespace BH.Engine.Reflection
                         StoreAllMethods(type);
                     }
                 }
-                else if (asm.IsOmAssembly() || asm.IsAdapterAssembly() || asm.IsUiAssembly())
+                else
                 {
                     foreach (Type type in asm.GetTypes())
                     {
