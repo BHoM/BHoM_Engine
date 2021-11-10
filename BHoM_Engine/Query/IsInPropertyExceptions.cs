@@ -40,7 +40,6 @@ namespace BH.Engine.Base
         [Description("Returns whether a property Name is included in the ComparisonConfig exceptions. Useful when Diffing or Hashing.")]
         [Input("comparisonConfig", "The comparisonConfig containing the exceptions to scan.")]
         [Input("objectFullName", "The object Full Name (e.g. `BH.oM.Structure.Elements.Bar.StartNode`). The function will check if this is included in the Exceptions.")]
-        [Output("bool", "True if the given objectFullName is amongst the PropertiesExceptions, false otherwise.")]
         public static bool IsInPropertyExceptions(this BaseComparisonConfig comparisonConfig, string objectFullName)
         {
             if (comparisonConfig.PropertyExceptions?.Any() ?? false)
