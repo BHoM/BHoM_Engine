@@ -143,9 +143,8 @@ namespace BH.Engine.Diffing
                 }
 
                 // Check if the property Full name matches any of the specified PropertiesToConsider.
-                if (cc.PropertiesToConsider?.Any() ?? false)
-                    if (!cc.PropertiesToConsider.Any(ptc => propertyFullName_noIndexes == ptc || propertyFullName_noIndexes.EndsWith($".{ptc}") || new WildcardPattern(ptc).IsMatch(propertyFullName_noIndexes)))
-                        continue; // no match found, skip this property.
+                if (!cc.ScanPropertiesToConsider(propertyFullName_noIndexes, kellermanPropertyDifference.ParentObject1))
+                    continue; // no match found, skip this property.
 
                 // Add to the final result.
                 result.Differences.Add(new PropertyDifference()
