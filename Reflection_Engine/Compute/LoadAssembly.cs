@@ -39,7 +39,11 @@ namespace BH.Engine.Reflection
         {
             try
             {
-                return Assembly.LoadFrom(assemblyPath);
+                string name = AssemblyName.GetAssemblyName(assemblyPath).FullName;
+                if (!Global.AllAssemblies.ContainsKey(name))
+                    return Assembly.LoadFrom(assemblyPath);
+                else
+                    return Global.AllAssemblies[name];
             }
             catch
             {
