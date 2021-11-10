@@ -24,6 +24,7 @@ using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Reflection
 {
@@ -37,7 +38,7 @@ namespace BH.Engine.Reflection
         [Output("typeDictionary", "Dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
         public static Dictionary<string, List<Type>> BHoMTypeDictionary()
         {
-            return Global.BHoMTypeDictionary;
+            return Global.BHoMTypeDictionary.ToDictionary(x => x.Key, x => x.Value);
         }
 
         /***************************************************/
