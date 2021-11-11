@@ -27,6 +27,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace BH.Engine.Structure
 {
@@ -213,24 +214,26 @@ namespace BH.Engine.Structure
             double tw = profile.WebThickness;
             double r = profile.RootRadius;
             double s = profile.FlangeSlope;
+            double tf = profile.FlangeThickness;
             double t1 = profile.FlangeThickness - Math.Tan(s) * b / 4;
             double t2 = t1 + Math.Tan(s) * (b - tw) / 2;
+            double vs = EndLossCorrectionVs(s);
 
-            double alpha0 = AlphaTJunction(tw, t2, r);
-            double alpha16 = -0.0836 + 0.2536 * tw / t2 + 0.1268 * r / t2 - 0.0806 * tw * r / Math.Pow(t2, 2) - 0.0858 * Math.Pow(tw / t2, 2); //Equation 28
-            //Interpolate alpha between parallel flange and slope of 1 to 6:
-            double alpha = alpha0 + alpha16 * profile.FlangeSlope / Math.Atan(0.1667);
+            double alpha = AlphaTaperTJunction(tw, tf, r, t2, s);
             
-            double D2 = InscribedDiameterTJunction(tw, t2, r);
+            double D = InscribedDiameterTaperTJunction(tw, r, t2, s);
 
-            return (b - tw) / 6 * (t1 + t2) * (Math.Pow(t1, 2) + Math.Pow(t2, 2)) + (2 / 3) * Math.Pow(t2, 3) + (d - t2) / 3 * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D2, 4) - 4 * 0.105 * Math.Pow(t1, 4); //Equation 35
+            //Equation 35
+            return (b - tw) / 6 * (t1 + t2) * (Math.Pow(t1, 2) + Math.Pow(t2, 2)) 
+                + (2 / 3) * tw * Math.Pow(t2, 3) + (1/3)*(d - 2*t2) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) 
+                - 4 * vs * Math.Pow(t1, 4);
         }
 
 
         /***************************************************/
 
         [Description("Calculates the torsional constant for the profile. Note that this is not the polar moment of inertia.\n" +
-                     "Formulae taken from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/.")]
+                     "Formulae taken from Johnston & El Darwish, 1964.")]
         [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
         [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
         public static double TorsionalConstant(this TaperFlangeChannelProfile profile)
@@ -243,12 +246,20 @@ namespace BH.Engine.Structure
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
             double r = profile.RootRadius;
+            double s = profile.FlangeSlope;
+            double t1 = profile.FlangeThickness - Math.Tan(s) * b / 2;
+            double t2 = t1 + Math.Tan(s) * (b - tw);
+            double vs = EndLossCorrectionVs(s);
+            double vl = EndLossCorrectionVl(s);
 
-            double alpha = AlphaLJunction(tw, tf, r); //Equation 30
-            double D = InscribedDiameterLJunction(tw, tf, r);
+            double alpha = AlphaTaperLJunction(tw, tf, r, t2, s);
+
+            double D = InscribedDiameterTaperLJunction(tw, r, t2, s);
 
             //Equation 37
-            return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
+            return (b - tw) / 6 * (t1 + t2) * (Math.Pow(t1, 2) + Math.Pow(t2, 2)) + (2 / 3) * tw * Math.Pow(t2, 3) 
+                + (1 / 3) * (h - 2 * t2) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) - 2 * vs * Math.Pow(t1, 4) 
+                - 2 * vl * Math.Pow(t2, 4);
         }
 
         /***************************************************/
@@ -437,6 +448,34 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Diameter of a circle inscribed in a tapered flange T-junction connection such as a taper flange I-section. Taken from Johnston & El Darwish, 1964, Figure 6 Case 2")]
+        [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
+        [Input("t3", "Flange thickness at theoretical intersection of flange and web centerline.", typeof(Length))]
+        [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
+        [Input("s", "Flange taper angle.", typeof(Length))]
+        private static double InscribedDiameterTaperTJunction(double tw, double t3, double r, double s)
+        {
+            //Equation 24
+            double f = r * s * (Math.Sqrt((1 / Math.Pow(s, 2)) + 1) - 1 - tw / (2 * r));
+            return (Math.Pow(f + t3, 2) + tw * (r + tw / 4)) / (f + r + t3);
+        }
+
+        /***************************************************/
+
+        [Description("Diameter of a circle inscribed in a tapered L-junction connection such as a taper flange channel. Taken from Johnston & El Darwish, 1964, Figure 6 Case 4")]
+        [Input("tw", "Web thickness.", typeof(Length))]
+        [Input("t2", "Flange thickness at theoretical intersection of flange and near face of web.", typeof(Length))]
+        [Input("r", "Root radius.", typeof(Length))]
+        [Input("s", "Flange taper angle.", typeof(Length))]
+        private static double InscribedDiameterTaperLJunction(double tw, double t2, double r, double s)
+        {
+            //Equation 26
+            double h = t2 - r * (s + 1 - Math.Sqrt(1 + Math.Pow(s, 2)));
+            return 2 * ((3 * r + tw + h) - Math.Sqrt(2 * (2 * r + tw) * (2 * r + h)));
+        }
+
+        /***************************************************/
+
         [Description("Emperical formula used to correct the torsional constant with enhancement from a T-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
         [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
         [Input("tf", "Flange thickness, assumed to be the top of the T.", typeof(Length))]
@@ -455,6 +494,109 @@ namespace BH.Engine.Structure
         private static double AlphaLJunction(double tw, double tf, double r)
         {
             return -0.0908 + 0.2621 * tw / tf + 0.1231 * r / tf - 0.0752 * (tw * r) / Math.Pow(tf, 2) - 0.0945 * Math.Pow(tw / tf, 2);
+        }
+
+        /***************************************************/
+
+        [Description("Emperical formula used to correct the torsional constant with enhancement from a tapered T-junction such as a taper flange I-Section. Taken from Johnston & El Darwish, 1964")]
+        [Input("tw", "Web thickness.", typeof(Length))]
+        [Input("tf", "Mean flange thickness.", typeof(Length))]
+        [Input("r", "Root radius.", typeof(Length))]
+        [Input("t2", "Thickness of flange at intersection with near face of web.", typeof(Length))]
+        [Input("s", "Flange taper angle.", typeof(Length))]
+        private static double AlphaTaperTJunction(double tw, double tf, double r, double t2, double s)
+        {
+            if (0.2 > r / t2 || r / t2 > 1.0)
+                Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of root radius to flange thickness is out of the applicable range.");
+
+            if (0.2 > tw / t2 || tw / t2 > 1.0)
+                Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of web thickness to flange thickness is out of the applicable range.");
+
+            double alpha0 = AlphaTJunction(tw, t2, r);
+
+            //Equation 28
+            double alpha16 = -0.0836 + 0.2536 * tw / t2 + 0.1268 * r / t2 - 0.0806 * tw * r / Math.Pow(t2, 2) - 0.0858 * Math.Pow(tw / t2, 2); 
+            //Interpolate alpha between parallel flange and slope of 1 to 6:
+            return alpha0 + alpha16 * s / Math.Atan(0.1667);
+        }
+
+        /***************************************************/
+
+        [Description("Emperical formula used to correct the torsional constant with enhancement from a tapered L-junction such as a taper flange channel. Taken from Johnston & El Darwish, 1964")]
+        [Input("tw", "Web thickness.", typeof(Length))]
+        [Input("tf", "Mean flange thickness.", typeof(Length))]
+        [Input("r", "Root radius.", typeof(Length))]
+        [Input("t2", "Thickness of flange at intersection with near face of web.", typeof(Length))]
+        [Input("s", "Flange taper angle.", typeof(Length))]
+        private static double AlphaTaperLJunction(double tw, double tf, double r, double t2, double s)
+        {
+            if (0.2 > r / t2 || r / t2 > 1.0)
+                Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of root radius to flange thickness is out of the applicable range.");
+
+            if (0.2 > tw / t2 || tw / t2 > 1.0)
+                Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of web thickness to flange thickness is out of the applicable range.");
+
+            double alpha0 = AlphaLJunction(tw, tf, r);
+            //Equation 30
+            double alpha16 = -0.1325 + 0.3015 * tw / t2 + 0.1400 * r / t2 - 0.1070 * tw * r / Math.Pow(t2, 2) - 0.0956 * Math.Pow(tw / t2, 2); 
+            //Interpolate alpha between parallel flange and slope of 1 to 6:
+            return alpha0 + alpha16 * s / Math.Atan(0.1667);
+        }
+
+        /***************************************************/
+
+        private static double EndLossCorrectionVl(double s)
+        {
+            List<double> slopes = new List<double>
+            {
+                Math.Atan(1 / 6),
+                Math.Atan(1 / 20),
+                Math.Atan(1 / 50),
+                Math.Atan(0)
+            };
+
+            List<double> vl = new List<double>
+            {
+                 0.09045,
+                 0.10026,
+                 0.10307,
+                 0.10504,
+            };
+
+            return Interpolate(slopes, vl, s);
+        }
+
+        /***************************************************/
+
+        private static double EndLossCorrectionVs(double s)
+        {
+            List<double> slopes = new List<double>
+            {
+                Math.Atan(1 / 6),
+                Math.Atan(1 / 20),
+                Math.Atan(1 / 50),
+                Math.Atan(0)
+            };
+
+            List<double> vs = new List<double>
+            {
+                 0.12441,
+                 0.11026,
+                 0.10707,
+                 0.10504,
+            };
+
+            return Interpolate(slopes, vs, s);
+        }
+
+        /***************************************************/
+
+        private static double Interpolate(List<double> keys, List<double> values, double s)
+        {
+            int index = keys.BinarySearch(s);
+            if (index > 0)
+                return values[index];
+            return values[index] + values[index + 1] * (s - keys[index]) / (keys[index + 1] - keys[index]);
         }
 
         /***************************************************/
