@@ -42,29 +42,30 @@ namespace BH.Engine.Base
         [Input("objectFullName", "The object Full Name (e.g. `BH.oM.Structure.Elements.Bar.StartNode`). The function will check if this is included in the Exceptions.")]
         public static bool IsInPropertyExceptions(this BaseComparisonConfig comparisonConfig, string objectFullName)
         {
-            if (comparisonConfig.PropertyExceptions?.Any() ?? false)
+            // Null checks
+            if (comparisonConfig == null || string.IsNullOrWhiteSpace(objectFullName) || (comparisonConfig.PropertyExceptions?.Any() ?? true))
+                return false;
+
+            foreach (string pe in comparisonConfig.PropertyExceptions)
             {
-                foreach (string pe in comparisonConfig.PropertyExceptions)
+                if (string.IsNullOrEmpty(pe))
+                    continue;
+
+                // If the specified exception contains a dot, we can assume it's a property full name, otherwise it's just a name. E.g. `BH.oM.Structure.Elements.Bar.StartNode` VS `StartNode`
+                bool isExceptionFullName = pe.Contains(".");
+
+                if (isExceptionFullName)
                 {
-                    if (string.IsNullOrEmpty(pe))
-                        continue;
-
-                    // If the specified exception contains a dot, we can assume it's a property full name, otherwise it's just a name. E.g. `BH.oM.Structure.Elements.Bar.StartNode` VS `StartNode`
-                    bool isExceptionFullName = pe.Contains(".");
-
-                    if (isExceptionFullName)
-                    {
-                        // If the exception is a FullName, check if the objectFullName starts with the exception.
-                        // E.g. we need to return true if the objectFullName is `BH.oM.Structure.Elements.Bar.StartNode.Position.X` and the exception is `BH.oM.Structure.Elements.Bar.StartNode`.
-                        if (objectFullName.StartsWith($"{pe}"))
-                            return true;
-                    }
-
-                    // If the exception is a simple Name, check if the objectFullName ends with the exception.
-                    // E.g. we need to return true if the objectFullName is `BH.oM.Structure.Elements.Bar.StartNode` and the exception is `StartNode`.
-                    if (objectFullName.EndsWith($".{pe}"))
+                    // If the exception is a FullName, check if the objectFullName starts with the exception.
+                    // E.g. we need to return true if the objectFullName is `BH.oM.Structure.Elements.Bar.StartNode.Position.X` and the exception is `BH.oM.Structure.Elements.Bar.StartNode`.
+                    if (objectFullName.StartsWith($"{pe}"))
                         return true;
                 }
+
+                // If the exception is a simple Name, check if the objectFullName ends with the exception.
+                // E.g. we need to return true if the objectFullName is `BH.oM.Structure.Elements.Bar.StartNode` and the exception is `StartNode`.
+                if (objectFullName.EndsWith($".{pe}"))
+                    return true;
             }
 
             return false;
