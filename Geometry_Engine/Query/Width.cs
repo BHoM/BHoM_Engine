@@ -31,24 +31,22 @@ namespace BH.Engine.Geometry
     {
 
         /***************************************************/
-        /****         Public Methods - ICurve           ****/
+        /****       Public Methods - BoundingBox        ****/
         /***************************************************/
 
-        [Description("Returns the width of a BHoM Geometry ICurve based on the bounding box of the curve")]
-        [Input("curve", "BHoM Geometry ICurve")]
-        [Output("width", "The width of the curve based on the difference in XY values for its bounding box")]
-        public static double Width(this ICurve curve)
+        [Description("Returns the horizontal orthogonal width of a BHoM BoundingBox.")]
+        [Input("boundingBox", "BHoM BoundingBox to query its width.")]
+        [Output("width", "The horizontal width of the BoundingBox based on the difference in XY values for its bounding box")]
+        public static double Width(this BoundingBox boundingBox)
         {
-            if (curve == null)
+            if (boundingBox == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null curve.");
-                return -1;
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null bounding box.");
+                return 0;
             }
-
-            BoundingBox bBox = curve.IBounds();
-
-            double diffX = Math.Abs(bBox.Max.X - bBox.Min.X);
-            double diffY = Math.Abs(bBox.Max.Y - bBox.Min.Y);
+            
+            double diffX = Math.Abs(boundingBox.Max.X - boundingBox.Min.X);
+            double diffY = Math.Abs(boundingBox.Max.Y - boundingBox.Min.Y);
 
             return Math.Sqrt((diffX * diffX) + (diffY * diffY));
         }       

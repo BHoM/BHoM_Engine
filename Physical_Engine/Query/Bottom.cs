@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
@@ -36,7 +37,7 @@ namespace BH.Engine.Physical
         /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Returns the bottom of a given generic opening object.")]
+        [Description("Returns the bottom curve of a given generic opening object.")]
         [Input("opening", "Any object implementing the IOpening interface that can have a geometrical bottom.")]
         [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]                
         [Output("curve", "An ICurve representation of the bottom of the object.")]
@@ -45,22 +46,26 @@ namespace BH.Engine.Physical
             if (opening == null)
                 return null;
 
-            Polyline workingCurves = opening.Location.IExternalEdges().FirstOrDefault().ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
+            List<Polyline> workingCurves = Polyline(opening);
 
             if (workingCurves == null)
                 return null;
 
             double heightZ = double.MaxValue;
             ICurve result = null;
-            foreach (ICurve curve in workingCurves.SplitAtPoints(workingCurves.DiscontinuityPoints()))
-            {
-                Point start = curve.IStartPoint();
-                Point end = curve.IEndPoint();
 
-                if (end.Z <= heightZ && start.Z <= heightZ)
+            foreach (Polyline polyline in workingCurves)
+            {
+                foreach (ICurve curve in polyline.SplitAtPoints(polyline.DiscontinuityPoints(distanceTolerance)))
                 {
-                    heightZ = Math.Max(end.Z, start.Z);
-                    result = curve;
+                    Point start = curve.IStartPoint();
+                    Point end = curve.IEndPoint();
+
+                    if (end.Z <= heightZ && start.Z <= heightZ)
+                    {
+                        heightZ = Math.Max(end.Z, start.Z);
+                        result = curve;
+                    }
                 }
             }
 

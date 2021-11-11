@@ -35,8 +35,8 @@ namespace BH.Engine.Physical
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Returns the height of a generic opening.")]
-        [Input("opening", "A generic Opening object.")]
+        [Description("Returns the vertical orthogonal height of a generic opening based on global coordinates of its BoundingBox.")]
+        [Input("opening", "A generic Opening object to query its height.")]
         [Output("height", "The total height of the generic opening.")]
         public static double IHeight(this IOpening opening)
         {
@@ -45,8 +45,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Returns the height of a door object.")]
-        [Input("door", "A door object.")]
+        [Description("Returns the vertical orthogonal height of a door object based on global coordinates of its BoundingBox.")]
+        [Input("door", "A door object to query its height.")]
         [Output("height", "The total height of the door object.")]
         public static double Height(this Door door)
         {
@@ -56,7 +56,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
 
-            return BH.Engine.Geometry.Query.Height((door.Location.IExternalEdges().FirstOrDefault()));
+            return BH.Engine.Geometry.Query.Height(door.Location.IBounds());
         }
 
         /***************************************************/
