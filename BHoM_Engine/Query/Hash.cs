@@ -48,7 +48,6 @@ namespace BH.Engine.Base
         [Input("iObj", "iObject the hash code should be calculated for.")]
         [Input("comparisonConfig", "Configure how the hash is computed.")]
         [Input("hashFromFragment", "If true, if the object is a BHoMObject that owns a HashFragment, retrieve the hash from it instead of computing the hash.")]
-        [Input("storeInFragment", "(Optional, defaults to false) If true, if the object is a BHoMObject, store the hash on it in a HashFragment.")]
         public static string Hash(this IObject iObj, BaseComparisonConfig comparisonConfig = null, bool hashFromFragment = false)
         {
             if (iObj == null)

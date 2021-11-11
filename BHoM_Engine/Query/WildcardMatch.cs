@@ -38,6 +38,9 @@ namespace BH.Engine.Base
         [Input("wildcardPattern", "WildcardPattern (e.g. *.someExtension) to be used to see if a match is found against the input text.")]
         public static bool WildcardMatch(this string text, string wildcardPattern)
         {
+            if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(wildcardPattern))
+                return false;
+
             // <author>H.A. Sullivan</author>
             // <date>04/11/2016</date>
             // <summary>Wildcard matching string extension method</summary> 
@@ -309,6 +312,9 @@ namespace BH.Engine.Base
         [Input("ignoreCase", "If we want to ignore the text case (lowercase/uppercase).")]
         public static bool WildcardMatch(this string text, string wildcardPattern, bool ignoreCase)
         {
+            if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(wildcardPattern))
+                return false;
+
             if (ignoreCase == true)
             {
                 return text.ToLower().WildcardMatch(wildcardPattern.ToLower());
