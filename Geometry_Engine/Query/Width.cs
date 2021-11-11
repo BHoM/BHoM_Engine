@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -34,14 +35,14 @@ namespace BH.Engine.Geometry
         /****       Public Methods - BoundingBox        ****/
         /***************************************************/
 
-        [Description("Returns the horizontal orthogonal width of a BHoM BoundingBox.")]
-        [Input("boundingBox", "BHoM BoundingBox to query its width.")]
-        [Output("width", "The horizontal width of the BoundingBox based on the difference in XY values for its bounding box")]
-        public static double Width(this BoundingBox boundingBox)
+        [Description("Returns the horizontal hypotenuse length of a BHoM BoundingBox.")]
+        [Input("boundingBox", "BHoM BoundingBox to query its hypotenuse length.")]
+        [Output("width", "The horizontal hypotenuse length of the BoundingBox based on the difference in XY values for its bounding box.",typeof(Length))]
+        public static double HorizontalHypotenuseLength(this BoundingBox boundingBox)
         {
             if (boundingBox == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null bounding box.");
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the hypotenuse length of a null bounding box.");
                 return 0;
             }
             
