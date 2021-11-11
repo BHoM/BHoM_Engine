@@ -35,8 +35,8 @@ namespace BH.Engine.Physical
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Returns the width of a generic opening.")]
-        [Input("opening", "A generic Opening object.")]
+        [Description("Returns the horizontal orthogonal width of a generic opening based on global coordinates of its BoundingBox.")]
+        [Input("opening", "A generic Opening object to query its width.")]
         [Output("width", "The total width of the generic opening.")]
         public static double IWidth(this IOpening opening)
         {
@@ -45,8 +45,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Returns the width of a door object.")]
-        [Input("door", "A door object.")]
+        [Description("Returns the horizontal orthogonal width of a door object based on global coordinates of its BoundingBox.")]
+        [Input("door", "A door object to query its width.")]
         [Output("width", "The total width of the door object.")]
         public static double Width(this Door door)
         {
@@ -56,7 +56,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
 
-            return BH.Engine.Geometry.Query.Width((door.Location.IExternalEdges().FirstOrDefault()));
+            return BH.Engine.Geometry.Query.Width(door.Location.IBounds());
         }
 
         /***************************************************/

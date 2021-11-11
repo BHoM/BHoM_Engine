@@ -30,22 +30,21 @@ namespace BH.Engine.Geometry
     {
 
         /***************************************************/
-        /****         Public Methods - ICurve           ****/
+        /****       Public Methods - BoundingBox        ****/
         /***************************************************/
 
-        [Description("Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve")]
-        [Input("curve", "BHoM Geometry ICurve")]
-        [Output("height", "The height of the curve based on the difference in z values for its bounding box")]
-        public static double Height(this ICurve curve)
+        [Description("Returns the vertical orthogonal height of a BHoM BoundingBox based on its Z minimum and maximum values.")]
+        [Input("boundingBox", "BHoM BoundingBox to query its height.")]
+        [Output("height", "The height of the BoundingBox based on the difference in Z minimum and maximum values.")]
+        public static double Height(this BoundingBox boundingBox)
         {
-            if (curve == null)
+            if (boundingBox == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null curve.");
-                return -1;
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null bounding box.");
+                return 0;
             }
 
-            BoundingBox bBox = curve.IBounds();
-            return (bBox.Max.Z - bBox.Min.Z);
+            return (boundingBox.Max.Z - boundingBox.Min.Z);
         }
 
         /***************************************************/
