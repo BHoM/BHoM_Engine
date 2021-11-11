@@ -41,6 +41,9 @@ namespace BH.Engine.Base
         [Output("List", "Filtered list containing only objects assignable from the provided type.")]
         public static List<object> FilterByType(this IEnumerable<object> list, Type type)
         {
+            if (list == null)
+                return null;
+
             return list.Where(x => type.IsAssignableFrom(x.GetType())).ToList();
         }
     }
