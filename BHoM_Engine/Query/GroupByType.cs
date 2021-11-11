@@ -40,6 +40,9 @@ namespace BH.Engine.Base
         [Output("Groups", "List of List of objects. Each inner list will correspond to one object type")]
         public static List<List<T>> GroupByType<T>(IEnumerable<T> list)
         {
+            if (list == null)
+                return null;
+
             return list.GroupBy(x => x.GetType()).Select(x => x.ToList()).ToList();
         }
 
