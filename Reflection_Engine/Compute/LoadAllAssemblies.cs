@@ -37,16 +37,18 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //[PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String)")]
-        //[PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String, System.String, System.Boolean)")]
-        //[Description("Loads all .dll assemblies with names ending with oM, _Engine and _Adapter (with optional suffixes) from a given folder.")]
-        //[Input("folder", "Folder to load the assemblies from. If left empty, default BHoM assemblies folder will be used.")]
-        //[Input("suffix", "Suffix to be added to the standard BHoM library endings (oM, _Engine, _Adapter) when parsing the folder.\n" +
-        //                 "For example, if this value is equal to '_2018', assemblies ending with oM_2018, _Engine_2018 or _Adapter_2018 will be loaded.")]
-        //[Input("forceParseFolder", "If false, the method will execute only once per lifetime of the process per each combination of folder and suffix values (every attempt after the first will be skipped).\n" +
-        //                           "If true, the given folder will be parsed for assemblies with given suffix on every call of this method.")]
-        //[Output("assemblies", "Assemblies that meet folder and suffix requirements and are loaded to BHoM.")]
-        public static List<Assembly> LoadAllAssemblies(string folder = "", string regexFilter = "", bool parseSubfolders = false, bool forceParseFolder = false)
+        [PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String)")]
+        [PreviousVersion("5.0", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String, System.String, System.Boolean)")]
+        [Description("Loads all .dll assemblies with names ending with oM, _Engine and _Adapter (with optional suffixes) from a given folder.")]
+        [Input("folder", "Folder to load the assemblies from. If left empty, default BHoM assemblies folder will be used.")]
+        [Input("regexFilter", "Regular expression filter to be applied to the assembly names (with .dll already cut off)." +
+                              "Default value is 'oM$|_Engine$|_UI$' (names ending with 'oM', '_Engine' or '_UI')." +
+                              "If the input is left null or blank, filter '.*' will be applied (accepts all names).")]
+        [Input("parseSubfolders", "If true, subfolders of the input folder will be parsed, otherwise only top folder to be considered.")]
+        [Input("forceParseFolder", "If false, the method will execute only once per lifetime of the process per each combination of folder and suffix values (every attempt after the first will be skipped).\n" +
+                                   "If true, the given folder will be parsed for assemblies with given suffix on every call of this method.")]
+        [Output("assemblies", "Assemblies that meet folder and suffix requirements and are loaded to BHoM.")]
+        public static List<Assembly> LoadAllAssemblies(string folder = "", string regexFilter = @"oM$|_Engine$|_UI$", bool parseSubfolders = false, bool forceParseFolder = false)
         {
             List<Assembly> result = new List<Assembly>();
             if (string.IsNullOrEmpty(folder))
@@ -68,7 +70,7 @@ namespace BH.Engine.Reflection
                 if (!string.IsNullOrWhiteSpace(regexFilter))
                     regex = new Regex(regexFilter);
                 else
-                    regex = new Regex(@"oM$|_Engine$|_UI$");
+                    regex = new Regex(".*");
 
                 SearchOption searchOption = parseSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
                 foreach (string file in Directory.GetFiles(folder, "*.dll", searchOption))
