@@ -64,7 +64,7 @@ namespace BH.Engine.Reflection
             {
                 string key = folder + "%" + regexFilter + "%" + parseSubfolders;
                 if (!forceParseFolder && m_AlreadyLoaded.ContainsKey(key))
-                    return m_AlreadyLoaded[key];
+                    return m_AlreadyLoaded[key].ToList();
 
                 Regex regex;
                 if (!string.IsNullOrWhiteSpace(regexFilter))
@@ -88,7 +88,7 @@ namespace BH.Engine.Reflection
                     }
                 }
 
-                m_AlreadyLoaded[key] = result;
+                m_AlreadyLoaded[key] = result.ToList();
                 return result;
             }
         }
