@@ -57,6 +57,13 @@ namespace BH.Engine.Reflection
 
 
         /***************************************************/
+        /****        Internal properties - locks        ****/
+        /***************************************************/
+
+        internal static object AssemblyReflectionLock { get; } = new object();
+
+
+        /***************************************************/
         /****            Static constructor             ****/
         /***************************************************/
 
