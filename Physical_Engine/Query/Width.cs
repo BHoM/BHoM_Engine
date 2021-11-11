@@ -26,6 +26,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.Engine.Geometry;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -37,9 +38,15 @@ namespace BH.Engine.Physical
 
         [Description("Returns the horizontal orthogonal width of a generic opening based on global coordinates of its BoundingBox.")]
         [Input("opening", "A generic Opening object to query its width.")]
-        [Output("width", "The total width of the generic opening.")]
+        [Output("width", "The total width of the generic opening.",typeof(Length))]
         public static double IWidth(this IOpening opening)
         {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null opening.");
+                return 0;
+            }
+            
             return Width(opening as dynamic);
         }
 
@@ -56,7 +63,7 @@ namespace BH.Engine.Physical
                 return 0;
             }
 
-            return BH.Engine.Geometry.Query.Width(door.Location.IBounds());
+            return BH.Engine.Geometry.Query.HorizontalHypotenuseLength(door.Location.IBounds());
         }
 
         /***************************************************/

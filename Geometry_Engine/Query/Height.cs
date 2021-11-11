@@ -23,6 +23,7 @@
 using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -35,7 +36,7 @@ namespace BH.Engine.Geometry
 
         [Description("Returns the vertical orthogonal height of a BHoM BoundingBox based on its Z minimum and maximum values.")]
         [Input("boundingBox", "BHoM BoundingBox to query its height.")]
-        [Output("height", "The height of the BoundingBox based on the difference in Z minimum and maximum values.")]
+        [Output("height", "The height of the BoundingBox based on the difference in Z minimum and maximum values.",typeof(Length))]
         public static double Height(this BoundingBox boundingBox)
         {
             if (boundingBox == null)

@@ -26,6 +26,7 @@ using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.Engine.Geometry;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -37,9 +38,15 @@ namespace BH.Engine.Physical
 
         [Description("Returns the vertical orthogonal height of a generic opening based on global coordinates of its BoundingBox.")]
         [Input("opening", "A generic Opening object to query its height.")]
-        [Output("height", "The total height of the generic opening.")]
+        [Output("height", "The total height of the generic opening.", typeof(Length))]
         public static double IHeight(this IOpening opening)
         {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null opening.");
+                return 0;
+            }
+            
             return Height(opening as dynamic);
         }
 
