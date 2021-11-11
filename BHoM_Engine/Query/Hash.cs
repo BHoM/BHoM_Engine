@@ -76,10 +76,27 @@ namespace BH.Engine.Base
             if (!cc.PropertyExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
                 cc.PropertyExceptions.Add(nameof(BHoMObject.BHoM_Guid));
 
-            // Make sure that the single Property exceptions are either:
-            // - explicitly referring to a property in its "property path": e.g. Bar.StartNode.Point.X
-            // - OR if it's only a property name e.g. BHoM_Guid make sure that we prepend the wildcard so we can match the single property inside any property path: e.g. *BHoM_Guid
-            //cc.PropertyExceptions = cc.PropertyExceptions.Select(pe => pe = pe.Contains('.') ? pe : "*" + pe).ToList();
+            // Parse `PropertiesToConsider`. If problems are found, expose all the error messages to the user, then return.
+            bool invalidPropertiesToConsider = false;
+            for (int i = 0; i < cc.PropertiesToConsider.Count; i++)
+            {
+                string ptc = cc.PropertiesToConsider[i];
+
+                if (ptc.Contains("*"))
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"Wildcards * are not supported in `{nameof(BaseComparisonConfig.PropertiesToConsider)}` when computing the Hash of an object. The input `{ptc}` is not valid, please remove it. will not be considered.");
+                    invalidPropertiesToConsider = true;
+                }
+
+                if (!ptc.StartsWith("BH"))
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"When computing the Hash using `{nameof(BaseComparisonConfig.PropertiesToConsider)}`, the property name must be provided in its Full Name form. The input `{ptc}` does not comply with this requirement." +
+                        $"\nFor example, if you are interested in considering `StartNode.Name` (the name of a Bar's StartNode), you need to specify `BH.oM.Structure.Elements.Bar.StartNode.Name`).");
+                    invalidPropertiesToConsider = true;
+                }
+            }
+
+            if (invalidPropertiesToConsider) return "";
 
             // Convert from the Numeric Tolerance to fractionalDigits (required for the hash).
             int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
