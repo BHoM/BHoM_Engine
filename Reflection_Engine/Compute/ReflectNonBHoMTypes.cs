@@ -41,7 +41,7 @@ namespace BH.Engine.Reflection
         [Input("assembly", "Non-BHoM assembly with the types to be reflected.")]
         public static void ReflectNonBHoMTypes(Assembly assembly)
         {
-            if (!Global.AllAssemblies.ContainsKey(assembly?.FullName) || assembly.ReflectionOnly)
+            if (assembly == null || !Global.AllAssemblies.ContainsKey(assembly.FullName) || assembly.ReflectionOnly)
             {
                 RecordError($"{nameof(ReflectNonBHoMTypes)} method works only with assemblies loaded to BHoM.");
                 return;
