@@ -34,7 +34,6 @@ using System.ComponentModel;
 using BH.Engine.Base;
 using System.Collections;
 using System.Data;
-using System.Management.Automation;
 
 namespace BH.Engine.Base
 {
@@ -48,7 +47,8 @@ namespace BH.Engine.Base
             "\nYou can change how the hash is computed by changing the settings in the ComparisonConfig.")]
         [Input("iObj", "iObject the hash code should be calculated for.")]
         [Input("comparisonConfig", "Configure how the hash is computed.")]
-        [Input("hashFromFragment", "If true, if the object is a BHoMObject storing a HashFragment, retrieve the hash from it instead of computing the hash.")]
+        [Input("hashFromFragment", "If true, if the object is a BHoMObject that owns a HashFragment, retrieve the hash from it instead of computing the hash.")]
+        [Input("storeInFragment", "(Optional, defaults to false) If true, if the object is a BHoMObject, store the hash on it in a HashFragment.")]
         public static string Hash(this IObject iObj, BaseComparisonConfig comparisonConfig = null, bool hashFromFragment = false)
         {
             if (iObj == null)
@@ -60,10 +60,10 @@ namespace BH.Engine.Base
             if (hashFromFragment && iObj is IBHoMObject)
             {
                 // Instead of computing the Hash, first tryGet the hash in HashFragment
-                string hash = (iObj as IBHoMObject).FindFragment<HashFragment>()?.Hash;
+                string fragmentHash = (iObj as IBHoMObject).FindFragment<HashFragment>()?.Hash;
 
-                if (!string.IsNullOrWhiteSpace(hash))
-                    return hash;
+                if (!string.IsNullOrWhiteSpace(fragmentHash))
+                    return fragmentHash;
             }
 
             // ------ SET UP OF CONFIGURATION ------
@@ -178,7 +178,7 @@ namespace BH.Engine.Base
 
                         foreach (var kv in cc.FractionalDigitsPerProperty)
                         {
-                            if (currentPropertyFullName.Contains(kv.Key) || new WildcardPattern(kv.Key).IsMatch(currentPropertyFullName))
+                            if (currentPropertyFullName.Contains(kv.Key) || currentPropertyFullName.WildCardMatch(kv.Key))
                                 if (digitsToLimit == -1)
                                     digitsToLimit = kv.Value;
                                 else
@@ -306,7 +306,7 @@ namespace BH.Engine.Base
 
             // Get the current object's declared properties full names.
             List<string> allDeclaredPropertyNames = BH.Engine.Reflection.Query.PropertyNames(currentObjType);
-            IEnumerable<string> allDeclaredPropertyFullNames = allDeclaredPropertyNames.Select(pn => $"{currentPropertyFullName}.{pn}");
+            List<string> allDeclaredPropertyFullNames = allDeclaredPropertyNames.Select(pn => $"{currentPropertyFullName}.{pn}").ToList();
 
             // Get the parent property's full name.
             string[] currentPropertyFullNameComponents = currentPropertyFullName?.Split('.');
@@ -314,21 +314,26 @@ namespace BH.Engine.Base
             if (currentPropertyFullNameComponents != null)
                 currentParentPropertyFullName = string.Join(".", currentPropertyFullNameComponents.Take(currentPropertyFullNameComponents.Count() - 1));
 
-            // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
-            List<string> currentLevelPropertiesToConsider = cc.PropertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel).ToList();
+            // Make sure that the propertiesToConsider are relative paths to the current property, if they were specified as Full Names.
+            List<string> propertiesToConsider = GetRelativePathsForFullNames(cc.PropertiesToConsider, currentPropertyFullNameComponents, nestingLevel);
 
-            List<string> subPropsToConsider = cc.PropertiesToConsider
-                .Where(pTc => pTc.Count(c => c == '.') > nestingLevel)
+            // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
+            List<string> currentLevelPropertiesToConsider = propertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel || pTc.StartsWith("*.")).ToList();
+
+            List<string> subPropsToConsider = propertiesToConsider
+                .Where(pTc => pTc.Count(c => c == '.') > nestingLevel && !pTc.StartsWith("*."))
                 .Where(ptc => currentParentPropertyFullName.EndsWith(string.Join(".", ptc.Take(nestingLevel))))
                 .ToList();
 
             // Get the declaredPropertiesToConsider, which are the currentLevelPropertiesToConsider for which there is a match among this object's properties.
-            IEnumerable<string> declaredPropertiesToConsider = allDeclaredPropertyFullNames.Where(pPath => currentLevelPropertiesToConsider.Any(ptc => pPath.EndsWith(ptc)));
+            List<string> declaredPropertiesToConsider = allDeclaredPropertyFullNames
+                .Where(pPath => currentLevelPropertiesToConsider
+                .Any(ptc => pPath.EndsWith(ptc) || pPath.WildCardMatch(ptc))).ToList();
 
             if (declaredPropertiesToConsider.Any())
             {
                 // All the remaining declaredProperties are to be added to the Exceptions.
-                IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyFullNames.Except(declaredPropertiesToConsider);
+                List<string> declaredPropertiesExceptions = allDeclaredPropertyFullNames.Except(declaredPropertiesToConsider).ToList();
                 cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
             }
 
@@ -354,6 +359,33 @@ namespace BH.Engine.Base
                     cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
                 }
             }
+        }
+
+        private static List<string> GetRelativePathsForFullNames(List<string> propertiesToConsider, string[] currentPropertyFullNameComponents, int nestingLevel)
+        {
+            List<string> propertiesToConsiderPartialName = new List<string>();
+            foreach (var ptc in propertiesToConsider)
+            {
+                if (ptc.StartsWith("BH"))
+                {
+                    var ptcComponents = ptc.Split('.');
+                    int lastCommonIndex = -1;
+                    int commonLength = Math.Min(currentPropertyFullNameComponents.Length, ptcComponents.Length);
+                    for (int i = 0; i < commonLength; i++)
+                    {
+                        if (ptcComponents[i] == currentPropertyFullNameComponents[i])
+                            lastCommonIndex = i;
+                    }
+
+                    string adjusted = string.Join(".", ptcComponents.Skip(lastCommonIndex + 1 - nestingLevel));
+                    
+                    propertiesToConsiderPartialName.Add(adjusted);
+                }
+                else
+                    propertiesToConsiderPartialName.Add(ptc);
+            }
+
+            return propertiesToConsiderPartialName;
         }
     }
 }
