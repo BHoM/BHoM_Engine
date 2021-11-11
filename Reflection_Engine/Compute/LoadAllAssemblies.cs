@@ -70,11 +70,9 @@ namespace BH.Engine.Reflection
                 else
                     regex = new Regex(@"oM$|_Engine$|_UI$");
 
-                foreach (string file in Directory.GetFiles(folder))
+                SearchOption searchOption = parseSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+                foreach (string file in Directory.GetFiles(folder, "*.dll", searchOption))
                 {
-                    if (!file.EndsWith(".dll"))
-                        continue;
-
                     string[] parts = file.Split(new char[] { '.', '\\' });
                     if (parts.Length < 2)
                         continue;
