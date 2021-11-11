@@ -195,7 +195,7 @@ namespace BH.Engine.Base
 
                         foreach (var kv in cc.FractionalDigitsPerProperty)
                         {
-                            if (currentPropertyFullName.Contains(kv.Key) || currentPropertyFullName.WildCardMatch(kv.Key))
+                            if (currentPropertyFullName.Contains(kv.Key) || currentPropertyFullName.WildcardMatch(kv.Key))
                                 if (digitsToLimit == -1)
                                     digitsToLimit = kv.Value;
                                 else
@@ -345,7 +345,7 @@ namespace BH.Engine.Base
             // Get the declaredPropertiesToConsider, which are the currentLevelPropertiesToConsider for which there is a match among this object's properties.
             List<string> declaredPropertiesToConsider = allDeclaredPropertyFullNames
                 .Where(pPath => currentLevelPropertiesToConsider
-                .Any(ptc => pPath.EndsWith(ptc) || pPath.WildCardMatch(ptc))).ToList();
+                .Any(ptc => pPath.EndsWith(ptc) || pPath.WildcardMatch(ptc))).ToList();
 
             if (declaredPropertiesToConsider.Any())
             {

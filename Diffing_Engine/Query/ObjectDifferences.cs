@@ -143,7 +143,7 @@ namespace BH.Engine.Diffing
 
                 // Check if the property Full name matches any of the specified PropertiesToConsider.
                 if (cc.PropertiesToConsider?.Any() ?? false)
-                    if (!cc.PropertiesToConsider.Any(ptc => propertyFullName_noIndexes == ptc || propertyFullName_noIndexes.EndsWith($".{ptc}") || propertyFullName_noIndexes.WildCardMatch(ptc)))
+                    if (!cc.PropertiesToConsider.Any(ptc => propertyFullName_noIndexes == ptc || propertyFullName_noIndexes.EndsWith($".{ptc}") || propertyFullName_noIndexes.WildcardMatch(ptc)))
                         continue; // no match found, skip this property.
 
                 // Add to the final result.
