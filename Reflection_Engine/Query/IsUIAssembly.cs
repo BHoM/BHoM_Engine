@@ -35,9 +35,9 @@ namespace BH.Engine.Reflection
         [Description("Checks whether a given assembly is a BHoM UI assembly.")]
         [Input("assembly", "Assembly to be checked whether it is a BHoM UI assembly.")]
         [Output("isUi", "True if the input assembly is a BHoM UI assembly.")]
-        public static bool IsUiAssembly(this Assembly assembly)
+        public static bool IsUIAssembly(this Assembly assembly)
         {
-            return assembly != null && assembly.GetName().Name.IsUiAssembly();
+            return assembly != null && assembly.GetName().Name.IsUIAssembly();
         }
 
         /***************************************************/
@@ -45,7 +45,7 @@ namespace BH.Engine.Reflection
         [Description("Checks whether a given assembly name follows the BHoM UI assembly naming convention.")]
         [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM UI assembly naming convention.")]
         [Output("isUi", "True if the input assembly name follows the BHoM UI assembly naming convention.")]
-        public static bool IsUiAssembly(this string assemblyName)
+        public static bool IsUIAssembly(this string assemblyName)
         {
             return assemblyName != null && (assemblyName.EndsWith("_UI") || assemblyName.Contains("_UI_"));
         }

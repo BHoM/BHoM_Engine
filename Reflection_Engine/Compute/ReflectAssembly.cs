@@ -258,7 +258,7 @@ namespace BH.Engine.Reflection
         private static bool IsBHoM(this Assembly assembly)
         {
             string name = assembly.GetName().Name;
-            return name.IsOmAssembly() || name.IsEngineAssembly() || name.IsAdapterAssembly() || name.IsUiAssembly();
+            return name.IsOmAssembly() || name.IsEngineAssembly() || name.IsAdapterAssembly() || name.IsUIAssembly();
         }
 
         /***************************************************/
