@@ -476,7 +476,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Emperical formula used to correct the torsional constant with enhancement from a T-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
+        [Description("Empirical formula used to correct the torsional constant with enhancement from a T-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
         [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
         [Input("tf", "Flange thickness, assumed to be the top of the T.", typeof(Length))]
         [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
@@ -487,7 +487,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Emperical formula used to correct the torsional constant with enhancement from a L-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
+        [Description("Empirical formula used to correct the torsional constant with enhancement from a L-junction. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("tf", "Flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
@@ -498,7 +498,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Emperical formula used to correct the torsional constant with enhancement from a tapered T-junction such as a taper flange I-Section. Taken from Johnston & El Darwish, 1964")]
+        [Description("Empirical formula used to correct the torsional constant with enhancement from a tapered T-junction such as a taper flange I-Section. Taken from Johnston & El Darwish, 1964")]
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("tf", "Mean flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
@@ -522,7 +522,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Emperical formula used to correct the torsional constant with enhancement from a tapered L-junction such as a taper flange channel. Taken from Johnston & El Darwish, 1964")]
+        [Description("Empirical formula used to correct the torsional constant with enhancement from a tapered L-junction such as a taper flange channel. Taken from Johnston & El Darwish, 1964")]
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("tf", "Mean flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
@@ -549,10 +549,10 @@ namespace BH.Engine.Structure
         {
             List<double> slopes = new List<double>
             {
-                Math.Atan(1 / 6),
-                Math.Atan(1 / 20),
+                Math.Atan(0),
                 Math.Atan(1 / 50),
-                Math.Atan(0)
+                Math.Atan(1 / 20),
+                Math.Atan(1 / 6),
             };
 
             List<double> vl = new List<double>
@@ -572,10 +572,10 @@ namespace BH.Engine.Structure
         {
             List<double> slopes = new List<double>
             {
-                Math.Atan(1 / 6),
-                Math.Atan(1 / 20),
+                Math.Atan(0),
                 Math.Atan(1 / 50),
-                Math.Atan(0)
+                Math.Atan(1 / 20),
+                Math.Atan(1 / 6),
             };
 
             List<double> vs = new List<double>
@@ -591,12 +591,21 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static double Interpolate(List<double> keys, List<double> values, double s)
+        [Description("Interpolate a series of values based on a search key and a list of keys.")]
+        [Input("keys","A list of numerical keys, i.e. tabulated input values for a function.")]
+        [Input("values","A list of numerical values which is the same length as keys, i.e. tabulated output values for a function.")]
+        [Input("s","a numerical value to compare to the keys. This must be in the domain covered by the keys.")]
+        public static double Interpolate(List<double> keys, List<double> values, double s)
         {
+            if (s < keys[0])
+                return double.NaN;
+            if (s > keys[keys.Count - 1])
+                return double.NaN;
+
             int index = keys.BinarySearch(s);
             if (index > 0)
                 return values[index];
-            return values[index] + values[index + 1] * (s - keys[index]) / (keys[index + 1] - keys[index]);
+            return values[~index - 1] + (values[~index] - values[~index - 1]) * (s - keys[~index - 1]) / (keys[~index] - keys[~index - 1]);
         }
 
         /***************************************************/
