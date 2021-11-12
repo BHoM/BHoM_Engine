@@ -164,7 +164,11 @@ namespace BH.Engine.Reflection
             else
                 typeList = Query.AllTypeList();
 
-            List<Type> types = typeList.Where(x => x.AssemblyQualifiedName.Contains(name)).ToList();
+            List<Type> types;
+            if (name.Contains(','))
+                types = typeList.Where(x => x.AssemblyQualifiedName.Contains(name)).ToList();
+            else
+                types = typeList.Where(x => x.FullName.EndsWith(name)).ToList();
 
             if (types.Count != 0)
                 return types;
