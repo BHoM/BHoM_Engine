@@ -20,8 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -33,6 +35,10 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a BHoM type that matches the given name.")]
+        [Input("name", "Name to be searched for among all BHoM types.")]
+        [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Output("type", "BHoM type that matches the given name.")]
         public static Type Type(string name, bool silent = false)
         {
             if (name == null)
