@@ -20,8 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -33,6 +35,10 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates all types with full names that end with given string, with or without assembly information after comma.")]
+        [Input("name", "Name to be searched for among all reflected types.")]
+        [Input("silent", "If true, the error about no types found will be suppressed, otherwise it will be raised.")]
+        [Output("types", "All reflected types that match the given name.")]
         public static List<Type> AllTypes(string name, bool silent = false)
         {
             if (name == null)
