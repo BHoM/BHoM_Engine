@@ -170,19 +170,6 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        private static void GetPathsAndLoadLibraries()
-        {
-            GetPathsAndLoadLibraries(m_sourceFolder, "", "");
-
-            foreach (string path in UserPaths())
-            {
-                GetPathsAndLoadLibraries(path, "", "");
-            }
-
-        }
-
-        /***************************************************/
-
         private static void InitialiseLibraries()
         {
             m_libraryPaths = new Dictionary<string, HashSet<string>>();
@@ -195,6 +182,23 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
+        [Description("Loops through all subfolders of default library folder and any additional userpaths and reads all json files contained in those folders.")]
+        private static void GetPathsAndLoadLibraries()
+        {
+            //Load all libraries from default path
+            GetPathsAndLoadLibraries(m_sourceFolder, "", "");
+
+            //Load all libraries from userpaths
+            foreach (string path in UserPaths())
+            {
+                GetPathsAndLoadLibraries(path, "", "");
+            }
+
+        }
+
+        /***************************************************/
+
+        [Description("Loop through all subfolders if provided source folder and extract all json files contained within it or any subfolder.")]
         private static void GetPathsAndLoadLibraries(string sourceFolder, string folderPath, string basePath)
         {
             string internalPath = Path.Combine(basePath, folderPath);
@@ -209,7 +213,11 @@ namespace BH.Engine.Library
                 {
                     string filePathName = Path.Combine(internalPath, Path.GetFileNameWithoutExtension(path));
                     AddToPathDictionary(filePathName, filePathName);
-                    m_libraryStrings[filePathName] = File.ReadAllLines(path);
+                    //Check that the file path has not already been added. If so, the one added first governs.
+                    if (!m_libraryStrings.ContainsKey(filePathName))
+                        m_libraryStrings[filePathName] = File.ReadAllLines(path);
+                    else
+                        Reflection.Compute.RecordError($"The library already contains the Dataset {filePathName}. The Dataset with this path has not been loaded from the source folder {sourceFolder}.");
                 }
             }
 
