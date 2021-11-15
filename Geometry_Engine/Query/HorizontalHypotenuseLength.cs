@@ -20,46 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using System.Collections.Generic;
+using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
+using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
+
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****       Public Methods - BoundingBox        ****/
         /***************************************************/
 
-        [Description("Returns all BHoM methods loaded in the current domain.")]
-        [Output("methods", "List of BHoM methods loaded in the current domain.")]
-        public static List<MethodInfo> BHoMMethodList()
+        [Description("Returns the horizontal hypotenuse length of a BHoM BoundingBox.")]
+        [Input("boundingBox", "BHoM BoundingBox to query its hypotenuse length.")]
+        [Output("width", "The horizontal hypotenuse length of the BoundingBox based on the difference in XY values for its bounding box.",typeof(Length))]
+        public static double HorizontalHypotenuseLength(this BoundingBox boundingBox)
         {
-            return Global.BHoMMethodList.ToList();
-        }
+            if (boundingBox == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the hypotenuse length of a null bounding box.");
+                return 0;
+            }
+            
+            double diffX = Math.Abs(boundingBox.Max.X - boundingBox.Min.X);
+            double diffY = Math.Abs(boundingBox.Max.Y - boundingBox.Min.Y);
 
-        /***************************************************/
-
-        [Description("Returns all methods loaded in the current domain.")]
-        [Output("methods", "List of all methods loaded in the current domain.")]
-        public static List<MethodBase> AllMethodList()
-        {
-            return Global.AllMethodList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all external methods loaded in the current domain.")]
-        [Output("methods", "List of external methods loaded in the current domain.")]
-        public static List<MethodBase> ExternalMethodList()
-        {
-            return Global.ExternalMethodList.ToList();
-        }
+            return Math.Sqrt((diffX * diffX) + (diffY * diffY));
+        }       
 
         /***************************************************/
     }
 }
-

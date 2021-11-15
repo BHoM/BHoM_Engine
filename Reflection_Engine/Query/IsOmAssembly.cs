@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -21,61 +21,33 @@
  */
 
 using BH.oM.Reflection.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Method               ****/
         /***************************************************/
-        
-        [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
-        [Description("Returns all BHoM interface types loaded in the current domain.")]
-        [Output("types", "List of BHoM interface types loaded in the current domain.")]
-        public static List<Type> BHoMInterfaceTypeList()
+
+        [Description("Checks whether a given assembly is a BHoM oM assembly.")]
+        [Input("assembly", "Assembly to be checked whether it is a BHoM oM assembly.")]
+        [Output("isOm", "True if the input assembly is a BHoM oM assembly.")]
+        public static bool IsOmAssembly(this Assembly assembly)
         {
-            return Global.InterfaceList.ToList();
+            return assembly != null && assembly.GetName().Name.IsOmAssembly();
         }
 
         /***************************************************/
 
-        [Description("Returns all BHoM types loaded in the current domain.")]
-        [Output("types", "List of BHoM types loaded in the current domain.")]
-        public static List<Type> BHoMTypeList()
+        [Description("Checks whether a given assembly name follows the BHoM oM assembly naming convention.")]
+        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM oM assembly naming convention.")]
+        [Output("isOm", "True if the input assembly name follows the BHoM oM assembly naming convention.")]
+        public static bool IsOmAssembly(this string assemblyName)
         {
-            return Global.BHoMTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all BHoM adapter types loaded in the current domain.")]
-        [Output("types", "List of BHoM adapter types loaded in the current domain.")]
-        public static List<Type> AdapterTypeList()
-        {
-            return Global.AdapterTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all types loaded in the current domain.")]
-        [Output("types", "List of all types loaded in the current domain.")]
-        public static List<Type> AllTypeList()
-        {
-            return Global.AllTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all BHoM engine types loaded in the current domain.")]
-        [Output("types", "List of BHoM engine types loaded in the current domain.")]
-        public static List<Type> EngineTypeList()
-        {
-            return Global.EngineTypeList.ToList();
+            return assemblyName != null && (assemblyName == "BHoM" || assemblyName.EndsWith("_oM") || assemblyName.Contains("_oM_"));
         }
 
         /***************************************************/

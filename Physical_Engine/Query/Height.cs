@@ -20,66 +20,63 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
+using BH.oM.Physical.Elements;
+using BH.Engine.Geometry;
+using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
+        /***************************************************/
+
+        [Description("Returns the vertical orthogonal height of a generic opening based on global coordinates of its BoundingBox.")]
+        [Input("opening", "A generic Opening object to query its height.")]
+        [Output("height", "The total height of the generic opening.", typeof(Length))]
+        public static double IHeight(this IOpening opening)
+        {
+            if(opening == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null opening.");
+                return 0;
+            }
+            
+            return Height(opening as dynamic);
+        }
+
+        /***************************************************/
+
+        [Description("Returns the vertical orthogonal height of a door object based on global coordinates of its BoundingBox.")]
+        [Input("door", "A door object to query its height.")]
+        [Output("height", "The total height of the door object.")]
+        public static double Height(this Door door)
+        {
+            if(door == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null door.");
+                return 0;
+            }
+
+            return BH.Engine.Geometry.Query.Height(door.Location.IBounds());
+        }
+
+        /***************************************************/
+        /****             Fallback Methods              ****/
         /***************************************************/
         
-        [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
-        [Description("Returns all BHoM interface types loaded in the current domain.")]
-        [Output("types", "List of BHoM interface types loaded in the current domain.")]
-        public static List<Type> BHoMInterfaceTypeList()
+        private static double Height(this object opening)
         {
-            return Global.InterfaceList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all BHoM types loaded in the current domain.")]
-        [Output("types", "List of BHoM types loaded in the current domain.")]
-        public static List<Type> BHoMTypeList()
-        {
-            return Global.BHoMTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all BHoM adapter types loaded in the current domain.")]
-        [Output("types", "List of BHoM adapter types loaded in the current domain.")]
-        public static List<Type> AdapterTypeList()
-        {
-            return Global.AdapterTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all types loaded in the current domain.")]
-        [Output("types", "List of all types loaded in the current domain.")]
-        public static List<Type> AllTypeList()
-        {
-            return Global.AllTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all BHoM engine types loaded in the current domain.")]
-        [Output("types", "List of BHoM engine types loaded in the current domain.")]
-        public static List<Type> EngineTypeList()
-        {
-            return Global.EngineTypeList.ToList();
+            BH.Engine.Reflection.Compute.RecordError(String.Format("Height query for {0} type is not implemented.",opening.GetType()));
+            return 0;
         }
 
         /***************************************************/
     }
 }
-
 

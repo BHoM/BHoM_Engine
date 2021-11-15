@@ -176,7 +176,6 @@ namespace BH.Engine.Serialiser
             {
                 BsonSerializer.RegisterSerializer(typeof(object), new BH_ObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(System.Drawing.Color), new ColourSerializer());
-                BsonSerializer.RegisterSerializer(typeof(MethodBase), new MethodBaseSerializer());
                 BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(BsonType.String));
                 BsonSerializer.RegisterSerializer(typeof(CustomObject), new CustomObjectSerializer());
                 BsonSerializer.RegisterSerializer(typeof(FragmentSet), new BHoMCollectionSerializer<FragmentSet, IFragment>());
@@ -189,6 +188,10 @@ namespace BH.Engine.Serialiser
                 var typeSerializer = new TypeSerializer();
                 BsonSerializer.RegisterSerializer(typeof(Type), typeSerializer);
                 BsonSerializer.RegisterSerializer(Type.GetType("System.RuntimeType"), typeSerializer);
+
+                var methodBaseSerializer = new MethodBaseSerializer();
+                BsonSerializer.RegisterSerializer(typeof(MethodBase), methodBaseSerializer);
+                BsonSerializer.RegisterSerializer(typeof(MethodInfo), methodBaseSerializer);
 
                 BsonDefaults.DynamicDocumentSerializer = new CustomObjectSerializer();
 

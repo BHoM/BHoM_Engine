@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -21,45 +21,37 @@
  */
 
 using BH.oM.Reflection.Attributes;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns all BHoM methods loaded in the current domain.")]
-        [Output("methods", "List of BHoM methods loaded in the current domain.")]
-        public static List<MethodInfo> BHoMMethodList()
+        [Description("Attempts to load an assembly under the given path.")]
+        [Input("assemblyPath", "Path from which the assembly is meant to be loaded.")]
+        [Output("assembly", "The assembly under the given path, if it exists and has been loaded to BHoM (at any point in time), otherwise null.")]
+        public static Assembly LoadAssembly(string assemblyPath)
         {
-            return Global.BHoMMethodList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all methods loaded in the current domain.")]
-        [Output("methods", "List of all methods loaded in the current domain.")]
-        public static List<MethodBase> AllMethodList()
-        {
-            return Global.AllMethodList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all external methods loaded in the current domain.")]
-        [Output("methods", "List of external methods loaded in the current domain.")]
-        public static List<MethodBase> ExternalMethodList()
-        {
-            return Global.ExternalMethodList.ToList();
+            try
+            {
+                string name = AssemblyName.GetAssemblyName(assemblyPath).FullName;
+                if (!Global.AllAssemblies.ContainsKey(name))
+                    return Assembly.LoadFrom(assemblyPath);
+                else
+                    return Global.AllAssemblies[name];
+            }
+            catch
+            {
+                RecordWarning("Failed to load assembly " + assemblyPath);
+                return null;
+            }
         }
 
         /***************************************************/
     }
 }
-

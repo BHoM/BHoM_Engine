@@ -20,46 +20,61 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Elements;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Returns all BHoM methods loaded in the current domain.")]
-        [Output("methods", "List of BHoM methods loaded in the current domain.")]
-        public static List<MethodInfo> BHoMMethodList()
+        [Description("Returns the bottom curve of a given generic opening object.")]
+        [Input("opening", "Any object implementing the IOpening interface that can have a geometrical bottom.")]
+        [Input("distanceTolerance", "Distance tolerance for calculating discontinuity points, default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]                
+        [Output("curve", "An ICurve representation of the bottom of the object.")]
+        public static ICurve Bottom(this IOpening opening, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            return Global.BHoMMethodList.ToList();
+            if (opening == null)
+                return null;
+
+            List<Polyline> workingCurves = Polyline(opening);
+
+            if (workingCurves == null)
+                return null;
+
+            double heightZ = double.MaxValue;
+            ICurve result = null;
+
+            foreach (Polyline polyline in workingCurves)
+            {
+                foreach (ICurve curve in polyline.SplitAtPoints(polyline.DiscontinuityPoints(distanceTolerance)))
+                {
+                    Point start = curve.IStartPoint();
+                    Point end = curve.IEndPoint();
+
+                    if (end.Z <= heightZ && start.Z <= heightZ)
+                    {
+                        heightZ = Math.Max(end.Z, start.Z);
+                        result = curve;
+                    }
+                }
+            }
+
+            return result;
         }
 
         /***************************************************/
 
-        [Description("Returns all methods loaded in the current domain.")]
-        [Output("methods", "List of all methods loaded in the current domain.")]
-        public static List<MethodBase> AllMethodList()
-        {
-            return Global.AllMethodList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all external methods loaded in the current domain.")]
-        [Output("methods", "List of external methods loaded in the current domain.")]
-        public static List<MethodBase> ExternalMethodList()
-        {
-            return Global.ExternalMethodList.ToList();
-        }
-
-        /***************************************************/
     }
 }
+
 

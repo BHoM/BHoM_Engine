@@ -20,46 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
 using BH.oM.Reflection.Attributes;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
+using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
+
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****       Public Methods - BoundingBox        ****/
         /***************************************************/
 
-        [Description("Returns all BHoM methods loaded in the current domain.")]
-        [Output("methods", "List of BHoM methods loaded in the current domain.")]
-        public static List<MethodInfo> BHoMMethodList()
+        [Description("Returns the vertical orthogonal height of a BHoM BoundingBox based on its Z minimum and maximum values.")]
+        [Input("boundingBox", "BHoM BoundingBox to query its height.")]
+        [Output("height", "The height of the BoundingBox based on the difference in Z minimum and maximum values.",typeof(Length))]
+        public static double Height(this BoundingBox boundingBox)
         {
-            return Global.BHoMMethodList.ToList();
-        }
+            if (boundingBox == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null bounding box.");
+                return 0;
+            }
 
-        /***************************************************/
-
-        [Description("Returns all methods loaded in the current domain.")]
-        [Output("methods", "List of all methods loaded in the current domain.")]
-        public static List<MethodBase> AllMethodList()
-        {
-            return Global.AllMethodList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all external methods loaded in the current domain.")]
-        [Output("methods", "List of external methods loaded in the current domain.")]
-        public static List<MethodBase> ExternalMethodList()
-        {
-            return Global.ExternalMethodList.ToList();
+            return (boundingBox.Max.Z - boundingBox.Min.Z);
         }
 
         /***************************************************/
     }
 }
-

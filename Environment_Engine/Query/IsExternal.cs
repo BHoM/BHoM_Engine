@@ -31,6 +31,8 @@ using BH.Engine.Geometry;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
+using BH.oM.Reflection;
+
 namespace BH.Engine.Environment
 {
     public static partial class Query
@@ -39,18 +41,45 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether the Environment Panel is externally facing")]
-        [Input("panel", "An Environment Panel")]
-        [Output("isExternal", "True if the panel is externally facing, false otherwise")]
-        public static bool IsExternal(this Panel panel)
-        {
-            if(panel == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a panel is external or not if it is null.");
-                return false;
-            }
+        [Description("Determines which Environment Panels are externally facing.")]
+        [Input("panels", "List of Environment Panels.")]
+        [MultiOutput(0, "externalPanels", "List of external panels.")]
+        [MultiOutput(1,"internalPanels","List of internal panels.")]
+        [PreviousVersion("5.0", "BH.Engine.Environment.Query.IsExternal(BH.oM.Environment.Elements.Panel)")]
+        public static Output<List<Panel>, List<Panel>> IsExternal(this List<Panel> panels)
+         {
+             List<List<Panel>> definedSpaces = panels.ToSpaces();
+             List<Panel> internalPanels = new List<Panel>();
+             List<Panel> externalPanels = new List<Panel>();
 
-            return panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal; //TODO: Put a more robust check of whether the element is external or not in...
+            foreach (Panel p in panels)
+             {      
+                 Vector panelNormal = p.Polyline().Normal();
+                 Point panelCentre = p.Polyline().Centroid();
+                 Point normalPt = panelCentre + (0.01 * panelNormal);
+                 Point negNormalPt = panelCentre - (0.01 * panelNormal);
+                int insideCounter = 0;
+                foreach (List<Panel> space in definedSpaces)
+                {
+                    if (space.IsContaining(normalPt))
+                    {
+                        insideCounter++;
+                        if (insideCounter > 1)
+                            break;
+                    }
+                    if (space.IsContaining(negNormalPt))
+                    {
+                        insideCounter++;
+                        if (insideCounter > 1)
+                            break;
+                    }
+                }
+                if (insideCounter > 1)
+                    internalPanels.Add(p);
+                else
+                    externalPanels.Add(p);
+            }
+             return new Output<List<Panel>, List<Panel>>() { Item1 = externalPanels, Item2 = internalPanels };
         }
     }
 }
