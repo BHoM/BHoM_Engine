@@ -58,7 +58,7 @@ namespace BH.Engine.Library
         /**** Private Fields                            ****/
         /***************************************************/
 
-        public static readonly string m_settingsPath = @"C:\ProgramData\BHoM\Settings\Library\LibrarySettings.cfg";
+        public static readonly string m_settingsPath = @"C:\ProgramData\BHoM\Settings\LibrarySettings.cfg";
 
         /***************************************************/
     }
