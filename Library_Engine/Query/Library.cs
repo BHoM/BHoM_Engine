@@ -42,7 +42,7 @@ namespace BH.Engine.Library
         [Description("Gets the content of the Datasets from the library.")]
         [Input("libraryName", "The name of the Dataset(s) to extract.")]
         [Output("libraryData", "The data from the Dataset(s).")]
-        public static List<IBHoMObject> Library(string libraryName)
+        public static List<IBHoMObject> Library(this string libraryName)
         {
             return Datasets(libraryName).SelectMany(x => x.Data).ToList();
         }
