@@ -35,7 +35,7 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a path is valid to add to the library settings. WIll return false if the path is the default library folder or a sub or superfolder of it.")]
+        [Description("Checks if a path is valid to add to the library settings. Will return false if the path is empty, or if it is a parent or subfolder of the default source folder.")]
         [Input("userPath", "The userpath to check.")]
         [Output("isValid", "Returns true if the user path is valid to be added.")]
         public static bool IsValidUserPath(this string userPath)
