@@ -20,36 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Data.Library;
+using System.Linq;
 
 namespace BH.Engine.Library
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Adds a custom folderpath to the User libraries accessed by the Library_Engine.")]
-        [Input("customPath", "Path to folder with custom libraries to be extracted from the Library_Engine.", typeof(FolderPathAttribute))]
-        [Input("refreshLibraries", "If true, all loaded libraries will be refreshed and reloaded, making use of the provided LibrarySettings object.")]
-        [Output("sucess", "Returns true of the settings was successfully updated.")]
-        public static bool AddUserPath(string customPath, bool refreshLibraries = true)
+        [Description("Checks if a path is valid to add to the library settings. WIll return false if the path is the default library folder or a sub or superfolder of it.")]
+        [Input("userPath", "The userpath to check.")]
+        [Output("isValid", "Returns true if the user path is valid to be added.")]
+        public static bool IsValidUserPath(this string userPath)
         {
-            if (!customPath.IsValidUserPath())
+            if (string.IsNullOrWhiteSpace(userPath))
+            {
+                Reflection.Compute.RecordWarning("Null or empty userpaths are not valid.");
                 return false;
+            }
 
-            LibrarySettings settings = Query.LibrarySettings() ?? new LibrarySettings();
-            settings.UserLibraryPaths.Add(customPath);
-            return SaveLibrarySettings(settings, true, refreshLibraries);
+            string path = System.IO.Path.GetFullPath(userPath);
+
+            if (m_sourceFolder.ToLower().Contains(path.ToLower()))
+            {
+                Reflection.Compute.RecordWarning($"Not allowed to add a parent folder of the default source folder {m_sourceFolder} to the user libraries.");
+                return false;
+            }
+
+            if (path.ToLower().Contains(m_sourceFolder.ToLower()))
+            {
+                Reflection.Compute.RecordWarning($"Not allowed to add a sub folder of the default dataset folder {m_sourceFolder} to the user libraries.");
+                return false;
+            }
+
+            return true;
         }
 
         /***************************************************/
     }
 }
-
