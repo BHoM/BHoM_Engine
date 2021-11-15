@@ -50,6 +50,9 @@ namespace BH.Engine.Library
                 return false;
             }
 
+            if (settings.UserLibraryPaths.Any(x => !x.IsValidUserPath()))
+                return false;
+
             if (File.Exists(Query.m_settingsPath))
             {
                 if (!replacePreexisting)
