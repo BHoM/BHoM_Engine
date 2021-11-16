@@ -45,6 +45,7 @@ namespace BH.Engine.Spatial
         [InputFromProperty("width")]
         [InputFromProperty("webThickness")]
         [InputFromProperty("flangeThickness")]
+        [InputFromProperty("flangeSlope")]
         [InputFromProperty("rootRadius")]
         [InputFromProperty("toeRadius")]
         [Output("I", "The created ISectionProfile.")]
@@ -64,7 +65,7 @@ namespace BH.Engine.Spatial
 
             if (flangeSlope < 0)
             {
-                Reflection.Compute.RecordError("Flange slope must be positive. Suggest approximately 0.16 radians");
+                Reflection.Compute.RecordError("Flange slope must be positive. Values typically range from 0 to 1/6");
                 return null;
             }            
 
@@ -96,37 +97,39 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> TaperFlangeIProfileCurves(double tft, double tfw, double bft, double bfw, double slope, double wt, double height, double r1, double r2)
         {
-            List<ICurve> perimeter = new List<ICurve>();
+            List<ICurve> edges = new List<ICurve>();
             Point p = new Point { X = bfw / 2, Y = 0, Z = 0 };
 
             Vector xAxis = oM.Geometry.Vector.XAxis;
             Vector yAxis = oM.Geometry.Vector.YAxis;
             Point origin = oM.Geometry.Point.Origin;
 
-            Line l1 = new Line { Start = p, End = p = p + yAxis * (bft - bfw / 4 * Math.Tan(slope)) };
-            Line l2 = new Line { Start = p, End = p = p - xAxis * (bfw - wt) / 2 + yAxis * ((bfw - wt) / 2 * Math.Tan(slope)) };
-            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + (bfw/4 - wt/2) * Math.Tan(slope)) - (tft + (tfw/4 - wt/2) * Math.Tan(slope)))};
-            Line l4 = new Line { Start = p, End = p = p + xAxis * (tfw - wt) / 2 + yAxis * ((tfw - wt) / 2 * Math.Tan(slope)) };
-            Line l5 = new Line { Start = p, End = p = p + yAxis * (tft - tfw / 4 * Math.Tan(slope)) };
+            Line l1 = new Line { Start = p, End = p = p + yAxis * (bft - bfw / 4 * slope) };
+            Line l2 = new Line { Start = p, End = p = p - xAxis * (bfw - wt) / 2 + yAxis * ((bfw - wt) / 2 * slope) };
+            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + (bfw/4 - wt/2) * slope - (tft + (tfw/4 - wt/2) * slope)))};
+            Line l4 = new Line { Start = p, End = p = p + xAxis * (tfw - wt) / 2 + yAxis * ((tfw - wt) / 2 * slope) };
+            Line l5 = new Line { Start = p, End = p = p + yAxis * (tft - tfw / 4 * slope) };
 
             List<ICurve> fillet = Fillet(l1, l2, r2);
-            perimeter.AddRange(fillet.GetRange(0, fillet.Count - 1));
+            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
             fillet = Fillet(fillet.Last() as Line, l3, r1);
-            perimeter.AddRange(fillet.GetRange(0, fillet.Count - 1));
+            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
             fillet = Fillet(fillet.Last() as Line, l4, r1);
-            perimeter.AddRange(fillet.GetRange(0, fillet.Count - 1));
+            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
             fillet = Fillet(fillet.Last() as Line, l5, r2);
-            perimeter.AddRange(fillet);
+            edges.AddRange(fillet);
 
-            int count = perimeter.Count;
+            int count = edges.Count;
             for (int i = 0; i < count; i++)
             {
-                perimeter.Add(perimeter[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
+                edges.Add(edges[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
             }
-            perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
-            perimeter.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
+            edges.Add(new Line { Start = p, End = p - xAxis * (tfw) });
+            edges.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
 
-            return perimeter;
+            Point centroid = edges.IJoin().Centroid();
+            Vector translation = Point.Origin - centroid;
+            return edges.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/

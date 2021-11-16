@@ -65,7 +65,7 @@ namespace BH.Engine.Spatial
 
             if (flangeSlope < 0)
             {
-                Reflection.Compute.RecordError("Flange slope must be positive. Suggest approximately 0.16 radians");
+                Reflection.Compute.RecordError("Flange slope must be positive. Values typically range from 0 to 1/6");
                 return null;
             }
 
@@ -101,34 +101,36 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> TaperFlangeChannelProfileCurves(double height, double width, double wt, double ft, double slope, double r1, double r2)
         {
-            List<ICurve> perimeter = new List<ICurve>();
+            List<ICurve> edges = new List<ICurve>();
             Point p = Point.Origin;
 
             Vector xAxis = oM.Geometry.Vector.XAxis;
             Vector yAxis = oM.Geometry.Vector.YAxis;
 
             Line l0 = new Line { Start = p, End = p = p + xAxis * width };
-            Line l1 = new Line { Start = p, End = p = p + yAxis * (ft - width / 2 * Math.Tan(slope)) };
-            Line l2 = new Line { Start = p, End = p = p - xAxis * (width - wt) + yAxis * (width - wt) * Math.Tan(slope) };
-            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - 2*(ft + (width / 2 - wt) * Math.Tan(slope))) };
-            Line l4 = new Line { Start = p, End = p = p + xAxis * (width - wt) + yAxis * (width - wt) * Math.Tan(slope) };
-            Line l5 = new Line { Start = p, End = p = p + yAxis * (ft - width / 2 * Math.Tan(slope)) };
+            Line l1 = new Line { Start = p, End = p = p + yAxis * (ft - width / 2 * slope) };
+            Line l2 = new Line { Start = p, End = p = p - xAxis * (width - wt) + yAxis * (width - wt) * slope };
+            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - 2*(ft + (width / 2 - wt) * slope)) };
+            Line l4 = new Line { Start = p, End = p = p + xAxis * (width - wt) + yAxis * (width - wt) * slope };
+            Line l5 = new Line { Start = p, End = p = p + yAxis * (ft - width / 2 * slope) };
             Line l6 = new Line { Start = p, End = p = p - xAxis * width };
             Line l7 = new Line { Start = p, End = p = p - yAxis * height };
 
-            perimeter.Add(l0);
+            edges.Add(l0);
             List<ICurve> fillet = Fillet(l1, l2, r2);
-            perimeter.AddRange(fillet.GetRange(0, fillet.Count - 1));
+            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
             fillet = Fillet(fillet.Last() as Line, l3, r1);
-            perimeter.AddRange(fillet.GetRange(0, fillet.Count - 1));
+            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
             fillet = Fillet(fillet.Last() as Line, l4, r1);
-            perimeter.AddRange(fillet.GetRange(0, fillet.Count - 1));
+            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
             fillet = Fillet(fillet.Last() as Line, l5, r2);
-            perimeter.AddRange(fillet);
-            perimeter.Add(l6);
-            perimeter.Add(l7);
+            edges.AddRange(fillet);
+            edges.Add(l6);
+            edges.Add(l7);
 
-            return perimeter;
+            Point centroid = edges.IJoin().Centroid();
+            Vector translation = Point.Origin - centroid;
+            return edges.Select(x => x.ITranslate(translation)).ToList();
         }
 
         /***************************************************/
