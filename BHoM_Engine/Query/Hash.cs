@@ -73,28 +73,31 @@ namespace BH.Engine.Base
             // Parse the ComparisonConfig's `PropertiesToConsider` and `PropertyExceptions` and get them all as Full Names.
             Modify.PropertyInclusionsToFullNames(cc, iObj.GetType());
 
-            // Convert from the Numeric Tolerance to fractionalDigits (required for the hash).
-            int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
-
             // ----- SET UP OF INPUT OBJECT -----
 
-            // Copy the object for immutability
-            IObject iObj_copy = iObj.ShallowClone();
+            IObject iObj_copy = null;
 
             // Any HashFragment present on the object must not be considered when computing the Hash. Remove if present.
-            IBHoMObject bhomobj = iObj_copy as IBHoMObject;
+            IBHoMObject bhomobj = iObj as IBHoMObject;
             if (bhomobj != null)
             {
                 IEnumerable<IHashFragment> hashFragments = bhomobj.GetAllFragments(typeof(IHashFragment)).OfType<IHashFragment>();
                 if (hashFragments.Any())
+                {
+                    // Copy the object for immutability
+                    IObject bhomobj_copy = bhomobj.ShallowClone();
                     hashFragments.ToList().ForEach(f => bhomobj.Fragments.Remove(f.GetType()));
-                iObj_copy = bhomobj;
+                    iObj_copy = bhomobj;
+                }
             }
+
+            if (iObj_copy == null)
+                iObj_copy = iObj;
 
             // ----- HASH -----
 
             // Compute the defining string.
-            string hashString = DefiningString(iObj_copy, cc, fractionalDigits, 0);
+            string hashString = DefiningString(iObj_copy, cc, 0);
 
             if (string.IsNullOrWhiteSpace(hashString))
             {
@@ -134,8 +137,8 @@ namespace BH.Engine.Base
         [Input("obj", "Objects the string should be calculated for.")]
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
-        [Input("propertyPath", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
-        private static string DefiningString(object obj, BaseComparisonConfig cc, int fractionalDigits, int nestingLevel, string currentPropertyFullName = null)
+        [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
+        private static string DefiningString(object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
         {
             string definingString = "";
 
@@ -159,36 +162,25 @@ namespace BH.Engine.Base
             {
                 return "";
             }
-            else if (type.IsPrimitive || type == typeof(decimal) || type == typeof(String))
+            else if (type == typeof(double) || type == typeof(decimal) || type == typeof(float))
             {
-                if (type == typeof(double) || type == typeof(decimal) || type == typeof(float))
-                {
-                    // Take care of fractional digits config option.
-                    if (cc.FractionalDigitsPerProperty?.Any() ?? false)
-                    {
-                        int digitsToLimit = -1;
+                double tolerance = cc.ToleranceFromConfig(currentPropertyFullName);
 
-                        foreach (var kv in cc.FractionalDigitsPerProperty)
-                        {
-                            if (currentPropertyFullName.Contains(kv.Key) || currentPropertyFullName.WildcardMatch(kv.Key))
-                                if (digitsToLimit == -1)
-                                    digitsToLimit = kv.Value;
-                                else
-                                    BH.Engine.Reflection.Compute.RecordError($"Too many matching results obtained with specified {nameof(cc.FractionalDigitsPerProperty)} `{kv.Key}`.");
-                        }
+                // Convert from the Numeric Tolerance to fractionalDigits (required for rounding).
+                int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(tolerance)));
 
-                        fractionalDigits = digitsToLimit != -1 ? digitsToLimit : fractionalDigits;
-                    }
+                obj = Math.Round(obj as dynamic, fractionalDigits);
 
-                    obj = Math.Round(obj as dynamic, fractionalDigits);
-                }
-
+                definingString += $"\n{tabs}" + obj?.ToString() ?? "";
+            }
+            else if (type.IsPrimitive || type == typeof(String))
+            {
                 definingString += $"\n{tabs}" + obj?.ToString() ?? "";
             }
             else if (type.IsArray)
             {
                 foreach (var element in (obj as dynamic))
-                    definingString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, currentPropertyFullName);
+                    definingString += $"\n{tabs}" + DefiningString(element, cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (typeof(IDictionary).IsAssignableFrom(type))
             {
@@ -209,13 +201,13 @@ namespace BH.Engine.Base
                             continue;
                     }
 
-                    definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, fractionalDigits, nestingLevel + 1, currentPropertyFullName)}";
+                    definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, nestingLevel + 1, currentPropertyFullName)}";
                 }
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 foreach (var element in (obj as dynamic))
-                    definingString += $"\n{tabs}" + DefiningString(element, cc, fractionalDigits, nestingLevel + 1, currentPropertyFullName);
+                    definingString += $"\n{tabs}" + DefiningString(element, cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (type.FullName.Contains("System.Collections.Generic.ObjectEqualityComparer`1"))
             {
@@ -224,7 +216,7 @@ namespace BH.Engine.Base
             else if (type == typeof(System.Data.DataTable))
             {
                 DataTable dt = obj as DataTable;
-                return definingString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + DefiningString(dt.AsEnumerable(), cc, fractionalDigits, nestingLevel + 1, currentPropertyFullName);
+                return definingString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + DefiningString(dt.AsEnumerable(), cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
@@ -271,7 +263,7 @@ namespace BH.Engine.Base
                     if (propertyValue != null)
                     {
                         // Recurse for this property.
-                        propHashString = DefiningString(propertyValue, cc, fractionalDigits, nestingLevel + 1, propFullName) ?? "";
+                        propHashString = DefiningString(propertyValue, cc, nestingLevel + 1, propFullName) ?? "";
                         if (!string.IsNullOrWhiteSpace(propHashString))
                             definingString += $"\n{tabs}" + $"{type.FullName}.{propName}:\n{tabs}{propHashString} ";
                     }

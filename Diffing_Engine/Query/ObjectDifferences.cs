@@ -62,7 +62,7 @@ namespace BH.Engine.Diffing
 
             // Make sure that `BHoM_Guid` will NOT be considered amongst the property differences.
             if (!cc.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
-                cc.PropertyExceptions.Add("BHoM_Guid"); // (this can be specified in "non-full
+                cc.PropertyExceptions.Add("BHoM_Guid"); 
 
             // General Kellerman configurations.
             kellerman.CompareLogic kellermanComparer = new kellerman.CompareLogic();
@@ -72,6 +72,12 @@ namespace BH.Engine.Diffing
             kellermanComparer.Config.TypesToIgnore.Add(typeof(RevisionFragment)); // Never include the changes in RevisionFragment.
             kellermanComparer.Config.TypesToIgnore.AddRange(cc.TypeExceptions);
             kellermanComparer.Config.MembersToIgnore = cc.PropertyExceptions;
+
+            // Kellerman configuration for tolerance.
+            // Setting Custom Tolerance for specific properties is complex with Kellerman. 
+            // So instead, we set the tolerance to be the smallest (most precise) of any CustomTolerance specified (or to the general tolerance if none is).
+            // Then, when we iterate all found property differences below, we apply the specific CustomTolerances and filter out differences as required.
+            kellermanComparer.Config.DoublePrecision = cc.SmallestToleranceFromConfig();
 
             // Perform the comparison using the Kellerman library.
             kellerman.ComparisonResult kellermanResult = kellermanComparer.Compare(pastObject, followingObject);
@@ -116,8 +122,8 @@ namespace BH.Engine.Diffing
                 // E.g. Bar.Fragments[1].Parameters[5].Name becomes Bar.Fragments.Parameters.Name, so we can check that against exceptions like `Parameters.Name`.
                 string propertyFullName_noIndexes = propertyFullName.RemoveSquareIndexing();
 
-                // Skip if the property is among the PropertyExceptions, or if it's a BHoM_Guid.
-                if ((cc.PropertyExceptions?.Contains(propertyFullName_noIndexes) ?? false) || propertyFullName_noIndexes.EndsWith("BHoM_Guid"))
+                // Skip if the property is among the PropertyExceptions.
+                if ((cc.PropertyExceptions?.Contains(propertyFullName_noIndexes) ?? false))
                     continue;
 
                 // If the PropertiesToConsider contains at least a value, ensure that this property is among them.
@@ -144,6 +150,23 @@ namespace BH.Engine.Diffing
                     propertyDisplayName = propertyFullName.Remove(propertyFullName.IndexOf('.'), 1);
                 }
 
+                // Check if we specified CustomTolerances and if this difference is a floating-point number difference.
+                if (comparisonConfig.CustomTolerances.Any() && kellermanPropertyDifference.Object1.IsFloatingPointNumber() && kellermanPropertyDifference.Object2.IsFloatingPointNumber())
+                {
+                    // Retrieve the numeric Tolerance to be used for this property.
+                    double tolerance = cc.ToleranceFromConfig(propertyFullName_noIndexes);
+
+                    // Convert from the Numeric Tolerance to fractionalDigits (required for rounding).
+                    int fractionalDigits = Math.Abs(System.Convert.ToInt32(Math.Log10(tolerance)));
+
+                    var number1 = Math.Round(kellermanPropertyDifference.Object1 as dynamic, fractionalDigits);
+                    var number2 = Math.Round(kellermanPropertyDifference.Object1 as dynamic, fractionalDigits);
+
+                    // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
+                    if (number1.Equals(number2))
+                        continue;
+                }
+
                 // Add to the final result.
                 result.Differences.Add(new PropertyDifference()
                 {
@@ -168,6 +191,13 @@ namespace BH.Engine.Diffing
         private static string RemoveSquareIndexing(this string propertyPath)
         {
             return System.Text.RegularExpressions.Regex.Replace(propertyPath, @"\[(.*?)\]", string.Empty);
+        }
+
+        /***************************************************/
+
+        private static bool IsFloatingPointNumber(this object obj)
+        {
+            return obj is double || obj is float || obj is decimal;
         }
     }
 }

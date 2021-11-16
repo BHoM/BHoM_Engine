@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,47 +20,23 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Reflection.Attributes;
-using System.ComponentModel;
-
-using BH.oM.Physical.Constructions;
-
-using BH.oM.Diffing;
 using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Management.Automation;
 
-namespace BH.Engine.Physical
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
-        [Description("Returns a collection of unique constructions from a list of construction objects")]
-        [Input("constructions", "A collection of Constructions")]
-        [Input("includeConstructionName", "Flag to determine whether or not to use the construction name as a parameter of uniqueness. Default false")]
-        [Output("uniqueConstructions", "A collection of unique Construction objects")]
-        public static List<Construction> UniqueConstructions(this List<Construction> constructions, bool includeConstructionName = false)
+        [Description("Extract the smallest (most precise) numeric tolerance from the ComparisonConfig," +
+            "which is the smallest value amongst all CustomTolerances (irrespective of the properties they were paired with) and the global numeric tolerance.")]
+        [Input("comparisonConfig", "Comparison Config from where tolerance information should be extracted.")]
+        public static double SmallestToleranceFromConfig(this BaseComparisonConfig comparisonConfig)
         {
-            ComparisonConfig cc = new ComparisonConfig()
-            {
-                PropertyExceptions = new List<string>
-                {
-                    "CustomData"
-                },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance
-            };
-
-            if (!includeConstructionName)
-                cc.PropertyExceptions.Add("Name");
-
-            List<Construction> allConstructions = constructions.Where(x => x != null).ToList();
-            List<Construction> uniqueConstructions = BH.Engine.Diffing.Modify.RemoveDuplicatesByHash<Construction>(allConstructions, cc).ToList();
-
-            return uniqueConstructions;
+            return ToleranceFromConfig(comparisonConfig, "", true); // the `propertyFullName` input is ignored when `getGlobalSmallest` is set to true.
         }
     }
 }
-
