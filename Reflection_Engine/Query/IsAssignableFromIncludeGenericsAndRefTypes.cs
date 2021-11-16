@@ -35,9 +35,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom." +
-            "\nIf this is false, checks if the assignable is generic and tests if it can be assigned as a generics version." +
-            "\nIf this is false, checks if the types are the same type, only a byRef version (&).")]
+        [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom;" +
+            "\nif the previous is false, checks if the assignable is generic and tests if it can be assigned as a generics version;" +
+            "\nif the previous is false, lastly this checks if the types are a byRef version (&typeName) of the same type.")]
         [Input("assignableTo", "The type to check if it can be assigned to.")]
         [Input("assignableFrom", "The type to check if it can be assigned from.")]
         [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
