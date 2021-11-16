@@ -21,7 +21,6 @@
   <ItemGroup>
     <PackageReference Include="DeepCloner" Version="0.10.2" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
-    <PackageReference Include="System.Management.Automation.dll" Version="10.0.10586" />
   </ItemGroup>
 
   <ItemGroup>

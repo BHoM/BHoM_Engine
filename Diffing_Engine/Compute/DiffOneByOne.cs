@@ -46,22 +46,22 @@ namespace BH.Engine.Diffing
             "\nThis will only identify 'modified' or 'unchanged' objects. For 'modified' objects, the property differences are also returned." +
             "\nIt will work correctly only if the input objects are in the same order.")]
         [Input("pastObjects", "Past objects. Objects whose creation precedes 'currentObjects'.")]
-        [Input("currentObjects", "Following objects. Objects that were created after 'pastObjects'.")]
+        [Input("followingObjects", "Following objects. Objects that were created after 'pastObjects'.")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         [Output("diff", "Object holding the detected changes.")]
-        public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null)
+        public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> followingObjects, DiffingConfig diffConfig = null)
         {
             Diff outputDiff = null;
-            if (InputObjectsNullOrEmpty(pastObjects, currentObjects, out outputDiff, diffConfig))
+            if (InputObjectsNullOrEmpty(pastObjects, followingObjects, out outputDiff, diffConfig))
                 return outputDiff;
 
-            if (pastObjects.Count() != currentObjects.Count())
+            if (pastObjects.Count() != followingObjects.Count())
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Input collections must be of the same length for '{nameof(DiffOneByOne)}' to work.");
                 return null;
             }
 
-            BH.Engine.Reflection.Compute.RecordNote($"This diffing method is equivalent to calling '{nameof(Query.DifferentProperties)}' on the input lists. " +
+            BH.Engine.Reflection.Compute.RecordNote($"This diffing method is equivalent to calling '{nameof(Query.ObjectDifferences)}' on the input lists. " +
                 $"\nThis will only identify 'modified' or 'unchanged' objects. For 'modified' objects, the property differences are also returned." +
                 $"\nIt will work correctly only if the objects in the lists are in the same order and at most they have been modified (i.e. no new object has been added, no object has been deleted).");
 
@@ -71,19 +71,19 @@ namespace BH.Engine.Diffing
 
             // Clone objects for immutability in the UI.
             List<object> pastObjects_cloned = BH.Engine.Base.Query.DeepClone(pastObjects).ToList();
-            List<object> currentObjects_cloned = BH.Engine.Base.Query.DeepClone(currentObjects).ToList();
+            List<object> currentObjects_cloned = BH.Engine.Base.Query.DeepClone(followingObjects).ToList();
 
             List<object> modifiedObjects = new List<object>();
             List<object> unchangedObjects = new List<object>();
 
             bool anyChangeDetected = false;
 
-            var allModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
+            List<ObjectDifferences> modifiedObjectDifferences = new List<ObjectDifferences>();
             for (int i = 0; i < pastObjects_cloned.Count(); i++)
             {
-                var modifiedProps = Query.DifferentProperties(currentObjects_cloned[i], pastObjects_cloned[i], diffConfigCopy);
+                ObjectDifferences objectDifferences = Query.ObjectDifferences(pastObjects_cloned[i], currentObjects_cloned[i], diffConfigCopy.ComparisonConfig);
 
-                if (modifiedProps != null && modifiedProps.Any())
+                if (objectDifferences != null && (objectDifferences.Differences?.Any() ?? false))
                 {
                     modifiedObjects.Add(currentObjects_cloned[i]);
                     anyChangeDetected = true;
@@ -91,13 +91,13 @@ namespace BH.Engine.Diffing
                 else if (diffConfigCopy.IncludeUnchangedObjects)
                     unchangedObjects.Add(currentObjects_cloned[i]);
 
-                allModifiedProps[$"Object #{i}"] = modifiedProps ?? new Dictionary<string, Tuple<object, object>>();
+                modifiedObjectDifferences.Add(objectDifferences);
             }
 
             if (!anyChangeDetected)
-                allModifiedProps = null;
+                modifiedObjectDifferences = null;
 
-            return new Diff(new List<object>(), new List<object>(), modifiedObjects, diffConfigCopy, allModifiedProps, unchangedObjects);
+            return new Diff(new List<object>(), new List<object>(), modifiedObjects, diffConfigCopy, modifiedObjectDifferences, unchangedObjects);
         }
     }
 }

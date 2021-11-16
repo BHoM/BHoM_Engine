@@ -20,42 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
 
 namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom and, if this is false, checks if the assignable is generic and tests if it can be assigned as a generics version.")]
-        [Input("assignableTo", "The type to check if it can be assigned to.")]
-        [Input("assignableFrom", "The type to check if it can be assigned from.")]
-        [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
-        public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
+        [Description("Determine whether a type is a numeric type.")]
+        [Input("type", "Type that we want to check if it is numeric type or not.")]
+        [Output("isNumeric", "True if the object is a numeric Type, false if not.")]
+        public static bool IsNumeric(this Type type)
         {
-            if (assignableTo == null || assignableFrom == null)
+            switch (Type.GetTypeCode(type))
             {
-                Compute.RecordError("Cannot assign to or from null types.");
-                return false;
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
             }
-
-            //Check if standard IsAssignableFrom works.
-            if (assignableTo.IsAssignableFrom(assignableFrom))
-                return true;
-            //If not, check if the argument is generic, and if so, use the IsAssignableToGenericType method to check if it can be assigned.
-            else
-                return assignableTo.IsGenericType && assignableFrom.IsAssignableToGenericType(assignableTo.GetGenericTypeDefinition());
         }
-
-        /***************************************************/
     }
 }
-
