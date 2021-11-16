@@ -171,7 +171,7 @@ namespace BH.Engine.Structure
             double alpha = AlphaTJunction(tw, tf, r);
             double D = InscribedDiameterTJunction(tw, tf, r);
 
-            return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.42 * Math.Pow(tf, 4);
+            return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
         }
 
 
@@ -196,7 +196,7 @@ namespace BH.Engine.Structure
             double D = InscribedDiameterLJunction(tw, tf, r);
 
             //Note that 'P385 Design of steel beams in torsion' states that the reduction in the end should only be  `- 0.210 * Math.Pow(tf, 4);`
-            //As orange and blue book is using `- 0.420 * Math.Pow(tf, 4);`, and this is more conservative, using the latter until clarified.
+            //As orange and blue book is using `- 0.420 * Math.Pow(tf, 4);`, and this is more conservative, using the latter until clarified. Johnston & El Darwish agrees that it should be 0.420, i.e. 4 times the end/L correction 
             return (2 * b * Math.Pow(tf, 3) + (h - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
         }/***************************************************/
 
@@ -215,8 +215,8 @@ namespace BH.Engine.Structure
             double r = profile.RootRadius;
             double s = profile.FlangeSlope;
             double tf = profile.FlangeThickness;
-            double t1 = profile.FlangeThickness - Math.Tan(s) * b / 4;
-            double t2 = t1 + Math.Tan(s) * (b - tw) / 2;
+            double t1 = profile.FlangeThickness - s * b / 4;
+            double t2 = t1 + s * (b - tw) / 2;
             double vs = EndLossCorrectionVs(s);
 
             double alpha = AlphaTaperTJunction(tw, tf, r, t2, s);
@@ -247,8 +247,8 @@ namespace BH.Engine.Structure
             double tw = profile.WebThickness;
             double r = profile.RootRadius;
             double s = profile.FlangeSlope;
-            double t1 = profile.FlangeThickness - Math.Tan(s) * b / 2;
-            double t2 = t1 + Math.Tan(s) * (b - tw);
+            double t1 = profile.FlangeThickness - s * b / 2;
+            double t2 = t1 + s * (b - tw);
             double vs = EndLossCorrectionVs(s);
             double vl = EndLossCorrectionVl(s);
 
@@ -316,9 +316,9 @@ namespace BH.Engine.Structure
                 return 0;
 
             bool leftOutstand = profile.LeftOutstandWidth > 0 && profile.LeftOutstandThickness > 0;
-            bool rightOustand = profile.RightOutstandWidth > 0 && profile.RightOutstandThickness > 0;
+            bool rightOutstand = profile.RightOutstandWidth > 0 && profile.RightOutstandThickness > 0;
 
-            if (!leftOutstand && !rightOustand)
+            if (!leftOutstand && !rightOutstand)
             {
                 //No outstands => Rectangle
 
@@ -340,7 +340,7 @@ namespace BH.Engine.Structure
             }
 
 
-            if (leftOutstand && !rightOustand || !leftOutstand && rightOustand)
+            if (leftOutstand && !rightOutstand || !leftOutstand && rightOutstand)
             {
                 //One outstand => angle
                 double totalWidth = (leftOutstand ? profile.LeftOutstandWidth : profile.RightOutstandWidth) + profile.WebThickness;
@@ -418,7 +418,7 @@ namespace BH.Engine.Structure
 
         private static double TorsionalConstant(this IProfile profile)
         {
-            Reflection.Compute.RecordWarning("Can not calculate Tosional constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
+            Reflection.Compute.RecordWarning("Cannot calculate Torsional constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
             return 0; //Return 0 for not specifically implemented ones
         }
 
@@ -426,23 +426,25 @@ namespace BH.Engine.Structure
         /**** Private Methods - helper methods          ****/
         /***************************************************/
 
-        [Description("Diameter of an circles inscribed in a T-junction connection where tf is assumed to be the thickness of the top of the T. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
+        [Description("Diameter of an circles inscribed in a T-junction connection such as in a parallel flange I-Section. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
         [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
         [Input("tf", "Flange thickness, assumed to be the top of the T.", typeof(Length))]
         [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
-        private static double InscribedDiameterTJunction(double tw, double tf, double r)
+        public static double InscribedDiameterTJunction(double tw, double tf, double r)
         {
+            //Equation 23
             return (Math.Pow(tf + r, 2) + (r + 0.25 * tw) * tw) / (2 * r + tf);
         }
 
         /***************************************************/
 
-        [Description("Diameter of an circles inscribed in a L-junction connection. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
+        [Description("Diameter of an circles inscribed in an L-junction connection such as in an L-Section. Taken from 'P385 Design of steel beams in torsion', Appendix B.")]
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("tf", "Flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
-        private static double InscribedDiameterLJunction(double tw, double tf, double r)
+        public static double InscribedDiameterLJunction(double tw, double tf, double r)
         {
+            //Equation 25
             return 2 * ((3 * r + tw + tf) - Math.Sqrt(2 * (2 * r + tw) * (2 * r + tf)));
         }
 
@@ -452,8 +454,8 @@ namespace BH.Engine.Structure
         [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
         [Input("t3", "Flange thickness at theoretical intersection of flange and web centerline.", typeof(Length))]
         [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
-        [Input("s", "Flange taper angle.", typeof(Length))]
-        private static double InscribedDiameterTaperTJunction(double tw, double t3, double r, double s)
+        [Input("s", "Flange taper slope.", typeof(Ratio))]
+        public static double InscribedDiameterTaperTJunction(double tw, double t3, double r, double s)
         {
             //Equation 24
             double f = r * s * (Math.Sqrt((1 / Math.Pow(s, 2)) + 1) - 1 - tw / (2 * r));
@@ -466,8 +468,8 @@ namespace BH.Engine.Structure
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("t2", "Flange thickness at theoretical intersection of flange and near face of web.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
-        [Input("s", "Flange taper angle.", typeof(Length))]
-        private static double InscribedDiameterTaperLJunction(double tw, double t2, double r, double s)
+        [Input("s", "Flange taper slope.", typeof(Ratio))]
+        public static double InscribedDiameterTaperLJunction(double tw, double t2, double r, double s)
         {
             //Equation 26
             double h = t2 - r * (s + 1 - Math.Sqrt(1 + Math.Pow(s, 2)));
@@ -482,6 +484,7 @@ namespace BH.Engine.Structure
         [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
         private static double AlphaTJunction(double tw, double tf, double r)
         {
+            //Equation 27
             return -0.042 + 0.2204 * tw / tf + 0.1355 * r / tf - 0.0865 * (r * tw) / Math.Pow(tf, 2) - 0.0725 * Math.Pow(tw / tf, 2);
         }
 
@@ -493,6 +496,7 @@ namespace BH.Engine.Structure
         [Input("r", "Root radius.", typeof(Length))]
         private static double AlphaLJunction(double tw, double tf, double r)
         {
+            //Equation 29
             return -0.0908 + 0.2621 * tw / tf + 0.1231 * r / tf - 0.0752 * (tw * r) / Math.Pow(tf, 2) - 0.0945 * Math.Pow(tw / tf, 2);
         }
 
@@ -503,7 +507,7 @@ namespace BH.Engine.Structure
         [Input("tf", "Mean flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
         [Input("t2", "Thickness of flange at intersection with near face of web.", typeof(Length))]
-        [Input("s", "Flange taper angle.", typeof(Length))]
+        [Input("s", "Flange taper slope.", typeof(Ratio))]
         private static double AlphaTaperTJunction(double tw, double tf, double r, double t2, double s)
         {
             if (0.2 > r / t2 || r / t2 > 1.0)
@@ -517,7 +521,7 @@ namespace BH.Engine.Structure
             //Equation 28
             double alpha16 = -0.0836 + 0.2536 * tw / t2 + 0.1268 * r / t2 - 0.0806 * tw * r / Math.Pow(t2, 2) - 0.0858 * Math.Pow(tw / t2, 2); 
             //Interpolate alpha between parallel flange and slope of 1 to 6:
-            return alpha0 + alpha16 * s / Math.Atan(0.1667);
+            return alpha0 + (alpha16 - alpha0) * s / (1.0/6);
         }
 
         /***************************************************/
@@ -527,7 +531,7 @@ namespace BH.Engine.Structure
         [Input("tf", "Mean flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
         [Input("t2", "Thickness of flange at intersection with near face of web.", typeof(Length))]
-        [Input("s", "Flange taper angle.", typeof(Length))]
+        [Input("s", "Flange taper slope.", typeof(Ratio))]
         private static double AlphaTaperLJunction(double tw, double tf, double r, double t2, double s)
         {
             if (0.2 > r / t2 || r / t2 > 1.0)
@@ -540,72 +544,21 @@ namespace BH.Engine.Structure
             //Equation 30
             double alpha16 = -0.1325 + 0.3015 * tw / t2 + 0.1400 * r / t2 - 0.1070 * tw * r / Math.Pow(t2, 2) - 0.0956 * Math.Pow(tw / t2, 2); 
             //Interpolate alpha between parallel flange and slope of 1 to 6:
-            return alpha0 + alpha16 * s / Math.Atan(0.1667);
+            return alpha0 + (alpha16 - alpha0) * s / (1.0/6);
         }
 
         /***************************************************/
 
         private static double EndLossCorrectionVl(double s)
         {
-            List<double> slopes = new List<double>
-            {
-                Math.Atan(0),
-                Math.Atan(1 / 50),
-                Math.Atan(1 / 20),
-                Math.Atan(1 / 6),
-            };
-
-            List<double> vl = new List<double>
-            {
-                 0.09045,
-                 0.10026,
-                 0.10307,
-                 0.10504,
-            };
-
-            return Interpolate(slopes, vl, s);
+            return 0.10504 - 0.10000 * s + 0.08480 * Math.Pow(s, 2) - 0.06746 * Math.Pow(s, 3) + 0.05153 * Math.Pow(s, 4);
         }
 
         /***************************************************/
 
         private static double EndLossCorrectionVs(double s)
         {
-            List<double> slopes = new List<double>
-            {
-                Math.Atan(0),
-                Math.Atan(1 / 50),
-                Math.Atan(1 / 20),
-                Math.Atan(1 / 6),
-            };
-
-            List<double> vs = new List<double>
-            {
-                 0.12441,
-                 0.11026,
-                 0.10707,
-                 0.10504,
-            };
-
-            return Interpolate(slopes, vs, s);
-        }
-
-        /***************************************************/
-
-        [Description("Interpolate a series of values based on a search key and a list of keys.")]
-        [Input("keys","A list of numerical keys, i.e. tabulated input values for a function.")]
-        [Input("values","A list of numerical values which is the same length as keys, i.e. tabulated output values for a function.")]
-        [Input("s","a numerical value to compare to the keys. This must be in the domain covered by the keys.")]
-        public static double Interpolate(List<double> keys, List<double> values, double s)
-        {
-            if (s < keys[0])
-                return double.NaN;
-            if (s > keys[keys.Count - 1])
-                return double.NaN;
-
-            int index = keys.BinarySearch(s);
-            if (index > 0)
-                return values[index];
-            return values[~index - 1] + (values[~index] - values[~index - 1]) * (s - keys[~index - 1]) / (keys[~index] - keys[~index - 1]);
+            return 0.10504 + 0.10000 * s + 0.08480 * Math.Pow(s, 2) + 0.06746 * Math.Pow(s, 3) + 0.05153 * Math.Pow(s, 4);
         }
 
         /***************************************************/
