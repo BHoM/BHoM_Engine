@@ -226,7 +226,7 @@ namespace BH.Engine.Structure
 
             //Equation 35
             return (b - tw) / 6 * (t1 + t2) * (Math.Pow(t1, 2) + Math.Pow(t2, 2)) 
-                + (2 / 3) * tw * Math.Pow(t2, 3) + (1/3)*(d - 2*t2) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) 
+                + (2.0 / 3) * tw * Math.Pow(t2, 3) + (1.0 / 3)*(d - 2*t2) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) 
                 - 4 * vs * Math.Pow(t1, 4);
         }
 
@@ -257,8 +257,8 @@ namespace BH.Engine.Structure
             double D = InscribedDiameterTaperLJunction(tw, t2, r, s);
 
             //Equation 37
-            return (b - tw) / 6 * (t1 + t2) * (Math.Pow(t1, 2) + Math.Pow(t2, 2)) + (2 / 3) * tw * Math.Pow(t2, 3) 
-                + (1 / 3) * (h - 2 * t2) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) - 2 * vs * Math.Pow(t1, 4) 
+            return (b - tw) / 6 * (t1 + t2) * (Math.Pow(t1, 2) + Math.Pow(t2, 2)) + (2.0 / 3) * tw * Math.Pow(t2, 3) 
+                + (1.0 / 3) * (h - 2 * t2) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) - 2 * vs * Math.Pow(t1, 4) 
                 - 0.210 * Math.Pow(t2, 4);
         }
 
