@@ -35,11 +35,13 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom and, if this is false, checks if the assignable is generic and tests if it can be assigned as a generics version.")]
+        [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom." +
+            "\nIf this is false, checks if the assignable is generic and tests if it can be assigned as a generics version." +
+            "\nIf this is false, checks if the types are the same type, only a byRef version (&).")]
         [Input("assignableTo", "The type to check if it can be assigned to.")]
         [Input("assignableFrom", "The type to check if it can be assigned from.")]
         [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
-        public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
+        public static bool IsAssignableFromIncludeGenericsAndRefTypes(this Type assignableTo, Type assignableFrom)
         {
             if (assignableTo == null || assignableFrom == null)
             {
@@ -47,15 +49,17 @@ namespace BH.Engine.Reflection
                 return false;
             }
 
-            //Check if standard IsAssignableFrom works.
-            if (assignableTo.IsAssignableFrom(assignableFrom))
+            if (IsAssignableFromIncludeGenerics(assignableTo, assignableFrom))
                 return true;
-            //If not, check if the argument is generic, and if so, use the IsAssignableToGenericType method to check if it can be assigned.
-            else
-                return assignableTo.IsGenericType && assignableFrom.IsAssignableToGenericType(assignableTo.GetGenericTypeDefinition());
-        }
 
-        /***************************************************/
+            if (assignableTo.FullName.EndsWith("&") || assignableFrom.FullName.EndsWith("&"))
+            {
+                // Check for reference types
+                return assignableTo.Assembly == assignableFrom.Assembly && assignableTo.FullName.Except(assignableFrom.FullName).Count() <= 1;
+            }
+
+            return false;
+        }
     }
 }
 
