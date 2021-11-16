@@ -57,8 +57,8 @@ namespace BH.Engine.Diffing
             BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
             // Make sure that the propertiesToConsider and propertyExceptions are specified with their FullName form.
-            cc.PropertyInclusionsToFullNames(pastObject.GetType());
-            cc.PropertyInclusionsToFullNames(followingObject.GetType());
+            cc.PropertyNamesToFullNames(pastObject.GetType());
+            cc.PropertyNamesToFullNames(followingObject.GetType());
 
             // Make sure that `BHoM_Guid` will NOT be considered amongst the property differences.
             if (!cc.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
@@ -151,10 +151,10 @@ namespace BH.Engine.Diffing
                 }
 
                 // Check if we specified CustomTolerances and if this difference is a floating-point number difference.
-                if (comparisonConfig.CustomTolerances.Any() && kellermanPropertyDifference.Object1.IsFloatingPointNumber() && kellermanPropertyDifference.Object2.IsFloatingPointNumber())
+                if (cc.PropertyNumericTolerances.Any() && kellermanPropertyDifference.Object1.IsFloatingPointNumber() && kellermanPropertyDifference.Object2.IsFloatingPointNumber())
                 {
                     // Retrieve the numeric Tolerance to be used for this property.
-                    double tolerance = cc.ToleranceFromConfig(propertyFullName_noIndexes);
+                    double tolerance = cc.PropertyNumericTolerance(propertyFullName_noIndexes);
 
                     // Convert from the Numeric Tolerance to fractionalDigits (required for rounding).
                     int fractionalDigits = Math.Abs(System.Convert.ToInt32(Math.Log10(tolerance)));

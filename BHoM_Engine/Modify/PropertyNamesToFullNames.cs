@@ -38,13 +38,13 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Parse the ComparisonConfig's property inclusions (the `PropertiesToConsider` and `PropertyExceptions`), and get them all as Full Names." +
+        [Description("Parse the ComparisonConfig's property names (from the `PropertiesToConsider`, `PropertyExceptions` and `PropertyNumericTolerances`), and get them all as Full Names." +
             "This allows to make sure we collect all relevant properties, even if we are given partial names or wildcards (e.g. `StartNode.*.X`).")]
         [Input("comparisonConfig", "ComparisonConfig object whose `PropertiesToConsider` and `PropertyExceptions` will be parsed." +
             "If they contain partial names or wildcards, they will be expanded with all the matching property FullNames found for the specified Type.")]
         [Input("type", "Object type whose properties will be collected and matched against the comparisonConfig's `PropertiesToConsider` and `PropertyExceptions`.")]
         [Input("cache", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance.")]
-        public static void PropertyInclusionsToFullNames(this BaseComparisonConfig comparisonConfig, Type type, bool cache = true)
+        public static void PropertyNamesToFullNames(this BaseComparisonConfig comparisonConfig, Type type, bool cache = true)
         {
             // Null checks.
             if (comparisonConfig == null || !typeof(IObject).IsAssignableFrom(type))
@@ -53,52 +53,75 @@ namespace BH.Engine.Base
             // Result variables.
             List<string> propertiesToConsider_fullNames = null;
             List<string> propertyExceptions_fullNames = null;
+            HashSet<PropertyNumericTolerance> propertyNumericTolerances_fullNames = null;
 
-            // If all the propertiesToConsider/propertyExceptions are already in FullName form and without wildcards, do nothing.
-            List<string> propertiesToConsiderToParse = comparisonConfig.PropertiesToConsider.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList();
-            List<string> propertyExceptionsToParse = comparisonConfig.PropertyExceptions.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList();
+            // We need to process only those properties that have not been specified in FullName form, or that contain wildcards.
+            List<string> propertiesToConsiderToParse = comparisonConfig.PropertiesToConsider?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
+            List<string> propertyExceptionsToParse = comparisonConfig.PropertyExceptions?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
+            List<string> propertyNumericTolerancesToParse = comparisonConfig.PropertyNumericTolerances?.Select(p => p.Name).Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
 
-            if (!propertiesToConsiderToParse.Any() && !propertyExceptionsToParse.Any())
+            // If all the property names are already in FullName form and without wildcards, return.
+            if (!propertiesToConsiderToParse.Any() && !propertyExceptionsToParse.Any() && !propertyNumericTolerancesToParse.Any())
                 return;
 
-            // Collect all property FullNames for this Type of object.
+            // Collect all property FullNames for this Type of object. This operation also caches results if the same Type is encountered in the same session.
             HashSet<string> allPropertiesFullNames = BH.Engine.Reflection.Query.GetAllPropertyFullNames(type, comparisonConfig.MaxNesting, true);
+
+            // Check if we have some cached results for this comparisonConfig and type combination.
+            // We cache separately the processed propertiesToConsider, propertyExceptions and propertyNumericTolerances to get optimal performance/versatility.
 
             // Check if we already have encountered and cached this same object Type and PropertiesToConsider.
             string propertiesToConsiderCacheKey = $"{type.FullName}:{string.Join(",", comparisonConfig.PropertiesToConsider)}";
-            if (cache && !m_cachedPropertiesToConsider.TryGetValue(propertiesToConsiderCacheKey, out propertiesToConsider_fullNames))
-            {
-                propertiesToConsider_fullNames = new List<string>();
-
-                // If not, parse the PropertiesToConsider and all the Properties of the object,
-                // so we convert partial property names/wildcards to their matching Full Name form.
-                foreach (var propToConsider in propertiesToConsiderToParse)
-                    foreach (var propertyFullName in allPropertiesFullNames)
-                        if (IsMatchingInclusion(propertyFullName, propToConsider))
-                            propertiesToConsider_fullNames.Add(propertyFullName);
-
-                m_cachedPropertiesToConsider[propertiesToConsiderCacheKey] = propertiesToConsider_fullNames;
-            }
+            bool processPropertiesToConsider = propertiesToConsiderToParse.Any() && (!cache || !m_cachedPropertiesToConsider.TryGetValue(propertiesToConsiderCacheKey, out propertiesToConsider_fullNames));
 
             // Check if we already have encountered and cached this same object Type and PropertyExceptions.
             string propertyExceptionsCacheKey = $"{type.FullName}:{string.Join(",", comparisonConfig.PropertyExceptions)}";
-            if (cache && !m_cachedPropertiesToConsider.TryGetValue(propertyExceptionsCacheKey, out propertyExceptions_fullNames))
+            bool processPropertiesExceptions = propertyExceptionsToParse.Any() && (!cache || !m_cachedPropertyExceptions.TryGetValue(propertyExceptionsCacheKey, out propertyExceptions_fullNames));
+
+            // Check if we already have encountered and cached this same object Type and PropertyNumericTolerances.
+            string propertyNumericTolerancesCacheKey = $"{type.FullName}:{string.Join(",", comparisonConfig.PropertyNumericTolerances?.Select(ct => ct.Name + ct.Tolerance))}";
+            bool processPropertyNumericTolerances = propertyNumericTolerancesToParse.Any() && (!cache || !m_cachedPropertyNumericTolerances.TryGetValue(propertyNumericTolerancesCacheKey, out propertyNumericTolerances_fullNames));
+
+            // Safety clauses because C#'s Dictionary TryGetValue sets the out variable to `null` if it failed.
+            propertiesToConsider_fullNames = propertiesToConsider_fullNames ?? new List<string>();
+            propertyExceptions_fullNames = propertyExceptions_fullNames ?? new List<string>();
+            propertyNumericTolerances_fullNames = propertyNumericTolerances_fullNames ?? new HashSet<PropertyNumericTolerance>();
+
+            // Iterate all of the input Type's propertyFullNames and see if they match with the propertiesToConsiderToParse, propertyExceptionsToParse and/or propertyNumericTolerancesToParse.
+            foreach (var propertyFullName in allPropertiesFullNames)
             {
-                propertyExceptions_fullNames = new List<string>();
+                if (processPropertiesToConsider)
+                {
+                    foreach (string propToConsider in propertiesToConsiderToParse)
+                        if (IsMatchingInclusion(propertyFullName, propToConsider))
+                            propertiesToConsider_fullNames.Add(propertyFullName);
 
-                // If not, parse the PropertyExceptions and all the Properties of the object,
-                // so we convert partial property names/wildcards to their matching Full Name form.
-                foreach (var propException in propertyExceptionsToParse)
-                    foreach (var propertyFullName in allPropertiesFullNames)
+                    if (cache) m_cachedPropertiesToConsider[propertiesToConsiderCacheKey] = propertiesToConsider_fullNames;
+                }
+
+                if (processPropertiesExceptions)
+                {
+                    foreach (var propException in propertyExceptionsToParse)
                         if (IsMatchingInclusion(propertyFullName, propException))
-                            comparisonConfig.PropertyExceptions.Add(propertyFullName);
+                            propertyExceptions_fullNames.Add(propertyFullName);
 
-                m_cachedPropertyExceptions[propertyExceptionsCacheKey] = propertyExceptions_fullNames;
+                    if (cache) m_cachedPropertyExceptions[propertyExceptionsCacheKey] = propertyExceptions_fullNames;
+                }
+
+                if (processPropertyNumericTolerances)
+                {
+                    foreach (var propNumericTolerance in propertyNumericTolerancesToParse)
+                        if (IsMatchingInclusion(propertyFullName, propNumericTolerance))
+                            propertyNumericTolerances_fullNames.Add(new PropertyNumericTolerance() { Name = propertyFullName, Tolerance = comparisonConfig.PropertyNumericTolerances.Where(pnc => pnc.Name == propNumericTolerance).First().Tolerance });
+
+                    if (cache) m_cachedPropertyNumericTolerances[propertyNumericTolerancesCacheKey] = propertyNumericTolerances_fullNames;
+                }
             }
 
             // Add the results to the ComparisonConfig.
             comparisonConfig.PropertiesToConsider.AddRange(propertiesToConsider_fullNames);
             comparisonConfig.PropertyExceptions.AddRange(propertyExceptions_fullNames);
+            comparisonConfig.PropertyNumericTolerances.UnionWith(propertyNumericTolerances_fullNames);
         }
 
         /***************************************************/
@@ -127,7 +150,9 @@ namespace BH.Engine.Base
         /**** Private Fields                            ****/
         /***************************************************/
 
+        // We cache separately the processed propertiesToConsider, propertyExceptions and propertyNumericTolerances to get optimal performance/versatility.
         private static Dictionary<string, List<string>> m_cachedPropertiesToConsider = new Dictionary<string, List<string>>();
         private static Dictionary<string, List<string>> m_cachedPropertyExceptions = new Dictionary<string, List<string>>();
+        private static Dictionary<string, HashSet<PropertyNumericTolerance>> m_cachedPropertyNumericTolerances = new Dictionary<string, HashSet<PropertyNumericTolerance>>();
     }
 }

@@ -134,7 +134,7 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> readObjs = pastObjects.ToList();
 
             // Make dictionary with object hashes to speed up the next lookups
-            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.RevisionFragment().Hash, obj => obj);
+            Dictionary<string, IBHoMObject> readObjs_dict = readObjs.ToDictionary(obj => obj.RevisionFragment()?.Hash, obj => obj);
 
             // Dispatch the objects: new, modified or old
             List<IBHoMObject> newObjs = new List<IBHoMObject>();

@@ -34,6 +34,7 @@ using System.ComponentModel;
 using BH.Engine.Base;
 using System.Collections;
 using System.Data;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.Base
 {
@@ -69,35 +70,15 @@ namespace BH.Engine.Base
 
             // Make sure we always have a config object. Clone for immutability.
             BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
+            cc.TypeExceptions.Add(typeof(HashFragment));
 
             // Parse the ComparisonConfig's `PropertiesToConsider` and `PropertyExceptions` and get them all as Full Names.
-            Modify.PropertyInclusionsToFullNames(cc, iObj.GetType());
-
-            // ----- SET UP OF INPUT OBJECT -----
-
-            IObject iObj_copy = null;
-
-            // Any HashFragment present on the object must not be considered when computing the Hash. Remove if present.
-            IBHoMObject bhomobj = iObj as IBHoMObject;
-            if (bhomobj != null)
-            {
-                IEnumerable<IHashFragment> hashFragments = bhomobj.GetAllFragments(typeof(IHashFragment)).OfType<IHashFragment>();
-                if (hashFragments.Any())
-                {
-                    // Copy the object for immutability
-                    IObject bhomobj_copy = bhomobj.ShallowClone();
-                    hashFragments.ToList().ForEach(f => bhomobj.Fragments.Remove(f.GetType()));
-                    iObj_copy = bhomobj;
-                }
-            }
-
-            if (iObj_copy == null)
-                iObj_copy = iObj;
+            Modify.PropertyNamesToFullNames(cc, iObj.GetType());
 
             // ----- HASH -----
 
             // Compute the defining string.
-            string hashString = DefiningString(iObj_copy, cc, 0);
+            string hashString = DefiningString(iObj, cc, 0);
 
             if (string.IsNullOrWhiteSpace(hashString))
             {
@@ -105,7 +86,7 @@ namespace BH.Engine.Base
                 // - all properties of the input object were disregarded due to the settings specified in the ComparisonConfig, or
                 // - all properties of the input object that were not disregarded were null or empty,
                 // Since a hash has to be always returned, for this scenario we are forced to build a defining string out of the type full name.
-                hashString = iObj_copy.GetType().FullName;
+                hashString = iObj.GetType().FullName;
             }
 
             // Return the SHA256 hash of the defining string.
@@ -155,6 +136,7 @@ namespace BH.Engine.Base
             // Compute the definingString depending on the object type. //
             // -------------------------------------------------------- // 
 
+
             if (type == null
                 || (cc.TypeExceptions != null && cc.TypeExceptions.Any(te => te.IsAssignableFrom(type)))
                 || (cc.NamespaceExceptions != null && cc.NamespaceExceptions.Where(ex => type.Namespace.Contains(ex)).Any())
@@ -162,16 +144,27 @@ namespace BH.Engine.Base
             {
                 return "";
             }
-            else if (type == typeof(double) || type == typeof(decimal) || type == typeof(float))
+            else if (type.IsNumeric())
             {
-                double tolerance = cc.ToleranceFromConfig(currentPropertyFullName);
+                double tolerance = cc.PropertyNumericTolerance(currentPropertyFullName);
 
-                // Convert from the Numeric Tolerance to fractionalDigits (required for rounding).
-                int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(tolerance)));
+                if (type == typeof(double))
+                {
+                    double numberAsDouble = (double)obj;
+                    return $"\n{tabs}" + numberAsDouble.RoundWithTolerance(tolerance).ToString() ?? "";
+                }
 
-                obj = Math.Round(obj as dynamic, fractionalDigits);
+                if (type == typeof(int))
+                {
+                    // Let's use a dedicated RoundWithTolerance method for integers, so we don't take a performance hit by casting and using the one for double.
+                    int numberAsInt = (int)obj;
+                    return $"\n{tabs}" + numberAsInt.RoundWithTolerance(tolerance).ToString() ?? "";
+                }
 
-                definingString += $"\n{tabs}" + obj?.ToString() ?? "";
+                // For all other cases, we admit some precision/performance hit, and we convert to double.
+                double parsedDouble;
+                double.TryParse(obj.ToString(), out parsedDouble);
+                return $"\n{tabs}" + parsedDouble.RoundWithTolerance((double)tolerance).ToString() ?? "";
             }
             else if (type.IsPrimitive || type == typeof(String))
             {
@@ -279,6 +272,8 @@ namespace BH.Engine.Base
 
             return definingString;
         }
+
+        /***************************************************/
     }
 }
 

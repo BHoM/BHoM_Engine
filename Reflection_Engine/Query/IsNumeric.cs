@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,22 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
-        [Description("Extract the smallest (most precise) numeric tolerance from the ComparisonConfig," +
-            "which is the smallest value amongst all CustomTolerances (irrespective of the properties they were paired with) and the global numeric tolerance.")]
-        [Input("comparisonConfig", "Comparison Config from where tolerance information should be extracted.")]
-        public static double SmallestToleranceFromConfig(this BaseComparisonConfig comparisonConfig)
+        [Description("Determine whether a type is a numeric type.")]
+        [Input("type", "Type that we want to check if it is numeric type or not.")]
+        [Output("isNumeric", "True if the object is a numeric Type, false if not.")]
+        public static bool IsNumeric(this Type type)
         {
-            return ToleranceFromConfig(comparisonConfig, "", true); // the `propertyFullName` input is ignored when `getGlobalSmallest` is set to true.
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

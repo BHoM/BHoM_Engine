@@ -25,7 +25,6 @@ using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Management.Automation;
 
 namespace BH.Engine.Base
 {
@@ -42,7 +41,7 @@ namespace BH.Engine.Base
         [Input("comparisonConfig", "Comparison Config from where tolerance information should be extracted.")]
         [Input("propertyFullName", "Full name (path) of the property for which we want to extract the numerical Tolerance.")]
         [Input("getGlobalSmallest", "(Optional, defaults to false) If true, extract the smallest (most precise) tolerance amongst all CustomTolerances for all properties and the global numeric tolerance.")]
-        public static double ToleranceFromConfig(this BaseComparisonConfig comparisonConfig, string propertyFullName)
+        public static double PropertyNumericTolerance(this BaseComparisonConfig comparisonConfig, string propertyFullName)
         {
             return ToleranceFromConfig(comparisonConfig, propertyFullName, false);
         }
@@ -63,13 +62,13 @@ namespace BH.Engine.Base
             double tolerance = double.MaxValue;
 
             // Take care of CustomTolerances.
-            if (comparisonConfig.CustomTolerances?.Any() ?? false)
+            if (comparisonConfig.PropertyNumericTolerances?.Any() ?? false)
             {
                 // Iterate the specified CustomTolerances. If more than one match with the current property is found, take the safest (smallest) value.
                 List<string> matchingCustomTolerancesNames = new List<string>();
-                foreach (var ct in comparisonConfig.CustomTolerances)
+                foreach (var ct in comparisonConfig.PropertyNumericTolerances)
                 {
-                    if (getGlobalSmallest || propertyFullName.EndsWith($".{ct.Name}") || new WildcardPattern(ct.Name).IsMatch(propertyFullName))
+                    if (getGlobalSmallest || propertyFullName.EndsWith($".{ct.Name}") || propertyFullName.WildcardMatch(ct.Name))
                     {
                         if (!getGlobalSmallest)
                             matchingCustomTolerancesNames.Add(ct.Name);
