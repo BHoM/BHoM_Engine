@@ -56,8 +56,8 @@ namespace BH.Engine.Diffing
             if (InputObjectsNullOrEmpty(pastObjects, followingObjects, out outputDiff, diffingConfig))
                 return outputDiff;
 
-            HashSet<string> pastObjectsIds = new HashSet<string>();
-            HashSet<string> followingObjectsIds = new HashSet<string>();
+            List<string> pastObjectsIds = new List<string>();
+            List<string> followingObjectsIds = new List<string>();
 
             // Verifies inputs and populates the id lists, then if successfull perform the Diffing.
             if (ExtractIdFromCustomData(pastObjects, followingObjects, customdataIdKey, out followingObjectsIds, out pastObjectsIds))
@@ -70,14 +70,14 @@ namespace BH.Engine.Diffing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static bool ExtractIdFromCustomData(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjects, string customdataIdKey, out HashSet<string> out_currentObjectsIds, out HashSet<string> out_pastObjectsIds)
+        private static bool ExtractIdFromCustomData(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjects, string customdataIdKey, out List<string> out_currentObjectsIds, out List<string> out_pastObjectsIds)
         {
             // Output ids
-            out_currentObjectsIds = new HashSet<string>();
-            out_pastObjectsIds = new HashSet<string>();
+            out_currentObjectsIds = new List<string>();
+            out_pastObjectsIds = new List<string>();
 
-            HashSet<string> followingObjectsIds = new HashSet<string>();
-            HashSet<string> pastObjectsIds = new HashSet<string>();
+            List<string> followingObjectsIds = new List<string>();
+            List<string> pastObjectsIds = new List<string>();
 
             // Check on customDataKey
             if (string.IsNullOrWhiteSpace(customdataIdKey))

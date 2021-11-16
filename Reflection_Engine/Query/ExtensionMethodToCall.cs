@@ -90,7 +90,7 @@ namespace BH.Engine.Reflection
                 bool matchingTypes = true;
                 for (int i = 1; i < parameters.Length; i++)
                 {
-                    if (!paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
+                    if (!paramInfo[i].ParameterType.IsAssignableFromIncludeGenericsAndRefTypes(parameters[i].GetType()))
                     {
                         //Parameter does not match, abort for this method
                         matchingTypes = false;

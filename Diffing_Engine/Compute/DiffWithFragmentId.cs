@@ -68,12 +68,6 @@ namespace BH.Engine.Diffing
                     $"\nDefaulted to `{typeof(IPersistentAdapterId).FullName}.{nameof(IPersistentAdapterId.PersistentId)}`.");
             }
 
-            if (string.IsNullOrWhiteSpace(fragmentIdProperty))
-            {
-                BH.Engine.Reflection.Compute.RecordError($"No {nameof(fragmentIdProperty)} specified.");
-                return null;
-            }
-
             // Checks on the specified fragmentType/fragmentIdProperty combination.
             var propertiesOnFragment = fragmentType.GetProperties().Where(pi => pi.Name == fragmentIdProperty);
             if (!propertiesOnFragment.Any())
@@ -82,8 +76,8 @@ namespace BH.Engine.Diffing
                 return null;
             }
 
-            IEnumerable<string> pastObjsIds = pastObjects.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !s.IsNullOrEmpty());
-            IEnumerable<string> follObjsIds = followingObjs.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !s.IsNullOrEmpty());
+            List<string> pastObjsIds = pastObjects.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+            List<string> follObjsIds = followingObjs.Select(o => o.GetIdFromFragment(fragmentType, fragmentIdProperty)).Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
 
             bool missingIds = false;
             if (pastObjsIds.Count() != pastObjects.Count())
@@ -121,7 +115,7 @@ namespace BH.Engine.Diffing
 
             IFragment idFragm = null;
             var idFragments = obj.GetAllFragments(fragmentType);
-            if (idFragments.Count > 1)
+            if (idFragments != null && idFragments.Count > 1)
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} contains more than one fragment of the provided Fragment type {fragmentType}. Unable to decide which one to pick.");
                 return null;

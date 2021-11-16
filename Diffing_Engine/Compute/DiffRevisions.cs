@@ -37,6 +37,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Reflection;
 using System.Collections;
 using BH.Engine.Base;
+using BH.Engine.Base.Objects;
 
 namespace BH.Engine.Diffing
 {
@@ -91,7 +92,7 @@ namespace BH.Engine.Diffing
             Diff diff = Compute.DiffRevisionObjects(prevObjs_BHoM, currObjs_BHoM, diffConfigCopy);
 
             // If all objects are BHoMObjects, we are done.
-            if (pastRevisionObjs.Count() != 0 && pastRevisionObjs.Count() == prevObjs_BHoM.Count() && followingRevisionObjs.Count() == currObjs_BHoM.Count())
+            if (!prevObjs_nonBHoM.Any() && !currObjs_nonBHoM.Any())
                 return diff;
 
             // Compute the generic Diffing for the other objects.
@@ -110,7 +111,7 @@ namespace BH.Engine.Diffing
             allPrevObjs.AddRange(vd.OnlySet2);
 
             // Create the final, actual diff.
-            Diff finalDiff = new Diff(allCurrObjs, allPrevObjs, diff.ModifiedObjects, diffConfigCopy, diff.ModifiedPropsPerObject, diff.UnchangedObjects);
+            Diff finalDiff = new Diff(allCurrObjs, allPrevObjs, diff.ModifiedObjects, diffConfigCopy, diff.ModifiedObjectsDifferences, diff.UnchangedObjects);
 
             return finalDiff;
         }
@@ -141,7 +142,7 @@ namespace BH.Engine.Diffing
             List<IBHoMObject> oldObjs = new List<IBHoMObject>();
             List<IBHoMObject> unChanged = new List<IBHoMObject>();
 
-            var objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
+            List<ObjectDifferences> modifiedObjectDifferences = new List<ObjectDifferences>();
 
             foreach (IBHoMObject bhomObj in currentObjs)
             {
@@ -172,10 +173,10 @@ namespace BH.Engine.Diffing
                         if (oldBhomObj == null) continue;
 
                         // To compute differentProps in a Revision-Diffing, make sure we remove the RevisionFragment. We don't want to consider that.
-                        var differentProps = Query.DifferentProperties(bhomObj.RemoveFragment(typeof(RevisionFragment)), oldBhomObj.RemoveFragment(typeof(RevisionFragment)), dc);
+                        ObjectDifferences objectDifferences = Query.ObjectDifferences(oldBhomObj.RemoveFragment(typeof(RevisionFragment)), bhomObj.RemoveFragment(typeof(RevisionFragment)), dc.ComparisonConfig);
 
-                        if (differentProps != null)
-                            objModifiedProps.Add(revisionFragm.Hash, differentProps);
+                        if (objectDifferences != null)
+                            modifiedObjectDifferences.Add(objectDifferences);
                     }
                 }
                 else
@@ -185,7 +186,7 @@ namespace BH.Engine.Diffing
             }
 
             // If no modified property was found, set the field to null (otherwise will get empty list)
-            objModifiedProps = objModifiedProps.Count == 0 ? null : objModifiedProps;
+            modifiedObjectDifferences = modifiedObjectDifferences.Count == 0 ? null : modifiedObjectDifferences;
 
             // All ReadObjs that cannot be found by hash in the previousHash of the CurrentObjs are toBeDeleted
             Dictionary<string, IBHoMObject> CurrentObjs_withPreviousHash_dict = currentObjs
@@ -195,7 +196,7 @@ namespace BH.Engine.Diffing
             oldObjs = readObjs_dict.Keys.Except(CurrentObjs_withPreviousHash_dict.Keys)
                 .Where(k => readObjs_dict.ContainsKey(k)).Select(k => readObjs_dict[k]).ToList();
 
-            return new Diff(newObjs, oldObjs, modifiedObjs, diffingConfig, objModifiedProps, unChanged);
+            return new Diff(newObjs, oldObjs, modifiedObjs, diffingConfig, modifiedObjectDifferences, unChanged);
         }
     }
 }

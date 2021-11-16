@@ -57,9 +57,6 @@ namespace BH.Engine.Diffing
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffingConfig dc = diffingConfig == null ? new DiffingConfig() : diffingConfig.DeepClone();
 
-            Dictionary<string, List<IBHoMObject>> pastBHoMObjs_perNamespace = pastObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
-            Dictionary<string, List<IBHoMObject>> followingBHoMObjs_perNamespace = followingObjs.OfType<IBHoMObject>().GroupBy(obj => obj.GetType().Namespace).ToDictionary(g => g.Key, g => g.ToList());
-
             if (!pastObjs.Any() && !followingObjs.Any())
                 return outputDiff;
 
@@ -73,9 +70,7 @@ namespace BH.Engine.Diffing
                 {
                     BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisions)}'.");
 
-                    Diff result = DiffRevisions(pastRev, follRev, dc);
-
-                    return outputDiff.CombinedDiff(result);
+                    return DiffRevisions(pastRev, follRev, dc);
                 }
             }
 
@@ -109,7 +104,10 @@ namespace BH.Engine.Diffing
                 // Modify the namespace grouping replacing "Engine" with "oM" for easier matching with objects from the same namespace.
                 Dictionary<string, MethodBase> adaptersDiffingMethods_modifiedNamespaces = adaptersDiffingMethods_perNamespace.ToDictionary(kv => kv.Key.Replace("Engine", "oM"), kv => kv.Value);
 
-                // Check if there is a Toolkit-specific Diffing method that accepts the specific IPersistentAdapterId type.
+                // Check if there is a Toolkit-specific Diffing method in the same namespace of the IPersistentAdapterId type's namespace. E.g.:
+                // (1) IPersistentAdapterId for Revit: BH.oM.Adapters.Revit.Parameters.RevitIdentifiers ==> its namespace is BH.oM.Adapters.Revit.Parameters
+                // (2) A Revit-specific Diffing method is: BH.Engine.Adapters.Revit.Compute.Diffing ==> its modified namespace is BH.oM.Adapters.Revit
+                // We can find a match by checking when the PersistentId namespace (1) starts with the modified namespace (2).
                 var adapterDiffingMethods = adaptersDiffingMethods_modifiedNamespaces.Where(kv => commonPersistentId_past.Namespace.StartsWith(kv.Key)).Select(kv => kv.Value);
                 MethodBase adapterDiffingMethod = adapterDiffingMethods.FirstOrDefault();
 
@@ -196,7 +194,7 @@ namespace BH.Engine.Diffing
             {
                 if (g.Count() > 1)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"{g.Count()} Diffing methods found in namespace {g.Key}. Only one is allowed. Returning only the first one.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{g.Count()} Diffing methods found in namespace {g.Key}. Only one is allowed. Returning only the first one.");
                 }
             }
 

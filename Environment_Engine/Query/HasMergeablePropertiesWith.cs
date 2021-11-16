@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         [Input("element", "An Environment Edge to compare the properties of with an other Environment Edge")]
         [Input("other", "The Environment Edge to compare with the other Environment Edge.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
-        public static bool HasMergeablePropertiesWith(Edge element, Edge other)
+        public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
         {
             return true; //Environment Edges have no additional data to be checked so geometric edges can be merged
         }
@@ -54,13 +54,11 @@ namespace BH.Engine.Environment
         [Input("element", "An Environment Panel to compare the properties of with an other Environment Panel")]
         [Input("other", "The Environment Panel to compare with the other Environment Panel.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
-        public static bool HasMergeablePropertiesWith(Panel element, Panel other)
+        public static bool HasMergeablePropertiesWith(this Panel element, Panel other)
         {
-            DiffingConfig config = new DiffingConfig()
+            ComparisonConfig cc = new ComparisonConfig()
             {
-                ComparisonConfig = new ComparisonConfig()
-                {
-                    PropertyExceptions = new List<string>
+                PropertyExceptions = new List<string>
                     {
                         "ExternalEdges",
                         "Openings",
@@ -69,24 +67,21 @@ namespace BH.Engine.Environment
                         "BHoM_Guid",
                         "CustomData",
                     },
-                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance
-                }
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
-            return Diffing.Query.DifferentProperties(element, other, config) == null;
+            return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
         }
 
         [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object")]
         [Input("element", "An Environment Opening to compare the properties of with an other Environment Opening")]
         [Input("other", "The Environment Opening to compare with the other Environment Opening.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
-        public static bool HasMergeablePropertiesWith(Opening element, Opening other)
+        public static bool HasMergeablePropertiesWith(this Opening element, Opening other)
         {
-            DiffingConfig config = new DiffingConfig()
+            ComparisonConfig cc = new ComparisonConfig()
             {
-                ComparisonConfig = new ComparisonConfig()
-                {
-                    PropertyExceptions = new List<string>
+                PropertyExceptions = new List<string>
                     {
                         "Edges",
                         "FrameFactorValue",
@@ -95,20 +90,19 @@ namespace BH.Engine.Environment
                         "BHoM_Guid",
                         "CustomData",
                     },
-                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance
-                }
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
-            return Diffing.Query.DifferentProperties(element, other, config) == null;
+            return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
         }
 
         [Description("Evaluates if the two elements non-geometrical data is equal to the point that they could be merged into one object. Environment Nodes are checked for their ID only")]
         [Input("element", "An Environment Node to compare the properties of with an other Environment Node")]
         [Input("other", "The Environment Node to compare with the other Environment Node")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
-        public static bool HasMergeablePropertiesWith(Node element, Node other)
+        public static bool HasMergeablePropertiesWith(this Node element, Node other)
         {
-            if(element == null || other == null)
+            if (element == null || other == null)
                 return false; //If either node is null, then it can probably can't have its properties merged
 
             return element.ID == other.ID; //If the IDs match, then they can be merged assuming their geometrical placement is the same
@@ -118,24 +112,22 @@ namespace BH.Engine.Environment
         [Input("element", "An Environment Space to compare the properties of with an other Environment Space")]
         [Input("other", "The Environment Space to compare with the other Environment Space")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object")]
-        public static bool HasMergeablePropertiesWith(Space element, Space other)
+        public static bool HasMergeablePropertiesWith(this Space element, Space other)
         {
-            DiffingConfig config = new DiffingConfig()
+            ComparisonConfig cc = new ComparisonConfig()
             {
-                ComparisonConfig = new ComparisonConfig()
-                {
-                    PropertyExceptions = new List<string>
+                PropertyExceptions = new List<string>
                     {
                         "Location",
                         "Type",
                         "BHoM_Guid",
                         "CustomData",
                     },
-                    NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
-                }
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+
             };
 
-            return Diffing.Query.DifferentProperties(element, other, config) == null;
+            return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
         }
     }
 }
