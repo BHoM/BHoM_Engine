@@ -20,42 +20,50 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System;
-using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
+using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom and, if this is false, checks if the assignable is generic and tests if it can be assigned as a generics version.")]
-        [Input("assignableTo", "The type to check if it can be assigned to.")]
-        [Input("assignableFrom", "The type to check if it can be assigned from.")]
-        [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
-        public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
+        [Description("Copy the properties from an object of a parent Type to an object of a child Type.")]
+        [Input("childObject", "Object whose properties in common with `parentObject` will be copied from there.")]
+        [Input("parentObject", "Object of a Type that is a super (parent) type of the type of childObject.")]
+        public static void CopyPropertiesFromParent<P, C>(this C childObject, P parentObject) where C : IObject, P
         {
-            if (assignableTo == null || assignableFrom == null)
-            {
-                Compute.RecordError("Cannot assign to or from null types.");
-                return false;
-            }
+            if (childObject == null || parentObject == null)
+                return;
 
-            //Check if standard IsAssignableFrom works.
-            if (assignableTo.IsAssignableFrom(assignableFrom))
-                return true;
-            //If not, check if the argument is generic, and if so, use the IsAssignableToGenericType method to check if it can be assigned.
-            else
-                return assignableTo.IsGenericType && assignableFrom.IsAssignableToGenericType(assignableTo.GetGenericTypeDefinition());
+            Type p = typeof(P);
+            Type c = typeof(C);
+
+            var parentProps = p.GetProperties();
+            var childProps = c.GetProperties();
+
+            foreach (var childProp in childProps)
+            {
+                var correspondingParentProp = parentProps.FirstOrDefault(pp => pp.Name == childProp.Name);
+                if (correspondingParentProp == null)
+                    continue;
+
+                var correspondingParentPropValue = correspondingParentProp.GetValue(parentObject);
+                childProp.SetValue(childObject, correspondingParentPropValue);
+            }
         }
 
         /***************************************************/
     }
 }
+
 

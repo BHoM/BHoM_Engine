@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -20,33 +20,22 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
+using BH.oM.Base;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
+using System.Linq;
 
 namespace BH.Engine.Base
 {
     public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Filters a list of objects by a type. Any objects that is assignable from the provided type will be returned.")]
-        [Input("list", "The list of elements to filter.")]
-        [Input("type", "Type to filter by.")]
-        [Output("List", "Filtered list containing only objects assignable from the provided type.")]
-        public static List<object> FilterByType(this IEnumerable<object> list, Type type)
+        [Description("Extract the smallest (most precise) numeric tolerance from the ComparisonConfig," +
+            "which is the smallest value amongst all CustomTolerances (irrespective of the properties they were paired with) and the global numeric tolerance.")]
+        [Input("comparisonConfig", "Comparison Config from where tolerance information should be extracted.")]
+        public static double SmallestToleranceFromConfig(this BaseComparisonConfig comparisonConfig)
         {
-            if (list == null)
-                return null;
-
-            return list.Where(x => type.IsAssignableFrom(x.GetType())).ToList();
+            return ToleranceFromConfig(comparisonConfig, "", true); // the `propertyFullName` input is ignored when `getGlobalSmallest` is set to true.
         }
     }
 }
-
-

@@ -132,7 +132,7 @@ namespace BH.Engine.Diffing
             List<object> modifiedObjs = new List<object>();
             List<object> removedObjs = new List<object>();
             List<object> unchangedObjs = new List<object>();
-            Dictionary<string, Dictionary<string, Tuple<object, object>>> objModifiedProps = new Dictionary<string, Dictionary<string, Tuple<object, object>>>();
+            List<ObjectDifferences> modifiedObjectsDifferences = new List<ObjectDifferences>();
 
             foreach (var kv_foll in follObjs_dict)
             {
@@ -157,13 +157,13 @@ namespace BH.Engine.Diffing
                     // If we are also asking for what properties changed, let's rely on DifferentProperties to see whether the object changed or not.
 
                     // Determine the changed properties.
-                    var differentProps = Query.DifferentProperties(followingObj, correspondingPastObj, diffingConfig);
+                    ObjectDifferences objectDifferences = Query.ObjectDifferences(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
 
-                    if (differentProps != null && differentProps.Count > 0)
+                    if (objectDifferences != null && (objectDifferences.Differences?.Any() ?? false))
                     {
                         // It's been modified
                         modifiedObjs.Add(followingObj);
-                        objModifiedProps.Add(followingObjID, differentProps);
+                        modifiedObjectsDifferences.Add(objectDifferences);
                     }
                     else
                     {
@@ -218,7 +218,7 @@ namespace BH.Engine.Diffing
             }
 
             // If no modifed property was found, set the field to null (otherwise will get empty list)
-            objModifiedProps = !objModifiedProps.Any() ? null : objModifiedProps;
+            modifiedObjectsDifferences = !modifiedObjectsDifferences.Any() ? null : modifiedObjectsDifferences;
 
             // All PastObjects that cannot be found by id in the CurrentObjs are old.
             removedObjs = pastObjs_dict.Keys.Except(follObjs_dict.Keys)
@@ -258,7 +258,7 @@ namespace BH.Engine.Diffing
                     $"No {nameof(BH.oM.Diffing.Diff.ModifiedObjects)} were found. Make sure that the specified `{nameof(DiffingConfig)}.{nameof(DiffingConfig.ComparisonConfig)}.{nameof(DiffingConfig.ComparisonConfig.PropertiesToConsider)}` is set correctly.");
             }
 
-            return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfig, objModifiedProps, unchangedObjs);
+            return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfig, modifiedObjectsDifferences, unchangedObjs);
         }
     }
 }
