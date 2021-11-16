@@ -64,6 +64,9 @@ namespace BH.Engine.Base
             "\nIf the hashFragment already existed, it is replaced.")]
         public static T SetHashFragment<T>(this T obj, string hash) where T : IBHoMObject
         {
+            if (obj == null)
+                return default(T);
+
             // Clone the current object to avoid modification by reference.
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
 
