@@ -70,32 +70,8 @@ namespace BH.Engine.Base
             // Make sure we always have a config object. Clone for immutability.
             BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
-            // Make sure that "BHoM_Guid" is added to the PropertyExceptions of the config.
-            cc.PropertyExceptions = cc.PropertyExceptions ?? new List<string>();
-            if (!cc.PropertyExceptions.Contains(nameof(BHoMObject.BHoM_Guid)))
-                cc.PropertyExceptions.Add(nameof(BHoMObject.BHoM_Guid));
-
-            // Parse `PropertiesToConsider`. If problems are found, expose all the error messages to the user, then return.
-            bool invalidPropertiesToConsider = false;
-            for (int i = 0; i < cc.PropertiesToConsider.Count; i++)
-            {
-                string ptc = cc.PropertiesToConsider[i];
-
-                if (ptc.Contains("*"))
-                {
-                    BH.Engine.Reflection.Compute.RecordError($"Wildcards * are not supported in `{nameof(BaseComparisonConfig.PropertiesToConsider)}` when computing the Hash of an object. The input `{ptc}` is not valid, please remove it. will not be considered.");
-                    invalidPropertiesToConsider = true;
-                }
-
-                if (!ptc.StartsWith("BH"))
-                {
-                    BH.Engine.Reflection.Compute.RecordError($"When computing the Hash using `{nameof(BaseComparisonConfig.PropertiesToConsider)}`, the property name must be provided in its Full Name form. The input `{ptc}` does not comply with this requirement." +
-                        $"\nFor example, if you are interested in considering `StartNode.Name` (the name of a Bar's StartNode), you need to specify `BH.oM.Structure.Elements.Bar.StartNode.Name`).");
-                    invalidPropertiesToConsider = true;
-                }
-            }
-
-            if (invalidPropertiesToConsider) return "";
+            // Parse the ComparisonConfig's `PropertiesToConsider` and `PropertyExceptions` and get them all as Full Names.
+            Modify.PropertyInclusionsToFullNames(cc, iObj.GetType());
 
             // Convert from the Numeric Tolerance to fractionalDigits (required for the hash).
             int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(cc.NumericTolerance)));
@@ -256,9 +232,6 @@ namespace BH.Engine.Base
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
                 PropertyInfo[] properties = type.GetProperties();
 
-                // Make sure we cover the PropertiesToConsider.
-                cc.AddExceptionsFromPropertiesToConsider(currentPropertyFullName, type, nestingLevel);
-
                 // Iterate all properties
                 foreach (PropertyInfo prop in properties)
                 {
@@ -279,8 +252,18 @@ namespace BH.Engine.Base
                     }
                     else
                     {
-                        // If no ComparisonInclusion() extension method was found, check the Exceptions to check if this property is to be skipped.
-                        if (cc.IsInPropertyExceptions(propFullName))
+                        // If no ComparisonInclusion() extension method was found,
+                        // then propertyExceptions/propertiesToConsider in the ComparisonConfig must be checked.
+
+                        // Skip if the property is among the PropertyExceptions, or if it's a BHoM_Guid.
+                        if ((cc.PropertyExceptions?.Contains(propFullName) ?? false) || propName == "BHoM_Guid")
+                            continue;
+
+                        // If the PropertiesToConsider contains at least a value, ensure that this property is "compatible" with at least one of them.
+                        // Compatible means to check not only that the current propFullName is among the propertiesToInclude;
+                        // we need to consider this propFullName ALSO IF there is at least one PropertyToInclude that specifies a property that is a child of the current propFullName.
+                        if ((cc.PropertiesToConsider?.Any() ?? false) &&
+                            !cc.PropertiesToConsider.Any(ptc => ptc.StartsWith(propFullName) || propFullName.StartsWith(ptc))) // we want to make sure that we do not exclude sub-properties to include, hence the OR condition.
                             continue;
                     }
 
@@ -303,105 +286,6 @@ namespace BH.Engine.Base
                 definingString = (nestingLevel > 0 ? "\t" : "") + $"[{type.FullName}]" + definingString;
 
             return definingString;
-        }
-
-        /***************************************************/
-
-        // Populates the properties exceptions from the properties to consider.
-        // To compute the hash, this is the simplest way of covering all possible use cases.
-        private static void AddExceptionsFromPropertiesToConsider(this BaseComparisonConfig cc, string currentPropertyFullName, Type currentObjType, int nestingLevel = -1)
-        {
-            // Null checks
-            if (cc == null) return;
-            if (!cc?.PropertiesToConsider?.Where(ptc => !string.IsNullOrWhiteSpace(ptc)).Any() ?? true) return;
-            if (string.IsNullOrEmpty(currentPropertyFullName)) return;
-
-            // Set nestingLevel if missing
-            if (nestingLevel == -1)
-                nestingLevel = currentPropertyFullName.Replace(currentObjType.FullName, "").Count(c => c == '.');
-
-            // Get the current object's declared properties full names.
-            List<string> allDeclaredPropertyNames = BH.Engine.Reflection.Query.PropertyNames(currentObjType);
-            List<string> allDeclaredPropertyFullNames = allDeclaredPropertyNames.Select(pn => $"{currentPropertyFullName}.{pn}").ToList();
-
-            // Get the parent property's full name.
-            string[] currentPropertyFullNameComponents = currentPropertyFullName?.Split('.');
-            string currentParentPropertyFullName = "";
-            if (currentPropertyFullNameComponents != null)
-                currentParentPropertyFullName = string.Join(".", currentPropertyFullNameComponents.Take(currentPropertyFullNameComponents.Count() - 1));
-
-            // Make sure that the propertiesToConsider are relative paths to the current property, if they were specified as Full Names.
-            List<string> propertiesToConsider = GetRelativePathsForFullNames(cc.PropertiesToConsider, currentPropertyFullNameComponents, nestingLevel);
-
-            // Get the currentLevelPropertiesToConsider, that is those propertiesToConsider that are at the current nesting level. E.g. for top-level propertiesToConsider, they should have no dot `.` in their string.
-            List<string> currentLevelPropertiesToConsider = propertiesToConsider.Where(pTc => pTc.Count(c => c == '.') == nestingLevel || pTc.StartsWith("*.")).ToList();
-
-            List<string> subPropsToConsider = propertiesToConsider
-                .Where(pTc => pTc.Count(c => c == '.') > nestingLevel && !pTc.StartsWith("*."))
-                .Where(ptc => currentParentPropertyFullName.EndsWith(string.Join(".", ptc.Take(nestingLevel))))
-                .ToList();
-
-            // Get the declaredPropertiesToConsider, which are the currentLevelPropertiesToConsider for which there is a match among this object's properties.
-            List<string> declaredPropertiesToConsider = allDeclaredPropertyFullNames
-                .Where(pPath => currentLevelPropertiesToConsider
-                .Any(ptc => pPath.EndsWith(ptc) || pPath.WildcardMatch(ptc))).ToList();
-
-            if (declaredPropertiesToConsider.Any())
-            {
-                // All the remaining declaredProperties are to be added to the Exceptions.
-                List<string> declaredPropertiesExceptions = allDeclaredPropertyFullNames.Except(declaredPropertiesToConsider).ToList();
-                cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
-            }
-
-            if (subPropsToConsider.Any())
-            {
-                // If we found sub-properties to consider, we need to make sure to add all declared properties of the "parent type" (= the current object) as exceptions.
-
-                // Find the current object PropertiesToConsider from the subpropertiesToConsider, by splitting their path at dots, and taking the property name at the current nesting level.
-                List<string> currentObjectPropertiesToConsiderFromSubProps = subPropsToConsider.Select(ptc => ptc.Split('.').ElementAtOrDefault(nestingLevel)).ToList();
-
-                // If we wrote e.g. *.Name, this allows to keep recursing until we find all properties called `Name`.
-                currentObjectPropertiesToConsiderFromSubProps.RemoveAll(s => s == "*" || string.IsNullOrWhiteSpace(s));
-
-                if (currentObjectPropertiesToConsiderFromSubProps.Any())
-                {
-                    // If we found "parent type" (= current object) properties to consider from the SubPropertiesToConsider, add them to the exceptions.
-
-                    // This is to ensure we record the "property path" form rather than "property name".
-                    IEnumerable<string> currentObjectPropertypathsToConsiderFromSubProps = allDeclaredPropertyFullNames.Where(pp => currentObjectPropertiesToConsiderFromSubProps.Any(ptc => pp.EndsWith(ptc)));
-
-                    // Obtain the exceptions and add them.
-                    IEnumerable<string> declaredPropertiesExceptions = allDeclaredPropertyFullNames.Except(currentObjectPropertypathsToConsiderFromSubProps);
-                    cc.PropertyExceptions.AddRange(declaredPropertiesExceptions);
-                }
-            }
-        }
-
-        private static List<string> GetRelativePathsForFullNames(List<string> propertiesToConsider, string[] currentPropertyFullNameComponents, int nestingLevel)
-        {
-            List<string> propertiesToConsiderPartialName = new List<string>();
-            foreach (var ptc in propertiesToConsider)
-            {
-                if (ptc.StartsWith("BH"))
-                {
-                    var ptcComponents = ptc.Split('.');
-                    int lastCommonIndex = -1;
-                    int commonLength = Math.Min(currentPropertyFullNameComponents.Length, ptcComponents.Length);
-                    for (int i = 0; i < commonLength; i++)
-                    {
-                        if (ptcComponents[i] == currentPropertyFullNameComponents[i])
-                            lastCommonIndex = i;
-                    }
-
-                    string adjusted = string.Join(".", ptcComponents.Skip(lastCommonIndex + 1 - nestingLevel));
-                    
-                    propertiesToConsiderPartialName.Add(adjusted);
-                }
-                else
-                    propertiesToConsiderPartialName.Add(ptc);
-            }
-
-            return propertiesToConsiderPartialName;
         }
     }
 }

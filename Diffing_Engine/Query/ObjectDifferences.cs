@@ -46,13 +46,23 @@ namespace BH.Engine.Diffing
         [PreviousVersion("5.0", "BH.Engine.Diffing.DifferentProperties(System.Object, System.Object, BH.oM.Base.ComparisonConfig)")]
         public static ObjectDifferences ObjectDifferences(this object pastObject, object followingObject, BaseComparisonConfig comparisonConfig = null)
         {
+            // Result object.
+            ObjectDifferences result = new ObjectDifferences() { PastObject = pastObject, FollowingObject = followingObject };
+
+            // Null check. At least one of the objects must be not null.
+            if (pastObject == null && followingObject == null)
+                return result;
+
             // Set ComparisonConfig if null. Clone it for immutability in the UI.
             BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
-            ObjectDifferences result = new ObjectDifferences() { PastObject = pastObject, FollowingObject = followingObject };
+            // Make sure that the propertiesToConsider and propertyExceptions are specified with their FullName form.
+            cc.PropertyInclusionsToFullNames(pastObject.GetType());
+            cc.PropertyInclusionsToFullNames(followingObject.GetType());
 
-            if (pastObject == null && followingObject == null)
-                return result;
+            // Make sure that `BHoM_Guid` will NOT be considered amongst the property differences.
+            if (!cc.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
+                cc.PropertyExceptions.Add("BHoM_Guid"); // (this can be specified in "non-full
 
             // General Kellerman configurations.
             kellerman.CompareLogic kellermanComparer = new kellerman.CompareLogic();
@@ -61,12 +71,6 @@ namespace BH.Engine.Diffing
             kellermanComparer.Config.TypesToIgnore.Add(typeof(HashFragment)); // Never include the changes in HashFragment.
             kellermanComparer.Config.TypesToIgnore.Add(typeof(RevisionFragment)); // Never include the changes in RevisionFragment.
             kellermanComparer.Config.TypesToIgnore.AddRange(cc.TypeExceptions);
-
-            // Make sure that `BHoM_Guid` will NOT be considered amongst the property differences.
-            if (!cc.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
-                cc.PropertyExceptions.Add("BHoM_Guid");
-
-            // Set the properties to be ignored.
             kellermanComparer.Config.MembersToIgnore = cc.PropertyExceptions;
 
             // Perform the comparison using the Kellerman library.
@@ -76,17 +80,12 @@ namespace BH.Engine.Diffing
             if (kellermanResult.Differences.Count == cc.MaxPropertyDifferences)
                 BH.Engine.Reflection.Compute.RecordWarning($"Hit the limit of {nameof(cc.MaxPropertyDifferences)} specified in the {nameof(oM.Base.ComparisonConfig)}.");
 
-            // Check if the objects to be compared are of the same type. Useful when recording information about the difference.
-            bool sameType = true;
-            Type commonType = pastObject?.GetType();
-            if (commonType != followingObject?.GetType())
-                sameType = false;
-
             // Iterate all property differences found by Kellerman.
+            string objectFullName = pastObject == null ? pastObject.GetType().FullName : followingObject.GetType().FullName;
             foreach (var kellermanPropertyDifference in kellermanResult.Differences)
             {
                 string propertyName = kellermanPropertyDifference.PropertyName;
-                string propertyFullName = sameType ? commonType.FullName + "." + propertyName : propertyName; // if the objects are of the same type, add the object Type fullname to the propertyName.
+                string propertyFullName = objectFullName + "." + propertyName;
                 string propertyDisplayName = propertyName;
 
                 // Check if there is a `PropertyComparisonInclusion()` extension method available for this property difference.
@@ -113,12 +112,16 @@ namespace BH.Engine.Diffing
                 }
 
                 // Get the property path without indexes in square brackets.
-                // This is useful to check if it matches with any property exception.
+                // This is useful to check if it matches with any propertyExceptions/propertiesToConsider.
                 // E.g. Bar.Fragments[1].Parameters[5].Name becomes Bar.Fragments.Parameters.Name, so we can check that against exceptions like `Parameters.Name`.
                 string propertyFullName_noIndexes = propertyFullName.RemoveSquareIndexing();
 
-                // Skip if the property is among the PropertyExceptions.
-                if (cc.IsInPropertyExceptions(propertyFullName_noIndexes))
+                // Skip if the property is among the PropertyExceptions, or if it's a BHoM_Guid.
+                if ((cc.PropertyExceptions?.Contains(propertyFullName_noIndexes) ?? false) || propertyFullName_noIndexes.EndsWith("BHoM_Guid"))
+                    continue;
+
+                // If the PropertiesToConsider contains at least a value, ensure that this property is among them.
+                if ((cc.PropertiesToConsider?.Any() ?? false) && !cc.PropertiesToConsider.Contains(propertyFullName_noIndexes))
                     continue;
 
                 // Check if this difference is a difference in terms of CustomData.
@@ -141,11 +144,6 @@ namespace BH.Engine.Diffing
                     propertyDisplayName = propertyFullName.Remove(propertyFullName.IndexOf('.'), 1);
                 }
 
-                // Check if the property Full name matches any of the specified PropertiesToConsider.
-                if (cc.PropertiesToConsider?.Any() ?? false)
-                    if (!cc.PropertiesToConsider.Any(ptc => propertyFullName_noIndexes == ptc || propertyFullName_noIndexes.EndsWith($".{ptc}") || propertyFullName_noIndexes.WildcardMatch(ptc)))
-                        continue; // no match found, skip this property.
-
                 // Add to the final result.
                 result.Differences.Add(new PropertyDifference()
                 {
@@ -161,6 +159,10 @@ namespace BH.Engine.Diffing
 
             return result;
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
         [Description("Removes square bracket indexing from property paths, e.g. `Bar.Fragments[0].Something` is returned as `Bar.Fragments.Something`.")]
         private static string RemoveSquareIndexing(this string propertyPath)
