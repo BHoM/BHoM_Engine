@@ -217,11 +217,12 @@ namespace BH.Engine.Structure
             double tf = profile.FlangeThickness;
             double t1 = profile.FlangeThickness - s * b / 4;
             double t2 = t1 + s * (b - tw) / 2;
+            double t3 = tf + s * (b / 4);
             double vs = EndLossCorrectionVs(s);
 
             double alpha = AlphaTaperTJunction(tw, tf, r, t2, s);
             
-            double D = InscribedDiameterTaperTJunction(tw, r, t2, s);
+            double D = InscribedDiameterTaperTJunction(tw, t3, r, s);
 
             //Equation 35
             return (b - tw) / 6 * (t1 + t2) * (Math.Pow(t1, 2) + Math.Pow(t2, 2)) 
@@ -250,16 +251,15 @@ namespace BH.Engine.Structure
             double t1 = profile.FlangeThickness - s * b / 2;
             double t2 = t1 + s * (b - tw);
             double vs = EndLossCorrectionVs(s);
-            double vl = EndLossCorrectionVl(s);
 
             double alpha = AlphaTaperLJunction(tw, tf, r, t2, s);
 
-            double D = InscribedDiameterTaperLJunction(tw, r, t2, s);
+            double D = InscribedDiameterTaperLJunction(tw, t2, r, s);
 
             //Equation 37
             return (b - tw) / 6 * (t1 + t2) * (Math.Pow(t1, 2) + Math.Pow(t2, 2)) + (2 / 3) * tw * Math.Pow(t2, 3) 
                 + (1 / 3) * (h - 2 * t2) * Math.Pow(tw, 3) + 2 * alpha * Math.Pow(D, 4) - 2 * vs * Math.Pow(t1, 4) 
-                - 2 * vl * Math.Pow(t2, 4);
+                - 0.210 * Math.Pow(t2, 4);
         }
 
         /***************************************************/
