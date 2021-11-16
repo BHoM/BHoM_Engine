@@ -106,7 +106,7 @@ namespace BH.Engine.Spatial
 
             Line l1 = new Line { Start = p, End = p = p + yAxis * (bft - bfw / 4 * slope) };
             Line l2 = new Line { Start = p, End = p = p - xAxis * (bfw - wt) / 2 + yAxis * ((bfw - wt) / 2 * slope) };
-            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + (bfw/4 - wt/2) * slope - (tft + (tfw/4 - wt/2) * slope)))};
+            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + (bfw/4 - wt/2) * slope + (tft + (tfw/4 - wt/2) * slope)))};
             Line l4 = new Line { Start = p, End = p = p + xAxis * (tfw - wt) / 2 + yAxis * ((tfw - wt) / 2 * slope) };
             Line l5 = new Line { Start = p, End = p = p + yAxis * (tft - tfw / 4 * slope) };
 
