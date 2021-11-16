@@ -457,6 +457,8 @@ namespace BH.Engine.Structure
         [Input("s", "Flange taper slope.", typeof(Ratio))]
         public static double InscribedDiameterTaperTJunction(double tw, double t3, double r, double s)
         {
+            if (s < 0.001) return InscribedDiameterTJunction(tw, t3, r);
+
             //Equation 24
             double f = r * s * (Math.Sqrt((1 / Math.Pow(s, 2)) + 1) - 1 - tw / (2 * r));
             return (Math.Pow(f + t3, 2) + tw * (r + tw / 4)) / (f + r + t3);
