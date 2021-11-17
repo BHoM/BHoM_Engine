@@ -32,6 +32,7 @@ using BH.oM.Base;
 using kellerman = KellermanSoftware.CompareNetObjects;
 using System.Reflection;
 using BH.Engine.Base;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.Diffing
 {
@@ -67,7 +68,6 @@ namespace BH.Engine.Diffing
             // General Kellerman configurations.
             kellerman.CompareLogic kellermanComparer = new kellerman.CompareLogic();
             kellermanComparer.Config.MaxDifferences = cc.MaxPropertyDifferences;
-            kellermanComparer.Config.DoublePrecision = cc.NumericTolerance;
             kellermanComparer.Config.TypesToIgnore.Add(typeof(HashFragment)); // Never include the changes in HashFragment.
             kellermanComparer.Config.TypesToIgnore.Add(typeof(RevisionFragment)); // Never include the changes in RevisionFragment.
             kellermanComparer.Config.TypesToIgnore.AddRange(cc.TypeExceptions);
@@ -75,9 +75,9 @@ namespace BH.Engine.Diffing
 
             // Kellerman configuration for tolerance.
             // Setting Custom Tolerance for specific properties is complex with Kellerman. 
-            // So instead, we set the tolerance to be the smallest (most precise) of any CustomTolerance specified (or to the general tolerance if none is).
-            // Then, when we iterate all found property differences below, we apply the specific CustomTolerances and filter out differences as required.
-            kellermanComparer.Config.DoublePrecision = cc.SmallestToleranceFromConfig();
+            // So instead, we set the Kellerman precision to capture all variations, that is by using the value 0.
+            kellermanComparer.Config.DoublePrecision = 0;
+            kellermanComparer.Config.DecimalPrecision = 0;
 
             // Perform the comparison using the Kellerman library.
             kellerman.ComparisonResult kellermanResult = kellermanComparer.Compare(pastObject, followingObject);
@@ -150,21 +150,42 @@ namespace BH.Engine.Diffing
                     propertyDisplayName = propertyFullName.Remove(propertyFullName.IndexOf('.'), 1);
                 }
 
-                // Check if we specified CustomTolerances and if this difference is a floating-point number difference.
-                if (cc.PropertyNumericTolerances.Any() && kellermanPropertyDifference.Object1.IsFloatingPointNumber() && kellermanPropertyDifference.Object2.IsFloatingPointNumber())
+                // Check if we specified CustomTolerances and if this difference is a number difference.
+                if (cc.NumericTolerance != double.MinValue || cc.SignificantFigures != int.MaxValue
+                    || (cc.PropertyNumericTolerances?.Any() ?? false) || (cc.PropertySignificantFigures?.Any() ?? false)
+                    && kellermanPropertyDifference.Object1.GetType().IsNumeric() && kellermanPropertyDifference.Object2.GetType().IsNumeric()) // GetType() is slow; call only after checking that any custom tolerance is present.
                 {
-                    // Retrieve the numeric Tolerance to be used for this property.
-                    double tolerance = cc.PropertyNumericTolerance(propertyFullName_noIndexes);
+                    // We have specified some custom tolerance in the ComparisonConfig AND this property difference is numeric.
+                    // Because we have set Kellerman to retrieve any possible numerical variation,
+                    // we now want to "filter out" number variations following our BHoM ComparisonConfig settings.
 
-                    // Convert from the Numeric Tolerance to fractionalDigits (required for rounding).
-                    int fractionalDigits = Math.Abs(System.Convert.ToInt32(Math.Log10(tolerance)));
+                    if (cc.NumericTolerance != double.MinValue || (cc.PropertyNumericTolerances?.Any() ?? false))
+                    {
+                        double tolerance = cc.PropertyNumericTolerance(propertyFullName_noIndexes);
+                        if (tolerance != double.MinValue)
+                        {
+                            double value1 = double.Parse(kellermanPropertyDifference.Object1.ToString()).RoundWithTolerance(tolerance);
+                            double value2 = double.Parse(kellermanPropertyDifference.Object2.ToString()).RoundWithTolerance(tolerance);
 
-                    var number1 = Math.Round(kellermanPropertyDifference.Object1 as dynamic, fractionalDigits);
-                    var number2 = Math.Round(kellermanPropertyDifference.Object1 as dynamic, fractionalDigits);
+                            // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
+                            if (value1 == value2)
+                                continue;
+                        }
+                    }
 
-                    // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
-                    if (number1.Equals(number2))
-                        continue;
+                    if (cc.SignificantFigures != int.MaxValue || (cc.PropertySignificantFigures?.Any() ?? false))
+                    {
+                        int significantFigures = cc.PropertySignificantFigures(propertyFullName_noIndexes);
+                        if (significantFigures != int.MaxValue)
+                        {
+                            double value1 = double.Parse(kellermanPropertyDifference.Object1.ToString()).RoundToSignificantFigures(significantFigures);
+                            double value2 = double.Parse(kellermanPropertyDifference.Object2.ToString()).RoundToSignificantFigures(significantFigures);
+
+                            // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
+                            if (value1 == value2)
+                                continue;
+                        }
+                    }
                 }
 
                 // Add to the final result.

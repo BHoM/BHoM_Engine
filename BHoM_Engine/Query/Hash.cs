@@ -146,25 +146,39 @@ namespace BH.Engine.Base
             }
             else if (type.IsNumeric())
             {
-                double tolerance = cc.PropertyNumericTolerance(currentPropertyFullName);
+                // If we didn't specify any custom tolerance, just do obj.ToString().
+                if (cc.NumericTolerance == double.MinValue && cc.SignificantFigures == int.MaxValue 
+                    && (!cc.PropertyNumericTolerances?.Any() ?? true) && (!cc.PropertySignificantFigures?.Any() ?? true))
+                    return $"\n{tabs}" + obj.ToString() ?? "";
 
-                if (type == typeof(double))
+                // Check if any 1) custom tolerance or 2) significant figures were specified.
+                // We carry over the rounded number from the two steps for SignificantFigures/NumericTolerance approximation
+                // so that, if multiple matches are found for this property, the most approximate (least precise) number is taken.
+                // We arbitrarily apply the rounding from 1) and then 2) - generally rounding is more "coarse" with significant figures, so better to do it as 2nd step.
+                double? number = null;
+
+                // 1) Check NumericTolerances.
+                if (cc.NumericTolerance != double.MinValue || (cc.PropertyNumericTolerances?.Any() ?? false))
                 {
-                    double numberAsDouble = (double)obj;
-                    return $"\n{tabs}" + numberAsDouble.RoundWithTolerance(tolerance).ToString() ?? "";
+                    double tolerance = cc.PropertyNumericTolerance(currentPropertyFullName);
+                    if (tolerance != double.MaxValue)
+                        number = Query.RoundWithTolerance(number ?? double.Parse(obj.ToString()), tolerance);
                 }
 
-                if (type == typeof(int))
+                // 2) Check significantFigures.
+                if (cc.SignificantFigures != int.MaxValue || (cc.PropertySignificantFigures?.Any() ?? false))
                 {
-                    // Let's use a dedicated RoundWithTolerance method for integers, so we don't take a performance hit by casting and using the one for double.
-                    int numberAsInt = (int)obj;
-                    return $"\n{tabs}" + numberAsInt.RoundWithTolerance(tolerance).ToString() ?? "";
+                    // Find the SignificantFigures that should be applied for this property.
+                    int significantFigures = cc.PropertySignificantFigures(currentPropertyFullName);
+                    if (significantFigures != int.MaxValue)
+                        number = Query.RoundToSignificantFigures(double.Parse(obj.ToString()), significantFigures);
                 }
 
-                // For all other cases, we admit some precision/performance hit, and we convert to double.
-                double parsedDouble;
-                double.TryParse(obj.ToString(), out parsedDouble);
-                return $"\n{tabs}" + parsedDouble.RoundWithTolerance((double)tolerance).ToString() ?? "";
+                // Fallback for invalid inputs. Just include all figures and do not approximate.
+                if (number == null)
+                    number = double.Parse(obj.ToString());
+
+                return $"\n{tabs}" + number.ToString() ?? "";
             }
             else if (type.IsPrimitive || type == typeof(String))
             {
