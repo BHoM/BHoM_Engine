@@ -26,6 +26,8 @@ using System.Collections;
 using System.Linq;
 using System;
 using System.Reflection;
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Base
 {
@@ -35,6 +37,9 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates an Enumeration of type T with a value matching the input value")]
+        [Input("value", "String representation of the Enumeration to be created")]
+        [Output("Enumeration of type T with a value matching the input string")]
         public static T Enumeration<T>(string value) where T : Enumeration
         {
             return Enumeration(typeof(T), value) as T;
@@ -42,6 +47,10 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Creates an Enumeration of type 'type' with a value matching the input value")]
+        [Input("type", "Type of Enumeration to be created")]
+        [Input("value", "String representation of the Enumeration to be created")]
+        [Output("Enumeration of type 'type' with a value matching the input string")]
         public static Enumeration Enumeration(Type type, string value)
         {
             if (type == null)
