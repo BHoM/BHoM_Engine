@@ -62,6 +62,10 @@ namespace BH.Engine.Base
                 return default(double);
             }
 
+            // If the tolerance is the smallest possible double, just return.
+            if (tolerance == double.MinValue)
+                return number;
+
             // First check if the tolerance can be converted into fractional digits, i.e. is a number in the form of 10^someExp.
             // This avoids imprecisions with the approximation formula below.
             int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(tolerance)));
