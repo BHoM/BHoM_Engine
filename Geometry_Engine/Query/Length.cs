@@ -25,6 +25,8 @@ using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -34,6 +36,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vector                   ****/
         /***************************************************/
 
+        [Description("Calculates the length of a Vector.")]
+        [Input("vector", "The vector to calculate the length of.")]
+        [Output("length", "The length of the Vector.", typeof(Length))]
         public static double Length(this Vector vector)
         {
             return Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z);
@@ -41,6 +46,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Calculates the square length of a Vector. Faster to compute than the length and can be usefull for example where only relative lengths between vectors are sought.")]
+        [Input("vector", "The vector to calculate the square length of.")]
+        [Output("sqLength", "The square length of the Vector.")]
         public static double SquareLength(this Vector vector)
         {
             return vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z;
@@ -51,6 +59,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Calculates the length of an Arc.")]
+        [Input("curve", "The Arc to calculate the length of.")]
+        [Output("length", "The length of the Arc.", typeof(Length))]
         public static double Length(this Arc curve)
         {
             return curve.Angle() * curve.Radius;
@@ -58,6 +69,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Calculates the length of an Circle.")]
+        [Input("curve", "The Circle to calculate the length of.")]
+        [Output("length", "The length of the Circle.", typeof(Length))]
         public static double Length(this Circle curve)
         {
             return 2 * Math.PI * curve.Radius;
@@ -65,8 +79,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Calculates the length of an Ellipse. Evaluated as an infinite series, utilising 10 times the ratio of the long and short radius number of terms.\n" +
+                     "Gives very close to exact results for ellipses with an ratio of up to 1:20 000 between the long and short radius.")]
+        [Input("curve", "The Ellipse to calculate the length of.")]
+        [Output("length", "The length of the Ellipse.", typeof(Length))]
         public static double Length(this Ellipse curve)
         {
+            //Get out a as the long radius and b as the short radius
             double a = Math.Max(curve.Radius1, curve.Radius2);
             double b = Math.Min(curve.Radius1, curve.Radius2);
 
@@ -92,6 +111,9 @@ namespace BH.Engine.Geometry
             //Ratio of ellipse to calculate number of series to evaluate
             nbSeries = (int)Math.Round(Math.Min(a / b * 10, binomialCooefs.Count));
 
+            //Evaluated as the "infinite" series listed in here:
+            //https://en.wikipedia.org/wiki/Ellipse#Circumference
+            //noted on the wikipedia page as Ivory and Bessel.
             for (int i = 0; i < nbSeries; i++)
             {
                 p += Math.Pow(h, i) * binomialCooefs[i];
@@ -99,8 +121,8 @@ namespace BH.Engine.Geometry
 
             double length = Math.PI * (a + b) * p;
 
-            //For ellipses with a very high (over 1:1000) ratio of a and b, the calculated length will be to low
-            //The check bellow checks that the returned length is at least that
+            //For ellipses with an extremely high ratio (over 1:1000 000) the length from the evaluated series will be to low.
+            //The check bellow checks that the returned length is at least that of 4 times the longest radius.
             if (length < 4 * a)
             {
                 Engine.Reflection.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times largest radius returned.");
@@ -112,6 +134,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Calculates the length of an Line.")]
+        [Input("curve", "The Line to calculate the length of.")]
+        [Output("length", "The length of the Line.", typeof(Length))]
         public static double Length(this Line curve)
         {
             return (curve.Start - curve.End).Length();
@@ -119,6 +144,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Calculates the square length of an Line. Faster to calculate than the length.")]
+        [Input("curve", "The Line to calculate the square length of.")]
+        [Output("sqLength", "The square length of the Line.")]
         public static double SquareLength(this Line curve)
         {
             return (curve.Start - curve.End).SquareLength();
@@ -126,6 +154,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Calculates the length of an PolyCurve. Calculated as the sum of the length of its parts.")]
+        [Input("curve", "The PolyCurve to calculate the length of.")]
+        [Output("length", "The length of the PolyCurve.", typeof(Length))]
         public static double Length(this PolyCurve curve)
         {
             return curve.Curves.Sum(c => c.ILength());
@@ -133,6 +164,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Calculates the length of a Polyline.")]
+        [Input("curve", "The Polyline to calculate the length of.")]
+        [Output("length", "The length of the Polyline.", typeof(Length))]
         public static double Length(this Polyline curve)
         {
             double length = 0;
@@ -149,6 +183,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Calculates the length of a Curve.")]
+        [Input("curve", "The ICurve to calculate the length of.")]
+        [Output("length", "The length of the Arc.", typeof(Length))]
         public static double ILength(this ICurve curve)
         {
             return Length(curve as dynamic);
@@ -169,18 +206,23 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
+        [Description("Calculates the square binomial cooefficients used in the infinite series of the ellipse length calculation.")]
         private static List<double> SquareBinomialCoefficientsEllipse(int requiredCount)
         {
+            //Only allow for one thread to modify the cache at once.
             lock (m_cooeficientLock)
             {
+                //Calcuation of coefficients only needs to be done once.
+                //Coefficients are being stored for next ellipse to be evaluated
                 if (m_ellipseCoeficients == null)
                     m_ellipseCoeficients = new List<double>();
 
+                //Check if coefficients up to the count required have already been added
                 if (requiredCount > m_ellipseCoeficients.Count)
                 {
-
                     //Limit the count to 100 000 to avoid being locked for to long time.
-                    //For common cases (ratios of less than 1:100) 1000 easily enough, but aloowing a larger limit.
+                    //For common cases (ratios of less than 1:100) 1000 easily enough, but allowing a larger limit.
+                    //The set limit of 100 000 should give accurate results for ellipses with a ratio of up to 1:20 000 between the long and short radius.
                     int addCount = Math.Min(requiredCount, 100000);
                     int currentCount = m_ellipseCoeficients.Count;
                     for (double i = currentCount; i < addCount; i++)
@@ -189,6 +231,9 @@ namespace BH.Engine.Geometry
 
                         List<double> js = new List<double>();
 
+                        //Construction a series to evaluate, counting first, last, send firt, second last etc.
+                        //This is done to avoid numeric overflow of the binomial cooefficient, as it for get to big if this is done
+                        //For i over 1000 without this technique.
                         if (i % 2 == 0)
                         {
                             double j = 1;
@@ -211,12 +256,13 @@ namespace BH.Engine.Geometry
                             js.Add(i / 2 + 0.5);
                         }
 
-
+                        //Calculate the cooeficient for the current i
                         foreach (double j in js)
                         {
                             binomialCoef *= (0.5 - (i - j)) / j;
                         }
 
+                        //The square of the cooeficcient is used for the length calculation, hence storing the square cooeficient
                         binomialCoef *= binomialCoef;
 
                         m_ellipseCoeficients.Add(binomialCoef);
