@@ -48,8 +48,13 @@ namespace BH.Engine.Diffing
         [Input("pastObjects", "Past objects. Objects whose creation precedes 'currentObjects'.")]
         [Input("currentObjects", "Following objects. Objects that were created after 'pastObjects'.")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
+        [Output("diff", "Object holding the detected changes.")]
         public static Diff DiffOneByOne(IEnumerable<object> pastObjects, IEnumerable<object> currentObjects, DiffingConfig diffConfig = null)
         {
+            Diff outputDiff = null;
+            if (InputObjectsNullOrEmpty(pastObjects, currentObjects, out outputDiff, diffConfig))
+                return outputDiff;
+
             if (pastObjects.Count() != currentObjects.Count())
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Input collections must be of the same length for '{nameof(DiffOneByOne)}' to work.");
@@ -83,7 +88,7 @@ namespace BH.Engine.Diffing
                     modifiedObjects.Add(currentObjects_cloned[i]);
                     anyChangeDetected = true;
                 }
-                else if (diffConfig.IncludeUnchangedObjects)
+                else if (diffConfigCopy.IncludeUnchangedObjects)
                     unchangedObjects.Add(currentObjects_cloned[i]);
 
                 allModifiedProps[$"Object #{i}"] = modifiedProps ?? new Dictionary<string, Tuple<object, object>>();

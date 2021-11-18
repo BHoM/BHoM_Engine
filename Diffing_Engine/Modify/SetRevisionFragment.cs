@@ -43,6 +43,9 @@ namespace BH.Engine.Diffing
             "If the object already has a RevisionFragment, it computes the current one and keeps the old one in the `previousHash` of the RevisionFragment.")]
         public static List<T> SetRevisionFragment<T>(this IEnumerable<T> objs, DiffingConfig diffingConfig = null) where T : IBHoMObject
         {
+            if (!objs?.Any() ?? true)
+                return null;
+
             // Clone the current objects to preserve immutability
             List<T> objs_cloned = new List<T>();
 
@@ -62,6 +65,9 @@ namespace BH.Engine.Diffing
             "If the object already has a RevisionFragment, it computes the current one and keeps the old one in the `previousHash` of the RevisionFragment.")]
         public static T SetRevisionFragment<T>(this T obj, DiffingConfig diffingConfig = null) where T : IBHoMObject
         {
+            if (obj == null)
+                return default(T);
+
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
 
@@ -82,6 +88,9 @@ namespace BH.Engine.Diffing
             "If the object already has a RevisionFragment, it computes the current one and keeps the old one in the `previousHash` of the RevisionFragment.")]
         public static T SetRevisionFragment<T>(this T obj, string hash) where T : IBHoMObject
         {
+            if (obj == null)
+                return default(T);
+
             // Clone the current object to preserve immutability
             T obj_cloned = BH.Engine.Base.Query.DeepClone(obj);
 

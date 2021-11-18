@@ -20,14 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using Mono.Cecil;
-using Mono.Reflection;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
@@ -52,19 +50,13 @@ namespace BH.Engine.Reflection
 
             try
             {
-                lock (m_GetAssembliesLock)
+                if (goDeep)
+                    return DeepDependencies(new List<Assembly> { assembly }, onlyBHoM);
+                else
                 {
-                    if (m_AllAssemblies == null || m_AllAssemblies.Count == 0)
-                        ExtractAllAssemblies();
-
-                    if (goDeep)
-                        return DeepDependencies(new List<Assembly> { assembly }, onlyBHoM);
-                    else
-                    {
-                        IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
-                        Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
-                        return assemblyNames.Where(x => dic.ContainsKey(x.FullName)).Select(x => dic[x.FullName]).ToList();
-                    }  
+                    IEnumerable<AssemblyName> assemblyNames = assembly.GetReferencedAssemblies();
+                    IDictionary<string, Assembly> dic = onlyBHoM ? Global.BHoMAssemblies : Global.AllAssemblies;
+                    return assemblyNames.Where(x => dic.ContainsKey(x.FullName)).Select(x => dic[x.FullName]).ToList();
                 }
             }
             catch (Exception e)
@@ -81,7 +73,7 @@ namespace BH.Engine.Reflection
         [Input("onlyBHoM", "Only return referenced assemblies that are part of the BHoM.")]
         [Input("goDeep", "Recursively collect all references so that indirect references are also returned.")]
         [Output("assemblies", "List of assemblies referenced by the input assemblies.")]
-        public static List<string> UsedAssemblies(List<string> assemblyNames, bool onlyBHoM = false, bool goDeep = false)
+        public static List<string> UsedAssemblies(this List<string> assemblyNames, bool onlyBHoM = false, bool goDeep = false)
         {
             if (assemblyNames == null)
             {
@@ -89,9 +81,8 @@ namespace BH.Engine.Reflection
                 return new List<string>();
             }
 
-            AllAssemblyList();
-            Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
-            List<Assembly> assemblies = assemblyNames.Where(x => dic.ContainsKey(x)).Select(x => dic[x]).ToList();
+            List<Assembly> loaded = onlyBHoM ? BHoMAssemblyList() : AllAssemblyList();
+            List<Assembly> assemblies = loaded.Where(x => assemblyNames.Any(y => x.GetName().FullName == y)).ToList();
 
             if (goDeep)
                 return DeepDependencies(assemblies, onlyBHoM).Select(x => x.Location).ToList();
@@ -112,12 +103,12 @@ namespace BH.Engine.Reflection
             if (depth > 20)
                 return new List<Assembly>();
 
-            Dictionary<string, Assembly> dic = onlyBHoM ? m_BHoMAssemblies : m_AllAssemblies;
+            IDictionary<string, Assembly> dic = onlyBHoM ? Global.BHoMAssemblies : Global.AllAssemblies;
 
             IEnumerable<AssemblyName> assemblyNames = assemblies.SelectMany(x => x.GetReferencedAssemblies())
                 .GroupBy(x => x.FullName).Select(x => x.First())
                 .ToList();
-            
+
             List<Assembly> dependencies = assemblyNames.Where(x => dic.ContainsKey(x.FullName))
                 .Select(x => dic[x.FullName])
                 .Except(collected)

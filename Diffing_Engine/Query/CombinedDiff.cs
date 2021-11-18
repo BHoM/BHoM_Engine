@@ -37,10 +37,14 @@ using BH.Engine.Base;
 
 namespace BH.Engine.Diffing
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Description("Combines two given diffs into one, appending objects of the second to the first.")]
-        public static Diff CombineDiffs(this Diff diff, Diff toAdd)
+        [Description("Combines two given diffs into one. The returned Diff has the objects of the second input concatenated after the objects of the first input.")]
+        [Input("diff", "First diff object.")]
+        [Input("toAdd", "Second diff object.")]
+        [Output("diff", "Merged Diff object, with the objects of the second input concatenated after the objects of the first input")]
+        [PreviousVersion("5.0", "BH.Engine.Diffing.Modify.CombineDiffs(BH.oM.Diffing.Diff, BH.oM.Diffing.Diff)")]
+        public static Diff CombinedDiff(this Diff diff, Diff toAdd)
         {
             if (diff == null)
                 return toAdd;
@@ -52,7 +56,7 @@ namespace BH.Engine.Diffing
                 diff.AddedObjects != null ? diff.AddedObjects.Concat(toAdd.AddedObjects ?? new List<object>()) : toAdd.AddedObjects ?? new List<object>(),
                 diff.RemovedObjects != null ? diff.RemovedObjects.Concat(toAdd.RemovedObjects ?? new List<object>()) : toAdd.RemovedObjects ?? new List<object>(),
                 diff.ModifiedObjects != null ? diff.ModifiedObjects.Concat(toAdd.ModifiedObjects ?? new List<object>()) : toAdd.ModifiedObjects ?? new List<object>(),
-                diff.DiffingConfig,
+                diff?.DiffingConfig ?? new DiffingConfig(),
                 diff.ModifiedPropsPerObject != null ?
                         diff.ModifiedPropsPerObject
                         .Concat(toAdd.ModifiedPropsPerObject ?? new Dictionary<string, Dictionary<string, Tuple<object, object>>>())

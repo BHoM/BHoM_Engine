@@ -60,6 +60,11 @@ namespace BH.Engine.Library
                 sourceDesc += prop.Name + ": " + sourceText + Environment.NewLine;
             }
 
+            string confidenceDesc = source.Confidence.GetType()?.GetField(source.Confidence.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description;
+
+            if(confidenceDesc != null)
+                sourceDesc += Environment.NewLine + "Confidence: " + source.Confidence.ToString() + " - " + confidenceDesc + Environment.NewLine;
+
             return sourceDesc;
         }
 

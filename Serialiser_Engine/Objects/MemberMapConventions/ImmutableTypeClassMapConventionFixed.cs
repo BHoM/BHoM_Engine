@@ -25,6 +25,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Bson.Serialization;
+using System.Diagnostics;
 
 namespace BH.Engine.Serialiser.MemberMapConventions
 {
@@ -89,11 +90,18 @@ namespace BH.Engine.Serialiser.MemberMapConventions
                 // if any constructors were mapped by this convention then map all the properties also
                 foreach (var property in properties)
                 {
-                    var memberMap = classMap.MapMember(property);
-                    if (classMap.IsAnonymous)
+                    try
                     {
-                        var defaultValue = memberMap.DefaultValue;
-                        memberMap.SetDefaultValue(defaultValue);
+                        var memberMap = classMap.MapMember(property);
+                        if (classMap.IsAnonymous)
+                        {
+                            var defaultValue = memberMap.DefaultValue;
+                            memberMap.SetDefaultValue(defaultValue);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
                     }
                 }
             }
