@@ -104,7 +104,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Ellipse to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-
         public static double Area(this Ellipse curve, double tolerance = Tolerance.Distance)
         {
             if (curve == null)
@@ -112,7 +111,6 @@ namespace BH.Engine.Geometry
                 BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
-
 
             return Math.PI * curve.Radius1 * curve.Radius2;
         }
