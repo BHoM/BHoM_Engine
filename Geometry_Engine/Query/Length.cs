@@ -84,10 +84,14 @@ namespace BH.Engine.Geometry
             double p = 0;
 
             //Ratio of ellipse to calculate number of series to evaluate
-            int nbSeries = (int)Math.Round(Math.Min(a / b * 5, 1000));
+            int nbSeries = (int)Math.Round(a / b * 10);
 
             //"Infinite" series evaluated
-            List<double> binomialCooefs = SquareBinomialCoefficientsEllipse();
+            List<double> binomialCooefs = SquareBinomialCoefficientsEllipse(nbSeries);
+
+            //Ratio of ellipse to calculate number of series to evaluate
+            nbSeries = (int)Math.Round(Math.Min(a / b * 10, binomialCooefs.Count));
+
             for (int i = 0; i < nbSeries; i++)
             {
                 p += Math.Pow(h, i) * binomialCooefs[i];
@@ -165,24 +169,58 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<double> SquareBinomialCoefficientsEllipse()
+        private static List<double> SquareBinomialCoefficientsEllipse(int requiredCount)
         {
-            if (m_ellipseCoeficients == null)
+            lock (m_cooeficientLock)
             {
+                if (m_ellipseCoeficients == null)
+                    m_ellipseCoeficients = new List<double>();
 
-                m_ellipseCoeficients = new List<double>();
-
-                for (double i = 0; i < 1000; i++)
+                if (requiredCount > m_ellipseCoeficients.Count)
                 {
-                    double binomialCoef = 1;
-                    for (double j = 1; j <= i; j++)
-                    {
-                        binomialCoef *= 0.5 - (i - j);
-                        binomialCoef /= j;
-                    }
-                    binomialCoef *= binomialCoef;
 
-                    m_ellipseCoeficients.Add(binomialCoef);
+                    //Limit the count to 100 000 to avoid being locked for to long time.
+                    //For common cases (ratios of less than 1:100) 1000 easily enough, but aloowing a larger limit.
+                    int addCount = Math.Min(requiredCount, 100000);
+                    int currentCount = m_ellipseCoeficients.Count;
+                    for (double i = currentCount; i < addCount; i++)
+                    {
+                        double binomialCoef = 1;
+
+                        List<double> js = new List<double>();
+
+                        if (i % 2 == 0)
+                        {
+                            double j = 1;
+                            while (js.Count < i)
+                            {
+                                js.Add(j);
+                                js.Add(i - j + 1);
+                                j++;
+                            }
+                        }
+                        else
+                        {
+                            double j = 1;
+                            while (js.Count < i - 1)
+                            {
+                                js.Add(j);
+                                js.Add(i - j + 1);
+                                j++;
+                            }
+                            js.Add(i / 2 + 0.5);
+                        }
+
+
+                        foreach (double j in js)
+                        {
+                            binomialCoef *= (0.5 - (i - j)) / j;
+                        }
+
+                        binomialCoef *= binomialCoef;
+
+                        m_ellipseCoeficients.Add(binomialCoef);
+                    }
                 }
             }
             return m_ellipseCoeficients;
@@ -191,6 +229,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         private static List<double> m_ellipseCoeficients = null;
+        private static object m_cooeficientLock = new object();
 
         /***************************************************/
     }
