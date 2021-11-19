@@ -39,7 +39,7 @@ namespace BH.Engine.Library
         /***************************************************/
 
         [Description("Get the Library settings object currently used by the Library_Engine.")]
-        [Output("settings", "The settings used by the Library_Engine. If not settings exists, null will be returned.")]
+        [Output("settings", "The settings used by the Library_Engine. If settings don't exist, null will be returned.")]
         public static LibrarySettings LibrarySettings()
         {
             if (File.Exists(m_settingsPath))

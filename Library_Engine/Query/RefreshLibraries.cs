@@ -43,7 +43,7 @@ namespace BH.Engine.Library
         public static void RefreshLibraries()
         {
             InitialiseLibraries();
-            Engine.Reflection.Compute.RecordWarning("Libraries have been refreshed and any changes will have an impact on the work of the methods in the Library_Engine. Any changes might not reflect in any loaded UI and a restart might be required.");
+            Engine.Reflection.Compute.RecordWarning("Libraries have been refreshed and any changes will have an impact on the methods in the Library_Engine. Changes may not be reflected in already loaded UIs; restarting these UIs will load the changes.");
         }
 
         /***************************************************/
