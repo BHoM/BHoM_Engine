@@ -182,7 +182,7 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        [Description("Loops through all subfolders of default library folder and any additional userpaths and reads all json files contained in those folders.")]
+        [Description("Loops through all subfolders of default library folder and any additional userpaths and reads all json files contained within.")]
         private static void GetPathsAndLoadLibraries()
         {
             //Load all libraries from default path
@@ -198,7 +198,7 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        [Description("Loop through all subfolders if provided source folder and extract all json files contained within it or any subfolder.")]
+        [Description("Loop through all subfolders of provided source folder and extract all json files contained within.")]
         private static void GetPathsAndLoadLibraries(string sourceFolder, string folderPath, string basePath)
         {
             string internalPath = Path.Combine(basePath, folderPath);

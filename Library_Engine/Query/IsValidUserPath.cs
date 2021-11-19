@@ -50,7 +50,7 @@ namespace BH.Engine.Library
 
             if (m_sourceFolder.ToLower().Contains(path.ToLower()))
             {
-                Reflection.Compute.RecordWarning($"Not allowed to add a parent folder of the default source folder {m_sourceFolder} to the user libraries.");
+                Reflection.Compute.RecordWarning($"Not allowed to add a parent folder of the default dataset folder {m_sourceFolder} to the user libraries.");
                 return false;
             }
 
