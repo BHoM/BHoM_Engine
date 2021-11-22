@@ -44,7 +44,7 @@ namespace BH.Test.Serialiser
         {
             // Test all the BHoM types available
             List<Type> types = Engine.Reflection.Query.BHoMTypeList()
-                .Concat(Engine.Reflection.Query.BHoMInterfaceList())
+                .Concat(Engine.Reflection.Query.BHoMInterfaceTypeList())
                 .Concat(Engine.Reflection.Query.AdapterTypeList())
                 .ToList();
             List<TestResult> results = types.Select(x => TypeToFromJson(x)).ToList();

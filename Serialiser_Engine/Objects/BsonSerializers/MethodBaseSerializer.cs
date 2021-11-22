@@ -51,6 +51,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, MethodBase value)
         {
             var bsonWriter = context.Writer;
+            if (value == null)
+            {
+                bsonWriter.WriteNull();
+                return;
+            }
+
             bsonWriter.WriteStartDocument();
 
             var discriminator = m_DiscriminatorConvention.GetDiscriminator(typeof(object), typeof(MethodBase));
@@ -80,6 +86,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
         public override MethodBase Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             var bsonReader = context.Reader;
+            if (bsonReader.CurrentBsonType == BsonType.Null)
+            {
+                context.Reader.ReadNull();
+                return null;
+            }
+
             bsonReader.ReadStartDocument();
 
             string text = bsonReader.ReadName();

@@ -20,8 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Reflection
 {
@@ -31,50 +34,12 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns a dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
+        [Output("typeDictionary", "Dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
         public static Dictionary<string, List<Type>> BHoMTypeDictionary()
         {
-            lock (m_GetTypesLock)
-            {
-                // If the dictionary exists already return it
-                if (m_BHoMTypeDictionary != null && m_BHoMTypeDictionary.Count > 0)
-                    return m_BHoMTypeDictionary;
-
-                // Otherwise, create it
-                m_BHoMTypeDictionary = new Dictionary<string, List<Type>>();
-                ExtractAllTypes();
-
-                return m_BHoMTypeDictionary;
-            }
+            return Global.BHoMTypeDictionary.ToDictionary(x => x.Key, x => x.Value);
         }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void AddBHoMTypeToDictionary(string name, Type type)
-        {
-            if (m_BHoMTypeDictionary.ContainsKey(name))
-                m_BHoMTypeDictionary[name].Add(type);
-            else
-            {
-                List<Type> list = new List<Type>();
-                list.Add(type);
-                m_BHoMTypeDictionary[name] = list;
-            }
-
-            int firstDot = name.IndexOf('.');
-            if (firstDot >= 0)
-                AddBHoMTypeToDictionary(name.Substring(firstDot + 1), type);
-        }
-        
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static Dictionary<string, List<Type>> m_BHoMTypeDictionary = new Dictionary<string, List<Type>>();
-
 
         /***************************************************/
     }

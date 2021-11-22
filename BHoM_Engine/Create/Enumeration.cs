@@ -20,62 +20,50 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
-using System;
+using BH.oM.Base;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections;
 using System.Linq;
+using System;
+using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
-        [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
-        [Description("Returns all BHoM interface types loaded in the current domain.")]
-        [Output("types", "List of BHoM interface types loaded in the current domain.")]
-        public static List<Type> BHoMInterfaceTypeList()
+
+        public static T Enumeration<T>(string value) where T : Enumeration
         {
-            return Global.InterfaceList.ToList();
+            return Enumeration(typeof(T), value) as T;
         }
 
         /***************************************************/
 
-        [Description("Returns all BHoM types loaded in the current domain.")]
-        [Output("types", "List of BHoM types loaded in the current domain.")]
-        public static List<Type> BHoMTypeList()
+        public static Enumeration Enumeration(Type type, string value)
         {
-            return Global.BHoMTypeList.ToList();
-        }
+            if (type == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot create an enumeration from a null type");
+                return null;
+            }
 
-        /***************************************************/
+            List<Enumeration> test = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                     .Select(f => f.GetValue(null))
+                     .OfType<Enumeration>().ToList();
 
-        [Description("Returns all BHoM adapter types loaded in the current domain.")]
-        [Output("types", "List of BHoM adapter types loaded in the current domain.")]
-        public static List<Type> AdapterTypeList()
-        {
-            return Global.AdapterTypeList.ToList();
-        }
+            Enumeration result = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                     .Select(f => f.GetValue(null))
+                     .OfType<Enumeration>()
+                     .Where(x => x.Value == value || x.Description == value)
+                     .FirstOrDefault();
 
-        /***************************************************/
+            if (result == null)
+                BH.Engine.Reflection.Compute.RecordError($"Cannot create an enumeration from type {type.ToString()} and value {value}");
 
-        [Description("Returns all types loaded in the current domain.")]
-        [Output("types", "List of all types loaded in the current domain.")]
-        public static List<Type> AllTypeList()
-        {
-            return Global.AllTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all BHoM engine types loaded in the current domain.")]
-        [Output("types", "List of BHoM engine types loaded in the current domain.")]
-        public static List<Type> EngineTypeList()
-        {
-            return Global.EngineTypeList.ToList();
+            return result;
         }
 
         /***************************************************/

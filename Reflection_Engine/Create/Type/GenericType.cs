@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
@@ -25,61 +25,45 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
-        [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
-        [Description("Returns all BHoM interface types loaded in the current domain.")]
-        [Output("types", "List of BHoM interface types loaded in the current domain.")]
-        public static List<Type> BHoMInterfaceTypeList()
+
+        [Description("Creates a generic BHoM type that matches the given name.")]
+        [Input("name", "Name to be searched for among all BHoM generic types.")]
+        [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Output("type", "BHoM generic type that matches the given name.")]
+        public static Type GenericType(string name, bool silent = false)
         {
-            return Global.InterfaceList.ToList();
-        }
+            if (name == null)
+            {
+                Compute.RecordError("Cannot create a type from a null string.");
+                return null;
+            }
 
-        /***************************************************/
+            string[] parts = name.Split('<', '>', ',').Select(x => x.Trim()).ToArray();
+            string[] arguments = parts.Skip(1).Where(x => x.Length > 0).ToArray();
 
-        [Description("Returns all BHoM types loaded in the current domain.")]
-        [Output("types", "List of BHoM types loaded in the current domain.")]
-        public static List<Type> BHoMTypeList()
-        {
-            return Global.BHoMTypeList.ToList();
-        }
+            Type typeDefinition = Type(parts[0] + "`" + arguments.Length);
+            if (typeDefinition == null)
+                return null;
 
-        /***************************************************/
-
-        [Description("Returns all BHoM adapter types loaded in the current domain.")]
-        [Output("types", "List of BHoM adapter types loaded in the current domain.")]
-        public static List<Type> AdapterTypeList()
-        {
-            return Global.AdapterTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all types loaded in the current domain.")]
-        [Output("types", "List of all types loaded in the current domain.")]
-        public static List<Type> AllTypeList()
-        {
-            return Global.AllTypeList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all BHoM engine types loaded in the current domain.")]
-        [Output("types", "List of BHoM engine types loaded in the current domain.")]
-        public static List<Type> EngineTypeList()
-        {
-            return Global.EngineTypeList.ToList();
+            try
+            {
+                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /***************************************************/
     }
 }
-
-

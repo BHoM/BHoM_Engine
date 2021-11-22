@@ -20,46 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Query
+    public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /*******************************************/
+        /**** Public Methods                    ****/
+        /*******************************************/
 
-        [Description("Returns all BHoM methods loaded in the current domain.")]
-        [Output("methods", "List of BHoM methods loaded in the current domain.")]
-        public static List<MethodInfo> BHoMMethodList()
+        public static T ParseEnum<T>(string value)
         {
-            return Global.BHoMMethodList.ToList();
+            object result = ParseEnum(typeof(T), value);
+            if (result == null)
+                return default(T);
+            else
+                return (T)result;
         }
 
-        /***************************************************/
+        /*******************************************/
 
-        [Description("Returns all methods loaded in the current domain.")]
-        [Output("methods", "List of all methods loaded in the current domain.")]
-        public static List<MethodBase> AllMethodList()
+        public static object ParseEnum(Type enumType, string value)
         {
-            return Global.AllMethodList.ToList();
+            if (Enum.IsDefined(enumType, value))
+                return Enum.Parse(enumType, value);
+            else
+            {
+                return Enum.GetValues(enumType).OfType<Enum>()
+                    .FirstOrDefault(x => {
+                        FieldInfo fi = enumType.GetField(x.ToString());
+                        DescriptionAttribute[] attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+
+                        return attributes != null && attributes.Count() > 0 && attributes.First().Description == value;
+                    });
+            }
         }
 
-        /***************************************************/
-
-        [Description("Returns all external methods loaded in the current domain.")]
-        [Output("methods", "List of external methods loaded in the current domain.")]
-        public static List<MethodBase> ExternalMethodList()
-        {
-            return Global.ExternalMethodList.ToList();
-        }
-
-        /***************************************************/
+        /*******************************************/
     }
 }
-
