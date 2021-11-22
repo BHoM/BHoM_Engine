@@ -78,7 +78,7 @@ namespace BH.Engine.Base
             // ----- HASH -----
 
             // Compute the defining string.
-            string hashString = DefiningString(iObj, cc, 0);
+            string hashString = HashString(iObj, cc, 0);
 
             if (string.IsNullOrWhiteSpace(hashString))
             {
@@ -119,7 +119,7 @@ namespace BH.Engine.Base
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
         [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
-        private static string DefiningString(object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
+        private static string HashString(object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
         {
             string definingString = "";
 
@@ -146,39 +146,25 @@ namespace BH.Engine.Base
             }
             else if (type.IsNumeric())
             {
-                // If we didn't specify any custom tolerance, just do obj.ToString().
-                if (cc.NumericTolerance == double.MinValue && cc.SignificantFigures == int.MaxValue 
+                // If we didn't specify any custom tolerance/significant figures, just return the input.
+                if (cc.NumericTolerance == double.MinValue && cc.SignificantFigures == int.MaxValue
                     && (!cc.PropertyNumericTolerances?.Any() ?? true) && (!cc.PropertySignificantFigures?.Any() ?? true))
-                    return $"\n{tabs}" + obj.ToString() ?? "";
+                    return $"\n{tabs}" + obj.ToString();
 
-                // Check if any 1) custom tolerance or 2) significant figures were specified.
-                // We carry over the rounded number from the two steps for SignificantFigures/NumericTolerance approximation
-                // so that, if multiple matches are found for this property, the most approximate (least precise) number is taken.
-                // We arbitrarily apply the rounding from 1) and then 2) - generally rounding is more "coarse" with significant figures, so better to do it as 2nd step.
-                double? number = null;
+                if (type == typeof(double))
+                    return $"\n{tabs}" + NumericalApproximation((double)obj, currentPropertyFullName, cc).ToString();
 
-                // 1) Check NumericTolerances.
-                if (cc.NumericTolerance != double.MinValue || (cc.PropertyNumericTolerances?.Any() ?? false))
-                {
-                    double tolerance = cc.PropertyNumericTolerance(currentPropertyFullName);
-                    if (tolerance != double.MaxValue)
-                        number = Query.RoundWithTolerance(number ?? double.Parse(obj.ToString()), tolerance);
-                }
+                if (type == typeof(int))
+                    return $"\n{tabs}" + NumericalApproximation((int)obj, currentPropertyFullName, cc).ToString();
 
-                // 2) Check significantFigures.
-                if (cc.SignificantFigures != int.MaxValue || (cc.PropertySignificantFigures?.Any() ?? false))
-                {
-                    // Find the SignificantFigures that should be applied for this property.
-                    int significantFigures = cc.PropertySignificantFigures(currentPropertyFullName);
-                    if (significantFigures != int.MaxValue)
-                        number = Query.RoundToSignificantFigures(double.Parse(obj.ToString()), significantFigures);
-                }
+                // Fallback for any other floating-point numeric type.
+                if (type.IsFloatingPointNumericType())
+                    return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString();
 
-                // Fallback for invalid inputs. Just include all figures and do not approximate.
-                if (number == null)
-                    number = double.Parse(obj.ToString());
+                // Fallback for any other integral numeric type.
+                if (type.IsIntegralNumericType())
+                    return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString();
 
-                return $"\n{tabs}" + number.ToString() ?? "";
             }
             else if (type.IsPrimitive || type == typeof(String))
             {
@@ -187,7 +173,7 @@ namespace BH.Engine.Base
             else if (type.IsArray)
             {
                 foreach (var element in (obj as dynamic))
-                    definingString += $"\n{tabs}" + DefiningString(element, cc, nestingLevel + 1, currentPropertyFullName);
+                    definingString += $"\n{tabs}" + HashString(element, cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (typeof(IDictionary).IsAssignableFrom(type))
             {
@@ -208,13 +194,13 @@ namespace BH.Engine.Base
                             continue;
                     }
 
-                    definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { DefiningString(entry.Value, cc, nestingLevel + 1, currentPropertyFullName)}";
+                    definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { HashString(entry.Value, cc, nestingLevel + 1, currentPropertyFullName)}";
                 }
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 foreach (var element in (obj as dynamic))
-                    definingString += $"\n{tabs}" + DefiningString(element, cc, nestingLevel + 1, currentPropertyFullName);
+                    definingString += $"\n{tabs}" + HashString(element, cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (type.FullName.Contains("System.Collections.Generic.ObjectEqualityComparer`1"))
             {
@@ -223,7 +209,7 @@ namespace BH.Engine.Base
             else if (type == typeof(System.Data.DataTable))
             {
                 DataTable dt = obj as DataTable;
-                return definingString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + DefiningString(dt.AsEnumerable(), cc, nestingLevel + 1, currentPropertyFullName);
+                return definingString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + HashString(dt.AsEnumerable(), cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
@@ -238,21 +224,18 @@ namespace BH.Engine.Base
                     string propName = prop.Name;
                     string propFullName = $"{currentPropertyFullName}.{propName}";
 
-                    // If the object is an IObject (= a BHoM class), check if there is a `ComparisonInclusion()` extension method available for this IObject.
-                    object propCompIncl = null;
+                    // If the object is an IObject (= a BHoM class), check if there is a `HashString()` extension method available for this IObject.
+                    object hashStringFromExtensionMethod = null;
                     object[] parameters = new object[] { currentPropertyFullName, cc };
-                    if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(obj, "ComparisonInclusion", parameters, out propCompIncl))
+                    if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
                     {
-                        // If a ComparisonInclusion() extension method was found, use its result to determine whether this property is to be included or not in the Hash.
-                        ComparisonInclusion comparisonInclusion = propCompIncl as ComparisonInclusion;
-
-                        if (!comparisonInclusion.Include)
-                            return ""; // do not include this in the Hash.
+                        return $"\n{tabs}" + hashStringFromExtensionMethod.ToString();
                     }
                     else
                     {
-                        // If no ComparisonInclusion() extension method was found,
-                        // then propertyExceptions/propertiesToConsider in the ComparisonConfig must be checked.
+                        // If no HashString() extension method was found for this object, continue.
+                        
+                        // Check the propertyExceptions/propertiesToConsider in the ComparisonConfig..
 
                         // Skip if the property is among the PropertyExceptions, or if it's a BHoM_Guid.
                         if ((cc.PropertyExceptions?.Contains(propFullName) ?? false) || propName == "BHoM_Guid")
@@ -270,7 +253,7 @@ namespace BH.Engine.Base
                     if (propertyValue != null)
                     {
                         // Recurse for this property.
-                        propHashString = DefiningString(propertyValue, cc, nestingLevel + 1, propFullName) ?? "";
+                        propHashString = HashString(propertyValue, cc, nestingLevel + 1, propFullName) ?? "";
                         if (!string.IsNullOrWhiteSpace(propHashString))
                             definingString += $"\n{tabs}" + $"{type.FullName}.{propName}:\n{tabs}{propHashString} ";
                     }

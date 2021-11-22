@@ -53,7 +53,7 @@ namespace BH.Engine.Base
             // Result variables.
             List<string> propertiesToConsider_fullNames = null;
             List<string> propertyExceptions_fullNames = null;
-            HashSet<PropertyNumericTolerance> propertyNumericTolerances_fullNames = null;
+            HashSet<NamedNumericTolerance> propertyNumericTolerances_fullNames = null;
 
             // We need to process only those properties that have not been specified in FullName form, or that contain wildcards.
             List<string> propertiesToConsiderToParse = comparisonConfig.PropertiesToConsider?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
@@ -85,7 +85,7 @@ namespace BH.Engine.Base
             // Safety clauses because C#'s Dictionary TryGetValue sets the out variable to `null` if it failed.
             propertiesToConsider_fullNames = propertiesToConsider_fullNames ?? new List<string>();
             propertyExceptions_fullNames = propertyExceptions_fullNames ?? new List<string>();
-            propertyNumericTolerances_fullNames = propertyNumericTolerances_fullNames ?? new HashSet<PropertyNumericTolerance>();
+            propertyNumericTolerances_fullNames = propertyNumericTolerances_fullNames ?? new HashSet<NamedNumericTolerance>();
 
             // Iterate all of the input Type's propertyFullNames and see if they match with the propertiesToConsiderToParse, propertyExceptionsToParse and/or propertyNumericTolerancesToParse.
             foreach (var propertyFullName in allPropertiesFullNames)
@@ -112,7 +112,7 @@ namespace BH.Engine.Base
                 {
                     foreach (var propNumericTolerance in propertyNumericTolerancesToParse)
                         if (IsMatchingInclusion(propertyFullName, propNumericTolerance))
-                            propertyNumericTolerances_fullNames.Add(new PropertyNumericTolerance() { Name = propertyFullName, Tolerance = comparisonConfig.PropertyNumericTolerances.Where(pnc => pnc.Name == propNumericTolerance).First().Tolerance });
+                            propertyNumericTolerances_fullNames.Add(new NamedNumericTolerance() { Name = propertyFullName, Tolerance = comparisonConfig.PropertyNumericTolerances.Where(pnc => pnc.Name == propNumericTolerance).First().Tolerance });
 
                     if (cache) m_cachedPropertyNumericTolerances[propertyNumericTolerancesCacheKey] = propertyNumericTolerances_fullNames;
                 }
@@ -153,6 +153,6 @@ namespace BH.Engine.Base
         // We cache separately the processed propertiesToConsider, propertyExceptions and propertyNumericTolerances to get optimal performance/versatility.
         private static Dictionary<string, List<string>> m_cachedPropertiesToConsider = new Dictionary<string, List<string>>();
         private static Dictionary<string, List<string>> m_cachedPropertyExceptions = new Dictionary<string, List<string>>();
-        private static Dictionary<string, HashSet<PropertyNumericTolerance>> m_cachedPropertyNumericTolerances = new Dictionary<string, HashSet<PropertyNumericTolerance>>();
+        private static Dictionary<string, HashSet<NamedNumericTolerance>> m_cachedPropertyNumericTolerances = new Dictionary<string, HashSet<NamedNumericTolerance>>();
     }
 }

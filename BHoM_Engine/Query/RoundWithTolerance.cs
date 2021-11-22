@@ -62,8 +62,8 @@ namespace BH.Engine.Base
                 return default(double);
             }
 
-            // If the tolerance is the smallest possible double, just return.
-            if (tolerance == double.MinValue)
+            // If the tolerance is the smallest possible double, or if the inputs are invalid, just return.
+            if (tolerance == double.MinValue || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
                 return number;
 
             // First check if the tolerance can be converted into fractional digits, i.e. is a number in the form of 10^someExp.

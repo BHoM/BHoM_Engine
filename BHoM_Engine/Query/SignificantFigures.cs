@@ -40,10 +40,9 @@ namespace BH.Engine.Base
             "If no match is found, return `ComparisonConfig.SignificantFigures`.")]
         [Input("comparisonConfig", "Comparison Config from where tolerance information should be extracted.")]
         [Input("propertyFullName", "Full name (path) of the property for which we want to extract the numerical Tolerance.")]
-        [Input("getGlobalSmallest", "(Optional, defaults to false) If true, extract the smallest (most precise) tolerance amongst all CustomTolerances for all properties and the global numeric tolerance.")]
-        public static int PropertySignificantFigures(this BaseComparisonConfig comparisonConfig, string propertyFullName)
+        public static int SignificantFigures(this BaseComparisonConfig comparisonConfig, string propertyFullName)
         {
-            return SignificantFiguresFromConfig(comparisonConfig, propertyFullName, false);
+            return SignificantFigures(comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures, propertyFullName);
         }
 
         /***************************************************/
@@ -54,24 +53,24 @@ namespace BH.Engine.Base
             "If a CustomTolerance match is found for this property Full Name, then return it. " +
             "If multiple matches are found, return the most sensistive among the matches. " +
             "If no match is found, return `ComparisonConfig.SignificantFigures`.")]
-        [Input("comparisonConfig", "Comparison Config from where tolerance information should be extracted.")]
-        [Input("propertyFullName", "Full name (path) of the property for which we want to extract the numerical Tolerance.")]
-        private static int SignificantFiguresFromConfig(this BaseComparisonConfig comparisonConfig, string propertyFullName, bool getGlobalSmallest = false)
+        [Input("propertySignificantFigures", "Custom significant figures associated with a certain name, to be matched with the `fullName` input.")]
+        [Input("globalSignificantFigures", "Fallback significant figures to be used when no named match is found.")]
+        [Input("fullName", "Full name of the property or object for which we want to extract the significant figures. This name will be seeked in the `propertySignificantFigures` input.")]
+        public static int SignificantFigures(this HashSet<NamedSignificantFigures> propertySignificantFigures, int globalSignificantFigures, string fullName = null)
         {
             // Initially set the result to an arbitrarily large number to perform the search for a smaller number, see loop.
             int significantFigures = int.MaxValue;
 
             // Take care of PropertyNumericTolerances.
-            if (comparisonConfig.PropertySignificantFigures?.Any() ?? false)
+            if (!string.IsNullOrWhiteSpace(fullName) && (propertySignificantFigures?.Any() ?? false))
             {
                 // Iterate the specified PropertyNumericTolerances. If more than one match with the current property is found, take the safest (smallest) value.
                 List<string> matchingCustomTolerancesNames = new List<string>();
-                foreach (var pnt in comparisonConfig.PropertySignificantFigures)
+                foreach (var pnt in propertySignificantFigures)
                 {
-                    if (getGlobalSmallest || propertyFullName.EndsWith($".{pnt.Name}") || propertyFullName.WildcardMatch(pnt.Name))
+                    if (fullName == pnt.Name || fullName.EndsWith($".{pnt.Name}") || fullName.WildcardMatch(pnt.Name))
                     {
-                        if (!getGlobalSmallest)
-                            matchingCustomTolerancesNames.Add(pnt.Name);
+                        matchingCustomTolerancesNames.Add(pnt.Name);
 
                         if (pnt.SignificantFigures < significantFigures)
                             significantFigures = pnt.SignificantFigures;
@@ -79,13 +78,13 @@ namespace BH.Engine.Base
                 }
 
                 if (matchingCustomTolerancesNames.Count > 1)
-                    BH.Engine.Reflection.Compute.RecordWarning($"The property `{propertyFullName}` matched with {matchingCustomTolerancesNames.Count} {nameof(BaseComparisonConfig.PropertyNumericTolerances)}: `{string.Join("`, ", matchingCustomTolerancesNames)}`." +
+                    BH.Engine.Reflection.Compute.RecordWarning($"The property `{fullName}` matched with {matchingCustomTolerancesNames.Count} {nameof(propertySignificantFigures)}: `{string.Join("`, ", matchingCustomTolerancesNames)}`." +
                     $"\nThe most sensitive tolerance was picked (smallest value): {significantFigures}.");
             }
 
-            // If no matching CustomTolerance was found, return `ComparisonConfig.SignificantFigures`.
+            // If no matching CustomTolerance was found, return the globalSignificantFigures.
             if (significantFigures == int.MaxValue)
-                significantFigures = comparisonConfig.SignificantFigures;
+                significantFigures = globalSignificantFigures;
 
             return significantFigures;
         }
