@@ -42,35 +42,47 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Given two numbers, checks if the ")]
-        public static bool NumericalDifferenceInclusion(this object object1, object object2, string propertyFullName, BaseComparisonConfig cc = null)
+        [Description("Given two numbers, checks if their difference is to be considered as relevant under the input ComparisonConfig settings.")]
+        [Input("number1", "First number to compare.")]
+        [Input("number2", "Second number to compare.")]
+        [Input("propertyFullName", "If the numbers are part of an object, full name of the property that owns them. This name will be used to seek matches in the ComparisoConfig named numeric tolerance/significant figures.")]
+        [Input("comparisonConfig", "Object containing the settings for this numerical comparison.")]
+        public static bool NumericalDifferenceInclusion(this object number1, object number2, string propertyFullName = null, BaseComparisonConfig comparisonConfig = null)
         {
-            return NumericalDifferenceInclusion(object1, object2, propertyFullName, cc.NumericTolerance, cc.SignificantFigures, cc.PropertyNumericTolerances, cc.PropertySignificantFigures);
+            return NumericalDifferenceInclusion(number1, number2, propertyFullName, comparisonConfig.PropertyNumericTolerances, comparisonConfig.NumericTolerance, comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures);
         }
 
         /***************************************************/
 
-        public static bool NumericalDifferenceInclusion(this object object1, object object2, string propertyFullName,
+        [Description("Given two numbers, checks if their difference is to be considered as relevant under the input ComparisonConfig settings.")]
+        [Input("number1", "First number to compare.")]
+        [Input("number2", "Second number to compare.")]
+        [Input("fullName", "If the numbers are part of an object, full name of the property that owns them. This name will be used to seek matches in the `customNumericTolerances`/`customSignificantFigures` sets.")]
+        [Input("namedNumericTolerances", "Custom numeric tolerances associated with a certain name, to be matched with the `fullName` input.")]
+        [Input("globalNumericTolerance", "Fallback numeric tolerance to be used when no named match is found.")]
+        [Input("namedSignificantFigures", "Custom significant figures associated with a certain name, to be matched with the `fullName` input.")]
+        [Input("globalSignificantFigures", "Fallback significant figures to be used when no named match is found.")]
+        public static bool NumericalDifferenceInclusion(this object number1, object number2, string fullName,
+            HashSet<NamedNumericTolerance> namedNumericTolerances = null,
             double globalNumericTolerance = double.MinValue,
-            int globalSignificantFigures = int.MaxValue,
-            HashSet<NamedNumericTolerance> customNumericTolerances = null,
-            HashSet<NamedSignificantFigures> customSignificantFigures = null)
+            HashSet<NamedSignificantFigures> namedSignificantFigures = null,
+            int globalSignificantFigures = int.MaxValue)
         {
             // Check if we specified CustomTolerances and if this difference is a number difference.
             if (globalNumericTolerance != double.MinValue || globalSignificantFigures != int.MaxValue
-                || (customNumericTolerances?.Any() ?? false) || (customSignificantFigures?.Any() ?? false)
-                && object1.GetType().IsNumeric() && object2.GetType().IsNumeric()) // GetType() is slow; call only after checking that any custom tolerance is present.
+                || (namedNumericTolerances?.Any() ?? false) || (namedSignificantFigures?.Any() ?? false)
+                && (number1?.GetType().IsNumeric() ?? false) && (number2?.GetType().IsNumeric() ?? false)) // GetType() is slow; call only after checking that any custom tolerance is present.
             {
                 // We have specified some custom tolerance in the ComparisonConfig AND this property difference is numeric.
                 // Because we have set Kellerman to retrieve any possible numerical variation,
                 // we now want to "filter out" number variations following our BHoM ComparisonConfig settings.
-                if (globalNumericTolerance!= double.MinValue || (customNumericTolerances?.Any() ?? false))
+                if (globalNumericTolerance!= double.MinValue || (namedNumericTolerances?.Any() ?? false))
                 {
-                    double toleranceToUse = BH.Engine.Base.Query.NumericTolerance(customNumericTolerances, globalNumericTolerance, propertyFullName);
+                    double toleranceToUse = BH.Engine.Base.Query.NumericTolerance(namedNumericTolerances, globalNumericTolerance, fullName);
                     if (toleranceToUse != double.MinValue)
                     {
-                        double value1 = double.Parse(object1.ToString()).RoundWithTolerance(toleranceToUse);
-                        double value2 = double.Parse(object2.ToString()).RoundWithTolerance(toleranceToUse);
+                        double value1 = double.Parse(number1.ToString()).RoundWithTolerance(toleranceToUse);
+                        double value2 = double.Parse(number2.ToString()).RoundWithTolerance(toleranceToUse);
 
                         // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
                         if (value1 == value2)
@@ -78,13 +90,13 @@ namespace BH.Engine.Diffing
                     }
                 }
 
-                if (globalSignificantFigures != int.MaxValue || (customSignificantFigures?.Any() ?? false))
+                if (globalSignificantFigures != int.MaxValue || (namedSignificantFigures?.Any() ?? false))
                 {
-                    int significantFiguresToUse = BH.Engine.Base.Query.SignificantFigures(customSignificantFigures, globalSignificantFigures, propertyFullName);
+                    int significantFiguresToUse = BH.Engine.Base.Query.SignificantFigures(namedSignificantFigures, globalSignificantFigures, fullName);
                     if (significantFiguresToUse != int.MaxValue)
                     {
-                        double value1 = double.Parse(object1.ToString()).RoundToSignificantFigures(significantFiguresToUse);
-                        double value2 = double.Parse(object2.ToString()).RoundToSignificantFigures(significantFiguresToUse);
+                        double value1 = double.Parse(number1.ToString()).RoundToSignificantFigures(significantFiguresToUse);
+                        double value2 = double.Parse(number2.ToString()).RoundToSignificantFigures(significantFiguresToUse);
 
                         // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
                         if (value1 == value2)
