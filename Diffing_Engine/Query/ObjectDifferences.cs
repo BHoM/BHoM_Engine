@@ -180,13 +180,6 @@ namespace BH.Engine.Diffing
         {
             return System.Text.RegularExpressions.Regex.Replace(propertyPath, @"\[(.*?)\]", string.Empty);
         }
-
-        /***************************************************/
-
-        private static bool IsFloatingPointNumber(this object obj)
-        {
-            return obj is double || obj is float || obj is decimal;
-        }
     }
 }
 
