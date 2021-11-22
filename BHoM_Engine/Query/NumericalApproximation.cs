@@ -59,9 +59,9 @@ namespace BH.Engine.Base
         [Input("number", "Number to approximate.")]
         [Input("fullName", "Name of the number or of the property that holds this number. This name will be used to seek any matching custom tolerance/significant figure to apply for this approximation in the `comparisonConfig` input.")]
         [Input("comparisonConfig", "Object that stores the settings that will used for the approximation.")]
-        public static double NumericalApproximation(this int number, string fullName = null, BaseComparisonConfig cc = null)
+        public static double NumericalApproximation(this int number, string fullName = null, BaseComparisonConfig comparisonConfig = null)
         {
-            return NumericalApproximation(number, fullName, cc.PropertySignificantFigures, cc.SignificantFigures);
+            return NumericalApproximation(number, fullName, comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures);
         }
 
         /***************************************************/
