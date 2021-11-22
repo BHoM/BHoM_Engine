@@ -37,35 +37,49 @@ using System.Data;
 
 namespace BH.Engine.Base
 {
-	public static partial class Query
-	{
-		/***************************************************/
-		/**** Public Methods                            ****/
-		/***************************************************/
+    public static partial class Query
+    {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-		[Description("Performs the rounding to significant figures.")]
-		[Input("number", "Number to be rounded.")]
-		[Input("figures", "Significant figures to be considered.")]
-		public static double RoundToSignificantFigures(this double number, int figures)
-		{
-			if (number == 0.0 || Double.IsNaN(number) || Double.IsInfinity(number) || figures == int.MaxValue)
-				return number;
+        [Description("Performs the rounding to significant figures.")]
+        [Input("number", "Number to be rounded.")]
+        [Input("figures", "Significant figures to be considered.")]
+        public static double RoundToSignificantFigures(this double number, int figures)
+        {
+            if (number == 0.0 || Double.IsNaN(number) || Double.IsInfinity(number) || figures == int.MaxValue)
+                return number;
 
-			// Compute shift of the decimal point.
-			int shift = figures - 1 - (int)Math.Floor(Math.Log10(Math.Abs(number)));
+            // Compute shift of the decimal point.
+            int shift = figures - 1 - (int)Math.Floor(Math.Log10(Math.Abs(number)));
 
-			// Return if rounding to the same or higher precision.
-			int decimalPlaces = 0;
-			for (long pow = 1; Math.Floor(number * pow) != (number * pow); pow *= 10) decimalPlaces++;
-			if (shift >= decimalPlaces)
-				return number;
+            // Return if rounding to the same or higher precision.
+            int decimalPlaces = 0;
+            for (long pow = 1; Math.Floor(number * pow) != (number * pow); pow *= 10) decimalPlaces++;
+            if (shift >= decimalPlaces)
+                return number;
 
-			// Round to sf-1 fractional digits of normalized mantissa x.dddd
-			double scale = Math.Pow(10, Math.Abs(shift));
-			return shift > 0 ?
-				   Math.Round(number * scale, MidpointRounding.AwayFromZero) / scale :
-				   Math.Round(number / scale, MidpointRounding.AwayFromZero) * scale;
-		}
-	}
+            // Round to sf-1 fractional digits of normalized mantissa x.dddd
+            double scale = Math.Pow(10, Math.Abs(shift));
+            return shift > 0 ?
+                   Math.Round(number * scale, MidpointRounding.AwayFromZero) / scale :
+                   Math.Round(number / scale, MidpointRounding.AwayFromZero) * scale;
+        }
+
+        /***************************************************/
+
+        [Description("Performs the rounding to significant figures.")]
+        [Input("number", "Number to be rounded.")]
+        [Input("figures", "Significant figures to be considered.")]
+        public static int RoundToSignificantFigures(this int number, int figures)
+        {
+            if (number == 0 || figures == int.MaxValue)
+                return number;
+
+            // If a faster implementation for integer can be done, enter it here.
+            // For now, casting to double and back to int.
+            return (int)RoundToSignificantFigures((double)number, figures);
+        }
+    }
 }
-

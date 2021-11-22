@@ -38,6 +38,10 @@ namespace BH.Engine.Diffing
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         [Description("Compare two versions of the same object that sustained some modification over time, and returns differences.")]
         [Input("pastObject", "Past version of the object (created before `followingObject`).")]
         [Input("followingObject", "Following version of the object (modified or created after `pastObject`).")]
@@ -63,7 +67,7 @@ namespace BH.Engine.Diffing
 
             // Make sure that `BHoM_Guid` will NOT be considered amongst the property differences.
             if (!cc.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
-                cc.PropertyExceptions.Add("BHoM_Guid"); 
+                cc.PropertyExceptions.Add("BHoM_Guid");
 
             // General Kellerman configurations.
             kellerman.CompareLogic kellermanComparer = new kellerman.CompareLogic();
@@ -95,25 +99,22 @@ namespace BH.Engine.Diffing
                 string propertyDisplayName = propertyName;
 
                 // Check if there is a `PropertyComparisonInclusion()` extension method available for this property difference.
-                object propCompIncl = null;
-                object[] parameters = new object[] { propertyFullName, cc };
-                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(kellermanPropertyDifference.ParentObject2, "ComparisonInclusion", parameters, out propCompIncl))
+                object comparisonInclusionFromExtensionMethod = null;
+                object[] parameters = new object[] { kellermanPropertyDifference.ParentObject2, propertyFullName, comparisonConfig };
+                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(kellermanPropertyDifference.ParentObject1, "ComparisonInclusion", parameters, out comparisonInclusionFromExtensionMethod))
                 {
-                    ComparisonInclusion propComparisonInclusion = propCompIncl as ComparisonInclusion;
-
-                    if (propComparisonInclusion.Include)
-                    {
+                    ComparisonInclusion comparisonInclusion = comparisonInclusionFromExtensionMethod as ComparisonInclusion;
+                    if (comparisonInclusion != null && comparisonInclusion.Include)
                         // Add to the final result.
                         result.Differences.Add(new PropertyDifference()
                         {
-                            DisplayName = propComparisonInclusion.DisplayName,
+                            DisplayName = comparisonInclusion.DisplayName,
                             PastValue = kellermanPropertyDifference.Object1,
                             FollowingValue = kellermanPropertyDifference.Object2,
                             FullName = propertyFullName
                         });
-                    }
 
-                    // Because a `PropertyComparisonInclusion()` extension method was found, we've already determined if this property difference was to be added or not. Continue.
+                    // Because a `ComparisonInclusion()` extension method was found, we've already determined if this difference was to be considered or not. Continue.
                     continue;
                 }
 
@@ -150,43 +151,9 @@ namespace BH.Engine.Diffing
                     propertyDisplayName = propertyFullName.Remove(propertyFullName.IndexOf('.'), 1);
                 }
 
-                // Check if we specified CustomTolerances and if this difference is a number difference.
-                if (cc.NumericTolerance != double.MinValue || cc.SignificantFigures != int.MaxValue
-                    || (cc.PropertyNumericTolerances?.Any() ?? false) || (cc.PropertySignificantFigures?.Any() ?? false)
-                    && kellermanPropertyDifference.Object1.GetType().IsNumeric() && kellermanPropertyDifference.Object2.GetType().IsNumeric()) // GetType() is slow; call only after checking that any custom tolerance is present.
-                {
-                    // We have specified some custom tolerance in the ComparisonConfig AND this property difference is numeric.
-                    // Because we have set Kellerman to retrieve any possible numerical variation,
-                    // we now want to "filter out" number variations following our BHoM ComparisonConfig settings.
-
-                    if (cc.NumericTolerance != double.MinValue || (cc.PropertyNumericTolerances?.Any() ?? false))
-                    {
-                        double tolerance = cc.PropertyNumericTolerance(propertyFullName_noIndexes);
-                        if (tolerance != double.MinValue)
-                        {
-                            double value1 = double.Parse(kellermanPropertyDifference.Object1.ToString()).RoundWithTolerance(tolerance);
-                            double value2 = double.Parse(kellermanPropertyDifference.Object2.ToString()).RoundWithTolerance(tolerance);
-
-                            // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
-                            if (value1 == value2)
-                                continue;
-                        }
-                    }
-
-                    if (cc.SignificantFigures != int.MaxValue || (cc.PropertySignificantFigures?.Any() ?? false))
-                    {
-                        int significantFigures = cc.PropertySignificantFigures(propertyFullName_noIndexes);
-                        if (significantFigures != int.MaxValue)
-                        {
-                            double value1 = double.Parse(kellermanPropertyDifference.Object1.ToString()).RoundToSignificantFigures(significantFigures);
-                            double value2 = double.Parse(kellermanPropertyDifference.Object2.ToString()).RoundToSignificantFigures(significantFigures);
-
-                            // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
-                            if (value1 == value2)
-                                continue;
-                        }
-                    }
-                }
+                // Check if this difference is numerical, and if so whether it should be included or not given the input tolerance/significant figures.
+                if (!NumericalDifferenceInclusion(kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName_noIndexes, cc))
+                    continue;
 
                 // Add to the final result.
                 result.Differences.Add(new PropertyDifference()

@@ -44,7 +44,7 @@ namespace BH.Engine.Diffing
     {
         [Description("Computes the diffing for two lists of objects, comparing objects one by one." +
             "\nThis will only identify 'modified' or 'unchanged' objects. For 'modified' objects, the property differences are also returned." +
-            "\nIt will work correctly only if the input objects are in the same order.")]
+            "\nIt will work correctly only if the input lists are of the same length and objects are in the same order (i.e. it will only discover modified objects, not added/removed).")]
         [Input("pastObjects", "Past objects. Objects whose creation precedes 'currentObjects'.")]
         [Input("followingObjects", "Following objects. Objects that were created after 'pastObjects'.")]
         [Input("diffConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
@@ -63,7 +63,7 @@ namespace BH.Engine.Diffing
 
             BH.Engine.Reflection.Compute.RecordNote($"This diffing method is equivalent to calling '{nameof(Query.ObjectDifferences)}' on the input lists. " +
                 $"\nThis will only identify 'modified' or 'unchanged' objects. For 'modified' objects, the property differences are also returned." +
-                $"\nIt will work correctly only if the objects in the lists are in the same order and at most they have been modified (i.e. no new object has been added, no object has been deleted).");
+                $"\nIt will work correctly only if the input objects are in the same order (i.e. it will only discover modified objects by comparing them one by one; it will not discover added/removed objects).");
 
             // Set configurations if diffConfig is null. Clone it for immutability in the UI.
             DiffingConfig diffConfigCopy = diffConfig == null ? new DiffingConfig() : (DiffingConfig)diffConfig.DeepClone();

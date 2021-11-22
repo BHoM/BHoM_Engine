@@ -133,10 +133,22 @@ namespace BH.Engine.Diffing
                 if (outputDiff != null)
                     BH.Engine.Reflection.Compute.RecordNote($"Continuing the Diffing for the remaining objects with '{nameof(DiffWithHash)}'.");
                 else
-                    BH.Engine.Reflection.Compute.RecordNote($"Previous conditions were not satisfied. Executing Diffing with the most generic method, '{nameof(DiffWithHash)}'.");
+                    BH.Engine.Reflection.Compute.RecordNote($"Main Diffing conditions were not satisfied by the input objects. Using generic diffing methods.");
 
-                Diff diffGeneric = DiffingWithHash(remainder_past, remainder_following, dc);
-                outputDiff = outputDiff.CombinedDiff(diffGeneric);
+                if (remainder_past.Count == remainder_following.Count)
+                {
+                    BH.Engine.Reflection.Compute.RecordNote($"Executing Diffing using `{nameof(DiffOneByOne)}`. This assumes that the input object lists have the objects sorted in the same order.");
+
+                    Diff diffGeneric = DiffOneByOne(remainder_past, remainder_following, dc);
+                    outputDiff = outputDiff.CombinedDiff(diffGeneric);
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordNote($"Executing Diffing with the most generic method, '{nameof(DiffWithHash)}'.");
+
+                    Diff diffGeneric = DiffingWithHash(remainder_past, remainder_following, dc);
+                    outputDiff = outputDiff.CombinedDiff(diffGeneric);
+                }
             }
 
             return outputDiff;
