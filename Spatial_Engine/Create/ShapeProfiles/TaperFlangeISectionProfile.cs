@@ -51,37 +51,46 @@ namespace BH.Engine.Spatial
         [Output("I", "The created ISectionProfile.")]
         public static TaperFlangeISectionProfile TaperFlangeISectionProfile(double height, double width, double webThickness, double flangeThickness, double flangeSlope, double rootRadius, double toeRadius)
         {
-            if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
+            if (height < 2 * (flangeThickness + flangeSlope * (width / 4 - webThickness / 2))) // assume no fillets
             {
-                InvalidRatioError("height", "flangeThickness and rootRadius");
+                InvalidRatioError("height", "flangeThickness, flangeSlope, webThickness");
                 return null;
             }
 
-            if (width < webThickness + rootRadius * 2 + toeRadius * 2)
+            if (width < webThickness) // Assume no fillets
             {
-                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
+                InvalidRatioError("width", "webThickness");
                 return null;
             }
 
-            if (flangeSlope < 0)
+            if (flangeSlope > flangeThickness / (width/4)) // Assume no fillets
             {
-                Reflection.Compute.RecordError("Flange slope must be positive. Values typically range from 0 to 1/6");
-                return null;
-            }            
-
-            if (flangeSlope > Math.Atan(4 * flangeThickness / width))
-            {
-                InvalidRatioError("Width", "FlangeThickness");
+                InvalidRatioError("Width", "FlangeThickness and flangeSlope");
                 return null;
             }
 
-            if (toeRadius > flangeThickness - width / 4 * Math.Tan(flangeSlope))
+            // check that the root radius doesn't take up the whole web
+            if (height < 2 * (flangeThickness + flangeSlope * (width / 4 - webThickness / 2 - rootRadius) + Math.Sqrt(Math.Pow(rootRadius, 2) + Math.Pow(flangeSlope * rootRadius, 2))))
             {
-                InvalidRatioError("toeRadius", "flangeThickness");
+                InvalidRatioError("rootRadius", "flangeThickness, flangeSlope, flangeWidth, webThickness, and height");
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            // check that the toe radius doesn't eliminate the face of the toe
+            if (Math.Sqrt(Math.Pow(toeRadius,2) + Math.Pow(flangeSlope * toeRadius, 2)) > flangeThickness - flangeSlope * (width / 4 - toeRadius))
+            {
+                InvalidRatioError("toeRadius", "flangeThickness, flangeSlope, and width");
+                return null;
+            }
+
+            // check that the toe and root radii don't eliminate the inner flange face
+            if (width < webThickness + 2 * (1 - flangeSlope)*( rootRadius + toeRadius ))
+            {
+                InvalidRatioError("width", "webthickness, rootRadius, and toeRadius");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || flangeSlope < 0 || rootRadius < 0 || toeRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
