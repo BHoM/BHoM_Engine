@@ -41,7 +41,7 @@ namespace BH.Engine.Spatial
 
         [Description("Creates a C-shaped profile based on input dimensions. Method generates edge curves based on the inputs.")]
         [InputFromProperty("height")]
-        [InputFromProperty("flangeWidth")]
+        [InputFromProperty("width")]
         [InputFromProperty("webThickness")]
         [InputFromProperty("flangeThickness")]
         [InputFromProperty("flangeSlope")]
@@ -49,50 +49,56 @@ namespace BH.Engine.Spatial
         [InputFromProperty("toeRadius")]
         [InputFromProperty("mirrorAboutLocalZ")]
         [Output("channel", "The created ChannelProfile.")]
-        public static TaperFlangeChannelProfile TaperFlangeChannelProfile(double height, double flangeWidth, double webThickness, double flangeThickness, double flangeSlope, double rootRadius = 0, double toeRadius = 0, bool mirrorAboutLocalZ = false)
+        public static TaperFlangeChannelProfile TaperFlangeChannelProfile(double height, double width, double webThickness, double flangeThickness, double flangeSlope, double rootRadius = 0, double toeRadius = 0, bool mirrorAboutLocalZ = false)
         {
-            if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
+            if (height < 2 * ( flangeThickness + flangeSlope * (width/2 - webThickness))) // Assume no fillets
             {
-                InvalidRatioError("height", "flangeThickness and rootRadius");
+                InvalidRatioError("height", "flangeThickness, width, and webThickness");
                 return null;
             }
 
-            if (flangeWidth < webThickness + rootRadius + toeRadius)
+            if (width < webThickness) // Assume no fillets
             {
-                InvalidRatioError("width", "webthickness, toeRadius and rootRadius");
+                InvalidRatioError("width", "webThickness");
                 return null;
             }
 
-            if (flangeSlope < 0)
-            {
-                Reflection.Compute.RecordError("Flange slope must be positive. Values typically range from 0 to 1/6");
-                return null;
-            }
-
-            if (flangeSlope > Math.Atan(2 * flangeThickness / flangeWidth))
+            if (flangeSlope > flangeThickness / (width/2)) // Assume no fillets
             {
                 InvalidRatioError("Width", "FlangeThickness and FlangeSlope");
                 return null;
             }
 
-            if (toeRadius > flangeThickness - flangeWidth/2 * Math.Tan(flangeSlope) )
+            // check that the root radius doesn't take up the whole web
+            if (height < 2 * (flangeThickness + flangeSlope * (width / 2 - webThickness - rootRadius) + Math.Sqrt(Math.Pow(rootRadius, 2) + Math.Pow(flangeSlope * rootRadius, 2))))
             {
-                InvalidRatioError("flangeThickness", "toeRadius");
+                InvalidRatioError("rootRadius", "flangeThickness, flangeSlope, width, webThickness, and height");
                 return null;
             }
 
-            if (height <= 0 || flangeWidth <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
+            // check that the toe radius doesn't eliminate the face of the toe
+            if (Math.Sqrt(Math.Pow(toeRadius, 2) + Math.Pow(flangeSlope * toeRadius, 2)) > flangeThickness - flangeSlope * (width / 2 - toeRadius))
+            {
+                InvalidRatioError("toeRadius", "flangeThickness, flangeSlope, and width");
+                return null;
+            }
+
+            // check that the toe and root radii don't eliminate the inner flange face
+            if (width < webThickness + (1 - flangeSlope) * (rootRadius + toeRadius))
+            {
+                InvalidRatioError("width", "webThickness, rootRadius, and toeRadius");
+                return null;
+            }
+
+            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || flangeSlope < 0 || rootRadius < 0 || toeRadius < 0)
             {
                 Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 
-            List<ICurve> curves = TaperFlangeChannelProfileCurves(height, flangeWidth, webThickness, flangeThickness, flangeSlope, rootRadius, toeRadius);
-
-            if (mirrorAboutLocalZ)
-                curves = curves.MirrorAboutLocalZ();
-
-            return new TaperFlangeChannelProfile(height, flangeWidth, webThickness, flangeThickness, flangeSlope, rootRadius, toeRadius, mirrorAboutLocalZ, curves);
+            List<ICurve> curves = TaperFlangeChannelProfileCurves(height, width, webThickness, flangeThickness, flangeSlope, rootRadius, toeRadius);
+            curves = mirrorAboutLocalZ ? curves.MirrorAboutLocalZ() : curves;
+            return new TaperFlangeChannelProfile(height, width, webThickness, flangeThickness, flangeSlope, rootRadius, toeRadius, mirrorAboutLocalZ, curves);
         }
 
         /***************************************************/
