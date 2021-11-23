@@ -457,7 +457,7 @@ namespace BH.Engine.Structure
         [Input("s", "Flange taper slope.", typeof(Ratio))]
         public static double InscribedDiameterTaperTJunction(double tw, double t3, double r, double s)
         {
-            if (s < 0.001) return InscribedDiameterTJunction(tw, t3, r);
+            if (s < Tolerance.Angle) return InscribedDiameterTJunction(tw, t3, r);
 
             //Equation 24
             double f = r * s * (Math.Sqrt((1 / Math.Pow(s, 2)) + 1) - 1 - tw / (2 * r));
@@ -518,7 +518,7 @@ namespace BH.Engine.Structure
             if (0.2 > tw / t2 || tw / t2 > 1.0)
                 Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of web thickness to flange thickness is out of the applicable range.");
 
-            double alpha0 = AlphaTJunction(tw, t2, r);
+            double alpha0 = AlphaTJunction(tw, tf, r);
 
             //Equation 28
             double alpha16 = -0.0836 + 0.2536 * tw / t2 + 0.1268 * r / t2 - 0.0806 * tw * r / Math.Pow(t2, 2) - 0.0858 * Math.Pow(tw / t2, 2); 
