@@ -430,7 +430,7 @@ namespace BH.Engine.Structure
         [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
         [Input("tf", "Flange thickness, assumed to be the top of the T.", typeof(Length))]
         [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
-        public static double InscribedDiameterTJunction(double tw, double tf, double r)
+        private static double InscribedDiameterTJunction(double tw, double tf, double r)
         {
             //Equation 23
             return (Math.Pow(tf + r, 2) + (r + 0.25 * tw) * tw) / (2 * r + tf);
@@ -442,7 +442,7 @@ namespace BH.Engine.Structure
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("tf", "Flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
-        public static double InscribedDiameterLJunction(double tw, double tf, double r)
+        private static double InscribedDiameterLJunction(double tw, double tf, double r)
         {
             //Equation 25
             return 2 * ((3 * r + tw + tf) - Math.Sqrt(2 * (2 * r + tw) * (2 * r + tf)));
@@ -455,7 +455,7 @@ namespace BH.Engine.Structure
         [Input("t3", "Flange thickness at theoretical intersection of flange and web centerline.", typeof(Length))]
         [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
         [Input("s", "Flange taper slope.", typeof(Ratio))]
-        public static double InscribedDiameterTaperTJunction(double tw, double t3, double r, double s)
+        private static double InscribedDiameterTaperTJunction(double tw, double t3, double r, double s)
         {
             if (s < Tolerance.Angle) return InscribedDiameterTJunction(tw, t3, r);
 
@@ -471,7 +471,7 @@ namespace BH.Engine.Structure
         [Input("t2", "Flange thickness at theoretical intersection of flange and near face of web.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
         [Input("s", "Flange taper slope.", typeof(Ratio))]
-        public static double InscribedDiameterTaperLJunction(double tw, double t2, double r, double s)
+        private static double InscribedDiameterTaperLJunction(double tw, double t2, double r, double s)
         {
             //Equation 26
             double h = t2 - r * (s + 1 - Math.Sqrt(1 + Math.Pow(s, 2)));
