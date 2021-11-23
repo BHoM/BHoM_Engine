@@ -213,6 +213,12 @@ namespace BH.Engine.Base
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
+                // If the object is an IObject (= a BHoM class), first check if there is a `HashString()` extension method available for this IObject.
+                object hashStringFromExtensionMethod = null;
+                object[] parameters = new object[] { currentPropertyFullName, cc };
+                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
+                    return (string)hashStringFromExtensionMethod;
+
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
                 PropertyInfo[] properties = type.GetProperties();
@@ -224,30 +230,18 @@ namespace BH.Engine.Base
                     string propName = prop.Name;
                     string propFullName = $"{currentPropertyFullName}.{propName}";
 
-                    // If the object is an IObject (= a BHoM class), check if there is a `HashString()` extension method available for this IObject.
-                    object hashStringFromExtensionMethod = null;
-                    object[] parameters = new object[] { currentPropertyFullName, cc };
-                    if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
-                    {
-                        return $"\n{tabs}" + hashStringFromExtensionMethod.ToString();
-                    }
-                    else
-                    {
-                        // If no HashString() extension method was found for this object, continue.
-                        
-                        // Check the propertyExceptions/propertiesToConsider in the ComparisonConfig..
+                    // Check the propertyExceptions/propertiesToConsider in the ComparisonConfig..
 
-                        // Skip if the property is among the PropertyExceptions, or if it's a BHoM_Guid.
-                        if ((cc.PropertyExceptions?.Contains(propFullName) ?? false) || propName == "BHoM_Guid")
-                            continue;
+                    // Skip if the property is among the PropertyExceptions, or if it's a BHoM_Guid.
+                    if ((cc.PropertyExceptions?.Contains(propFullName) ?? false) || propName == "BHoM_Guid")
+                        continue;
 
-                        // If the PropertiesToConsider contains at least a value, ensure that this property is "compatible" with at least one of them.
-                        // Compatible means to check not only that the current propFullName is among the propertiesToInclude;
-                        // we need to consider this propFullName ALSO IF there is at least one PropertyToInclude that specifies a property that is a child of the current propFullName.
-                        if ((cc.PropertiesToConsider?.Any() ?? false) &&
-                            !cc.PropertiesToConsider.Any(ptc => ptc.StartsWith(propFullName) || propFullName.StartsWith(ptc))) // we want to make sure that we do not exclude sub-properties to include, hence the OR condition.
-                            continue;
-                    }
+                    // If the PropertiesToConsider contains at least a value, ensure that this property is "compatible" with at least one of them.
+                    // Compatible means to check not only that the current propFullName is among the propertiesToInclude;
+                    // we need to consider this propFullName ALSO IF there is at least one PropertyToInclude that specifies a property that is a child of the current propFullName.
+                    if ((cc.PropertiesToConsider?.Any() ?? false) &&
+                        !cc.PropertiesToConsider.Any(ptc => ptc.StartsWith(propFullName) || propFullName.StartsWith(ptc))) // we want to make sure that we do not exclude sub-properties to include, hence the OR condition.
+                        continue;
 
                     object propertyValue = prop.GetValue(obj);
                     if (propertyValue != null)
