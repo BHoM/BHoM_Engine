@@ -187,6 +187,30 @@ namespace BH.Engine.Structure
         [Description("Gets the warping constant for the profile.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
+        public static double WarpingConstant(this TaperFlangeISectionProfile profile)
+        {
+            if (profile.IsNull())
+                return 0;
+
+
+            //Calculated according to Anngex G of ENV 1993-1-1:1992
+
+            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(profile.Edges.ToList());
+
+            double iz = curvesZ.Sum(x => x.IIntegrateRegion(2));
+
+            double tf = profile.FlangeThickness;
+            double hs = profile.Height - tf;
+
+            return iz * hs * hs / 4;
+
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this TaperFlangeChannelProfile profile)
         {
             if (profile.IsNull())
@@ -205,35 +229,12 @@ namespace BH.Engine.Structure
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
 
-            double cz = Math.Abs(curvesZ.Bounds().Min.X);
+            double y0 = Math.Abs(curvesZ.Bounds().Min.X);
+            double ew = y0 - 0.5 * tw;
 
             double hf2 = (h - tf) * (h - tf);
 
-            return hf2 / 4 * (iz - a * Math.Pow(cz - tw / 2, 2) * (hf2 * a / (4 * iy) - 1));
-        }
-
-        /***************************************************/
-
-        [Description("Gets the warping constant for the profile.")]
-        [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
-        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
-        public static double WarpingConstant(this TaperFlangeISectionProfile profile)
-        {
-            if (profile.IsNull())
-                return 0;
-
-
-            //Calculated according to Anngex G of ENV 1993-1-1:1992
-
-            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(profile.Edges.ToList());
-
-            double iz = curvesZ.Sum(x => x.IIntegrateRegion(2));
-
-            double tf = profile.FlangeThickness;
-            double hs = profile.Height - tf;
-
-            return iz * hs * hs / 4;
-
+            return 0.25*hf2 * (iz - a * Math.Pow(ew, 2) * (hf2 * a / (4 * iy) - 1));
         }
 
         /***************************************************/
