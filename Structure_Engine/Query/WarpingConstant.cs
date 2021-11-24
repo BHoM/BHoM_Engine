@@ -110,7 +110,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        //TODO: Add warping constant calculation for Angle, T sections, generalised fabricated box, generalised T section and Z.
+        //TODO: Add warping constant calculation for generalised fabricated box, generalised T section and Z.
 
         [Description("Gets the warping constant for the profile.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
