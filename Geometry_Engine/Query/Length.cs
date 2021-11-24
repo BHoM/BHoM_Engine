@@ -210,28 +210,26 @@ namespace BH.Engine.Geometry
         private static List<double> SquareBinomialCoefficientsEllipse(int requiredCount)
         {
             //Only allow for one thread to modify the cache at once.
-            lock (m_cooeficientLock)
+            lock (m_CooeficientLock)
             {
                 //Calcuation of coefficients only needs to be done once.
                 //Coefficients are being stored for next ellipse to be evaluated
-                if (m_ellipseCoeficients == null)
-                    m_ellipseCoeficients = new List<double>();
 
                 //Check if coefficients up to the count required have already been added
-                if (requiredCount > m_ellipseCoeficients.Count)
+                if (requiredCount > m_EllipseCoeficients.Count)
                 {
                     //Limit the count to 100 000 to avoid being locked for to long time.
                     //For common cases (ratios of less than 1:100) 1000 easily enough, but allowing a larger limit.
                     //The set limit of 100 000 should give accurate results for ellipses with a ratio of up to 1:20 000 between the long and short radius.
                     int addCount = Math.Min(requiredCount, 100000);
-                    int currentCount = m_ellipseCoeficients.Count;
+                    int currentCount = m_EllipseCoeficients.Count;
                     for (double i = currentCount; i < addCount; i++)
                     {
                         double binomialCoef = 1;
 
                         List<double> js = new List<double>();
 
-                        //Construction a series to evaluate, counting first, last, send firt, second last etc.
+                        //Construction a series to evaluate, counting first, last, send first, second last etc.
                         //This is done to avoid numeric overflow of the binomial cooefficient, as it for get to big if this is done
                         //For i over 1000 without this technique.
                         if (i % 2 == 0)
@@ -265,17 +263,17 @@ namespace BH.Engine.Geometry
                         //The square of the cooeficcient is used for the length calculation, hence storing the square cooeficient
                         binomialCoef *= binomialCoef;
 
-                        m_ellipseCoeficients.Add(binomialCoef);
+                        m_EllipseCoeficients.Add(binomialCoef);
                     }
                 }
             }
-            return m_ellipseCoeficients;
+            return m_EllipseCoeficients;
         }
 
         /***************************************************/
 
-        private static List<double> m_ellipseCoeficients = null;
-        private static object m_cooeficientLock = new object();
+        private static List<double> m_EllipseCoeficients = new List<double>();
+        private static object m_CooeficientLock = new object();
 
         /***************************************************/
     }
