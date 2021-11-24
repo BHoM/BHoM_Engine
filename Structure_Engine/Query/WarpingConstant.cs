@@ -187,6 +187,60 @@ namespace BH.Engine.Structure
         [Description("Gets the warping constant for the profile.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
+        public static double WarpingConstant(this TaperFlangeChannelProfile profile)
+        {
+            if (profile.IsNull())
+                return 0;
+
+            //Calculated according to Anngex G of ENV 1993-1-1:1992
+
+            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(profile.Edges.ToList());
+            List<PolyCurve> curvesY = curvesZ.Select(x => x.Rotate(Point.Origin, Vector.ZAxis, -Math.PI / 2)).ToList();
+
+            double a = curvesZ.Sum(x => x.IIntegrateRegion(0));
+            double iy = curvesY.Sum(x => x.IIntegrateRegion(2));
+            double iz = curvesZ.Sum(x => x.IIntegrateRegion(2));
+
+            double h = profile.Height;
+            double tf = profile.FlangeThickness;
+            double tw = profile.WebThickness;
+
+            double cz = Math.Abs(curvesZ.Bounds().Min.X);
+
+            double hf2 = (h - tf) * (h - tf);
+
+            return hf2 / 4 * (iz - a * Math.Pow(cz - tw / 2, 2) * (hf2 * a / (4 * iy) - 1));
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
+        public static double WarpingConstant(this TaperFlangeISectionProfile profile)
+        {
+            if (profile.IsNull())
+                return 0;
+
+
+            //Calculated according to Anngex G of ENV 1993-1-1:1992
+
+            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(profile.Edges.ToList());
+
+            double iz = curvesZ.Sum(x => x.IIntegrateRegion(2));
+
+            double tf = profile.FlangeThickness;
+            double hs = profile.Height - tf;
+
+            return iz * hs * hs / 4;
+
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this TSectionProfile profile)
         {
             if (profile.IsNull())
