@@ -100,6 +100,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the warping constant for the profile. This will always return 0 for angle sections.")]
+        [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
+        public static double WarpingConstant(this AngleProfile profile)
+        {
+            return profile.IsNull() ? 0 : 0;
+        }
+
+        /***************************************************/
+
         //TODO: Add warping constant calculation for Angle, T sections, generalised fabricated box, generalised T section and Z.
 
         [Description("Gets the warping constant for the profile.")]
