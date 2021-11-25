@@ -89,16 +89,25 @@ namespace BH.Engine.Geometry
             double a = Math.Max(curve.Radius1, curve.Radius2);
             double b = Math.Min(curve.Radius1, curve.Radius2);
 
-            //Special case circle
-            if (a == b)
-                return 2 * Math.PI * a;
-
-            //Special case line
-            if (b == 0)
-                return 4 * a;
 
             double h = (a - b)/ (a + b);
             h *= h;
+
+            //When h is equal to 1, the ellipse is a line
+            //The algorithm below will not be able to handle to elongated ellipses, hence 
+            //pointless to evaluate.
+            if (1 - h < 1e-6)
+            {
+                //Raise a warning when b is not exactly equal to 0
+                if (b != 0)
+                {
+                    Reflection.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times length of line between vertex and co-vertex returned.");
+                    double hypotenus = Math.Sqrt(a * a + b * b);
+                    return 4 * hypotenus;
+                }
+                else
+                    return 4 * a;
+            }
 
             double p = 0;
 
@@ -125,8 +134,9 @@ namespace BH.Engine.Geometry
             //The check bellow checks that the returned length is at least that of 4 times the longest radius.
             if (length < 4 * a)
             {
-                Engine.Reflection.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times largest radius returned.");
-                return 4 * a;
+                Reflection.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times length of line between vertex and co-vertex. ");
+                double hypotenus = Math.Sqrt(a * a + b * b);
+                return 4 * hypotenus;
             }
 
             return length; 
