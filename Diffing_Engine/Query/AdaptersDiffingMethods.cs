@@ -37,8 +37,8 @@ namespace BH.Engine.Diffing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the Diffing methods found in all Toolkits (i.e. not in the BHoM_Engine)." +
-            "\nA diffing method is a method whose name ends with 'Diffing' and that has these parameters:" +
+        [Description("Return all the public Diffing methods found in Toolkits (i.e. not in the BHoM_Engine)." +
+            "\nA Diffing method is a public method whose name ends with 'Diffing' and that has these parameters:" +
             "an IEnumerable<objects> for the past set; an IEnumerable<objects> for the following set;" +
             "any number of other optional parameters; and one DiffingConfig parameter.")]
         [Output("Diffing methods found in all Toolkits (i.e. not in the BHoM_Engine).")]
@@ -50,6 +50,7 @@ namespace BH.Engine.Diffing
             List<MethodBase> adaptersDiffingMethods = new List<MethodBase>();
 
             List<MethodBase> diffingMethods = BH.Engine.Reflection.Query.AllMethodList()
+                .Where(x => x.IsPublic)
                 .Where(x => x.Name.EndsWith("Diffing"))
                 .Where(mi => mi.DeclaringType.Module.Name != typeof(BH.Engine.Diffing.Query).Module.Name)
                 .ToList();

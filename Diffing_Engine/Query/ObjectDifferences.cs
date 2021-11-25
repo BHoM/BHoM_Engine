@@ -62,8 +62,8 @@ namespace BH.Engine.Diffing
             BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
 
             // Make sure that the propertiesToConsider and propertyExceptions are specified with their FullName form.
-            cc.PropertyNamesToFullNames(pastObject.GetType());
-            cc.PropertyNamesToFullNames(followingObject.GetType());
+            //cc.PropertyNamesToFullNames(pastObject.GetType());
+            //cc.PropertyNamesToFullNames(followingObject.GetType());
 
             // Make sure that `BHoM_Guid` will NOT be considered amongst the property differences.
             if (!cc.PropertyExceptions?.Contains("BHoM_Guid") ?? true)
@@ -98,6 +98,11 @@ namespace BH.Engine.Diffing
                 string propertyFullName = objectFullName + "." + propertyName;
                 string propertyDisplayName = propertyName;
 
+                // Get the property path without indexes in square brackets.
+                // This is useful to check if it matches with any propertyExceptions/propertiesToConsider.
+                // E.g. Bar.Fragments[1].Parameters[5].Name becomes Bar.Fragments.Parameters.Name, so we can check that against exceptions like `Parameters.Name`.
+                string propertyFullName_noIndexes = propertyFullName.RemoveSquareIndexing();
+
                 // Check if there is a `PropertyComparisonInclusion()` extension method available for this property difference.
                 object comparisonInclusionFromExtensionMethod = null;
                 object[] parameters = new object[] { kellermanPropertyDifference.ParentObject2, propertyFullName, comparisonConfig };
@@ -118,20 +123,7 @@ namespace BH.Engine.Diffing
                     continue;
                 }
 
-                // Get the property path without indexes in square brackets.
-                // This is useful to check if it matches with any propertyExceptions/propertiesToConsider.
-                // E.g. Bar.Fragments[1].Parameters[5].Name becomes Bar.Fragments.Parameters.Name, so we can check that against exceptions like `Parameters.Name`.
-                string propertyFullName_noIndexes = propertyFullName.RemoveSquareIndexing();
-
-                // Skip if the property is among the PropertyExceptions.
-                if ((cc.PropertyExceptions?.Contains(propertyFullName_noIndexes) ?? false))
-                    continue;
-
-                // If the PropertiesToConsider contains at least a value, ensure that this property is among them.
-                if ((cc.PropertiesToConsider?.Any() ?? false) && !cc.PropertiesToConsider.Contains(propertyFullName_noIndexes))
-                    continue;
-
-                // Check if this difference is a difference in terms of CustomData.
+                // Check if this difference is a difference in terms of CustomData. It may also be a CustomObject.
                 if (propertyFullName.Contains("CustomData") && propertyFullName.Contains("Value"))
                 {
                     // Get the custom data Key, so we can check if it belongs to the exceptions.
@@ -139,17 +131,48 @@ namespace BH.Engine.Diffing
                     int keyEnd = propertyFullName.IndexOf(']');
                     string customDataKey = propertyFullName.Substring(keyStart, keyEnd - keyStart);
 
-                    // If there are CustomdataKeysToInclude specified and this customDataKey is not among them, skip it.
-                    if ((cc.CustomdataKeysToInclude?.Any() ?? false) && !cc.CustomdataKeysToInclude.Contains(customDataKey))
+                    // For aesthetic reasons, remove the first dot in the name between CustomData.[keyname].etc
+                    propertyFullName = propertyFullName.Remove(keyStart - 2, 1);
+                    propertyFullName = propertyFullName.Replace(".Value", "");
+
+                    // Workaround for Kellerman duplicating the CustomData differences.
+                    if (result.Differences.Any(d => d.FullName == propertyFullName))
                         continue;
 
-                    // Skip this custom data if the key belongs to the exceptions.
-                    if (cc.CustomdataKeysExceptions?.Contains(customDataKey) ?? false)
-                        continue;
+                    // Check if we are talking about CustomObjects.
+                    if (pastObject is CustomObject || followingObject is CustomObject)
+                    {
+                        // Replace the property name as if this CustomData difference was actually a Property Difference.
+                        propertyName = customDataKey;
+                        propertyFullName_noIndexes = propertyName;
+                        propertyDisplayName = propertyName;
+                    }
+                    else
+                    {
+                        propertyDisplayName = $"{customDataKey} (CustomData)";
 
-                    // Just for aesthetic reasons, remove the first dot in the name between CustomData.[keyname].etc
-                    propertyDisplayName = propertyFullName.Remove(propertyFullName.IndexOf('.'), 1);
+                        // Skip this custom data if the key belongs to the exceptions.
+                        if (cc.CustomdataKeysExceptions?.Any(cdKeyExcept => cdKeyExcept == customDataKey || customDataKey.WildcardMatch(cdKeyExcept)) ?? false)
+                            continue;
+
+                        // If there are CustomdataKeysToInclude specified and this customDataKey is not among them, skip it.
+                        if ((cc.CustomdataKeysToInclude?.Any() ?? false) && !cc.CustomdataKeysToInclude.Any(cdkeyToInc => cdkeyToInc == customDataKey || customDataKey.WildcardMatch(cdkeyToInc)))
+                            continue;
+                    }
                 }
+
+                // Skip if the property is among the PropertyExceptions.
+                if ((cc.PropertyExceptions?.Any(pe => propertyFullName_noIndexes.EndsWith(pe) || propertyFullName_noIndexes.PropertyNameWildcardMatch(pe)) ?? false))
+                    continue;
+
+                // If the PropertiesToConsider contains at least a value, ensure that this property is among them.
+                if ((cc.PropertiesToConsider?.Any() ?? false) &&
+                    !cc.PropertiesToConsider.Any(ptc =>
+                        propertyFullName_noIndexes.EndsWith(ptc) || propertyFullName_noIndexes.PropertyNameWildcardMatch(ptc)
+                        || propertyName.StartsWith($"{ptc}.") // make sure we include sub-properties, for those cases where we did not collect all actual propertiesFullNames from the CC because of interface properties.
+                        )
+                    )
+                    continue;
 
                 // Check if this difference is numerical, and if so whether it should be included or not given the input tolerance/significant figures.
                 if (!NumericalDifferenceInclusion(kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName_noIndexes, cc))
@@ -179,6 +202,20 @@ namespace BH.Engine.Diffing
         private static string RemoveSquareIndexing(this string propertyPath)
         {
             return System.Text.RegularExpressions.Regex.Replace(propertyPath, @"\[(.*?)\]", string.Empty);
+        }
+
+        /***************************************************/
+
+        [Description("If the wildcardPattern is not a fullname, prepends a wildcard to it, then checks if it matches a given propertyName.")]
+        private static bool PropertyNameWildcardMatch(this string propertyName, string wildcardPattern)
+        {
+            if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(wildcardPattern))
+                return false;
+
+            if (!wildcardPattern.StartsWith("BH."))
+                wildcardPattern = "*" + wildcardPattern;
+
+            return propertyName.WildcardMatch(wildcardPattern);
         }
     }
 }

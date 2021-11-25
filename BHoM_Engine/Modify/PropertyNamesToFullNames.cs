@@ -38,17 +38,25 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Parse the ComparisonConfig's property names (from the `PropertiesToConsider`, `PropertyExceptions` and `PropertyNumericTolerances`), and get them all as Full Names." +
+        [Description("Parse the ComparisonConfig's property-based configs (`PropertiesToConsider`, `PropertyExceptions`, etc.), and get them all as Full Names." +
             "This allows to make sure we collect all relevant properties, even if we are given partial names or wildcards (e.g. `StartNode.*.X`).")]
         [Input("comparisonConfig", "ComparisonConfig object whose `PropertiesToConsider` and `PropertyExceptions` will be parsed." +
             "If they contain partial names or wildcards, they will be expanded with all the matching property FullNames found for the specified Type.")]
-        [Input("type", "Object type whose properties will be collected and matched against the comparisonConfig's `PropertiesToConsider` and `PropertyExceptions`.")]
+        [Input("type", "Object type whose properties will be collected and matched against the comparisonConfig's `PropertiesToConsider`, `PropertyExceptions`, and the other property-based configs.")]
         [Input("cache", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance.")]
         public static void PropertyNamesToFullNames(this BaseComparisonConfig comparisonConfig, Type type, bool cache = true)
         {
             // Null checks.
             if (comparisonConfig == null || !typeof(IObject).IsAssignableFrom(type))
                 return;
+
+            // Check if this combination of comparisonConfig and Type was already processed.
+            Tuple<Type, object> cachedResultKey = new Tuple<Type, object>(type, comparisonConfig);
+            if (m_ComparisonConfig_Type_processed.Keys.Contains(cachedResultKey))
+            {
+                comparisonConfig = (BaseComparisonConfig)m_ComparisonConfig_Type_processed[cachedResultKey];
+                return;
+            }
 
             // Result variables.
             List<string> propertiesToConsider_fullNames = null;
@@ -122,6 +130,62 @@ namespace BH.Engine.Base
             comparisonConfig.PropertiesToConsider.AddRange(propertiesToConsider_fullNames);
             comparisonConfig.PropertyExceptions.AddRange(propertyExceptions_fullNames);
             comparisonConfig.PropertyNumericTolerances.UnionWith(propertyNumericTolerances_fullNames);
+
+            m_ComparisonConfig_Type_processed[new Tuple<Type, object>(type, comparisonConfig)] = comparisonConfig;
+        }
+
+        /***************************************************/
+
+        [Description("Parse the ComparisonConfig's property-based configs (from the `PropertiesToConsider`, `PropertyExceptions`, etc.), and get them all as Full Names." +
+            "This allows to make sure we collect all relevant properties, even if we are given partial names or wildcards (e.g. `StartNode.*.X`).")]
+                [Input("comparisonConfig", "ComparisonConfig object whose `PropertiesToConsider` and `PropertyExceptions` will be parsed." +
+            "If they contain partial names or wildcards, they will be expanded with all the matching property FullNames found for the specified Type.")]
+        [Input("obj", "Object whose properties will be collected and matched against the comparisonConfig's `PropertiesToConsider`, `PropertyExceptions`, and the other property-based configs.")]
+        public static void PropertyNamesToFullNames(this BaseComparisonConfig comparisonConfig, object obj)
+        {
+            // Null checks.
+            if (comparisonConfig == null || obj == null)
+                return;
+
+            // We need to execute this method only if we have properties in the ComparisonConfig that have NOT been specified in FullName form, or that contain wildcards.
+            List<string> propertiesToConsiderToParse = comparisonConfig.PropertiesToConsider?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
+            List<string> propertyExceptionsToParse = comparisonConfig.PropertyExceptions?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
+            List<string> propertyNumericTolerancesToParse = comparisonConfig.PropertyNumericTolerances?.Select(p => p.Name).Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
+
+            // If all the property names in the ComparisonConfig are already in FullName form and without wildcards, return.
+            if (!propertiesToConsiderToParse.Any() && !propertyExceptionsToParse.Any() && !propertyNumericTolerancesToParse.Any())
+                return;
+
+            // Result variables.
+            List<string> propertiesToConsider_fullNames = new List<string>();
+            List<string> propertyExceptions_fullNames = new List<string>();
+            HashSet<NamedNumericTolerance> propertyNumericTolerances_fullNames = new HashSet<NamedNumericTolerance>();
+
+            // Collect all property FullNames for this Type of object. This operation also caches results if the same Type is encountered in the same session.
+            HashSet<string> allPropertiesFullNames = BH.Engine.Reflection.Query.GetAllPropertyFullNames(obj, comparisonConfig.MaxNesting);
+
+            // Iterate all of the input Type's propertyFullNames and see if they match with the propertiesToConsiderToParse, propertyExceptionsToParse and/or propertyNumericTolerancesToParse.
+            foreach (var propertyFullName in allPropertiesFullNames)
+            {
+                foreach (string propToConsider in propertiesToConsiderToParse)
+                    if (IsMatchingInclusion(propertyFullName, propToConsider))
+                        propertiesToConsider_fullNames.Add(propertyFullName);
+
+
+                foreach (var propException in propertyExceptionsToParse)
+                    if (IsMatchingInclusion(propertyFullName, propException))
+                        propertyExceptions_fullNames.Add(propertyFullName);
+
+
+                foreach (var propNumericTolerance in propertyNumericTolerancesToParse)
+                    if (IsMatchingInclusion(propertyFullName, propNumericTolerance))
+                        propertyNumericTolerances_fullNames.Add(new NamedNumericTolerance() { Name = propertyFullName, Tolerance = comparisonConfig.PropertyNumericTolerances.Where(pnc => pnc.Name == propNumericTolerance).First().Tolerance });
+            }
+
+            // Add the results to the ComparisonConfig.
+            comparisonConfig.PropertiesToConsider.AddRange(propertiesToConsider_fullNames);
+            comparisonConfig.PropertyExceptions.AddRange(propertyExceptions_fullNames);
+            comparisonConfig.PropertyNumericTolerances.UnionWith(propertyNumericTolerances_fullNames);
         }
 
         /***************************************************/
@@ -151,6 +215,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         // We cache separately the processed propertiesToConsider, propertyExceptions and propertyNumericTolerances to get optimal performance/versatility.
+        private static Dictionary<Tuple<Type, object>, object> m_ComparisonConfig_Type_processed = new Dictionary<Tuple<Type, object>, object>();
         private static Dictionary<string, List<string>> m_cachedPropertiesToConsider = new Dictionary<string, List<string>>();
         private static Dictionary<string, List<string>> m_cachedPropertyExceptions = new Dictionary<string, List<string>>();
         private static Dictionary<string, HashSet<NamedNumericTolerance>> m_cachedPropertyNumericTolerances = new Dictionary<string, HashSet<NamedNumericTolerance>>();
