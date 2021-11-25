@@ -216,9 +216,12 @@ namespace BH.Engine.Results
                 case MeshResultSmoothingType.ByFiniteElementCentres:
                 case MeshResultSmoothingType.BySelection:
                 default:
-                    Engine.Base.Compute.RecordError("Unsupported SmoothingType: " + Base.Query.PropertyValue(meshResult, "Smoothing").ToString() +
-                                                      " detected, meshResult for ObjectId: " + meshResult.ObjectId.ToString() +
-                                                      " and ResultCase: " + meshResult.ResultCase.ToString() + "will be returned empty.");
+                    string msg = $"Unsupported SmoothingType: {smoothingType} detected, meshResult for ObjectId: {meshResult.ObjectId}";
+                    if (meshResult is ICasedResult)
+                        msg += $" and ResultCase: {(meshResult as ICasedResult).ResultCase}";
+
+                    msg += " will be returned empty.";
+                    Engine.Base.Compute.RecordError(msg);
                     return new RenderMesh();
             }
 
