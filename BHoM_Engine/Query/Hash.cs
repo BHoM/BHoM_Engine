@@ -73,7 +73,7 @@ namespace BH.Engine.Base
             cc.TypeExceptions.Add(typeof(HashFragment));
 
             // Parse the ComparisonConfig's `PropertiesToConsider` and `PropertyExceptions` and get them all as Full Names.
-            Modify.PropertyNamesToFullNames(cc, iObj.GetType());
+            Modify.PropertyNamesToFullNames(cc, iObj);
 
             // ----- HASH -----
 
@@ -185,12 +185,14 @@ namespace BH.Engine.Base
                 {
                     if (isCustomDataDic)
                     {
-                        // If the CustomDataKey is among the exceptions, skip it.
-                        if (cc.CustomdataKeysExceptions?.Contains(entry.Key) ?? false)
+                        string customDataKey = entry.Key.ToString();
+
+                        // Skip this custom data if the key belongs to the exceptions.
+                        if (cc.CustomdataKeysExceptions?.Any(cdKeyExcept => cdKeyExcept == customDataKey || customDataKey.WildcardMatch(cdKeyExcept)) ?? false)
                             continue;
 
-                        // If there are CustomdataKeysToInclude specified and CustomDataKey is not among them, skip it.
-                        if ((cc.CustomdataKeysToInclude?.Any() ?? false) && !cc.CustomdataKeysToInclude.Contains(entry.Key))
+                        // If there are CustomdataKeysToInclude specified and this customDataKey is not among them, skip it.
+                        if ((cc.CustomdataKeysToInclude?.Any() ?? false) && !cc.CustomdataKeysToInclude.Any(cdkeyToInc => cdkeyToInc == customDataKey || customDataKey.WildcardMatch(cdkeyToInc)))
                             continue;
                     }
 
@@ -230,10 +232,26 @@ namespace BH.Engine.Base
                     string propName = prop.Name;
                     string propFullName = $"{currentPropertyFullName}.{propName}";
 
-                    // Check the propertyExceptions/propertiesToConsider in the ComparisonConfig..
+                    // Skip if the property is a BHoM_Guid.
+                    if (propName == "BHoM_Guid")
+                        continue;
 
-                    // Skip if the property is among the PropertyExceptions, or if it's a BHoM_Guid.
-                    if ((cc.PropertyExceptions?.Contains(propFullName) ?? false) || propName == "BHoM_Guid")
+                    if (type == typeof(CustomObject))
+                    {
+                        // Get the custom data Key, so we can check if it belongs to the exceptions.
+                        int keyStart = propFullName.IndexOf('[') + 1;
+                        int keyEnd = propFullName.IndexOf(']');
+                        string customDataKey = propFullName.Substring(keyStart, keyEnd - keyStart);
+
+                        // Replace the property name as if this CustomData difference was actually a Property Difference.
+                        propName = customDataKey;
+                        propFullName = $"{currentPropertyFullName}.CustomData[{customDataKey}]";
+                    }
+
+                    // Check the propertyExceptions/propertiesToConsider in the ComparisonConfig.
+
+                    // Skip if the property is among the PropertyExceptions.
+                    if ((cc.PropertyExceptions?.Any(pe => propFullName.EndsWith(pe) || propFullName.WildcardMatch(pe)) ?? false))
                         continue;
 
                     // If the PropertiesToConsider contains at least a value, ensure that this property is "compatible" with at least one of them.

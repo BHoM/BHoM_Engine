@@ -36,6 +36,22 @@ namespace BH.Engine.Reflection
 		/**** Public Methods                            ****/
 		/***************************************************/
 
+		[Description("Get all the Properties and Sub properties of the given object in their full name form.")]
+		[Input("obj", "Object to get the properties from.")]
+		[Input("maxDepth", "(Optional, defaults to 100) Maximum property nesting level.")]
+		public static HashSet<string> GetAllPropertyFullNames(this object obj, int maxDepth = 100)
+		{
+			if (maxDepth < 1)
+				return new HashSet<string>();
+
+			HashSet<string> allPropertyFullNames = new HashSet<string>();
+			GetAllPropertyFullNames(obj, obj.GetType().FullName, 0, ref allPropertyFullNames, maxDepth);
+
+			return allPropertyFullNames ?? new HashSet<string>();
+		}
+
+		/***************************************************/
+
 		[Description("Get all the Properties and Sub properties of the given type in their full name form.")]
 		[Input("type", "Type to get the properties from.")]
 		[Input("maxDepth", "(Optional, defaults to 100) Maximum property nesting level.")]
@@ -79,6 +95,34 @@ namespace BH.Engine.Reflection
 				allPropertyFullNames.Add(res);
 
 				PropertyNameTree(res, subProps, currentDepth + 1, maxDepth, ref allPropertyFullNames);
+			}
+		}
+
+		/***************************************************/
+
+		private static void GetAllPropertyFullNames(object obj, string nameToCombine, int nestingLevel, ref HashSet<string> result, int maxDepth = 100)
+		{
+			if (nestingLevel > maxDepth || obj == null || result == null)
+				return;
+
+			Type objectType = obj.GetType();
+
+			if (!typeof(IObject).IsAssignableFrom(objectType))
+				return;
+
+			var props = objectType.GetProperties();
+
+			foreach (var prop in props)
+			{
+				// Get only the readable, declared properties.
+				if (!prop.CanRead || !typeof(IObject).IsAssignableFrom(prop.DeclaringType))
+					return;
+
+				string propertyPath = nameToCombine + "." + prop.Name;
+
+				result.Add(propertyPath);
+
+				GetAllPropertyFullNames(prop.GetValue(obj), propertyPath, nestingLevel + 1, ref result, maxDepth);
 			}
 		}
 
