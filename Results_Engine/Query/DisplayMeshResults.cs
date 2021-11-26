@@ -90,8 +90,18 @@ namespace BH.Engine.Results
 
             // Map the MeshResults to Meshes
             List<List<IMeshResult<TMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", identifier, caseFilter);
+            Func<IMeshElementResult, double> propertyFuction = GetPropertFunc(meshResults.First().Results.First() as dynamic, meshResultDisplay);
 
-            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(z => z.ResultToValue(meshResultDisplay)))));
+            if (propertyFuction == null)
+            {
+                return new Output<List<List<RenderMesh>>, GradientOptions>
+                {
+                    Item1 = new List<List<RenderMesh>>(),
+                    Item2 = gradientOptions
+                };
+            }
+            
+            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(z => propertyFuction(z)))));
 
             List<List<RenderMesh>> result = new List<List<RenderMesh>>();
 
@@ -100,7 +110,7 @@ namespace BH.Engine.Results
                 result.Add(new List<RenderMesh>());
                 for (int j = 0; j < mappedResults[i].Count; j++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, meshResultDisplay, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
+                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, propertyFuction, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
                 }
             }
 
@@ -115,25 +125,10 @@ namespace BH.Engine.Results
         /****           Private Methods                 ****/
         /***************************************************/
 
-        [Description("Gets the value type specified in MeshResultDisplay from the object r.")]
-        [Output("value", "The value of the specified type.")]
-        private static double ResultToValue(this IMeshElementResult r, string prop)
-        {
-            object resultValue = Engine.Base.Query.PropertyValue(r, prop);
-
-            if (resultValue is double)
-                return System.Convert.ToDouble(resultValue);
-
-            Engine.Base.Compute.RecordError(prop.ToString() + " is not present in the results.");
-            return 0;
-        }
-
-        /***************************************************/
-
         [Description("Applies colour to a single IMesh based on a single MeshResult, i.e stress or force etc.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
         private static RenderMesh DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IMesh<TNode, TFace> mesh, IMeshResult<TMeshElementResult> meshResult, Type identifier,
-                                             string meshResultDisplay, Gradient gradient, double from, double to)
+                                             Func<IMeshElementResult, double> propertyFuction, Gradient gradient, double from, double to)
             where TNode : INode
             where TFace : IFace
             where TMeshElementResult : IMeshElementResult
@@ -149,8 +144,6 @@ namespace BH.Engine.Results
                 return null;
             }
 
-            // Order the MeshNodeResults by the IMesh Nodes
-            List<List<TMeshElementResult>> tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, "NodeId", identifier);
             // Get the relevant values into a list
 
             List<RenderPoint> verts = new List<RenderPoint>();
@@ -161,29 +154,36 @@ namespace BH.Engine.Results
             if (smoothing is MeshResultSmoothingType)
                 smoothingType = (MeshResultSmoothingType)smoothing;
 
+            // Order the MeshNodeResults by the IMesh Nodes or faces depending on smoothing
+            List<List<TMeshElementResult>> tempMappedElementResults;
+            if (smoothingType == MeshResultSmoothingType.ByFiniteElementCentres)
+                tempMappedElementResults = mesh.Faces.MapResults(meshResult.Results, nameof(IMeshElementResult.MeshFaceId), identifier);
+            else
+                tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, nameof(IMeshElementResult.NodeId), identifier);
+
             switch (smoothingType)
             {
                 case MeshResultSmoothingType.None:
                     //  pair nodeValue as list<Dictionary<FaceId,nodeValue>>
                     //  all nodes are expected to have FaceIds
-                    List<Dictionary<IComparable, double>> nodeValuePairs = tempMappedElementResults.Select(x => x.ToDictionary(y => y.MeshFaceId, y => /*propFunction(y)*/y.ResultToValue(meshResultDisplay))).ToList();
+                    List<Dictionary<IComparable, double>> nodeValuePairs = tempMappedElementResults.Select(x => x.ToDictionary(y => y.MeshFaceId, y => propertyFuction(y))).ToList();
                     //  put the Faces in a Dictionary<FaceId,Face>
                     Dictionary<object, Face> faceDictionaryResult = mesh.Faces.ToDictionary(x => x.FindFragment<IAdapterId>(identifier).Id, x => x.Geometry());
-                    Dictionary<object, Face> faceDictionaryRefrence = mesh.Faces.ToDictionary(x => x.FindFragment<IAdapterId>(identifier).Id, x => x.Geometry());
+                    Dictionary<object, Face> faceDictionaryRefrence = new Dictionary<object, Face>(faceDictionaryResult);
 
                     // Add all verticies to a list with their colour and update the Faces
                     for (int k = 0; k < mesh.Nodes.Count; k++)
                     {
-                        foreach (KeyValuePair<IComparable, double> FaceRelatedValue in nodeValuePairs[k])
+                        foreach (KeyValuePair<IComparable, double> faceRelatedValue in nodeValuePairs[k])
                         {
                             verts.Add(new RenderPoint()
                             {
                                 Point = mesh.Nodes[k].Position,
-                                Colour = gradient.Color(FaceRelatedValue.Value, from, to)
+                                Colour = gradient.Color(faceRelatedValue.Value, from, to)
                             });
                             // Face management, faceResult points to verts and faceReference points to mesh.Nodes
-                            Face faceResult = faceDictionaryResult[FaceRelatedValue.Key];
-                            Face faceReference = faceDictionaryRefrence[FaceRelatedValue.Key];
+                            Face faceResult = faceDictionaryResult[faceRelatedValue.Key];
+                            Face faceReference = faceDictionaryRefrence[faceRelatedValue.Key];
                             Face newFace = new Face()
                             {
                                 A = faceReference.A == k ? verts.Count - 1 : faceResult.A,
@@ -191,7 +191,7 @@ namespace BH.Engine.Results
                                 C = faceReference.C == k ? verts.Count - 1 : faceResult.C,
                                 D = faceReference.IsQuad() ? faceReference.D == k ? verts.Count - 1 : faceResult.D : -1
                             };
-                            faceDictionaryResult[FaceRelatedValue.Key] = newFace;
+                            faceDictionaryResult[faceRelatedValue.Key] = newFace;
                         }
                     }
                     faces = faceDictionaryResult.Select(x => x.Value).ToList();
@@ -199,7 +199,7 @@ namespace BH.Engine.Results
 
                 case MeshResultSmoothingType.ByPanel:
                 case MeshResultSmoothingType.Global:
-                    List<double> nodeValues = tempMappedElementResults.Select(x => x[0].ResultToValue(meshResultDisplay)).ToList();
+                    List<double> nodeValues = tempMappedElementResults.Select(x => propertyFuction(x[0])).ToList();
 
                     // Add all verticies to a list with their colour
                     for (int k = 0; k < mesh.Nodes.Count; k++)
@@ -214,6 +214,32 @@ namespace BH.Engine.Results
                     break;
 
                 case MeshResultSmoothingType.ByFiniteElementCentres:
+                    List<double> faceValues = tempMappedElementResults.Select(x => propertyFuction(x[0])).ToList();
+                    faces = new List<Face>();
+                    for (int i = 0; i < mesh.Faces.Count; i++)
+                    {
+                        System.Drawing.Color colour = gradient.Color(faceValues[i], from, to);
+                        List<int> faceIndecies = new List<int>();
+                        foreach (int nodeIndex in mesh.Faces[i].NodeListIndices)
+                        {
+                            faceIndecies.Add(verts.Count);
+                            verts.Add(new RenderPoint()
+                            {
+                                Point = mesh.Nodes[nodeIndex].Position,
+                                Colour = colour
+                            });
+                        }
+                        faces.Add(new Face
+                        {
+                            A = faceIndecies[0],
+                            B = faceIndecies[1],
+                            C = faceIndecies[2],
+                            D = faceIndecies.Count > 3 ? faceIndecies[3] : -1
+                        });
+                        
+                    }
+
+                    break;
                 case MeshResultSmoothingType.BySelection:
                 default:
                     string msg = $"Unsupported SmoothingType: {smoothingType} detected, meshResult for ObjectId: {meshResult.ObjectId}";
@@ -230,6 +256,22 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
+        private static Func<IMeshElementResult, double> GetPropertFunc<T>(T meshElemResult, string prop) where T : IMeshElementResult
+        {
+            var propInfo = typeof(T).GetProperty(prop);
+
+            if (propInfo == null || propInfo.PropertyType != typeof(double))
+            {
+                Base.Compute.RecordError($"Property {prop} is not a valid property for results of type {typeof(T).Name}. Try one of the following: {typeof(T).GetProperties().Where(x => x.PropertyType == typeof(double)).Select(x => x.Name).Aggregate((a, b) => a + " ," + b)}");
+                return null;
+            }
+
+            Func<T, double> funcT = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), propInfo.GetGetMethod());
+
+            return x => funcT((T)x);
+        }
+
+        /***************************************************/
     }
 }
 
