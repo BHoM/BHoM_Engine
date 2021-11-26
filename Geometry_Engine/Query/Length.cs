@@ -64,6 +64,11 @@ namespace BH.Engine.Geometry
         [Output("length", "The length of the Arc.", typeof(Length))]
         public static double Length(this Arc curve)
         {
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                return double.NaN;
+            }
             return curve.Angle() * curve.Radius;
         }
 
@@ -74,6 +79,11 @@ namespace BH.Engine.Geometry
         [Output("length", "The length of the Circle.", typeof(Length))]
         public static double Length(this Circle curve)
         {
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                return double.NaN;
+            }
             return 2 * Math.PI * curve.Radius;
         }
 
@@ -85,10 +95,15 @@ namespace BH.Engine.Geometry
         [Output("length", "The length of the Ellipse.", typeof(Length))]
         public static double Length(this Ellipse curve)
         {
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                return double.NaN;
+            }
+
             //Get out a as the long radius and b as the short radius
             double a = Math.Max(curve.Radius1, curve.Radius2);
             double b = Math.Min(curve.Radius1, curve.Radius2);
-
 
             double h = (a - b)/ (a + b);
             h *= h;
@@ -169,6 +184,11 @@ namespace BH.Engine.Geometry
         [Output("length", "The length of the PolyCurve.", typeof(Length))]
         public static double Length(this PolyCurve curve)
         {
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                return double.NaN;
+            }
             return curve.Curves.Sum(c => c.ILength());
         }
 
@@ -179,6 +199,11 @@ namespace BH.Engine.Geometry
         [Output("length", "The length of the Polyline.", typeof(Length))]
         public static double Length(this Polyline curve)
         {
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                return double.NaN;
+            }
             double length = 0;
             List<Point> pts = curve.ControlPoints;
 
@@ -198,6 +223,11 @@ namespace BH.Engine.Geometry
         [Output("length", "The length of the Arc.", typeof(Length))]
         public static double ILength(this ICurve curve)
         {
+            if (curve == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                return double.NaN;
+            }
             return Length(curve as dynamic);
         }
 
