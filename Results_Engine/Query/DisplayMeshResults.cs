@@ -25,6 +25,7 @@ using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Base;
 using System.Linq;
+using System.Reflection;
 using BH.oM.Geometry;
 using BH.oM.Structure.Results;
 using BH.oM.Graphics;
@@ -262,7 +263,8 @@ namespace BH.Engine.Results
 
             if (propInfo == null || propInfo.PropertyType != typeof(double))
             {
-                Base.Compute.RecordError($"Property {prop} is not a valid property for results of type {typeof(T).Name}. Try one of the following: {typeof(T).GetProperties().Where(x => x.PropertyType == typeof(double)).Select(x => x.Name).Aggregate((a, b) => a + " ," + b)}");
+                Base.Compute.RecordError($"Property {prop} is not a valid property for results of type {typeof(T).Name}." + 
+                    $"Try one of the following: {typeof(T).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => x.PropertyType == typeof(double)).Select(x => x.Name).Aggregate((a, b) => a + " ," + b)}");
                 return null;
             }
 
