@@ -215,21 +215,30 @@ namespace BH.Engine.Results
                     break;
 
                 case MeshResultSmoothingType.ByFiniteElementCentres:
+                    //For smoothening by face centres, the same colour is displayed for the whole face.
+                    //This is acheived by adding duplicate nodes (one for each face that connected to a node) and give
+                    //All nodes that belong to a face the same colour
+
+                    //Get out face results
                     List<double> faceValues = tempMappedElementResults.Select(x => propertyFuction(x[0])).ToList();
                     faces = new List<Face>();
                     for (int i = 0; i < mesh.Faces.Count; i++)
                     {
+                        //Get colour for the face
                         System.Drawing.Color colour = gradient.Color(faceValues[i], from, to);
+                        //Store face indecies for newly added vertecies
                         List<int> faceIndecies = new List<int>();
+                        int vertsCount = verts.Count - 1;
                         foreach (int nodeIndex in mesh.Faces[i].NodeListIndices)
                         {
-                            faceIndecies.Add(verts.Count);
                             verts.Add(new RenderPoint()
                             {
                                 Point = mesh.Nodes[nodeIndex].Position,
                                 Colour = colour
                             });
+                            faceIndecies.Add(vertsCount++);
                         }
+                        //Add new face pointing at the newly added vertex indecies
                         faces.Add(new Face
                         {
                             A = faceIndecies[0],
@@ -257,19 +266,28 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
+        [Description("Gets a compiled getter for extracting a doble property with the provided name from the type T. This is to improve the performance for extracting the inner result values.")]
         private static Func<IMeshElementResult, double> GetPropertFunc<T>(T meshElemResult, string prop) where T : IMeshElementResult
         {
+            //Get the property to evaluate
             var propInfo = typeof(T).GetProperty(prop);
 
-            if (propInfo == null || propInfo.PropertyType != typeof(double))
+            //Get the get method from the property
+            MethodInfo getMethod = propInfo?.GetGetMethod();
+
+            //Check that the property exists, has a get method and is of double type.
+            if (getMethod == null || propInfo.PropertyType != typeof(double))
             {
+                //If incorrect type, raise error message with suggestions of property types that works for the current MeshElementResult type
                 Base.Compute.RecordError($"Property {prop} is not a valid property for results of type {typeof(T).Name}." + 
                     $"Try one of the following: {typeof(T).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => x.PropertyType == typeof(double)).Select(x => x.Name).Aggregate((a, b) => a + " ," + b)}");
                 return null;
             }
 
-            Func<T, double> funcT = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), propInfo.GetGetMethod());
+            //Compile the getter method for the property into a delegate
+            Func<T, double> funcT = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), getMethod);
 
+            //Return a fuction that casts the IMeshELementResult to T and calls the getmethod on the object for the property.
             return x => funcT((T)x);
         }
 
