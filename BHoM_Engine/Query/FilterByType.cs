@@ -42,9 +42,12 @@ namespace BH.Engine.Base
         public static List<object> FilterByType(this IEnumerable<object> list, Type type)
         {
             if (list == null)
-                return null;
+                return new List<object>();
 
-            return list.Where(x => type.IsAssignableFrom(x.GetType())).ToList();
+            if (type == null)
+                return list.ToList();
+
+            return list.Where(x => type.IsAssignableFrom(x?.GetType())).ToList();
         }
     }
 }
