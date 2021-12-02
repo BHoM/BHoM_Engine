@@ -41,7 +41,7 @@ namespace BH.Engine.Reflection
 		[Input("maxDepth", "(Optional, defaults to 100) Maximum property nesting level.")]
 		public static HashSet<string> GetAllPropertyFullNames(this object obj, int maxDepth = 100)
 		{
-			if (maxDepth < 1)
+			if (obj == null || maxDepth < 1)
 				return new HashSet<string>();
 
 			HashSet<string> allPropertyFullNames = new HashSet<string>();

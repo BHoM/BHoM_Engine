@@ -43,7 +43,7 @@ namespace BH.Engine.Base
             if (list == null)
                 return null;
 
-            return list.GroupBy(x => x.GetType()).Select(x => x.ToList()).ToList();
+            return list.GroupBy(x => x?.GetType()).Select(x => x?.ToList()).ToList();
         }
 
         /***************************************************/
