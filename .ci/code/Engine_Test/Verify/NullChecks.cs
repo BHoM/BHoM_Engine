@@ -46,8 +46,8 @@ namespace BH.Test.Engine
         public static TestResult NullChecks()
         {
             // Ignore because of stack overflow or need to install external libraries
-            List<string> toIgnore = new List<string> { "MachineLearning", "Python", "LifeCycleAssessment.Query.GetEvaluationValue" };
-
+            List<string> toIgnore = new List<string> { "MachineLearning", "Python", "LifeCycleAssessment.Query.GetEvaluationValue", "BH.Engine.Adapters.BIM360.Query.AuthorisationCode" };
+            
             // Test all the BHoM types available
             List<MethodInfo> methods = BH.Engine.Reflection.Query.BHoMMethodList()
                 .Where(x => !x.IsDeprecated())
