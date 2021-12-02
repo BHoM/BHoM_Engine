@@ -42,6 +42,8 @@ namespace BH.Engine.Base
         [Input("propertyFullName", "Full name (path) of the property for which we want to extract the numerical Tolerance.")]
         public static double NumericTolerance(this BaseComparisonConfig comparisonConfig, string propertyFullName)
         {
+            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
+
             return NumericTolerance(comparisonConfig.PropertyNumericTolerances, comparisonConfig.NumericTolerance, propertyFullName, false);
         }
 
