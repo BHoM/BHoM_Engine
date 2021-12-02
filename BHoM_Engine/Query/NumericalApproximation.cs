@@ -50,6 +50,8 @@ namespace BH.Engine.Base
         [Input("comparisonConfig", "Object that stores the settings that will used for the approximation.")]
         public static double NumericalApproximation(this double number, string fullName = null, BaseComparisonConfig comparisonConfig = null)
         {
+            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
+
             return NumericalApproximation(number, fullName, comparisonConfig.PropertyNumericTolerances, comparisonConfig.NumericTolerance, comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures);
         }
 
@@ -61,6 +63,8 @@ namespace BH.Engine.Base
         [Input("comparisonConfig", "Object that stores the settings that will used for the approximation.")]
         public static double NumericalApproximation(this int number, string fullName = null, BaseComparisonConfig comparisonConfig = null)
         {
+            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
+
             return NumericalApproximation(number, fullName, comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures);
         }
 
