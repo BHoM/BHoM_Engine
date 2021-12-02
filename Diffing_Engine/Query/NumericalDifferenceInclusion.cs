@@ -49,6 +49,8 @@ namespace BH.Engine.Diffing
         [Input("comparisonConfig", "Object containing the settings for this numerical comparison.")]
         public static bool NumericalDifferenceInclusion(this object number1, object number2, string propertyFullName = null, BaseComparisonConfig comparisonConfig = null)
         {
+            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
+
             return NumericalDifferenceInclusion(number1, number2, propertyFullName, comparisonConfig.PropertyNumericTolerances, comparisonConfig.NumericTolerance, comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures);
         }
 

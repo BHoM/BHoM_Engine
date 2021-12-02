@@ -41,7 +41,7 @@ namespace BH.Engine.Reflection
         [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
         public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
         {
-            if (assignableTo == null || assignableFrom == null)
+            if(assignableTo == null || assignableFrom == null)
             {
                 Compute.RecordError("Cannot assign to or from null types.");
                 return false;
