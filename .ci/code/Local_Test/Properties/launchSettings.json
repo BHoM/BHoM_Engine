@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Local_Test": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}

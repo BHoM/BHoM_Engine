@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Engine_Test\Engine_Test.csproj" />
+    <ProjectReference Include="..\Serialiser_Test\Serialiser_Test.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Adapter_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Adapter_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="BHoM_Adapter">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM_Adapter.dll</HintPath>
+    </Reference>
+    <Reference Include="File_Adapter">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\File_Adapter.dll</HintPath>
+    </Reference>
+    <Reference Include="File_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\File_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Reflection_Engine">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Serialiser_Engine">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Serialiser_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Test_Engine">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Test_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Test_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Test_oM.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

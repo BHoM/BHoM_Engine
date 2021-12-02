@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1259
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialiser_Test", "Serialiser_Test\Serialiser_Test.csproj", "{92F35A76-1A04-4194-9249-D459460DE328}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine_Test", "Engine_Test\Engine_Test.csproj", "{216E8DF8-9650-4B3B-8416-959B94BC527C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Local_Test", "Local_Test\Local_Test.csproj", "{6074345E-FCB8-4D68-B0E4-44727490E7FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{216E8DF8-9650-4B3B-8416-959B94BC527C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{216E8DF8-9650-4B3B-8416-959B94BC527C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{216E8DF8-9650-4B3B-8416-959B94BC527C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6074345E-FCB8-4D68-B0E4-44727490E7FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6074345E-FCB8-4D68-B0E4-44727490E7FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6074345E-FCB8-4D68-B0E4-44727490E7FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6074345E-FCB8-4D68-B0E4-44727490E7FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
