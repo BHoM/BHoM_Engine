@@ -144,7 +144,7 @@ namespace BH.Engine.Base
             {
                 return "";
             }
-            else if (type.IsNumeric())
+            else if (type.IsNumeric() && type.BaseType != typeof(System.Enum))
             {
                 // If we didn't specify any custom tolerance/significant figures, just return the input.
                 if (cc.NumericTolerance == double.MinValue && cc.SignificantFigures == int.MaxValue
