@@ -138,7 +138,7 @@ namespace BH.Engine.Base
 
         [Description("Parse the ComparisonConfig's property-based configs (from the `PropertiesToConsider`, `PropertyExceptions`, etc.), and get them all as Full Names." +
             "This allows to make sure we collect all relevant properties, even if we are given partial names or wildcards (e.g. `StartNode.*.X`).")]
-                [Input("comparisonConfig", "ComparisonConfig object whose `PropertiesToConsider` and `PropertyExceptions` will be parsed." +
+        [Input("comparisonConfig", "ComparisonConfig object whose `PropertiesToConsider` and `PropertyExceptions` will be parsed." +
             "If they contain partial names or wildcards, they will be expanded with all the matching property FullNames found for the specified Type.")]
         [Input("obj", "Object whose properties will be collected and matched against the comparisonConfig's `PropertiesToConsider`, `PropertyExceptions`, and the other property-based configs.")]
         public static void PropertyNamesToFullNames(this BaseComparisonConfig comparisonConfig, object obj)
@@ -183,9 +183,11 @@ namespace BH.Engine.Base
             }
 
             // Add the results to the ComparisonConfig.
-            comparisonConfig.PropertiesToConsider.AddRange(propertiesToConsider_fullNames);
-            comparisonConfig.PropertyExceptions.AddRange(propertyExceptions_fullNames);
-            comparisonConfig.PropertyNumericTolerances.UnionWith(propertyNumericTolerances_fullNames);
+            comparisonConfig.PropertiesToConsider = comparisonConfig.PropertiesToConsider?.Concat(propertiesToConsider_fullNames).ToList() ?? propertiesToConsider_fullNames;
+            comparisonConfig.PropertyExceptions = comparisonConfig.PropertyExceptions?.Concat(propertyExceptions_fullNames).ToList() ?? propertyExceptions_fullNames;
+            comparisonConfig.PropertyNumericTolerances = comparisonConfig.PropertyNumericTolerances == null ?
+                new HashSet<NamedNumericTolerance>(comparisonConfig.PropertyNumericTolerances?.Union(propertyNumericTolerances_fullNames))
+                : propertyNumericTolerances_fullNames;
         }
 
         /***************************************************/
