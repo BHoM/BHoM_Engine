@@ -70,7 +70,6 @@ namespace BH.Engine.Base
 
             // Make sure we always have a config object. Clone for immutability.
             BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
-            cc.TypeExceptions.Add(typeof(HashFragment));
 
             // Parse the ComparisonConfig's `PropertiesToConsider` and `PropertyExceptions` and get them all as Full Names.
             Modify.PropertyNamesToFullNames(cc, iObj);
@@ -136,8 +135,8 @@ namespace BH.Engine.Base
             // Compute the definingString depending on the object type. //
             // -------------------------------------------------------- // 
 
-
             if (type == null
+                || type == typeof(HashFragment)
                 || (cc.TypeExceptions != null && cc.TypeExceptions.Any(te => te.IsAssignableFrom(type)))
                 || (cc.NamespaceExceptions != null && cc.NamespaceExceptions.Where(ex => type.Namespace.Contains(ex)).Any())
                 || nestingLevel >= cc.MaxNesting)
