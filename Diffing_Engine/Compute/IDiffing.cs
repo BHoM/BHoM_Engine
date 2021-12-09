@@ -91,8 +91,8 @@ namespace BH.Engine.Diffing
             List<object> remainder_following;
             Type commonPersistentId_past;
             Type commonPersistentId_following;
-            List<IBHoMObject> bHoMObjects_past_persistId = bHoMObjects_past.WithCommonPersistentAdapterId(out remainder_past, out commonPersistentId_past);
-            List<IBHoMObject> bHoMObjects_following_persistId = bHoMObjects_following.WithCommonPersistentAdapterId(out remainder_following, out commonPersistentId_following);
+            List<IBHoMObject> bHoMObjects_past_persistId = pastObjs.WithCommonPersistentAdapterId(out remainder_past, out commonPersistentId_past);
+            List<IBHoMObject> bHoMObjects_following_persistId = followingObjs.WithCommonPersistentAdapterId(out remainder_following, out commonPersistentId_following);
 
             // For the BHoMObjects having a common PersistentAdapterId in their fragments, we can compute the Diff by using it.
             if (commonPersistentId_past != null && commonPersistentId_past == commonPersistentId_following
