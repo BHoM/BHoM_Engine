@@ -98,6 +98,9 @@ namespace BH.Engine.Diffing
                 string propertyFullName = objectFullName + "." + propertyName;
                 string propertyDisplayName = propertyName;
 
+                if ((cc.NamespaceExceptions?.Any() ?? false) && cc.NamespaceExceptions.Any(ne => propertyFullName.StartsWith(ne)))
+                    continue;
+
                 // Get the property path without indexes in square brackets.
                 // This is useful to check if it matches with any propertyExceptions/propertiesToConsider.
                 // E.g. Bar.Fragments[1].Parameters[5].Name becomes Bar.Fragments.Parameters.Name, so we can check that against exceptions like `Parameters.Name`.
