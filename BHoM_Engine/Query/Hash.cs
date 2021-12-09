@@ -190,8 +190,8 @@ namespace BH.Engine.Base
                         if (cc.CustomdataKeysExceptions?.Any(cdKeyExcept => cdKeyExcept == customDataKey || customDataKey.WildcardMatch(cdKeyExcept)) ?? false)
                             continue;
 
-                        // If there are CustomdataKeysToInclude specified and this customDataKey is not among them, skip it.
-                        if ((cc.CustomdataKeysToInclude?.Any() ?? false) && !cc.CustomdataKeysToInclude.Any(cdkeyToInc => cdkeyToInc == customDataKey || customDataKey.WildcardMatch(cdkeyToInc)))
+                        // If there are CustomdataKeysToConsider specified and this customDataKey is not among them, skip it.
+                        if ((cc.CustomdataKeysToConsider?.Any() ?? false) && !cc.CustomdataKeysToConsider.Any(cdkeyToInc => cdkeyToInc == customDataKey || customDataKey.WildcardMatch(cdkeyToInc)))
                             continue;
                     }
 
