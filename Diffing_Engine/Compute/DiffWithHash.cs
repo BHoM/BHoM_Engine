@@ -81,6 +81,8 @@ namespace BH.Engine.Diffing
 
         private static Diff DiffingWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, DiffingConfig diffingConfig = null, bool storeHash = false, bool retrieveStoredHash = false)
         {
+            DiffingConfig diffConfigCopy = diffingConfig ?? new DiffingConfig();
+
             Diff outputDiff = null;
             if (InputObjectsNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffingConfig))
                 return outputDiff;
@@ -97,7 +99,7 @@ namespace BH.Engine.Diffing
             HashComparer<object> hashComparer = new HashComparer<object>(diffingConfig.ComparisonConfig, storeHash, retrieveStoredHash);
             VennDiagram<object> vd = Engine.Data.Create.VennDiagram(pastObjects, followingObjs, hashComparer);
 
-            return new Diff(vd.OnlySet2, vd.OnlySet1, null, diffingConfig, null, vd.Intersection);
+            return new Diff(vd.OnlySet2, vd.OnlySet1, null, diffingConfig, null, vd.Intersection.Select(i => i.Item2));
         }
 
         /***************************************************/
