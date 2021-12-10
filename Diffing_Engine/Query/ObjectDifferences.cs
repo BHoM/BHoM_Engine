@@ -76,7 +76,7 @@ namespace BH.Engine.Diffing
             kellermanComparer.Config.TypesToIgnore.Add(typeof(RevisionFragment)); // Never include the changes in RevisionFragment.
             kellermanComparer.Config.TypesToIgnore.AddRange(cc.TypeExceptions);
             kellermanComparer.Config.MembersToIgnore = cc.PropertyExceptions;
-
+            
             // Kellerman configuration for tolerance.
             // Setting Custom Tolerance for specific properties is complex with Kellerman. 
             // So instead, we set the Kellerman precision to capture all variations, that is by using the value 0.
@@ -98,6 +98,15 @@ namespace BH.Engine.Diffing
                 string propertyFullName = objectFullName + "." + propertyName;
                 string propertyDisplayName = propertyName;
 
+                // Check Max Nesting level if specified.
+                if (cc.MaxNesting != int.MaxValue && cc.MaxNesting >= 0)
+                {
+                    int nestingLevel = propertyName.Count(c => c == '.');
+                    if (nestingLevel >= cc.MaxNesting)
+                        continue;
+                }
+
+                // Check namespace exceptions if specified.
                 if ((cc.NamespaceExceptions?.Any() ?? false) && cc.NamespaceExceptions.Any(ne => propertyFullName.StartsWith(ne)))
                     continue;
 
