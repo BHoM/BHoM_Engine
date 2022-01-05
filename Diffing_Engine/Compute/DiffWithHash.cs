@@ -51,7 +51,6 @@ namespace BH.Engine.Diffing
         [Input("pastObjects", "Objects whose creation predates 'currentObjects'.")]
         [Input("followingObjs", "Following objects. Objects that were created after 'pastObjects'.")]
         [Output("diff", "Object holding the detected changes.")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.DiffWithHash(System.Collections.Generic.IEnumerable<System.Object>, System.Collections.Generic.IEnumerable<System.Object>, BH.oM.Diffing.DiffingConfig, System.Boolean)")]
         public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs)
         {
             BH.Engine.Reflection.Compute.RecordNote(m_DiffWithHashNote);
