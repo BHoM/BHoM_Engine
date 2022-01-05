@@ -48,7 +48,6 @@ namespace BH.Engine.Diffing
         [Input("comparisonConfig", "Additional configurations to be used for the comparison.")]
         [Output("Returns an `ObjectDifferences` object storing all the found differences between `previousObject` and `followingObject`." +
             "\nIf no difference was found, returns null.")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.DifferentProperties(System.Object, System.Object, BH.oM.Base.ComparisonConfig)")]
         public static ObjectDifferences ObjectDifferences(this object pastObject, object followingObject, BaseComparisonConfig comparisonConfig = null)
         {
             // Result object.

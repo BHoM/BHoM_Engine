@@ -34,7 +34,6 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
         
-        [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
         [Description("Returns all BHoM interface types loaded in the current domain.")]
         [Output("types", "List of BHoM interface types loaded in the current domain.")]
         public static List<Type> BHoMInterfaceTypeList()
