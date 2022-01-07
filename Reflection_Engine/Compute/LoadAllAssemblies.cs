@@ -73,12 +73,7 @@ namespace BH.Engine.Reflection
                 SearchOption searchOption = parseSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
                 foreach (string file in Directory.GetFiles(folder, "*.dll", searchOption))
                 {
-                    string[] parts = file.Split(new char[] { '\\' });
-                    if (parts.Length < 2)
-                        continue;
-
-                    string name = parts[parts.Length - 1];
-                    name = name.Substring(0, name.Length - 4);
+                    string name = Path.GetFileNameWithoutExtension(file);
                     if (regex.IsMatch(name))
                     {
                         Assembly loaded = LoadAssembly(file);
