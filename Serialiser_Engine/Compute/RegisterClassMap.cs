@@ -52,10 +52,6 @@ namespace BH.Engine.Serialiser
                     { 
                         BsonClassMap cm = new BsonClassMap(type);
                         cm.AutoMap();
-                        cm.SetDiscriminator(type.FullName);
-                        cm.SetDiscriminatorIsRequired(true);
-                        cm.SetIgnoreExtraElements(true);   // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
-                        cm.SetIdMember(null);
 
                         BsonClassMap.RegisterClassMap(cm);
 
