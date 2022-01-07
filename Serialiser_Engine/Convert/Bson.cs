@@ -158,6 +158,7 @@ namespace BH.Engine.Serialiser
 
             // Define the conventions   
             var pack = new ConventionPack();
+            pack.Add(new BHoMDefaultClassMapConvention());
             pack.Add(new ImmutableBHoMClassMapConvention());
             pack.Add(new ImmutableBHoMCreatorMapConvention());
             pack.Add(new BHoMDictionaryConvention());
@@ -166,10 +167,6 @@ namespace BH.Engine.Serialiser
             var pack2 = new ConventionPack();
             pack2.Add(new BHoMEnumConvention());
             ConventionRegistry.Register("Enum Conventions", pack2, x => x.GetType().IsEnum);
-
-            var pack3 = new ConventionPack();
-            pack3.Add(new BHoMDefaultClassMapConvention());
-            ConventionRegistry.Register("GenericBHoMConventions", pack3, x => x.IsGenericType);
         }
 
         /*******************************************/

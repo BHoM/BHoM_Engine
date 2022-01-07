@@ -32,9 +32,11 @@ using BH.oM.Base;
 namespace BH.Engine.Serialiser.Conventions
 {
     /// <summary>
-    /// Ensures the SetIgnoreExtraElements, Discriminator and IdMember is correctly set for generic types
-    /// Important for generic types that gets registred by a different mechanism compared to the one in compute
-    /// for example if a generic type is the value type of a Dictionary
+    /// This convetion is applied to all classmaps, and replaces calls previously made in the Compute method registring classmaps
+    /// Ensures the SetIgnoreExtraElements, Discriminator and IdMember is set correctly
+    /// This ensures all named properties are correctly set for all types, independant on what mechanism was used
+    /// to generate and register the class map, that is independant if it was being done from calls in the Serialiser_Engine or
+    /// from code in the Mongo.DB library.
     /// </summary>
     public class BHoMDefaultClassMapConvention : ConventionBase, IClassMapConvention
     {
@@ -44,23 +46,13 @@ namespace BH.Engine.Serialiser.Conventions
 
         public void Apply(BsonClassMap classMap)
         {
-            Type classMapType = classMap.ClassType;
-
-            if (!classMapType.IsGenericType)
-                return;
-
-            if (!typeof(IObject).IsAssignableFrom(classMapType))
-                return;
-
-            classMap.SetDiscriminator(classMapType.FullName);
+            classMap.SetDiscriminator(classMap.ClassType.FullName);
             classMap.SetDiscriminatorIsRequired(true);
-            classMap.SetIgnoreExtraElements(true);
+            classMap.SetIgnoreExtraElements(true); // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
             classMap.SetIdMember(null);
         }
 
-
         /*******************************************/
-
     }
 }
 
