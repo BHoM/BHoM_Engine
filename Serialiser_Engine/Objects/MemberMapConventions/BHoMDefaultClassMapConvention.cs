@@ -32,7 +32,7 @@ using BH.oM.Base;
 namespace BH.Engine.Serialiser.Conventions
 {
     /// <summary>
-    /// This convetion is applied to all classmaps, and replaces calls previously made in the Compute method registring classmaps
+    /// This convetion is applied to all classmaps of all IObject types
     /// Ensures the SetIgnoreExtraElements, Discriminator and IdMember is set correctly
     /// This ensures all named properties are correctly set for all types, independant on what mechanism was used
     /// to generate and register the class map, that is independant if it was being done from calls in the Serialiser_Engine or
@@ -46,6 +46,9 @@ namespace BH.Engine.Serialiser.Conventions
 
         public void Apply(BsonClassMap classMap)
         {
+            if (!typeof(IObject).IsAssignableFrom(classMap.ClassType))
+                return;
+
             classMap.SetDiscriminator(classMap.ClassType.FullName);
             classMap.SetDiscriminatorIsRequired(true);
             classMap.SetIgnoreExtraElements(true); // It would have been nice to use cm.MapExtraElementsProperty("CustomData") but it doesn't work for inherited properties
