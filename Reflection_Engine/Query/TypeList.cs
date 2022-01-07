@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -34,7 +34,6 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
         
-        [PreviousVersion("5.0", "BH.Engine.Reflection.Query.BHoMInterfaceList()")]
         [Description("Returns all BHoM interface types loaded in the current domain.")]
         [Output("types", "List of BHoM interface types loaded in the current domain.")]
         public static List<Type> BHoMInterfaceTypeList()
@@ -81,5 +80,6 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
+
 
 

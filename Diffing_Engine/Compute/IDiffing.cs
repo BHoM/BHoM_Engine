@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -47,7 +47,6 @@ namespace BH.Engine.Diffing
         [Input("followingObjs", "Set of objects belonging to a following revision.")]
         [Input("diffingConfig", "(Optional) Additional settings for the Diffing.")]
         [Output("diff", "Object holding the detected changes.")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.IDiffing(System.Collections.Generic.IEnumerable<System.Object>, System.Collections.Generic.IEnumerable<System.Object>, BH.oM.Diffing.DiffingType, BH.oM.Diffing.DiffingConfig)")]
         public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
@@ -325,4 +324,5 @@ namespace BH.Engine.Diffing
         }
     }
 }
+
 

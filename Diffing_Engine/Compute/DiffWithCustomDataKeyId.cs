@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -49,7 +49,6 @@ namespace BH.Engine.Diffing
             "\nE.g. 'Revit_UniqueId' may be used; an id must be stored under object.CustomData['Revit_UniqueId'].")]
         [Input("diffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.")]
         [Output("diff", "Object holding the detected changes.")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.DiffWithCustomId(System.Collections.Generic.IEnumerable<BH.oM.Base.IBHoMObject>, System.Collections.Generic.IEnumerable<BH.oM.Base.IBHoMObject>, System.String, BH.oM.Diffing.DiffingConfig)")]
         public static Diff DiffWithCustomDataKeyId(IEnumerable<IBHoMObject> pastObjects, IEnumerable<IBHoMObject> followingObjects, string customdataIdKey, DiffingConfig diffingConfig = null)
         {
             Diff outputDiff = null;
@@ -142,5 +141,6 @@ namespace BH.Engine.Diffing
         }
     }
 }
+
 
 

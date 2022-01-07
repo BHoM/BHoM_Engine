@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -51,7 +51,6 @@ namespace BH.Engine.Diffing
         [Input("pastObjects", "Objects whose creation predates 'currentObjects'.")]
         [Input("followingObjs", "Following objects. Objects that were created after 'pastObjects'.")]
         [Output("diff", "Object holding the detected changes.")]
-        [PreviousVersion("5.0", "BH.Engine.Diffing.Compute.DiffWithHash(System.Collections.Generic.IEnumerable<System.Object>, System.Collections.Generic.IEnumerable<System.Object>, BH.oM.Diffing.DiffingConfig, System.Boolean)")]
         public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs)
         {
             BH.Engine.Reflection.Compute.RecordNote(m_DiffWithHashNote);
@@ -111,5 +110,6 @@ namespace BH.Engine.Diffing
                $"\nConsider using '{nameof(DiffWithCustomIds)}','{nameof(DiffWithCustomDataKeyId)}', '{nameof(DiffWithFragmentId)}' or '{nameof(DiffRevisions)}' if this feature is needed.";
     }
 }
+
 
 

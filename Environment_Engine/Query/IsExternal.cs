@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,7 +45,6 @@ namespace BH.Engine.Environment
         [Input("panels", "List of Environment Panels.")]
         [MultiOutput(0, "externalPanels", "List of external panels.")]
         [MultiOutput(1,"internalPanels","List of internal panels.")]
-        [PreviousVersion("5.0", "BH.Engine.Environment.Query.IsExternal(BH.oM.Environment.Elements.Panel)")]
         public static Output<List<Panel>, List<Panel>> IsExternal(this List<Panel> panels)
          {
              List<List<Panel>> definedSpaces = panels.ToSpaces();
@@ -83,6 +82,7 @@ namespace BH.Engine.Environment
         }
     }
 }
+
 
 
 
