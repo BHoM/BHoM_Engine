@@ -27,7 +27,7 @@ using BH.oM.MEP.Fixtures;
 using BH.oM.Architecture.Elements;
 using BH.Engine.Reflection;
 
-namespace BH.Engine.MEP.HVAC
+namespace BH.Engine.MEP.HVAC.RulesOfThumb.WaterSide
 {
     public static partial class Compute
     {
@@ -35,28 +35,35 @@ namespace BH.Engine.MEP.HVAC
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the coefficient of performance given the BTU output and input.")]
-        [Input("btuOutput", "Equipment btu Output value")]
-        [Input("btuInput", "Equipment btu Input value")]
-        [Output("coefficientOfPerformanceBtuOutput", "The coefficient of performance (COP)")]
-        public static double CoefficientOfPerformanceBtuOutput(double btuOutput, double btuInput)
+        [Description("Calculates the total heat contained within water given flow rate and two temperature points. Rule of Thumb calc uses coefficient at standard water conditions.")]
+        [Input("flowRate", "water flow rate [GPM]")]
+        [Input("temperatureIn", "in temperature value [F]")]
+        [Input("temperatureOut", "out temperature value [F]")]
+        [Output("totalHeat", "total heat value [Btu/h]")]
+        public static double TotalHeat(double flowRate, double temperatureIn, double temperatureOut)
         {
-            if(btuOutput == double.NaN)
+            if(flowRate == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the COP from a null btuOutput value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null flowRate value");
                 return -1;
             }
 
-            if(btuInput == double.NaN)
+            if(temperatureIn == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the COP from a null btuInput value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null temperatureIn value");
                 return -1;
             }
 
-            double coefficientOfPerformanceBtuOutput = btuOutput/btuInput;
+            if (temperatureOut == double.NaN)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null temperatureOut value");
+                return -1;
+            }
+
+            double totalHeat = 500 * flowRate * (temperatureIn-temperatureOut);
 
 
-            return coefficientOfPerformanceBtuOutput;
+            return totalHeat;
         }
 
         /***************************************************/

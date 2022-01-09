@@ -27,7 +27,7 @@ using BH.oM.MEP.Fixtures;
 using BH.oM.Architecture.Elements;
 using BH.Engine.Reflection;
 
-namespace BH.Engine.MEP.HVAC
+namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
 {
     public static partial class Compute
     {
@@ -35,28 +35,35 @@ namespace BH.Engine.MEP.HVAC
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the coefficient of performance given the BTU output and input.")]
-        [Input("btuOutput", "Equipment btu Output value")]
-        [Input("btuInput", "Equipment btu Input value")]
-        [Output("coefficientOfPerformanceBtuOutput", "The coefficient of performance (COP)")]
-        public static double CoefficientOfPerformanceBtuOutput(double btuOutput, double btuInput)
+        [Description("Calculates the latent heat contained within air given CFM and two humidityRatio points. Rule of Thumb calc uses coefficient at STP of air.")]
+        [Input("airflow", "Airflow [CFM]")]
+        [Input("humidityRatioIn", "in humidityRatio value [Lbs water/Lbs dry air]")]
+        [Input("humidityRatioOut", "out humidityRatio value [Lbs water/Lbs dry air]")]
+        [Output("latentHeat", "latent heat value [Btu/h]")]
+        public static double LatentHeat(double airflow, double humidityRatioIn, double humidityRatioOut)
         {
-            if(btuOutput == double.NaN)
+            if(airflow == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the COP from a null btuOutput value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the latent heat from a null airflow value");
                 return -1;
             }
 
-            if(btuInput == double.NaN)
+            if(humidityRatioIn == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the COP from a null btuInput value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the latent heat from a null humidityRatioIn value");
                 return -1;
             }
 
-            double coefficientOfPerformanceBtuOutput = btuOutput/btuInput;
+            if (humidityRatioOut == double.NaN)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the latent heat from a null humidityRatioOut value");
+                return -1;
+            }
+
+            double latentHeat = 4840 * airflow * (humidityRatioIn-humidityRatioOut);
 
 
-            return coefficientOfPerformanceBtuOutput;
+            return latentHeat;
         }
 
         /***************************************************/

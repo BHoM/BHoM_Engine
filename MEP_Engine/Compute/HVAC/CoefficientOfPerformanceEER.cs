@@ -27,7 +27,7 @@ using BH.oM.MEP.Fixtures;
 using BH.oM.Architecture.Elements;
 using BH.Engine.Reflection;
 
-namespace BH.Engine.MEP
+namespace BH.Engine.MEP.HVAC
 {
     public static partial class Compute
     {

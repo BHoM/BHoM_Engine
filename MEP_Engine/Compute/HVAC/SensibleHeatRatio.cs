@@ -27,7 +27,7 @@ using BH.oM.MEP.Fixtures;
 using BH.oM.Architecture.Elements;
 using BH.Engine.Reflection;
 
-namespace BH.Engine.MEP.HVAC
+namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
 {
     public static partial class Compute
     {
@@ -35,28 +35,29 @@ namespace BH.Engine.MEP.HVAC
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the coefficient of performance given the BTU output and input.")]
-        [Input("btuOutput", "Equipment btu Output value")]
-        [Input("btuInput", "Equipment btu Input value")]
-        [Output("coefficientOfPerformanceBtuOutput", "The coefficient of performance (COP)")]
-        public static double CoefficientOfPerformanceBtuOutput(double btuOutput, double btuInput)
+        [Description("Calculates the sensible heat ratio (SHR) given sensible heat and total heat (total heat = sensible heat + latent heat).")]
+        [Input("sensibleHeat", "sensible heat value [Btu/h]")]
+        [Input("totalHeat", "total heat value [Btu/h]")]
+        [Output("sensibleHeatRatio", "[Btu/h]")]
+        public static double SensibleHeatRatio(double sensibleHeat, double totalHeat)
         {
-            if(btuOutput == double.NaN)
+            if(sensibleHeat == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the COP from a null btuOutput value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the SHR from a null sensible heat value");
                 return -1;
             }
 
-            if(btuInput == double.NaN)
+            if(totalHeat == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the COP from a null btuInput value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the SHR from a null total heat value");
                 return -1;
             }
 
-            double coefficientOfPerformanceBtuOutput = btuOutput/btuInput;
+
+            double sensibleHeatRatio = sensibleHeat/totalHeat;
 
 
-            return coefficientOfPerformanceBtuOutput;
+            return sensibleHeatRatio;
         }
 
         /***************************************************/

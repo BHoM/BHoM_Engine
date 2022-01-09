@@ -27,7 +27,7 @@ using BH.oM.MEP.Fixtures;
 using BH.oM.Architecture.Elements;
 using BH.Engine.Reflection;
 
-namespace BH.Engine.MEP.HVAC
+namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
 {
     public static partial class Compute
     {
@@ -35,28 +35,35 @@ namespace BH.Engine.MEP.HVAC
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the coefficient of performance given the BTU output and input.")]
-        [Input("btuOutput", "Equipment btu Output value")]
-        [Input("btuInput", "Equipment btu Input value")]
-        [Output("coefficientOfPerformanceBtuOutput", "The coefficient of performance (COP)")]
-        public static double CoefficientOfPerformanceBtuOutput(double btuOutput, double btuInput)
+        [Description("Calculates the total heat contained within air given CFM and two enthalpy points. Rule of Thumb calc uses coefficient at STP of air.")]
+        [Input("airflow", "Airflow [CFM]")]
+        [Input("enthalpyIn", "in enthalpy value [Btu/Lb dry air]")]
+        [Input("enthalpyOut", "out enthalpy value [Btu/Lb dry air]")]
+        [Output("totalHeat", "total heat value [Btu/h]")]
+        public static double TotalHeat(double airflow, double enthalpyIn, double enthalpyOut)
         {
-            if(btuOutput == double.NaN)
+            if(airflow == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the COP from a null btuOutput value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null airflow value");
                 return -1;
             }
 
-            if(btuInput == double.NaN)
+            if(enthalpyIn == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the COP from a null btuInput value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null enthalpyIn value");
                 return -1;
             }
 
-            double coefficientOfPerformanceBtuOutput = btuOutput/btuInput;
+            if (enthalpyOut == double.NaN)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null enthalpyOut value");
+                return -1;
+            }
+
+            double totalHeat = 4.5 * airflow * (enthalpyIn-enthalpyOut);
 
 
-            return coefficientOfPerformanceBtuOutput;
+            return totalHeat;
         }
 
         /***************************************************/
