@@ -23,26 +23,35 @@
 using BH.oM.Base.Debugging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool RecordWarning(string message)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AllEvents()")]
+        public static List<Event> AllEvents()
         {
-            return RecordEvent(new Event { Message = message, Type = EventType.Warning });
+            Log log = DebugLog();
+            return log.AllEvents.ToList();
         }
+
+
+        /***************************************************/
+
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.CurrentEvents()")]
+        public static List<Event> CurrentEvents()
+        {
+            Log log = DebugLog();
+            return log.CurrentEvents.ToList();
+        }
+
 
         /***************************************************/
     }

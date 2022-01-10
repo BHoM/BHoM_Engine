@@ -23,15 +23,9 @@
 using BH.oM.Base.Debugging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Compute
     {
@@ -39,9 +33,29 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool RecordError(string message)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RemoveEvent(BH.oM.Base.Debugging.Event)")]
+        public static bool RemoveEvent(Event newEvent)
         {
-            return RecordEvent(new Event { Message = message, Type = EventType.Error });
+            Log log = Query.DebugLog();
+            bool success = log.AllEvents.Remove(newEvent);
+            success &= log.CurrentEvents.Remove(newEvent);
+            return success;
+        }
+
+        /***************************************************/
+
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RemoveEvents(System.Collections.Generic.List<BH.oM.Base.Debugging.Event>)")]
+        public static bool RemoveEvents(List<Event> events)
+        {
+            Log log = Query.DebugLog();
+            bool success = true;
+            foreach (Event e in events)
+            {
+                success &= log.AllEvents.Remove(e);
+                success &= log.CurrentEvents.Remove(e);
+            }
+            
+            return success;
         }
 
         /***************************************************/

@@ -23,46 +23,34 @@
 using BH.oM.Base.Debugging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool RecordEvent(string message, EventType type = EventType.Unknown)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.DebugLog()")]
+        internal static Log DebugLog()
         {
-            return RecordEvent(new Event { Message = message, Type = type });
+            if (m_DebugLog == null)
+                m_DebugLog = new Log();
+
+            return m_DebugLog;
         }
+
 
         /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
 
-        public static bool RecordEvent(Event newEvent)
-        {
-            if(newEvent == null)
-            {
-                Compute.RecordError("Cannot record a null event.");
-                return false;
-            }
+        [ThreadStatic]
+        private static Log m_DebugLog = new Log();
 
-            string trace = System.Environment.StackTrace;
-            newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
-
-            Log log = Query.DebugLog();
-            log.AllEvents.Add(newEvent);
-            log.CurrentEvents.Add(newEvent);
-
-            return true;
-        }
 
         /***************************************************/
     }
