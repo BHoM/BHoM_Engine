@@ -22,9 +22,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -32,11 +34,24 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static string CurrentAssemblyFolder()
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExtensionMethods(System.Type, System.String)")]
+        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
         {
-            return System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        }
+            List<MethodInfo> methods = new List<MethodInfo>();
 
+            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
+            {
+                ParameterInfo[] param = method.GetParameters();
+
+                if (param.Length > 0)
+                {
+                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
+                        methods.Add(method);
+                }
+            }
+
+            return methods;
+        }
 
         /***************************************************/
     }
