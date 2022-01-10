@@ -38,7 +38,7 @@ namespace BH.Engine.Reflection
         [Description("Return true if a C# method has multiple outputs")]
         public static bool IsMultipleOutputs(this MethodBase method)
         {
-            return (method is MethodInfo) && (typeof(oM.Reflection.Interface.IOutput).IsAssignableFrom(((MethodInfo)method).ReturnType));
+            return (method is MethodInfo) && (typeof(oM.Base.IOutput).IsAssignableFrom(((MethodInfo)method).ReturnType));
         }
 
         /***************************************************/
