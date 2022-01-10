@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -21,17 +21,9 @@
  */
 
 using BH.oM.Base.Debugging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Compute
     {
@@ -39,30 +31,56 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool RemoveEvent(Event newEvent)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordEvent(System.String, BH.oM.Base.Debugging.EventType)")]
+        public static bool RecordEvent(string message, EventType type = EventType.Unknown)
         {
-            Log log = Query.DebugLog();
-            bool success = log.AllEvents.Remove(newEvent);
-            success &= log.CurrentEvents.Remove(newEvent);
-            return success;
+            return RecordEvent(new Event { Message = message, Type = type });
         }
 
         /***************************************************/
 
-        public static bool RemoveEvents(List<Event> events)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordEvent(BH.oM.Base.Debugging.Event)")]
+        public static bool RecordEvent(Event newEvent)
         {
-            Log log = Query.DebugLog();
-            bool success = true;
-            foreach (Event e in events)
+            if (newEvent == null)
             {
-                success &= log.AllEvents.Remove(e);
-                success &= log.CurrentEvents.Remove(e);
+                Compute.RecordError("Cannot record a null event.");
+                return false;
             }
-            
-            return success;
+
+            string trace = System.Environment.StackTrace;
+            newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
+
+            Log log = Query.DebugLog();
+            log.AllEvents.Add(newEvent);
+            log.CurrentEvents.Add(newEvent);
+
+            return true;
         }
 
         /***************************************************/
+
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordError(System.String)")]
+        public static bool RecordError(string message)
+        {
+            return RecordEvent(new Event { Message = message, Type = EventType.Error });
+        }
+
+        /***************************************************/
+
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordWarning(System.String)")]
+        public static bool RecordWarning(string message)
+        {
+            return RecordEvent(new Event { Message = message, Type = EventType.Warning });
+        }
+
+        /***************************************************/
+
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordNote(System.String)")]
+        public static bool RecordNote(string message)
+        {
+            return RecordEvent(new Event { Message = message, Type = EventType.Note });
+        }
     }
 }
 

@@ -20,35 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using BH.oM.Base.Debugging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        internal static Log DebugLog()
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ClearCurrentEvents()")]
+        public static bool ClearCurrentEvents()
         {
-            if (m_DebugLog == null)
-                m_DebugLog = new Log();
-
-            return m_DebugLog;
+            Log log = Query.DebugLog();
+            log.CurrentEvents.Clear();
+            return true;
         }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        [ThreadStatic]
-        private static Log m_DebugLog = new Log();
-
 
         /***************************************************/
     }
