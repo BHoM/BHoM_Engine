@@ -105,7 +105,7 @@ namespace BH.Engine.Programming
 
             if (node.Outputs.Count == 1)
                 node.Outputs[0].DataType = node.Method.ReturnType;
-            else if (node.Outputs.Count > 1 && node.Method.ReturnType is oM.Reflection.Interface.IOutput)
+            else if (node.Outputs.Count > 1 && node.Method.ReturnType is oM.Base.IOutput)
             {
                 Type[] types = node.Method.ReturnType.GetGenericArguments();
                 if (types.Length == node.Outputs.Count)
