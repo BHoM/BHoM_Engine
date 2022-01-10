@@ -24,7 +24,7 @@ using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Compute
     {
@@ -35,6 +35,7 @@ namespace BH.Engine.Reflection
         [Description("Attempts to load an assembly under the given path.")]
         [Input("assemblyPath", "Path from which the assembly is meant to be loaded.")]
         [Output("assembly", "The assembly under the given path, if it exists and has been loaded to BHoM (at any point in time), otherwise null.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.LoadAssembly(System.String)")]
         public static Assembly LoadAssembly(string assemblyPath)
         {
             try

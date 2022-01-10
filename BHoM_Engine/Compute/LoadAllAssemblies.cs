@@ -29,7 +29,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Compute
     {
@@ -46,6 +46,7 @@ namespace BH.Engine.Reflection
         [Input("forceParseFolder", "If false, the method will execute only once per lifetime of the process per each combination of folder and suffix values (every attempt after the first will be skipped).\n" +
                                    "If true, the given folder will be parsed for assemblies with given suffix on every call of this method.")]
         [Output("assemblies", "Assemblies that meet folder and suffix requirements and are loaded to BHoM.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.LoadAllAssemblies(System.String, System.String, System.Boolean, System.Boolean)")]
         public static List<Assembly> LoadAllAssemblies(string folder = "", string regexFilter = @"oM$|_Engine$|_Adapter$", bool parseSubfolders = false, bool forceParseFolder = false)
         {
             List<Assembly> result = new List<Assembly>();
