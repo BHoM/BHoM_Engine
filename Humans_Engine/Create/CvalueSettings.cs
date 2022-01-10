@@ -23,7 +23,7 @@
 
 using BH.oM.Humans.ViewQuality;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Humans.ViewQuality

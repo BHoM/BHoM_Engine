@@ -22,7 +22,7 @@
 
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.MaterialFragments;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Structure
 {

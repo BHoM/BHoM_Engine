@@ -29,7 +29,7 @@ using BH.oM.Structure.Elements;
 using BH.oM.Structure.Fragments;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Structure.Results;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.Engine.Base;
 
 namespace BH.Engine.Structure

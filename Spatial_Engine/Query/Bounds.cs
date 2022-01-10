@@ -24,7 +24,7 @@ using BH.Engine.Geometry;
 using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

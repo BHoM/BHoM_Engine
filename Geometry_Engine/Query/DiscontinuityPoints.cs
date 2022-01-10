@@ -24,7 +24,7 @@ using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Geometry
 {

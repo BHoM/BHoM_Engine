@@ -27,8 +27,8 @@ using BH.oM.Environment;
 using BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Reflection;
+using BH.oM.Base.Attributes;
+using BH.oM.Base;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment

@@ -30,7 +30,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Dimensional;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Analytical
 {

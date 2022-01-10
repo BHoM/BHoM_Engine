@@ -24,7 +24,7 @@ using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Lighting.Elements;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Lighting

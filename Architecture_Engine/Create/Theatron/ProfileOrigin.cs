@@ -25,7 +25,7 @@ using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using BH.Engine.Geometry;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.Engine.Base;
 
 namespace BH.Engine.Architecture.Theatron

@@ -22,7 +22,7 @@
 
 using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure

@@ -27,7 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Environment.Analysis;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Geometry;
 using BH.oM.Environment.Elements;

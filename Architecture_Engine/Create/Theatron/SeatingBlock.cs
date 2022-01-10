@@ -30,7 +30,7 @@ using System;
 using BH.Engine.Base;
 using System.Linq;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {

@@ -22,7 +22,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Base;
 using System.Linq;
 using BH.oM.Geometry;
@@ -36,7 +36,7 @@ using BH.Engine.Analytical;
 using BH.oM.Analytical.Results;
 using BH.oM.Analytical.Elements;
 using BH.oM.Graphics.Colours;
-using BH.oM.Reflection;
+ 
 
 namespace BH.Engine.Results
 {

@@ -25,9 +25,9 @@ using BH.oM.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Analytical.Elements;
 using BH.Engine.Geometry;
-using BH.oM.Reflection;
+using BH.oM.Base;
 using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Facade
@@ -111,7 +111,7 @@ namespace BH.Engine.Facade
 
             bool isAdj = false;
 
-            BH.oM.Reflection.Output<Point, Point> results = curve1.CurveProximity(curve2);
+            BH.oM.Base.Output<Point, Point> results = curve1.CurveProximity(curve2);
             double distance = results.Item1.Distance(results.Item2);
             if (distance < Tolerance.Distance)
             {

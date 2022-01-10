@@ -32,7 +32,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using MongoDB.Bson;
 
 namespace BH.Engine.Versioning

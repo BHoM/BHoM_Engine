@@ -27,7 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Analytical.Results;
 using BH.oM.Structure.Loads;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;
 using System.ComponentModel;

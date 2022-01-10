@@ -25,7 +25,7 @@ using BH.oM.Humans.ViewQuality;
 using BH.oM.Architecture.Theatron;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Architecture.Theatron
 {

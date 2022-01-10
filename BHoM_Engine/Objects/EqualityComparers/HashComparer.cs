@@ -28,8 +28,7 @@ using System.Linq;
 using System.Reflection;
 using BH.Engine.Serialiser;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Reflection;
+using BH.oM.Base.Attributes;
 using System.Collections;
 using BH.Engine.Base;
 

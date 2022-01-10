@@ -32,7 +32,7 @@ using BH.oM.Physical.FramingProperties;
 using BH.Engine.Physical;
 using BH.Engine.Spatial;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 using BH.oM.Quantities.Attributes;

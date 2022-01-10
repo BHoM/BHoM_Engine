@@ -26,7 +26,7 @@ using System.Linq;
 using System.ComponentModel;
 
 using BH.oM.Environment.Elements;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Environment
 {

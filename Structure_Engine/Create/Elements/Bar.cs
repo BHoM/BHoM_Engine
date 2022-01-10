@@ -30,7 +30,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Reflection;
 using BH.Engine.Spatial;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 

@@ -22,7 +22,7 @@
 
 using BH.oM.Architecture.BuildersWork;
 using BH.oM.Architecture.Elements;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Architecture

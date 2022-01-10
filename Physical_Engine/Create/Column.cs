@@ -21,7 +21,7 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Geometry;

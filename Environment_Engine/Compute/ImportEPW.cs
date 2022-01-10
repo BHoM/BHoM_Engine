@@ -29,7 +29,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Collections;
 using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Environment.Climate;
 
 namespace BH.Engine.Environment

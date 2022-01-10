@@ -25,7 +25,7 @@ using System.ComponentModel;
 using System.Linq;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.Engine.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 
 namespace BH.Engine.MEP

@@ -32,7 +32,7 @@ using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.Reinforcement;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using System;

@@ -29,7 +29,7 @@ using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;

@@ -23,7 +23,7 @@
 using BH.oM.Data.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Linq;
 using System;
 

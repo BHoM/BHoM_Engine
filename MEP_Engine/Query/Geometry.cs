@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.MEP.System;
 using BH.oM.MEP.Fixtures;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
 using BH.oM.MEP.System.Fittings;
 

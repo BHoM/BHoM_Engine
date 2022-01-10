@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using Force.DeepCloner;
 
 namespace BH.Engine.Base

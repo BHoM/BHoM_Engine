@@ -25,7 +25,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Data.Library;
 using BH.oM.Base;
 

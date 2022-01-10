@@ -27,7 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
@@ -36,8 +36,7 @@ using BH.Engine.Geometry;
 using BH.oM.Analytical.Elements;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
-using BH.oM.Reflection;
-using System.Security.Cryptography.X509Certificates;
+using BH.oM.Base;
 
 namespace BH.Engine.Environment
 {

@@ -30,7 +30,7 @@ using BH.oM.Environment.Elements;
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment

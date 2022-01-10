@@ -23,7 +23,7 @@
 using System;
 using System.ComponentModel;
 using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.MEP
 {

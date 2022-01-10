@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
 using BH.Engine.Serialiser;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Diffing

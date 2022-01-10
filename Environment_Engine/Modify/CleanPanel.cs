@@ -25,7 +25,7 @@ using BH.oM.Environment.Elements;
 using BH.oM.Environment;
 using BH.oM.Geometry;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;

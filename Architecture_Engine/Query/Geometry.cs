@@ -25,7 +25,7 @@ using BH.oM.Architecture.BuildersWork;
 using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
