@@ -21,33 +21,54 @@
  */
 
 using BH.oM.Base.Attributes;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
         /***************************************************/
-        /****               Public Method               ****/
+        /**** Interface Methods                         ****/
         /***************************************************/
 
-        [Description("Checks whether a given assembly is a BHoM oM assembly.")]
-        [Input("assembly", "Assembly to be checked whether it is a BHoM oM assembly.")]
-        [Output("isOm", "True if the input assembly is a BHoM oM assembly.")]
-        public static bool IsOmAssembly(this Assembly assembly)
+        [Description("Return the path of the assembly containing this item")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IAssemblyPath(System.Object)")]
+        public static string IAssemblyPath(this object item)
         {
-            return assembly != null && assembly.GetName().Name.IsOmAssembly();
+            return AssemblyPath(item as dynamic);
+        }
+
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Return the path of the assembly containing this method")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AssemblyPath(System.Reflection.MethodBase)")]
+        public static string AssemblyPath(this MethodBase method)
+        {
+            return method.DeclaringType.Assembly.Location;
         }
 
         /***************************************************/
 
-        [Description("Checks whether a given assembly name follows the BHoM oM assembly naming convention.")]
-        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM oM assembly naming convention.")]
-        [Output("isOm", "True if the input assembly name follows the BHoM oM assembly naming convention.")]
-        public static bool IsOmAssembly(this string assemblyName)
+        [Description("Return the path of the assembly containing this type")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AssemblyPath(System.Type)")]
+        public static string AssemblyPath(this Type type)
         {
-            return assemblyName != null && (assemblyName == "BHoM" || assemblyName.EndsWith("_oM") || assemblyName.Contains("_oM_"));
+            return type.Assembly.Location;
+        }
+
+        /***************************************************/
+
+        [Description("Return the path of the assembly containing this type of object")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AssemblyPath(System.Object)")]
+        public static string AssemblyPath(object item)
+        {
+            return item.GetType().AssemblyPath();
         }
 
         /***************************************************/

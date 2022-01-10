@@ -20,35 +20,25 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base.Attributes;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
         /***************************************************/
-        /****               Public Method               ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks whether a given assembly is a BHoM engine assembly.")]
-        [Input("assembly", "Assembly to be checked whether it is a BHoM engine assembly.")]
-        [Output("isEngine", "True if the input assembly is a BHoM engine assembly.")]
-        public static bool IsEngineAssembly(this Assembly assembly)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMFolder()")]
+        public static string BHoMFolder()
         {
-            return assembly != null && assembly.GetName().Name.IsEngineAssembly();
+            return @"C:\ProgramData\BHoM\Assemblies";
         }
 
-        /***************************************************/
-
-        [Description("Checks whether a given assembly name follows the BHoM engine assembly naming convention.")]
-        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM engine assembly naming convention.")]
-        [Output("isEngine", "True if the input assembly name follows the BHoM engine assembly naming convention.")]
-        public static bool IsEngineAssembly(this string assemblyName)
-        {
-            return assemblyName != null && (assemblyName.EndsWith("_Engine") || assemblyName.Contains("_Engine_"));
-        }
 
         /***************************************************/
     }

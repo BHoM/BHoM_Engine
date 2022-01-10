@@ -21,50 +21,35 @@
  */
 
 using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Interface Methods                         ****/
+        /****               Public Method               ****/
         /***************************************************/
 
-        [Description("Return the path of the assembly containing this item")]
-        public static string IAssemblyPath(this object item)
+        [Description("Checks whether a given assembly is a BHoM adapter assembly.")]
+        [Input("assembly", "Assembly to be checked whether it is a BHoM adapter assembly.")]
+        [Output("isAdapter", "True if the input assembly is a BHoM adapter assembly.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsAdapterAssembly(System.Reflection.Assembly)")]
+        public static bool IsAdapterAssembly(this Assembly assembly)
         {
-            return AssemblyPath(item as dynamic);
-        }
-
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Return the path of the assembly containing this method")]
-        public static string AssemblyPath(this MethodBase method)
-        {
-            return method.DeclaringType.Assembly.Location;
+            return assembly != null && assembly.GetName().Name.IsAdapterAssembly();
         }
 
         /***************************************************/
 
-        [Description("Return the path of the assembly containing this type")]
-        public static string AssemblyPath(this Type type)
+        [Description("Checks whether a given assembly name follows the BHoM adapter assembly naming convention.")]
+        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM adapter assembly naming convention.")]
+        [Output("isAdapter", "True if the input assembly name follows the BHoM adapter assembly naming convention.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsAdapterAssembly(System.String)")]
+        public static bool IsAdapterAssembly(this string assemblyName)
         {
-            return type.Assembly.Location;
-        }
-
-        /***************************************************/
-
-        [Description("Return the path of the assembly containing this type of object")]
-        public static string AssemblyPath(object item)
-        {
-            return item.GetType().AssemblyPath();
+            return assemblyName != null && (assemblyName.EndsWith("_Adapter") || assemblyName.Contains("_Adapter_"));
         }
 
         /***************************************************/

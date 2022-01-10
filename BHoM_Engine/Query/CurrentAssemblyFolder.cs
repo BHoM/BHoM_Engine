@@ -20,35 +20,25 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base.Attributes;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
         /***************************************************/
-        /****               Public Method               ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks whether a given assembly is a BHoM adapter assembly.")]
-        [Input("assembly", "Assembly to be checked whether it is a BHoM adapter assembly.")]
-        [Output("isAdapter", "True if the input assembly is a BHoM adapter assembly.")]
-        public static bool IsAdapterAssembly(this Assembly assembly)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.CurrentAssemblyFolder()")]
+        public static string CurrentAssemblyFolder()
         {
-            return assembly != null && assembly.GetName().Name.IsAdapterAssembly();
+            return System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
-        /***************************************************/
-
-        [Description("Checks whether a given assembly name follows the BHoM adapter assembly naming convention.")]
-        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM adapter assembly naming convention.")]
-        [Output("isAdapter", "True if the input assembly name follows the BHoM adapter assembly naming convention.")]
-        public static bool IsAdapterAssembly(this string assemblyName)
-        {
-            return assemblyName != null && (assemblyName.EndsWith("_Adapter") || assemblyName.Contains("_Adapter_"));
-        }
 
         /***************************************************/
     }

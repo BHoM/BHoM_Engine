@@ -24,9 +24,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BH.oM.Base.Attributes;
 
-
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -34,23 +34,41 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMVersion()")]
+        public static string BHoMVersion()
         {
-            List<MethodInfo> methods = new List<MethodInfo>();
+            if (m_BHoMVersion.Length > 0)
+                return m_BHoMVersion;
 
-            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
+            // First try to get the assembly file version
+            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+            if (attributes.Length > 0)
             {
-                ParameterInfo[] param = method.GetParameters();
-
-                if (param.Length > 0)
+                AssemblyFileVersionAttribute attribute = attributes.First() as AssemblyFileVersionAttribute;
+                if (attribute != null && attribute.Version != null)
                 {
-                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        methods.Add(method);
+                    string[] split = attribute.Version.Split('.');
+                    if (split.Length >= 2)
+                        m_BHoMVersion = split[0] + "." + split[1];
                 }
             }
 
-            return methods;
+            // Get the assembly version as a fallback
+            if (m_BHoMVersion.Length == 0)
+            {
+                Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                m_BHoMVersion = currentVersion.Major + "." + currentVersion.Minor;
+            }
+
+            return m_BHoMVersion;
         }
+
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        private static string m_BHoMVersion = "";
 
         /***************************************************/
     }

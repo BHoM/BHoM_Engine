@@ -20,53 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using BH.oM.Base.Attributes;
+using System.ComponentModel;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Method               ****/
         /***************************************************/
 
-        public static string BHoMVersion()
+        [Description("Checks whether a given assembly is a BHoM oM assembly.")]
+        [Input("assembly", "Assembly to be checked whether it is a BHoM oM assembly.")]
+        [Output("isOm", "True if the input assembly is a BHoM oM assembly.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsOmAssembly(System.Reflection.Assembly)")]
+        public static bool IsOmAssembly(this Assembly assembly)
         {
-            if (m_BHoMVersion.Length > 0)
-                return m_BHoMVersion;
-
-            // First try to get the assembly file version
-            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
-            if (attributes.Length > 0)
-            {
-                AssemblyFileVersionAttribute attribute = attributes.First() as AssemblyFileVersionAttribute;
-                if (attribute != null && attribute.Version != null)
-                {
-                    string[] split = attribute.Version.Split('.');
-                    if (split.Length >= 2)
-                        m_BHoMVersion = split[0] + "." + split[1];
-                }
-            }
-
-            // Get the assembly version as a fallback
-            if (m_BHoMVersion.Length == 0)
-            {
-                Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                m_BHoMVersion = currentVersion.Major + "." + currentVersion.Minor;
-            }
-
-            return m_BHoMVersion;
+            return assembly != null && assembly.GetName().Name.IsOmAssembly();
         }
 
-
-        /***************************************************/
-        /**** Private Fields                            ****/
         /***************************************************/
 
-        private static string m_BHoMVersion = "";
+        [Description("Checks whether a given assembly name follows the BHoM oM assembly naming convention.")]
+        [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM oM assembly naming convention.")]
+        [Output("isOm", "True if the input assembly name follows the BHoM oM assembly naming convention.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsOmAssembly(System.String)")]
+        public static bool IsOmAssembly(this string assemblyName)
+        {
+            return assemblyName != null && (assemblyName == "BHoM" || assemblyName.EndsWith("_oM") || assemblyName.Contains("_oM_"));
+        }
 
         /***************************************************/
     }

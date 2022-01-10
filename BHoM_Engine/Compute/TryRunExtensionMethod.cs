@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Compute
     {
@@ -48,15 +48,16 @@ namespace BH.Engine.Reflection
         [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
         [Input("result", "Result of the method invocation, if the method had been invoked. If no method is found this is null.")]
         [Output("True if a method was found and an invocation was attempted. False otherwise.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.TryRunExtensionMethod(System.Object, System.String, System.Object&)")]
         public static bool TryRunExtensionMethod(this object obj, string methodName, out object result)
         {
             result = null;
 
-            System.Reflection.MethodInfo mi = Reflection.Query.ExtensionMethodToCall(obj, methodName);
+            System.Reflection.MethodInfo mi = Query.ExtensionMethodToCall(obj, methodName);
 
             if (mi == null) return false;
 
-            result = Reflection.Compute.RunExtensionMethod(obj, mi);
+            result = Compute.RunExtensionMethod(obj, mi);
             return true;
         }
 
@@ -70,15 +71,16 @@ namespace BH.Engine.Reflection
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
         [Input("result", "Result of the method invocation, if the method had been invoked. If no method is found this is null.")]
         [Output("True if a method was found and an invocation was attempted. False otherwise.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.TryRunExtensionMethod(System.Object, System.String, System.Object[], System.Object&)")]
         public static bool TryRunExtensionMethod(this object obj, string methodName, object[] parameters, out object result)
         {
             result = null;
 
-            System.Reflection.MethodInfo mi = Reflection.Query.ExtensionMethodToCall(obj, methodName, parameters);
+            System.Reflection.MethodInfo mi = Query.ExtensionMethodToCall(obj, methodName, parameters);
 
             if (mi == null) return false;
 
-            result = Reflection.Compute.RunExtensionMethod(obj, mi, parameters);
+            result = Compute.RunExtensionMethod(obj, mi, parameters);
             return true;
         }
     }
