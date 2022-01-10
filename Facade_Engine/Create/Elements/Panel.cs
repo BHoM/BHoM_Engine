@@ -21,7 +21,7 @@
  */
 
 using BH.Engine.Spatial;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Facade.Elements;
 using BH.oM.Facade.SectionProperties;
 using BH.oM.Geometry;

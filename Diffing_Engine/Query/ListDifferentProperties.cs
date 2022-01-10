@@ -26,11 +26,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Diffing;
 using BH.oM.Base;
 using System.Reflection;
-using BH.oM.Reflection;
+ 
 
 namespace BH.Engine.Diffing
 {

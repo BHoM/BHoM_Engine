@@ -28,7 +28,7 @@ using System.Linq;
 using BH.oM.Physical.Materials;
 using BH.oM.Physical.Constructions;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Diffing;
 using BH.Engine.Physical;

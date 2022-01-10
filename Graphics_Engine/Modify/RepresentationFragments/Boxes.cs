@@ -30,7 +30,7 @@ using BH.oM.Graphics.Components;
 using BH.oM.Graphics.Fragments;
 using BH.oM.Graphics.Scales;
 using BH.oM.Graphics.Views;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

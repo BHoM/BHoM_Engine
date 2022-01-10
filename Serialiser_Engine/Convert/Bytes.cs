@@ -25,7 +25,7 @@ using MongoDB.Bson.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using MongoDB.Bson.Serialization;
 
 namespace BH.Engine.Serialiser

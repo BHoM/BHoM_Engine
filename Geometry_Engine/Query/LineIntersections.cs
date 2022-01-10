@@ -22,7 +22,7 @@
 
 using BH.Engine.Base;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
             Line l2 = line2.DeepClone();
             l1.Infinite |= useInfiniteLines;
             l2.Infinite |= useInfiniteLines;
-            BH.oM.Reflection.Output<double, double> intParamsOutput = l1.SkewLineProximity(l2, angleTolerance);
+            BH.oM.Base.Output<double, double> intParamsOutput = l1.SkewLineProximity(l2, angleTolerance);
 
             if (intParamsOutput == null)
                 return null;

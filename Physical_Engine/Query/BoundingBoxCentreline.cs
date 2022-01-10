@@ -25,7 +25,7 @@ using BH.Engine.Spatial;
 using BH.oM.Geometry;
 using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Physical

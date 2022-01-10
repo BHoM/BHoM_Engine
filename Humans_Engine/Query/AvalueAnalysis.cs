@@ -28,7 +28,7 @@ using System.Linq;
 using Accord.Collections;
 using System.IO;
 using BH.Engine.Base;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Geometry.CoordinateSystem;
 using System.Threading.Tasks;

@@ -22,7 +22,7 @@
 
 using System;
 using System.Linq;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
 using BH.Engine.Geometry;

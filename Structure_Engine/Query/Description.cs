@@ -33,7 +33,7 @@ using BH.oM.Base;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Structure.Constraints;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure;

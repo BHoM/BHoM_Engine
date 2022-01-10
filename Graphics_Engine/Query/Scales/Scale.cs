@@ -28,7 +28,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Data.Collections;
 using BH.oM.Graphics.Scales;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Graphics.Scales
 {

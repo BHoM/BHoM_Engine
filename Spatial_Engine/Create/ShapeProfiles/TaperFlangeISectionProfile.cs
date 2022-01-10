@@ -28,7 +28,7 @@ using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using System;
 using BH.Engine.Reflection;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 

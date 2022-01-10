@@ -24,7 +24,7 @@ using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Humans.ViewQuality;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

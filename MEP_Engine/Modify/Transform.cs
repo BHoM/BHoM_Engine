@@ -25,7 +25,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Geometry;
 using BH.oM.MEP.System;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.MEP

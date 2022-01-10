@@ -30,7 +30,7 @@ using BH.oM.Environment;
 using BH.oM.Environment.MaterialFragments;
 using BH.oM.Physical.Constructions;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment

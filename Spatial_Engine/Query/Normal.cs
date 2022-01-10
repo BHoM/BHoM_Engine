@@ -25,7 +25,7 @@ using BH.oM.Geometry;
 using BH.oM.Dimensional;
 using System;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Spatial
 {

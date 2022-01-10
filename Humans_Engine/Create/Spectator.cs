@@ -26,7 +26,7 @@ using BH.oM.Humans.BodyParts;
 using BH.Engine.Humans;
 using System.Collections.Generic;
 using System;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.Engine.Geometry;

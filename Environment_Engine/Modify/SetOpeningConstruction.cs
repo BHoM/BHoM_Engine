@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Environment.Fragments;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 using BH.Engine.Base;

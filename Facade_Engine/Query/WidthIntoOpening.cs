@@ -29,9 +29,9 @@ using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Analytical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.Engine.Geometry;
-using BH.oM.Reflection;
+ 
 using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Facade

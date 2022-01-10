@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BHPE = BH.oM.Physical.Elements;
 using BHPP = BH.oM.Physical.FramingProperties;

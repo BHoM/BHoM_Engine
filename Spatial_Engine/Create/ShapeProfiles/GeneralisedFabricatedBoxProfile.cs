@@ -27,7 +27,7 @@ using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
 using System;
 using BH.Engine.Reflection;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 using BH.oM.Quantities.Attributes;

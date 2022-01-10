@@ -23,7 +23,7 @@
 using System.ComponentModel;
 
 using BH.oM.Physical.Constructions;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 using System.Collections.Generic;

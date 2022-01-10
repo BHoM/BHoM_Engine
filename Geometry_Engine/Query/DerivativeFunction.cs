@@ -22,7 +22,7 @@
 
 using System;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 
 namespace BH.Engine.Geometry

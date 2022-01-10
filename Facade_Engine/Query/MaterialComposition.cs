@@ -37,7 +37,7 @@ using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Facade

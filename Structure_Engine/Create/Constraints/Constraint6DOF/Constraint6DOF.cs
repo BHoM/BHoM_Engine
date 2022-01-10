@@ -22,7 +22,7 @@
 
 using BH.oM.Structure.Constraints;
 using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.Engine.Base;
 using System.ComponentModel;
 

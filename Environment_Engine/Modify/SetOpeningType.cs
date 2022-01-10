@@ -27,7 +27,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Environment.Fragments;
 using System;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 

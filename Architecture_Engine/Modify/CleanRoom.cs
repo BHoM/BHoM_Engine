@@ -23,7 +23,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 

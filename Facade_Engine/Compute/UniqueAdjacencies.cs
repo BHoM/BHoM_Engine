@@ -31,8 +31,8 @@ using BH.oM.Facade.SectionProperties;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Base;
-using BH.oM.Reflection;
-using BH.oM.Reflection.Attributes;
+ 
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Facade
@@ -84,7 +84,7 @@ namespace BH.Engine.Facade
                 List<IElement2D> tempElems = uniqueElems.Except(new List<IElement2D> { elem }).ToList();
                 foreach (IEdge edge in elem.IOutlineElements1D())
                 {
-                    BH.oM.Reflection.Output<List<IElement1D>, List<IElement2D>> result = edge.EdgeAdjacencies(tempElems);
+                    BH.oM.Base.Output<List<IElement1D>, List<IElement2D>> result = edge.EdgeAdjacencies(tempElems);
                     for (int i = 0; i < result.Item1.Count; i++)
                     {
                         string adjPrefix = "";
@@ -118,7 +118,7 @@ namespace BH.Engine.Facade
 
                     foreach (ICurve intPanelEdge in intCrvs)
                     {
-                        BH.oM.Reflection.Output<List<IElement1D>, List<IElement2D>> result = intPanelEdge.EdgeAdjacencies(tempElems);
+                        BH.oM.Base.Output<List<IElement1D>, List<IElement2D>> result = intPanelEdge.EdgeAdjacencies(tempElems);
                         for (int i = 0; i < result.Item1.Count; i++)
                         {
                             string adjPrefix = "";

@@ -24,7 +24,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;

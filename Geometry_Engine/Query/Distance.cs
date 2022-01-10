@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,7 +132,7 @@ namespace BH.Engine.Geometry
 
         public static double Distance(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
-            BH.oM.Reflection.Output<Point, Point> results = curve1.ICurveProximity(curve2, tolerance);
+            BH.oM.Base.Output<Point, Point> results = curve1.ICurveProximity(curve2, tolerance);
             return results.Item1.Distance(results.Item2);
         }
 

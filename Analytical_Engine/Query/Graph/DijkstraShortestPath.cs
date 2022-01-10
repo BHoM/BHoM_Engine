@@ -26,7 +26,7 @@ using BH.oM.Analytical.Elements;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
 using BH.oM.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

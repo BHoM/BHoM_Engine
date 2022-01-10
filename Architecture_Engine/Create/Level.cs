@@ -21,7 +21,7 @@
  */
 
 using BH.oM.Architecture.Elements;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Architecture.Elements
 {

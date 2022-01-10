@@ -25,7 +25,7 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Geometry;
 using System.ComponentModel;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Structure
 {

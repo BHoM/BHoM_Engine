@@ -24,13 +24,13 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
 
 using BH.Engine.Base;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Materials;
-using BH.oM.Reflection;
+ 
 using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Matter

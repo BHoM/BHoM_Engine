@@ -31,7 +31,7 @@ using BH.oM.Environment.Elements;
 using BH.oM.Environment.Fragments;
 using BH.oM.Base;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 using BH.Engine.Base;
@@ -40,7 +40,7 @@ using BH.oM.Physical.Elements;
 using BH.Engine.Geometry;
 
 using BH.oM.Geometry.SettingOut;
-using BH.oM.Reflection;
+ 
 
 namespace BH.Engine.Environment
 {

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Structure.Reinforcement;
 using BH.oM.Structure.SectionProperties;

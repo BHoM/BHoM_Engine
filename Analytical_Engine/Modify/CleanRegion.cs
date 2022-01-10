@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 using BH.oM.Analytical.Elements;
 using BH.Engine.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Analytical

@@ -25,7 +25,7 @@ using BH.oM.MEP.System.MaterialFragments;
 using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 

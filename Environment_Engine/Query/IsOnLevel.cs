@@ -29,7 +29,7 @@ using System.ComponentModel;
 
 using BH.oM.Geometry;
 using BH.oM.Geometry.SettingOut;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Environment
 {

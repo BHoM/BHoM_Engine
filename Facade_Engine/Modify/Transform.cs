@@ -26,7 +26,7 @@ using BH.Engine.Spatial;
 using BH.oM.Facade.Elements;
 using BH.oM.Geometry;
 using BH.oM.Physical.FramingProperties;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;

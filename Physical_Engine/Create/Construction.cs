@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 using BH.oM.Physical.Constructions;
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Physical

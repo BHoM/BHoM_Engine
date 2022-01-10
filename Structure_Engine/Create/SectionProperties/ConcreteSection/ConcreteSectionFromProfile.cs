@@ -23,7 +23,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Structure.Reinforcement;

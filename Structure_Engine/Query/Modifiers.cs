@@ -22,7 +22,7 @@
 
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure.Fragments;

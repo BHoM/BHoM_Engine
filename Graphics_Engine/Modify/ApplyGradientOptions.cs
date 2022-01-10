@@ -24,7 +24,7 @@ using BH.Engine.Base;
 using BH.oM.Graphics;
 using BH.oM.Graphics.Colours;
 using BH.oM.Graphics.Enums;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

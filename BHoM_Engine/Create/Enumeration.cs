@@ -27,7 +27,7 @@ using System.Linq;
 using System;
 using System.Reflection;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Base
 {
