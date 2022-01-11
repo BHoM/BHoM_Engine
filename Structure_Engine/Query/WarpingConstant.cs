@@ -285,7 +285,7 @@ namespace BH.Engine.Structure
 
         private static double WarpingConstant(this IProfile profile)
         {
-            Reflection.Compute.RecordWarning("Can not calculate Warping constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
+            Base.Compute.RecordWarning("Can not calculate Warping constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
             return 0; // Return 0 for not specifically implemented ones
         }
 

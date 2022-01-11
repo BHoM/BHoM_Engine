@@ -74,7 +74,7 @@ namespace BH.Engine.Structure
                     else
                         errorMessage = e.Message;
 
-                    Reflection.Compute.RecordError("Failed to get analytical bars from " + nameMsg + ". The following error was thrown by the method: " + errorMessage);
+                    Base.Compute.RecordError("Failed to get analytical bars from " + nameMsg + ". The following error was thrown by the method: " + errorMessage);
                 }
             }
 
@@ -89,7 +89,7 @@ namespace BH.Engine.Structure
         {
             if (centreLine is NurbsCurve)
             {
-                Engine.Reflection.Compute.RecordError("The analytical bars method is currently not supported for NurbsCurves. Please use another method to split up the nurbs to polylines that can be used to construct the bars.");
+                Engine.Base.Compute.RecordError("The analytical bars method is currently not supported for NurbsCurves. Please use another method to split up the nurbs to polylines that can be used to construct the bars.");
                 return new List<Bar>();
             }
 
@@ -142,13 +142,13 @@ namespace BH.Engine.Structure
 
             if (material == null)
             {
-                Reflection.Compute.RecordError("The FramingElement does not contain any material. An empty generic isotropic material has been used");
+                Base.Compute.RecordError("The FramingElement does not contain any material. An empty generic isotropic material has been used");
                 fragment = new GenericIsotropicMaterial();
             }
             else if (!material.IsValidStructural())
             {
                 string matName = material.Name ?? "";
-                Reflection.Compute.RecordWarning("The material with name " + matName + " is not a valid structural material as it does not contain exactly one structural material fragment. An empty generic isotropic material has been assumed");
+                Base.Compute.RecordWarning("The material with name " + matName + " is not a valid structural material as it does not contain exactly one structural material fragment. An empty generic isotropic material has been assumed");
                 fragment = new GenericIsotropicMaterial { Name = matName };
             }
             else

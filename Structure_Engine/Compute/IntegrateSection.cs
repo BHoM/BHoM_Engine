@@ -89,7 +89,7 @@ namespace BH.Engine.Structure
             {
                 if (!c.IsClosed())
                 {
-                    Engine.Reflection.Compute.RecordError(c.ToString() + " is not closed");
+                    Engine.Base.Compute.RecordError(c.ToString() + " is not closed");
                 }
             }
 
@@ -200,7 +200,7 @@ namespace BH.Engine.Structure
 
             if (discontinius)
             {
-                Engine.Reflection.Compute.RecordWarning("Asy and Asz are not calculated for discontinuous sections. They have ben set to 0");
+                Engine.Base.Compute.RecordWarning("Asy and Asz are not calculated for discontinuous sections. They have ben set to 0");
                 results["Asy"] = 0;
                 results["Asz"] = 0;
             }

@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
                     sFac = 1;
                     break;
                 default:
-                    Reflection.Compute.RecordError("Unrecognised unit type.");
+                    Base.Compute.RecordError("Unrecognised unit type.");
                     return null;
             }
 
@@ -91,7 +91,7 @@ namespace BH.Engine.Structure
 
             if (magnitude.Count < 1)
             {
-                Reflection.Compute.RecordError("At least magnitude value is required, please check inputs.");
+                Base.Compute.RecordError("At least magnitude value is required, please check inputs.");
                 return null;
             }
 
@@ -152,7 +152,7 @@ namespace BH.Engine.Structure
                 case LoadType.Pressure:
                 case LoadType.Geometrical:
                 default:
-                    Reflection.Compute.RecordError("Load type not implemented.");
+                    Base.Compute.RecordError("Load type not implemented.");
                     return null;
             }
         }

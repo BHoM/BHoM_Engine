@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
         {
             if ((forceAtStart == null || forceAtEnd == null) && (momentAtStart == null || momentAtEnd == null))
             {
-                Reflection.Compute.RecordError("BarVaryingDistributedLoad requires at least the force at start and end or the moment at start and end to be defined.");
+                Base.Compute.RecordError("BarVaryingDistributedLoad requires at least the force at start and end or the moment at start and end to be defined.");
                 return null;
             }
 

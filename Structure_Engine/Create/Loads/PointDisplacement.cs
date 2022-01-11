@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         {
             if (translation == null && rotation == null)
             {
-                Reflection.Compute.RecordError("PointDisplacement requires at least the translation or rotation vector to be defined");
+                Base.Compute.RecordError("PointDisplacement requires at least the translation or rotation vector to be defined");
                 return null;
             }
 

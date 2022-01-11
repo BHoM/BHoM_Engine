@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
                 return new Opening { Edges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList() };
             else
             {
-                Reflection.Compute.RecordError("Provided curve is not closed. Could not create opening.");
+                Base.Compute.RecordError("Provided curve is not closed. Could not create opening.");
                 return null;
             }
         }
@@ -70,12 +70,12 @@ namespace BH.Engine.Structure
 
             if (joined.Count == 0)
             {
-                Reflection.Compute.RecordError("Could not join Curves. Opening not Created.");
+                Base.Compute.RecordError("Could not join Curves. Opening not Created.");
                 return null;
             }
             else if (joined.Count > 1)
             {
-                Reflection.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
+                Base.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
                 return null;
             }
 
@@ -84,7 +84,7 @@ namespace BH.Engine.Structure
                 return new Opening { Edges = edges.Select(x => new Edge { Curve = x }).ToList() };
             else
             {
-                Reflection.Compute.RecordError("Provided curves does not form a closed loop. Could not create opening.");
+                Base.Compute.RecordError("Provided curves does not form a closed loop. Could not create opening.");
                 return null;
             }
 

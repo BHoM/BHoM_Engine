@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         {
             if (translationAcc == null && rotationAcc == null)
             {
-                Reflection.Compute.RecordError("PointAcceleration requires at least the translation or rotation vector to be defined");
+                Base.Compute.RecordError("PointAcceleration requires at least the translation or rotation vector to be defined");
                 return null;
             }
 

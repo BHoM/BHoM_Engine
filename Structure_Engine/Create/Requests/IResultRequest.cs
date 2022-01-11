@@ -67,7 +67,7 @@ namespace BH.Engine.Structure
                 else if (type == typeof(BarModeShape))
                     resType = BarResultType.BarModeShape;
                 else
-                    Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
+                    Base.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
                 request = new BarResultRequest { Divisions = divisions, DivisionType = DivisionType.EvenlyDistributed, ResultType = resType };
             }
@@ -86,7 +86,7 @@ namespace BH.Engine.Structure
                 else if (type == typeof(MeshModeShape))
                     resType = MeshResultType.MeshModeShape;
                 else
-                    Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
+                    Base.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
                 request = new MeshResultRequest { ResultType = resType };
 
@@ -100,7 +100,7 @@ namespace BH.Engine.Structure
                 else if (type == typeof(ModalDynamics))
                     resType = GlobalResultType.ModalDynamics;
                 else
-                    Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
+                    Base.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
                 request = new GlobalResultRequest { ResultType = resType };
             }
@@ -121,7 +121,7 @@ namespace BH.Engine.Structure
                 else if (type == typeof(NodeModeShape))
                     resType = NodeResultType.NodeModeShape;
                 else
-                    Reflection.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
+                    Base.Compute.RecordWarning("Did not find exact type. Assuming " + resType);
 
                 request = new NodeResultRequest { ResultType = resType };
             }

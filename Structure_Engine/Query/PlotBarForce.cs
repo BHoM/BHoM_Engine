@@ -47,12 +47,12 @@ namespace BH.Engine.Structure
         {
             if (adapterIdType == null)
             {
-                Reflection.Compute.RecordError("The provided adapter id type is null.");
+                Base.Compute.RecordError("The provided adapter id type is null.");
                 return new List<ICurve>();
             }
             if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
             {
-                Reflection.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
+                Base.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
                 return new List<ICurve>();
             }
 
@@ -65,7 +65,7 @@ namespace BH.Engine.Structure
                 IAdapterId id = bar.FindFragment<IAdapterId>(adapterIdType);
                 if (id == null)
                 {
-                    Engine.Reflection.Compute.RecordWarning("Could not find the adapter id for at least one Bar.");
+                    Engine.Base.Compute.RecordWarning("Could not find the adapter id for at least one Bar.");
                     continue;
                 }
 

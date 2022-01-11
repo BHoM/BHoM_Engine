@@ -31,7 +31,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this AreaUniformTemperatureLoad load)
         {
             return oM.Structure.Loads.LoadType.AreaTemperature;
@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this AreaUniformlyDistributedLoad load)
         {
             return oM.Structure.Loads.LoadType.AreaUniformLoad;
@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this BarPointLoad load)
         {
             return oM.Structure.Loads.LoadType.BarPointLoad;
@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this BarPrestressLoad load)
         {
             return oM.Structure.Loads.LoadType.Pressure;
@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this BarUniformTemperatureLoad load)
         {
             return oM.Structure.Loads.LoadType.BarTemperature;
@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this BarUniformlyDistributedLoad load)
         {
             return oM.Structure.Loads.LoadType.BarUniformLoad;
@@ -79,7 +79,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this BarVaryingDistributedLoad load)
         {
             return oM.Structure.Loads.LoadType.BarVaryingLoad;
@@ -87,7 +87,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this GravityLoad load)
         {
             return oM.Structure.Loads.LoadType.Selfweight;
@@ -95,7 +95,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this PointAcceleration load)
         {
             return oM.Structure.Loads.LoadType.PointAcceleration;
@@ -103,7 +103,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this PointDisplacement load)
         {
             return oM.Structure.Loads.LoadType.PointDisplacement;
@@ -111,7 +111,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this PointLoad load)
         {
             return oM.Structure.Loads.LoadType.PointForce;
@@ -119,7 +119,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
+        [ToBeRemoved("3.1", "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting. To be deleted.")]
         public static LoadType LoadType(this PointVelocity load)
         {
             return oM.Structure.Loads.LoadType.PointVelocity;

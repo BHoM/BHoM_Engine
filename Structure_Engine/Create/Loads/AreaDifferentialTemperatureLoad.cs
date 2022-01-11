@@ -54,18 +54,18 @@ namespace BH.Engine.Structure
             //Checks for positions and profiles
             if (positions.Count != temperatures.Count)
             {
-                Reflection.Compute.RecordError("Number of positions and temperatures provided are not equal");
+                Base.Compute.RecordError("Number of positions and temperatures provided are not equal");
                 return null;
             }
             else if (positions.Exists((double d) => { return d > 1; }) || positions.Exists((double d) => { return d < 0; }))
             {
-                Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
+                Base.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
                 return null;
             }
 
             if (positions.Zip(positions.Skip(1), (a, b) => new { a, b }).Any(p => p.a > p.b))
             {
-                Reflection.Compute.RecordError("Positions must be sorted in ascending order.");
+                Base.Compute.RecordError("Positions must be sorted in ascending order.");
                 return null;
             }
 

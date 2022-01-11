@@ -352,7 +352,7 @@ namespace BH.Engine.Structure
             }
 
 
-            Reflection.Compute.RecordWarning("Can only calculate torsional constant of symmetric T sections or angles");
+            Base.Compute.RecordWarning("Can only calculate torsional constant of symmetric T sections or angles");
             return 0;
 
         }
@@ -418,7 +418,7 @@ namespace BH.Engine.Structure
 
         private static double TorsionalConstant(this IProfile profile)
         {
-            Reflection.Compute.RecordWarning("Cannot calculate Torsional constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
+            Base.Compute.RecordWarning("Cannot calculate Torsional constants for profiles of type " + profile.GetType().Name + ". Returned value will be 0.");
             return 0; //Return 0 for not specifically implemented ones
         }
 
@@ -513,10 +513,10 @@ namespace BH.Engine.Structure
         private static double AlphaTaperTJunction(double tw, double tf, double r, double t2, double s)
         {
             if (0.2 > r / t2 || r / t2 > 1.0)
-                Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of root radius to flange thickness is out of the applicable range.");
+                Base.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of root radius to flange thickness is out of the applicable range.");
 
             if (0.2 > tw / t2 || tw / t2 > 1.0)
-                Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of web thickness to flange thickness is out of the applicable range.");
+                Base.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of web thickness to flange thickness is out of the applicable range.");
 
             double alpha0 = AlphaTJunction(tw, tf, r);
 
@@ -537,10 +537,10 @@ namespace BH.Engine.Structure
         private static double AlphaTaperLJunction(double tw, double tf, double r, double t2, double s)
         {
             if (0.2 > r / t2 || r / t2 > 1.0)
-                Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of root radius to flange thickness is out of the applicable range.");
+                Base.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of root radius to flange thickness is out of the applicable range.");
 
             if (0.2 > tw / t2 || tw / t2 > 1.0)
-                Reflection.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of web thickness to flange thickness is out of the applicable range.");
+                Base.Compute.RecordWarning("Calculation of alpha term of torsional constant may not be accurate because ratio of web thickness to flange thickness is out of the applicable range.");
 
             double alpha0 = AlphaLJunction(tw, tf, r);
             //Equation 30

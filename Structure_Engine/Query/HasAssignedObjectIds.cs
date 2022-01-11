@@ -48,19 +48,19 @@ namespace BH.Engine.Structure
 
             if (load.Objects == null || load.Objects.Elements == null || load.Objects.Elements.Any(x => x == null))
             {
-                Reflection.Compute.RecordError("At least one of the provided objects assigned to the load is null. Id assignment could not be evaluated.");
+                Base.Compute.RecordError("At least one of the provided objects assigned to the load is null. Id assignment could not be evaluated.");
                 return false;
             }
 
             if (adapterIdType == null)
             {
-                Reflection.Compute.RecordError("The provided AdapterId type is null. Could not check object id assignment for the load.");
+                Base.Compute.RecordError("The provided AdapterId type is null. Could not check object id assignment for the load.");
                 return false;
             }
 
             if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
             {
-                Reflection.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
+                Base.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
                 return false;
             }
             return load.Objects.Elements.All(x => x.Fragments.Contains(adapterIdType));

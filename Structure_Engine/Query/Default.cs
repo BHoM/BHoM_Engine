@@ -61,7 +61,7 @@ namespace BH.Engine.Structure
                 case oM.Structure.MaterialFragments.MaterialType.Tendon:
                 case oM.Structure.MaterialFragments.MaterialType.Glass:
                 default:
-                    Reflection.Compute.RecordWarning("Could not find default material of type " + materialType);
+                    Base.Compute.RecordWarning("Could not find default material of type " + materialType);
                     return null;
             }
 

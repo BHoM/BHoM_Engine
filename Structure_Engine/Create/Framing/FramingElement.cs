@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
             ISectionProperty prop = bar.SectionProperty;
             BHPP.ConstantFramingProperty framingProp = null;
             if (prop == null)
-                Reflection.Compute.RecordWarning("The bar does not contain a sectionProperty. Can not extract profile or material");
+                Base.Compute.RecordWarning("The bar does not contain a sectionProperty. Can not extract profile or material");
             else
                 framingProp = Create.ConstantFramingProperty(bar.SectionProperty, bar.OrientationAngle);
 

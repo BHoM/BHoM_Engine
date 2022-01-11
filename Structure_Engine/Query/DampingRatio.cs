@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("3.1","Deprecated as method only used for early proof of concept, not in use any longer.")]
+        [ToBeRemoved("3.1","ToBeRemoved as method only used for early proof of concept, not in use any longer.")]
         [Description("Damping ratio of the material. Gets the damping ratio from the structural material fragment.")]
         [Output("ζ", "Damping ratio of the material. .")]
         public static double DampingRatio(this Material material)

@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
                 return null;
             else if (diameter < Tolerance.Distance || spacing < Tolerance.Distance)
             {
-                Reflection.Compute.RecordError("The diameter or spacing is less than the tolerance. Please check your inputs.");
+                Base.Compute.RecordError("The diameter or spacing is less than the tolerance. Please check your inputs.");
                 return null;
             }
 

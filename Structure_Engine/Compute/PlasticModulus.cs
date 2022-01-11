@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
 
             if (double.IsNaN(neutralAxis))
             {
-                Engine.Reflection.Compute.RecordError("NeutralAxis not found, PlasticModulus set to 0");
+                Engine.Base.Compute.RecordError("NeutralAxis not found, PlasticModulus set to 0");
                 return 0;
             }
 
@@ -219,7 +219,7 @@ namespace BH.Engine.Structure
 
                     if (between1 && between2)           //TODO test if its always x1 or x2 or whatever (99% that it's x1)
                     {
-                        Engine.Reflection.Compute.RecordWarning("two solutions: x1 = " + x1 + " x2 = " + x2);
+                        Engine.Base.Compute.RecordWarning("two solutions: x1 = " + x1 + " x2 = " + x2);
                         return double.NaN;
                     }
                     else if (between1)
@@ -228,7 +228,7 @@ namespace BH.Engine.Structure
                         return x2;
                     else
                     {
-                        Engine.Reflection.Compute.RecordWarning($"both solutions invalid, x1 = {x1} x2 = {x2}");
+                        Engine.Base.Compute.RecordWarning($"both solutions invalid, x1 = {x1} x2 = {x2}");
                         return double.NaN;
                     }
                 }

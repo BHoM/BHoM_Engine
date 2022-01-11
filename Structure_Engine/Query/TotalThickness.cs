@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
         [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
         public static double TotalThickness(this LoadingPanelProperty property)
         {
-            Reflection.Compute.RecordWarning("LoadingPanelProperties do not have a thickness.");
+            Base.Compute.RecordWarning("LoadingPanelProperties do not have a thickness.");
             return 0;
         }
 
@@ -95,7 +95,7 @@ namespace BH.Engine.Structure
 
         private static double TotalThickness(this ISurfaceProperty property)
         {
-            Reflection.Compute.RecordError(property.GetType().Name + " does not have an implementation for TotalThickness. Returning NaN.");
+            Base.Compute.RecordError(property.GetType().Name + " does not have an implementation for TotalThickness. Returning NaN.");
             return double.NaN;
         }
 

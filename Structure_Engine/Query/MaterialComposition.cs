@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
 
             if (bar.SectionProperty == null || bar.SectionProperty.Material == null)
             {
-                Engine.Reflection.Compute.RecordError("The Bars MaterialComposition could not be calculated as no Material has been assigned.");
+                Engine.Base.Compute.RecordError("The Bars MaterialComposition could not be calculated as no Material has been assigned.");
                 return null;
             }
 
@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
 
             if (areaElement.Property == null || areaElement.Property.Material == null)
             {
-                Engine.Reflection.Compute.RecordError("The areaElements MaterialComposition could not be calculated as no Material has been assigned.");
+                Engine.Base.Compute.RecordError("The areaElements MaterialComposition could not be calculated as no Material has been assigned.");
                 return null;
             }
 
@@ -176,17 +176,17 @@ namespace BH.Engine.Structure
                 return (MaterialComposition)Physical.Create.Material(baseMaterial);
       
             if(reinforcementDensity.Material.Density < 0)
-                Engine.Reflection.Compute.RecordWarning("The Density of the Material of the ReinforcementDensity is less than 0. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
+                Engine.Base.Compute.RecordWarning("The Density of the Material of the ReinforcementDensity is less than 0. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
 
             if (reinforcementDensity.Density < 0)
-                Engine.Reflection.Compute.RecordWarning("The Density of the ReinforcementDensity is less than 0. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
+                Engine.Base.Compute.RecordWarning("The Density of the ReinforcementDensity is less than 0. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
 
             //Calculate volume ratio of reinforcement
             double reinfRatio = reinforcementDensity.Density / reinforcementDensity.Material.Density;
 
             if (reinfRatio > 1)
             {
-                Engine.Reflection.Compute.RecordWarning("The ReinforcementDensity fragment on an object gives a volume ratio larger than 1. This means the volume of reinforcement exceeds the volume of the host object. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
+                Engine.Base.Compute.RecordWarning("The ReinforcementDensity fragment on an object gives a volume ratio larger than 1. This means the volume of reinforcement exceeds the volume of the host object. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
             }
 
             //Remaining volume to base material

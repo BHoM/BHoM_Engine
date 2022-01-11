@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
                 return null;
             else if (diameter < Tolerance.Distance)
             {
-                Reflection.Compute.RecordError("The diameter is less than the tolerance. Please check your inputs.");
+                Base.Compute.RecordError("The diameter is less than the tolerance. Please check your inputs.");
                 return null;
             }
 
@@ -79,23 +79,23 @@ namespace BH.Engine.Structure
             if (startLocation < 0)
             {
                 startLocation = 0;
-                Reflection.Compute.RecordWarning("Start location need to be larger or equal to 0. To accommodate, the start location has been set to 0.");
+                Base.Compute.RecordWarning("Start location need to be larger or equal to 0. To accommodate, the start location has been set to 0.");
             }
             else if (startLocation > 1)
             {
                 startLocation = 1;
-                Reflection.Compute.RecordWarning("Start location need to be smaller or equal to 1. To accommodate, the start location has been set to 1.");
+                Base.Compute.RecordWarning("Start location need to be smaller or equal to 1. To accommodate, the start location has been set to 1.");
             }
 
             if (endLocation < 0)
             {
                 startLocation = 0;
-                Reflection.Compute.RecordWarning("End location need to be larger or equal to 0. To accommodate, the end location has been set to 0.");
+                Base.Compute.RecordWarning("End location need to be larger or equal to 0. To accommodate, the end location has been set to 0.");
             }
             else if (startLocation > 1)
             {
                 startLocation = 1;
-                Reflection.Compute.RecordWarning("End location need to be smaller or equal to 1. To accommodate, the end location has been set to 1.");
+                Base.Compute.RecordWarning("End location need to be smaller or equal to 1. To accommodate, the end location has been set to 1.");
             }
 
             if (startLocation > endLocation)
@@ -103,7 +103,7 @@ namespace BH.Engine.Structure
                 double temp = startLocation;
                 startLocation = endLocation;
                 endLocation = temp;
-                Reflection.Compute.RecordWarning("Start location need to be smaller or equal than the end location. To accommodate, the start and end location have been switched.");
+                Base.Compute.RecordWarning("Start location need to be smaller or equal than the end location. To accommodate, the start and end location have been switched.");
             }
         }
 

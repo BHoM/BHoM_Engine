@@ -57,19 +57,19 @@ namespace BH.Engine.Structure
         {
             if ((forceAtStart == null || forceAtEnd == null) && (momentAtStart == null || momentAtEnd == null))
             {
-                Reflection.Compute.RecordError("BarVaryingDistributedLoad requires at least the force at start and end or the moment at start and end to be defined.");
+                Base.Compute.RecordError("BarVaryingDistributedLoad requires at least the force at start and end or the moment at start and end to be defined.");
                 return null;
             }
 
             if (startPosition < 0 || endPosition < 0)
             {
-                Reflection.Compute.RecordError("Positions need to be greater or equal to 0.");
+                Base.Compute.RecordError("Positions need to be greater or equal to 0.");
                 return null;
             }
 
             if (relativePositions && (startPosition > 1 || endPosition > 1))
             {
-                Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive) for relative positions set to true.");
+                Base.Compute.RecordError("Positions must exist between 0 and 1 (inclusive) for relative positions set to true.");
                 return null;
             }
 

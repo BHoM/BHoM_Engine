@@ -79,7 +79,7 @@ namespace BH.Engine.Structure
 
             if (orientation != null && centroid == null)
             {
-                Reflection.Compute.RecordWarning("Panel Centroid could not be calculated. CoordinateSystem will use control point average as substitute.");
+                Base.Compute.RecordWarning("Panel Centroid could not be calculated. CoordinateSystem will use control point average as substitute.");
                 centroid = panel.ControlPoints().Average();
             }
 

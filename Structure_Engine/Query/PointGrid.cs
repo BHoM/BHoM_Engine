@@ -168,7 +168,7 @@ namespace BH.Engine.Structure
 
         private static List<Point> PointGrid(this IAreaElement element)
         {
-            Reflection.Compute.RecordWarning("Point grid for element of type " + element.GetType().Name + " not implemented.");
+            Base.Compute.RecordWarning("Point grid for element of type " + element.GetType().Name + " not implemented.");
             return new List<Point>();
         }
 

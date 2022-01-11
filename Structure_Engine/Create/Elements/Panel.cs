@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
                 return null;
             else if (!outline.IIsClosed())
             {
-                Reflection.Compute.RecordError("Outline is not closed. Could not create Panel.");
+                Base.Compute.RecordError("Outline is not closed. Could not create Panel.");
                 return null;
             }
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).Where(x => x != null).ToList() : new List<Opening>();
@@ -147,7 +147,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Deprecated               ****/
+        /**** Public Methods - ToBeRemoved               ****/
         /***************************************************/
 
         [ToBeRemoved("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]

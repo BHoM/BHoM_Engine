@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         {
             if (newElements0D.Count != 2)
             {
-                Reflection.Compute.RecordError("A bar is defined by 2 nodes.");
+                Base.Compute.RecordError("A bar is defined by 2 nodes.");
                 return null;
             }
 

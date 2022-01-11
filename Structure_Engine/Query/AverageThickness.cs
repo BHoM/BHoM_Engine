@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
             if (property.StemWidth == 0 || property.Spacing < property.StemWidth ||
                 property.TotalDepth < property.Thickness)
             {
-                Reflection.Compute.RecordError("Invalid Ribbed slab, returning null.");
+                Base.Compute.RecordError("Invalid Ribbed slab, returning null.");
                 return double.NaN;
             }
             double avrageThicknessLower = (property.TotalDepth - property.Thickness) * (property.StemWidth / property.Spacing);
@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
                 property.StemWidthY == 0 || property.SpacingY < property.StemWidthY ||
                 property.TotalDepthX < property.Thickness || property.TotalDepthY < property.Thickness)
             {
-                Reflection.Compute.RecordError("Invalid Waffle slab, returning null.");
+                Base.Compute.RecordError("Invalid Waffle slab, returning null.");
                 return double.NaN;
             }
 
@@ -98,7 +98,7 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double AverageThickness(this LoadingPanelProperty property)
         {
-            Reflection.Compute.RecordWarning("Structural IAreaElements are defined without volume.");
+            Base.Compute.RecordWarning("Structural IAreaElements are defined without volume.");
             return 0;
         }
 
@@ -122,7 +122,7 @@ namespace BH.Engine.Structure
 
         private static double AverageThickness(this ISurfaceProperty property)
         {
-            Reflection.Compute.RecordError(property.GetType().Name + " does not have an implementation for AverageThickness. Returning NaN.");
+            Base.Compute.RecordError(property.GetType().Name + " does not have an implementation for AverageThickness. Returning NaN.");
             return double.NaN;
         }
 
