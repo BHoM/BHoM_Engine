@@ -21,9 +21,10 @@
  */
 
 using BH.Engine.Reflection;
+using BH.Engine.Base;
 using BH.Engine.Serialiser;
 using BH.Engine.Test;
-using BH.oM.Reflection.Debugging;
+using BH.oM.Base.Debugging;
 using BH.oM.Test;
 using BH.oM.Test.Results;
 using System;
@@ -49,7 +50,7 @@ namespace BH.Test.Engine
             List<string> toIgnore = new List<string> { "MachineLearning", "Python", "LifeCycleAssessment.Query.GetEvaluationValue" };
 
             // Test all the BHoM types available
-            List<MethodInfo> methods = BH.Engine.Reflection.Query.BHoMMethodList()
+            List<MethodInfo> methods = BH.Engine.Base.Query.BHoMMethodList()
                 .Where(x => !x.IsDeprecated())
                 .Where(x => !toIgnore.Any(i => $"{x.DeclaringType.Namespace}.{x.DeclaringType.Name}.{x.Name}".Contains(i)))
                 .ToList();

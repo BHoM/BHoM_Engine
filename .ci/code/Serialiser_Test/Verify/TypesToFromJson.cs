@@ -20,10 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 using BH.Engine.Serialiser;
 using BH.Engine.Test;
-using BH.oM.Reflection.Debugging;
+using BH.oM.Base.Debugging;
 using BH.oM.Test;
 using BH.oM.Test.Results;
 using System;
@@ -43,9 +43,9 @@ namespace BH.Test.Serialiser
         public static TestResult TypesToFromJson()
         {
             // Test all the BHoM types available
-            List<Type> types = Engine.Reflection.Query.BHoMTypeList()
-                .Concat(Engine.Reflection.Query.BHoMInterfaceTypeList())
-                .Concat(Engine.Reflection.Query.AdapterTypeList())
+            List<Type> types = Engine.Base.Query.BHoMTypeList()
+                .Concat(Engine.Base.Query.BHoMInterfaceTypeList())
+                .Concat(Engine.Base.Query.AdapterTypeList())
                 .ToList();
             List<TestResult> results = types.Select(x => TypeToFromJson(x)).ToList();
 
@@ -75,12 +75,12 @@ namespace BH.Test.Serialiser
             string json = "";
             try
             {
-                Engine.Reflection.Compute.ClearCurrentEvents();
+                Engine.Base.Compute.ClearCurrentEvents();
                 json = type.ToJson();
             }
             catch (Exception e)
             {
-                Engine.Reflection.Compute.RecordError(e.Message);
+                Engine.Base.Compute.RecordError(e.Message);
             }
 
             if (string.IsNullOrWhiteSpace(json))
@@ -89,19 +89,19 @@ namespace BH.Test.Serialiser
                     Description = typeDescription,
                     Status = TestStatus.Error,
                     Message = $"Error: Failed to convert type {typeDescription} to json.",
-                    Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
                 };
 
             // From Json
             Type copy = null;
             try
             {
-                Engine.Reflection.Compute.ClearCurrentEvents();
+                Engine.Base.Compute.ClearCurrentEvents();
                 copy = Engine.Serialiser.Convert.FromJson(json) as Type;
             }
             catch (Exception e)
             {
-                Engine.Reflection.Compute.RecordError(e.Message);
+                Engine.Base.Compute.RecordError(e.Message);
             }
 
             if (!type.IsEqual(copy))
@@ -110,7 +110,7 @@ namespace BH.Test.Serialiser
                     Description = typeDescription,
                     Status = TestStatus.Error,
                     Message = $"Error: Type {typeDescription} is not equal to the original after serialisation.",
-                    Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
                 };
 
             // All test objects passed the test
