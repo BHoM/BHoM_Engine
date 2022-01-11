@@ -22,8 +22,9 @@
 
 using BH.Engine.Reflection;
 using BH.Engine.Serialiser;
+using BH.Engine.Base;
 using BH.Engine.Test;
-using BH.oM.Reflection.Debugging;
+using BH.oM.Base.Debugging;
 using BH.oM.Test;
 using BH.oM.Test.Results;
 using System;
@@ -44,7 +45,7 @@ namespace BH.Test.Serialiser
         public static TestResult MethodsToFromJson()
         {
             // Test all the BHoM types available
-            List<MethodInfo> methods = Engine.Reflection.Query.BHoMMethodList().Where(x => !x.IsDeprecated()).ToList();
+            List<MethodInfo> methods = Engine.Base.Query.BHoMMethodList().Where(x => !x.IsDeprecated()).ToList();
             List<TestResult> results = methods.Select(x => MethodToFromJson(x)).ToList();
 
             // Generate the result message
@@ -73,12 +74,12 @@ namespace BH.Test.Serialiser
             string json = "";
             try
             {
-                Engine.Reflection.Compute.ClearCurrentEvents();
+                Engine.Base.Compute.ClearCurrentEvents();
                 json = method.ToJson();
             }
             catch (Exception e)
             {
-                Engine.Reflection.Compute.RecordError(e.Message);
+                Engine.Base.Compute.RecordError(e.Message);
             }
 
             if (string.IsNullOrWhiteSpace(json))
@@ -87,19 +88,19 @@ namespace BH.Test.Serialiser
                     Description = methodDescription,
                     Status = TestStatus.Error,
                     Message = $"Error: Failed to convert method {methodDescription} to json.",
-                    Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
                 };
 
             // From Json
             MethodInfo copy = null;
             try
             {
-                Engine.Reflection.Compute.ClearCurrentEvents();
+                Engine.Base.Compute.ClearCurrentEvents();
                 copy = Engine.Serialiser.Convert.FromJson(json) as MethodInfo;
             }
             catch (Exception e)
             {
-                Engine.Reflection.Compute.RecordError(e.Message);
+                Engine.Base.Compute.RecordError(e.Message);
             }
 
             if (!method.IsEqual(copy))
@@ -108,7 +109,7 @@ namespace BH.Test.Serialiser
                     Description = methodDescription,
                     Status = TestStatus.Error,
                     Message = $"Error: Method {methodDescription} is not equal to the original after serialisation.",
-                    Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
                 };
 
             // All test objects passed the test

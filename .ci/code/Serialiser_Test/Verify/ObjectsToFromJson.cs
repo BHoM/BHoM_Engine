@@ -20,10 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 using BH.Engine.Serialiser;
 using BH.Engine.Test;
-using BH.oM.Reflection.Debugging;
+using BH.oM.Base.Debugging;
 using BH.oM.Test;
 using BH.oM.Test.Results;
 using System;
@@ -75,12 +75,12 @@ namespace BH.Test.Serialiser
                 object dummy = null;
                 try
                 {
-                    Engine.Reflection.Compute.ClearCurrentEvents();
+                    Engine.Base.Compute.ClearCurrentEvents();
                     dummy = Engine.Test.Compute.DummyObject(type);
                 }
                 catch (Exception e)
                 {
-                    Engine.Reflection.Compute.RecordWarning(e.Message);
+                    Engine.Base.Compute.RecordWarning(e.Message);
                 }
 
                 if (dummy == null)
@@ -89,7 +89,7 @@ namespace BH.Test.Serialiser
                         Description = typeDescription,
                         Status = TestStatus.Warning,
                         Message = $"Warning: Failed to create a dummy object of type {typeDescription}.",
-                        Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                        Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
                     };
                 else
                     testObjects.Add(dummy);
@@ -102,12 +102,12 @@ namespace BH.Test.Serialiser
                 string json = "";
                 try
                 {
-                    Engine.Reflection.Compute.ClearCurrentEvents();
+                    Engine.Base.Compute.ClearCurrentEvents();
                     json = testObject.ToJson();
                 }
                 catch (Exception e)
                 {
-                    Engine.Reflection.Compute.RecordError(e.Message);
+                    Engine.Base.Compute.RecordError(e.Message);
                 }
 
                 if (string.IsNullOrWhiteSpace(json))
@@ -116,19 +116,19 @@ namespace BH.Test.Serialiser
                         Description = typeDescription,
                         Status = TestStatus.Error,
                         Message = $"Error: Failed to convert object of type {typeDescription} to json.",
-                        Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                        Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
                     };
 
                 // From Json
                 object copy = null;
                 try
                 {
-                    Engine.Reflection.Compute.ClearCurrentEvents();
+                    Engine.Base.Compute.ClearCurrentEvents();
                     copy = Engine.Serialiser.Convert.FromJson(json);
                 }
                 catch (Exception e)
                 {
-                    Engine.Reflection.Compute.RecordError(e.Message);
+                    Engine.Base.Compute.RecordError(e.Message);
                 }
 
                 if (!testObject.IsEqual(copy))
@@ -137,7 +137,7 @@ namespace BH.Test.Serialiser
                         Description = typeDescription,
                         Status = TestStatus.Error,
                         Message = $"Error: Object of type {typeDescription} is not equal to the original after serialisation.",
-                        Information = Engine.Reflection.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                        Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
                     };
             }
 
