@@ -43,7 +43,7 @@ namespace BH.Engine.MEP
         {
             if(sectionProfile == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a cable tray section property with a null section profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a cable tray section property with a null section profile.");
                 return null;
             }
 
@@ -54,7 +54,7 @@ namespace BH.Engine.MEP
 
             if (property == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Insufficient information to create a CableTraySectionProperty. Please ensure you have all required inputs.");
+                BH.Engine.Base.Compute.RecordError("Insufficient information to create a CableTraySectionProperty. Please ensure you have all required inputs.");
                 return null;
             }
 

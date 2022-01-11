@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the exposure to the sun of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the exposure to the sun of a null panel.");
                 return false;
             }
 

@@ -42,7 +42,7 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(parameters == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
                 return null;
             }
 
@@ -65,13 +65,13 @@ namespace BH.Engine.Architecture.Theatron
         {
             if (parameters == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
                 return null;
             }
 
             if(planGeometry == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null theatron plan.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron full profile from a null theatron plan.");
                 return null;
             }
 
@@ -90,19 +90,19 @@ namespace BH.Engine.Architecture.Theatron
         {
             if (parameters == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron full profile from a null collection of profile parameters.");
                 return null;
             }
 
             if (focalPoint == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null focal point.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron full profile from a null focal point.");
                 return null;
             }
 
             if (sectionOrigin == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron full profile from a null profile origin.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron full profile from a null profile origin.");
                 return null;
             }
 

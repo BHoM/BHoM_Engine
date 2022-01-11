@@ -64,7 +64,7 @@ namespace BH.Engine.Diffing
                 fragmentType = typeof(IPersistentAdapterId);
                 fragmentIdProperty = nameof(IPersistentAdapterId.PersistentId);
 
-                BH.Engine.Reflection.Compute.RecordNote($"No `{nameof(fragmentType)}` or `{nameof(fragmentIdProperty)}` specified." +
+                BH.Engine.Base.Compute.RecordNote($"No `{nameof(fragmentType)}` or `{nameof(fragmentIdProperty)}` specified." +
                     $"\nDefaulted to `{typeof(IPersistentAdapterId).FullName}.{nameof(IPersistentAdapterId.PersistentId)}`.");
             }
 
@@ -72,7 +72,7 @@ namespace BH.Engine.Diffing
             var propertiesOnFragment = fragmentType.GetProperties().Where(pi => pi.Name == fragmentIdProperty);
             if (!propertiesOnFragment.Any())
             {
-                BH.Engine.Reflection.Compute.RecordError($"No property named `{fragmentIdProperty}` was found on the specified {nameof(fragmentType)} `{fragmentType.FullName}`.");
+                BH.Engine.Base.Compute.RecordError($"No property named `{fragmentIdProperty}` was found on the specified {nameof(fragmentType)} `{fragmentType.FullName}`.");
                 return null;
             }
 
@@ -83,13 +83,13 @@ namespace BH.Engine.Diffing
             if (pastObjsIds.Count() != pastObjects.Count())
             {
                 missingIds = true;
-                BH.Engine.Reflection.Compute.RecordError($"Could not find the Id in some of the input {nameof(pastObjects)} within the specified fragment property `{fragmentType.Name}.{fragmentIdProperty}`.");
+                BH.Engine.Base.Compute.RecordError($"Could not find the Id in some of the input {nameof(pastObjects)} within the specified fragment property `{fragmentType.Name}.{fragmentIdProperty}`.");
             }
 
             if (follObjsIds.Count() != followingObjs.Count())
             {
                 missingIds = true;
-                BH.Engine.Reflection.Compute.RecordError($"Could not find the Id in some of the input {nameof(followingObjs)} within the specified fragment property `{fragmentType.Name}.{fragmentIdProperty}`.");
+                BH.Engine.Base.Compute.RecordError($"Could not find the Id in some of the input {nameof(followingObjs)} within the specified fragment property `{fragmentType.Name}.{fragmentIdProperty}`.");
             }
 
             if (missingIds)
@@ -102,14 +102,14 @@ namespace BH.Engine.Diffing
         {
             if (!typeof(IFragment).IsAssignableFrom(fragmentType))
             {
-                BH.Engine.Reflection.Compute.RecordError("The specified Type must be a fragment Type.");
+                BH.Engine.Base.Compute.RecordError("The specified Type must be a fragment Type.");
                 return null;
             }
 
             // Check on fragmentIdProperty
             if (string.IsNullOrWhiteSpace(fragmentIdProperty))
             {
-                BH.Engine.Reflection.Compute.RecordError($"Invalid {nameof(fragmentIdProperty)} provided.");
+                BH.Engine.Base.Compute.RecordError($"Invalid {nameof(fragmentIdProperty)} provided.");
                 return null;
             }
 
@@ -117,7 +117,7 @@ namespace BH.Engine.Diffing
             var idFragments = obj.GetAllFragments(fragmentType);
             if (idFragments != null && idFragments.Count > 1)
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} contains more than one fragment of the provided Fragment type {fragmentType}. Unable to decide which one to pick.");
+                BH.Engine.Base.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} contains more than one fragment of the provided Fragment type {fragmentType}. Unable to decide which one to pick.");
                 return null;
             }
             else
@@ -125,14 +125,14 @@ namespace BH.Engine.Diffing
 
             if (idFragm == null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} does not contain a fragment of the provided Fragment type {fragmentType}.");
+                BH.Engine.Base.Compute.RecordWarning($"Object of type {obj.GetType()}, guid {obj.BHoM_Guid} does not contain a fragment of the provided Fragment type {fragmentType}.");
                 return null;
             }
 
-            object value = BH.Engine.Reflection.Query.PropertyValue(idFragm, fragmentIdProperty);
+            object value = BH.Engine.Base.Query.PropertyValue(idFragm, fragmentIdProperty);
             if (value == null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"The retrieved fragment for an object of type {obj.GetType()}, guid {obj.BHoM_Guid} has not any value under the property named {fragmentIdProperty}.");
+                BH.Engine.Base.Compute.RecordWarning($"The retrieved fragment for an object of type {obj.GetType()}, guid {obj.BHoM_Guid} has not any value under the property named {fragmentIdProperty}.");
                 return null;
             }
 

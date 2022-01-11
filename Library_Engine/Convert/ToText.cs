@@ -44,7 +44,7 @@ namespace BH.Engine.Library
         {
             if(source == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null source object to a string.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null source object to a string.");
                 return "";
             }
 

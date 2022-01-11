@@ -94,7 +94,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             catch
             {
-                Reflection.Compute.RecordError("Enum " + valueName + " failed to deserialise.");
+                Base.Compute.RecordError("Enum " + valueName + " failed to deserialise.");
                 return null;
             }
         }

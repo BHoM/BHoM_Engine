@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
         {
             if(construction == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the absorptance of a null construction.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the absorptance of a null construction.");
                 return 0;
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Environment
         {
             if (layer == null || layer.Material == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the absorptance of a null layer or where the layer has a null material.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the absorptance of a null layer or where the layer has a null material.");
                 return 0;
             }
 
@@ -80,7 +80,7 @@ namespace BH.Engine.Environment
         {
             if (material == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the absorptance of a null material.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the absorptance of a null material.");
                 return 0;
             }
 
@@ -90,7 +90,7 @@ namespace BH.Engine.Environment
             double maxEmissivity = Math.Max(materialProperties.EmissivityExternal, materialProperties.EmissivityInternal);
             if (maxEmissivity > 1 || maxEmissivity < 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Maximum emissivity was greater than 1 or less than 0 and so absorptance cannot be accurately calculated");
+                BH.Engine.Base.Compute.RecordError("Maximum emissivity was greater than 1 or less than 0 and so absorptance cannot be accurately calculated");
                 return 0.0;
             }
 

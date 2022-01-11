@@ -36,6 +36,7 @@ namespace BH.Engine.Reflection
         /**** Interface Methods                         ****/
         /***************************************************/
 
+        [ToBeRemoved("5.1", "The IsDeprecated function will be removed as the Deprecated Attribute no longer exists. All uses of this function will return false - as no objects or methods can have the Deprecated Attribute going forward so no method or object can be deprecated.")]
         public static bool IIsDeprecated(this object obj)
         {
             if (obj == null)
@@ -49,45 +50,18 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [ToBeRemoved("5.1", "The IsDeprecated function will be removed as the Deprecated Attribute no longer exists. All uses of this function will return false - as no objects or methods can have the Deprecated Attribute going forward so no method or object can be deprecated.")]
         public static bool IsDeprecated(this MethodBase method)
         {
-            if (method == null)
-                return false;
-
-            // Keep this one line for now but should be removed once the DepreacatedAttribute is deleted
-            DeprecatedAttribute attribute = method.GetCustomAttribute<DeprecatedAttribute>();
-
-            ToBeRemovedAttribute deletedAttribute = method.GetCustomAttribute<ToBeRemovedAttribute>();
-            ReplacedAttribute replacedAttribute = method.GetCustomAttribute<ReplacedAttribute>();
-
-            if (attribute != null || deletedAttribute != null || replacedAttribute != null)
-                return true;
-   
-            if (method is ConstructorInfo)
-            {
-                return method.DeclaringType.IsDeprecated();
-            }
-
             return false;
         }
 
         /***************************************************/
 
+        [ToBeRemoved("5.1", "The IsDeprecated function will be removed as the Deprecated Attribute no longer exists. All uses of this function will return false - as no objects or methods can have the Deprecated Attribute going forward so no method or object can be deprecated.")]
         public static bool IsDeprecated(this Type type)
         {
-            if (type == null)
-                return false;
-
-            // Keep this one line for now but should be removed once the DepreacatedAttribute is deleted
-            DeprecatedAttribute attribute = type.GetCustomAttribute<DeprecatedAttribute>();
-
-            ToBeRemovedAttribute deletedAttribute = type.GetCustomAttribute<ToBeRemovedAttribute>();
-            ReplacedAttribute replacedAttribute = type.GetCustomAttribute<ReplacedAttribute>();
-
-            if (attribute != null || deletedAttribute != null || replacedAttribute != null)
-                return true;
-            else
-                return false;
+            return false;
         }
 
 

@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
             double tilt = environmentObject.Tilt(distanceTolerance, angleTolerance);
             if ((tilt >= 0 - numericTolerance && tilt <= 0 + numericTolerance) || (tilt >= 180 - numericTolerance && tilt <= 180 + numericTolerance))
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Cannot find the sides of a horizontal IEnvironmentObject");
+                BH.Engine.Base.Compute.RecordWarning("Cannot find the sides of a horizontal IEnvironmentObject");
                 return null;
             }
 

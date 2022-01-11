@@ -44,7 +44,7 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the Guids that are not sinks of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the Guids that are not sinks of a null graph.");
                 return new List<Guid>();
             }
 

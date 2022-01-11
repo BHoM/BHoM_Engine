@@ -80,7 +80,7 @@ namespace BH.Engine.Diffing
             // Check on customDataKey
             if (string.IsNullOrWhiteSpace(customdataIdKey))
             {
-                BH.Engine.Reflection.Compute.RecordError($"Invalid {nameof(customdataIdKey)} provided.");
+                BH.Engine.Base.Compute.RecordError($"Invalid {nameof(customdataIdKey)} provided.");
                 return false;
             }
 
@@ -101,11 +101,11 @@ namespace BH.Engine.Diffing
 
             // Checks on current Objects
             if (!allRetrieved)
-                BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(followingObjects)}' do not have a valid ID/Key usable for Diffing.");
+                BH.Engine.Base.Compute.RecordWarning($"Some or all of the {nameof(followingObjects)}' do not have a valid ID/Key usable for Diffing.");
 
             if (followingObjectsIds.Count != followingObjectsIds.Distinct().Count())
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"Some of the {nameof(followingObjects)} have duplicate Id.");
+                BH.Engine.Base.Compute.RecordWarning($"Some of the {nameof(followingObjects)} have duplicate Id.");
                 noDuplicates = false;
             }
 
@@ -122,11 +122,11 @@ namespace BH.Engine.Diffing
 
             // Checks on past Objects
             if (!allRetrieved)
-                BH.Engine.Reflection.Compute.RecordWarning($"Some or all of the {nameof(pastObjects)}' do not have a valid ID/Key usable for Diffing.");
+                BH.Engine.Base.Compute.RecordWarning($"Some or all of the {nameof(pastObjects)}' do not have a valid ID/Key usable for Diffing.");
 
             if (pastObjectsIds.Count != pastObjectsIds.Distinct().Count())
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"Some of the {nameof(pastObjects)} have duplicate Id.");
+                BH.Engine.Base.Compute.RecordWarning($"Some of the {nameof(pastObjects)} have duplicate Id.");
                 noDuplicates = false;
             }
 

@@ -25,13 +25,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
         [Description("Determine whether a type is a numeric type.")]
         [Input("type", "Type that we want to check if it is numeric type or not.")]
         [Output("isNumeric", "True if the object is a numeric Type, false if not.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsNumeric(System.Type)")]
         public static bool IsNumeric(this Type type)
         {
             switch (Type.GetTypeCode(type))
@@ -47,6 +48,55 @@ namespace BH.Engine.Reflection
                 case TypeCode.Decimal:
                 case TypeCode.Double:
                 case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Determine whether a type is a floating-point numeric type." +
+            "\nSee https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types for more information.")]
+        [Input("type", "Type that we want to check if it is numeric type or not.")]
+        [Output("isNumeric", "True if the object is a numeric Type, false if not.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsFloatingPointNumericType(System.Type)")]
+        public static bool IsNumericFloatingPointType(this Type type)
+        {
+            // As per https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types
+
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Determine whether a type is a integral numeric type (an integer)." +
+            "\nSee https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types for more information.")]
+        [Input("type", "Type that we want to check if it is numeric type or not.")]
+        [Output("isNumeric", "True if the object is a numeric Type, false if not.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsIntegralNumericType(System.Type)")]
+        public static bool IsNumericIntegralType(this Type type)
+        {
+            // As per https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
+
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
                     return true;
                 default:
                     return false;

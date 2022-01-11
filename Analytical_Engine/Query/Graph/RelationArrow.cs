@@ -51,7 +51,7 @@ namespace BH.Engine.Analytical
 
             if (headLength == 0)
             {
-                Reflection.Compute.RecordWarning("Unable to create arrow with headLength of zero.");
+                Base.Compute.RecordWarning("Unable to create arrow with headLength of zero.");
                 return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
             }
                 

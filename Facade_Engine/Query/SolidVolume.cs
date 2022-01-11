@@ -54,7 +54,7 @@ namespace BH.Engine.Facade
         {
             if (curtainWall == null || curtainWall.Openings == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null curtain wall");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null curtain wall");
                 return 0;
             }
 
@@ -82,7 +82,7 @@ namespace BH.Engine.Facade
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null panel.");
                 return 0;
             }
 
@@ -104,7 +104,7 @@ namespace BH.Engine.Facade
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null opening.");
                 return 0;
             }
 
@@ -140,7 +140,7 @@ namespace BH.Engine.Facade
         {
             if(frameEdge == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null frame edge.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null frame edge.");
                 return 0;
             }
 

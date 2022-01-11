@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
         {
             if (geometry == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
             
@@ -74,7 +74,7 @@ namespace BH.Engine.Geometry
                 return Math.PI * curve.Radius * curve.Radius;
             else
             {
-                Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
+                Base.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
             }
         }
@@ -90,7 +90,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
 
@@ -108,7 +108,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
 
@@ -124,7 +124,7 @@ namespace BH.Engine.Geometry
 
         public static double Area(this Line curve, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
+            Base.Compute.RecordWarning("Cannot calculate area for an open curve.");
             return 0;
         }
 
@@ -139,7 +139,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
             
@@ -148,7 +148,7 @@ namespace BH.Engine.Geometry
 
             if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
+                Base.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
             }
 
@@ -163,7 +163,7 @@ namespace BH.Engine.Geometry
             {
                 if (c is NurbsCurve)
                 {
-                    Reflection.Compute.RecordError("Area for NurbsuCurve is not implemented.");
+                    Base.Compute.RecordError("Area for NurbsuCurve is not implemented.");
                     return double.NaN;
                 }
                 Point ePt = c.IEndPoint();
@@ -200,13 +200,13 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
             
             if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordWarning("Cannot calculate area for an open curve.");
+                Base.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
             }
 
@@ -246,7 +246,7 @@ namespace BH.Engine.Geometry
         {
             if (mesh == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
             
@@ -279,7 +279,7 @@ namespace BH.Engine.Geometry
         {
             if (pSurf == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
             
@@ -297,7 +297,7 @@ namespace BH.Engine.Geometry
         {
             if (pSurf == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
             
@@ -326,7 +326,7 @@ namespace BH.Engine.Geometry
         {
             if (v2 == null || v2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
             
@@ -350,11 +350,11 @@ namespace BH.Engine.Geometry
         {
             if (geometry == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query area as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
             
-            Reflection.Compute.RecordError("Area for " + geometry.GetType().Name + " is not implemented.");
+            Base.Compute.RecordError("Area for " + geometry.GetType().Name + " is not implemented.");
             return double.NaN;
         }
 

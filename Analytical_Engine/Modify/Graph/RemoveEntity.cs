@@ -46,13 +46,13 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot remove an entity from a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot remove an entity from a null graph.");
                 return null;
             }
 
             if(entityToRemove == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot remove a null entity from a graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot remove a null entity from a graph.");
                 return null;
             }
 
@@ -69,7 +69,7 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot remove an entity from a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot remove an entity from a null graph.");
                 return null;
             }
 
@@ -80,7 +80,7 @@ namespace BH.Engine.Analytical
                 graph.Entities.Remove(entityToRemove);
             }
             else
-                Reflection.Compute.RecordWarning("Entity was not found in the graph.");
+                Base.Compute.RecordWarning("Entity was not found in the graph.");
 
             return graph;
         }

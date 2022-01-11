@@ -46,13 +46,13 @@ namespace BH.Engine.Environment
         {
             if(node == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null node.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null node.");
                 return node;
             }
 
             if(point == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to a node.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null geometry to a node.");
                 return node;
             }
 
@@ -78,13 +78,13 @@ namespace BH.Engine.Environment
         {
             if (panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null panel.");
                 return panel;
             }
 
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to a panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null geometry to a panel.");
                 return panel;
             }
 
@@ -101,13 +101,13 @@ namespace BH.Engine.Environment
         {
             if (opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null opening.");
                 return opening;
             }
 
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to an opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null geometry to an opening.");
                 return opening;
             }
 
@@ -124,13 +124,13 @@ namespace BH.Engine.Environment
         {
             if (edge == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null edge.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null edge.");
                 return edge;
             }
 
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to an edge.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null geometry to an edge.");
                 return edge;
             }
 
@@ -147,13 +147,13 @@ namespace BH.Engine.Environment
         {
             if (space == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null space.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null space.");
                 return space;
             }
 
             if (locationPoint == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null geometry to a space.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null geometry to a space.");
                 return space;
             }
 

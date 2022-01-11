@@ -49,7 +49,7 @@ namespace BH.Engine.Facade
         {
             if(frameEdgeProp == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the width of a null frame edge property.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the width of a null frame edge property.");
                 return 0;
             }
 

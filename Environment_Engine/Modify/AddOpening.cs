@@ -46,13 +46,13 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot add an opening to a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot add an opening to a null panel.");
                 return panel;
             }
 
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot add a null opening to a panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot add a null opening to a panel.");
                 return panel;
             }
 
@@ -72,13 +72,13 @@ namespace BH.Engine.Environment
         {
             if (panels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot add openings to null panels.");
+                BH.Engine.Base.Compute.RecordError("Cannot add openings to null panels.");
                 return panels;
             }
 
             if (openings == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot add null openings to panels.");
+                BH.Engine.Base.Compute.RecordError("Cannot add null openings to panels.");
                 return panels;
             }
 

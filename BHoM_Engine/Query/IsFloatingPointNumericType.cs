@@ -20,38 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Base;
-using BH.oM.Environment;
-using BH.oM.Environment.Fragments;
-
-using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Reflection
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        [Description("Appends a Fragment Property to a given Environment Object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have fragment properties appended to it")]
-        [Input("fragment", "Any fragment object implementing the IFragment interface to append to the object")]
-        [Output("environmentObject", "The environment object with the added fragment")]
-        [Deprecated("3.1", "Deprecated in favour of AddFragment method in the base engine")]
-        public static IEnvironmentObject AddFragment(this IEnvironmentObject environmentObject, IFragment fragment)
-        {
-            if (environmentObject == null)
-                return null;
-
-            environmentObject.Fragments.Add(fragment);
-            return environmentObject;
-        }
+        
     }
 }
-
-
 

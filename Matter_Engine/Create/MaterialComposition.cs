@@ -81,7 +81,7 @@ namespace BH.Engine.Matter
         {
             if(materialProperty == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a material composition from a null set of material properties.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a material composition from a null set of material properties.");
                 return null;
             }
 

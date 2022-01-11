@@ -47,13 +47,13 @@ namespace BH.Engine.Environment
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null opening.");
                 return opening;
             }
 
             if(outlineElements1D == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null outline elements to an opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null outline elements to an opening.");
                 return opening;
             }
 
@@ -70,13 +70,13 @@ namespace BH.Engine.Environment
         {
             if (panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null panel.");
                 return panel;
             }
 
             if (outlineElements1D == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null outline elements to a panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null outline elements to a panel.");
                 return panel;
             }
 
@@ -93,13 +93,13 @@ namespace BH.Engine.Environment
         {
             if (space == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null space.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null space.");
                 return space;
             }
 
             if (outlineElements1D == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null outline elements to a space.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null outline elements to a space.");
                 return space;
             }
 

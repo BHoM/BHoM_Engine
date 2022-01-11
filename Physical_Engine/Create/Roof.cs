@@ -80,7 +80,7 @@ namespace BH.Engine.Physical
         {
             if (construction == null || edges == null)
             {
-                Reflection.Compute.RecordError("Physical Roof could not be created because some input data are null");
+                Base.Compute.RecordError("Physical Roof could not be created because some input data are null");
                 return null;
             }
 
@@ -91,7 +91,7 @@ namespace BH.Engine.Physical
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
             if (aPlanarSurface == null)
             {
-                Reflection.Compute.RecordError("Physical Roof could not be created because invalid geometry of edges");
+                Base.Compute.RecordError("Physical Roof could not be created because invalid geometry of edges");
                 return null;
             }
 

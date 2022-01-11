@@ -92,13 +92,13 @@ namespace BH.Engine.Environment
         {
             if(openings == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the openings related to a level if the openings are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the openings related to a level if the openings are null.");
                 return null;
             }
 
             if(searchLevel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the level that openings are on if the search level is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the level that openings are on if the search level is null.");
                 return null;
             }
 
@@ -122,13 +122,13 @@ namespace BH.Engine.Environment
         {
             if (openings == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the openings related to a maximum level if the openings are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the openings related to a maximum level if the openings are null.");
                 return null;
             }
 
             if (searchLevel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the openings are on the maximum level if the search level is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the openings are on the maximum level if the search level is null.");
                 return null;
             }
 
@@ -152,13 +152,13 @@ namespace BH.Engine.Environment
         {
             if (openings == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the openings related to a minimum level if the openings are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the openings related to a minimum level if the openings are null.");
                 return null;
             }
 
             if (searchLevel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the openings are on the minimum level if the search level is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the openings are on the minimum level if the search level is null.");
                 return null;
             }
 

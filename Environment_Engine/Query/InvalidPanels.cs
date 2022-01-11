@@ -94,21 +94,21 @@ namespace BH.Engine.Environment
             }
 
             if (listPanels[0].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("External panels must have one adjacent space");
+                BH.Engine.Base.Compute.RecordWarning("External panels must have one adjacent space");
             if (listPanels[1].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Shade must have no adjacent space");
+                BH.Engine.Base.Compute.RecordWarning("Shade must have no adjacent space");
             if (listPanels[2].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Internal panel must have two different adj spaces");
+                BH.Engine.Base.Compute.RecordWarning("Internal panel must have two different adj spaces");
             if (listPanels[3].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Internal panels have two adjacent spaces in their data which is the same space name");
+                BH.Engine.Base.Compute.RecordWarning("Internal panels have two adjacent spaces in their data which is the same space name");
             if (listPanels[4].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Panel area is possibly to small, area is less than panel area");
+                BH.Engine.Base.Compute.RecordWarning("Panel area is possibly to small, area is less than panel area");
             if (listPanels[5].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("One of panel edges is less than panel edge length");
+                BH.Engine.Base.Compute.RecordWarning("One of panel edges is less than panel edge length");
             if (listPanels[6].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Panel polyline is not closed");
+                BH.Engine.Base.Compute.RecordWarning("Panel polyline is not closed");
             if (listPanels[7].Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Panel polyline is self intersecting");
+                BH.Engine.Base.Compute.RecordWarning("Panel polyline is self intersecting");
 
             return listPanels;
         }

@@ -49,7 +49,7 @@ namespace BH.Engine.Acoustic
         {
             if(speaker == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a Ray from a null Speaker.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a Ray from a null Speaker.");
                 return null;
             }
 

@@ -47,19 +47,19 @@ namespace BH.Engine.Environment
         {
             if(location == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Location point to build Opening from was null.");
+                BH.Engine.Base.Compute.RecordError("Location point to build Opening from was null.");
                 return null;
             }
 
             if(configurationOption == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Configuration Options cannot be null to build openings on.");
+                BH.Engine.Base.Compute.RecordError("Configuration Options cannot be null to build openings on.");
                 return null;
             }
 
             if(panels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Panels cannot be null, panels are necessary to define the orientation of the openings being built from configurations.");
+                BH.Engine.Base.Compute.RecordError("Panels cannot be null, panels are necessary to define the orientation of the openings being built from configurations.");
                 return null;
             }
 

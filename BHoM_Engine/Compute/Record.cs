@@ -22,6 +22,7 @@
 
 using BH.oM.Base.Debugging;
 using BH.oM.Base.Attributes;
+using System.Linq;
 
 namespace BH.Engine.Base
 {
@@ -60,7 +61,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordError(System.String)")]
+        [PreviousVersion("5.1", "BH.Engine.Base.Compute.RecordError(System.String)")]
         public static bool RecordError(string message)
         {
             return RecordEvent(new Event { Message = message, Type = EventType.Error });
@@ -68,7 +69,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordWarning(System.String)")]
+        [PreviousVersion("5.1", "BH.Engine.Base.Compute.RecordWarning(System.String)")]
         public static bool RecordWarning(string message)
         {
             return RecordEvent(new Event { Message = message, Type = EventType.Warning });
@@ -76,7 +77,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordNote(System.String)")]
+        [PreviousVersion("5.1", "BH.Engine.Base.Compute.RecordNote(System.String)")]
         public static bool RecordNote(string message)
         {
             return RecordEvent(new Event { Message = message, Type = EventType.Note });

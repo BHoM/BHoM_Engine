@@ -39,7 +39,7 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordWarning("Cannot query the inherited types of a null type. Returning an empty list instead.");
+                Base.Compute.RecordWarning("Cannot query the inherited types of a null type. Returning an empty list instead.");
                 return new List<Type>();
             }
 

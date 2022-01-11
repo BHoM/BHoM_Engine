@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
         {
             if(panel1 == null || panel2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot merge null panels.");
+                BH.Engine.Base.Compute.RecordError("Cannot merge null panels.");
                 return null;
             }
 
@@ -111,7 +111,7 @@ namespace BH.Engine.Environment
 
                 if (newGeometry.Count < 1)
                 {
-                    Reflection.Compute.RecordError("Could not output geometry for panel");
+                    Base.Compute.RecordError("Could not output geometry for panel");
                     return null;
                 }
 
@@ -127,7 +127,7 @@ namespace BH.Engine.Environment
                 return rtnPanel;
             }
 
-            Reflection.Compute.RecordError("These panels do not belong to the same space(s) and cannot be merged together");
+            Base.Compute.RecordError("These panels do not belong to the same space(s) and cannot be merged together");
             return null;
 
         }

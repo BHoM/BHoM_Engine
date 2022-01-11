@@ -57,7 +57,7 @@ namespace BH.Engine.Analytical
         {
             if(dependency == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null dependency to a collection of relations.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null dependency to a collection of relations.");
                 return new List<IRelation>();
             }
 
@@ -89,7 +89,7 @@ namespace BH.Engine.Analytical
         {
             if (dependency == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null dependency to a collection of relations.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null dependency to a collection of relations.");
                 return new List<IRelation>();
             }
 
@@ -123,7 +123,7 @@ namespace BH.Engine.Analytical
         {
             if(obj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null BHoM object to a relation.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null BHoM object to a relation.");
                 return new List<IRelation>();
             }
 

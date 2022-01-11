@@ -55,7 +55,7 @@ namespace BH.Engine.Facade
         {
             if(elems == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot calculate unique adjacencies if the input elements are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot calculate unique adjacencies if the input elements are null.");
                 return new Output<List<string>, List<List<IElement1D>>, List<List<IElement2D>>, List<List<IElement1D>>, List<List<IElement2D>>>();
             }
 

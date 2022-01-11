@@ -65,7 +65,7 @@ namespace BH.Engine.Spatial
 
             if (height <= 0 || width <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || topCorbelWidth < 0 || botCorbelWidth < 0)
             {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                Engine.Base.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 

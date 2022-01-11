@@ -46,7 +46,7 @@ namespace BH.Engine.Analytical
         {
             if(node == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null node.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null node.");
                 return null;
             }
 
@@ -68,7 +68,7 @@ namespace BH.Engine.Analytical
         {
             if (!curve.IIsLinear())
             {
-                Reflection.Compute.RecordError("The curve used to set the geometry of a Bar needs to be linear.");
+                Base.Compute.RecordError("The curve used to set the geometry of a Bar needs to be linear.");
                 return null;
             }
 
@@ -88,7 +88,7 @@ namespace BH.Engine.Analytical
         {
             if(edge == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null edge.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null edge.");
                 return null;
             }
 
@@ -108,7 +108,7 @@ namespace BH.Engine.Analytical
         {
             if(anaSurface == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null surface.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null surface.");
                 return null;
             }
 

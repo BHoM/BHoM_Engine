@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         {
             if (!transform.IsValid())
             {
-                BH.Engine.Reflection.Compute.RecordError("The given TransformMatrix is not valid.");
+                BH.Engine.Base.Compute.RecordError("The given TransformMatrix is not valid.");
                 return false;
             }
 

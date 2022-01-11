@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
         {
             if(layer == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the RValue of a null layer.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the RValue of a null layer.");
                 return -1;
             }
 

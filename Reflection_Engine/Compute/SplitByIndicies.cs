@@ -39,13 +39,13 @@ namespace BH.Engine.Reflection
         {
             if (text == null)
             {
-                Compute.RecordError("Cannot split a null string.");
+                Base.Compute.RecordError("Cannot split a null string.");
                 return new List<string>();
             }
 
             if (indices == null)
             {
-                Compute.RecordWarning("The 'indices' input is null and was replaced by an empty list");
+                Base.Compute.RecordWarning("The 'indices' input is null and was replaced by an empty list");
                 indices = new List<int>();
             }
 

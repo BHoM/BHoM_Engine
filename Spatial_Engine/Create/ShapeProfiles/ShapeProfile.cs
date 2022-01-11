@@ -58,7 +58,7 @@ namespace BH.Engine.Spatial
 
         private static void InvalidRatioError(string first, string second)
         {
-            Engine.Reflection.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
+            Engine.Base.Compute.RecordError("The ratio of the " + first + " in relation to the " + second + " makes section inconceivable");
         }
 
         /***************************************************/

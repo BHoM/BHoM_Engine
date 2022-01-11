@@ -69,7 +69,7 @@ namespace BH.Engine.Analytical
         {
             if(region == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null region.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null region.");
                 return new List<IElement1D>();
             }
 

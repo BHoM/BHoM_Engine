@@ -188,7 +188,7 @@ namespace BH.Engine.Geometry
 
         private static Point PointAtParameter(this ICurve curve, double t)
         {
-            Reflection.Compute.RecordError($"PointAtParameter is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"PointAtParameter is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

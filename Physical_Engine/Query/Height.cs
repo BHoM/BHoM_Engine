@@ -43,7 +43,7 @@ namespace BH.Engine.Physical
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the height of a null opening.");
                 return 0;
             }
             
@@ -59,7 +59,7 @@ namespace BH.Engine.Physical
         {
             if(door == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null door.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the height of a null door.");
                 return 0;
             }
 
@@ -72,7 +72,7 @@ namespace BH.Engine.Physical
         
         private static double Height(this object opening)
         {
-            BH.Engine.Reflection.Compute.RecordError(String.Format("Height query for {0} type is not implemented.",opening.GetType()));
+            BH.Engine.Base.Compute.RecordError(String.Format("Height query for {0} type is not implemented.",opening.GetType()));
             return 0;
         }
 

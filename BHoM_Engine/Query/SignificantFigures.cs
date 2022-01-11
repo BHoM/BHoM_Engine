@@ -80,7 +80,7 @@ namespace BH.Engine.Base
                 }
 
                 if (matchingCustomTolerancesNames.Count > 1)
-                    BH.Engine.Reflection.Compute.RecordWarning($"The property `{fullName}` matched with {matchingCustomTolerancesNames.Count} {nameof(namedSignificantFigures)}: `{string.Join("`, ", matchingCustomTolerancesNames)}`." +
+                    BH.Engine.Base.Compute.RecordWarning($"The property `{fullName}` matched with {matchingCustomTolerancesNames.Count} {nameof(namedSignificantFigures)}: `{string.Join("`, ", matchingCustomTolerancesNames)}`." +
                     $"\nThe most sensitive tolerance was picked (smallest value): {significantFigures}.");
             }
 

@@ -118,9 +118,9 @@ namespace BH.Engine.Facade
 
         private static string PrimaryPropertyName(this IElement2D elem)
         {
-            string nameConst = Reflection.Query.PropertyValue(elem, "Construction.Name").ToString();
-            string openNameConst = Reflection.Query.PropertyValue(elem, "OpeningConstruction.Name").ToString();
-            string nameProp = Reflection.Query.PropertyValue(elem, "Property.Name").ToString();
+            string nameConst = Base.Query.PropertyValue(elem, "Construction.Name").ToString();
+            string openNameConst = Base.Query.PropertyValue(elem, "OpeningConstruction.Name").ToString();
+            string nameProp = Base.Query.PropertyValue(elem, "Property.Name").ToString();
 
             if (nameConst != null)
                 return nameConst;

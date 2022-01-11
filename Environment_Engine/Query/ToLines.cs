@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
         {
             if(edge == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of a null edge.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the lines of a null edge.");
                 return null;
             }
 
@@ -61,7 +61,7 @@ namespace BH.Engine.Environment
         {
             if(edges == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of null edges.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the lines of null edges.");
                 return null;
             }
 
@@ -79,7 +79,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the lines of a null panel.");
                 return null;
             }
 
@@ -93,7 +93,7 @@ namespace BH.Engine.Environment
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the lines of a null opening.");
                 return null;
             }
 
@@ -107,7 +107,7 @@ namespace BH.Engine.Environment
         {
             if(environmentObject == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the lines of a null environment object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the lines of a null environment object.");
                 return null;
             }
 

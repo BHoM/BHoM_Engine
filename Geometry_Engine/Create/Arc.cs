@@ -88,7 +88,7 @@ namespace BH.Engine.Geometry
             //Check that start and end points are the same distance from the centre point
             if (Math.Abs(radius - end.Distance(centre)) > tolerance)
             {
-                Reflection.Compute.RecordError("Start and end points need to have the same distance from the centre point");
+                Base.Compute.RecordError("Start and end points need to have the same distance from the centre point");
                 return null;
             }
 
@@ -99,7 +99,7 @@ namespace BH.Engine.Geometry
 
             if (Math.Abs(angle - Math.PI) < Tolerance.Angle)
             {
-                Reflection.Compute.RecordError("Method does not work for colinear points");
+                Base.Compute.RecordError("Method does not work for colinear points");
                 return null;
             }
 

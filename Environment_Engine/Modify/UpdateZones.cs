@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         {
             if(space == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot update the zones of a null space.");
+                BH.Engine.Base.Compute.RecordError("Cannot update the zones of a null space.");
                 return space;
             }
 

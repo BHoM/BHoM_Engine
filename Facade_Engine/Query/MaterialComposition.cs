@@ -55,13 +55,13 @@ namespace BH.Engine.Facade
         {
             if (curtainWall == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null curtain wall.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null curtain wall.");
                 return null;
             }
 
             if (curtainWall.Openings == null || curtainWall.Openings.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("CurtainWall has no openings. Please confirm the CurtainWall is valid and try again.");
+                BH.Engine.Base.Compute.RecordError("CurtainWall has no openings. Please confirm the CurtainWall is valid and try again.");
                 return null;
             }
 
@@ -96,21 +96,21 @@ namespace BH.Engine.Facade
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the material composition of a null panel.");
                 return null;
             }
 
             if (panel.Construction == null || panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
             {
-                BH.Engine.Reflection.Compute.RecordError("Panel " + panel.BHoM_Guid + " does not have a construction assigned");
+                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + " does not have a construction assigned");
                 return null;
             }
 
-            List<Layer> layers = (List<Layer>)Reflection.Query.PropertyValue(panel.Construction, "Layers");
+            List<Layer> layers = (List<Layer>)Base.Query.PropertyValue(panel.Construction, "Layers");
 
             if (layers != null && layers.Any(x => x.Material == null))
             {
-                Engine.Reflection.Compute.RecordError("Panel " + panel.BHoM_Guid + " has a layer with no material assigned. MaterialComposition only works for panels with materials assigned to all layers of their Construction.");
+                Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + " has a layer with no material assigned. MaterialComposition only works for panels with materials assigned to all layers of their Construction.");
                 return null;
             }
 
@@ -149,7 +149,7 @@ namespace BH.Engine.Facade
         {
             if (opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the material composition of a null opening.");
                 return null;
             }
 
@@ -157,18 +157,18 @@ namespace BH.Engine.Facade
             {
                 if (opening.Edges == null || !opening.Edges.Any(x => x.FrameEdgeProperty != null))
                 {
-                    Engine.Reflection.Compute.RecordError("Opening " + opening.BHoM_Guid + " does not have any constructions assigned");
+                    Engine.Base.Compute.RecordError("Opening " + opening.BHoM_Guid + " does not have any constructions assigned");
                     return null;
                 }
                 else
-                    Engine.Reflection.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have an opening construction assigned. Material Composition is being calculated based on frame edges only.");
+                    Engine.Base.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have an opening construction assigned. Material Composition is being calculated based on frame edges only.");
             }
 
-            List<Layer> layers = (List<Layer>)Reflection.Query.PropertyValue(opening.OpeningConstruction, "Layers");
+            List<Layer> layers = (List<Layer>)Base.Query.PropertyValue(opening.OpeningConstruction, "Layers");
 
             if (layers != null && layers.Any(x => x.Material == null))
             {
-                Engine.Reflection.Compute.RecordError("Opening " + opening.BHoM_Guid + " has a layer with no material assigned. MaterialComposition only works for openings with materials assigned to all layers of their Construction.");
+                Engine.Base.Compute.RecordError("Opening " + opening.BHoM_Guid + " has a layer with no material assigned. MaterialComposition only works for openings with materials assigned to all layers of their Construction.");
                 return null;
             }
 
@@ -212,7 +212,7 @@ namespace BH.Engine.Facade
 
             if (comps.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("The Opening does not have any constructions assigned to get an aggregated material composition from");
+                BH.Engine.Base.Compute.RecordError("The Opening does not have any constructions assigned to get an aggregated material composition from");
                 return null;
             }
 
@@ -229,7 +229,7 @@ namespace BH.Engine.Facade
         {
             if (frameEdge == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null frame edge.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the material composition of a null frame edge.");
                 return null;
             }
 
@@ -238,13 +238,13 @@ namespace BH.Engine.Facade
 
             if (frameEdge.FrameEdgeProperty == null || frameEdge.FrameEdgeProperty.SectionProperties.Count() == 0)
             {
-                Engine.Reflection.Compute.RecordWarning("FrameEdge " + frameEdge.BHoM_Guid + " does not have a frame edge property assigned to get material composition from, so the material composition returned is empty.");
+                Engine.Base.Compute.RecordWarning("FrameEdge " + frameEdge.BHoM_Guid + " does not have a frame edge property assigned to get material composition from, so the material composition returned is empty.");
                 return new MaterialComposition(new List<Material>() { new Material() }, new List<double> { 1 } ); ;
             }
 
             if (frameEdge.FrameEdgeProperty.SectionProperties.Any(x => x.Material == null))
             {
-                Engine.Reflection.Compute.RecordError("FrameEdge " + frameEdge.BHoM_Guid + " has a property with no material assigned. MaterialComposition only works for FrameEdges with materials assigned.");
+                Engine.Base.Compute.RecordError("FrameEdge " + frameEdge.BHoM_Guid + " has a property with no material assigned. MaterialComposition only works for FrameEdges with materials assigned.");
                 return null;
             }
 

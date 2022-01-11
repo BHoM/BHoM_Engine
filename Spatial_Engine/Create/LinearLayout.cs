@@ -47,14 +47,14 @@ namespace BH.Engine.Spatial
         {
             if (numberOfPoints <= 0)
             {
-                Engine.Reflection.Compute.RecordError("LinearLayout requires numberOfPoints to be at least 1.");
+                Engine.Base.Compute.RecordError("LinearLayout requires numberOfPoints to be at least 1.");
                 return null;
             }
             Vector projDir = direction ?? Vector.XAxis;
             if (projDir.Z != 0)
             {
                 projDir = new Vector { X = direction.X, Y = direction.Y };
-                Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
+                Engine.Base.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
             }
 
             return new LinearLayout(numberOfPoints, projDir, offset, referencePoint);

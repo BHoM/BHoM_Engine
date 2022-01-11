@@ -55,7 +55,7 @@ namespace BH.Engine.Analytical
         {
             if(source == null || target == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a relation from a null source or a null target.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a relation from a null source or a null target.");
                 return null;
             }
 

@@ -49,7 +49,7 @@ namespace BH.Engine.Physical
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 
@@ -58,7 +58,7 @@ namespace BH.Engine.Physical
 
             ConstantFramingProperty property = result.Property as ConstantFramingProperty;
             if (property == null)
-                BH.Engine.Reflection.Compute.RecordWarning($"Orientation angle of the IFramingElement has not been transformed because its property is not ConstantFramingProperty. BHoM_Guid: {framingElement.BHoM_Guid}");
+                BH.Engine.Base.Compute.RecordWarning($"Orientation angle of the IFramingElement has not been transformed because its property is not ConstantFramingProperty. BHoM_Guid: {framingElement.BHoM_Guid}");
             else
             {
                 if (framingElement.Location is Line)
@@ -70,7 +70,7 @@ namespace BH.Engine.Physical
                     result.Property = newProperty;
                 }
                 else if (!framingElement.Location.IIsPlanar(tolerance))
-                    BH.Engine.Reflection.Compute.RecordWarning($"The element's location is a nonlinear, nonplanar curve. Correctness of orientation angle after transform could not be ensured in 100%. BHoM_Guid: {framingElement.BHoM_Guid}");
+                    BH.Engine.Base.Compute.RecordWarning($"The element's location is a nonlinear, nonplanar curve. Correctness of orientation angle after transform could not be ensured in 100%. BHoM_Guid: {framingElement.BHoM_Guid}");
             }
 
             return result;
@@ -87,7 +87,7 @@ namespace BH.Engine.Physical
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 
@@ -107,7 +107,7 @@ namespace BH.Engine.Physical
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 

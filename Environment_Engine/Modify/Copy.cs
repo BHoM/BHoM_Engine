@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot copy a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot copy a null panel.");
                 return null;
             }
 

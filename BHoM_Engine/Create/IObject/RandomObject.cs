@@ -49,7 +49,7 @@ namespace BH.Engine.Base
             // make sure the type inherits from IObject
             if (!typeof(IObject).IsAssignableFrom(type))
             {
-                Reflection.Compute.RecordError("RandomObject method can only create type inheriting from IObjects");
+                Base.Compute.RecordError("RandomObject method can only create type inheriting from IObjects");
                 return null;
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Base
 
         private static void LinkInterfaces()
         {
-            List<Type> types = BH.Engine.Reflection.Query.BHoMTypeList();
+            List<Type> types = Query.BHoMTypeList();
 
             foreach (Type type in types)
             {
@@ -84,7 +84,7 @@ namespace BH.Engine.Base
                 }
                 catch (Exception e)
                 {
-                    Reflection.Compute.RecordWarning(e.ToString());
+                    Base.Compute.RecordWarning(e.ToString());
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace BH.Engine.Base
                 case "Double":
                     return rnd.NextDouble();
                 case "Single":
-                    return Convert.ToSingle(rnd.NextDouble());
+                    return System.Convert.ToSingle(rnd.NextDouble());
                 case "Char":
                     return (char)('a' + rnd.Next(0, 26));
                 case "Guid":
@@ -283,7 +283,7 @@ namespace BH.Engine.Base
         private static object RandomTuple(Type type, Random rnd, int depth)
         {
             Type[] keys = type.GetGenericArguments();
-            Type tupleType = Type.GetType("System.Tuple`" + keys.Length);
+            Type tupleType = System.Type.GetType("System.Tuple`" + keys.Length);
             Type constructedType = tupleType.MakeGenericType(keys);
             return Activator.CreateInstance(constructedType, keys.Select(x => GetValue(x, rnd, depth + 1)).ToArray()) as object;
         }

@@ -47,13 +47,13 @@ namespace BH.Engine.Physical
         {
             if(framingElement == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the normal of a null framing element.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the normal of a null framing element.");
                 return null;
             }
 
             double orientationAngle = 0;
             if (!(framingElement.Property is ConstantFramingProperty))
-                Reflection.Compute.RecordWarning("No ConstantFramingProperty found, OrientationAngle set as 0");
+                Base.Compute.RecordWarning("No ConstantFramingProperty found, OrientationAngle set as 0");
             else
                 orientationAngle = (framingElement.Property as ConstantFramingProperty).OrientationAngle;
 

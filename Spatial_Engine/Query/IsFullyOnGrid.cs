@@ -68,7 +68,7 @@ namespace BH.Engine.Spatial
             // to also check grid curve control points against input element1D, though this may still leave some holes open.
             if (!grid.Curve.IIsLinear())
             {
-                BH.Engine.Reflection.Compute.RecordError("IsFullyOnGrid does not support non-linear grid curves.");
+                BH.Engine.Base.Compute.RecordError("IsFullyOnGrid does not support non-linear grid curves.");
                 return false;
             }
 
@@ -79,7 +79,7 @@ namespace BH.Engine.Spatial
             // reflect local maximi in distance from the curve. ClosestPoint does not yet support NurbsCurves anyway.
             if (curve.IsNurbsCurve())
             {
-                BH.Engine.Reflection.Compute.RecordWarning("IsFullyOnGrid does not fully support NurbsCurves. Results may be inaccurate.");
+                BH.Engine.Base.Compute.RecordWarning("IsFullyOnGrid does not fully support NurbsCurves. Results may be inaccurate.");
             }
 
             foreach (Point pt in ctrlPts)
@@ -130,7 +130,7 @@ namespace BH.Engine.Spatial
 
         private static bool IsFullyOnGrid(this IElement element, Grid grid, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"IsFullyOnGrid is not implemented for IElements of type: {element.GetType().Name}.");
+            Base.Compute.RecordError($"IsFullyOnGrid is not implemented for IElements of type: {element.GetType().Name}.");
             return false;
         }
 

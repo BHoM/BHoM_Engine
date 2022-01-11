@@ -90,13 +90,13 @@ namespace BH.Engine.Environment
         {
             if(panels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
                 return false;
             }
 
             if(point == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query is a collection of panels contains a point if the point is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query is a collection of panels contains a point if the point is null.");
                 return false;
             }
 

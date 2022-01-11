@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -40,6 +40,7 @@ namespace BH.Engine.Reflection
         [Input("obj", "object to get the value from")]
         [Input("propName", "name of the property to get the value from")]
         [Output("value", "value of the property")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.PropertyValue(System.Object, System.String)")]
         public static object PropertyValue(this object obj, string propName)
         {
             if (obj == null || propName == null)

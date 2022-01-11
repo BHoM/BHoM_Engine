@@ -46,7 +46,7 @@ namespace BH.Engine.Data
         {
             if(table == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query if an axis exists on a null table.");
+                BH.Engine.Base.Compute.RecordError("Cannot query if an axis exists on a null table.");
                 return false;
             }
 
@@ -63,7 +63,7 @@ namespace BH.Engine.Data
         {
             if(table == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query if axes exist on a null table.");
+                BH.Engine.Base.Compute.RecordError("Cannot query if axes exist on a null table.");
                 return false;
             }
 
@@ -77,7 +77,7 @@ namespace BH.Engine.Data
                 success &= exists;
 
                 if (!exists)
-                    Reflection.Compute.RecordWarning("Table does not contain any axis with the name " + axis);
+                    Base.Compute.RecordWarning("Table does not contain any axis with the name " + axis);
             }
 
             return success;

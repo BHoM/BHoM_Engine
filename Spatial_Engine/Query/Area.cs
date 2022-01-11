@@ -57,7 +57,7 @@ namespace BH.Engine.Spatial
         [Output("area", "The area of the geometrical representation of an IElement1D.", typeof(Area))]
         public static double Area(this IElement1D element1D)
         {
-            BH.Engine.Reflection.Compute.RecordWarning("Area of an IElement1D cannot be queried because IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.");
+            BH.Engine.Base.Compute.RecordWarning("Area of an IElement1D cannot be queried because IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.");
             return 0;
         }
 
@@ -94,7 +94,7 @@ namespace BH.Engine.Spatial
         {
             if (profile is TaperedProfile)
             {
-                Engine.Reflection.Compute.RecordWarning("The sectional area of TaperedProfiles vary along their length. The average area of the TaperedProfile has been returned, assuming that the section varies linearly.");
+                Engine.Base.Compute.RecordWarning("The sectional area of TaperedProfiles vary along their length. The average area of the TaperedProfile has been returned, assuming that the section varies linearly.");
                 TaperedProfile taperedProfile = profile as TaperedProfile;
                 double sum = 0;
                 for (int i = 0; i < taperedProfile.Profiles.Count - 1; i++)

@@ -50,7 +50,7 @@ namespace BH.Engine.Architecture
         {
             if(ceiling == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ceiling tiles for a null ceiling.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ceiling tiles for a null ceiling.");
                 return new List<CeilingTile>();
             }
 

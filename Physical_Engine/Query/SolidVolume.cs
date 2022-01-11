@@ -51,13 +51,13 @@ namespace BH.Engine.Physical
         {
             if(framingElement == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null framing element.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null framing element.");
                 return 0;
             }
 
             if (framingElement.Property == null)
             {
-                Engine.Reflection.Compute.RecordError("The IFramingElement Solid Volume could not be calculated as no property has been assigned. Returning zero volume.");
+                Engine.Base.Compute.RecordError("The IFramingElement Solid Volume could not be calculated as no property has been assigned. Returning zero volume.");
                 return 0;
             }
             return framingElement.Location.Length() * IAverageProfileArea(framingElement.Property);
@@ -73,18 +73,18 @@ namespace BH.Engine.Physical
         {
             if(surface == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null surface.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null surface.");
                 return 0;
             }
 
             if (surface.Construction == null)
             {
-                Engine.Reflection.Compute.RecordError("The ISurface Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
+                Engine.Base.Compute.RecordError("The ISurface Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
                 return 0;
             }
 
             if (surface.Offset != Offset.Centre && !surface.Location.IIsPlanar())
-                Reflection.Compute.RecordWarning("The SolidVolume for non-Planar ISurfaces with offsets other than Centre is approxamite at best");
+                Base.Compute.RecordWarning("The SolidVolume for non-Planar ISurfaces with offsets other than Centre is approxamite at best");
 
             double area = surface.Location.IArea();
             area -= surface.Openings.Sum(x => x.Location.IArea());
@@ -101,7 +101,7 @@ namespace BH.Engine.Physical
         {
             if (solidBulk == null || solidBulk.Geometry == null)
             {
-                Engine.Reflection.Compute.RecordError("No valid SolidBulk objects have been provided. Returning NaN.");
+                Engine.Base.Compute.RecordError("No valid SolidBulk objects have been provided. Returning NaN.");
                 return double.NaN;
             }
 
@@ -109,7 +109,7 @@ namespace BH.Engine.Physical
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
+                Engine.Base.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
                 return 0;
             }
 
@@ -125,14 +125,14 @@ namespace BH.Engine.Physical
         {
             if (explicitBulk == null)
             {
-                Engine.Reflection.Compute.RecordError("No valid ExplicitBulk objects have been provided. Returning NaN.");
+                Engine.Base.Compute.RecordError("No valid ExplicitBulk objects have been provided. Returning NaN.");
                 return double.NaN;
             }
 
             double solidVolume = explicitBulk.Volume;
             if (solidVolume < 0)
             {
-                Engine.Reflection.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
+                Engine.Base.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
                 return 0;
             }
             return solidVolume;
@@ -145,7 +145,7 @@ namespace BH.Engine.Physical
         {
             if (opening is BH.oM.Physical.Elements.Void)
             {
-                Engine.Reflection.Compute.RecordError("Voids contain no solid volume. Try querying the desired value another way.");
+                Engine.Base.Compute.RecordError("Voids contain no solid volume. Try querying the desired value another way.");
                 return 0;
             }
 
@@ -161,7 +161,7 @@ namespace BH.Engine.Physical
 
             if (solidVolume <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Solid volume cannot be calculated for element of type :" + opening.GetType() + ". Returning zero volume.");
+                Engine.Base.Compute.RecordError("Solid volume cannot be calculated for element of type :" + opening.GetType() + ". Returning zero volume.");
                 return 0;
             }
 

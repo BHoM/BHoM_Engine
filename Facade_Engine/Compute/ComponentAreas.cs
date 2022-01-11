@@ -50,7 +50,7 @@ namespace BH.Engine.Facade
         {
             if (opening == null)
             {
-                Reflection.Compute.RecordWarning("Component areas can not be calculated for a null opening.");
+                Base.Compute.RecordWarning("Component areas can not be calculated for a null opening.");
                 return new Output<double, double>
                 {
                     Item1 = double.NaN,

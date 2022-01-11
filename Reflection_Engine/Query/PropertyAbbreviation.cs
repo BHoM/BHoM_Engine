@@ -41,13 +41,13 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordError("Cannot query the property abbreviation of a null object.");
+                Base.Compute.RecordError("Cannot query the property abbreviation of a null object.");
                 return "";
             }
 
             if(propName == null)
             {
-                Compute.RecordError("Cannot query the property abbreviation where the property name is null.");
+                Base.Compute.RecordError("Cannot query the property abbreviation where the property name is null.");
                 return "";
             }
 

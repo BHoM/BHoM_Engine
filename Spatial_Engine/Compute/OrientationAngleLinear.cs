@@ -57,12 +57,12 @@ namespace BH.Engine.Spatial
 
                 if (Math.Abs(1 - dot) < Tolerance.Angle)
                 {
-                    Reflection.Compute.RecordError("The normal is parallel to the centreline of the element. OrientationAngle could not be calcualted.");
+                    Base.Compute.RecordError("The normal is parallel to the centreline of the element. OrientationAngle could not be calcualted.");
                     return double.NaN;
                 }
                 else if (Math.Abs(dot) > Tolerance.Angle)
                 {
-                    Reflection.Compute.RecordWarning("Normal is not othogonal to the centreline and will get projected.");
+                    Base.Compute.RecordWarning("Normal is not othogonal to the centreline and will get projected.");
                 }
 
                 Vector reference;

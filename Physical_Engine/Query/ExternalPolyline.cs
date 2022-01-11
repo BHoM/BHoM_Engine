@@ -56,7 +56,7 @@ namespace BH.Engine.Physical
         {
             if(physicalObject == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the external polyline of a null surface.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the external polyline of a null surface.");
                 return new List<Polyline>();
             }
 
@@ -72,7 +72,7 @@ namespace BH.Engine.Physical
         {
             if(physicalOpening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the external polyline of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the external polyline of a null opening.");
                 return new List<Polyline>();
             }
 

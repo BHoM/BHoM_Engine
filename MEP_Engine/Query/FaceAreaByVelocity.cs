@@ -40,7 +40,7 @@ namespace BH.Engine.MEP
         {
             if(mepEquipmentObject == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the face area by velocity of a null air handling unit object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the face area by velocity of a null air handling unit object.");
                 return -1;
             }
 

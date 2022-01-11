@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         {
             if(node == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null node.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the geometry of a null node.");
                 return null;
             }
 
@@ -59,7 +59,7 @@ namespace BH.Engine.Environment
         {
             if(edge == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null edge.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the geometry of a null edge.");
                 return null;
             }
 

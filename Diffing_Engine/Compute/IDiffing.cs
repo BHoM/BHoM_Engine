@@ -67,7 +67,7 @@ namespace BH.Engine.Diffing
 
                 if (pastRev != null && follRev != null)
                 {
-                    BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisions)}'.");
+                    BH.Engine.Base.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisions)}'.");
 
                     return DiffRevisions(pastRev, follRev, dc);
                 }
@@ -81,7 +81,7 @@ namespace BH.Engine.Diffing
             // If so, we may attempt the Revision diffing.
             if (bHoMObjects_past.AllHaveRevisionFragment() && bHoMObjects_following.AllHaveRevisionFragment())
             {
-                BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisionObjects)}'.");
+                BH.Engine.Base.Compute.RecordNote($"Calling the diffing method '{nameof(DiffRevisionObjects)}'.");
                 return DiffRevisionObjects(bHoMObjects_past, bHoMObjects_following, dc);
             }
 
@@ -114,12 +114,12 @@ namespace BH.Engine.Diffing
                 if (adapterDiffingMethods.Count() == 1 && adapterDiffingMethod != null)
                 {
                     // Invoke the Toolkit-specific ("Adapter") DiffingMethod on the objects of the corresponding oM namespace.
-                    BH.Engine.Reflection.Compute.RecordNote($"Invoking Diffing method `{adapterDiffingMethod.DeclaringType.FullName}.{adapterDiffingMethod.Name}` on the input objects that have the common `{nameof(IPersistentAdapterId)}` fragment: `{commonPersistentId_past.FullName}`.");
+                    BH.Engine.Base.Compute.RecordNote($"Invoking Diffing method `{adapterDiffingMethod.DeclaringType.FullName}.{adapterDiffingMethod.Name}` on the input objects that have the common `{nameof(IPersistentAdapterId)}` fragment: `{commonPersistentId_past.FullName}`.");
                     fragmentDiff = InvokeAdapterDiffing(adapterDiffingMethod, bHoMObjects_past_persistId, bHoMObjects_following_persistId, dc);
                 }
                 else
                 {
-                    BH.Engine.Reflection.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithFragmentId)}'.");
+                    BH.Engine.Base.Compute.RecordNote($"Calling the diffing method '{nameof(DiffWithFragmentId)}'.");
                     fragmentDiff = DiffWithFragmentId(bHoMObjects_past_persistId, bHoMObjects_following_persistId, typeof(IPersistentAdapterId), nameof(IPersistentAdapterId.PersistentId), dc);
                 }
 
@@ -130,20 +130,20 @@ namespace BH.Engine.Diffing
             if (remainder_past.Any() || remainder_following.Any())
             {
                 if (outputDiff != null)
-                    BH.Engine.Reflection.Compute.RecordNote($"Continuing the Diffing for the remaining objects with '{nameof(DiffWithHash)}'.");
+                    BH.Engine.Base.Compute.RecordNote($"Continuing the Diffing for the remaining objects with '{nameof(DiffWithHash)}'.");
                 else
-                    BH.Engine.Reflection.Compute.RecordNote($"Main Diffing conditions were not satisfied by the input objects. Using generic diffing methods.");
+                    BH.Engine.Base.Compute.RecordNote($"Main Diffing conditions were not satisfied by the input objects. Using generic diffing methods.");
 
                 if (remainder_past.Count == remainder_following.Count)
                 {
-                    BH.Engine.Reflection.Compute.RecordNote($"Executing Diffing using `{nameof(DiffOneByOne)}`. This assumes that the input object lists have the objects sorted in the same order.");
+                    BH.Engine.Base.Compute.RecordNote($"Executing Diffing using `{nameof(DiffOneByOne)}`. This assumes that the input object lists have the objects sorted in the same order.");
 
                     Diff diffGeneric = DiffOneByOne(remainder_past, remainder_following, dc);
                     outputDiff = outputDiff.CombinedDiff(diffGeneric);
                 }
                 else
                 {
-                    BH.Engine.Reflection.Compute.RecordNote($"Executing Diffing with the most generic method, '{nameof(DiffWithHash)}'.");
+                    BH.Engine.Base.Compute.RecordNote($"Executing Diffing with the most generic method, '{nameof(DiffWithHash)}'.");
 
                     Diff diffGeneric = DiffingWithHash(remainder_past, remainder_following, dc);
                     outputDiff = outputDiff.CombinedDiff(diffGeneric);
@@ -205,7 +205,7 @@ namespace BH.Engine.Diffing
             {
                 if (g.Count() > 1)
                 {
-                    BH.Engine.Reflection.Compute.RecordNote($"{g.Count()} Diffing methods found in namespace {g.Key}. Only one is allowed. Returning only the first one.");
+                    BH.Engine.Base.Compute.RecordNote($"{g.Count()} Diffing methods found in namespace {g.Key}. Only one is allowed. Returning only the first one.");
                 }
             }
 
@@ -235,7 +235,7 @@ namespace BH.Engine.Diffing
             }
             catch (Exception e)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Error invoking Toolkit-specific Diffing method. Error:\n\t{e.ToString()}");
+                BH.Engine.Base.Compute.RecordError($"Error invoking Toolkit-specific Diffing method. Error:\n\t{e.ToString()}");
             }
 
             return result;
@@ -297,7 +297,7 @@ namespace BH.Engine.Diffing
                         // it means that there is more than one PersistentAdapterId fragment type on all of the BHoMObjects.
                         // This brings us to an undefined situation where it is not possible to automate the Diffing:
                         // the user must manually specify what PersistentAdapterId they want to Diff with.
-                        BH.Engine.Reflection.Compute.RecordWarning($"Input objects have multiple {nameof(IPersistentAdapterId)} fragments assigned: `{string.Join("`, ", persistentIdFragmentTypesFound.Keys.Select(t => t.FullName))}`." +
+                        BH.Engine.Base.Compute.RecordWarning($"Input objects have multiple {nameof(IPersistentAdapterId)} fragments assigned: `{string.Join("`, ", persistentIdFragmentTypesFound.Keys.Select(t => t.FullName))}`." +
                             $"\nWhich one should be used for Diffing? Use the method {nameof(DiffWithFragmentId)} or a Toolkit-specific Diffing method (e.g. RevitDiffing) to manually specify it.");
                         remainder = objects.ToList();
                         return new List<IBHoMObject>();

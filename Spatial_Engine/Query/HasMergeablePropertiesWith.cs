@@ -81,11 +81,11 @@ namespace BH.Engine.Spatial
                 return false;
 
             // look for a specific comparing method
-            object result = Reflection.Compute.RunExtensionMethod(element, "HasMergeablePropertiesWith", new object[] { other });
+            object result = Base.Compute.RunExtensionMethod(element, "HasMergeablePropertiesWith", new object[] { other });
 
             if (result == null || !result.GetType().IsAssignableFrom(typeof(bool)))
             {
-                Reflection.Compute.RecordWarning("No comparer found for comparing the properties");
+                Base.Compute.RecordWarning("No comparer found for comparing the properties");
                 return false;
             }
 

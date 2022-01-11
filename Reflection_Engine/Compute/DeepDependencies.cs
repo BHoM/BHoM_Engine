@@ -42,7 +42,7 @@ namespace BH.Engine.Reflection
             if (methods == null)
             {
                 methods = new List<MethodBase>();
-                RecordWarning("The input 'methods' is null and was replaced with an empty list.");
+                Base.Compute.RecordWarning("The input 'methods' is null and was replaced with an empty list.");
             }
 
             List<MethodBase> current = methods;

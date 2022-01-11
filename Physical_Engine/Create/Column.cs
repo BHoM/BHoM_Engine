@@ -56,7 +56,7 @@ namespace BH.Engine.Physical
         {
             if(basePoint == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a Physical.Column from a null base point.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a Physical.Column from a null base point.");
                 return null;
             }
 

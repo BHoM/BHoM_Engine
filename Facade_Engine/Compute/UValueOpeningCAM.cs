@@ -51,7 +51,7 @@ namespace BH.Engine.Facade
         {
             if (opening == null)
             {
-                Reflection.Compute.RecordWarning("U Value can not be calculated for a null opening.");
+                Base.Compute.RecordWarning("U Value can not be calculated for a null opening.");
                 return null;
             }                
             
@@ -60,12 +60,12 @@ namespace BH.Engine.Facade
             List<IFragment> glassUValues = opening.GetAllFragments(typeof(UValueGlassCentre));
             if (glassUValues.Count <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-value assigned.");
+                BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-value assigned.");
                 return null;
             }
             if (glassUValues.Count > 1)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Glass U-value assigned.");
+                BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Glass U-value assigned.");
                 return null;
             }
             double glassUValue = (glassUValues[0] as UValueGlassCentre).UValue;
@@ -107,12 +107,12 @@ namespace BH.Engine.Facade
                 List<IFragment> uValues = frameEdges[i].GetAllFragments(typeof(UValueFrame));
                 if (uValues.Count <= 0)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Frame U-value assigned.");
+                    BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Frame U-value assigned.");
                     return null;
                 }
                 if (uValues.Count > 1)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Frame U-value assigned.");
+                    BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Frame U-value assigned.");
                     return null;
                 }
                 double frameUValue = (uValues[0] as UValueFrame).UValue;
@@ -121,12 +121,12 @@ namespace BH.Engine.Facade
                 List<IFragment> psiGs = frameEdges[i].GetAllFragments(typeof(PsiGlassEdge));
                 if (psiGs.Count <= 0)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} does not have PsiG value assigned.");
+                    BH.Engine.Base.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} does not have PsiG value assigned.");
                     return null;
                 }
                 if (psiGs.Count > 1)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} has more than one PsiG value assigned. Each FrameEdge should only have one unique PsiG value assigned to it.");
+                    BH.Engine.Base.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} has more than one PsiG value assigned. Each FrameEdge should only have one unique PsiG value assigned to it.");
                     return null;
                 }
                 double psiG = (psiGs[0] as PsiGlassEdge).PsiValue;
@@ -144,7 +144,7 @@ namespace BH.Engine.Facade
             double totArea = opening.Area();
             if (totArea == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has a calculated area of 0. Ensure the opening is valid with associated edges defining its geometry and try again.");
+                BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has a calculated area of 0. Ensure the opening is valid with associated edges defining its geometry and try again.");
             }
             double effectiveUValue = (((glassArea * glassUValue) + psigProduct + FrameUValProduct) / totArea);
             OverallUValue result = new OverallUValue (effectiveUValue, new List<IComparable> { opening.BHoM_Guid });

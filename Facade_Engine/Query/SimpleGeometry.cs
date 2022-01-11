@@ -50,7 +50,7 @@ namespace BH.Engine.Facade
         {
             if(frameEdgeProp == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the simple geometry of a null frame edge property.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the simple geometry of a null frame edge property.");
                 return null;
             }
 
@@ -59,7 +59,7 @@ namespace BH.Engine.Facade
 
             if  (frameEdgeProp.SectionProperties.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("This FrameEdgeProperty has no SectionProperties and therefore no geometry associated with it.");
+                BH.Engine.Base.Compute.RecordWarning("This FrameEdgeProperty has no SectionProperties and therefore no geometry associated with it.");
                 return new Polyline();
             }
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Facade
 
             if (profileOutlines.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("This FrameEdgeProperty's SectionProperties have no profile geometry associated with them.");
+                BH.Engine.Base.Compute.RecordWarning("This FrameEdgeProperty's SectionProperties have no profile geometry associated with them.");
                 return new Polyline();
             }
 

@@ -49,7 +49,7 @@ namespace BH.Engine.Physical
         {
             if(framingProperty == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the average profile area of a null framing property.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the average profile area of a null framing property.");
                 return 0;
             }
 
@@ -65,13 +65,13 @@ namespace BH.Engine.Physical
         {
             if (framingProperty == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the average profile area of a null constant framing property.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the average profile area of a null constant framing property.");
                 return 0;
             }
 
             if (framingProperty.Profile == null)
             {
-                Engine.Reflection.Compute.RecordError("The framingProperty Average Profile Area could not be calculated as no Profile has been assigned. Returning zero Area.");
+                Engine.Base.Compute.RecordError("The framingProperty Average Profile Area could not be calculated as no Profile has been assigned. Returning zero Area.");
                 return 0;
             }
 

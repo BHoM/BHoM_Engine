@@ -47,7 +47,7 @@ namespace BH.Engine.Diffing
         {
             if (obj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot parse a null object to a GUID.");
+                BH.Engine.Base.Compute.RecordError("Cannot parse a null object to a GUID.");
                 guid = Guid.Empty;
                 return false;
             }

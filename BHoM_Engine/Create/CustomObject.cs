@@ -100,7 +100,7 @@ namespace BH.Engine.Base
 
         private static void SetFragments(CustomObject custom, object fragments)
         {
-            Engine.Reflection.Compute.RecordWarning("The Fragments property should be a List<IFragment>. It will be added in CustomData instead.");
+            Engine.Base.Compute.RecordWarning("The Fragments property should be a List<IFragment>. It will be added in CustomData instead.");
             custom.CustomData["Fragments"] = fragments;
         }
 
@@ -126,7 +126,7 @@ namespace BH.Engine.Base
 
         private static void SetTags(CustomObject custom, object tags)
         {
-            Engine.Reflection.Compute.RecordWarning("The Tags property should be a List<string>. It will be added in CustomData instead.");
+            Engine.Base.Compute.RecordWarning("The Tags property should be a List<string>. It will be added in CustomData instead.");
             custom.CustomData["Tags"] = tags;
         }
 

@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
         {
             if (v1 == null || v2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute angle as one or both vectors are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute angle as one or both vectors are null.");
                 return 0;
             }
 

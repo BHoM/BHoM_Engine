@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -135,12 +136,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 }
 
                 if (method == null)
-                    Reflection.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
+                    Base.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
                 return method;
             }
             catch
             {
-                Reflection.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
+                Base.Compute.RecordError("Method " + methodName + " from " + typeName + " failed to deserialise.");
                 return null;
             }
         }
@@ -158,7 +159,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
             {
                 typeName = typeDocument["Name"].AsString;
-                foreach (Type type in Reflection.Create.AllTypes(typeName, true))
+                foreach (Type type in Base.Create.AllTypes(typeName, true))
                 {
                     method = Create.MethodBase(type, methodName, types.Select(x => x.ToText(true)).ToList()); // type overload
                     if (method == null)

@@ -97,17 +97,17 @@ namespace BH.Engine.Geometry
         {
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
+                Base.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve is not closed. Cannot calculate centroid.");
+                Base.Compute.RecordError("Input curve is not closed. Cannot calculate centroid.");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve is self-intersecting. Cannot calculate centroid.");
+                Base.Compute.RecordError("Input curve is self-intersecting. Cannot calculate centroid.");
                 return null;
             }
 
@@ -162,17 +162,17 @@ namespace BH.Engine.Geometry
         {
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
+                Base.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve is not closed. Cannot calculate centroid.");
+                Base.Compute.RecordError("Input curve is not closed. Cannot calculate centroid.");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
             {
-                Reflection.Compute.RecordError("Input curve is self-intersecting. Cannot calculate centroid.");
+                Base.Compute.RecordError("Input curve is self-intersecting. Cannot calculate centroid.");
                 return null;
             }
 
@@ -190,7 +190,7 @@ namespace BH.Engine.Geometry
                     pts.Add(crv.IEndPoint());
                 else
                 {
-                    Reflection.Compute.RecordError("PolyCurve consisting of type: " + crv.GetType().Name + " is not implemented for Centroid.");
+                    Base.Compute.RecordError("PolyCurve consisting of type: " + crv.GetType().Name + " is not implemented for Centroid.");
                     return null;
                 }
             }
@@ -319,7 +319,7 @@ namespace BH.Engine.Geometry
 
         private static Point Centroid(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"Centroid is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"Centroid is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

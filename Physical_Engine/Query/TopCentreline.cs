@@ -49,7 +49,7 @@ namespace BH.Engine.Physical
         {   
             if(element == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the top centreline of a null framing element.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the top centreline of a null framing element.");
                 return null;
             }
 
@@ -63,13 +63,13 @@ namespace BH.Engine.Physical
             }
             catch
             {
-                Engine.Reflection.Compute.RecordError("IFramingElement must have linear location line.");
+                Engine.Base.Compute.RecordError("IFramingElement must have linear location line.");
                 return null;
             }
 
             if (normal == null)
             {
-                Engine.Reflection.Compute.RecordError("Was not able to compute element normal.");
+                Engine.Base.Compute.RecordError("Was not able to compute element normal.");
                 return null;
             }
 
@@ -85,7 +85,7 @@ namespace BH.Engine.Physical
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Element does not have a suitable framing property, so the section height could not be calculated.");
+                Engine.Base.Compute.RecordError("Element does not have a suitable framing property, so the section height could not be calculated.");
                 return null;
             }
         }

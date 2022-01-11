@@ -27,7 +27,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -40,6 +40,7 @@ namespace BH.Engine.Reflection
         [Input("onlyBHoM", "Only return referenced assemblies that are part of the BHoM.")]
         [Input("goDeep", "Recursively collect all references so that indirect references are also returned.")]
         [Output("assemblies", "List of assemblies referenced by the input assembly.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.UsedAssemblies(System.Reflection.Assembly, System.Boolean, System.Boolean")]
         public static List<Assembly> UsedAssemblies(this Assembly assembly, bool onlyBHoM = false, bool goDeep = false)
         {
             if(assembly == null)
@@ -73,15 +74,16 @@ namespace BH.Engine.Reflection
         [Input("onlyBHoM", "Only return referenced assemblies that are part of the BHoM.")]
         [Input("goDeep", "Recursively collect all references so that indirect references are also returned.")]
         [Output("assemblies", "List of assemblies referenced by the input assemblies.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.UsedAssemblies(System.Collections.Generic.List<System.String>, System.Boolean, System.Boolean")]
         public static List<string> UsedAssemblies(this List<string> assemblyNames, bool onlyBHoM = false, bool goDeep = false)
         {
             if (assemblyNames == null)
             {
-                Compute.RecordWarning("The list of assmeblyNames is null. An empty list will be returned as the list of used assemblies.");
+                Base.Compute.RecordWarning("The list of assmeblyNames is null. An empty list will be returned as the list of used assemblies.");
                 return new List<string>();
             }
 
-            List<Assembly> loaded = onlyBHoM ? BHoMAssemblyList() : AllAssemblyList();
+            List<Assembly> loaded = onlyBHoM ? Base.Query.BHoMAssemblyList() : Base.Query.AllAssemblyList();
             List<Assembly> assemblies = loaded.Where(x => assemblyNames.Any(y => x.GetName().FullName == y)).ToList();
 
             if (goDeep)

@@ -49,13 +49,13 @@ namespace BH.Engine.Analytical
         {
             if(region == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a null region contains any of the provided points.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether a null region contains any of the provided points.");
                 return null;
             }
 
             if(points == null || points.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a null or empty list of points is contained by the region.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether a null or empty list of points is contained by the region.");
                 return null;
             }
 

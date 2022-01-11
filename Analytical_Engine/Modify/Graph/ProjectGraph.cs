@@ -113,7 +113,7 @@ namespace BH.Engine.Analytical
 
         private static Graph ProjectGraph(this Graph graph, IProjection projection)
         {
-            Reflection.Compute.RecordError("IProjection provided does not have a corresponding GraphView method implemented.");
+            Base.Compute.RecordError("IProjection provided does not have a corresponding GraphView method implemented.");
             return new Graph();
         }
        

@@ -48,13 +48,13 @@ namespace BH.Engine.Physical
         {
             if(framingElement == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null framing element.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the material composition of a null framing element.");
                 return null;
             }
 
             if (framingElement.Property == null)
             {
-                Engine.Reflection.Compute.RecordError("The MaterialComposition could not be queried as no Property has been assigned to the IFramingElement.");
+                Engine.Base.Compute.RecordError("The MaterialComposition could not be queried as no Property has been assigned to the IFramingElement.");
                 return null;
             }
             return framingElement.Property.IMaterialComposition();
@@ -69,13 +69,13 @@ namespace BH.Engine.Physical
         {
             if(surface == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null surface.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the material composition of a null surface.");
                 return null;
             }
 
             if (surface.Construction == null)
             {
-                Engine.Reflection.Compute.RecordError("The MaterialComposition could not be queried as no IConstruction has been assigned to the ISurface.");
+                Engine.Base.Compute.RecordError("The MaterialComposition could not be queried as no IConstruction has been assigned to the ISurface.");
                 return null;
             }
             return surface.Construction.IMaterialComposition();
@@ -93,7 +93,7 @@ namespace BH.Engine.Physical
             {
                 if ((opening as Window).Construction == null)
                 {
-                    Engine.Reflection.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
+                    Engine.Base.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
                     return null;
                 }
 
@@ -104,7 +104,7 @@ namespace BH.Engine.Physical
             {
                 if ((opening as Door).Construction == null)
                 {
-                    Engine.Reflection.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
+                    Engine.Base.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
                     return null;
                 }
 
@@ -113,7 +113,7 @@ namespace BH.Engine.Physical
 
             if (opening is BH.oM.Physical.Elements.Void)
             {
-                Engine.Reflection.Compute.RecordError("Void's do not support constructions and therefore, contain no material composition. Returning null.");
+                Engine.Base.Compute.RecordError("Void's do not support constructions and therefore, contain no material composition. Returning null.");
                 return null;
             }
 
@@ -134,7 +134,7 @@ namespace BH.Engine.Physical
 
             if (solidBulk.MaterialComposition == null)
             {
-                Engine.Reflection.Compute.RecordError("The SolidBulk MaterialComposition could not be queried as no Materials have been assigned to at least one of the layers of the Construction.");
+                Engine.Base.Compute.RecordError("The SolidBulk MaterialComposition could not be queried as no Materials have been assigned to at least one of the layers of the Construction.");
                 return null;
             }
             return solidBulk.MaterialComposition;
@@ -154,7 +154,7 @@ namespace BH.Engine.Physical
 
             if (explicitBulk.MaterialComposition == null)
             {
-                Engine.Reflection.Compute.RecordError("The ExplicitBulk MaterialComposition could not be queried as no Materials have been assigned to at least one of the layers of the Construction.");
+                Engine.Base.Compute.RecordError("The ExplicitBulk MaterialComposition could not be queried as no Materials have been assigned to at least one of the layers of the Construction.");
                 return null;
             }
             return explicitBulk.MaterialComposition;
@@ -195,7 +195,7 @@ namespace BH.Engine.Physical
         {
             if (prop.Layers.Any(x => x.Material == null))
             {
-                Engine.Reflection.Compute.RecordError("The Construction MaterialComposition could not be queried as no Material has been assigned.");
+                Engine.Base.Compute.RecordError("The Construction MaterialComposition could not be queried as no Material has been assigned.");
                 return null;
             }
             return Matter.Create.MaterialComposition(prop.Layers.Select(x => x.Material), prop.Layers.Select(x => x.Thickness));
@@ -216,7 +216,7 @@ namespace BH.Engine.Physical
         {
             if (prop.Material == null)
             {
-                Engine.Reflection.Compute.RecordError("The ConstantFramingProperty MaterialComposition could not be queried as no Material has been assigned to the ConstantFramingProperty.");
+                Engine.Base.Compute.RecordError("The ConstantFramingProperty MaterialComposition could not be queried as no Material has been assigned to the ConstantFramingProperty.");
                 return null;
             }
             return (MaterialComposition)prop.Material;

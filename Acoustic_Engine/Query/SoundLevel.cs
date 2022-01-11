@@ -38,7 +38,7 @@ namespace BH.Engine.Acoustic
         {
             if(ray == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the sound level for a null ray.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the sound level for a null ray.");
                 return null;
             }
 

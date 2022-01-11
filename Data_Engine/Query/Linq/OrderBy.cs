@@ -42,7 +42,7 @@ namespace BH.Engine.Data
         {
             if (objects == null || objects.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("No objects submitted to order");
+                BH.Engine.Base.Compute.RecordWarning("No objects submitted to order");
                 return new List<T>();
             }
 
@@ -50,14 +50,14 @@ namespace BH.Engine.Data
 
             if(objects.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("All objects in the list to order are null, please try with valid objects");
+                BH.Engine.Base.Compute.RecordError("All objects in the list to order are null, please try with valid objects");
                 return new List<T>();
             }
 
             int groupedObjects = objects.GroupBy(x => x.GetType()).Count();
             if (groupedObjects != 1)
             {
-                BHRE.Compute.RecordError("All objects in the list to be sorted should be of the exact same type.");
+                BH.Engine.Base.Compute.RecordError("All objects in the list to be sorted should be of the exact same type.");
                 return null;
             }
             try
@@ -68,12 +68,12 @@ namespace BH.Engine.Data
                     if (prop != null)
                         return objects.OrderBy(x => prop.GetValue(x)).ToList();
                 }
-                BHRE.Compute.RecordNote("CustomData or nested property is used as the sorting property (using 'Object.Property.Property...') which is slower than a base property.");
-                return objects.OrderBy(x => BHRE.Query.PropertyValue(x, propertyName)).ToList();
+                BH.Engine.Base.Compute.RecordNote("CustomData or nested property is used as the sorting property (using 'Object.Property.Property...') which is slower than a base property.");
+                return objects.OrderBy(x => BH.Engine.Base.Query.PropertyValue(x, propertyName)).ToList();
             }
             catch
             {
-                BHRE.Compute.RecordWarning("The sorting property does not have a sort function.");
+                BH.Engine.Base.Compute.RecordWarning("The sorting property does not have a sort function.");
                 return null;
             }
         }

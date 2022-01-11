@@ -45,7 +45,7 @@ namespace BH.Engine.Physical
         {
             if(surface == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the internal 2D elements of a null surface.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the internal 2D elements of a null surface.");
                 return new List<IElement2D>();
             }
 

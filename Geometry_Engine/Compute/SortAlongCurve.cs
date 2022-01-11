@@ -185,7 +185,7 @@ namespace BH.Engine.Geometry
 
         private static List<Point> SortAlongCurve(this List<Point> points, ICurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            Reflection.Compute.RecordError($"SortAlongCurve is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"SortAlongCurve is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

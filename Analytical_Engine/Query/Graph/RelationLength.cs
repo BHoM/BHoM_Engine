@@ -48,13 +48,13 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the relation length of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the relation length of a null graph.");
                 return 0;
             }
 
             if(relation == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the relation length for a graph if the relation to query is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the relation length for a graph if the relation to query is null.");
                 return 0;
             }
 

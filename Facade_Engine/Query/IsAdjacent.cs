@@ -47,7 +47,7 @@ namespace BH.Engine.Facade
         {
             if(curve1 == null || curve2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two lines if either line is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of two lines if either line is null.");
                 return false;
             }
 
@@ -105,7 +105,7 @@ namespace BH.Engine.Facade
         {
             if (curve1 == null || curve2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the approximate adjacency of two lines if either line is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the approximate adjacency of two lines if either line is null.");
                 return false;
             }
 
@@ -150,7 +150,7 @@ namespace BH.Engine.Facade
         {
             if (curve1 == null || curve2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two curves if either curve is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of two curves if either curve is null.");
                 return false;
             }
             
@@ -171,7 +171,7 @@ namespace BH.Engine.Facade
         {
             if (curve1 == null || curve2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of a PolyLine and a Curve if either is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of a PolyLine and a Curve if either is null.");
                 return false;
             }
             
@@ -192,7 +192,7 @@ namespace BH.Engine.Facade
         {
             if (curve1 == null || curve2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two PolyLines if either PolyLine is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of two PolyLines if either PolyLine is null.");
                 return false;
             }
             
@@ -216,7 +216,7 @@ namespace BH.Engine.Facade
         {
             if (curve1 == null || curve2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two ICurves if either ICurve is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of two ICurves if either ICurve is null.");
                 return false;
             }
             
@@ -232,7 +232,7 @@ namespace BH.Engine.Facade
         {
             if (elem1 == null || elem2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two IElement1Ds if either is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of two IElement1Ds if either is null.");
                 return false;
             }
             
@@ -248,11 +248,11 @@ namespace BH.Engine.Facade
         {
             if (curve1 == null || curve2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two curves if either is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of two curves if either is null.");
                 return false;
             }
 
-            Reflection.Compute.RecordWarning($"IsAdjacent is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
+            Base.Compute.RecordWarning($"IsAdjacent is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
             return false;
         }
 
@@ -262,11 +262,11 @@ namespace BH.Engine.Facade
         {
             if(elem1 == null || elem2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of two IElement1Ds if either is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of two IElement1Ds if either is null.");
                 return false;
             }
 
-            Reflection.Compute.RecordWarning($"IsAdjacent is not implemented for a combination of {elem1.GetType().Name} and {elem2.GetType().Name}.");
+            Base.Compute.RecordWarning($"IsAdjacent is not implemented for a combination of {elem1.GetType().Name} and {elem2.GetType().Name}.");
             return false;
         }
 

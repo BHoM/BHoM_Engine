@@ -54,7 +54,7 @@ namespace BH.Engine.Analytical
 
             if (polycurves.Count != 1)
             {
-                Reflection.Compute.RecordError("The curve defining the Panel is not a single continuous curve");
+                Base.Compute.RecordError("The curve defining the Panel is not a single continuous curve");
                 return null;
             }
 

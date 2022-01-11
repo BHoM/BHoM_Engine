@@ -55,7 +55,7 @@ namespace BH.Engine.Base
         {
             if (type == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create an enumeration from a null type");
+                BH.Engine.Base.Compute.RecordError("Cannot create an enumeration from a null type");
                 return null;
             }
 
@@ -70,7 +70,7 @@ namespace BH.Engine.Base
                      .FirstOrDefault();
 
             if (result == null)
-                BH.Engine.Reflection.Compute.RecordError($"Cannot create an enumeration from type {type.ToString()} and value {value}");
+                BH.Engine.Base.Compute.RecordError($"Cannot create an enumeration from type {type.ToString()} and value {value}");
 
             return result;
         }

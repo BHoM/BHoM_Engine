@@ -44,13 +44,13 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(structuralSections == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron plan from a null collection of structural sections.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron plan from a null collection of structural sections.");
                 return null;
             }
 
             if(focalPolyline == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron plan from a null focal polyline.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron plan from a null focal polyline.");
                 return null;
             }
 
@@ -72,7 +72,7 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(parameters == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a theatron plan from a null set of stadia parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a theatron plan from a null set of stadia parameters.");
                 return null;
             }
 

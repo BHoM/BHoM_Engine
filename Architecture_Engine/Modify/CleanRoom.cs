@@ -44,7 +44,7 @@ namespace BH.Engine.Architecture
         {
             if(room == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot clean the geometry of a null room.");
+                BH.Engine.Base.Compute.RecordError("Cannot clean the geometry of a null room.");
                 return room;
             }
 

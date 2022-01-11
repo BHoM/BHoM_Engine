@@ -42,7 +42,7 @@ namespace BH.Engine.Matter
         [Output("materialComposition", "The kind of matter the element is composed of and in which ratios.")]
         public static MaterialComposition IMaterialComposition(this IElementM elementM)
         {
-            return Reflection.Compute.RunExtensionMethod(elementM, "MaterialComposition") as MaterialComposition;
+            return Base.Compute.RunExtensionMethod(elementM, "MaterialComposition") as MaterialComposition;
         }
 
         /******************************************/

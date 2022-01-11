@@ -186,7 +186,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             }
             catch
             {
-                Reflection.Compute.RecordError("Bitmap failed to deserialise.");
+                Base.Compute.RecordError("Bitmap failed to deserialise.");
                 return null;
             }
         }

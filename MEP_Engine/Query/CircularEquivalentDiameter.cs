@@ -39,7 +39,7 @@ namespace BH.Engine.MEP
         {
             if(profile == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the circular equivalent diameter of a null profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the circular equivalent diameter of a null profile.");
                 return -1;
             }
 
@@ -55,7 +55,7 @@ namespace BH.Engine.MEP
         {
             if(box == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the circular equivalent diameter of a null box profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the circular equivalent diameter of a null box profile.");
                 return - 1;
             }
 

@@ -37,7 +37,7 @@ namespace BH.Engine.Diffing
         {
             if(obj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the revision fragment from a null object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the revision fragment from a null object.");
                 return null;
             }
 

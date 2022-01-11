@@ -38,7 +38,7 @@ namespace BH.Engine.Spatial
         [Output("element2D", "A internal IElement2D which can be assigned to the IElement2D. Returns null if the IElement2D does not have a type of internal IElement2D.")]
         public static IElement2D INewInternalElement2D(this IElement2D element2D)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
+            return Base.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
         }
 
         /******************************************/

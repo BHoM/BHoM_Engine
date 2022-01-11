@@ -43,10 +43,10 @@ namespace BH.Engine.Environment
         public static List<Panel> FilterByAdjacencies(this List<Panel> panels, int adjacencies)
         {
             if (adjacencies < 0)
-                Reflection.Compute.RecordError("Input can't be less than 0");
+                Base.Compute.RecordError("Input can't be less than 0");
 
             if (adjacencies > 3)
-                Reflection.Compute.RecordWarning("A panel should not have more than 3 adjacencies. Any panels returned may want to be examined for errors in their data");
+                Base.Compute.RecordWarning("A panel should not have more than 3 adjacencies. Any panels returned may want to be examined for errors in their data");
 
             return panels.Where(x => x.ConnectedSpaces.Count == adjacencies).ToList();
         }

@@ -76,13 +76,13 @@ namespace BH.Engine.Serialiser
                 }
                 else
                 {
-                    Reflection.Compute.RecordError("The string provided is not a supported json format");
+                    Base.Compute.RecordError("The string provided is not a supported json format");
                     return null;
                 }
             }
             else if (json.StartsWith("["))
             {
-                Reflection.Compute.RecordNote($"The string provided appears to be a Json Array and will be deserialized as a `List<object>`." +
+                Base.Compute.RecordNote($"The string provided appears to be a Json Array and will be deserialized as a `List<object>`." +
                     $"\nIf calling this method from an UI and you intend to retrieve the individual list items, please use the method {nameof(FromJsonArray)} instead.");
 
                 return FromJsonArray(json);
@@ -91,7 +91,7 @@ namespace BH.Engine.Serialiser
             else
             {
                 // Could we do something when a string is not a valid json?
-                Reflection.Compute.RecordError("The string provided is not a valid json format");
+                Base.Compute.RecordError("The string provided is not a valid json format");
                 return null;
             }
         }
@@ -124,7 +124,7 @@ namespace BH.Engine.Serialiser
         {
             if (!jsonArray.StartsWith("[") || !jsonArray.EndsWith("]"))
             {
-                BH.Engine.Reflection.Compute.RecordError("The specified text is not a well-formed Json Array.");
+                BH.Engine.Base.Compute.RecordError("The specified text is not a well-formed Json Array.");
                 return null;
             }
 

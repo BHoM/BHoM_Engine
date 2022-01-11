@@ -36,7 +36,7 @@ namespace BH.Engine.Graphics
         {
             if(svg == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the bounding box of a null SVG object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null SVG object.");
                 return null;
             }
 
@@ -55,7 +55,7 @@ namespace BH.Engine.Graphics
         {
             if (svg == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the bounding box of a null SVG object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null SVG object.");
                 return null;
             }
 
@@ -73,7 +73,7 @@ namespace BH.Engine.Graphics
         {
             if (svg == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the bounding box of a null SVG document.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null SVG document.");
                 return null;
             }
 
@@ -86,7 +86,7 @@ namespace BH.Engine.Graphics
         {
             if (svg == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the bounding box of a null SVG document.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null SVG document.");
                 return null;
             }
 

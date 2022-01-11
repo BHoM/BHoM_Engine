@@ -105,7 +105,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
+                Base.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
+                Base.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -143,7 +143,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Reflection.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
+                Base.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -258,7 +258,7 @@ namespace BH.Engine.Geometry
             double volume = solid.Volume;
             if (transform.IsRigidTransformation())
             {
-                Reflection.Compute.RecordWarning("Transformation is not rigid. Therefore stored BoundaryRepresentation Volume will be invalidated and reset to NaN (not a number)");
+                Base.Compute.RecordWarning("Transformation is not rigid. Therefore stored BoundaryRepresentation Volume will be invalidated and reset to NaN (not a number)");
                 volume = double.NaN;
             }
 
@@ -313,7 +313,7 @@ namespace BH.Engine.Geometry
 
         private static IGeometry Transform(this IGeometry geometry, TransformMatrix transform)
         {
-            Reflection.Compute.RecordError("Transform method has not been implemented for type " + geometry.GetType().Name);
+            Base.Compute.RecordError("Transform method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 

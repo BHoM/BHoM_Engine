@@ -47,7 +47,7 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot filter the relations of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot filter the relations of a null graph.");
                 return new List<IRelation>();
             }
 

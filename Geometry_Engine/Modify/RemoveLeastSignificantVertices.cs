@@ -82,7 +82,7 @@ namespace BH.Engine.Geometry
             {
                 if (angle < smallestAcceptableAngle)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("One ore more of the angles of the new polyline is smaller than smallestAcceptableAngle, choose a smaller value for smallestAcceptableAngle or proceed with the created polyline as it is.");
+                    BH.Engine.Base.Compute.RecordWarning("One ore more of the angles of the new polyline is smaller than smallestAcceptableAngle, choose a smaller value for smallestAcceptableAngle or proceed with the created polyline as it is.");
                 }
             }
             

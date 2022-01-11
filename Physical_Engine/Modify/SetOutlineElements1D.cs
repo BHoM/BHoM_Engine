@@ -49,7 +49,7 @@ namespace BH.Engine.Physical
         {
             if(surface == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null surface.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null surface.");
                 return null;
             }
 
@@ -69,7 +69,7 @@ namespace BH.Engine.Physical
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null opening.");
                 return null;
             }
 

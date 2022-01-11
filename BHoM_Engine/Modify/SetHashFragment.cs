@@ -30,7 +30,6 @@ using System.Security.Cryptography;
 using System.Reflection;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.Engine.Serialiser;
 
 namespace BH.Engine.Base
 {

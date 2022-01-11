@@ -85,7 +85,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             if (text == m_DiscriminatorConvention.ElementName)
             {
                 string typeName = bsonReader.ReadString();
-                type = BH.Engine.Reflection.Create.Type(typeName);
+                type = BH.Engine.Base.Create.Type(typeName);
             }
 
             if (type == null)

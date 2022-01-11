@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
         {
             if(environmentObject == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null environment object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the height of a null environment object.");
                 return -1;
             }
 
@@ -63,7 +63,7 @@ namespace BH.Engine.Environment
         {
             if (panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the height of a null panel.");
                 return -1;
             }
 
@@ -77,7 +77,7 @@ namespace BH.Engine.Environment
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the height of a null opening.");
                 return -1;
             }
 
@@ -91,7 +91,7 @@ namespace BH.Engine.Environment
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null curve.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the height of a null curve.");
                 return -1;
             }
 

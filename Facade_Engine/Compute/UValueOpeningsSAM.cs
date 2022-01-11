@@ -59,7 +59,7 @@ namespace BH.Engine.Facade
             }
             if (totalArea == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Openings have a total calculated area of 0. Ensure Openings are valid with associated edges defining their geometry and try again.");
+                BH.Engine.Base.Compute.RecordError("Openings have a total calculated area of 0. Ensure Openings are valid with associated edges defining their geometry and try again.");
                 return null;
             }
 

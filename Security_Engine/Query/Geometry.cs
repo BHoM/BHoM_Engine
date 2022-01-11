@@ -44,7 +44,7 @@ namespace BH.Engine.Security
         {
             if(cameraDevice == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null camera device.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the geometry of a null camera device.");
                 return null;
             }
 

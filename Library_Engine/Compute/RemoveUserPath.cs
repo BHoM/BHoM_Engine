@@ -43,7 +43,7 @@ namespace BH.Engine.Library
         {
             if (string.IsNullOrEmpty(customPath))
             {
-                Engine.Reflection.Compute.RecordError($"Provided {nameof(customPath)} is null. Can not remove from library settings.");
+                Engine.Base.Compute.RecordError($"Provided {nameof(customPath)} is null. Can not remove from library settings.");
                 return false;
             }
 
@@ -51,7 +51,7 @@ namespace BH.Engine.Library
 
             if (settings == null)
             {
-                Engine.Reflection.Compute.RecordError("No library settings available. Unable to remove path.");
+                Engine.Base.Compute.RecordError("No library settings available. Unable to remove path.");
                 return false;
             }
 
@@ -60,7 +60,7 @@ namespace BH.Engine.Library
                 settings.UserLibraryPaths.Remove(customPath);
             else
             {
-                Engine.Reflection.Compute.RecordWarning($"Library settings does not contain provided {nameof(customPath)}.");
+                Engine.Base.Compute.RecordWarning($"Library settings does not contain provided {nameof(customPath)}.");
                 return false;
             }
 

@@ -251,7 +251,7 @@ namespace BH.Engine.Geometry
 
         private static IGeometry Project(this IGeometry geometry, Plane p)
         {
-            Reflection.Compute.RecordError("Project method has not been implemented for type " + geometry.GetType().Name);
+            Base.Compute.RecordError("Project method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 

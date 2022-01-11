@@ -297,7 +297,7 @@ namespace BH.Engine.Geometry
 
         private static List<Point> LineIntersections(this ICurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"LineIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"LineIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

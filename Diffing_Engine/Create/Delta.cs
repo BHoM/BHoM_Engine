@@ -50,13 +50,13 @@ namespace BH.Engine.Diffing
         {
             if(pastRevision == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a Delta from a null past revision.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a Delta from a null past revision.");
                 return null;
             }
 
             if(currentRevision == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a Delta from a null current revision.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a Delta from a null current revision.");
                 return null;
             }
 
@@ -76,7 +76,7 @@ namespace BH.Engine.Diffing
         {
             if(revision == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a Delta from a null revision.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a Delta from a null revision.");
                 return null;
             }
 

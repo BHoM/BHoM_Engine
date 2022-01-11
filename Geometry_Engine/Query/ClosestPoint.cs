@@ -198,7 +198,7 @@ namespace BH.Engine.Geometry
 
         private static Point ClosestPoint(this IGeometry geometry, Point point)
         {
-            Reflection.Compute.RecordError($"ClosestPoint is not implemented for IGeometry of type: {geometry.GetType().Name}.");
+            Base.Compute.RecordError($"ClosestPoint is not implemented for IGeometry of type: {geometry.GetType().Name}.");
             return null;
         }
 

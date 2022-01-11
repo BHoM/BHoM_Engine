@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -36,6 +36,7 @@ namespace BH.Engine.Reflection
         
         [Description("Returns all BHoM interface types loaded in the current domain.")]
         [Output("types", "List of BHoM interface types loaded in the current domain.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMInterfaceTypeList()")]
         public static List<Type> BHoMInterfaceTypeList()
         {
             return Global.InterfaceList.ToList();
@@ -45,6 +46,7 @@ namespace BH.Engine.Reflection
 
         [Description("Returns all BHoM types loaded in the current domain.")]
         [Output("types", "List of BHoM types loaded in the current domain.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMTypeList()")]
         public static List<Type> BHoMTypeList()
         {
             return Global.BHoMTypeList.ToList();
@@ -54,6 +56,7 @@ namespace BH.Engine.Reflection
 
         [Description("Returns all BHoM adapter types loaded in the current domain.")]
         [Output("types", "List of BHoM adapter types loaded in the current domain.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AdapterTypeList()")]
         public static List<Type> AdapterTypeList()
         {
             return Global.AdapterTypeList.ToList();
@@ -63,6 +66,7 @@ namespace BH.Engine.Reflection
 
         [Description("Returns all types loaded in the current domain.")]
         [Output("types", "List of all types loaded in the current domain.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AllTypeList()")]
         public static List<Type> AllTypeList()
         {
             return Global.AllTypeList.ToList();
@@ -72,6 +76,7 @@ namespace BH.Engine.Reflection
 
         [Description("Returns all BHoM engine types loaded in the current domain.")]
         [Output("types", "List of BHoM engine types loaded in the current domain.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.EngineTypeList()")]
         public static List<Type> EngineTypeList()
         {
             return Global.EngineTypeList.ToList();

@@ -39,7 +39,7 @@ namespace BH.Engine.Spatial
         [Output("element0Ds", "The IElement0Ds from the IElement1D. Returns null if no IElement0Ds are defined for the type of IElement1D.")]
         public static List<IElement0D> IElements0D(this IElement1D element1D)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "Elements0D") as List<IElement0D>;
+            return Base.Compute.RunExtensionMethod(element1D, "Elements0D") as List<IElement0D>;
         }
 
         /******************************************/

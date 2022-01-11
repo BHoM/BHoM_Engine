@@ -48,7 +48,7 @@ namespace BH.Engine.Geometry
             if (toleranceScaleFactor < 0)
                 toleranceScaleFactor = 0;
             else if (toleranceScaleFactor > 0.01)
-                Reflection.Compute.RecordWarning("High values for toleranceGrowth can be unstable and are not recommended");
+                Base.Compute.RecordWarning("High values for toleranceGrowth can be unstable and are not recommended");
             if (scale <= 0)
             {
                 BoundingBox box = curve.IBounds();

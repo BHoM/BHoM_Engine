@@ -176,7 +176,7 @@ namespace BH.Engine.Spatial
 
             if (distributionLines.Count == 0)
             {
-                Engine.Reflection.Compute.RecordError("Count not find extents of distribution for the layout.");
+                Engine.Base.Compute.RecordError("Count not find extents of distribution for the layout.");
                 return new List<Point>();
             }
 
@@ -215,14 +215,14 @@ namespace BH.Engine.Spatial
                     //No lines found and axis is within boundingbox of the curve, try next layer
                     if (axis.IsInRange(bounds) && offsetDir.SquareLength() != 0)
                     {
-                        Engine.Reflection.Compute.RecordNote("Could not find distribution lines for one or more layer.");
+                        Engine.Base.Compute.RecordNote("Could not find distribution lines for one or more layer.");
                         refPoint += offsetDir;
                         continue;
                     }
                     else
                     {
                         //No more lines can be found
-                        Engine.Reflection.Compute.RecordError("Could not generate distribution lines for the reinforcement. The number of points might not fit in the region curve. The resulting number of points might be different from the number requested.");
+                        Engine.Base.Compute.RecordError("Could not generate distribution lines for the reinforcement. The number of points might not fit in the region curve. The resulting number of points might be different from the number requested.");
                         remainingPoints = 0;
                     }
                 }
@@ -268,7 +268,7 @@ namespace BH.Engine.Spatial
 
         private static List<Point> PointLayout(this ILayout2D layout2D, IEnumerable<ICurve> hostRegionCurves, IEnumerable<ICurve> openingCurves = null)
         {
-            Reflection.Compute.RecordError("PointLayout for " + layout2D.GetType().Name + " is not implemented.");
+            Base.Compute.RecordError("PointLayout for " + layout2D.GetType().Name + " is not implemented.");
             return new List<Point>();
         }
 
@@ -465,7 +465,7 @@ namespace BH.Engine.Spatial
                         {
                             //For now, if the above does not work, leave a warning and continue.
                             //TODO: make this work for these cases as well.
-                            Engine.Reflection.Compute.RecordWarning("The ends of some distribution lines are closer together than the minimum spacing, but could not be separated automatically. Please check the result of the PointLayout distribution.");
+                            Engine.Base.Compute.RecordWarning("The ends of some distribution lines are closer together than the minimum spacing, but could not be separated automatically. Please check the result of the PointLayout distribution.");
                         }
                     }
                 }

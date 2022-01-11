@@ -59,7 +59,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             if (newDoc == null || newDoc.Equals(doc))
             {
-                Engine.Reflection.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
+                Engine.Base.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
                 context.Reader.ReturnToBookmark(bookmark);
                 IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
                 return customSerializer.Deserialize(context, args);

@@ -39,19 +39,19 @@ namespace BH.Engine.Reflection
         {
             if (declaringType == null)
             {
-                Compute.RecordError("Cannot create a method info from a null type.");
+                Base.Compute.RecordError("Cannot create a method info from a null type.");
                 return null;
             }
 
             if (methodName == null)
             {
-                Compute.RecordError("Cannot create a method info from a null method name.");
+                Base.Compute.RecordError("Cannot create a method info from a null method name.");
                 return null;
             }
 
             if (paramTypes == null)
             {
-                Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
+                Base.Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
                 paramTypes = new List<Type>();
             }
 

@@ -111,7 +111,7 @@ namespace BH.Engine.Geometry
 
             if (regions.Any(x => !x.IsClosed(tolerance)))
             {
-                Reflection.Compute.RecordError("Boolean Union works on closed regions.");
+                Base.Compute.RecordError("Boolean Union works on closed regions.");
                 return regions;
             }
 
@@ -239,7 +239,7 @@ namespace BH.Engine.Geometry
 
             if (regionsList.Any(x => x is NurbsCurve || x is Ellipse))
             {
-                Reflection.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanUnion.");
+                Base.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanUnion.");
                 return null;
             }
 
@@ -263,7 +263,7 @@ namespace BH.Engine.Geometry
 
             if (regionsList.Any(x => !x.IIsClosed(tolerance)))
             {
-                Reflection.Compute.RecordError("Boolean Union works on closed regions.");
+                Base.Compute.RecordError("Boolean Union works on closed regions.");
                 foreach (ICurve curve in regionsList)
                 {
                     if (curve is PolyCurve)

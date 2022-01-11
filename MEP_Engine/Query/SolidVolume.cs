@@ -45,38 +45,38 @@ namespace BH.Engine.MEP
 
             if(length <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
+                Engine.Base.Compute.RecordError("Cannot query SolidVolume from zero length members.");
                 return double.NaN;
             }
 
             if(duct.SectionProperty.SectionProfile.ElementProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + duct.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No ElementProfile detected for object " + duct.BHoM_Guid);
             }
 
             if (duct.SectionProperty.SectionProfile.InsulationProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No InsulationProfile detected for object " + duct.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No InsulationProfile detected for object " + duct.BHoM_Guid);
             }
 
             if (duct.SectionProperty.SectionProfile.LiningProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No LiningProfile detected for object " + duct.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No LiningProfile detected for object " + duct.BHoM_Guid);
             }
 
             if (elementSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+                Engine.Base.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
 
             if (insulationSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
+                Engine.Base.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
 
             if (liningSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
+                Engine.Base.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
             }
 
             return ((length * elementSolidArea) + (length * insulationSolidArea) + (length * liningSolidArea));
@@ -97,38 +97,38 @@ namespace BH.Engine.MEP
 
             if (length <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
+                Engine.Base.Compute.RecordError("Cannot query SolidVolume from zero length members.");
                 return double.NaN;
             }
 
             if (pipe.SectionProperty.SectionProfile.ElementProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + pipe.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No ElementProfile detected for object " + pipe.BHoM_Guid);
             }
 
             if (pipe.SectionProperty.SectionProfile.InsulationProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No InsulationProfile detected for object " + pipe.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No InsulationProfile detected for object " + pipe.BHoM_Guid);
             }
 
             if (pipe.SectionProperty.SectionProfile.LiningProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No LiningProfile detected for object " + pipe.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No LiningProfile detected for object " + pipe.BHoM_Guid);
             }
 
             if (elementSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+                Engine.Base.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
 
             if (insulationSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
+                Engine.Base.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
 
             if (liningSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
+                Engine.Base.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
             }
 
             return ((length * elementSolidArea) + (length * insulationSolidArea) + (length * liningSolidArea));
@@ -149,38 +149,38 @@ namespace BH.Engine.MEP
 
             if (length <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
+                Engine.Base.Compute.RecordError("Cannot query SolidVolume from zero length members.");
                 return double.NaN;
             }
 
             if (wireSegment.SectionProperty.SectionProfile.ElementProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + wireSegment.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No ElementProfile detected for object " + wireSegment.BHoM_Guid);
             }
 
             if (wireSegment.SectionProperty.SectionProfile.InsulationProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No InsulationProfile detected for object " + wireSegment.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No InsulationProfile detected for object " + wireSegment.BHoM_Guid);
             }
 
             if (wireSegment.SectionProperty.SectionProfile.LiningProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No LiningProfile detected for object " + wireSegment.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No LiningProfile detected for object " + wireSegment.BHoM_Guid);
             }
 
             if (elementSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+                Engine.Base.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
 
             if (insulationSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
+                Engine.Base.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
 
             if (liningSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
+                Engine.Base.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for InsulationSolidVolume.");
             }
 
             return ((length * elementSolidArea) + (length * insulationSolidArea) + (length * liningSolidArea));
@@ -199,18 +199,18 @@ namespace BH.Engine.MEP
 
             if (length <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Cannot query SolidVolume from zero length members.");
+                Engine.Base.Compute.RecordError("Cannot query SolidVolume from zero length members.");
                 return double.NaN;
             }
 
             if (cableTray.SectionProperty.SectionProfile.ElementProfile == null)
             {
-                Engine.Reflection.Compute.RecordWarning("No ElementProfile detected for object " + cableTray.BHoM_Guid);
+                Engine.Base.Compute.RecordWarning("No ElementProfile detected for object " + cableTray.BHoM_Guid);
             }
 
             if (elementSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+                Engine.Base.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
 
             return length * elementSolidArea;

@@ -87,7 +87,7 @@ namespace BH.Engine.Geometry
 
         private static Vector TangentAtLength(this ICurve curve, double length, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"TangentAtLength is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"TangentAtLength is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

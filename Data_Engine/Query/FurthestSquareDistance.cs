@@ -43,7 +43,7 @@ namespace BH.Engine.Data
         {
             if(box1 == null || box2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the furthest square distance if either domain box is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the furthest square distance if either domain box is null.");
                 return 0;
             }
 
@@ -59,7 +59,7 @@ namespace BH.Engine.Data
         {
             if (box1 == null || box2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the furthest square distance if either domain box is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the furthest square distance if either domain box is null.");
                 return 0;
             }
 

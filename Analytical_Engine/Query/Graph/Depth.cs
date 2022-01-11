@@ -48,7 +48,7 @@ namespace BH.Engine.Analytical
             Dictionary<Guid, int> level = new Dictionary<Guid, int>();
             if (!adjacency.ContainsKey(startEntity))
             {
-                Reflection.Compute.RecordError("startEntity provided cannot be found in the adjacency dictionary. Ensure the entity exists in the original graph.");
+                Base.Compute.RecordError("startEntity provided cannot be found in the adjacency dictionary. Ensure the entity exists in the original graph.");
                 return level;
             }
             // dictionary to store when entity has been visited
@@ -95,7 +95,7 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the depth of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the depth of a null graph.");
                 return new Dictionary<Guid, int>();
             }
 

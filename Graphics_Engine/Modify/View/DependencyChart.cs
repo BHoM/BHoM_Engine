@@ -50,7 +50,7 @@ namespace BH.Engine.Graphics
         {
             if (view == null || dataset == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot modify a view if the view or dataset are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot modify a view if the view or dataset are null.");
                 return;
             }
 

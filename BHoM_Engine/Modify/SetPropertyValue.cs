@@ -29,7 +29,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Modify
     {
@@ -42,6 +42,7 @@ namespace BH.Engine.Reflection
         [Input("propName", "name of the property to set the value of")]
         [Input("value", "new value of the property. \nIf left empty, the value for that property will be cleared \n(enumerables will be emptied, primitives will be set to their default value, and objects will be set to null)")]
         [Output("result", "New object with its property changed to the new value")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Modify.SetPropertyValue(System.Object, System.String, System.Object)")]
         public static object SetPropertyValue(this object obj, string propName, object value = null)
         {
             if(obj == null)
@@ -74,7 +75,7 @@ namespace BH.Engine.Reflection
             {
                 if (!prop.CanWrite)
                 {
-                    Engine.Reflection.Compute.RecordError("This property doesn't have a public setter so it is not possible to modify it.");
+                    Compute.RecordError("This property doesn't have a public setter so it is not possible to modify it.");
                     return obj;
                 }
 
@@ -92,13 +93,13 @@ namespace BH.Engine.Reflection
                     string enumName = (value as string).Split('.').Last();
                     try
                     {
-                        object enumValue = Reflection.Compute.ParseEnum(propType, enumName);
+                        object enumValue = Compute.ParseEnum(propType, enumName);
                         if (enumValue != null)
                             value = enumValue;
                     }
                     catch
                     {
-                        Engine.Reflection.Compute.RecordError($"An enum of type {propType.ToText(true)} does not have a value of {enumName}");
+                        Compute.RecordError($"An enum of type {propType.ToText(true)} does not have a value of {enumName}");
                     }   
                 }
 
@@ -116,7 +117,7 @@ namespace BH.Engine.Reflection
                             value = date;
                         else
                         {
-                            Engine.Reflection.Compute.RecordError($"The value provided for {propName} is not a valid DateTime.");
+                            Compute.RecordError($"The value provided for {propName} is not a valid DateTime.");
                             value = DateTime.MinValue;
                         }
                     }
@@ -151,8 +152,7 @@ namespace BH.Engine.Reflection
                 
                 try
                 {
-                    prop.SetValue(toChange, value);
-                    
+                    prop.SetValue(toChange, value);   
                 }
                 catch (Exception e)
                 {
@@ -225,7 +225,7 @@ namespace BH.Engine.Reflection
         {
             if (type == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create an enumeration from a null type");
+                BH.Engine.Base.Compute.RecordError("Cannot create an enumeration from a null type");
                 return null;
             }
 
@@ -240,7 +240,7 @@ namespace BH.Engine.Reflection
                      .FirstOrDefault();
 
             if (result == null)
-                BH.Engine.Reflection.Compute.RecordError($"Cannot create an enumeration from type {type.ToString()} and value {value}");
+                BH.Engine.Base.Compute.RecordError($"Cannot create an enumeration from type {type.ToString()} and value {value}");
 
             return result;
         }

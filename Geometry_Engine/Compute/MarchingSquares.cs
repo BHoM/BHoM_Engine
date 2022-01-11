@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
         {
             if (mesh?.Vertices == null || vertexValues == null || mesh.Vertices.Count != vertexValues.Count)
             {
-                Reflection.Compute.RecordError("Number of vertexValues must match the number of vertices in the mesh.");
+                Base.Compute.RecordError("Number of vertexValues must match the number of vertices in the mesh.");
                 return new List<List<Line>>();
             }
 

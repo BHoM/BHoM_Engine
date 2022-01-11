@@ -43,7 +43,7 @@ namespace BH.Engine.Data
         {
             if(point == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a discrete point from a null geometry point.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a discrete point from a null geometry point.");
                 return null;
             }
 

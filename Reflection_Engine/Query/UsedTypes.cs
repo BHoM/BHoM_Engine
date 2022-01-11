@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Reflection
 {
@@ -39,7 +40,7 @@ namespace BH.Engine.Reflection
         {
             if(method == null)
             {
-                Compute.RecordWarning("Cannot query the used types of a null method. An empty list will be returned as the list of used types.");
+                Base.Compute.RecordWarning("Cannot query the used types of a null method. An empty list will be returned as the list of used types.");
                 return new List<Type>();
             }
 
@@ -61,7 +62,7 @@ namespace BH.Engine.Reflection
             }
             catch (Exception e)
             {
-                Compute.RecordError(method.ToString() + " failed t oextract its types.\nError: " + e.ToString());
+                Base.Compute.RecordError(method.ToString() + " failed t oextract its types.\nError: " + e.ToString());
                 return new List<Type>();
             }
         }
@@ -72,7 +73,7 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordWarning("Cannot query the used types of a null type. An empty list will be returned as the list of used types.");
+                Base.Compute.RecordWarning("Cannot query the used types of a null type. An empty list will be returned as the list of used types.");
                 return new List<Type>();
             }
 

@@ -49,7 +49,7 @@ namespace BH.Engine.Versioning
             if (m_UpgraderVersions != null)
                 return m_UpgraderVersions;
 
-            string upgraderFolder = Path.Combine(Reflection.Query.BHoMFolder(), "..", "Upgrades");
+            string upgraderFolder = Path.Combine(Base.Query.BHoMFolder(), "..", "Upgrades");
 
             m_UpgraderVersions = Directory.GetDirectories(upgraderFolder, "BHoMUpgrader*", SearchOption.TopDirectoryOnly).Select(folder =>
             {

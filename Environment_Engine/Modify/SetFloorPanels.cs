@@ -59,7 +59,7 @@ namespace BH.Engine.Environment
 
             if (floorPanels.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("No floor panels were found to set the type for");
+                BH.Engine.Base.Compute.RecordWarning("No floor panels were found to set the type for");
                 return clones;
             }
 

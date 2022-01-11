@@ -49,7 +49,7 @@ namespace BH.Engine.Architecture
         {
             if(room == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null room.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null room.");
                 return new List<IElement1D>();
             }
 
@@ -65,7 +65,7 @@ namespace BH.Engine.Architecture
         {
             if(ceiling == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null ceiling.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null ceiling.");
                 return new List<IElement1D>();
             }
 

@@ -44,7 +44,7 @@ namespace BH.Engine.Geometry
         {
             if (faces.Count != cellRelation.Count)
             {
-                Engine.Reflection.Compute.RecordError("The number of cell relations must match the number of faces.");
+                Engine.Base.Compute.RecordError("The number of cell relations must match the number of faces.");
                 return null;
             }
 

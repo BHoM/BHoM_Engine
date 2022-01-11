@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         {
             if(panels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot add adjacent spaces to a null collection of panels.");
+                BH.Engine.Base.Compute.RecordError("Cannot add adjacent spaces to a null collection of panels.");
                 return panels;
             }
 
@@ -69,7 +69,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot add an adjacent space to a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot add an adjacent space to a null panel.");
                 return panel;
             }
 

@@ -44,18 +44,18 @@ namespace BH.Engine.Base
         {
             if (o == null)
             {
-                Reflection.Compute.RecordError("Provided object is null. Cannot extract identifier.");
+                Base.Compute.RecordError("Provided object is null. Cannot extract identifier.");
                 return null;
             }
             Type adapterIdType = o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
             if (adapterIdType == null)
             {
-                Reflection.Compute.RecordError("No Identifier found.");
+                Base.Compute.RecordError("No Identifier found.");
                 return null;
             }
             else
             {
-                Reflection.Compute.RecordNote($"Auto-generated Identifier as {adapterIdType.Name}.");
+                Base.Compute.RecordNote($"Auto-generated Identifier as {adapterIdType.Name}.");
                 return adapterIdType;
             }
         }
@@ -72,7 +72,7 @@ namespace BH.Engine.Base
             }
             else if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
             {
-                Reflection.Compute.RecordError("The provided adapterIdType need to be a type of IAdapterId.");
+                Base.Compute.RecordError("The provided adapterIdType need to be a type of IAdapterId.");
                 return null;
             }
             return adapterIdType;

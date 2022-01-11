@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Reflection
 {
@@ -43,7 +44,7 @@ namespace BH.Engine.Reflection
         {
             if(member == null)
             {
-                Compute.RecordWarning("Cannot query the description of a null member info object. An empty string will be returned instead.");
+                Base.Compute.RecordWarning("Cannot query the description of a null member info object. An empty string will be returned instead.");
                 return "";
             }
 
@@ -69,7 +70,7 @@ namespace BH.Engine.Reflection
         {
             if(parameter == null)
             {
-                Compute.RecordWarning("Cannot query the description of a null parameter object. An empty string will be returned instead.");
+                Base.Compute.RecordWarning("Cannot query the description of a null parameter object. An empty string will be returned instead.");
                 return "";
             }
 
@@ -124,7 +125,7 @@ namespace BH.Engine.Reflection
         {
             if (type == null)
             {
-                Compute.RecordWarning("Cannot query the description of a null type. An empty string will be returned instead.");
+                Base.Compute.RecordWarning("Cannot query the description of a null type. An empty string will be returned instead.");
                 return "";
             }
 
@@ -213,7 +214,7 @@ namespace BH.Engine.Reflection
         {
             if(quantity == null)
             {
-                Compute.RecordWarning("Cannot query the description of a null quantity attribute. An empty string will be returned isntead.");
+                Base.Compute.RecordWarning("Cannot query the description of a null quantity attribute. An empty string will be returned isntead.");
                 return "";
             }
 

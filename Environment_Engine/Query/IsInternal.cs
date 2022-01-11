@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         {
             if (panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a panel is internal or not if it is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether a panel is internal or not if it is null.");
                 return false;
             }
 

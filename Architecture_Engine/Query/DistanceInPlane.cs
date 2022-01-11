@@ -49,13 +49,13 @@ namespace BH.Engine.Architecture
         {
             if (opening1 == null || opening2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("One of the openings is null, distance cannot be caluclated.");
+                BH.Engine.Base.Compute.RecordError("One of the openings is null, distance cannot be caluclated.");
                 return double.NaN;
             }
 
             if (!opening1.IsValidForInPlaneDistanceCheck(opening2, maxExpectedDistance, distanceTolerance, angleTolerance)) 
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Openings do not fulfil preliminary requirements for distance check.");
+                BH.Engine.Base.Compute.RecordWarning("Openings do not fulfil preliminary requirements for distance check.");
                 return double.NaN;
             }
 

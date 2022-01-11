@@ -39,7 +39,7 @@ namespace BH.Engine.Reflection
         {
             if (enumValue == null)
             {
-                Compute.RecordWarning("Cannot get the enum values of null. Returning an empty list instead.");
+                Base.Compute.RecordWarning("Cannot get the enum values of null. Returning an empty list instead.");
                 return new List<T>();
             }
 
@@ -52,7 +52,7 @@ namespace BH.Engine.Reflection
         {
             if (enumType == null)
             {
-                Compute.RecordWarning("Cannot get the enum values of a null type. Returning an empty list instead.");
+                Base.Compute.RecordWarning("Cannot get the enum values of a null type. Returning an empty list instead.");
                 return new List<T>();
             }
 

@@ -94,7 +94,7 @@ namespace BH.Engine.Geometry
 
         private static Vector StartDir(this ICurve curve)
         {
-            Reflection.Compute.RecordError($"StartDir is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"StartDir is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

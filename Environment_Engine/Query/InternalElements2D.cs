@@ -50,7 +50,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the internal 2D elements of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the internal 2D elements of a null panel.");
                 return null;
             }
 

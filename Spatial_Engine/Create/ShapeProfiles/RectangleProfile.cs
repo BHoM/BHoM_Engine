@@ -60,7 +60,7 @@ namespace BH.Engine.Spatial
 
             if (height <= 0 || width <= 0 || cornerRadius < 0)
             {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                Engine.Base.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
             List<ICurve> curves = RectangleProfileCurves(width, height, cornerRadius);

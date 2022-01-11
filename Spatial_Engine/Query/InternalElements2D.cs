@@ -39,7 +39,7 @@ namespace BH.Engine.Spatial
         [Output("element2D", "A list of the IElement2Ds internal elements.")]
         public static List<IElement2D> IInternalElements2D(this IElement2D element2D)
         {
-            List<IElement2D> result = Reflection.Compute.RunExtensionMethod(element2D, "InternalElements2D") as List<IElement2D>;
+            List<IElement2D> result = Base.Compute.RunExtensionMethod(element2D, "InternalElements2D") as List<IElement2D>;
 
             return result ?? new List<IElement2D>();
         }

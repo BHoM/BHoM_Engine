@@ -45,7 +45,7 @@ namespace BH.Engine.Physical
                 return material;
 
             if (newProperties != null && material.Properties.Where(x => x.GetType() == newProperties.GetType()).FirstOrDefault() != null)
-                BH.Engine.Reflection.Compute.RecordError("Properties of that type already exist on this material - please remove them before adding new properties of that type");
+                BH.Engine.Base.Compute.RecordError("Properties of that type already exist on this material - please remove them before adding new properties of that type");
             else
                 material.Properties.Add(newProperties);
 

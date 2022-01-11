@@ -36,7 +36,7 @@ namespace BH.Engine.Acoustic
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the plane of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the plane of a null panel.");
                 return null;
             }
 

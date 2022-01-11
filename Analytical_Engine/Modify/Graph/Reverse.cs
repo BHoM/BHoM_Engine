@@ -57,7 +57,7 @@ namespace BH.Engine.Analytical
         {
             if(relation == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot reverse a null relation.");
+                BH.Engine.Base.Compute.RecordError("Cannot reverse a null relation.");
                 return null;
             }
 
@@ -75,7 +75,7 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot reverse a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot reverse a null graph.");
                 return null;
             }
 

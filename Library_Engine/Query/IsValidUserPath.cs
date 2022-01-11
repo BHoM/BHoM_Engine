@@ -42,7 +42,7 @@ namespace BH.Engine.Library
         {
             if (string.IsNullOrWhiteSpace(userPath))
             {
-                Reflection.Compute.RecordWarning("Null or empty userpaths are not valid.");
+                Base.Compute.RecordWarning("Null or empty userpaths are not valid.");
                 return false;
             }
 
@@ -50,13 +50,13 @@ namespace BH.Engine.Library
 
             if (m_sourceFolder.ToLower().Contains(path.ToLower()))
             {
-                Reflection.Compute.RecordWarning($"Not allowed to add a parent folder of the default dataset folder {m_sourceFolder} to the user libraries.");
+                Base.Compute.RecordWarning($"Not allowed to add a parent folder of the default dataset folder {m_sourceFolder} to the user libraries.");
                 return false;
             }
 
             if (path.ToLower().Contains(m_sourceFolder.ToLower()))
             {
-                Reflection.Compute.RecordWarning($"Not allowed to add a sub folder of the default dataset folder {m_sourceFolder} to the user libraries.");
+                Base.Compute.RecordWarning($"Not allowed to add a sub folder of the default dataset folder {m_sourceFolder} to the user libraries.");
                 return false;
             }
 

@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
         {
             if (vector == null || angleTolerance == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("One or more of the inputs is empty or null.");
+                BH.Engine.Base.Compute.RecordError("One or more of the inputs is empty or null.");
                 return false;
             }
 

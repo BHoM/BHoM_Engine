@@ -214,7 +214,7 @@ namespace BH.Engine.Geometry
 
         private static IGeometry Translate(this IGeometry geometry, Vector transform)
         {
-            Reflection.Compute.RecordError("Translate method has not been implemented for type " + geometry.GetType().Name);
+            Base.Compute.RecordError("Translate method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 

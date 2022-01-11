@@ -34,7 +34,7 @@ namespace BH.Engine.Acoustic
         {
             if(room == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the sabine time for a null room.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the sabine time for a null room.");
                 return 0;
             }
 

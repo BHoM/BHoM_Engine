@@ -45,7 +45,7 @@ namespace BH.Engine.Physical
             normal = element.Normal();
             if (normal == null)
             {
-                Engine.Reflection.Compute.RecordError("IFramingElement must have linear location line.");
+                Engine.Base.Compute.RecordError("IFramingElement must have linear location line.");
                 return null;
             }
 
@@ -67,7 +67,7 @@ namespace BH.Engine.Physical
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("Only suitable framing property for the action is ConstantFramingProperty.");
+                Engine.Base.Compute.RecordError("Only suitable framing property for the action is ConstantFramingProperty.");
                 return null;
             }
         }

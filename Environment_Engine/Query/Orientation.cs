@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         {
             if(environmentObject == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the orientation of a null environment object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the orientation of a null environment object.");
                 return null;
             }
 
@@ -57,7 +57,7 @@ namespace BH.Engine.Environment
             Vector objectNormal = BH.Engine.Geometry.Query.Normal(environmentObject.Polyline());
             if (objectNormal.X == 0 && objectNormal.Y == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("When an objects normal is either directly up or down, orientation angle cannot be successfully evaluated.");
+                BH.Engine.Base.Compute.RecordError("When an objects normal is either directly up or down, orientation angle cannot be successfully evaluated.");
                 return null;
             }
 

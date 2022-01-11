@@ -41,7 +41,7 @@ namespace BH.Engine.Graphics
         {
             if(mesh == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null mesh to a render mesh.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null mesh to a render mesh.");
                 return null;
             }
 

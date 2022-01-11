@@ -45,13 +45,13 @@ namespace BH.Engine.Physical
         {
             if(framingElement == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the 3D Geometry of a null framing element.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the 3D Geometry of a null framing element.");
                 return null;
             }
 
             if (framingElement.Location == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Cannot compute the Geometry3D for this {nameof(IFramingElement)} because its `{nameof(IFramingElement.Location)}` is null.");
+                BH.Engine.Base.Compute.RecordError($"Cannot compute the Geometry3D for this {nameof(IFramingElement)} because its `{nameof(IFramingElement.Location)}` is null.");
                 return null;
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Physical
                 }
 
                 if (pl == null || (pl != null && pl.ControlPoints.Count() > 2))
-                    BH.Engine.Reflection.Compute.RecordWarning($"Geometry3D for {nameof(IFramingElement)} currently works only if it has its {nameof(IFramingElement.Location)} defined as a {nameof(Line)}. Proceeding by taking Start/End point of the provided {framingElement.Location.GetType().Name}.");
+                    BH.Engine.Base.Compute.RecordWarning($"Geometry3D for {nameof(IFramingElement)} currently works only if it has its {nameof(IFramingElement.Location)} defined as a {nameof(Line)}. Proceeding by taking Start/End point of the provided {framingElement.Location.GetType().Name}.");
             }
 
             Vector extrusionVec = BH.Engine.Geometry.Create.Vector(line.Start, line.End);
@@ -76,7 +76,7 @@ namespace BH.Engine.Physical
             ConstantFramingProperty constantFramingProperty = prop as ConstantFramingProperty;
             if (constantFramingProperty == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Geometry3D for {nameof(IFramingElement)} currently works only if its {nameof(IFramingElement.Property)} is of type {nameof(ConstantFramingProperty)}.");
+                BH.Engine.Base.Compute.RecordError($"Geometry3D for {nameof(IFramingElement)} currently works only if its {nameof(IFramingElement.Property)} is of type {nameof(ConstantFramingProperty)}.");
                 return null;
             }
 
@@ -84,7 +84,7 @@ namespace BH.Engine.Physical
 
             if (profileToExtrude == null || !profileToExtrude.Any())
             {
-                BH.Engine.Reflection.Compute.RecordError($"Geometry3D error: could not gather the profile curve to be extruded for this {framingElement.GetType().Name}.");
+                BH.Engine.Base.Compute.RecordError($"Geometry3D error: could not gather the profile curve to be extruded for this {framingElement.GetType().Name}.");
                 return null;
             }
 
@@ -103,7 +103,7 @@ namespace BH.Engine.Physical
         {
             if(floor == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the 3D geometry of a null floor.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the 3D geometry of a null floor.");
                 return null;
             }
 

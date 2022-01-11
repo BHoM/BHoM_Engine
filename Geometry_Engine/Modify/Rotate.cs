@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
         {
             if (vector == null || axis == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot rotate vector as it and/or the axis vector is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot rotate vector as it and/or the axis vector is null.");
                 return null;
             }
 
@@ -250,7 +250,7 @@ namespace BH.Engine.Geometry
 
         private static IGeometry Rotate(this IGeometry geometry, double rad, Vector axis)
         {
-            Engine.Reflection.Compute.RecordError("Rotate method has not been implemented for type " + geometry.GetType().Name);
+            Engine.Base.Compute.RecordError("Rotate method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 

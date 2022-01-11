@@ -37,7 +37,7 @@ namespace BH.Engine.Data
         {
             if(request == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot filter data with a null request.");
+                BH.Engine.Base.Compute.RecordError("Cannot filter data with a null request.");
                 return new List<IBHoMObject>();
             }
 

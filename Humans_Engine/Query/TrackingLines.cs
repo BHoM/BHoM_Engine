@@ -37,7 +37,7 @@ namespace BH.Engine.Humans
         {
             if(skeleton == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the tracking lines of a null skeleton.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the tracking lines of a null skeleton.");
                 return null;
             }
 

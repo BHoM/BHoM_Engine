@@ -43,28 +43,28 @@ namespace BH.Engine.Geometry
         {
             if (externalBoundary == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from a null outline.");
+                BH.Engine.Base.Compute.RecordError("Cannot create planar surface from a null outline.");
                 return null;
             }
 
             //--------------Planar-External-Boundary-----------------------//
             if (!externalBoundary.IIsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("External edge curve is not planar");
+                Base.Compute.RecordError("External edge curve is not planar");
                 return null;
             }
 
             //---------------Closed-External-Boundary-----------------------//
             if (!externalBoundary.IIsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("External edge curve is not closed");
+                Base.Compute.RecordError("External edge curve is not closed");
                 return null;
             }
 
             //--------------SelfIntersecting-External-Boundary--------------//
             if (!externalBoundary.ISubParts().Any(y => y is NurbsCurve) && externalBoundary.IIsSelfIntersecting(tolerance))
             {
-                Reflection.Compute.RecordError("The provided external boundary is self-intersecting.");
+                Base.Compute.RecordError("The provided external boundary is self-intersecting.");
                 return null;
             }
 
@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
 
             if (internalBoundaries.Count != count)
             {
-                Reflection.Compute.RecordWarning("At least one of the internal boundaries is not closed and has been ignored on creation of the planar surface.");
+                Base.Compute.RecordWarning("At least one of the internal boundaries is not closed and has been ignored on creation of the planar surface.");
             }
 
             //---------------Coplanar-Internal-Boundaries-------------------//
@@ -88,12 +88,12 @@ namespace BH.Engine.Geometry
 
             if (internalBoundaries.Count != count)
             {
-                Reflection.Compute.RecordWarning("At least one of the internal boundaries is not coplanar with the external edge curve and has been ignored on creation of the planar surface.");
+                Base.Compute.RecordWarning("At least one of the internal boundaries is not coplanar with the external edge curve and has been ignored on creation of the planar surface.");
             }
 
             //--------------Unsupported-Internal-Boundaries-Warning---------//
             if (internalBoundaries.SelectMany(x => x.ISubParts()).Any(x => x is NurbsCurve || x is Ellipse))
-                Reflection.Compute.RecordWarning("At least one of the internal boundaries is a NurbsCurve or Ellipse and has not been checked for validity on creation of the planar surface.");
+                Base.Compute.RecordWarning("At least one of the internal boundaries is a NurbsCurve or Ellipse and has not been checked for validity on creation of the planar surface.");
 
             //--------------Self-Intersecting-Internal-Boundaries-----------//
             count = internalBoundaries.Count;
@@ -102,7 +102,7 @@ namespace BH.Engine.Geometry
 
             if (internalBoundaries.Count != count)
             {
-                Reflection.Compute.RecordWarning("At least one of the internal boundaries is self-intersecting and has been ignored on creation of the planar surface.");
+                Base.Compute.RecordWarning("At least one of the internal boundaries is self-intersecting and has been ignored on creation of the planar surface.");
             }
 
             //--------------Overlapping-Internal-Boundaries-----------------//
@@ -113,13 +113,13 @@ namespace BH.Engine.Geometry
 
             if (internalBoundaries.Count != count)
             {
-                Reflection.Compute.RecordWarning("At least one of the internalBoundaries was overlapping another one. BooleanUnion was used to resolve it.");
+                Base.Compute.RecordWarning("At least one of the internalBoundaries was overlapping another one. BooleanUnion was used to resolve it.");
             }
 
             //--------------Unsupported-External-Boundary-------------------//
             if (externalBoundary.ISubParts().Any(x => x is NurbsCurve ||  x is Ellipse))
             {
-                Reflection.Compute.RecordWarning("External boundary is a nurbs curve or Ellipse. Necessary checks to ensure validity of a planar surface based on nurbs curve cannot be run, therefore correctness of the surface boundaries is not guaranteed.");
+                Base.Compute.RecordWarning("External boundary is a nurbs curve or Ellipse. Necessary checks to ensure validity of a planar surface based on nurbs curve cannot be run, therefore correctness of the surface boundaries is not guaranteed.");
                 // External done
                 return new PlanarSurface(externalBoundary, internalBoundaries);
             }
@@ -137,7 +137,7 @@ namespace BH.Engine.Geometry
                     externalBoundary = externalBoundary.BooleanDifference(new List<ICurve>() { intCurve }).Single();
                     internalBoundaries.RemoveAt(i);
                     i--;
-                    Reflection.Compute.RecordWarning("At least one of the internalBoundaries is intersecting the externalBoundary. BooleanDifference was used to resolve the issue.");
+                    Base.Compute.RecordWarning("At least one of the internalBoundaries is intersecting the externalBoundary. BooleanDifference was used to resolve the issue.");
                 }
             }
 
@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
 
             if (internalBoundaries.Count != count)
             {
-                Reflection.Compute.RecordWarning("At least one of the internalBoundaries is not contained by the externalBoundary. And have been disregarded.");
+                Base.Compute.RecordWarning("At least one of the internalBoundaries is not contained by the externalBoundary. And have been disregarded.");
             }
             
             //------------------Return-Valid-Surface------------------------//
@@ -165,7 +165,7 @@ namespace BH.Engine.Geometry
         {
             if (boundaryCurves == null || boundaryCurves.Count == 0 || boundaryCurves.All(x => x == null))
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create planar surface from a null or empty collection of boundary curves.");
+                BH.Engine.Base.Compute.RecordError("Cannot create planar surface from a null or empty collection of boundary curves.");
                 return null;
             }
 
@@ -173,29 +173,29 @@ namespace BH.Engine.Geometry
             int count = boundaryCurves.Count;
             List<ICurve> checkedCurves = boundaryCurves.Where(x => x != null).ToList();
             if (checkedCurves.Count != count)
-                Reflection.Compute.RecordWarning("Some of the input boundary curves were null and have been ignored on planar surface creation. Please make sure if the output is correct.");
+                Base.Compute.RecordWarning("Some of the input boundary curves were null and have been ignored on planar surface creation. Please make sure if the output is correct.");
 
             //--------------Unsupported-Boundary-Curves-----------------------//
             count = checkedCurves.Count;
             checkedCurves = checkedCurves.Where(x => !(x is NurbsCurve) && !(x is Ellipse)).ToList();
             if (checkedCurves.Count != count)
-                Reflection.Compute.RecordWarning("Some of the input boundary curves were nurbs curves or ellipses, which are unsupported, and have been ignored on planar surface creation. Please make sure if the output is correct.");
+                Base.Compute.RecordWarning("Some of the input boundary curves were nurbs curves or ellipses, which are unsupported, and have been ignored on planar surface creation. Please make sure if the output is correct.");
 
             //--------------Planar-Boundary-Curves-----------------------//
             count = checkedCurves.Count;
             checkedCurves = checkedCurves.Where(x => x.IIsPlanar(tolerance)).ToList();
             if (checkedCurves.Count != count)
-                Reflection.Compute.RecordWarning("Some of the input boundary curves were not planar within the tolerance and have been ignored on planar surface creation. Please make sure if the output is correct and tweak the input tolerance if needed.");
+                Base.Compute.RecordWarning("Some of the input boundary curves were not planar within the tolerance and have been ignored on planar surface creation. Please make sure if the output is correct and tweak the input tolerance if needed.");
 
             //--------------Closed-Boundary-Curves-----------------------//
             count = checkedCurves.Count;
             checkedCurves = checkedCurves.Where(x => x.IIsClosed(tolerance)).ToList();
             if (checkedCurves.Count != count)
-                Reflection.Compute.RecordWarning("Some of the input boundary curves were not closed within the tolerance and have been ignored on planar surface creation. Please make sure if the output is correct and tweak the input tolerance if needed.");
+                Base.Compute.RecordWarning("Some of the input boundary curves were not closed within the tolerance and have been ignored on planar surface creation. Please make sure if the output is correct and tweak the input tolerance if needed.");
 
             if (checkedCurves.Count == 0)
             {
-                Reflection.Compute.RecordError("Planar surface could not be created because all input boundary curves are invalid (null, unsupported type, non-planar, not closed within the tolerance).");
+                Base.Compute.RecordError("Planar surface could not be created because all input boundary curves are invalid (null, unsupported type, non-planar, not closed within the tolerance).");
                 return new List<PlanarSurface>();
             }
 

@@ -42,35 +42,35 @@ namespace BH.Engine.Environment
         {
             if(location == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query if a location is valid if the location is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query if a location is valid if the location is null.");
                 return false;
             }
 
             double latitude = location.Latitude;
             if (latitude < -90 || latitude > 90)
             {
-                BH.Engine.Reflection.Compute.RecordError("Invalid Latitude passed. It should be between -90 and 90");
+                BH.Engine.Base.Compute.RecordError("Invalid Latitude passed. It should be between -90 and 90");
                 return false;
             }
 
             double longitude = location.Longitude;
             if (longitude < -180 || longitude > 180)
             {
-                BH.Engine.Reflection.Compute.RecordError("Invalid Longitude passed. It should be between -180 and 180");
+                BH.Engine.Base.Compute.RecordError("Invalid Longitude passed. It should be between -180 and 180");
                 return false;
             }
 
             double elevation = location.Elevation;
             if (elevation < -413 || elevation > 8848)
             {
-                BH.Engine.Reflection.Compute.RecordError("Invalid Elevation passed. It should be between -413 and 8848");
+                BH.Engine.Base.Compute.RecordError("Invalid Elevation passed. It should be between -413 and 8848");
                 return false;
             }
 
             double utcOffset = location.UtcOffset;
             if (utcOffset < -12 || utcOffset > 12)
             {
-                BH.Engine.Reflection.Compute.RecordError("Invalid UtcOffset passed. It should be between -12 and 12");
+                BH.Engine.Base.Compute.RecordError("Invalid UtcOffset passed. It should be between -12 and 12");
                 return false;
             }
 

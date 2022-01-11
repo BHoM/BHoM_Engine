@@ -77,7 +77,7 @@ namespace BH.Engine.Spatial
 
             if (height <= 0 || webThickness <= 0 || leftOutstandThickness < 0 || leftOutstandWidth < 0 || rightOutstandThickness < 0 || rightOutstandWidth < 0)
             {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                Engine.Base.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 

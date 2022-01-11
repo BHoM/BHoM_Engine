@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry.SettingOut;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -30,6 +31,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Level(System.Double)")]
         public static Level Level(double elevation)
         {
             return new Level
@@ -40,6 +42,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Level(System.Double, System.String)")]
         public static Level Level(double elevation, string name)
         {
             return new Level

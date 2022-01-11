@@ -29,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>false</Private>
@@ -39,6 +43,10 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Convert\" />
   </ItemGroup>
 
 </Project>

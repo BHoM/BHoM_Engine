@@ -39,7 +39,7 @@ namespace BH.Engine.Reflection
         {
             if (qualifiedName == null)
             {
-                Compute.RecordError("Cannot extract the unqualified name from a null string.");
+                Base.Compute.RecordError("Cannot extract the unqualified name from a null string.");
                 return "";
             }
 

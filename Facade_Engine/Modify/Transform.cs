@@ -48,7 +48,7 @@ namespace BH.Engine.Facade
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 
@@ -75,7 +75,7 @@ namespace BH.Engine.Facade
                     edge.FrameEdgeProperty.SectionProperties = newProperties;
                 }
                 else if (!edge.Curve.IIsPlanar(tolerance))
-                    BH.Engine.Reflection.Compute.RecordWarning($"The element's location is a nonlinear, nonplanar curve. Correctness of orientation angle after transform could not be ensured in 100%. BHoM_Guid: {edge.BHoM_Guid}");
+                    BH.Engine.Base.Compute.RecordWarning($"The element's location is a nonlinear, nonplanar curve. Correctness of orientation angle after transform could not be ensured in 100%. BHoM_Guid: {edge.BHoM_Guid}");
             }
 
             return result;
@@ -92,7 +92,7 @@ namespace BH.Engine.Facade
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 
@@ -112,7 +112,7 @@ namespace BH.Engine.Facade
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 
@@ -134,7 +134,7 @@ namespace BH.Engine.Facade
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 

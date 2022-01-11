@@ -46,7 +46,7 @@ namespace BH.Engine.Spatial
             if (points.Any(x => x.Z != 0))
             {
                 xyPts = points.Select(pt => new Point() { X = pt.X, Y = pt.Y });
-                Engine.Reflection.Compute.RecordWarning("Points have been projected to the global XY-plane");
+                Engine.Base.Compute.RecordWarning("Points have been projected to the global XY-plane");
             }
             return new ExplicitLayout(xyPts);
         }

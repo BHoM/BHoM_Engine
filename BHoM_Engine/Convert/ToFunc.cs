@@ -24,8 +24,9 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Convert
     {
@@ -33,7 +34,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToFunc(System.Reflection.MethodBase)")]
         public static Func<object[], object> ToFunc(this MethodBase method)
         {
             if (method is MethodInfo)
@@ -45,6 +46,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToFunc(System.Reflection.MethodInfo)")]
         public static Func<object[], object> ToFunc(this MethodInfo method)
         {
             if(method == null)
@@ -90,6 +92,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToFunc(System.Reflection.ConstructorInfo)")]
         public static Func<object[], object> ToFunc(this ConstructorInfo ctor)
         {
             if(ctor == null)
@@ -106,6 +109,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToFunc(System.Action<System.Object[]>)")]
         public static Func<object[], object> ToFunc(this Action<object[]> act)
         {
             return inputs => { act(inputs); return true; };
@@ -113,6 +117,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToFunc(System.Func<System.Object, System.Object[], System.Object>)")]
         public static Func<object[], object> ToFunc(this Func<object, object[], object> func)
         {
             return inputs => { return func(inputs[0], inputs.Skip(1).ToArray()); };
@@ -120,6 +125,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToFunc(System.Action<System.Object, System.Object[]>)")]
         public static Func<object[], object> ToFunc(this Action<object, object[]> act)
         {
             return inputs => { act(inputs[0], inputs.Skip(1).ToArray()); return true; };

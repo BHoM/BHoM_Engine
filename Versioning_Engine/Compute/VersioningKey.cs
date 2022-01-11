@@ -52,7 +52,7 @@ namespace BH.Engine.Versioning
             if (methodName == "")
                 methodName = ".ctor";
 
-            return Engine.Reflection.Query.AllMethodList()
+            return Engine.Base.Query.AllMethodList()
                 .Where(x => x.Name == methodName && x.DeclaringType.FullName.EndsWith(declaringType))
                 .Select(x => x.VersioningKey())
                 .ToList();

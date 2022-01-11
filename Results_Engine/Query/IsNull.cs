@@ -58,7 +58,7 @@ namespace BH.Engine.Results
 
         private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
         {
-            Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
+            Base.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
         }
 
     }

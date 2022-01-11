@@ -47,7 +47,7 @@ namespace BH.Engine.Versioning
         [Output("events", "List of all exiting events describing a versioning upgrade.")]
         public static List<VersioningEvent> VersioningEvents()
         {
-            return BH.Engine.Reflection.Query.AllEvents().OfType<VersioningEvent>().ToList();
+            return BH.Engine.Base.Query.AllEvents().OfType<VersioningEvent>().ToList();
         }
 
         /***************************************************/
