@@ -353,10 +353,10 @@ namespace BH.Engine.Physical
 
             Point cStart = new Point() { Y = -shapeCode.C + bendOffset + shapeCode.Diameter / 2 };
             Point bcCentre = cStart.Translate(new Vector() { X = -bendOffset });
-            Point bEnd = bcCentre.Translate(new Vector() { Y = bendOffset });
+            Point bEnd = bcCentre.Translate(new Vector() { Y = -bendOffset });
             Point bStart = bEnd.Translate(new Vector() { X = -shapeCode.B + bendOffset + shapeCode.Diameter / 2 + lengthReduction });
             Point abCentre = bStart.Translate(new Vector() { Y = -bendOffset });
-            Point aStart = new Point() { X = -shapeCode.B - shapeCode.E + shapeCode.Diameter / 2 * (1 + Math.Cos(angle)), Y = - shapeCode.C - shapeCode.D + shapeCode.Diameter / 2*( 2 + Math.Sin(angle)) };
+            Point aStart = new Point() { X = -shapeCode.B - shapeCode.E + shapeCode.Diameter / 2 * (1 + Math.Cos(angle)), Y = - shapeCode.C - shapeCode.D + shapeCode.Diameter / 2* Math.Sin(angle) };
             Circle circle = new Circle() { Centre = abCentre, Normal = Vector.ZAxis, Radius = bendOffset };
             Point aEnd = circle.ClosestPoint(aStart).Rotate(abCentre, Vector.ZAxis, -Math.PI / 2);
 
@@ -867,37 +867,55 @@ namespace BH.Engine.Physical
         private static ICurve Centreline(this ShapeCode56 shapeCode)
         {
             double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
-            double angle = Math.Acos((shapeCode.A - shapeCode.C) / shapeCode.D);
+            double angle = Math.Acos((shapeCode.A - shapeCode.C) / (shapeCode.B - shapeCode.Diameter - bendOffset - shapeCode.Diameter));
             double lengthReduction = (shapeCode.BendRadius + shapeCode.Diameter) * Math.Sin(angle)/2;
 
-            Point fStart = new Point(); //{ X = -shapeCode.A / 2 + shapeCode.Diameter / 2, Y = -shapeCode.B / 2 + shapeCode.F };
-            Point fEnd = fStart + new Vector() { Y = -shapeCode.F + shapeCode.Diameter + shapeCode.BendRadius };
+            Point fStart = new Point();
+            Point fEnd = fStart + new Vector() { Y = -shapeCode.F + bendOffset + shapeCode.Diameter/2 };
             Point faCentre = fEnd + new Vector() { X = bendOffset };
             Point aStart = faCentre + new Vector() { Y = -bendOffset };
             Point aEnd = aStart + new Vector() { X = shapeCode.A - 2 * shapeCode.Diameter - 2 * shapeCode.BendRadius };
             Point adCentre = aEnd + new Vector() { Y = bendOffset };
-            Line adRadius = new Line() { Start = adCentre, End = adCentre + new Vector() { Y = -bendOffset } }.Rotate(adCentre, Vector.ZAxis, Math.PI - angle);
-            Point dStart = adRadius.End;
-            Line d = new Line() { Start = dStart, End = dStart + new Vector() { X = -shapeCode.D + shapeCode.Diameter + shapeCode.BendRadius + lengthReduction  } }.Rotate(dStart, Vector.ZAxis, -angle);
-            Point dEnd = d.End;
-            Line dcRadius = new Line() { Start = dEnd, End = dEnd + new Vector() { Y = -bendOffset } }.Rotate(dEnd, Vector.ZAxis, -angle);
-            Point dcCentre = dcRadius.End;
-            Point cStart = dcCentre + new Vector() { Y = bendOffset };
-            Point cEnd = cStart + new Vector() { X = -shapeCode.C + shapeCode.BendRadius + shapeCode.Diameter + lengthReduction, Z = -shapeCode.Diameter };
-            Point cbCenter = cEnd + new Vector() { Y = -bendOffset };
-            Point bStart = cbCenter + new Vector() { X = -bendOffset };
-            Point bEnd = fEnd + new Vector() { Z = -shapeCode.Diameter };
-            Point eStart = aStart + new Vector() { Z = -shapeCode.Diameter };
+
+            Point eEnd = fStart + new Vector() { X =  shapeCode.E - shapeCode.Diameter / 2, Y = -shapeCode.F + shapeCode.Diameter/2, Z = -shapeCode.Diameter };
+            Point eStart = eEnd + new Vector() { X = -shapeCode.E + bendOffset + shapeCode.Diameter/2};
+            Point bStart = fEnd + new Vector() { Y = shapeCode.B - 2*bendOffset - shapeCode.Diameter, Z = -shapeCode.Diameter };
+            Point cbCentre = bStart + new Vector() { X = bendOffset };
+            Point cEnd = cbCentre + new Vector() { Y = bendOffset };
+            Point cStart = cEnd + new Vector() {X = shapeCode.C - shapeCode.BendRadius - shapeCode.Diameter - lengthReduction, Z= shapeCode.Diameter};
+            Point dcCentre = cStart + new Vector() { Y = -bendOffset };
+
+            Circle adCircle = new Circle() { Centre = adCentre, Normal = Vector.ZAxis, Radius = bendOffset };
+            Circle dcCircle = new Circle() { Centre = dcCentre, Normal = Vector.ZAxis, Radius = bendOffset };
+
+            Point dStart = adCircle.ClosestPoint(dcCentre).Rotate(adCentre, Vector.ZAxis, -Math.PI / 2);
+            Point dEnd = dcCircle.ClosestPoint(adCentre).Rotate(dcCentre, Vector.ZAxis, Math.PI / 2);
+
+            //Point aStart = baCircle.ClosestPoint(aEnd).Rotate(baCentre, Vector.ZAxis, -Math.PI / 2);
+
+            //Line adRadius = new Line() { Start = adCentre, End = adCentre + new Vector() { Y = -bendOffset } }.Rotate(adCentre, Vector.ZAxis, Math.PI - angle);
+            //Point dStart = adRadius.End;
+            //Line d = new Line() { Start = dStart, End = dStart + new Vector() { X = -shapeCode.D + shapeCode.Diameter + shapeCode.BendRadius + lengthReduction  } }.Rotate(dStart, Vector.ZAxis, -angle);
+            //Point dEnd = d.End;
+            //Line dcRadius = new Line() { Start = dEnd, End = dEnd + new Vector() { Y = -bendOffset } }.Rotate(dEnd, Vector.ZAxis, -angle);
+            //Point dcCentre = dcRadius.End;
+            //Point cStart = dcCentre + new Vector() { Y = bendOffset };
+            //Point cEnd = cStart + new Vector() { X = -shapeCode.C + shapeCode.BendRadius + shapeCode.Diameter + lengthReduction, Z = -shapeCode.Diameter };
+            //Point cbCenter = cEnd + new Vector() { Y = -bendOffset };
+            //Point bStart = cbCenter + new Vector() { X = -bendOffset };
+            //Point bEnd = fEnd + new Vector() { Z = -shapeCode./2 };
+            //Point eStart = aStart + new Vector() { Z = -shapeCode.Diameter };
 
             Line f = new Line() { Start = fStart, End = fEnd };
             Arc fa = Engine.Geometry.Create.ArcByCentre(faCentre, fEnd, aStart);
             Line a = new Line() { Start = aStart, End = aEnd };
             Arc ad = Engine.Geometry.Create.ArcByCentre(adCentre, aEnd, dStart);
+            Line d = new Line() { Start = dStart, End = dEnd };
             Arc dc = Engine.Geometry.Create.ArcByCentre(dcCentre, dEnd, cStart);
             Line c = new Line() { Start = cStart, End = cEnd };
-            Arc cb = Engine.Geometry.Create.ArcByCentre(cbCenter, cEnd, bStart);
-            Line b = new Line() { Start = bStart, End = bEnd };
-            Line e = new Line() { Start = eStart, End = eStart + new Vector() { X = shapeCode.E - shapeCode.BendRadius - shapeCode.Diameter } };
+            Arc cb = Engine.Geometry.Create.ArcByCentre(cbCentre, cEnd, bStart);
+            Line b = new Line() { Start = bStart, End = fEnd + new Vector() { Z = -shapeCode.Diameter } };
+            Line e = new Line() { Start = eStart, End = eEnd};
 
             return new PolyCurve() { Curves = new List<ICurve>() { f, fa, a, ad, d, dc, c, cb, b, fa.Translate(new Vector() { Z = -shapeCode.Diameter }), e } };
         }

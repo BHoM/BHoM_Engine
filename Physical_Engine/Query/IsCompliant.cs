@@ -645,7 +645,7 @@ namespace BH.Engine.Physical
                 Reflection.Compute.RecordError("The parameter C must be less than or equal to the parameter R.");
                 return false;
             }
-            else if(Math.Abs(shapeCode.A - 2*shapeCode.R*Math.Asin(shapeCode.B/(2*(shapeCode.R + shapeCode.Diameter)))) > Tolerance.Distance)
+            else if(Math.Abs(shapeCode.A - shapeCode.R*2*Math.Acos((shapeCode.R-shapeCode.C)/shapeCode.R)) > Tolerance.Distance)
             {
                 Reflection.Compute.RecordError("The parameter A of ShapeCode67 must be equal to the arc length formed by the segment constructed from the width B and centre R.");
                 return false;
