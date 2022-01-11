@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
                 }
                 else
                 {
-                    Reflection.Compute.RecordError("The Bar and/or Material could not be found in the lists provided corresponding to the ids provided for in the BarRequiredArea.");
+                    Base.Compute.RecordError("The Bar and/or Material could not be found in the lists provided corresponding to the ids provided for in the BarRequiredArea.");
                     return null;
                 }
             }

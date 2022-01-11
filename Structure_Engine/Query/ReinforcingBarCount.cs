@@ -79,7 +79,7 @@ namespace BH.Engine.Structure
 
         private static int LayoutCount(ILayout2D layout)
         {
-            Engine.Reflection.Compute.RecordError("Could not extract number of points from layout of type " + layout.GetType().Name);
+            Engine.Base.Compute.RecordError("Could not extract number of points from layout of type " + layout.GetType().Name);
             return 0;
         }
 

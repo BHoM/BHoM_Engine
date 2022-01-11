@@ -50,7 +50,7 @@ namespace BH.Engine.Structure
 
             if (bar.SectionProperty == null)
             {
-                Engine.Reflection.Compute.RecordError("The Bars Solid Volume could not be calculated as no section property has been assigned. Returning zero volume.");
+                Engine.Base.Compute.RecordError("The Bars Solid Volume could not be calculated as no section property has been assigned. Returning zero volume.");
                 return 0;
             }
             return bar.SectionProperty.Area * bar.Length();
@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
 
             if (areaElement.Property == null)
             {
-                Engine.Reflection.Compute.RecordError("The IAreaElements Solid Volume could not be calculated as no surface property has been assigned. Returning zero volume.");
+                Engine.Base.Compute.RecordError("The IAreaElements Solid Volume could not be calculated as no surface property has been assigned. Returning zero volume.");
                 return 0;
             }
 

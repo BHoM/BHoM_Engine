@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
 
             if (divisions < 1)
             {
-                Reflection.Compute.RecordWarning("Cant handle 0 or negative divisions. Divisions has been set to 1!");
+                Base.Compute.RecordWarning("Cant handle 0 or negative divisions. Divisions has been set to 1!");
                 divisions = 1;
             }
 

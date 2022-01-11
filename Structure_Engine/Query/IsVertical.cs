@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("3.1", "Moved to Geometry_Engine.")]
+        [ToBeRemoved("3.1", "Moved to Geometry_Engine.")]
         public static bool IsVertical(this Line line)
         {
             return Engine.Geometry.Query.IsVertical(line);

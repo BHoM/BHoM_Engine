@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         {
             if (diameter < Tolerance.Distance || area < Math.Pow(Tolerance.Distance, 2) || spacing < Tolerance.Distance)
             {
-                Reflection.Compute.RecordError("The diameter, area or spacing values are less than the tolerance. Please check your inputs.");
+                Base.Compute.RecordError("The diameter, area or spacing values are less than the tolerance. Please check your inputs.");
                 return null;
             }
 

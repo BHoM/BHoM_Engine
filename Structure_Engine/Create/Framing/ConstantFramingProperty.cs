@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
             if (sectionProperty is IGeometricalSection)
                 profile = (sectionProperty as IGeometricalSection).SectionProfile;
             else
-                Reflection.Compute.RecordWarning("Was not able to extract any section profile.");
+                Base.Compute.RecordWarning("Was not able to extract any section profile.");
 
 
             oM.Physical.Materials.Material material = null;
@@ -64,7 +64,7 @@ namespace BH.Engine.Structure
             }
             else
             {
-                Reflection.Compute.RecordWarning("Material from SectionProperty of the Bar is null.");
+                Base.Compute.RecordWarning("Material from SectionProperty of the Bar is null.");
             }
 
             name = string.IsNullOrEmpty(name) ? sectionProperty.Name : name;

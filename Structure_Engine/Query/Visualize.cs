@@ -376,7 +376,7 @@ namespace BH.Engine.Structure
 
                     if (bar.SectionProperty == null || bar.SectionProperty.Material == null)
                     {
-                        Reflection.Compute.RecordWarning("Bar needs a valid sectionproperty and material to display gravity loading");
+                        Base.Compute.RecordWarning("Bar needs a valid sectionproperty and material to display gravity loading");
                         continue;
                     }
 
@@ -396,7 +396,7 @@ namespace BH.Engine.Structure
                 }
                 else
                 {
-                    Reflection.Compute.RecordWarning("Display for gravity loads only implemented for Bars and IAreaElements. No area elements will be displayed");
+                    Base.Compute.RecordWarning("Display for gravity loads only implemented for Bars and IAreaElements. No area elements will be displayed");
                 }
             }
 
@@ -589,7 +589,7 @@ namespace BH.Engine.Structure
 
             if (lineLoad.Projected || lineLoad.Axis == LoadAxis.Local)
             {
-                Engine.Reflection.Compute.RecordWarning("Can not currently visualize GeometricalLineLoads that are projected or in local coordinates.");
+                Engine.Base.Compute.RecordWarning("Can not currently visualize GeometricalLineLoads that are projected or in local coordinates.");
                 return arrows;
             }
 
@@ -662,7 +662,7 @@ namespace BH.Engine.Structure
 
         private static IEnumerable<IGeometry> Visualize(this ILoad load, double scaleFactor, bool displayForces, bool displayMoments, bool asResultants)
         {
-            Reflection.Compute.RecordWarning("No load visualisation is yet implemented for load of type " + load.GetType().Name);
+            Base.Compute.RecordWarning("No load visualisation is yet implemented for load of type " + load.GetType().Name);
             return new List<IGeometry>();
         }
 

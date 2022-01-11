@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
         {
             if (localX == null || normal == null)
             {
-                Reflection.Compute.RecordError("The provided normal and/or local x are null. The orientation angle could not be calculated.");
+                Base.Compute.RecordError("The provided normal and/or local x are null. The orientation angle could not be calculated.");
                 return double.NaN;
             }
 
@@ -58,12 +58,12 @@ namespace BH.Engine.Structure
 
             if (Math.Abs(1 - dot) < Tolerance.Angle)
             {
-                Reflection.Compute.RecordError("The provided local x is parallel to the normal of the element. The orientation angle could not be calculated.");
+                Base.Compute.RecordError("The provided local x is parallel to the normal of the element. The orientation angle could not be calculated.");
                 return double.NaN;
             }
             else if (Math.Abs(dot) > Tolerance.Angle)
             {
-                Reflection.Compute.RecordWarning("The provided local x is not in the plane of the element and will get projected");
+                Base.Compute.RecordWarning("The provided local x is not in the plane of the element and will get projected");
                 localX = localX.Project(new Plane { Normal = normal });
             }
 

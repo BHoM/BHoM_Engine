@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
                 case MaterialType.Cable:
                 case MaterialType.Undefined:
                 default:
-                    Reflection.Compute.RecordWarning("The BHoM does not currently explicitly support sections of material type " + materialType + ". A generic section has been created with the material applied to it");
+                    Base.Compute.RecordWarning("The BHoM does not currently explicitly support sections of material type " + materialType + ". A generic section has been created with the material applied to it");
                     return GenericSectionFromProfile(profile, material, name);
             }
 
@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
             //Check profile and raise warnings
             if (profile.Edges.Count == 0)
             {
-                Engine.Reflection.Compute.RecordWarning("Profile with name " + profile.Name + " does not contain any edges. Section named " + name + " made with this profile will have 0 value sections constants");
+                Engine.Base.Compute.RecordWarning("Profile with name " + profile.Name + " does not contain any edges. Section named " + name + " made with this profile will have 0 value sections constants");
             }
 
             Output<IProfile, Dictionary<string, double>> result = Compute.Integrate(profile, Tolerance.MicroDistance);

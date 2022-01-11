@@ -71,12 +71,12 @@ namespace BH.Engine.Structure
 
             if (face.NodeListIndices.Count < 3)
             {
-                Engine.Reflection.Compute.RecordError("Face has insufficient number of nodes to calculate normal.");
+                Engine.Base.Compute.RecordError("Face has insufficient number of nodes to calculate normal.");
                 return null;
             }
             else if (face.NodeListIndices.Count > 4)
             {
-                Engine.Reflection.Compute.RecordError("Can only determine normal from 3 or 4 sided faces.");
+                Engine.Base.Compute.RecordError("Can only determine normal from 3 or 4 sided faces.");
                 return null;
             }
 
@@ -114,15 +114,15 @@ namespace BH.Engine.Structure
 
         private static Vector Normal(this IAreaElement areaElement)
         {
-            Reflection.Compute.RecordWarning("Cannot get normal for element of type " + areaElement.GetType().Name);
+            Base.Compute.RecordWarning("Cannot get normal for element of type " + areaElement.GetType().Name);
             return null;
         }
 
         /***************************************************/
-        /**** Public Methods - Deprecated               ****/
+        /**** Public Methods - ToBeRemoved               ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Deprecated by method targeting IElement2D.")]
+        [ToBeRemoved("3.1", "ToBeRemoved by method targeting IElement2D.")]
         [Description("Returns the Panels local z-axis, a vector orthogonal to the plane of the Panel. This is found by fitting a plane through all the edge curves and taking the Normal from this plane.")]
         [Input("panel", "The Panel to evaluate the normal of.")]
         [Output("normal", "Vector representing the local z-axis Panel.")]

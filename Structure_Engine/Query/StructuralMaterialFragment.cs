@@ -43,13 +43,13 @@ namespace BH.Engine.Structure
         {
             if (material == null)
             {
-                Engine.Reflection.Compute.RecordError("Material is null and therefore the StructuralMaterialFragment cannot be evaluated.");
+                Engine.Base.Compute.RecordError("Material is null and therefore the StructuralMaterialFragment cannot be evaluated.");
                 return null;
             }
 
             if (!material.IsValidStructural())
             {
-                Reflection.Compute.RecordWarning("Material with name " + material.Name + " does not contain a structural material fragment.");
+                Base.Compute.RecordWarning("Material with name " + material.Name + " does not contain a structural material fragment.");
                 return null;
             }
 

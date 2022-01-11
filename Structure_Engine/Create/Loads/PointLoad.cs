@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         {
             if (force == null && moment == null)
             {
-                Reflection.Compute.RecordError("PointForce requires at least the force or moment vector to be defined");
+                Base.Compute.RecordError("PointForce requires at least the force or moment vector to be defined");
                 return null;
             }
 
@@ -90,10 +90,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Deprecated               ****/
+        /**** Public Methods - ToBeRemoved               ****/
         /***************************************************/
 
-        [Deprecated("2.3", "Method and class name updated from PointForce to PointLoad", null, "PointLoad")]
+        [ToBeRemoved("2.3", "Method and class name updated from PointForce to PointLoad")]
         public static PointLoad PointForce(Loadcase loadcase, BHoMGroup<Node> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             return PointLoad(loadcase, group, force, moment, axis, name);
@@ -102,7 +102,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Deprecated("2.3", "Method and class name updated from PointForce to PointLoad", null, "PointLoad")]
+        [ToBeRemoved("2.3", "Method and class name updated from PointForce to PointLoad")]
         public static PointLoad PointForce(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
         {
             return PointLoad(loadcase, objects, force, moment, axis, name);

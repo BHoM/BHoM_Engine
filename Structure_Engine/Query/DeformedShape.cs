@@ -59,12 +59,12 @@ namespace BH.Engine.Structure
         {
             if (adapterIdType == null)
             {
-                Reflection.Compute.RecordError("The provided adapter id type is null.");
+                Base.Compute.RecordError("The provided adapter id type is null.");
                 return new List<IGeometry>();
             }
             if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
             {
-                Reflection.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
+                Base.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
                 return new List<IGeometry>();
             }
 
@@ -75,14 +75,14 @@ namespace BH.Engine.Structure
             var resGroups = barDisplacements.GroupBy(x => x.ObjectId.ToString()).ToDictionary(x => x.Key);
 
             if (drawSections)
-                Reflection.Compute.RecordWarning("Display of rotations of sections is not yet supported for deformed shape.");
+                Base.Compute.RecordWarning("Display of rotations of sections is not yet supported for deformed shape.");
 
             foreach (Bar bar in bars)
             {
                 IAdapterId idFragment = bar.FindFragment<IAdapterId>(adapterIdType);
                 if (idFragment == null)
                 {
-                    Engine.Reflection.Compute.RecordWarning("Could not find the adapter id for at least one Bar.");
+                    Engine.Base.Compute.RecordWarning("Could not find the adapter id for at least one Bar.");
                     continue;
                 }
 
@@ -120,12 +120,12 @@ namespace BH.Engine.Structure
         {
             if (adapterIdType == null)
             {
-                Reflection.Compute.RecordError("The provided adapter id type is null.");
+                Base.Compute.RecordError("The provided adapter id type is null.");
                 return new List<Mesh>();
             }
             if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
             {
-                Reflection.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
+                Base.Compute.RecordError($"The `{adapterIdType.Name}` is not a valid `{typeof(IAdapterId).Name}`.");
                 return new List<Mesh>();
             }
 
@@ -140,7 +140,7 @@ namespace BH.Engine.Structure
                 IAdapterId idFragment = feMesh.FindFragment<IAdapterId>(adapterIdType);
                 if (idFragment == null)
                 {
-                    Engine.Reflection.Compute.RecordWarning("Could not find the adapter id for at least one FEMesh.");
+                    Engine.Base.Compute.RecordWarning("Could not find the adapter id for at least one FEMesh.");
                     continue;
                 }
 
@@ -225,7 +225,7 @@ namespace BH.Engine.Structure
 
                 if (disp == null)
                 {
-                    Reflection.Compute.RecordError("Could not find displacement for node with adapter Id: " + node.FindFragment<IAdapterId>(adapterIdType)?.Id?.ToString() ?? "unkown" + ", from mesh with Id: " + feMesh.FindFragment<IAdapterId>(adapterIdType)?.Id?.ToString() ?? "unkown");
+                    Base.Compute.RecordError("Could not find displacement for node with adapter Id: " + node.FindFragment<IAdapterId>(adapterIdType)?.Id?.ToString() ?? "unkown" + ", from mesh with Id: " + feMesh.FindFragment<IAdapterId>(adapterIdType)?.Id?.ToString() ?? "unkown");
                     return new Mesh();
                 }
 
@@ -239,12 +239,12 @@ namespace BH.Engine.Structure
             {
                 if (feFace.NodeListIndices.Count < 3)
                 {
-                    Reflection.Compute.RecordError("Insuffiecient node indices");
+                    Base.Compute.RecordError("Insuffiecient node indices");
                     continue;
                 }
                 if (feFace.NodeListIndices.Count > 4)
                 {
-                    Reflection.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
+                    Base.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
                     continue;
                 }
 

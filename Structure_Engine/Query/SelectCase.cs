@@ -63,10 +63,10 @@ namespace BH.Engine.Structure
                 if (!string.IsNullOrWhiteSpace(loadCaseId))
                     return results.Where(x => x.ResultCase.ToString() == loadCaseId).ToList();
                 else
-                    Reflection.Compute.RecordWarning("Could not extract filter identifier from the provided loadcase filter. All results are returned.");
+                    Base.Compute.RecordWarning("Could not extract filter identifier from the provided loadcase filter. All results are returned.");
             }
             else
-                Reflection.Compute.RecordWarning("Loadcase filter is null. No filtering is applied. All results are returned.");
+                Base.Compute.RecordWarning("Loadcase filter is null. No filtering is applied. All results are returned.");
 
             return results;
         }

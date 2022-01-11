@@ -109,12 +109,12 @@ namespace BH.Engine.Structure
             }
             else if (mesh.Faces == null || mesh.Faces.Count == 0)
             {
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the list of Faces are null or the number of Faces is 0. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the list of Faces are null or the number of Faces is 0. {msg}");
                 return true;
             }
             else if (mesh.Nodes == null || mesh.Nodes.Count == 0)
             {
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the list of Nodes are null or the number of Nodes is 0. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the list of Nodes are null or the number of Nodes is 0. {msg}");
                 return true;
             }
 
@@ -128,7 +128,7 @@ namespace BH.Engine.Structure
             // If mesh nodes are specified, check that they are in range
             else if (checkNodes && mesh.Nodes.Count - 1 < nodeListIndices.Max())
             {
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because Node indices are out of range for FEMesh");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because Node indices are out of range for FEMesh");
                 return false;
             }
 
@@ -191,7 +191,7 @@ namespace BH.Engine.Structure
             }
             else if (face.NodeListIndices.Count == 0)
             {
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Face NodeListIndicies count is 0. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the Face NodeListIndicies count is 0. {msg}");
                 return true;
             }
 
@@ -217,13 +217,13 @@ namespace BH.Engine.Structure
             }
             else if (panel.ExternalEdges.Count == 0)
             {
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Panel ExternalEdges count is 0. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the Panel ExternalEdges count is 0. {msg}");
                 return true;
             }
             else if (panel.ExternalEdges.Any(x => x.IsNull($"The ExternalEdges are owned by a Panel. {msg}", methodName)))
             {
                 if (!string.IsNullOrEmpty(msg))
-                    Reflection.Compute.RecordError(msg);
+                    Base.Compute.RecordError(msg);
                 return true;
             }
 
@@ -592,7 +592,7 @@ namespace BH.Engine.Structure
 
         private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
         {
-            Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
+            Base.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
         }
 
         /***************************************************/

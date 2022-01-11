@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
         {
             if (diameter < Tolerance.Distance || barCount <= 0)
             {
-                Reflection.Compute.RecordError("The diameter or bar count is less than the tolerance. Please check your inputs.");
+                Base.Compute.RecordError("The diameter or bar count is less than the tolerance. Please check your inputs.");
                 return null;
             }
 

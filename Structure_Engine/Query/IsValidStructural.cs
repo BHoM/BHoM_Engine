@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         {
             if (material == null)
             {
-                Reflection.Compute.RecordError("The Material provided is null and is not a valid structural material fragment.");
+                Base.Compute.RecordError("The Material provided is null and is not a valid structural material fragment.");
                 return false;
             }
 

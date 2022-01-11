@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
         {
             if (force == null && moment == null)
             {
-                Reflection.Compute.RecordError("BarPointLoad requires at least the force or the moment vector to be defined.");
+                Base.Compute.RecordError("BarPointLoad requires at least the force or the moment vector to be defined.");
                 return null;
             }
 

@@ -113,10 +113,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Deprecated               ****/
+        /**** Public Methods - ToBeRemoved               ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Replaced with method for base interface IGeometricalSection.", typeof(Query), "Geometry(this IGeometricalSection section).")]
+        [ToBeRemoved("3.1", "Replaced with method for base interface IGeometricalSection.")]
         public static IGeometry Geometry(this SteelSection section)
         {
             if (section?.SectionProfile?.Edges == null)

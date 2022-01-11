@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         {
             if (material == null)
             {
-                Reflection.Compute.RecordError("Physical Material provided is null and therefore SetStructuralFragment cannot be evaluated.");
+                Base.Compute.RecordError("Physical Material provided is null and therefore SetStructuralFragment cannot be evaluated.");
                 return null;
             }
 

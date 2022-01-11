@@ -152,7 +152,7 @@ namespace BH.Engine.Structure
 
             if (outerCurves.Count() == 0)
             {
-                Reflection.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
+                Base.Compute.RecordError("Cover is to large for the section curve. Could not generate layout.");
                 return null;
             }
             return reinforcement.RebarLayout.IPointLayout(outerCurves, innerCurves);
@@ -227,7 +227,7 @@ namespace BH.Engine.Structure
                 return null;
             else if (length < Tolerance.MicroDistance)
             {
-                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                Base.Compute.RecordError("The length provided is less than or equal to the tolerance.");
                 return null;
             }
 
@@ -262,7 +262,7 @@ namespace BH.Engine.Structure
                 return null;
             else if (length <= Tolerance.MicroDistance)
             {
-                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                Base.Compute.RecordError("The length provided is less than or equal to the tolerance.");
                 return null;
             }
 
@@ -313,7 +313,7 @@ namespace BH.Engine.Structure
                 return null;
             else if (length <= Tolerance.MicroDistance)
             {
-                Reflection.Compute.RecordError("The length provided is less than or equal to the tolerance.");
+                Base.Compute.RecordError("The length provided is less than or equal to the tolerance.");
                 return null;
             }
 

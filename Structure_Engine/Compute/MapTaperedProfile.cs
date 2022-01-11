@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
 
             if (!(section.SectionProfile is TaperedProfile))
             {
-                Reflection.Compute.RecordError("Section provided does not contain a TaperedProfile.");
+                Base.Compute.RecordError("Section provided does not contain a TaperedProfile.");
                 foreach (Bar newBar in newBars)
                 {
                     newBar.SectionProperty = section;
@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
             //Check profiles have the same shape
             if (taperedProfile.Profiles.Values.Any(x => x.Shape != taperedProfile.Profiles.Values.First().Shape))
             {
-                Reflection.Compute.RecordError("MapTaperedProfile does not support TaperedProfiles with different ShapeProfiles.");
+                Base.Compute.RecordError("MapTaperedProfile does not support TaperedProfiles with different ShapeProfiles.");
                 return null;
             }
 
@@ -94,7 +94,7 @@ namespace BH.Engine.Structure
             List<Polyline> centrelines = lines.Join();
             if (lines.Join().Count > 1)
             {
-                Reflection.Compute.RecordError("Bars provided do not form a single continuous line.");
+                Base.Compute.RecordError("Bars provided do not form a single continuous line.");
                 return null;
             }
 
@@ -107,7 +107,7 @@ namespace BH.Engine.Structure
 
             if (!midpoints.SequenceEqual(orderedMidpoints))
             {
-                Reflection.Compute.RecordError("Bars provided are not sorted.");
+                Base.Compute.RecordError("Bars provided are not sorted.");
                 return null;
             }
 

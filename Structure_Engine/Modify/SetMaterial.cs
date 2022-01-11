@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
             Bar clone = bar.ShallowClone();
             if (bar.SectionProperty == null)
             {
-                Engine.Reflection.Compute.RecordError("The section property parameter is null - material has not been assigned");
+                Engine.Base.Compute.RecordError("The section property parameter is null - material has not been assigned");
                 return clone;
             }
             ISectionProperty sectionClone = bar.SectionProperty.ShallowClone();

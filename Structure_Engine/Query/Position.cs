@@ -35,7 +35,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("3.1", "Deprecated as method is simply returning a defining property of the node.")]
+        [ToBeRemoved("3.1", "ToBeRemoved as method is simply returning a defining property of the node.")]
         public static Point Position(this Node node)
         {
             return node.Position;

@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
         {
             if (diameter < Tolerance.Distance || barCount <= 0 || parallelSpacing < Tolerance.Distance || perpendicularSpacing < Tolerance.Distance)
             {
-                Reflection.Compute.RecordError("The diameter, bar count, parallel spacing or perpindicular spacing is less than the tolerance. Please check your inputs.");
+                Base.Compute.RecordError("The diameter, bar count, parallel spacing or perpindicular spacing is less than the tolerance. Please check your inputs.");
                 return null;
             }
 
