@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
                     factoredCases.Add(new Tuple<double, ICase>(factors[i], cases[i]));
             }
 
-            return new LoadCombination { LoadCases = factoredCases.ToList(), Name = name, Number = number };
+            return new LoadCombination { LoadCases = factoredCases, Name = name, Number = number };
         }
     }
 }
