@@ -38,15 +38,17 @@ namespace BH.Engine.Physical
 
         [Description("Creates a ShapeCode object using the parameters provided. Refer to the object descriptions for alignment.")]
         [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
-        public static ShapeCode67 ShapeCode67(double b, double c, double r, double diameter, double bendRadius)
+        public static ShapeCode67 ShapeCode67(double c, double r, double diameter, double bendRadius)
         {
-            if (b < Tolerance.Distance || c < Tolerance.Distance || r < Tolerance.Distance)
+            if (c < Tolerance.Distance || r < Tolerance.Distance)
             {
                 Reflection.Compute.RecordError("One or more of the parameters given is zero and therefore the ShapeCode cannot be created.");
                 return null;
             }
 
-            double a = 2* r * Math.Asin(b / (2 * (r + diameter)));
+            double angle = 2 * Math.Acos((r - c) / r);
+            double b = 2 * r * Math.Sin(angle / 2);
+            double a = r * angle;
 
             ShapeCode67 shapeCode = new ShapeCode67(a, b, c, r, diameter, bendRadius);
 
