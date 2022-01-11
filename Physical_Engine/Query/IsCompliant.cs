@@ -318,7 +318,8 @@ namespace BH.Engine.Physical
 
         private static bool IsCompliant(this ShapeCode29 shapeCode)
         {
-            if (Math.Abs(Math.Pow(shapeCode.B, 2) - Math.Pow(shapeCode.D, 2) - Math.Pow(shapeCode.E, 2)) > Tolerance.MacroDistance)
+            double angle = Math.Atan(shapeCode.E / (shapeCode.D - shapeCode.Diameter - 2 * shapeCode.BendRadius));
+            if (Math.Pow(shapeCode.B - shapeCode.BendRadius - shapeCode.Diameter,2) - Math.Pow(shapeCode.E,2) - Math.Pow(shapeCode.D - 2*shapeCode.BendRadius - shapeCode.Diameter,2)  > Tolerance.MacroDistance)
             {
                 Reflection.Compute.RecordError("The parameters B, D and Eof ShapeCode29 do not form a right angled triangle within tolerance.");
                 return false;
