@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
         {
             if(region == null || searchLevels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the level for a region if either the region or the search levels are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the level for a region if either the region or the search levels are null.");
                 return null;
             }
 

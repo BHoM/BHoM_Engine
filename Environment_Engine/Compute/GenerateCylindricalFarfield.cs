@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         {
             if (resolution < 3)
             {
-                BH.Engine.Reflection.Compute.RecordError("The base for the three dimensional farfield cannot be generated from less than three vertices.");
+                BH.Engine.Base.Compute.RecordError("The base for the three dimensional farfield cannot be generated from less than three vertices.");
                 return null;
             }
 
@@ -90,7 +90,7 @@ namespace BH.Engine.Environment
             Polyline topPolyline = Geometry.Create.Polyline(topCirclePoints);
 
             if (resolution <= 5)
-                BH.Engine.Reflection.Compute.RecordWarning("Be aware, the low value of resolution might make the farfield too different from a perfect cylinder.");
+                BH.Engine.Base.Compute.RecordWarning("Be aware, the low value of resolution might make the farfield too different from a perfect cylinder.");
 
             List<Polyline> rectanglePolylines = new List<Polyline>();
             foreach (Point startingVertex in baseCirclePoints)

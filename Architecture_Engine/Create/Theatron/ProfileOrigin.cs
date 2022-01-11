@@ -42,7 +42,7 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(direction == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a profile origin from a null direction.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a profile origin from a null direction.");
                 return null;
             }
 

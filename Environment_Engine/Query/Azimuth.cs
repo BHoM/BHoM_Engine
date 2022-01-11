@@ -48,13 +48,13 @@ namespace BH.Engine.Environment
         {
             if(environmentObject == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the azimuth for a null environmental object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the azimuth for a null environmental object.");
                 return -1;
             }
 
             if(refVector == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the azimuth from a null vector.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the azimuth from a null vector.");
                 return -1;
             }
 
@@ -69,13 +69,13 @@ namespace BH.Engine.Environment
         {
             if (polyline == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the azimuth for a null polyline.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the azimuth for a null polyline.");
                 return -1;
             }
 
             if (refVector == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the azimuth from a null vector.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the azimuth from a null vector.");
                 return -1;
             }
 

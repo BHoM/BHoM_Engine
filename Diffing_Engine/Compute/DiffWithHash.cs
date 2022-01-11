@@ -53,7 +53,7 @@ namespace BH.Engine.Diffing
         [Output("diff", "Object holding the detected changes.")]
         public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs)
         {
-            BH.Engine.Reflection.Compute.RecordNote(m_DiffWithHashNote);
+            BH.Engine.Base.Compute.RecordNote(m_DiffWithHashNote);
 
             return DiffingWithHash(pastObjects, followingObjs);
         }
@@ -69,7 +69,7 @@ namespace BH.Engine.Diffing
         [Output("diff", "Object holding the detected changes.")]
         public static Diff DiffWithHash(IEnumerable<object> pastObjects, IEnumerable<object> followingObjs, DiffingConfig diffingConfig = null, bool storeHash = false, bool retrieveStoredHash = false)
         {
-            BH.Engine.Reflection.Compute.RecordNote(m_DiffWithHashNote);
+            BH.Engine.Base.Compute.RecordNote(m_DiffWithHashNote);
 
             return DiffingWithHash(pastObjects, followingObjs, diffingConfig, storeHash, retrieveStoredHash);
         }

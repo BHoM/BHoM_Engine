@@ -53,7 +53,7 @@ namespace BH.Engine.Facade
             //Check for null case
             if (panel == null || opening == null || useroffset == double.NaN || useroffset < 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Invalid inputs, offset was not applied.");
+                BH.Engine.Base.Compute.RecordError("Invalid inputs, offset was not applied.");
                 return;
             }
 

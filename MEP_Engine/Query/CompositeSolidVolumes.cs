@@ -47,30 +47,30 @@ namespace BH.Engine.MEP
 
             if (duct.SectionProperty == null)
             {
-                Engine.Reflection.Compute.RecordError("No section property defined.");
+                Engine.Base.Compute.RecordError("No section property defined.");
                 return null;
             }
 
             //Negative LiningThickness Warning
             if (duct.SectionProperty.LiningSolidArea < 0)
             {
-                Engine.Reflection.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
+                Engine.Base.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
             }
 
             //SolidArea = 0 user feedback.
             if (duct.SectionProperty.ElementSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+                Engine.Base.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
 
             if (duct.SectionProperty.LiningSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
+                Engine.Base.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
 
             if (duct.SectionProperty.InsulationSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
+                Engine.Base.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
             }
 
             Output<double, double, double> output = new Output<double, double, double>
@@ -99,30 +99,30 @@ namespace BH.Engine.MEP
 
             if (pipe.SectionProperty == null)
             {
-                Engine.Reflection.Compute.RecordError("No section property defined.");
+                Engine.Base.Compute.RecordError("No section property defined.");
                 return null;
             }
 
             //Negative LiningThickness Warning
             if (pipe.SectionProperty.LiningSolidArea < 0)
             {
-                Engine.Reflection.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
+                Engine.Base.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
             }
 
             //SolidArea = 0 user feedback.
             if (pipe.SectionProperty.ElementSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+                Engine.Base.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
 
             if (pipe.SectionProperty.LiningSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
+                Engine.Base.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
 
             if (pipe.SectionProperty.InsulationSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
+                Engine.Base.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
             }
 
             Output<double, double, double> output = new Output<double, double, double>
@@ -150,30 +150,30 @@ namespace BH.Engine.MEP
 
             if (wire.SectionProperty == null)
             {
-                Engine.Reflection.Compute.RecordError("No section property defined.");
+                Engine.Base.Compute.RecordError("No section property defined.");
                 return null;
             }
 
             //Negative LiningThickness Warning
             if (wire.SectionProperty.LiningSolidArea < 0)
             {
-                Engine.Reflection.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
+                Engine.Base.Compute.RecordWarning("LiningSolidArea is a negative value, and will result in incorrect SolidVolume results. Try adjusting LiningThickness to produce a positive value for SolidArea.");
             }
 
             //SolidArea = 0 user feedback.
             if (wire.SectionProperty.ElementSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+                Engine.Base.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
             }
 
             if (wire.SectionProperty.LiningSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
+                Engine.Base.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
             }
 
             if (wire.SectionProperty.InsulationSolidArea <= 0)
             {
-                Engine.Reflection.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
+                Engine.Base.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
             }
 
             Output<double, double, double> output = new Output<double, double, double>

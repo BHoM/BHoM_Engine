@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the adjacent spaces of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the adjacent spaces of a null panel.");
                 return panel;
             }
 

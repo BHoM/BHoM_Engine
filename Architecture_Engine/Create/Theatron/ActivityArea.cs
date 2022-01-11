@@ -76,13 +76,13 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(activityArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create an activty area from a null polyline.");
+                BH.Engine.Base.Compute.RecordError("Cannot create an activty area from a null polyline.");
                 return null;
             }
 
             if (!activityArea.IsClosed())
             {
-                BH.Engine.Reflection.Compute.RecordError("activityArea must be closed");
+                BH.Engine.Base.Compute.RecordError("activityArea must be closed");
                 return null;
             }
 

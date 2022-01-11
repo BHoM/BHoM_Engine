@@ -20,47 +20,31 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base.Attributes;
+using BH.oM.Base;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns all BHoM methods loaded in the current domain.")]
-        [Output("methods", "List of BHoM methods loaded in the current domain.")]
-        public static List<MethodInfo> BHoMMethodList()
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Modify.CastGeneric(System.Collections.Generic.IEnumerable<System.Object>, System.Type)")]
+        public static object CastGeneric<T>(this IEnumerable<T> source, Type genericType)
         {
-            return Global.BHoMMethodList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all methods loaded in the current domain.")]
-        [Output("methods", "List of all methods loaded in the current domain.")]
-        public static List<MethodBase> AllMethodList()
-        {
-            return Global.AllMethodList.ToList();
-        }
-
-        /***************************************************/
-
-        [Description("Returns all external methods loaded in the current domain.")]
-        [Output("methods", "List of external methods loaded in the current domain.")]
-        public static List<MethodBase> ExternalMethodList()
-        {
-            return Global.ExternalMethodList.ToList();
+            return typeof(System.Linq.Enumerable).GetMethod("Cast").MakeGenericMethod(genericType).Invoke(null, new object[] { source });
         }
 
         /***************************************************/
     }
 }
+
 
 

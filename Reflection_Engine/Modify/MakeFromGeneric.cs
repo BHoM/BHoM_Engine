@@ -41,7 +41,7 @@ namespace BH.Engine.Reflection
         {
             if(genericType == null)
             {
-                Compute.RecordError("Cannot make generic from null type.");
+                Base.Compute.RecordError("Cannot make generic from null type.");
                 return null;
             }
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Reflection
         {
             if(genericMethod == null)
             {
-                Compute.RecordError("Cannot make generic from a null method.");
+                Base.Compute.RecordError("Cannot make generic from a null method.");
                 return null;
             }
 

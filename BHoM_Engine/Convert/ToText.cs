@@ -26,8 +26,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Convert
     {
@@ -35,6 +36,7 @@ namespace BH.Engine.Reflection
         /**** Interface Methods                         ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.IToText(System.Object, System.Boolean)")]
         public static string IToText(this object member, bool includePath = false)
         {
             if (member == null)
@@ -48,6 +50,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToText(System.Reflection.MemberInfo, System.Boolean)")]
         public static string ToText(this MemberInfo member, bool includePath = false)
         {
             if (member == null)
@@ -63,6 +66,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToText(System.Reflection.MethodBase, System.Boolean, System.String, System.String, System.String, System.Boolean, System.Boolean, System.Int32, System.Int32, System.Boolean)")]
         public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false)
         {
             if (method == null)
@@ -122,6 +126,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Convert.ToText(System.Type, System.Boolean, System.Boolean, System.String, System.String, System.String)")]
         public static string ToText(this Type type, bool includePath = false, bool replaceGeneric = false, string genericStart = "<", string genericSeparator = ", ", string genericEnd = ">")
         {
             if (type == null)

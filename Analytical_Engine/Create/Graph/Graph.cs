@@ -84,7 +84,7 @@ namespace BH.Engine.Analytical
 
             if (clonedEntities.Count == 0)
             {
-                Reflection.Compute.RecordWarning("No IBHoMObjects found.");
+                Base.Compute.RecordWarning("No IBHoMObjects found.");
                 return graph;
             }
 
@@ -109,7 +109,7 @@ namespace BH.Engine.Analytical
             graph.UniqueEntityNames();
 
             if(graph.Relations.Count == 0)
-                Reflection.Compute.RecordWarning("No Relations have been defined for this graph.");
+                Base.Compute.RecordWarning("No Relations have been defined for this graph.");
 
             return graph;
         }

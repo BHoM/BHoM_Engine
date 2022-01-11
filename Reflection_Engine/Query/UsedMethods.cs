@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Reflection
 {
@@ -39,7 +40,7 @@ namespace BH.Engine.Reflection
         {
             if(method == null)
             {
-                Compute.RecordWarning("Cannot query the used methods of a null method. An empty list will be returned as the list of used methods.");
+                Base.Compute.RecordWarning("Cannot query the used methods of a null method. An empty list will be returned as the list of used methods.");
                 return new List<MethodBase>();
             }
 
@@ -61,7 +62,7 @@ namespace BH.Engine.Reflection
             }
             catch (Exception e)
             {
-                Compute.RecordError("Method " + method.DeclaringType.Namespace + "." + method.Name + " failed to extract the information about the method.\nError: " + e.ToString());
+                Base.Compute.RecordError("Method " + method.DeclaringType.Namespace + "." + method.Name + " failed to extract the information about the method.\nError: " + e.ToString());
                 return new List<MethodBase>();
             }
         }

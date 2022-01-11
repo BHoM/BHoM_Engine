@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
 
             if (Math.Abs(dot) > Tolerance.Angle)
             {
-                Reflection.Compute.RecordWarning("x and y are not orthogonal. y will be made othogonal to x and z");
+                Base.Compute.RecordWarning("x and y are not orthogonal. y will be made othogonal to x and z");
                 y = z.CrossProduct(x).Normalise();
             }
 

@@ -41,7 +41,7 @@ namespace BH.Engine.Physical
         {
             if(framingElement == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null framing element.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null framing element.");
                 return null;
             }
 

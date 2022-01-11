@@ -115,7 +115,7 @@ namespace BH.Engine.Geometry
 
         private static double Volume(this ISolid solid)
         {
-            Reflection.Compute.RecordError($"Volume is not implemented for ISolids of type: {solid.GetType().Name}.");
+            Base.Compute.RecordError($"Volume is not implemented for ISolids of type: {solid.GetType().Name}.");
             return double.NaN;
         }
 

@@ -87,7 +87,7 @@ namespace BH.Engine.Geometry
 
         public static Vector TangentAtPoint(this ICurve curve, Point point, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"TangentAtPoint is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"TangentAtPoint is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

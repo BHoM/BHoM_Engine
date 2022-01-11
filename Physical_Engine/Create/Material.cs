@@ -62,7 +62,7 @@ namespace BH.Engine.Physical
         {
             if(property == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a Physical.Material from a null set of material properties.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a Physical.Material from a null set of material properties.");
                 return null;
             }
 

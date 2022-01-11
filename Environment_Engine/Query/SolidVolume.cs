@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null panel.");
                 return 0;
             }
 
@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null opening.");
                 return 0.0;
             }
 

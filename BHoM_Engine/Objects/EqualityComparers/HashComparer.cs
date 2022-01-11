@@ -26,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using BH.Engine.Serialiser;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using System.Collections;

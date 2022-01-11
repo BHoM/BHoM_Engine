@@ -51,7 +51,7 @@ namespace BH.Engine.Serialiser
             }
             catch (Exception e)
             {
-                BH.Engine.Reflection.Compute.RecordError(e.Message);
+                BH.Engine.Base.Compute.RecordError(e.Message);
                 return false;
             }
 

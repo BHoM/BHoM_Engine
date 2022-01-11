@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
         {
             if (a == null || b == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Could not compute Dot Product because one or both Vectors are null.");
+                BH.Engine.Base.Compute.RecordError("Could not compute Dot Product because one or both Vectors are null.");
                 return double.NaN;
             }
             
@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
         {
             if (a == null || b == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Could not compute Cross Product because one or both Vectors are null.");
+                BH.Engine.Base.Compute.RecordError("Could not compute Cross Product because one or both Vectors are null.");
                 return null;
             }
             
@@ -60,7 +60,7 @@ namespace BH.Engine.Geometry
         {
             if (a == null || b == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Could not compute Cross Product because one or both Points are null.");
+                BH.Engine.Base.Compute.RecordError("Could not compute Cross Product because one or both Points are null.");
                 return null;
             }
             
@@ -73,7 +73,7 @@ namespace BH.Engine.Geometry
         {
             if (q1 == null || q2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Could not compute Product because one or both Quaternions are null.");
+                BH.Engine.Base.Compute.RecordError("Could not compute Product because one or both Quaternions are null.");
                 return null;
             }
             

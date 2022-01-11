@@ -25,7 +25,7 @@ using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.MEP.Fixtures;
 using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.MEP
 {
@@ -44,19 +44,19 @@ namespace BH.Engine.MEP
         {
             if(occupancy == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null occupancy object.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null occupancy object.");
                 return -1;
             }
 
             if(fixtureFlow == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null fixture flow object.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null fixture flow object.");
                 return -1;
             }
 
             if(fixtureUsage == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null fixture usage object.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the plumbing fixture water demand from a null fixture usage object.");
                 return -1;
             }
 

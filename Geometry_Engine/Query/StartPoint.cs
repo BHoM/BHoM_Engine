@@ -71,7 +71,7 @@ namespace BH.Engine.Geometry
                 return curve.ControlPoints.FirstOrDefault();
             else
             {
-                Reflection.Compute.RecordError("StartPoint is not implemented for periodic NurbsCurves");
+                Base.Compute.RecordError("StartPoint is not implemented for periodic NurbsCurves");
                 return null;
             }
         }
@@ -118,7 +118,7 @@ namespace BH.Engine.Geometry
 
         private static Point StartPoint(this ICurve curve)
         {
-            Reflection.Compute.RecordError("StartPoint is not implemented for curve of type: " + curve.GetType().Name + ". ");
+            Base.Compute.RecordError("StartPoint is not implemented for curve of type: " + curve.GetType().Name + ". ");
             return null;
         }
 

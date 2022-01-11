@@ -63,7 +63,7 @@ namespace BH.Engine.Results
         {
             if (meshes == null || meshes.Count() < 1)
             {
-                Engine.Reflection.Compute.RecordError("No meshes found. Make sure that your meshes are input correctly.");
+                Engine.Base.Compute.RecordError("No meshes found. Make sure that your meshes are input correctly.");
                 return new Output<List<List<RenderMesh>>, GradientOptions>
                 {
                     Item1 = new List<List<RenderMesh>>(),
@@ -72,7 +72,7 @@ namespace BH.Engine.Results
             }
             if (meshResults == null || meshResults.Count() < 1)
             {
-                Engine.Reflection.Compute.RecordError("No results found. Make sure that your results are input correctly.");
+                Engine.Base.Compute.RecordError("No results found. Make sure that your results are input correctly.");
                 return new Output<List<List<RenderMesh>>, GradientOptions>
                 {
                     Item1 = new List<List<RenderMesh>>(),
@@ -119,12 +119,12 @@ namespace BH.Engine.Results
         [Output("value", "The value of the specified type.")]
         private static double ResultToValue(this IMeshElementResult r, string prop)
         {
-            object resultValue = Engine.Reflection.Query.PropertyValue(r, prop);
+            object resultValue = Engine.Base.Query.PropertyValue(r, prop);
 
             if (resultValue is double)
                 return System.Convert.ToDouble(resultValue);
 
-            Engine.Reflection.Compute.RecordError(prop.ToString() + " is not present in the results.");
+            Engine.Base.Compute.RecordError(prop.ToString() + " is not present in the results.");
             return 0;
         }
 
@@ -140,12 +140,12 @@ namespace BH.Engine.Results
         {
             if (mesh?.Nodes == null || mesh?.Faces == null || mesh.Nodes.Count < 1 || mesh.Faces.Count < 1)
             {
-                Engine.Reflection.Compute.RecordError("A mesh is null or invalid. Cannot display results for this mesh.");
+                Engine.Base.Compute.RecordError("A mesh is null or invalid. Cannot display results for this mesh.");
                 return null;
             }
             if (meshResult?.Results == null || meshResult.Results.Count < 1)
             {
-                Engine.Reflection.Compute.RecordError("A result is null or invalid. Cannot display results for this mesh.");
+                Engine.Base.Compute.RecordError("A result is null or invalid. Cannot display results for this mesh.");
                 return null;
             }
 
@@ -156,7 +156,7 @@ namespace BH.Engine.Results
             List<RenderPoint> verts = new List<RenderPoint>();
             List<Face> faces;
 
-            object smoothing = Reflection.Query.PropertyValue(meshResult, "Smoothing");
+            object smoothing = Base.Query.PropertyValue(meshResult, "Smoothing");
             MeshResultSmoothingType smoothingType = MeshResultSmoothingType.None;
             if (smoothing is MeshResultSmoothingType)
                 smoothingType = (MeshResultSmoothingType)smoothing;
@@ -216,7 +216,7 @@ namespace BH.Engine.Results
                 case MeshResultSmoothingType.ByFiniteElementCentres:
                 case MeshResultSmoothingType.BySelection:
                 default:
-                    Engine.Reflection.Compute.RecordError("Unsupported SmoothingType: " + Reflection.Query.PropertyValue(meshResult, "Smoothing").ToString() +
+                    Engine.Base.Compute.RecordError("Unsupported SmoothingType: " + Base.Query.PropertyValue(meshResult, "Smoothing").ToString() +
                                                       " detected, meshResult for ObjectId: " + meshResult.ObjectId.ToString() +
                                                       " and ResultCase: " + meshResult.ResultCase.ToString() + "will be returned empty.");
                     return new RenderMesh();

@@ -85,13 +85,13 @@ namespace BH.Engine.Environment
         {
             if (panels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the panels related to a level if the panels are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the panels related to a level if the panels are null.");
                 return null;
             }
 
             if (searchLevel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the level that panels are on if the search level is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the level that panels are on if the search level is null.");
                 return null;
             }
 
@@ -115,13 +115,13 @@ namespace BH.Engine.Environment
         {
             if (panels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the panels related to a maximum level if the panels are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the panels related to a maximum level if the panels are null.");
                 return null;
             }
 
             if (searchLevel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the panels are on the maximum level if the search level is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the panels are on the maximum level if the search level is null.");
                 return null;
             }
 
@@ -145,13 +145,13 @@ namespace BH.Engine.Environment
         {
             if (panels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the panels related to a minimum level if the panels are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the panels related to a minimum level if the panels are null.");
                 return null;
             }
 
             if (searchLevel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the panels are on the minimum level if the search level is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the panels are on the minimum level if the search level is null.");
                 return null;
             }
 

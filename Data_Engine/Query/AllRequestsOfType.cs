@@ -42,7 +42,7 @@ namespace BH.Engine.Data
         {
             if (!typeof(IRequest).IsAssignableFrom(requestType))
             {
-                BH.Engine.Reflection.Compute.RecordError($"Type {requestType} does not implement {nameof(IRequest)} interface.");
+                BH.Engine.Base.Compute.RecordError($"Type {requestType} does not implement {nameof(IRequest)} interface.");
                 return null;
             }
 

@@ -92,7 +92,7 @@ namespace BH.Engine.Spatial
 
             if (height <= 0 || width <= 0 || thickness <= 0 || outerRadius < 0 || innerRadius < 0)
             {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                Engine.Base.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 

@@ -133,7 +133,7 @@ namespace BH.Engine.Geometry
 
         private static double ParameterAtPoint(this ICurve curve, Point point, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"ParameterAtPoint is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"ParameterAtPoint is not implemented for ICurves of type: {curve.GetType().Name}.");
             return double.NaN;
         }
 

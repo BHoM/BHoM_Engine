@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot assign the generic constructions to a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot assign the generic constructions to a null panel.");
                 return null;
             }
 
@@ -53,14 +53,14 @@ namespace BH.Engine.Environment
             List<Construction> constructions = BH.Engine.Library.Query.Library("GenericConstructions").Select(x => x as Construction).ToList();
             if (constructions.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("The dataset for generic Environment constructions did not exist within your datasets. Generic Constructions cannot be assigned.");
+                BH.Engine.Base.Compute.RecordError("The dataset for generic Environment constructions did not exist within your datasets. Generic Constructions cannot be assigned.");
                 return cloned;
             }
 
             if (cloned.Construction != null)
-                BH.Engine.Reflection.Compute.RecordWarning(string.Format("The construction for the panel with GUID {0} was not null and will be replaced with a generic construction", cloned.BHoM_Guid));
+                BH.Engine.Base.Compute.RecordWarning(string.Format("The construction for the panel with GUID {0} was not null and will be replaced with a generic construction", cloned.BHoM_Guid));
             else
-                BH.Engine.Reflection.Compute.RecordNote(string.Format("The construction for the panel with GUID {0} was automatically assigned a generic construction", cloned.BHoM_Guid));
+                BH.Engine.Base.Compute.RecordNote(string.Format("The construction for the panel with GUID {0} was automatically assigned a generic construction", cloned.BHoM_Guid));
 
             switch (cloned.Type)
             {
@@ -101,7 +101,7 @@ namespace BH.Engine.Environment
         {
             if (opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot assign the generic constructions to a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot assign the generic constructions to a null opening.");
                 return null;
             }
 
@@ -110,14 +110,14 @@ namespace BH.Engine.Environment
             List<Construction> constructions = BH.Engine.Library.Query.Library("GenericConstructions").Select(x => x as Construction).ToList();
             if (constructions.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("The dataset for generic Environment constructions did not exist within your datasets. Generic Constructions cannot be assigned.");
+                BH.Engine.Base.Compute.RecordError("The dataset for generic Environment constructions did not exist within your datasets. Generic Constructions cannot be assigned.");
                 return cloned;
             }
 
             if (cloned.OpeningConstruction != null)
-                BH.Engine.Reflection.Compute.RecordWarning(string.Format("The construction for the opening with GUID {0} was not null and will be replaced with a generic construction", cloned.BHoM_Guid));
+                BH.Engine.Base.Compute.RecordWarning(string.Format("The construction for the opening with GUID {0} was not null and will be replaced with a generic construction", cloned.BHoM_Guid));
             else
-                BH.Engine.Reflection.Compute.RecordNote(string.Format("The construction for the opening with GUID {0} was automatically assigned a generic construction", cloned.BHoM_Guid));
+                BH.Engine.Base.Compute.RecordNote(string.Format("The construction for the opening with GUID {0} was automatically assigned a generic construction", cloned.BHoM_Guid));
 
             switch (cloned.Type)
             {

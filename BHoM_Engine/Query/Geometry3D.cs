@@ -55,7 +55,7 @@ namespace BH.Engine.Base
         {
             if(obj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the 3D Geometry of a null custom object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the 3D Geometry of a null custom object.");
                 return null;
             }
 
@@ -107,9 +107,9 @@ namespace BH.Engine.Base
 
         private static IGeometry Geometry3D(this IObject obj)
         {
-            System.Reflection.MethodInfo mi = Reflection.Query.ExtensionMethodToCall(obj, "Geometry3D");
+            System.Reflection.MethodInfo mi = Query.ExtensionMethodToCall(obj, "Geometry3D");
             if (mi != null)
-                return Reflection.Compute.RunExtensionMethod(obj, "Geometry3D") as IGeometry;
+                return Compute.RunExtensionMethod(obj, "Geometry3D") as IGeometry;
             else
                 return null;
         }

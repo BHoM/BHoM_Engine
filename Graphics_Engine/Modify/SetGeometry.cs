@@ -43,7 +43,7 @@ namespace BH.Engine.Graphics
         {
             if (obj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Cannot set the geometry of a null {nameof(RenderPoint)}.");
+                BH.Engine.Base.Compute.RecordError($"Cannot set the geometry of a null {nameof(RenderPoint)}.");
                 return obj;
             }
 

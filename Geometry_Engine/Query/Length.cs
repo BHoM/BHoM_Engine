@@ -66,7 +66,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query length as the geometry is null.");
                 return double.NaN;
             }
             return curve.Angle() * curve.Radius;
@@ -81,7 +81,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query length as the geometry is null.");
                 return double.NaN;
             }
             return 2 * Math.PI * curve.Radius;
@@ -97,7 +97,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query length as the geometry is null.");
                 return double.NaN;
             }
 
@@ -116,7 +116,7 @@ namespace BH.Engine.Geometry
                 //Raise a warning when b is not exactly equal to 0
                 if (b != 0)
                 {
-                    Reflection.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times length of line between vertex and co-vertex returned.");
+                    Base.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times length of line between vertex and co-vertex returned.");
                     double hypotenus = Math.Sqrt(a * a + b * b);
                     return 4 * hypotenus;
                 }
@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
             //The check bellow checks that the returned length is at least that of 4 times the longest radius.
             if (length < 4 * a)
             {
-                Reflection.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times length of line between vertex and co-vertex. ");
+                Base.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the length. Approximate value of 4 times length of line between vertex and co-vertex. ");
                 double hypotenus = Math.Sqrt(a * a + b * b);
                 return 4 * hypotenus;
             }
@@ -186,7 +186,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query length as the geometry is null.");
                 return double.NaN;
             }
             return curve.Curves.Sum(c => c.ILength());
@@ -201,7 +201,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query length as the geometry is null.");
                 return double.NaN;
             }
             double length = 0;
@@ -225,7 +225,7 @@ namespace BH.Engine.Geometry
         {
             if (curve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query length as the geometry is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query length as the geometry is null.");
                 return double.NaN;
             }
             return Length(curve as dynamic);
@@ -238,7 +238,7 @@ namespace BH.Engine.Geometry
 
         private static double Length(this ICurve curve)
         {
-            Reflection.Compute.RecordError($"Length is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"Length is not implemented for ICurves of type: {curve.GetType().Name}.");
             return double.NaN;
         }
 

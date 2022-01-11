@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether the normal of a panel is pointing away from its containing space if the panel itself is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether the normal of a panel is pointing away from its containing space if the panel itself is null.");
                 return false;
             }
 

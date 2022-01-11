@@ -46,7 +46,7 @@ namespace BH.Engine.Spatial
             if (xyCurves.Any(curve => !curve.IIsInPlane(Plane.XY, Tolerance.Distance)))
             {
                 xyCurves = curves.Select(curve => curve.IProject(Plane.XY));
-                Reflection.Compute.RecordWarning("Curves has been projected to the global XY-plane.");
+                Base.Compute.RecordWarning("Curves has been projected to the global XY-plane.");
             }
 
             return new ExplicitCurveLayout(xyCurves);

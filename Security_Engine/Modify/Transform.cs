@@ -47,7 +47,7 @@ namespace BH.Engine.Security
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 

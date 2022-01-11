@@ -115,16 +115,16 @@ namespace BH.Engine.Geometry
         {
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
+                Base.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
+                Base.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
-                Reflection.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
+                Base.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
 
             Point avg = curve.ControlPoints.Average();
             Vector normal = new Vector();
@@ -135,7 +135,7 @@ namespace BH.Engine.Geometry
 
             if (normal.Length() < tolerance)
             {
-                Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve.");
+                Base.Compute.RecordError("Couldn't calculate a normal vector of the given curve.");
                 return null;
             }
 
@@ -160,22 +160,22 @@ namespace BH.Engine.Geometry
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
             if (crvs.Any(x => x is NurbsCurve))
             {
-                Reflection.Compute.RecordError("Querying normal from PolyCurves with segments of type NurbsCurve is not supported.");
+                Base.Compute.RecordError("Querying normal from PolyCurves with segments of type NurbsCurve is not supported.");
                 return null;
             }
 
             if (!curve.IsPlanar(tolerance))
             {
-                Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
+                Base.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
                 return null;
             }
             else if (!curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
+                Base.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
                 return null;
             }
             else if (curve.IsSelfIntersecting(tolerance))
-                Reflection.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
+                Base.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
             
             if (crvs.Count() == 0)
                 return null;
@@ -207,7 +207,7 @@ namespace BH.Engine.Geometry
 
                 if (normal.Length() < tolerance)
                 {
-                    Reflection.Compute.RecordError("Couldn't calculate a normal vector of the given curve.");
+                    Base.Compute.RecordError("Couldn't calculate a normal vector of the given curve.");
                     return null;
                 }
 
@@ -302,7 +302,7 @@ namespace BH.Engine.Geometry
 
         private static Vector Normal(this ICurve curve, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"Normal is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"Normal is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 
@@ -310,7 +310,7 @@ namespace BH.Engine.Geometry
 
         private static List<Vector> Normals(this IGeometry geometry)
         {
-            Reflection.Compute.RecordError($"Normals is not implemented for IGeometry of type: {geometry.GetType().Name}.");
+            Base.Compute.RecordError($"Normals is not implemented for IGeometry of type: {geometry.GetType().Name}.");
             return null;
         }
 

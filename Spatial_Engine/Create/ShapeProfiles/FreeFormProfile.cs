@@ -60,14 +60,14 @@ namespace BH.Engine.Spatial
                 bool failedProject = false;
                 if (cPoints.Any(x => x.Distance(plane) > Tolerance.Distance))
                 {
-                    Reflection.Compute.RecordWarning("The Profiles curves are not Planar");
+                    Base.Compute.RecordWarning("The Profiles curves are not Planar");
                     try
                     {
                         // Get biggest contributing curve and fit a plane to it
                         plane = Geometry.Compute.IJoin(edges.ToList()).OrderBy(x => Geometry.Query.Area(x)).Last().ControlPoints().FitPlane();
 
                         result = edges.Select(x => x.IProject(plane)).ToList();
-                        Reflection.Compute.RecordWarning("The Profiles curves have been projected onto a plane fitted through the biggest curve's control points.");
+                        Base.Compute.RecordWarning("The Profiles curves have been projected onto a plane fitted through the biggest curve's control points.");
                         cPoints = result.SelectMany(x => Geometry.Query.IControlPoints(x)).ToList();
                     }
                     catch
@@ -81,7 +81,7 @@ namespace BH.Engine.Spatial
                     // Is Coplanar with XY
                     if (plane.Normal.IsParallel(oM.Geometry.Vector.ZAxis) == 0)
                     {
-                        Reflection.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
+                        Base.Compute.RecordWarning("The Profiles curves are not coplanar with the XY-Plane. Automatic orientation has occured.");
 
                         plane.Normal = plane.Normal.Z > 0 ? plane.Normal : -plane.Normal;
                         double rad = plane.Normal.Angle(oM.Geometry.Vector.ZAxis);
@@ -94,7 +94,7 @@ namespace BH.Engine.Spatial
                     // Is on XY
                     if (cPoints.FirstOrDefault().Distance(oM.Geometry.Plane.XY) > Tolerance.Distance)
                     {
-                        Reflection.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
+                        Base.Compute.RecordWarning("The Profiles curves are not on the XY-Plane. Automatic translation has occured.");
                         Point p = cPoints.FirstOrDefault();
                         Vector v = new oM.Geometry.Vector() { X = p.X, Y = p.Y, Z = p.Z };
 
@@ -112,11 +112,11 @@ namespace BH.Engine.Spatial
 
                 // Is Closed
                 if (joinedCurves.Any(x => !x.IsClosed()))
-                    Reflection.Compute.RecordWarning("The Profiles curves does not form closed curves");
+                    Base.Compute.RecordWarning("The Profiles curves does not form closed curves");
 
                 // Has non-zero area
                 if (joinedCurves.Any(x => Geometry.Query.IArea(x) < Tolerance.Distance))
-                    Reflection.Compute.RecordWarning("One or more of the profile curves have close to zero area.");
+                    Base.Compute.RecordWarning("One or more of the profile curves have close to zero area.");
 
                 if (!joinedCurves.Any(x => x.ISubParts().Any(y => y is Ellipse)))
                 {
@@ -136,7 +136,7 @@ namespace BH.Engine.Spatial
                             break;
                     }
                     if (intersects)
-                        Engine.Reflection.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
+                        Engine.Base.Compute.RecordWarning("The Profiles curves are intersecting eachother.");
 
                     if (centreProfile)
                     {
@@ -158,11 +158,11 @@ namespace BH.Engine.Spatial
                 }
                 // Is SelfInteersecting
                 if (joinedCurves.Any(x => Geometry.Query.IsSelfIntersecting(x)))
-                    Engine.Reflection.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
+                    Engine.Base.Compute.RecordWarning("One or more of the Profiles curves is intersecting itself.");
             }
 
             if (centreProfile && !couldCentre)
-                Engine.Reflection.Compute.RecordWarning("Failed to align the centroid of the provided edgecurve with the global origin.");
+                Engine.Base.Compute.RecordWarning("Failed to align the centroid of the provided edgecurve with the global origin.");
 
             return new FreeFormProfile(result);
         }

@@ -39,7 +39,7 @@ namespace BH.Engine.Architecture
             // Check if openings aren't nulls
             if (opening1 == null || opening2 == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("One of the openings is null, the query cannot be verified.");
+                BH.Engine.Base.Compute.RecordError("One of the openings is null, the query cannot be verified.");
                 return false;
             }
 

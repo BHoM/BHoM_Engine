@@ -56,11 +56,11 @@ namespace BH.Engine.Diffing
 
             if (pastObjects.Count() != followingObjects.Count())
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"Input collections must be of the same length for '{nameof(DiffOneByOne)}' to work.");
+                BH.Engine.Base.Compute.RecordWarning($"Input collections must be of the same length for '{nameof(DiffOneByOne)}' to work.");
                 return null;
             }
 
-            BH.Engine.Reflection.Compute.RecordNote($"This diffing method is equivalent to calling '{nameof(Query.ObjectDifferences)}' on the input lists. " +
+            BH.Engine.Base.Compute.RecordNote($"This diffing method is equivalent to calling '{nameof(Query.ObjectDifferences)}' on the input lists. " +
                 $"\nThis will only identify 'modified' or 'unchanged' objects. For 'modified' objects, the property differences are also returned." +
                 $"\nIt will work correctly only if the input objects are in the same order (i.e. it will only discover modified objects by comparing them one by one; it will not discover added/removed objects).");
 

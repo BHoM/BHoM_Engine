@@ -41,7 +41,7 @@ namespace BH.Engine.Reflection
         {
             if(method == null)
             {
-                Compute.RecordWarning("Cannot query the input descriptions of a null method. Returning an empty dictionary instead.");
+                Base.Compute.RecordWarning("Cannot query the input descriptions of a null method. Returning an empty dictionary instead.");
                 return new Dictionary<string, string>();
             }
 

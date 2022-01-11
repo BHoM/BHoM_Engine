@@ -52,7 +52,7 @@ namespace BH.Engine.Humans.Modify
 
             if (!newHeadOutline.IsPlanar() || !newHeadOutline.IsClosed())
             {
-                Reflection.Compute.RecordError("The reference headOutline must be closed and planar.");
+                Base.Compute.RecordError("The reference headOutline must be closed and planar.");
                 return;
             }
             //local cartesian

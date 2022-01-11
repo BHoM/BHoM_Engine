@@ -23,10 +23,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -34,46 +36,49 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static string Path(this Type type)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsLegal(System.Reflection.MethodInfo)")]
+        public static bool IsLegal(this MethodInfo method)
         {
-            if(type == null)
-            {
-                Compute.RecordError("Cannot query the path of a null type.");
-                return null;
-            }
+            if (method == null)
+                return false;
 
-            return type.Namespace;
+            try
+            {
+                method.GetParameters();
+                return method.ReturnType != null;   //void is not null
+            }
+            catch
+            {
+                return false;
+            }
         }
+
 
         /***************************************************/
 
-        public static string Path(this MethodBase method, bool userReturnTypeForCreate = true, bool useExtentionType = false) 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsLegal(System.Type)")]
+        public static bool IsLegal(this Type type) //TODO: Check if there is a better way to do this, instead of using a try-catch
         {
-            if(method == null)
-            {
-                Compute.RecordError("Cannot query the path of a null method base.");
-                return null;
-            }
+            if (type == null)
+                return false;
 
-            Type type = method.DeclaringType;
-
-            if (userReturnTypeForCreate && type.Name == "Create" && method is MethodInfo)
+            try
             {
-                Type returnType = ((MethodInfo)method).ReturnType.UnderlyingType().Type;
-                if (returnType.Namespace.StartsWith("BH."))
-                    type = returnType;
+                //Checking that all the constructors have loaded parameter types
+                type.GetConstructors().SelectMany(x => x.GetParameters()).ToList(); //ToList() there to execute the linq query
             }
-            else if (useExtentionType && method.IsDefined(typeof(ExtensionAttribute), false))
+            catch
             {
-                ParameterInfo[] parameters = method.GetParameters();
-                if (parameters.Length > 0)
-                    type = parameters[0].ParameterType;
+                return false;
             }
-
-            return type.ToText(true, true);
+            return true;
         }
 
+
         /***************************************************/
+
+
+
     }
 }
 

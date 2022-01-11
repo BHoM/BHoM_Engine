@@ -59,7 +59,7 @@ namespace BH.Engine.Environment
 
             if (wallPanels.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("No wall panels were found to set the type for");
+                BH.Engine.Base.Compute.RecordWarning("No wall panels were found to set the type for");
                 return clones;
             }
 

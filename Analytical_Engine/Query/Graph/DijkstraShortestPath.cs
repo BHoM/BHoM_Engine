@@ -49,19 +49,19 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path from a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the Dijkstra shortest path from a null graph.");
                 return null;
             }
 
             if (start == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path between two points when the start is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the Dijkstra shortest path between two points when the start is null.");
                 return null;
             }
 
             if (end == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path between two points when the end is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the Dijkstra shortest path between two points when the end is null.");
                 return null;
             }
 
@@ -79,7 +79,7 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the Dijkstra shortest path from a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the Dijkstra shortest path from a null graph.");
                 return null;
             }
 

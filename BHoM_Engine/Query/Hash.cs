@@ -28,13 +28,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
-using BH.Engine.Serialiser;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 using System.Collections;
 using System.Data;
-using BH.Engine.Reflection;
 
 namespace BH.Engine.Base
 {
@@ -53,7 +51,7 @@ namespace BH.Engine.Base
         {
             if (iObj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the hash of a null object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the hash of a null object.");
                 return "";
             }
 
@@ -157,11 +155,11 @@ namespace BH.Engine.Base
                     return $"\n{tabs}" + NumericalApproximation((int)obj, currentPropertyFullName, cc).ToString();
 
                 // Fallback for any other floating-point numeric type.
-                if (type.IsFloatingPointNumericType())
+                if (type.IsNumericFloatingPointType())
                     return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString();
 
                 // Fallback for any other integral numeric type.
-                if (type.IsIntegralNumericType())
+                if (type.IsNumericIntegralType())
                     return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString();
 
             }
@@ -217,7 +215,7 @@ namespace BH.Engine.Base
                 // If the object is an IObject (= a BHoM class), first check if there is a `HashString()` extension method available for this IObject.
                 object hashStringFromExtensionMethod = null;
                 object[] parameters = new object[] { currentPropertyFullName, cc };
-                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
+                if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
                     return (string)hashStringFromExtensionMethod;
 
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 

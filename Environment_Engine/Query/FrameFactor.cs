@@ -44,13 +44,13 @@ namespace BH.Engine.Environment
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the frame factor of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the frame factor of a null opening.");
                 return 0;
             }
 
             if(opening.InnerEdges == null || opening.InnerEdges.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"This opening with ID {opening.BHoM_Guid} does not contain any inner edges for the calculation. Assuming a 0% frame factor");
+                BH.Engine.Base.Compute.RecordWarning($"This opening with ID {opening.BHoM_Guid} does not contain any inner edges for the calculation. Assuming a 0% frame factor");
                 return 0;
             }
 

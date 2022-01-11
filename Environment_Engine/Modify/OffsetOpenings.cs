@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot offset the openings of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot offset the openings of a null panel.");
                 return panel;
             }
 

@@ -53,7 +53,7 @@ namespace BH.Engine.Facade
         {
             if (edge == null || elements == null)
             {
-                Reflection.Compute.RecordWarning("Can not get adjacencies of a null element.");
+                Base.Compute.RecordWarning("Can not get adjacencies of a null element.");
                 return null;
             }
 

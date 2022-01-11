@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
         {
             if (polyline == null || level == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a polyline is on a level if either the polyline or the level are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether a polyline is on a level if either the polyline or the level are null.");
                 return false;
             }
 

@@ -53,7 +53,7 @@ namespace BH.Engine.Matter
         {
             if(material == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the density of a null material.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the density of a null material.");
                 return 0;
             }
 
@@ -65,7 +65,7 @@ namespace BH.Engine.Matter
 
             foreach (IMaterialProperties mat in material.Properties.Where(x => type.IsAssignableFrom(x.GetType())))
             {
-                object density = Reflection.Query.PropertyValue(mat, "Density");
+                object density = Base.Query.PropertyValue(mat, "Density");
                 if (density != null)
                 {
                     densities.Add((double)density);
@@ -75,18 +75,18 @@ namespace BH.Engine.Matter
 
             if (densities.Count == 0)
             {
-                Reflection.Compute.RecordWarning("no density on any of the fragments of " + material.Name + " by type " + type.Name);
+                Base.Compute.RecordWarning("no density on any of the fragments of " + material.Name + " by type " + type.Name);
                 return 0;
             }
             if (densities.Count > 1 && !CheckRange(densities, tolerance))
             {
-                Reflection.Compute.RecordWarning("Multiple unique values for density found across multiple IMaterialProperties for " + material.Name + ". Please either ensure consistency of values or provide a specific material property type to define a valid density.");
+                Base.Compute.RecordWarning("Multiple unique values for density found across multiple IMaterialProperties for " + material.Name + ". Please either ensure consistency of values or provide a specific material property type to define a valid density.");
                 return double.NaN;
             }
             if (densities.Count > 1)
                 notes.Add("");
 
-            Reflection.Compute.RecordNote(string.Join(System.Environment.NewLine, notes.ToArray()));
+            Base.Compute.RecordNote(string.Join(System.Environment.NewLine, notes.ToArray()));
 
             return densities.First();
         }

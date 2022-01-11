@@ -39,6 +39,7 @@ namespace BH.Engine.Base
         [Input("fragment", "Any fragment object implementing the IFragment interface to append to the object.")]
         [Input("replace", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance.")]
         [Output("iBHoMObject", "The BHoM object with the added fragment.")]
+        [PreviousVersion("5.1", "BH.Engine.Environment.Modify.AddFragment(BH.oM.Environment.IEnvironmentObject, BH.oM.Base.IFragment)")]
         public static IBHoMObject AddFragment(this IBHoMObject iBHoMObject, IFragment fragment, bool replace = false)
         {
             if (iBHoMObject == null || fragment == null)
@@ -50,7 +51,7 @@ namespace BH.Engine.Base
             foreach (Type restriction in fragment.GetType().UniquenessRestrictions())
             {
                 if (currentFragmentTypes.Any(x => restriction.IsAssignableFrom(x) && x != fragment.GetType()))
-                    Engine.Reflection.Compute.RecordWarning("There is already a fragment of type " + restriction + " on this object. \nThe Fragment will still be added but consider reviewing this task as fragments of that type are supposed to be unique.");
+                    Engine.Base.Compute.RecordWarning("There is already a fragment of type " + restriction + " on this object. \nThe Fragment will still be added but consider reviewing this task as fragments of that type are supposed to be unique.");
             }
 
             // Make sure this fragment can be added to that object
@@ -62,7 +63,7 @@ namespace BH.Engine.Base
                     o.Fragments.AddOrReplace(fragment);
             }
             else
-                Engine.Reflection.Compute.RecordError("An object of type " + iBHoMObject.GetType() + " is not a valid target for a fragment of type " + fragment.GetType() + ". The fragment was not added.");
+                Engine.Base.Compute.RecordError("An object of type " + iBHoMObject.GetType() + " is not a valid target for a fragment of type " + fragment.GetType() + ". The fragment was not added.");
             
 
             return o;

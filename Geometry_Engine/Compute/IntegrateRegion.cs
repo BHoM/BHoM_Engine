@@ -63,11 +63,11 @@ namespace BH.Engine.Geometry
                     return -((a.X + b.X) * (a.X * a.X + b.X * b.X) * diffY) / 12;
                 /********************/
                 case -1:
-                    Engine.Reflection.Compute.RecordError("powX = -1 is not implemented");
+                    Engine.Base.Compute.RecordError("powX = -1 is not implemented");
                     return 0;
                     //if (a.X < tol || b.X < tol)
                     //{
-                    //    Engine.Reflection.Compute.RecordError("powX = -1 is not defined left of the Y-axis");
+                    //    Engine.Base.Compute.RecordError("powX = -1 is not defined left of the Y-axis");
                     //    return 0;
                     //}
                     //diffX = (a.X - b.X);
@@ -79,7 +79,7 @@ namespace BH.Engine.Geometry
                 case -2:
                     if ((a.X < 0 ^ b.X < 0) || Math.Abs(a.X) < tol || Math.Abs(b.X) < tol)
                     {
-                        Engine.Reflection.Compute.RecordError("powX = -2 is not defined on the Y-axis");
+                        Engine.Base.Compute.RecordError("powX = -2 is not defined on the Y-axis");
                         return 0;
                     }
                     diffX = (a.X - b.X);
@@ -125,7 +125,7 @@ namespace BH.Engine.Geometry
 
         private static double IntegrateRegion(ICurve curve, int powX, double tol = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"IntegrateRegion is not implemented for a ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"IntegrateRegion is not implemented for a ICurves of type: {curve.GetType().Name}.");
             return double.NaN;
         }
 

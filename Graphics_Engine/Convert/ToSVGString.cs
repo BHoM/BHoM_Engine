@@ -40,7 +40,7 @@ namespace BH.Engine.Graphics
         {
             if(svgStyle == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null SVG Style.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null SVG Style.");
                 return "";
             }
 
@@ -101,7 +101,7 @@ namespace BH.Engine.Graphics
         {
             if(svgObject == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null SVG object.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null SVG object.");
                 return "";
             }
 
@@ -133,7 +133,7 @@ namespace BH.Engine.Graphics
         {
             if(svgDocument == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null SVG Document.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null SVG Document.");
                 return "";
             }
 
@@ -177,7 +177,7 @@ namespace BH.Engine.Graphics
         {
             if(point == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null point to SVG string.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null point to SVG string.");
                 return "";
             }
 
@@ -197,7 +197,7 @@ namespace BH.Engine.Graphics
         {
             if(line == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null line to SVG string.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null line to SVG string.");
                 return "";
             }
 
@@ -218,7 +218,7 @@ namespace BH.Engine.Graphics
         {
             if(circle == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null circle to SVG string.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null circle to SVG string.");
                 return "";
             }
 
@@ -238,7 +238,7 @@ namespace BH.Engine.Graphics
         {
             if(arc == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null arc to SVG string.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null arc to SVG string.");
                 return "";
             }
 
@@ -264,7 +264,7 @@ namespace BH.Engine.Graphics
         {
             if(ellipse == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null ellipse to SVG string.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null ellipse to SVG string.");
                 return "";
             }
 
@@ -287,7 +287,7 @@ namespace BH.Engine.Graphics
         {
             if(polyline == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert null polyline to SVG string.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert null polyline to SVG string.");
                 return "";
             }
 
@@ -318,7 +318,7 @@ namespace BH.Engine.Graphics
         {
             if(nurbCurve == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert null nurb curve to SVG string.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert null nurb curve to SVG string.");
                 return "";
             }
 

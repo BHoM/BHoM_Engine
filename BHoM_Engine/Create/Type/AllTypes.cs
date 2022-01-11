@@ -27,7 +27,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Create
     {
@@ -35,32 +35,48 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a generic BHoM type that matches the given name.")]
-        [Input("name", "Name to be searched for among all BHoM generic types.")]
-        [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
-        [Output("type", "BHoM generic type that matches the given name.")]
-        public static Type GenericType(string name, bool silent = false)
+        [Description("Creates all types with full names that end with given string, with or without assembly information after comma.")]
+        [Input("name", "Name to be searched for among all reflected types.")]
+        [Input("silent", "If true, the error about no types found will be suppressed, otherwise it will be raised.")]
+        [Output("types", "All reflected types that match the given name.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Create.AllTypes(System.String, System.Boolean)")]
+        public static List<Type> AllTypes(string name, bool silent = false)
         {
             if (name == null)
             {
-                Compute.RecordError("Cannot create a type from a null string.");
-                return null;
+                Compute.RecordError("Cannot create types from a null string.");
+                return new List<Type>();
             }
 
-            string[] parts = name.Split('<', '>', ',').Select(x => x.Trim()).ToArray();
-            string[] arguments = parts.Skip(1).Where(x => x.Length > 0).ToArray();
+            List<Type> typeList = new List<Type>();
+            if (name.StartsWith("BH.Engine"))
+                typeList = Query.EngineTypeList();
+            else if (name.StartsWith("BH.Adapter"))
+                typeList = Query.AdapterTypeList();
+            else if (name.StartsWith("BH.oM"))
+                typeList = Query.BHoMTypeList();
+            else
+                typeList = Query.AllTypeList();
 
-            Type typeDefinition = Type(parts[0] + "`" + arguments.Length);
-            if (typeDefinition == null)
-                return null;
+            List<Type> types;
+            if (name.Contains(','))
+                types = typeList.Where(x => x.AssemblyQualifiedName.Contains(name)).ToList();
+            else
+                types = typeList.Where(x => x.FullName.EndsWith(name)).ToList();
 
-            try
+            if (types.Count != 0)
+                return types;
+            else
             {
-                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());
-            }
-            catch
-            {
-                return null;
+                //No method found in dictionary, try System.Type
+                Type type = System.Type.GetType(name);
+                if (type == null)
+                {
+                    if (!silent)
+                        Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                    return new List<Type>();
+                }
+                return new List<Type> { type };
             }
         }
 

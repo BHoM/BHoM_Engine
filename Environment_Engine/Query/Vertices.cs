@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the vertices of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the vertices of a null panel.");
                 return null;
             }
 
@@ -60,7 +60,7 @@ namespace BH.Engine.Environment
         {
             if(panelsAsSpace == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the verticies of panels that are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the verticies of panels that are null.");
                 return null;
             }
 

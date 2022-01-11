@@ -108,7 +108,7 @@ namespace BH.Engine.Geometry
 
         private static List<Point> ControlPoints(this ICurve curve)
         {
-            Reflection.Compute.RecordError($"ControlPoints is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"ControlPoints is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

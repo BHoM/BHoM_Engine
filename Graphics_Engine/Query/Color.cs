@@ -45,7 +45,7 @@ namespace BH.Engine.Graphics
         {
             if(gradient == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the colour of a null gradient.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the colour of a null gradient.");
                 return System.Drawing.Color.Transparent;
             }
 
@@ -78,7 +78,7 @@ namespace BH.Engine.Graphics
         {
             if (gradient == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the colour of a null gradient.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the colour of a null gradient.");
                 return System.Drawing.Color.Transparent;
             }
 

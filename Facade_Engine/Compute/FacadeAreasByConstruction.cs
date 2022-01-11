@@ -53,13 +53,13 @@ namespace BH.Engine.Facade
         {
             if(elems == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot calculate facade areas if the input elements are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot calculate facade areas if the input elements are null.");
                 return new Output<List<double>, List<string>, double>();
             }
 
             List<IFacadeObject> elemList = elems.ToList();
             if (elems.Any(x => !(x is Panel) && !(x is Opening) && !(x is CurtainWall)))
-                Reflection.Compute.RecordWarning("Some of the provided elements are not valid Facade Element Types. These elements have been ignored.");
+                Base.Compute.RecordWarning("Some of the provided elements are not valid Facade Element Types. These elements have been ignored.");
 
             Dictionary<string, double> areasDict = new Dictionary<string, double>();
             double frameArea = 0;

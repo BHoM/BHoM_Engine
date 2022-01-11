@@ -79,13 +79,13 @@ namespace BH.Engine.Facade
         {
             if (outline == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a panel from a null outline.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a panel from a null outline.");
                 return null;
             }
             
             if (!outline.IIsClosed())
             {
-                Reflection.Compute.RecordError("Outline not closed. Could not create Panel.");
+                Base.Compute.RecordError("Outline not closed. Could not create Panel.");
                 return null;
             }
             List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(new List<ICurve> {o}, openingConstruction, openingFrameEdgeProperty)).Where(x => x != null).ToList() : new List<Opening>();
@@ -106,7 +106,7 @@ namespace BH.Engine.Facade
         {
             if(surface == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a panel from a null surface.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a panel from a null surface.");
                 return null;
             }
 

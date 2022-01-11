@@ -36,7 +36,7 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordWarning("Cannot query the property types of a null object. An empty list of types will be returned.");
+                Base.Compute.RecordWarning("Cannot query the property types of a null object. An empty list of types will be returned.");
                 return new List<Type>();
             }
 
@@ -49,7 +49,7 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordWarning("Cannot query the property types of a null type. An empty list of types will be returned.");
+                Base.Compute.RecordWarning("Cannot query the property types of a null type. An empty list of types will be returned.");
                 return new List<Type>();
             }
 

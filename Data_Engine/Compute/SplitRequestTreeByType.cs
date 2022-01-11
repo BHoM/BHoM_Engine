@@ -44,19 +44,19 @@ namespace BH.Engine.Data
         {
             if (!typeof(IRequest).IsAssignableFrom(splittingType))
             {
-                BH.Engine.Reflection.Compute.RecordError($"Type {splittingType} does not implement {nameof(IRequest)} interface.");
+                BH.Engine.Base.Compute.RecordError($"Type {splittingType} does not implement {nameof(IRequest)} interface.");
                 return null;
             }
 
             if (typeof(ILogicalRequest).IsAssignableFrom(splittingType))
             {
-                BH.Engine.Reflection.Compute.RecordError($"It is not allowed to split by types that implement {nameof(ILogicalRequest)} interface.");
+                BH.Engine.Base.Compute.RecordError($"It is not allowed to split by types that implement {nameof(ILogicalRequest)} interface.");
                 return null;
             }
 
             if (request.IsPotentialOverlap(splittingType))
             {
-                BH.Engine.Reflection.Compute.RecordError($"The request could not be split by type {splittingType} because there is a potential logical AND overlap between two requests of the given type.");
+                BH.Engine.Base.Compute.RecordError($"The request could not be split by type {splittingType} because there is a potential logical AND overlap between two requests of the given type.");
                 return null;
             }
 

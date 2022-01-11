@@ -125,7 +125,7 @@ namespace BH.Engine.Library
 
                 foreach (var events in m_deserialisationEvents[name])
                 {
-                    Reflection.Compute.RecordEvent(events.Item2, events.Item1);
+                    Base.Compute.RecordEvent(events.Item2, events.Item1);
                 }
 
                 return dataset;
@@ -229,7 +229,7 @@ namespace BH.Engine.Library
                     if (!m_libraryStrings.ContainsKey(filePathName))
                         m_libraryStrings[filePathName] = File.ReadAllLines(path);
                     else
-                        Reflection.Compute.RecordError($"The library already contains the Dataset {filePathName}. The Dataset with this path has not been loaded from the source folder {sourceFolder}.");
+                        Base.Compute.RecordError($"The library already contains the Dataset {filePathName}. The Dataset with this path has not been loaded from the source folder {sourceFolder}.");
                 }
             }
 

@@ -106,7 +106,7 @@ namespace BH.Engine.Environment
             };
 
             if (regionsNotByLevel.Count > 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Some regions were not able to be mapped to a level. See the regionsNotMapped output to examine which regions and resolve any issues");
+                BH.Engine.Base.Compute.RecordWarning("Some regions were not able to be mapped to a level. See the regionsNotMapped output to examine which regions and resolve any issues");
 
             return output;
         }

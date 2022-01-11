@@ -46,7 +46,7 @@ namespace BH.Engine.Humans.ViewQuality
         {
             if (audience == null || settings == null || activityArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the EvalueAnalysis if the audience, settings, or activity area are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the EvalueAnalysis if the audience, settings, or activity area are null.");
                 return new List<Evalue>();
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Humans.ViewQuality
             List<List<Evalue>> results = new List<List<Evalue>>();
             if (audience == null || settings == null || activityArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the EvalueAnalysis if the audience, settings, or activity area are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the EvalueAnalysis if the audience, settings, or activity area are null.");
                 return results;
             }
 

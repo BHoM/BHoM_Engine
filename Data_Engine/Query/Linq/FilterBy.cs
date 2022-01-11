@@ -26,7 +26,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Data
 {
@@ -47,7 +47,7 @@ namespace BH.Engine.Data
         {
             if (objects == null || objects.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("No objects submitted to filter");
+                BH.Engine.Base.Compute.RecordWarning("No objects submitted to filter");
                 return new List<T>();
             }
 
@@ -55,19 +55,19 @@ namespace BH.Engine.Data
 
             if (objects.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("All objects in the list to filter are null, please try with valid objects");
+                BH.Engine.Base.Compute.RecordError("All objects in the list to filter are null, please try with valid objects");
                 return new List<T>();
             }
 
             if (propertyName == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("propertyName cannot be null in order to filter the objects");
+                BH.Engine.Base.Compute.RecordError("propertyName cannot be null in order to filter the objects");
                 return new List<T>();
             }
 
             if (value == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("value cannot be null to filter the objects");
+                BH.Engine.Base.Compute.RecordError("value cannot be null to filter the objects");
                 return new List<T>();
             }
 
@@ -76,7 +76,7 @@ namespace BH.Engine.Data
             
             if(type == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("That property name could not be resolved to a specific object type. Please check the property name and try again");
+                BH.Engine.Base.Compute.RecordError("That property name could not be resolved to a specific object type. Please check the property name and try again");
                 return new List<T>();
             }
 

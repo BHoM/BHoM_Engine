@@ -51,16 +51,16 @@ namespace BH.Engine.Environment
         {
             if (externalBoundary == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("ExternalBoundary must be set in order to calculate the analysis grid.");
+                BH.Engine.Base.Compute.RecordError("ExternalBoundary must be set in order to calculate the analysis grid.");
                 return null;
             }
 
             innerBoundaries = innerBoundaries ?? new List<Polyline>();
 
             if(id == -1)
-                BH.Engine.Reflection.Compute.RecordWarning("ID has not been set to a valid ID, this may cause errors in processing results from this AnalysisGrid if it cannot be uniquely identified later");
+                BH.Engine.Base.Compute.RecordWarning("ID has not been set to a valid ID, this may cause errors in processing results from this AnalysisGrid if it cannot be uniquely identified later");
             if (name == "")
-                BH.Engine.Reflection.Compute.RecordWarning("Name has not been set to a valid Name, this may cause confusion in reading results from this AnalysisGrid if it cannot be attributed to the model later");
+                BH.Engine.Base.Compute.RecordWarning("Name has not been set to a valid Name, this may cause confusion in reading results from this AnalysisGrid if it cannot be attributed to the model later");
 
             //Get the normal from the external boundary
             Vector surfaceNormal = externalBoundary.Normal().Normalise();

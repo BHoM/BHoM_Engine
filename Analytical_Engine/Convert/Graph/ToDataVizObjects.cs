@@ -46,7 +46,7 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null graph to DataViz objects.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null graph to DataViz objects.");
                 return new List<CustomObject>();
             }
 

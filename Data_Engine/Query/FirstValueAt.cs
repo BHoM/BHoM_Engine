@@ -46,7 +46,7 @@ namespace BH.Engine.Data
         {
             if (table == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot get the first value at from a null table.");
+                BH.Engine.Base.Compute.RecordError("Cannot get the first value at from a null table.");
                 return null;
             }
 

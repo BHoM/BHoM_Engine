@@ -46,11 +46,11 @@ namespace BH.Engine.Graphics
         {
             if (colors.Count() != positions.Count())
             {
-                Engine.Reflection.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
+                Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
             }
             if (positions.Max() > 1 || positions.Min() < 0)
             {
-                Engine.Reflection.Compute.RecordWarning("Gradients assumes positions between 0 and 1. Values outside this range will not be considered in colour interpolations");
+                Engine.Base.Compute.RecordWarning("Gradients assumes positions between 0 and 1. Values outside this range will not be considered in colour interpolations");
             }
             return new Gradient()
             {

@@ -67,7 +67,7 @@ namespace BH.Engine.Humans.ViewQuality
 
             if (!headOutline.IsPlanar() || !headOutline.IsClosed())
             {
-                Reflection.Compute.RecordError("The reference headOutline must be closed and planar.");
+                Base.Compute.RecordError("The reference headOutline must be closed and planar.");
                 return null;
             }
 

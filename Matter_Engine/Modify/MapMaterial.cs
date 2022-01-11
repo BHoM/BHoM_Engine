@@ -49,7 +49,7 @@ namespace BH.Engine.Matter
         {
             if (keys.Count > materialFragments.Count)
             {
-                Engine.Reflection.Compute.RecordError("Can't have more keys than materialFragments.");
+                Engine.Base.Compute.RecordError("Can't have more keys than materialFragments.");
                 return null;
             }
 
@@ -71,7 +71,7 @@ namespace BH.Engine.Matter
             // Ensure distinct
             if (culledKeys.Count != culledKeys.Distinct().Count())
             {
-                Engine.Reflection.Compute.RecordError("Non-empty keys must be distinct.");
+                Engine.Base.Compute.RecordError("Non-empty keys must be distinct.");
                 return null;
             }
             

@@ -47,7 +47,7 @@ namespace BH.Engine.Library
             HashSet<string> keys;
             if (!LibraryPaths().TryGetValue(libraryName, out keys))
             {
-                BH.Engine.Reflection.Compute.RecordWarning(String.Format("No file or subfolder named {0} could be found in the Datasets folder.", libraryName));
+                BH.Engine.Base.Compute.RecordWarning(String.Format("No file or subfolder named {0} could be found in the Datasets folder.", libraryName));
                 return new List<Dataset>();
             }
 

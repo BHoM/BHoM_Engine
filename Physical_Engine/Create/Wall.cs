@@ -52,13 +52,13 @@ namespace BH.Engine.Physical
         {
             if (construction == null || bottomEdge == null || height <= 0)
             {
-                Reflection.Compute.RecordError("Physical Wall could not be created because some input data are null");
+                Base.Compute.RecordError("Physical Wall could not be created because some input data are null");
                 return null;
             }
 
             if (Geometry.Query.IIsClosed(bottomEdge))
             {
-                Reflection.Compute.RecordError("Physical Wall could not be created because bottom edge cannot be closed curve");
+                Base.Compute.RecordError("Physical Wall could not be created because bottom edge cannot be closed curve");
                 return null;
             }
             
@@ -89,7 +89,7 @@ namespace BH.Engine.Physical
         {
             if(line == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a Physical.Wall from a null line.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a Physical.Wall from a null line.");
                 return null;
             }
 
@@ -123,14 +123,14 @@ namespace BH.Engine.Physical
         {
             if (construction == null || edges == null)
             {
-                Reflection.Compute.RecordError("Physical Wall could not be created because some input data are null");
+                Base.Compute.RecordError("Physical Wall could not be created because some input data are null");
                 return null;
             }
 
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges);
             if (aPlanarSurface == null)
             {
-                Reflection.Compute.RecordError("Physical Wall could not be created because invalid geometry of edges");
+                Base.Compute.RecordError("Physical Wall could not be created because invalid geometry of edges");
                 return null;
             }
 

@@ -44,19 +44,19 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(planFull == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null theatron plan.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry will a null theatron plan.");
                 return null;
             }
 
             if (profile == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry will a null profile.");
                 return null;
             }
 
             if (sParams == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null set of stadia parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry from a null set of stadia parameters.");
                 return null;
             }
 
@@ -76,19 +76,19 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(structuralOrigins == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null list of structural origins.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry from a null list of structural origins.");
                 return null;
             }
 
             if (profile == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry will a null profile.");
                 return null;
             }
 
             if (pParams == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null collection of profile parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry from a null collection of profile parameters.");
                 return null;
             }
 
@@ -110,19 +110,19 @@ namespace BH.Engine.Architecture.Theatron
         {
             if (planPart == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null theatron plan.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry will a null theatron plan.");
                 return null;
             }
 
             if (profile == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry will a null profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry will a null profile.");
                 return null;
             }
 
             if (pParams == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create theatron geometry from a null collection of profile parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create theatron geometry from a null collection of profile parameters.");
                 return null;
             }
 

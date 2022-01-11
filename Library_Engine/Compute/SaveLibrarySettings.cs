@@ -46,7 +46,7 @@ namespace BH.Engine.Library
         {
             if (settings == null)
             {
-                Engine.Reflection.Compute.RecordError("Settings object is null and can not be stored.");
+                Engine.Base.Compute.RecordError("Settings object is null and can not be stored.");
                 return false;
             }
 
@@ -57,7 +57,7 @@ namespace BH.Engine.Library
             {
                 if (!replacePreexisting)
                 {
-                    Engine.Reflection.Compute.RecordError($"A LibrarySettings object already exists. To replace it, toggle replacePreexisting to true. \nTo add a new path to the old set of Paths, try using the {nameof(AddUserPath)} method.");
+                    Engine.Base.Compute.RecordError($"A LibrarySettings object already exists. To replace it, toggle replacePreexisting to true. \nTo add a new path to the old set of Paths, try using the {nameof(AddUserPath)} method.");
                     return false;
                 }
                 else

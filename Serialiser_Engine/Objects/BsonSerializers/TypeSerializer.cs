@@ -190,7 +190,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                 if (type == null)
                 {
                     if (!string.IsNullOrWhiteSpace(fullName) && fullName != "T")  // To mirror the structure of the code above (line 59), we need to check if the fullName is empty.
-                        Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
+                        Base.Compute.RecordError("Type " + fullName + " failed to deserialise.");
                 }
                 else if (type.IsGenericType && type.GetGenericArguments().Length == genericTypes.Where(x => x != null).Count())
                     type = type.MakeGenericType(genericTypes.ToArray()); 
@@ -200,7 +200,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             catch
             {
                 if (!string.IsNullOrWhiteSpace(fullName) && fullName != "T") // To mirror the structure of the code above (line 59), we need to check if the fullName is empty.
-                    Reflection.Compute.RecordError("Type " + fullName + " failed to deserialise.");
+                    Base.Compute.RecordError("Type " + fullName + " failed to deserialise.");
                 return null;
             }
         }
@@ -218,15 +218,15 @@ namespace BH.Engine.Serialiser.BsonSerializers
             if (fullName == "T")
                 return null;
             if (fullName.StartsWith("BH.oM"))
-                type = Reflection.Create.Type(fullName, true);
+                type = Base.Create.Type(fullName, true);
             else if (fullName.StartsWith("BH.Engine"))
-                type = Reflection.Create.EngineType(fullName, true);
+                type = Base.Create.EngineType(fullName, true);
             else
                 type = Type.GetType(fullName);
 
             if (type == null)
             {
-                List<Type> types = Reflection.Create.AllTypes(fullName, true);
+                List<Type> types = Base.Create.AllTypes(fullName, true);
                 if (types.Count > 0)
                     type = types.First();
             }

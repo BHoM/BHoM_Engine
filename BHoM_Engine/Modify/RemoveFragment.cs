@@ -46,13 +46,13 @@ namespace BH.Engine.Base
 
             if (!typeof(IFragment).IsAssignableFrom(fragmentType))
             {
-                Reflection.Compute.RecordError("Provided input in fragmentType is not a Fragment type (does not implement IFragment interface).");
+                Base.Compute.RecordError("Provided input in fragmentType is not a Fragment type (does not implement IFragment interface).");
                 return iBHoMObject;
             }
 
             if (!iBHoMObject.Fragments.Contains(fragmentType))
             {
-                Reflection.Compute.RecordWarning($"{iBHoMObject.GetType().Name} does not contain any `{fragmentType.Name}` fragment.");
+                Base.Compute.RecordWarning($"{iBHoMObject.GetType().Name} does not contain any `{fragmentType.Name}` fragment.");
                 return iBHoMObject;
             }
 

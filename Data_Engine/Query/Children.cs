@@ -61,7 +61,7 @@ namespace BH.Engine.Data
 
         private static IEnumerable<INode<T>> Children<T>(this INode<T> node)
         {
-            Reflection.Compute.RecordError("The method Values is not implemented for " + node.GetType().Name);
+            Base.Compute.RecordError("The method Values is not implemented for " + node.GetType().Name);
             return null;
         }
 

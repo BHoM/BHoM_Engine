@@ -223,7 +223,7 @@ namespace BH.Engine.Geometry
 
         private static IGeometry Scale(this IGeometry geometry, Point origin, Vector scaleVector)
         {
-            Reflection.Compute.RecordError("Scale method has not been implemented for type " + geometry.GetType().Name);
+            Base.Compute.RecordError("Scale method has not been implemented for type " + geometry.GetType().Name);
             return null;
         }
 

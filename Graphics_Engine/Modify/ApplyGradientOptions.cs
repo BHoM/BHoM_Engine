@@ -48,7 +48,7 @@ namespace BH.Engine.Graphics
             
             if (gradientOptions == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot apply gradientOptions because gradientOptions is null or invalid.");
+                BH.Engine.Base.Compute.RecordError("Cannot apply gradientOptions because gradientOptions is null or invalid.");
                 return null;
             }
 
@@ -57,7 +57,7 @@ namespace BH.Engine.Graphics
             // Checks if bounds exist or can be automatically set
             if ((double.IsNaN(result.UpperBound) || double.IsNaN(result.LowerBound)) && (allValues == null || allValues.Count() < 1))
             {
-                BH.Engine.Reflection.Compute.RecordError("No bounds have been manually set for Gradient, and no values are provided by which to set them.");
+                BH.Engine.Base.Compute.RecordError("No bounds have been manually set for Gradient, and no values are provided by which to set them.");
                 return result;
             }
 
@@ -73,7 +73,7 @@ namespace BH.Engine.Graphics
                 result.Gradient = Library.Query.Match("Gradients", defaultGradient) as Gradient;
                 if (result.Gradient == null)
                 {
-                    Engine.Reflection.Compute.RecordError("Could not find gradient " + defaultGradient + " in the Library, make sure you have BHoM Datasets or create a custom gradient");
+                    Engine.Base.Compute.RecordError("Could not find gradient " + defaultGradient + " in the Library, make sure you have BHoM Datasets or create a custom gradient");
                     return null;
                 }
             }

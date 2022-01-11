@@ -53,7 +53,7 @@ namespace BH.Engine.Facade
             List<ICurve> subParts = curve.SubParts();
             if (subParts.Count != offsets.Count)
             {
-                BH.Engine.Reflection.Compute.RecordError("PolyCurve segment count does not match amount of offset values provided.");
+                BH.Engine.Base.Compute.RecordError("PolyCurve segment count does not match amount of offset values provided.");
                 return null;
             }
 
@@ -66,13 +66,13 @@ namespace BH.Engine.Facade
 
             if (!curve.IsPlanar(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Offset works only on planar curves");
+                BH.Engine.Base.Compute.RecordError("Offset works only on planar curves");
                 return null;
             }
 
             if (curve.IsSelfIntersecting(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Offset works only on non-self intersecting curves");
+                BH.Engine.Base.Compute.RecordError("Offset works only on non-self intersecting curves");
                 return null;
             }
 
@@ -81,7 +81,7 @@ namespace BH.Engine.Facade
             {
                 if (!isClosed)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Normal is missing. Normal vector is not needed only for closed curves");
+                    BH.Engine.Base.Compute.RecordError("Normal is missing. Normal vector is not needed only for closed curves");
                     return null;
                 }
                 else
@@ -148,14 +148,14 @@ namespace BH.Engine.Facade
                     connectingError = true;
             }
 
-            Reflection.Compute.ClearCurrentEvents();
+            Base.Compute.ClearCurrentEvents();
 
             if (connectingError)
-                Reflection.Compute.RecordWarning("Couldn't connect offset subCurves properly.");
+                Base.Compute.RecordWarning("Couldn't connect offset subCurves properly.");
 
             if (offsetCurves.Count == 0)
             {
-                Reflection.Compute.RecordError("Method failed to produce correct offset. Returning null.");
+                Base.Compute.RecordError("Method failed to produce correct offset. Returning null.");
                 return null;
             }
 
@@ -166,14 +166,14 @@ namespace BH.Engine.Facade
             else
             {
                 result.Curves = offsetCurves;
-                Reflection.Compute.RecordWarning("Offset may be wrong. Please inspect the results.");
+                Base.Compute.RecordWarning("Offset may be wrong. Please inspect the results.");
             }
 
             if (result.IsSelfIntersecting(tolerance) || result.CurveIntersections(curve, tolerance).Count != 0)
-                Reflection.Compute.RecordWarning("Intersections occured. Please inspect the results.");
+                Base.Compute.RecordWarning("Intersections occured. Please inspect the results.");
 
             if (isClosed && !result.IsClosed(tolerance))
-                Reflection.Compute.RecordError("Final curve is not closed. Please inspect the results.");
+                Base.Compute.RecordError("Final curve is not closed. Please inspect the results.");
 
             return result;
         }
@@ -244,7 +244,7 @@ namespace BH.Engine.Facade
 
             if (!((curve1 is Line || curve1 is Arc) && (curve2 is Line || curve2 is Arc))) //for now works only with combinations of lines and arcs
             {
-                Reflection.Compute.RecordError("Private method fillet is implemented only for PolyCurves consisting of Lines or Arcs.");
+                Base.Compute.RecordError("Private method fillet is implemented only for PolyCurves consisting of Lines or Arcs.");
                 return null;
             }
 
@@ -260,7 +260,7 @@ namespace BH.Engine.Facade
 
             List<Point> intersections = curve1.ICurveIntersections(curve2, tolerance);
             if (intersections.Count > 2)
-                Reflection.Compute.RecordError("Invalid number of intersections between curves. Two lines/arcs can have no more than two intersections.");
+                Base.Compute.RecordError("Invalid number of intersections between curves. Two lines/arcs can have no more than two intersections.");
             else if (intersections.Count == 2 || intersections.Count == 1)
             {
                 Point intersection = intersections[0];
@@ -328,7 +328,7 @@ namespace BH.Engine.Facade
                             (curve2.IStartPoint().Distance((curve1 as Line), true) < curve2.IEndPoint().Distance((curve1 as Line), true) &&
                              !intersection.IIsOnCurve(curve2)))
                         {
-                            Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
+                            Base.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
                         }
                         resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
@@ -342,7 +342,7 @@ namespace BH.Engine.Facade
                             (curve2.IStartPoint().Distance((curve1 as Line), true) > curve2.IEndPoint().Distance((curve1 as Line), true) &&
                              !intersection.IIsOnCurve(curve2)))
                         {
-                            Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
+                            Base.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
                         }
                         resultCurves.AddRange(curve1.ExtendToPoint(curve1.IStartPoint(), intersection, tangentExtensions, tolerance));
@@ -355,7 +355,7 @@ namespace BH.Engine.Facade
                             (curve2.IStartPoint().Distance((curve1 as Line), true) < curve2.IEndPoint().Distance((curve1 as Line), true) &&
                              !intersection.IIsOnCurve(curve2)))
                         {
-                            Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
+                            Base.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
                         }
                         resultCurves.AddRange(curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
@@ -370,7 +370,7 @@ namespace BH.Engine.Facade
                             (curve2.IStartPoint().Distance((curve1 as Line), true) > curve2.IEndPoint().Distance((curve1 as Line), true) &&
                              !intersection.IIsOnCurve(curve2)))
                         {
-                            Reflection.Compute.RecordWarning("Couldn't provide correct fillet for given input");
+                            Base.Compute.RecordWarning("Couldn't provide correct fillet for given input");
                             return null;
                         }
                         resultCurves.AddRange(curve1.ExtendToPoint(intersection, curve1.IEndPoint(), tangentExtensions, tolerance));
@@ -398,7 +398,7 @@ namespace BH.Engine.Facade
                         List<Point> curveIntersections = pCurve1.CurveIntersections(pCurve2, tolerance);
                         if (curveIntersections.Count == 0)
                         {
-                            Reflection.Compute.RecordError("Curves' extensions do not intersect");
+                            Base.Compute.RecordError("Curves' extensions do not intersect");
                             return null;
                         }
                         if (C1SP && C2SP)
@@ -448,7 +448,7 @@ namespace BH.Engine.Facade
                                 intersection = curveIntersecions.ClosestPoint(curve1.IEndPoint());
                             else
                             {
-                                Reflection.Compute.RecordWarning("Couldn't create fillet");
+                                Base.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
 
@@ -483,7 +483,7 @@ namespace BH.Engine.Facade
                                 intersection = curveIntersecions.ClosestPoint(curve1.IEndPoint());
                             else
                             {
-                                Reflection.Compute.RecordWarning("Couldn't create fillet");
+                                Base.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
 
@@ -505,7 +505,7 @@ namespace BH.Engine.Facade
                                 intersection = curveIntersecions.ClosestPoint(curve1.IStartPoint());
                             else
                             {
-                                Reflection.Compute.RecordWarning("Couldn't create fillet");
+                                Base.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
                             PolyCurve subResult1 = new PolyCurve
@@ -538,7 +538,7 @@ namespace BH.Engine.Facade
                                 intersection = curveIntersecions.ClosestPoint(curve1.IStartPoint());
                             else
                             {
-                                Reflection.Compute.RecordWarning("Couldn't create fillet");
+                                Base.Compute.RecordWarning("Couldn't create fillet");
                                 return null;
                             }
                             PolyCurve subResult1 = new PolyCurve

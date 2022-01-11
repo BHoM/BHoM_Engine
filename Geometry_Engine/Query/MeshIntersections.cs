@@ -138,7 +138,7 @@ namespace BH.Engine.Geometry
 
         private static List<Point> MeshIntersections(this ICurve curve, Mesh mesh, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"MeshIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"MeshIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

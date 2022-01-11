@@ -57,7 +57,7 @@ namespace BH.Engine.Versioning
             }
             else
             {
-                Reflection.Compute.RecordError("The string provided is not a supported json format");
+                Base.Compute.RecordError("The string provided is not a supported json format");
                 return json;
             }
         }
@@ -103,7 +103,7 @@ namespace BH.Engine.Versioning
                         if (result.Contains("Message"))
                         {
                             noUpdateMessage = result["Message"].ToString();
-                            Engine.Reflection.Compute.RecordError(noUpdateMessage);
+                            Engine.Base.Compute.RecordError(noUpdateMessage);
                         }     
                     }  
                     else if (document != result)
@@ -119,11 +119,11 @@ namespace BH.Engine.Versioning
             if (wasUpdated || noUpdateMessage != null)
             {
                 string newDocument = noUpdateMessage != null ? null : Compute.VersioningKey(document);
-                string newVersion = Engine.Reflection.Query.BHoMVersion();
+                string newVersion = Engine.Base.Query.BHoMVersion();
                 string oldVersion = string.IsNullOrWhiteSpace(version) ? "?.?" : version;
                 string message = noUpdateMessage ?? $"{oldDocument} from version {oldVersion} has been upgraded to {newDocument} (version {newVersion})";
 
-                BH.Engine.Reflection.Compute.RecordEvent(new VersioningEvent
+                BH.Engine.Base.Compute.RecordEvent(new VersioningEvent
                 {
                     OldDocument = oldDocument,
                     NewDocument = newDocument,
@@ -159,7 +159,7 @@ namespace BH.Engine.Versioning
             }
             catch
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Failed to create a connection with BHoM Upgrader version " + version + ". The object will not be upgraded");
+                BH.Engine.Base.Compute.RecordWarning("Failed to create a connection with BHoM Upgrader version " + version + ". The object will not be upgraded");
                 return null;
             }
 
@@ -172,7 +172,7 @@ namespace BH.Engine.Versioning
 
                 if (!File.Exists(processFile))
                 {
-                    Reflection.Compute.RecordWarning(processFile.Split(new char[] { '\\' }).Last() + " is missing. The object will not be upgraded");
+                    Base.Compute.RecordWarning(processFile.Split(new char[] { '\\' }).Last() + " is missing. The object will not be upgraded");
                     return null;
                 }
             }

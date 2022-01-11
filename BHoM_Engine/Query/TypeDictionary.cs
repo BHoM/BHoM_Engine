@@ -20,14 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Base.Attributes;
-using BH.oM.Base;
+using System.Linq;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -35,28 +34,17 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a type is assignable from another type by first checking the system IsAssignableFrom and, if this is false, checks if the assignable is generic and tests if it can be assigned as a generics version.")]
-        [Input("assignableTo", "The type to check if it can be assigned to.")]
-        [Input("assignableFrom", "The type to check if it can be assigned from.")]
-        [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
-        public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
+        [Description("Returns a dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
+        [Output("typeDictionary", "Dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMTypeDictionary()")]
+        public static Dictionary<string, List<Type>> BHoMTypeDictionary()
         {
-            if(assignableTo == null || assignableFrom == null)
-            {
-                Compute.RecordError("Cannot assign to or from null types.");
-                return false;
-            }
-
-            //Check if standard IsAssignableFrom works.
-            if (assignableTo.IsAssignableFrom(assignableFrom))
-                return true;
-            //If not, check if the argument is generic, and if so, use the IsAssignableToGenericType method to check if it can be assigned.
-            else
-                return assignableTo.IsGenericType && assignableFrom.IsAssignableToGenericType(assignableTo.GetGenericTypeDefinition());
+            return Global.BHoMTypeDictionary.ToDictionary(x => x.Key, x => x.Value);
         }
 
         /***************************************************/
     }
 }
+
 
 

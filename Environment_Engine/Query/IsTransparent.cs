@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
         {
             if(material == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the transparency of a null material.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the transparency of a null material.");
                 return false;
             }
 

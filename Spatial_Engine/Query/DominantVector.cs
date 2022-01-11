@@ -47,14 +47,14 @@ namespace BH.Engine.Spatial
         {
             if (element1D == null || orthogonalPriority == null || orthogonalLengthFactor == null || angleTolerance == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("One or more of the inputs is empty or null.");
+                BH.Engine.Base.Compute.RecordError("One or more of the inputs is empty or null.");
                 return null;
             }
 
             List<ICurve> curves = element1D.IGeometry().ISubParts().ToList();
             
             if(!curves.Any(x=> x.IIsLinear()))
-                BH.Engine.Reflection.Compute.RecordWarning("Non-linear curves are using an approximate vector between its start and end.");
+                BH.Engine.Base.Compute.RecordWarning("Non-linear curves are using an approximate vector between its start and end.");
             
             List<Vector> vectors = curves.Select(x => (x.IStartPoint() -x.IEndPoint())).ToList();
 
@@ -71,7 +71,7 @@ namespace BH.Engine.Spatial
             if (largestOrthogonal != null)
             {
                 if (largestGlobal.Sum(x => x.Length()) * orthogonalLengthFactor > largestOrthogonal.Sum(x => x.Length()))
-                    BH.Engine.Reflection.Compute.RecordWarning("Orthogonal vector was found but didn't pass the length tolerance in relation to the actual non-orthogonal dominant vector. The actual dominant vector is the output.");
+                    BH.Engine.Base.Compute.RecordWarning("Orthogonal vector was found but didn't pass the length tolerance in relation to the actual non-orthogonal dominant vector. The actual dominant vector is the output.");
                 else
                     dominantVector = largestOrthogonal[0].Normalise();
             }
@@ -93,7 +93,7 @@ namespace BH.Engine.Spatial
         {
             if (element2D == null || orthogonalPriority == null || orthogonalLengthFactor == null || angleTolerance == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("One or more of the inputs is empty or null.");
+                BH.Engine.Base.Compute.RecordError("One or more of the inputs is empty or null.");
                 return null;
             }
 

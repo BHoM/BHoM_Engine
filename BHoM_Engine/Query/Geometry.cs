@@ -48,7 +48,7 @@ namespace BH.Engine.Base
         {
             if(obj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null custom object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the geometry of a null custom object.");
                 return null;
             }
 
@@ -100,9 +100,9 @@ namespace BH.Engine.Base
 
         private static IGeometry Geometry(this IBHoMObject obj)
         {
-            System.Reflection.MethodInfo mi = Reflection.Query.ExtensionMethodToCall(obj, "Geometry");
+            System.Reflection.MethodInfo mi = Query.ExtensionMethodToCall(obj, "Geometry");
             if (mi != null)
-                return Reflection.Compute.RunExtensionMethod(obj, "Geometry") as IGeometry;
+                return Compute.RunExtensionMethod(obj, "Geometry") as IGeometry;
             else
                 return null;
         }

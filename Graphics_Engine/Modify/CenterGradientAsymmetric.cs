@@ -45,7 +45,7 @@ namespace BH.Engine.Graphics
         {
             if (gradient?.Markers == null || gradient.Markers.Count < 2)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot edit gradient because gradient is null or invalid.");
+                BH.Engine.Base.Compute.RecordError("Cannot edit gradient because gradient is null or invalid.");
                 return null;
             }
 

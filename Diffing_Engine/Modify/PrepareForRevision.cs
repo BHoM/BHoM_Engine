@@ -54,7 +54,7 @@ namespace BH.Engine.Diffing
             objs_cloned = Modify.RemoveDuplicatesByHash(objs_cloned);
 
             if (objs_cloned.Count() != objects.Count())
-                Reflection.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
+                Base.Compute.RecordWarning("Some Objects were duplicates (same hash) and therefore have been discarded.");
 
             return objs_cloned;
         }

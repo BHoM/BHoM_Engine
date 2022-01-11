@@ -42,13 +42,13 @@ namespace BH.Engine.Data
         {
             if (!typeof(IRequest).IsAssignableFrom(requestType))
             {
-                BH.Engine.Reflection.Compute.RecordError($"Type {requestType} does not implement {nameof(IRequest)} interface.");
+                BH.Engine.Base.Compute.RecordError($"Type {requestType} does not implement {nameof(IRequest)} interface.");
                 return false;
             }
 
             if (typeof(ILogicalRequest).IsAssignableFrom(requestType))
             {
-                BH.Engine.Reflection.Compute.RecordError($"It is not allowed to query for overlaps of types that implement {nameof(ILogicalRequest)} interface.");
+                BH.Engine.Base.Compute.RecordError($"It is not allowed to query for overlaps of types that implement {nameof(ILogicalRequest)} interface.");
                 return false;
             }
 

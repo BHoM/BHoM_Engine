@@ -494,7 +494,7 @@ namespace BH.Engine.Geometry
 
         private static BoundingBox Bounds(IGeometry geometry)
         {
-            Reflection.Compute.RecordError($"Bounds is not implemented for IGeometry of type: {geometry.GetType().Name}.");
+            Base.Compute.RecordError($"Bounds is not implemented for IGeometry of type: {geometry.GetType().Name}.");
             return null;
         }
 

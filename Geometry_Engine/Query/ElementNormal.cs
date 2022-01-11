@@ -65,12 +65,12 @@ namespace BH.Engine.Geometry
             }
             else if (curve.IIsPlanar())
             {
-                Engine.Reflection.Compute.RecordError("The normal for non-linear elements is not implemented");
+                Engine.Base.Compute.RecordError("The normal for non-linear elements is not implemented");
                 return null;
             }
             else
             {
-                Engine.Reflection.Compute.RecordError("The normal for non-planar elements is not implemented");
+                Engine.Base.Compute.RecordError("The normal for non-planar elements is not implemented");
                 return null;
             }
 

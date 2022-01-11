@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
         {
             if (start + end + curve.Length() < tolerance)
             {
-                Reflection.Compute.RecordError("Extend values too small");
+                Base.Compute.RecordError("Extend values too small");
                 return null;
             }
             Vector dir = curve.Direction(tolerance);
@@ -78,13 +78,13 @@ namespace BH.Engine.Geometry
 
             if (startAngleExt + endAngleExt + curve.EndAngle < tolerance)
             {
-                Reflection.Compute.RecordError("Negative extend values are smaller than curve length.");
+                Base.Compute.RecordError("Negative extend values are smaller than curve length.");
                 return null;
             }
 
             if (startAngleExt + endAngleExt + curve.EndAngle - (2 * Math.PI) > tolerance)
             {
-                Reflection.Compute.RecordError("Extension values to great.");
+                Base.Compute.RecordError("Extension values to great.");
                 return null;
             }
             Cartesian oldCS = curve.CoordinateSystem;
@@ -109,7 +109,7 @@ namespace BH.Engine.Geometry
         [Output("curve", "Extended curve")]
         public static Circle Extend(this Circle curve, double start = 0.0, double end = 0.0, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordNote("Cannot Trim or Extend closed curves.");
+            Base.Compute.RecordNote("Cannot Trim or Extend closed curves.");
             return curve;
         }
 
@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
         [Output("curve", "Extended curve")]
         public static Ellipse Extend(this Ellipse curve, double start = 0.0, double end = 0.0, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordNote("Cannot Trim or Extend closed curves.");
+            Base.Compute.RecordNote("Cannot Trim or Extend closed curves.");
             return curve;
         }
 
@@ -139,13 +139,13 @@ namespace BH.Engine.Geometry
         {
             if (curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordNote("Cannot Trim or Extend closed curves.");
+                Base.Compute.RecordNote("Cannot Trim or Extend closed curves.");
                 return curve;
             }
 
             if (start + end + curve.Length() < tolerance)
             {
-                Reflection.Compute.RecordError("Negative extend values are smaller than curve length.");
+                Base.Compute.RecordError("Negative extend values are smaller than curve length.");
                 return null;
             }
 
@@ -209,13 +209,13 @@ namespace BH.Engine.Geometry
 
             if (curve.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordNote("Cannot Trim or Extend closed curves.");
+                Base.Compute.RecordNote("Cannot Trim or Extend closed curves.");
                 return curve;
             }
 
             if (start + end + curve.Length() < tolerance)
             {
-                Reflection.Compute.RecordError("Negative extend values are smaller than curve length.");
+                Base.Compute.RecordError("Negative extend values are smaller than curve length.");
                 return null;
             }
 
@@ -282,7 +282,7 @@ namespace BH.Engine.Geometry
 
         private static ICurve Extend(this ICurve curve, double start = 0.0, double end = 0.0, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"Extend is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"Extend is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 
@@ -295,7 +295,7 @@ namespace BH.Engine.Geometry
         {
             if (-start > curve.Length() || -end > curve.Length()) //ExtendTangent allows to trim the curve but only to the limit of it's length. 
             {
-                Reflection.Compute.RecordError("Extension value too small");
+                Base.Compute.RecordError("Extension value too small");
                 return null;
             }
 
@@ -342,7 +342,7 @@ namespace BH.Engine.Geometry
         {
             if (-start > curve.Length() || -end > curve.Length()) //ExtendTangent allows to trim the curve but only to the limit of it's length. 
             {
-                Reflection.Compute.RecordError("Extension value too small");
+                Base.Compute.RecordError("Extension value too small");
                 return null;
             }
 

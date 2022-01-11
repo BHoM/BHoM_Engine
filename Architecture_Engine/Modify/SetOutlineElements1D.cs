@@ -46,7 +46,7 @@ namespace BH.Engine.Architecture
         {
             if(room == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline elements of a null room.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the outline elements of a null room.");
                 return room;
             }
 
@@ -65,7 +65,7 @@ namespace BH.Engine.Architecture
         {
             if(ceiling == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline elements of a null ceiling.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the outline elements of a null ceiling.");
                 return ceiling;
             }
 

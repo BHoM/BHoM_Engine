@@ -20,16 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Serialiser;
 using BH.oM.Base;
-using BH.oM.Base.Debugging;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Compute
     {
@@ -37,6 +36,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.MakeGenericFromInputs(System.Reflection.MethodInfo, System.Collections.Generic.List<System.Type>)")]
         public static MethodInfo MakeGenericFromInputs(this MethodInfo method, List<Type> inputTypes)
         {
             if(method == null)
@@ -70,8 +70,8 @@ namespace BH.Engine.Reflection
             return method.MakeGenericMethod(actualTypes.ToArray());
         }
 
-        /***************************************************/
-        /**** Public Methods                            ****/
+        /*****************************************************/
+        /**** Private Methods                            ****/
         /***************************************************/
 
         private static void MatchGenericParameters(Type genericType, Type targetType, ref Dictionary<string, Type> dic)

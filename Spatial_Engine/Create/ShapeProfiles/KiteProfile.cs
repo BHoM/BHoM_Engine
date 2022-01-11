@@ -49,7 +49,7 @@ namespace BH.Engine.Spatial
 
             if (width1 <= 0 || angle1 <= 0 || thickness <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                Engine.Base.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 
@@ -79,7 +79,7 @@ namespace BH.Engine.Spatial
 
             if (angle2 < tolerance || angle2 > Math.PI - tolerance)
             {
-                Reflection.Compute.RecordError("Angles must be well between 0 and Pi");
+                Base.Compute.RecordError("Angles must be well between 0 and Pi");
                 return null;
             }
 

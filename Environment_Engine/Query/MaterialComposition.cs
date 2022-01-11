@@ -49,13 +49,13 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the material composition of a null panel.");
                 return null;
             }
 
             if (panel.Construction == null || panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
             {
-                BH.Engine.Reflection.Compute.RecordError("The Panel does not have a construction assigned");
+                BH.Engine.Base.Compute.RecordError("The Panel does not have a construction assigned");
                 return null;
             }
 
@@ -87,13 +87,13 @@ namespace BH.Engine.Environment
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the material composition of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the material composition of a null opening.");
                 return null;
             }
 
             if (opening.OpeningConstruction == null && opening.FrameConstruction == null)
             {
-                Engine.Reflection.Compute.RecordError("The Opening does not have any constructions assigned");
+                Engine.Base.Compute.RecordError("The Opening does not have any constructions assigned");
                 return null;
             }
 
@@ -131,7 +131,7 @@ namespace BH.Engine.Environment
 
             if(comps.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("The Opening does not have any constructions assigned to get an aggregated material composition from");
+                BH.Engine.Base.Compute.RecordError("The Opening does not have any constructions assigned to get an aggregated material composition from");
                 return null;
             }
 

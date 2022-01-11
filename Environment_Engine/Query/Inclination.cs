@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
         {
             if (environmentObject == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the inclination of a null environment object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the inclination of a null environment object.");
                 return -1;
             }
 

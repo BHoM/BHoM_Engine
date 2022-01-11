@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
                 return curve.ControlPoints.LastOrDefault();
             else
             {
-                Reflection.Compute.RecordError("EndPoint is not implemented for periodic NurbsCurves");
+                Base.Compute.RecordError("EndPoint is not implemented for periodic NurbsCurves");
                 return null;
             }
         }
@@ -118,7 +118,7 @@ namespace BH.Engine.Geometry
 
         private static Point EndPoint(this ICurve curve)
         {
-            Reflection.Compute.RecordError("EndPoint is not implemented for curve of type: " + curve.GetType().Name + ". ");
+            Base.Compute.RecordError("EndPoint is not implemented for curve of type: " + curve.GetType().Name + ". ");
             return null;
         }
 

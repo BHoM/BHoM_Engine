@@ -51,13 +51,13 @@ namespace BH.Engine.Diffing
         {
             if (pastRevision == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the diff between revisions when the past revision is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the diff between revisions when the past revision is null.");
                 return null;
             }
 
             if (followingRevision == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the diff between revisions when the following revision is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the diff between revisions when the following revision is null.");
                 return null;
             }
 

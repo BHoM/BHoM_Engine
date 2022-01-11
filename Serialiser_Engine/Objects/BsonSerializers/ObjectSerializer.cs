@@ -185,7 +185,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     return reader.ReadString();
             }
 
-            Engine.Reflection.Compute.RecordError($"ObjectSerializer does not support BSON type '{currentBsonType}'.");
+            Engine.Base.Compute.RecordError($"ObjectSerializer does not support BSON type '{currentBsonType}'.");
             return null;
         }
 
@@ -313,7 +313,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
             catch (Exception e)
             {
                 if (e.Message.Contains("Could not load file or assembly"))
-                    Engine.Reflection.Compute.RecordError(e.Message);
+                    Engine.Base.Compute.RecordError(e.Message);
 
                 context.Reader.ReturnToBookmark(bookmark);
                 DeprecatedSerializer deprecatedSerialiser = new DeprecatedSerializer();

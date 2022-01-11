@@ -58,7 +58,7 @@ namespace BH.Engine.Graphics.Scales
         {
             if(scale == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the scale of a null linear scale object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the scale of a null linear scale object.");
                 return null;
             }
 
@@ -75,7 +75,7 @@ namespace BH.Engine.Graphics.Scales
         {
             if (scale == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the scale of a null ordinal scale object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the scale of a null ordinal scale object.");
                 return null;
             }
 

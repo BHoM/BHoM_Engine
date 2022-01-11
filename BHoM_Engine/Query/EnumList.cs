@@ -20,13 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -34,11 +33,10 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
-        [Output("typeDictionary", "Dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
-        public static Dictionary<string, List<Type>> BHoMTypeDictionary()
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMEnumList()")]
+        public static List<Type> BHoMEnumList()
         {
-            return Global.BHoMTypeDictionary.ToDictionary(x => x.Key, x => x.Value);
+            return BHoMTypeList().Where(x => x.IsEnum).ToList();
         }
 
         /***************************************************/

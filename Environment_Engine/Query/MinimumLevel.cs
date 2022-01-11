@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
         {
             if (panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the minimum level of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the minimum level of a null panel.");
                 return -1;
             }
 
@@ -82,7 +82,7 @@ namespace BH.Engine.Environment
         {
             if (opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the minimum level of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the minimum level of a null opening.");
                 return -1;
             }
 

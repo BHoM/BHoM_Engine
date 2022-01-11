@@ -20,39 +20,50 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Architecture.Elements;
 using BH.oM.Base.Attributes;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 
-namespace BH.Engine.Architecture.Elements
+namespace BH.Engine.Base
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
-        public static Level Level(double elevation)
+        [Description("Returns all BHoM methods loaded in the current domain.")]
+        [Output("methods", "List of BHoM methods loaded in the current domain.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMMethodList()")]
+        public static List<MethodInfo> BHoMMethodList()
         {
-            return new Level
-            {
-                Elevation = elevation
-            };
+            return Global.BHoMMethodList.ToList();
         }
 
         /***************************************************/
 
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Level superseded by BH.oM.Geometry.SettingOut.Level")]
-        public static Level Level(double elevation, string name)
+        [Description("Returns all methods loaded in the current domain.")]
+        [Output("methods", "List of all methods loaded in the current domain.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AllMethodList()")]
+        public static List<MethodBase> AllMethodList()
         {
-            return new Level
-            {
-                Elevation = elevation,
-                Name = name,
-            };
+            return Global.AllMethodList.ToList();
         }
+
+        /***************************************************/
+
+        [Description("Returns all external methods loaded in the current domain.")]
+        [Output("methods", "List of external methods loaded in the current domain.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExternalMethodList()")]
+        public static List<MethodBase> ExternalMethodList()
+        {
+            return Global.ExternalMethodList.ToList();
+        }
+
+        /***************************************************/
     }
 }
-
 
 

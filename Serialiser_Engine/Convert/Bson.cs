@@ -209,7 +209,7 @@ namespace BH.Engine.Serialiser
 
         private static void RegisterClassMaps()
         {
-            BH.Engine.Reflection.Query.BHoMTypeList().ForEach(x => Compute.RegisterClassMap(x));
+            BH.Engine.Base.Query.BHoMTypeList().ForEach(x => Compute.RegisterClassMap(x));
             Compute.RegisterClassMap(typeof(System.Drawing.Color));
             Compute.RegisterClassMap(typeof(MethodInfo));
             Compute.RegisterClassMap(typeof(ConstructorInfo));

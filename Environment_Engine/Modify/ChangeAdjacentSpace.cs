@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot change the adjacent space of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot change the adjacent space of a null panel.");
                 return panel;
             }
 
@@ -69,14 +69,14 @@ namespace BH.Engine.Environment
         {
             if(panels == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot change the adjancent spaces of null panels.");
+                BH.Engine.Base.Compute.RecordError("Cannot change the adjancent spaces of null panels.");
                 return panels;
             }
 
             List<Panel> clonedPanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
             if (spaceNamesToChange.Count != replacementSpaceNames.Count)
             {
-                BH.Engine.Reflection.Compute.RecordError("Please ensure the number of replacement space names matches the number of changing space names. Panels returned without change");
+                BH.Engine.Base.Compute.RecordError("Please ensure the number of replacement space names matches the number of changing space names. Panels returned without change");
                 return clonedPanels;
             }
 

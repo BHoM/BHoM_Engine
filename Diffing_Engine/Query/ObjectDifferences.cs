@@ -87,7 +87,7 @@ namespace BH.Engine.Diffing
 
             // Alert if the maximum properties cap was hit.
             if (kellermanResult.Differences.Count == cc.MaxPropertyDifferences)
-                BH.Engine.Reflection.Compute.RecordWarning($"Hit the limit of {nameof(cc.MaxPropertyDifferences)} specified in the {nameof(oM.Base.ComparisonConfig)}.");
+                BH.Engine.Base.Compute.RecordWarning($"Hit the limit of {nameof(cc.MaxPropertyDifferences)} specified in the {nameof(oM.Base.ComparisonConfig)}.");
 
             // Iterate all property differences found by Kellerman.
             string objectFullName = pastObject == null ? pastObject.GetType().FullName : followingObject.GetType().FullName;
@@ -117,7 +117,7 @@ namespace BH.Engine.Diffing
                 // Check if there is a `PropertyComparisonInclusion()` extension method available for this property difference.
                 object comparisonInclusionFromExtensionMethod = null;
                 object[] parameters = new object[] { kellermanPropertyDifference.ParentObject2, propertyFullName, comparisonConfig };
-                if (BH.Engine.Reflection.Compute.TryRunExtensionMethod(kellermanPropertyDifference.ParentObject1, "ComparisonInclusion", parameters, out comparisonInclusionFromExtensionMethod))
+                if (BH.Engine.Base.Compute.TryRunExtensionMethod(kellermanPropertyDifference.ParentObject1, "ComparisonInclusion", parameters, out comparisonInclusionFromExtensionMethod))
                 {
                     ComparisonInclusion comparisonInclusion = comparisonInclusionFromExtensionMethod as ComparisonInclusion;
                     if (comparisonInclusion != null && comparisonInclusion.Include)

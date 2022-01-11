@@ -46,13 +46,13 @@ namespace BH.Engine.Diffing
         {
             if(objects == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a revision from a null collection of objects.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a revision from a null collection of objects.");
                 return null;
             }
 
             if(streamId == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a revision from a null stream ID.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a revision from a null stream ID.");
                 return null;
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Diffing
 
             Guid _streamId;
             if (!Convert.TryParseObjectToGuid(streamId, out _streamId))
-                BH.Engine.Reflection.Compute.RecordError($"Specified input in {nameof(streamId)} is not valid.");
+                BH.Engine.Base.Compute.RecordError($"Specified input in {nameof(streamId)} is not valid.");
 
             return _streamId;
         }

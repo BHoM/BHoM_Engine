@@ -281,7 +281,7 @@ namespace BH.Engine.Geometry
 
         private static List<Point> PlaneIntersections(this ICurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"PlaneIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
+            Base.Compute.RecordError($"PlaneIntersections is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
         }
 

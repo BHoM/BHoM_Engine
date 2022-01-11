@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,19 +38,19 @@ namespace BH.Engine.Serialiser
         {
             if(type == null)
             {
-                Compute.RecordError("Cannot create a method base from a null type.");
+                Base.Compute.RecordError("Cannot create a method base from a null type.");
                 return null;
             }
             
             if(methodName == null)
             {
-                Compute.RecordError("Cannot create a method base from a null method name.");
+                Base.Compute.RecordError("Cannot create a method base from a null method name.");
                 return null;
             }
 
             if(paramTypeNames == null)
             {
-                Compute.RecordWarning("The 'paramTypeNames' input is null and was replaced by an empty list");
+                Base.Compute.RecordWarning("The 'paramTypeNames' input is null and was replaced by an empty list");
                 paramTypeNames = new List<string>();
             }
 
@@ -90,7 +90,7 @@ namespace BH.Engine.Serialiser
                 ParameterInfo[] parameters = method.GetParameters();
                 if (parameters.Length == paramTypeNames.Count)
                 {
-                    List<Type> types = paramTypeNames.Select(x => Reflection.Create.Type(x)).ToList();
+                    List<Type> types = paramTypeNames.Select(x => Base.Create.Type(x)).ToList();
 
                     bool matching = true;
                     for (int i = 0; i < parameters.Length; i++)
@@ -129,7 +129,7 @@ namespace BH.Engine.Serialiser
                         {
                             try
                             {
-                                MethodInfo result = Compute.MakeGenericFromInputs(method as MethodInfo, types);
+                                MethodInfo result = Base.Compute.MakeGenericFromInputs(method as MethodInfo, types);
                                 if (result != null)
                                     return result;
                             }
@@ -149,19 +149,19 @@ namespace BH.Engine.Serialiser
         {
             if (type == null)
             {
-                Compute.RecordError("Cannot create a method base from a null type.");
+                Base.Compute.RecordError("Cannot create a method base from a null type.");
                 return null;
             }
 
             if (methodName == null)
             {
-                Compute.RecordError("Cannot create a method base from a null method name.");
+                Base.Compute.RecordError("Cannot create a method base from a null method name.");
                 return null;
             }
 
             if (paramTypes == null)
             {
-                Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
+                Base.Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
                 paramTypes = new List<Type>();
             }
 

@@ -40,7 +40,7 @@ namespace BH.Engine.Spatial
         [Output("element0D", "A IElement0D with the properties of 'element0D' and the location of 'point'.")]
         public static IElement0D ISetGeometry(this IElement0D element0D, Point point)
         {
-            return Reflection.Compute.RunExtensionMethod(element0D, "SetGeometry", new object[] { point }) as IElement0D;
+            return Base.Compute.RunExtensionMethod(element0D, "SetGeometry", new object[] { point }) as IElement0D;
         }
 
         /******************************************/
@@ -53,7 +53,7 @@ namespace BH.Engine.Spatial
         [Output("element1D", "A IElement1D with the properties of 'element1D' and the location of 'curve'.")]
         public static IElement1D ISetGeometry(this IElement1D element1D, ICurve curve)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "SetGeometry", new object[] { curve }) as IElement1D;
+            return Base.Compute.RunExtensionMethod(element1D, "SetGeometry", new object[] { curve }) as IElement1D;
         }
 
         /******************************************/

@@ -47,13 +47,13 @@ namespace BH.Engine.Environment
         {
             if(panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the internal 2D elements of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the internal 2D elements of a null panel.");
                 return panel;
             }
             
             if(internalElements2D == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set null internal 2D elements to a panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot set null internal 2D elements to a panel.");
                 return panel;
             }
 

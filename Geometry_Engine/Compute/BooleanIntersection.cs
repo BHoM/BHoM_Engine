@@ -135,7 +135,7 @@ namespace BH.Engine.Geometry
         {
             if (!region.IsClosed(tolerance) || !refRegion.IsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Boolean Union works on closed regions.");
+                Base.Compute.RecordError("Boolean Union works on closed regions.");
                 return new List<Polyline>();
             }
 
@@ -243,13 +243,13 @@ namespace BH.Engine.Geometry
         {
             if (region is NurbsCurve || region is Ellipse || refRegion is NurbsCurve || refRegion is Ellipse)
             {
-                Reflection.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanIntersection.");
+                Base.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanIntersection.");
                 return null;
             }
 
             if (!region.IIsClosed(tolerance) || !refRegion.IIsClosed(tolerance))
             {
-                Reflection.Compute.RecordError("Boolean Intersection works on closed regions.");
+                Base.Compute.RecordError("Boolean Intersection works on closed regions.");
                 return new List<PolyCurve>();
             }
 

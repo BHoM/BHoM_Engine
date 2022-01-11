@@ -95,13 +95,13 @@ namespace BH.Engine.Diffing
 
                 if (pastObjsIdsDistinct.Count() != pastObjectsIds.Count())
                 {
-                    if (recordEvents) BH.Engine.Reflection.Compute.RecordWarning($"Some of the input {pastObjectsIds} were duplicate.");
+                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {pastObjectsIds} were duplicate.");
                     duplicateIdsFound = true;
                 }
 
                 if (follObjsIdsDistinct.Count() != followingObjectsIds.Count())
                 {
-                    if (recordEvents) BH.Engine.Reflection.Compute.RecordWarning($"Some of the input {followingObjectsIds} were duplicate.");
+                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {followingObjectsIds} were duplicate.");
                     duplicateIdsFound = true;
                 }
 
@@ -112,13 +112,13 @@ namespace BH.Engine.Diffing
             // Check if input objects and correspondent Id lists are of equal size.
             if (pastObjects.Count() != pastObjectsIds.Count())
             {
-                if (recordEvents) BH.Engine.Reflection.Compute.RecordError($"The number of input `{nameof(pastObjects)}` must be the same as the number of input `{nameof(pastObjectsIds)}`.");
+                if (recordEvents) BH.Engine.Base.Compute.RecordError($"The number of input `{nameof(pastObjects)}` must be the same as the number of input `{nameof(pastObjectsIds)}`.");
                 return null;
             }
 
             if (followingObjects.Count() != followingObjectsIds.Count())
             {
-                if (recordEvents) BH.Engine.Reflection.Compute.RecordError($"The number of input `{nameof(followingObjects)}` must be the same as the number of input `{nameof(followingObjectsIds)}`.");
+                if (recordEvents) BH.Engine.Base.Compute.RecordError($"The number of input `{nameof(followingObjects)}` must be the same as the number of input `{nameof(followingObjectsIds)}`.");
                 return null;
             }
 
@@ -232,7 +232,7 @@ namespace BH.Engine.Diffing
                 if (!addedObjs.Any() && !removedObjs.Any())
                 {
                     // If no Added/Removed objs were found, then the input objects had no valid Ids. Return Error.
-                    if (recordEvents) BH.Engine.Reflection.Compute.RecordError(
+                    if (recordEvents) BH.Engine.Base.Compute.RecordError(
                         $"\nSome or all of the input objects had no valid ID/Key usable for diffing." +
                         $"\nPlease make sure that:" +
                         $"\n\t * all the objects that changed between revisions were included in the input;" +
@@ -241,7 +241,7 @@ namespace BH.Engine.Diffing
                     return null;
                 }
                 else // If some Added/Removed objs were found, then simply add a Warning to inform the user that the Id used for the Diffing may have been invalid.
-                    if (recordEvents) BH.Engine.Reflection.Compute.RecordWarning(
+                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning(
                         $"\nThe {nameof(pastObjects)} and {nameof(followingObjects)} were either identical or completely different." +
                         $"\nPlease make sure that:" +
                         $"\n\t * all the objects that changed between revisions were included in the input;" +
@@ -253,7 +253,7 @@ namespace BH.Engine.Diffing
             {
                 // If no modified object was found and some PropertiesToConsider was specified,
                 // add a Note to remind the user that if no differences were found it's probably because of that.
-                if (recordEvents) BH.Engine.Reflection.Compute.RecordNote(
+                if (recordEvents) BH.Engine.Base.Compute.RecordNote(
                     $"No {nameof(BH.oM.Diffing.Diff.ModifiedObjects)} were found. Make sure that the specified `{nameof(DiffingConfig)}.{nameof(DiffingConfig.ComparisonConfig)}.{nameof(DiffingConfig.ComparisonConfig.PropertiesToConsider)}` is set correctly.");
             }
 

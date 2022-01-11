@@ -50,18 +50,18 @@ namespace BH.Engine.Spatial
             //Checks for positions and profiles
             if (positions.Count != profiles.Count)
             {
-                Reflection.Compute.RecordError("Number of positions and profiles provided are not equal");
+                Base.Compute.RecordError("Number of positions and profiles provided are not equal");
                 return null;
             }
             else if (positions.Exists((double d) => { return d > 1; }) || positions.Exists((double d) => { return d < 0; }))
             {
-                Reflection.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
+                Base.Compute.RecordError("Positions must exist between 0 and 1 (inclusive)");
                 return null;
             }
 
             if (positions.Zip(positions.Skip(1), (a, b) => new { a, b }).Any(p => p.a > p.b))
             {
-                Reflection.Compute.RecordError("Positions must be sorted in ascending order.");
+                Base.Compute.RecordError("Positions must be sorted in ascending order.");
                 return null;
             }
 
@@ -76,13 +76,13 @@ namespace BH.Engine.Spatial
             }
             else if (!(interpolationOrder.Count == positions.Count - 1))
             {
-                Reflection.Compute.RecordError("InterpolationOrder is between the profiles provided. Therefore, the number of interpolationOrder should be one less (n - 1) than the number of profiles/positions.");
+                Base.Compute.RecordError("InterpolationOrder is between the profiles provided. Therefore, the number of interpolationOrder should be one less (n - 1) than the number of profiles/positions.");
                 return null;
             }
 
             if (interpolationOrder.Any(x => x < 1))
             {
-                Reflection.Compute.RecordError("The interpolationOrder values must be greater than 1.");
+                Base.Compute.RecordError("The interpolationOrder values must be greater than 1.");
                 return null;
             }
 

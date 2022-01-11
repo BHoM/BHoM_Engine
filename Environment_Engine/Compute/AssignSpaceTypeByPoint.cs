@@ -55,7 +55,7 @@ namespace BH.Engine.Environment
                 spaceType = (SpaceType)value;
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("This string does not match any of the options for SpaceType Enum");
+                BH.Engine.Base.Compute.RecordError("This string does not match any of the options for SpaceType Enum");
                 return null;
             }
 

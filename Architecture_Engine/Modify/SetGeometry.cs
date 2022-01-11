@@ -47,7 +47,7 @@ namespace BH.Engine.Architecture
         {
             if (room == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null room.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null room.");
                 return room;
             }
 
@@ -67,20 +67,20 @@ namespace BH.Engine.Architecture
         {
             if (opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null opening.");
                 return null;
             }
 
             if (locationPoint == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of an opening to a null point.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of an opening to a null point.");
                 return null;
             }
 
             Opening clone = opening.ShallowClone();
             clone.CoordinateSystem = new Cartesian(locationPoint, opening.CoordinateSystem.X, opening.CoordinateSystem.Y, opening.CoordinateSystem.Z);
 
-            BH.Engine.Reflection.Compute.RecordWarning("Only the location point of the opening has been updated - to update its dimension, please modify relevant properties of the Profile.");
+            BH.Engine.Base.Compute.RecordWarning("Only the location point of the opening has been updated - to update its dimension, please modify relevant properties of the Profile.");
             return clone;
         }
 
@@ -94,14 +94,14 @@ namespace BH.Engine.Architecture
         {
             if (opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the geometry of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null opening.");
                 return null;
             }
             
             Opening clone = opening.ShallowClone();
             clone.CoordinateSystem = coordinateSystem;
             
-            BH.Engine.Reflection.Compute.RecordWarning("Only the coordinate system of the opening has been updated - to update its dimension, please modify relevant properties of the Profile.");
+            BH.Engine.Base.Compute.RecordWarning("Only the coordinate system of the opening has been updated - to update its dimension, please modify relevant properties of the Profile.");
             return clone;
         }
 

@@ -47,7 +47,7 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot convert a null graph to a Dot Format.");
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null graph to a Dot Format.");
                 return "";
             }
 

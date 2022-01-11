@@ -48,7 +48,7 @@ namespace BH.Engine.Environment
         {
             if(construction == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the UValue of a null construction.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the UValue of a null construction.");
                 return 0.0;
             }
 

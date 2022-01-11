@@ -44,7 +44,7 @@ namespace BH.Engine.Data
             Dictionary<GraphNode<T>, int> level = new Dictionary<GraphNode<T>, int>();
             if (!adjacency.ContainsKey(startNode))
             {
-                Reflection.Compute.RecordError("startNode provided cannot be found in the adjacency dictionary. Ensure the node exists in the original graph");
+                Base.Compute.RecordError("startNode provided cannot be found in the adjacency dictionary. Ensure the node exists in the original graph");
                 return level;
             }   
             // dictionary to store when node has been visited

@@ -50,7 +50,7 @@ namespace BH.Engine.Base
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the List failed a null check. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the List failed a null check. {msg}");
 
                 return true;
             }
@@ -60,7 +60,7 @@ namespace BH.Engine.Base
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the List is empty. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the List is empty. {msg}");
 
                 return true;
             }

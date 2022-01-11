@@ -55,7 +55,7 @@ namespace BH.Engine.Spatial
         public static IElement2D ITransform(this IElement2D element2D, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
             object result;
-            if (!Reflection.Compute.TryRunExtensionMethod(element2D, "Transform", new object[] { transform, tolerance }, out result))
+            if (!Base.Compute.TryRunExtensionMethod(element2D, "Transform", new object[] { transform, tolerance }, out result))
                 result = element2D.Transform(transform, tolerance);
 
             return result as IElement2D;
@@ -71,7 +71,7 @@ namespace BH.Engine.Spatial
         public static IElement1D ITransform(this IElement1D element1D, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
             object result;
-            if (!Reflection.Compute.TryRunExtensionMethod(element1D, "Transform", new object[] { transform, tolerance }, out result))
+            if (!Base.Compute.TryRunExtensionMethod(element1D, "Transform", new object[] { transform, tolerance }, out result))
                 result = element1D.Transform(transform, tolerance);
 
             return result as IElement1D;
@@ -87,7 +87,7 @@ namespace BH.Engine.Spatial
         public static IElement0D ITransform(this IElement0D element0D, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
             object result;
-            if (!Reflection.Compute.TryRunExtensionMethod(element0D, "Transform", new object[] { transform, tolerance }, out result))
+            if (!Base.Compute.TryRunExtensionMethod(element0D, "Transform", new object[] { transform, tolerance }, out result))
                 result = element0D.Transform(transform, tolerance);
 
             return result as IElement0D;
@@ -102,7 +102,7 @@ namespace BH.Engine.Spatial
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 
@@ -128,7 +128,7 @@ namespace BH.Engine.Spatial
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 
@@ -141,7 +141,7 @@ namespace BH.Engine.Spatial
         {
             if (!transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Reflection.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 

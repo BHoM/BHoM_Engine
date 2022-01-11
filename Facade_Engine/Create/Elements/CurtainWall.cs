@@ -57,7 +57,7 @@ namespace BH.Engine.Facade
         {
             if(outlines == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a CurtainWall from a null collection of outlines.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a CurtainWall from a null collection of outlines.");
                 return null;
             }
 
@@ -67,7 +67,7 @@ namespace BH.Engine.Facade
             bool useConstructions = true;
             if (outlines.Count() != constructions.Count())
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Outline and Construction list lengths do not match. CurtainWall will be created with no Opening Constructions applied.");
+                BH.Engine.Base.Compute.RecordWarning("Outline and Construction list lengths do not match. CurtainWall will be created with no Opening Constructions applied.");
                 useConstructions = false;
             }
 
@@ -83,7 +83,7 @@ namespace BH.Engine.Facade
                     continue;
                 if (!outline.IIsClosed())
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlines which each represent one opening in the CurtainWall.");
+                    BH.Engine.Base.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlines which each represent one opening in the CurtainWall.");
                 }
                 else
                 {
@@ -137,7 +137,7 @@ namespace BH.Engine.Facade
         {
             if (outlines == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a CurtainWall from a null collection of outlines.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a CurtainWall from a null collection of outlines.");
                 return null;
             }
 
@@ -147,7 +147,7 @@ namespace BH.Engine.Facade
                 ICurve outline = outlines.ElementAt(i);
                 if (outline.IIsClosed() != true)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlines which each represent one opening in the CurtainWall.");
+                    BH.Engine.Base.Compute.RecordError("Outline at index " + i + " was not closed and was excluded from the created CurtainWall. This method only works with closed outlines which each represent one opening in the CurtainWall.");
                 }
                 else
                 {

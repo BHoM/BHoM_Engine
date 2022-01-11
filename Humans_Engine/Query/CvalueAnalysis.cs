@@ -48,7 +48,7 @@ namespace BH.Engine.Humans.ViewQuality
         {
             if (audience == null || settings == null || playingArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the CvalueAnalysis if the audience, settings, or playing area are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the CvalueAnalysis if the audience, settings, or playing area are null.");
                 return new List<Cvalue>();
             }
 
@@ -68,7 +68,7 @@ namespace BH.Engine.Humans.ViewQuality
         {
             if (audience == null || settings == null || playingArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the CvalueAnalysis if the audience, settings, or playing area are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the CvalueAnalysis if the audience, settings, or playing area are null.");
                 return new List<List<Cvalue>>();
             }
             List<List<Cvalue>> results = new List<List<Cvalue>>();

@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
             // Check that file passed exists, and exit if it doesn't while passing a record of your failure to the Error Log
             if (!File.Exists(filePath))
             {
-                BH.Engine.Reflection.Compute.RecordError("File not found. Did you give the correct path?");
+                BH.Engine.Base.Compute.RecordError("File not found. Did you give the correct path?");
                 return null;
             }
 
@@ -57,7 +57,7 @@ namespace BH.Engine.Environment
             // Check to see if the file passed contains the requisite number of lines to parse as an EPW (> 8760)
             if (lines.Count() < 8760)
             {
-                BH.Engine.Reflection.Compute.RecordError("The file passed has less than 8760 lines. Are you sure it's an EPW?");
+                BH.Engine.Base.Compute.RecordError("The file passed has less than 8760 lines. Are you sure it's an EPW?");
                 return null;
             }
 
@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
             // Check that file header is capable of being parsed as location data
             if (header.Count() < 10)
             {
-                BH.Engine.Reflection.Compute.RecordError("The file passed has an odd header structure. Are you sure it's an EPW?");
+                BH.Engine.Base.Compute.RecordError("The file passed has an odd header structure. Are you sure it's an EPW?");
                 return null;
             }
 
@@ -137,7 +137,7 @@ namespace BH.Engine.Environment
             }
             catch (Exception e)
             {
-                BH.Engine.Reflection.Compute.RecordError(e.ToString());
+                BH.Engine.Base.Compute.RecordError(e.ToString());
                 return null;
             }
 
@@ -150,7 +150,7 @@ namespace BH.Engine.Environment
 
             if ((data.Count - 1) < index)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("No data for " + dataName + " could be extracted from the EPW");
+                BH.Engine.Base.Compute.RecordWarning("No data for " + dataName + " could be extracted from the EPW");
                 return new List<double>();
             }
 
@@ -160,7 +160,7 @@ namespace BH.Engine.Environment
             }
             catch (Exception e)
             {
-                BH.Engine.Reflection.Compute.RecordError("An error occurred in converting the " + dataName + " data. The error was\n" + e.ToString());
+                BH.Engine.Base.Compute.RecordError("An error occurred in converting the " + dataName + " data. The error was\n" + e.ToString());
                 return new List<double>();
             }
         }

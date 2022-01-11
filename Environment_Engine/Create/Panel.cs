@@ -53,7 +53,7 @@ namespace BH.Engine.Environment
         {
             if(brep == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Could not create panels from a null brep.");
+                BH.Engine.Base.Compute.RecordError("Could not create panels from a null brep.");
                 return null;
             }
 
@@ -70,7 +70,7 @@ namespace BH.Engine.Environment
         {
             if(surfaces == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Could not create panels from null surfaces.");
+                BH.Engine.Base.Compute.RecordError("Could not create panels from null surfaces.");
                 return null;
             }
 

@@ -50,7 +50,7 @@ namespace BH.Engine.Facade
         {
             if(edges == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create an opening from a null collection of edges.");
+                BH.Engine.Base.Compute.RecordError("Cannot create an opening from a null collection of edges.");
                 return null;
             }
 
@@ -64,12 +64,12 @@ namespace BH.Engine.Facade
 
             if (joined.Count == 0)
             {
-                Reflection.Compute.RecordError("Could not join Curves. Opening not Created.");
+                Base.Compute.RecordError("Could not join Curves. Opening not Created.");
                 return null;
             }
             else if (joined.Count > 1)
             {
-                Reflection.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
+                Base.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
                 return null;
             }
 
@@ -78,7 +78,7 @@ namespace BH.Engine.Facade
                 return new Opening { Edges = externalEdges.Select(x => new FrameEdge { Curve = x, FrameEdgeProperty = frameEdgeProperty }).ToList(), OpeningConstruction = construction, Name = name };
             else
             {
-                Reflection.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
+                Base.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
                 return null;
             }
             
@@ -98,7 +98,7 @@ namespace BH.Engine.Facade
         {
             if (edges == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create an opening from a null collection of edges.");
+                BH.Engine.Base.Compute.RecordError("Cannot create an opening from a null collection of edges.");
                 return null;
             }
 
@@ -108,12 +108,12 @@ namespace BH.Engine.Facade
 
             if (joined.Count == 0)
             {
-                Reflection.Compute.RecordError("Could not join Curves. Opening not created.");
+                Base.Compute.RecordError("Could not join Curves. Opening not created.");
                 return null;
             }
             else if (joined.Count > 1)
             {
-                Reflection.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
+                Base.Compute.RecordError("Provided curves could not be joined to a single curve. Opening not created.");
                 return null;
             }
 
@@ -143,7 +143,7 @@ namespace BH.Engine.Facade
             }
             else
             {
-                Reflection.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
+                Base.Compute.RecordError("Provided curves do not form a closed loop. Could not create opening.");
                 return null;
             }
 

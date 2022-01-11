@@ -53,7 +53,7 @@ namespace BH.Engine.Facade
         {
             if (opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the Frame Geometry of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the Frame Geometry of a null opening.");
                 return null;
             }
 
@@ -62,7 +62,7 @@ namespace BH.Engine.Facade
 
             if (!extCrv.IsPlanar(Tolerance.Distance))
             {
-                BH.Engine.Reflection.Compute.RecordWarning("This method only works on planar curves. Opening " + opening.BHoM_Guid + " has non-planar curves and will be ignored.");
+                BH.Engine.Base.Compute.RecordWarning("This method only works on planar curves. Opening " + opening.BHoM_Guid + " has non-planar curves and will be ignored.");
                 return null;
             }
             
@@ -74,7 +74,7 @@ namespace BH.Engine.Facade
 
             if (widths.Min() == 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " has no 2D frame geometry because frame edges all have widths of zero.");
+                BH.Engine.Base.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " has no 2D frame geometry because frame edges all have widths of zero.");
                 return null;
             }
 

@@ -1063,7 +1063,7 @@ namespace BH.Engine.Geometry
 
         private static Output<Point, Point> CurveProximity(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"CurveProximity is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
+            Base.Compute.RecordError($"CurveProximity is not implemented for a combination of {curve1.GetType().Name} and {curve2.GetType().Name}.");
             return null;
         }
 

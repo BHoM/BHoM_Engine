@@ -38,7 +38,7 @@ namespace BH.Engine.Spatial
         [Output("point", "The IElement0Ds base geometrical point object.")]
         public static Point IGeometry(this IElement0D element0D)
         {
-            return Reflection.Compute.RunExtensionMethod(element0D, "Geometry") as Point;
+            return Base.Compute.RunExtensionMethod(element0D, "Geometry") as Point;
         }
 
         /******************************************/
@@ -50,7 +50,7 @@ namespace BH.Engine.Spatial
         [Output("curve", "The IElement1Ds base geometrical curve object.")]
         public static ICurve IGeometry(this IElement1D element1D)
         {
-            return Reflection.Compute.RunExtensionMethod(element1D, "Geometry") as ICurve;
+            return Base.Compute.RunExtensionMethod(element1D, "Geometry") as ICurve;
         }
 
         /******************************************/

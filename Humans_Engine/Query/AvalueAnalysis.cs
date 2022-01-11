@@ -53,7 +53,7 @@ namespace BH.Engine.Humans.ViewQuality
         {
             if (audience == null || settings == null || playingArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the AvalueAnalysis if the audience, settings, or playing area are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the AvalueAnalysis if the audience, settings, or playing area are null.");
                 return new List<Avalue>();
             }
             List<Avalue> results = EvaluateAvalue(audience, settings, playingArea, parallelProcess);
@@ -74,7 +74,7 @@ namespace BH.Engine.Humans.ViewQuality
             List<List<Avalue>> results = new List<List<Avalue>>();
             if (audience == null || settings == null || playingArea == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the AvalueAnalysis if the audience, settings, or playing area are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the AvalueAnalysis if the audience, settings, or playing area are null.");
                 return results;
             }
             foreach (Audience a in audience)
@@ -312,12 +312,12 @@ namespace BH.Engine.Humans.ViewQuality
                 };
 
                 m_AvalueSettings.EffectiveConeOfVision = Geometry.Create.Polyline(points);
-                Reflection.Compute.RecordNote("No Cone Of Vision was provided by the user the default Cone Of Vision has been created.");
+                Base.Compute.RecordNote("No Cone Of Vision was provided by the user the default Cone Of Vision has been created.");
             }
 
             if (!m_AvalueSettings.EffectiveConeOfVision.IsPlanar() || !m_AvalueSettings.EffectiveConeOfVision.IsPlanar())
             {
-                Reflection.Compute.RecordError("Cone Of Vision should be planar and closed.");
+                Base.Compute.RecordError("Cone Of Vision should be planar and closed.");
                 return false;
             }
             //get the view angle from the cone

@@ -42,7 +42,7 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot modify a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot modify a null graph.");
                 return null;
             }
 

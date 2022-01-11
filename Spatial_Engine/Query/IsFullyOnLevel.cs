@@ -96,7 +96,7 @@ namespace BH.Engine.Spatial
 
         private static bool IsFullyOnLevel(this IElement element, Level level, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            Reflection.Compute.RecordError($"IsFullyOnLevel is not implemented for IElements of type: {element.GetType().Name}.");
+            Base.Compute.RecordError($"IsFullyOnLevel is not implemented for IElements of type: {element.GetType().Name}.");
             return false;
         }
 

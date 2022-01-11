@@ -40,7 +40,7 @@ namespace BH.Engine.Reflection
         {
             if(@interface == null)
             {
-                Compute.RecordWarning("Cannot query the implementing types of a null type.");
+                Base.Compute.RecordWarning("Cannot query the implementing types of a null type.");
                 return new List<Type>();
             }
 
@@ -48,7 +48,7 @@ namespace BH.Engine.Reflection
                 return new List<Type>();
 
             List<Type> implemented = new List<Type>();
-            foreach (Type t in BHoMTypeList())
+            foreach (Type t in Base.Query.BHoMTypeList())
             {
                 if (@interface.IsAssignableFrom(t))
                     implemented.Add(t);

@@ -91,7 +91,7 @@ namespace BH.Engine.Spatial
 
             if (planar && !newElement2d.IsPlanar()) //If the original element was planar we need to ensure that result is planar as well.
             {
-                Reflection.Compute.RecordWarning("Rounding the coordinates of an IElement2D couldn't be achieved without losing planarity. No action has been taken.");
+                Base.Compute.RecordWarning("Rounding the coordinates of an IElement2D couldn't be achieved without losing planarity. No action has been taken.");
                 return element2d;
             }
 
@@ -119,7 +119,7 @@ namespace BH.Engine.Spatial
 
         private static IElement RoundCoordinates(this IElement element, int decimalPlaces = 6)
         {
-            Engine.Reflection.Compute.RecordError("No RoundCoordinates method has been implemented for: " + element.GetType().Name + ". The object has not been modified.");
+            Engine.Base.Compute.RecordError("No RoundCoordinates method has been implemented for: " + element.GetType().Name + ". The object has not been modified.");
             return element;
         }
 

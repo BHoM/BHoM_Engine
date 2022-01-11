@@ -49,7 +49,7 @@ namespace BH.Engine.Diffing
 
             List<MethodBase> adaptersDiffingMethods = new List<MethodBase>();
 
-            List<MethodBase> diffingMethods = BH.Engine.Reflection.Query.AllMethodList()
+            List<MethodBase> diffingMethods = BH.Engine.Base.Query.AllMethodList()
                 .Where(x => x.IsPublic)
                 .Where(x => x.Name.EndsWith("Diffing"))
                 .Where(mi => mi.DeclaringType.Module.Name != typeof(BH.Engine.Diffing.Query).Module.Name)

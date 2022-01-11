@@ -51,19 +51,19 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the AStar shortest path from a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the AStar shortest path from a null graph.");
                 return null;
             }
 
             if (start == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the AStar shortest path between two points when the start is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the AStar shortest path between two points when the start is null.");
                 return null;
             }
 
             if (end == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the AStar shortest path between two points when the end is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the AStar shortest path between two points when the end is null.");
                 return null;
             }
 
@@ -82,7 +82,7 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the AStar shortest path from a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the AStar shortest path from a null graph.");
                 return null;
             }
 
@@ -90,7 +90,7 @@ namespace BH.Engine.Analytical
 
             if (m_GeometricGraph.Entities.Count == 0 || m_GeometricGraph.Relations.Count == 0)
             {
-                Reflection.Compute.RecordWarning("The graph provided does not contain sufficient spatial entities or relations.\n" +
+                Base.Compute.RecordWarning("The graph provided does not contain sufficient spatial entities or relations.\n" +
                     "To use a star shortest path provide a graph where some entities implement IElement0D and spatial relations are defined between them.\n" +
                     "Shortest path is computed using Dijkstra shortest path instead.");
 
@@ -212,7 +212,7 @@ namespace BH.Engine.Analytical
         private static Guid FindClosestEnd()
         {
             //finds the closest accessible entity to the end when the search fails
-            Reflection.Compute.RecordWarning("Shortest path to target could not be computed. The shortest path to the accessible entity closest to the target has been computed.\n" +
+            Base.Compute.RecordWarning("Shortest path to target could not be computed. The shortest path to the accessible entity closest to the target has been computed.\n" +
                 " Check the target entity is connected to the Graph through links that are all traversable from the start.");
 
             double minDist = double.MaxValue;

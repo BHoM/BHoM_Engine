@@ -46,7 +46,7 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the adjacency of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the adjacency of a null graph.");
                 return new Dictionary<Guid, List<Guid>>();
             }
 

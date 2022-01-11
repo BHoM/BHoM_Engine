@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
         {
             if(spaceTime == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the date/time of a null space time object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the date/time of a null space time object.");
                 return System.DateTime.Now;
             }
 
@@ -63,7 +63,7 @@ namespace BH.Engine.Environment
         {
             if(time == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the date/time of a null time object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the date/time of a null time object.");
                 return System.DateTime.Now;
             }
 

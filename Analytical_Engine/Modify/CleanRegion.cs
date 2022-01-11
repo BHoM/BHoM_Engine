@@ -44,7 +44,7 @@ namespace BH.Engine.Analytical
         {
             if (region == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot clean the perimeter of a null region.");
+                BH.Engine.Base.Compute.RecordError("Cannot clean the perimeter of a null region.");
                 return;
             }
 

@@ -81,7 +81,7 @@ namespace BH.Engine.Analytical
         {
             if(region == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot set the outline 1D elements of a null region.");
+                BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null region.");
                 return null;
             }
 
@@ -94,13 +94,13 @@ namespace BH.Engine.Analytical
             if (joinedCurves.Count() == 1)
             {
                 if (!joinedCurves.First().IIsClosed())
-                    Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region do not form a closed loop.");
+                    Engine.Base.Compute.RecordWarning("The outline elements assigned to the region do not form a closed loop.");
 
                 r.Perimeter = joinedCurves.First();
             }
             else
             {
-                Engine.Reflection.Compute.RecordWarning("The outline elements assigned to the region are disjointed.");
+                Engine.Base.Compute.RecordWarning("The outline elements assigned to the region are disjointed.");
                 r.Perimeter = new PolyCurve { Curves = outlineElements.Cast<ICurve>().ToList() };
             }
 

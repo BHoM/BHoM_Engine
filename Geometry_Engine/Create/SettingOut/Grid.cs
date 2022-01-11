@@ -38,6 +38,8 @@ namespace BH.Engine.Geometry.SettingOut
         [Input("curve", "Curve to be used as grid curve. Will be projected to the XY Plane.")]
         [Input("name", "Optional name of the Grid.")]
         [Output("grid", "A Grid in the XY Plane.")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Grid(BH.oM.Geometry.ICurve)")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Grid(BH.oM.Geometry.ICurve, System.String)")]
         public static Grid Grid(ICurve curve, string name = "")
         {
             return new Grid
@@ -55,6 +57,8 @@ namespace BH.Engine.Geometry.SettingOut
         [Input("length", "Length of the output Grid line.", typeof(Length))]
         [Input("name", "Optional name of the Grid.")]
         [Output("grid", "A Grid in the XY Plane.")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Double)")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.String, System.Double)")]
         public static Grid Grid(Point origin, Vector direction, double length = 20, string name = "")
         {
             Point projectedOrigin = origin.Project(Plane.XY);

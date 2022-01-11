@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
         {
             if (boundingBox == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the height of a null bounding box.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the height of a null bounding box.");
                 return 0;
             }
 

@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
 
             if (k > 2)
             {
-                Engine.Reflection.Compute.RecordError("Binomial not implemented, hence derivatives higher than 2 of the NurbsCurve can't be calculated.");
+                Engine.Base.Compute.RecordError("Binomial not implemented, hence derivatives higher than 2 of the NurbsCurve can't be calculated.");
                 return null;
             }
 
@@ -101,7 +101,7 @@ namespace BH.Engine.Geometry
 
             if (k > 2 || l > 2)
             {
-                Engine.Reflection.Compute.RecordError("Binomial not implemented, hence derivatives higher than 2 of the NurbsCurve can't be calculated.");
+                Engine.Base.Compute.RecordError("Binomial not implemented, hence derivatives higher than 2 of the NurbsCurve can't be calculated.");
                 return null;
             }
 

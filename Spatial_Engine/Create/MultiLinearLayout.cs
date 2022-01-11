@@ -64,12 +64,12 @@ namespace BH.Engine.Spatial
         {
             if (numberOfPoints <= 0)
             {
-                Engine.Reflection.Compute.RecordError("MultiLinearLayout requires number of points to be at least 1.");
+                Engine.Base.Compute.RecordError("MultiLinearLayout requires number of points to be at least 1.");
                 return null;
             }
             if (parallelMinimumSpacing <= 0 || perpendicularMinimumSpacing <= 0)
             {
-                Engine.Reflection.Compute.RecordError("MultiLinearLayout requires the minimum spacing to be larger than 0.");
+                Engine.Base.Compute.RecordError("MultiLinearLayout requires the minimum spacing to be larger than 0.");
                 return null;
             }
 
@@ -77,7 +77,7 @@ namespace BH.Engine.Spatial
             if (projDir.Z != 0)
             {
                 projDir = new Vector { X = direction.X, Y = direction.Y };
-                Engine.Reflection.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
+                Engine.Base.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
             }
 
             return new MultiLinearLayout(numberOfPoints, parallelMinimumSpacing, perpendicularMinimumSpacing, projDir, offset, referencePoint);

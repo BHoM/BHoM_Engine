@@ -51,7 +51,7 @@ namespace BH.Engine.Spatial
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Profile failed a null check. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the Profile failed a null check. {msg}");
 
                 return true;
             }
@@ -72,7 +72,7 @@ namespace BH.Engine.Spatial
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the Layout2D failed a null check. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the Layout2D failed a null check. {msg}");
 
                 return true;
             }
@@ -93,7 +93,7 @@ namespace BH.Engine.Spatial
                 {
                     methodName = "Method";
                 }
-                Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the CurveLayout failed a null check. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the CurveLayout failed a null check. {msg}");
 
                 return true;
             }

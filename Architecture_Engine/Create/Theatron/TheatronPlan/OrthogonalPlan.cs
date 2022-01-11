@@ -37,7 +37,7 @@ namespace BH.Engine.Architecture.Theatron
         {
             if (parameters == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create an orthogonal plan from a null set of stadia parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create an orthogonal plan from a null set of stadia parameters.");
                 return null;
             }
 

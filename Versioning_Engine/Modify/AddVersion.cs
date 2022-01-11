@@ -37,7 +37,7 @@ namespace BH.Engine.Versioning
         public static void AddVersion(this BsonDocument document)
         {
             if (document != null)
-                document["_bhomVersion"] = Reflection.Query.BHoMVersion();
+                document["_bhomVersion"] = Base.Query.BHoMVersion();
         }
 
         /***************************************************/
@@ -47,7 +47,7 @@ namespace BH.Engine.Versioning
             if (writer != null)
             {
                 writer.WriteName("_bhomVersion");
-                writer.WriteString(Reflection.Query.BHoMVersion());
+                writer.WriteString(Base.Query.BHoMVersion());
             }
         }
 

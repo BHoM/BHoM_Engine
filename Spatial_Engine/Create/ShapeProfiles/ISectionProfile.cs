@@ -69,7 +69,7 @@ namespace BH.Engine.Spatial
 
             if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
             {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                Engine.Base.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
 

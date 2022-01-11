@@ -93,7 +93,7 @@ namespace BH.Engine.Analytical
 
         private static void RelationCurves(this Graph graph, IProjection projection)
         {
-            Reflection.Compute.RecordError("Modify method RelationCurves for IProjection provided has not been implemented.");
+            Base.Compute.RecordError("Modify method RelationCurves for IProjection provided has not been implemented.");
             return;
         }
 

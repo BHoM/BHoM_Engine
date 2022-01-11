@@ -28,7 +28,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Reflection;
-using BH.Engine.Serialiser;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
@@ -58,7 +57,7 @@ namespace BH.Engine.Base
         {
             if (tolerance < 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Tolerance cannot be less than 0.");
+                BH.Engine.Base.Compute.RecordError("Tolerance cannot be less than 0.");
                 return default(double);
             }
 
@@ -68,7 +67,7 @@ namespace BH.Engine.Base
 
             // First check if the tolerance can be converted into fractional digits, i.e. is a number in the form of 10^someExp.
             // This avoids imprecisions with the approximation formula below.
-            int fractionalDigits = Math.Abs(Convert.ToInt32(Math.Log10(tolerance)));
+            int fractionalDigits = Math.Abs(System.Convert.ToInt32(Math.Log10(tolerance)));
             if (tolerance < 1 && Math.Pow(10, -fractionalDigits) == tolerance)
                 // If so, just return Math.Round().
                 return Math.Round(number, fractionalDigits);
@@ -101,7 +100,7 @@ namespace BH.Engine.Base
 
             if (tolerance < 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("Tolerance cannot be less than 0.");
+                BH.Engine.Base.Compute.RecordError("Tolerance cannot be less than 0.");
                 return 0;
             }
 

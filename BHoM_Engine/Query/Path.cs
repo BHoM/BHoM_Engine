@@ -19,59 +19,66 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
-using BH.oM.Architecture.Elements;
-using System.Collections.Generic;
-using BH.Engine.Geometry;
 
-namespace BH.Engine.Architecture.Elements
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using BH.oM.Base.Attributes;
+
+namespace BH.Engine.Base
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid Grid(ICurve curve)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Path(System.Type)")]
+        public static string Path(this Type type)
         {
-            return new Grid
+            if(type == null)
             {
-                Curve = Geometry.Modify.IProject(curve, Plane.XY)
-            };
+                Compute.RecordError("Cannot query the path of a null type.");
+                return null;
+            }
+
+            return type.Namespace;
         }
 
         /***************************************************/
 
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid Grid(Point origin, Vector direction, double length = 20)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Path(System.Reflection.MethodBase, System.Boolean, System.Boolean)")]
+        public static string Path(this MethodBase method, bool userReturnTypeForCreate = true, bool useExtentionType = false) 
         {
-            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
-            return new Grid { Curve = line };
-        }
-
-        /***************************************************/
-
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid Grid(ICurve curve, string name)
-        {
-            return new Grid
+            if(method == null)
             {
-                Curve = Geometry.Modify.IProject(curve, Plane.XY),
-                Name = name,
-            };
+                Compute.RecordError("Cannot query the path of a null method base.");
+                return null;
+            }
+
+            Type type = method.DeclaringType;
+
+            if (userReturnTypeForCreate && type.Name == "Create" && method is MethodInfo)
+            {
+                Type returnType = ((MethodInfo)method).ReturnType.UnderlyingType().Type;
+                if (returnType.Namespace.StartsWith("BH."))
+                    type = returnType;
+            }
+            else if (useExtentionType && method.IsDefined(typeof(ExtensionAttribute), false))
+            {
+                ParameterInfo[] parameters = method.GetParameters();
+                if (parameters.Length > 0)
+                    type = parameters[0].ParameterType;
+            }
+
+            return type.ToText(true, true);
         }
 
         /***************************************************/
-
-        [Deprecated("2.4", "BH.Engine.Architecture.Elements.Grid superseded by BH.oM.Geometry.SettingOut.Grid")]
-        public static Grid Grid(Point origin, Vector direction, string name, double length = 20)
-        {
-            Line line = new Line { Start = new Point { X = origin.X, Y = origin.Y, Z = 0 }, End = origin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
-            return new Grid { Curve = line, Name = name };
-        }
     }
 }
+
 
 

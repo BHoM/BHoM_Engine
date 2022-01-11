@@ -53,7 +53,7 @@ namespace BH.Engine.Base
 
             if (!typeof(IFragment).IsAssignableFrom(parentType))
             {
-                Reflection.Compute.RecordError("Provided input in parentType is not a Fragment type (does not implement IFragment interface).");
+                Base.Compute.RecordError("Provided input in parentType is not a Fragment type (does not implement IFragment interface).");
                 return null;
             }
 

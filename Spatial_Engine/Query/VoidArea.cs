@@ -46,7 +46,7 @@ namespace BH.Engine.Spatial
         {
             if (profile is TaperedProfile)
             {
-                Engine.Reflection.Compute.RecordWarning("The sectional area of TaperedProfiles may vary along their length. The average area of the TaperedProfile has been returned, assuming that the section varies linearly.");
+                Engine.Base.Compute.RecordWarning("The sectional area of TaperedProfiles may vary along their length. The average area of the TaperedProfile has been returned, assuming that the section varies linearly.");
                 TaperedProfile taperedProfile = profile as TaperedProfile;
                 double sum = 0;
                 for (int i = 0; i < taperedProfile.Profiles.Count - 1; i++)

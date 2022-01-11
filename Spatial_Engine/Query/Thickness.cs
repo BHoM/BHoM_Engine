@@ -79,7 +79,7 @@ namespace BH.Engine.Spatial
 
         private static double Thickness(this IProfile profile)
         {
-            Reflection.Compute.RecordError($"Thickness is not implemented for IProfile of type: {profile.GetType().Name}.");
+            Base.Compute.RecordError($"Thickness is not implemented for IProfile of type: {profile.GetType().Name}.");
             return double.NaN;
         }
 

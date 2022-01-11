@@ -160,12 +160,12 @@ namespace BH.Engine.Analytical
 
             if (face.NodeListIndices.Count < 3)
             {
-                Reflection.Compute.RecordError("Insuffiecient node indices");
+                Base.Compute.RecordError("Insuffiecient node indices");
                 return null;
             }
             if (face.NodeListIndices.Count > 4)
             {
-                Reflection.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
+                Base.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
                 return null;
             }
 
@@ -200,7 +200,7 @@ namespace BH.Engine.Analytical
         {
             if(graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the geometry of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the geometry of a null graph.");
                 return null;
             }
 

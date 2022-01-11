@@ -50,13 +50,13 @@ namespace BH.Engine.Environment
         {
             if (panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the bottom right corner of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the bottom right corner of a null panel.");
                 return null;
             }
 
             if (panelsAsSpace == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the bottom right corner of a panel without knowing the space it belongs to.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the bottom right corner of a panel without knowing the space it belongs to.");
                 return null;
             }
 
@@ -71,13 +71,13 @@ namespace BH.Engine.Environment
         {
             if (polyline == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the bottom right corner of a null polyline.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the bottom right corner of a null polyline.");
                 return null;
             }
 
             if (panelsAsSpace == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the bottom right corner of a polyline without knowing the space it belongs to.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the bottom right corner of a polyline without knowing the space it belongs to.");
                 return null;
             }
 

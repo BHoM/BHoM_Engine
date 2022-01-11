@@ -21,7 +21,7 @@
  */
 
 using BH.Engine.Graphics.Scales;
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Data.Library;
 using BH.oM.Geometry;
@@ -53,7 +53,7 @@ namespace BH.Engine.Graphics
         {
             if(component == null || dataset == null || viewConfig == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot add box representation fragments if the components, datasets, or view configurations are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot add box representation fragments if the components, datasets, or view configurations are null.");
                 return;
             }
 
@@ -189,7 +189,7 @@ namespace BH.Engine.Graphics
 
             if (groups.Count() == 0)
             {
-                Reflection.Compute.RecordError("No groups could be defined with the supplied property name: " + component.Group + ".");
+                Base.Compute.RecordError("No groups could be defined with the supplied property name: " + component.Group + ".");
                 return;
             }
 

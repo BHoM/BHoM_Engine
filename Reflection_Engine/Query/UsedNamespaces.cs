@@ -39,7 +39,7 @@ namespace BH.Engine.Reflection
         {
             if(method == null)
             {
-                Compute.RecordWarning("Cannot query the used namespaces of a null method. An empty list will be returned as the list of used namespaces.");
+                Base.Compute.RecordWarning("Cannot query the used namespaces of a null method. An empty list will be returned as the list of used namespaces.");
                 return new List<string>();
             }
 
@@ -52,7 +52,7 @@ namespace BH.Engine.Reflection
         {
             if(type == null)
             {
-                Compute.RecordWarning("Cannot query the used namespaces of a null type. An empty list will be returned as the list of used namespaces.");
+                Base.Compute.RecordWarning("Cannot query the used namespaces of a null type. An empty list will be returned as the list of used namespaces.");
                 return new List<string>();
             }
 

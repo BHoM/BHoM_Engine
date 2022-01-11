@@ -29,7 +29,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Compute
     {
@@ -39,11 +39,12 @@ namespace BH.Engine.Reflection
 
         [Description("Extracts all types from an already loaded non-BHoM assembly and adds them to the Global collection of all reflected types.")]
         [Input("assembly", "Non-BHoM assembly with the types to be reflected.")]
-        public static void ReflectNonBHoMTypes(Assembly assembly)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ReflectNonBHoMTypes(System.Reflection.Assembly)")]
+        public static void LoadNonBHoMTypes(Assembly assembly)
         {
             if (assembly == null || !Global.AllAssemblies.ContainsKey(assembly.FullName) || assembly.ReflectionOnly)
             {
-                RecordError($"{nameof(ReflectNonBHoMTypes)} method works only with assemblies loaded to BHoM.");
+                RecordError($"{nameof(LoadNonBHoMTypes)} method works only with assemblies loaded to BHoM.");
                 return;
             }
 
@@ -65,11 +66,12 @@ namespace BH.Engine.Reflection
 
         [Description("Extracts all types from an already loaded non-BHoM assembly under the given name and adds them to the Global collection of all reflected types.")]
         [Input("assemblyName", "Name of the non-BHoM assembly with the types to be reflected.")]
-        public static void ReflectNonBHoMTypes(string assemblyName)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ReflectNonBHoMTypes(System.String)")]
+        public static void LoadNonBHoMTypes(string assemblyName)
         {
             Assembly asm = Global.AllAssemblies.Values.FirstOrDefault(x => x.GetName().Name == assemblyName);
             if (asm != null)
-                ReflectNonBHoMTypes(asm);
+                LoadNonBHoMTypes(asm);
             else
                 RecordError($"No assembly named {assemblyName} has been loaded to BHoM.");
         }

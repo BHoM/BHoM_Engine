@@ -34,7 +34,7 @@ namespace BH.Engine.Acoustic
         {
             if(ray == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the length of a null ray.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the length of a null ray.");
                 return 0;
             }
 

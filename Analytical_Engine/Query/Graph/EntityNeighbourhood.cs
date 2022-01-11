@@ -48,7 +48,7 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the entity neighbourhood of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the entity neighbourhood of a null graph.");
                 return new List<Graph>();
             }
 
@@ -73,13 +73,13 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the entity neighbourhood of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the entity neighbourhood of a null graph.");
                 return null;
             }
 
             if(entity == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot search from a null entity.");
+                BH.Engine.Base.Compute.RecordError("Cannot search from a null entity.");
                 return null;
             }
 

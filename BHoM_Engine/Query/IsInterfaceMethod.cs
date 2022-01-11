@@ -20,16 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -37,52 +36,24 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static UnderlyingType UnderlyingType(this Type type)
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsInterfaceMethod(System.Reflection.MethodBase)")]
+        public static bool IsInterfaceMethod(this MethodBase method)
         {
-            if (type == null)
-                return null;
+            if (method == null || method is ConstructorInfo)
+                return false;
 
-            int depth = 0;
-            while (typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string))
-            {
-                Type subType = type.GetElementType();
-                
-                if (subType == null)
-                {
-                    Type[] generics = type.GetGenericArguments();
-                    if (generics.Count() == 1)
-                        subType = generics.First();
-                    else if (generics.Count() == 0)
-                    {
-                        foreach (ConstructorInfo constructor in type.GetConstructors())
-                        {
-                            ParameterInfo[] parameters = constructor.GetParameters();
-                            if (parameters.Count() == 1)
-                            {
-                                string paramType = parameters[0].ParameterType.Name;
-                                if (paramType == "List`1" || paramType == "IEnumerable`1")
-                                {
-                                    subType = parameters[0].ParameterType.GetGenericArguments()[0];
-                                    break;
-                                }   
-                            }
-                        }
-                    }
-                }
+            string name = method.Name;
+            if (name.Length <= 2 || name[0] != 'I' || char.IsLower(name[1]))
+                return false;
 
-                if (subType != null)
-                {
-                    type = subType;
-                    depth++;
-                }
-                else
-                    break;
-            }
-
-            return new UnderlyingType { Type = type, Depth = depth };
+            return true;
         }
 
+
         /***************************************************/
+
+
+
     }
 }
 

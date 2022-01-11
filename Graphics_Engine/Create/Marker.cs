@@ -46,7 +46,7 @@ namespace BH.Engine.Graphics
         {
             if (marker == null || end == null || direction == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a marker if the basic arrow marker, end attachment point, or direction vector are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a marker if the basic arrow marker, end attachment point, or direction vector are null.");
                 return new List<ICurve>();
             }
 
@@ -63,7 +63,7 @@ namespace BH.Engine.Graphics
         {
             if(marker == null || end == null || direction == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a marker if the basic arrow marker, end attachment point, or direction vector are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a marker if the basic arrow marker, end attachment point, or direction vector are null.");
                 return new List<ICurve>();
             }
 

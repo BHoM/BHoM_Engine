@@ -49,13 +49,13 @@ namespace BH.Engine.Graphics
             RenderMeshOptions rmOpt = renderMeshOptions == null ? new RenderMeshOptions() : renderMeshOptions;
 
             // Try using the method that is defined in the TriangleNet_Toolkit. 
-            Reflection.Compute.TryRunExtensionMethod(iobj, "IRenderMesh", new object[] { rmOpt }, out result);
+            Base.Compute.TryRunExtensionMethod(iobj, "IRenderMesh", new object[] { rmOpt }, out result);
 
             if (result != null)
                 return result as RenderMesh;
 
             // If TriangleNet_Toolkit could not be found or didn't return anything, try looking for an ad-hoc extension method.
-            Reflection.Compute.TryRunExtensionMethod(iobj, "RenderMesh", new object[] { rmOpt }, out result);
+            Base.Compute.TryRunExtensionMethod(iobj, "RenderMesh", new object[] { rmOpt }, out result);
 
             return result as RenderMesh;
         }

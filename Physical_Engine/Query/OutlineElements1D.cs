@@ -45,14 +45,14 @@ namespace BH.Engine.Physical
         {
             if(surface == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null surface.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null surface.");
                 return new List<IElement1D>();
             }
 
             PlanarSurface pSurface = surface.Location as PlanarSurface;
             if (pSurface == null)
             {
-                Engine.Reflection.Compute.RecordError("Not implemented for non-PlanarSurfaces");
+                Engine.Base.Compute.RecordError("Not implemented for non-PlanarSurfaces");
                 return null;
             }
 
@@ -68,14 +68,14 @@ namespace BH.Engine.Physical
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null opening.");
                 return new List<IElement1D>();
             }
 
             PlanarSurface pSurface = opening.Location as PlanarSurface;
             if (pSurface == null)
             {
-                Engine.Reflection.Compute.RecordError("Not implemented for non-PlanarSurfaces");
+                Engine.Base.Compute.RecordError("Not implemented for non-PlanarSurfaces");
                 return null;
             }
 

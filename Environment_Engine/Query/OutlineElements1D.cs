@@ -50,7 +50,7 @@ namespace BH.Engine.Environment
         {
             if(opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null opening.");
                 return null;
             }
 
@@ -64,7 +64,7 @@ namespace BH.Engine.Environment
         {
             if (panel == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null panel.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null panel.");
                 return null;
             }
 
@@ -78,7 +78,7 @@ namespace BH.Engine.Environment
         {
             if (space == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the outline 1D elements of a null space.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null space.");
                 return null;
             }
 

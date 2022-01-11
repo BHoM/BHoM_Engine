@@ -75,13 +75,13 @@ namespace BH.Engine.Architecture
         {
             if (opening == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot extract the geometry from a null opening.");
+                BH.Engine.Base.Compute.RecordError("Cannot extract the geometry from a null opening.");
                 return null;
             }
 
             if (opening.CoordinateSystem == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot extract the geometry from an opening without coordinate system.");
+                BH.Engine.Base.Compute.RecordError("Cannot extract the geometry from an opening without coordinate system.");
                 return null;
             }
 

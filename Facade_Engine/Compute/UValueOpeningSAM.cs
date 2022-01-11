@@ -51,7 +51,7 @@ namespace BH.Engine.Facade
         {
             if (opening == null)
             {
-                Reflection.Compute.RecordWarning("U Value can not be calculated for a null opening.");
+                Base.Compute.RecordWarning("U Value can not be calculated for a null opening.");
                 return null;
             }
 
@@ -60,12 +60,12 @@ namespace BH.Engine.Facade
             List<IFragment> uValues = opening.GetAllFragments(typeof(UValueGlassCentre));
             if (uValues.Count <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have U-value assigned.");
+                BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have U-value assigned.");
                 return null;
             }
             if (uValues.Count > 1)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one U-value assigned.");
+                BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one U-value assigned.");
                 return null;
             }
             double uValue = (uValues[0] as UValueGlassCentre).UValue;
@@ -79,12 +79,12 @@ namespace BH.Engine.Facade
                 List<IFragment> psiJoints = frameEdge.GetAllFragments(typeof(PsiJoint));
                 if (psiJoints.Count <= 0)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} does not have PsiJoint value assigned.");
+                    BH.Engine.Base.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} does not have PsiJoint value assigned.");
                     return null;
                 }
                 if (psiJoints.Count > 1)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} has more than one PsiJoint value assigned. Each FrameEdge should only have one unique PsiJoint value assigned to it.");
+                    BH.Engine.Base.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} has more than one PsiJoint value assigned. Each FrameEdge should only have one unique PsiJoint value assigned to it.");
                     return null;
                 }
                 double psiJoint = (psiJoints[0] as PsiJoint).PsiValue;

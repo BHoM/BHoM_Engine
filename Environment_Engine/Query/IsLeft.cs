@@ -46,13 +46,13 @@ namespace BH.Engine.Environment
         {
             if(line == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a point is on the left side of a null line.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether a point is on the left side of a null line.");
                 return false;
             }
 
             if(check == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether a point is on the left side of a line if the point is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether a point is on the left side of a line if the point is null.");
                 return false;
             }
 

@@ -42,7 +42,7 @@ namespace BH.Engine.MEP
         {
             if (line == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a wire segment from an empty line.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a wire segment from an empty line.");
                 return null;
             }
 

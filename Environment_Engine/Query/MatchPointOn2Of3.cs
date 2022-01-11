@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         {
             if(point == null || comparePoint == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query whether two points match on 2 out of 3 axes if either point is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether two points match on 2 out of 3 axes if either point is null.");
                 return false;
             }
 

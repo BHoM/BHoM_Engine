@@ -79,12 +79,12 @@ namespace BH.Engine.Analytical
             if(replaceMap.ContainsKey(relation.Source))
                 relation.Source = replaceMap[relation.Source].BHoM_Guid;
             else
-                Reflection.Compute.RecordError($"The Source reference on IRelation of type {relation.GetType().ToString()} cannot be found in the entities provided. Check all required entities have been included.");
+                Base.Compute.RecordError($"The Source reference on IRelation of type {relation.GetType().ToString()} cannot be found in the entities provided. Check all required entities have been included.");
                 
             if(replaceMap.ContainsKey(relation.Target))
                 relation.Target = replaceMap[relation.Target].BHoM_Guid;
             else
-                Reflection.Compute.RecordError($"The Target reference on IRelation of type {relation.GetType().ToString()} cannot be found in the entities provided. Check all required entities have been included.");
+                Base.Compute.RecordError($"The Target reference on IRelation of type {relation.GetType().ToString()} cannot be found in the entities provided. Check all required entities have been included.");
             
             //go deeper into making the subgraph unique is an option for future use
             //relation.Subgraph.UniqueEntities(replaceMap);

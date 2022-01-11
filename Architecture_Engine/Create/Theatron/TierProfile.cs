@@ -44,13 +44,13 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(parameters == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a tier profile from a null set of profile parameters.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a tier profile from a null set of profile parameters.");
                 return null;
             }
 
             if(lastPointPrevTier == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a tier profile from a null spectator eye point from a previous tier.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a tier profile from a null spectator eye point from a previous tier.");
                 return null;
             }
 
@@ -77,25 +77,25 @@ namespace BH.Engine.Architecture.Theatron
         {
             if (originalSection == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot modify a null tier profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot modify a null tier profile.");
                 return originalSection;
             }
 
             if (scale == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot transform a tier profile using a null scale vector.");
+                BH.Engine.Base.Compute.RecordError("Cannot transform a tier profile using a null scale vector.");
                 return originalSection;
             }
 
             if (source == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot transform a tier profile from a null source point.");
+                BH.Engine.Base.Compute.RecordError("Cannot transform a tier profile from a null source point.");
                 return originalSection;
             }
 
             if (target == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot transform a tier profile from a null target point.");
+                BH.Engine.Base.Compute.RecordError("Cannot transform a tier profile from a null target point.");
                 return originalSection;
             }
 
@@ -296,13 +296,13 @@ namespace BH.Engine.Architecture.Theatron
         {
             if (profile == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot modify a null tier profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot modify a null tier profile.");
                 return;
             }
 
             if (xTrans == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot modify a tier profile with a null transformation matrix.");
+                BH.Engine.Base.Compute.RecordError("Cannot modify a tier profile with a null transformation matrix.");
                 return;
             }
 

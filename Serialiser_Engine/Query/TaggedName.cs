@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser
         {
             if(obj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the tagged name of a null object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the tagged name of a null object.");
                 return "";
             }
 

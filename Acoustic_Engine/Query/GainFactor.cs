@@ -34,7 +34,7 @@ namespace BH.Engine.Acoustic
         {
             if(speaker == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the gain factor from a null speaker.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the gain factor from a null speaker.");
                 return 0;
             }
 

@@ -50,13 +50,13 @@ namespace BH.Engine.Architecture.Theatron
         {
             if(start == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a seating block with a null starting profile origin.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a seating block with a null starting profile origin.");
                 return null;
             }
 
             if(end == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot create a seating block with a null ending profile origin.");
+                BH.Engine.Base.Compute.RecordError("Cannot create a seating block with a null ending profile origin.");
                 return null;
             }
 

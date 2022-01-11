@@ -146,7 +146,7 @@ namespace BH.Engine.Geometry
 
         private static List<ICurve> ExternalEdges(this ISurface surface)
         {
-            Reflection.Compute.RecordError($"ExternalEdges is not implemented for ISurface of type: {surface.GetType().Name}.");
+            Base.Compute.RecordError($"ExternalEdges is not implemented for ISurface of type: {surface.GetType().Name}.");
             return null;
         }
 

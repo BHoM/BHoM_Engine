@@ -48,19 +48,19 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the relations of a null graph.");
                 return new List<IRelation>();
             }
 
             if (source == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a graph when the source is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the relations of a graph when the source is null.");
                 return new List<IRelation>();
             }
 
             if (target == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a graph when the target is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the relations of a graph when the target is null.");
                 return new List<IRelation>();
             }
 
@@ -95,7 +95,7 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the relations of a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the relations of a null graph.");
                 return new List<Guid>();
             }
 

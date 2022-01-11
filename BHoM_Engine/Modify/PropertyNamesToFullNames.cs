@@ -73,7 +73,7 @@ namespace BH.Engine.Base
                 return;
 
             // Collect all property FullNames for this Type of object. This operation also caches results if the same Type is encountered in the same session.
-            HashSet<string> allPropertiesFullNames = BH.Engine.Reflection.Query.GetAllPropertyFullNames(type, comparisonConfig.MaxNesting, true);
+            HashSet<string> allPropertiesFullNames = Query.GetAllPropertyFullNames(type, comparisonConfig.MaxNesting, true);
 
             // Check if we have some cached results for this comparisonConfig and type combination.
             // We cache separately the processed propertiesToConsider, propertyExceptions and propertyNumericTolerances to get optimal performance/versatility.
@@ -162,7 +162,7 @@ namespace BH.Engine.Base
             HashSet<NamedNumericTolerance> propertyNumericTolerances_fullNames = new HashSet<NamedNumericTolerance>();
 
             // Collect all property FullNames for this Type of object. This operation also caches results if the same Type is encountered in the same session.
-            HashSet<string> allPropertiesFullNames = BH.Engine.Reflection.Query.GetAllPropertyFullNames(obj, comparisonConfig.MaxNesting);
+            HashSet<string> allPropertiesFullNames = Query.GetAllPropertyFullNames(obj, comparisonConfig.MaxNesting);
 
             // Iterate all of the input Type's propertyFullNames and see if they match with the propertiesToConsiderToParse, propertyExceptionsToParse and/or propertyNumericTolerancesToParse.
             foreach (var propertyFullName in allPropertiesFullNames)

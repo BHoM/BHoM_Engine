@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
         {
             if (nSamples <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("nSamples must be greater than 0 in order to generate sample vectors.");
+                BH.Engine.Base.Compute.RecordWarning("nSamples must be greater than 0 in order to generate sample vectors.");
             }
 
             List<double> indices = new List<double>();

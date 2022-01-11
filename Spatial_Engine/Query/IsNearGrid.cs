@@ -104,7 +104,7 @@ namespace BH.Engine.Spatial
 
         private static bool IsNearGrid(this IElement element, Grid grid, double maxDistance)
         {
-            Reflection.Compute.RecordError($"IsNearGrid is not implemented for IElements of type: {element.GetType().Name}.");
+            Base.Compute.RecordError($"IsNearGrid is not implemented for IElements of type: {element.GetType().Name}.");
             return false;
         }
 

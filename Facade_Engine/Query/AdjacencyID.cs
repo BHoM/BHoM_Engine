@@ -52,7 +52,7 @@ namespace BH.Engine.Facade
             List<string> adjIDs = new List<string>();
             if (edges.Count != elems.Count)
             {
-                Reflection.Compute.RecordWarning("Edge and element list lengths do not match. Each edge should have a corresponding element, please check your inputs.");
+                Base.Compute.RecordWarning("Edge and element list lengths do not match. Each edge should have a corresponding element, please check your inputs.");
                 return null;
             }
             else

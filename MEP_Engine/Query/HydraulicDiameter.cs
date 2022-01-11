@@ -43,7 +43,7 @@ namespace BH.Engine.MEP
         {
             if(profile == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the hydraulic diameter of a null profile.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the hydraulic diameter of a null profile.");
                 return -1;
             }
 

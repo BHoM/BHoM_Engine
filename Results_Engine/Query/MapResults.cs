@@ -50,12 +50,12 @@ namespace BH.Engine.Results
         {
             if (objects == null || objects.Count() < 1)
             {
-                Engine.Reflection.Compute.RecordError("No objects found. Make sure that your objects are input correctly.");
+                Engine.Base.Compute.RecordError("No objects found. Make sure that your objects are input correctly.");
                 return new List<List<TResult>>();
             }
             if (results == null || results.Count() < 1)
             {
-                Engine.Reflection.Compute.RecordError("No results found. Make sure that your results are input correctly.");
+                Engine.Base.Compute.RecordError("No results found. Make sure that your results are input correctly.");
                 return new List<List<TResult>>();
             }
 
@@ -76,7 +76,7 @@ namespace BH.Engine.Results
 
             //Group results by Id and turn to dictionary
             // Add null check for when the property of the name in whichId does not exist?
-            resGroups = filteredRes.GroupBy(x => Reflection.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
+            resGroups = filteredRes.GroupBy(x => Base.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
 
             List<List<TResult>> result = new List<List<TResult>>();
 

@@ -212,7 +212,7 @@ namespace BH.Engine.Geometry
                 // list[i] and one of the point are the same
                 // TODO handle this?    
                 // would ideally take another step along the polyline in the direction
-                Engine.Reflection.Compute.RecordWarning(
+                Engine.Base.Compute.RecordWarning(
                     "WetBlanketInterpretation issue, points on top of each other");
             }
             else

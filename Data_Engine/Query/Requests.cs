@@ -48,7 +48,7 @@ namespace BH.Engine.Data
         {
             if(request == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the requests from a null logical and request.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the requests from a null logical and request.");
                 return new List<IRequest>();
             }
 
@@ -61,7 +61,7 @@ namespace BH.Engine.Data
         {
             if (request == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the requests from a null logical or request.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the requests from a null logical or request.");
                 return new List<IRequest>();
             }
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Data
         {
             if (request == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the requests from a null logical not request.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the requests from a null logical not request.");
                 return new List<IRequest>();
             }
 

@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         {
             if(type == null)
             {
-                Reflection.Compute.RecordError("Cannot query the generic type constraints when the type is null.");
+                Base.Compute.RecordError("Cannot query the generic type constraints when the type is null.");
                 return null;
             }
 

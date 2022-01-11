@@ -46,7 +46,7 @@ namespace BH.Engine.MEP
         {
             if (curve.IIsLinear() == false)
             {
-                Engine.Reflection.Compute.RecordError("IFlow objects are not linear.");
+                Engine.Base.Compute.RecordError("IFlow objects are not linear.");
                 return null;
             }
 
@@ -71,7 +71,7 @@ namespace BH.Engine.MEP
             
             if (connectionLocations.Count < 2)
             {
-                Engine.Reflection.Compute.RecordError("A fitting requires at least 2 physical connections, e.g. an elbow fitting has 2, please input at least two Points in connectionLocations.");
+                Engine.Base.Compute.RecordError("A fitting requires at least 2 physical connections, e.g. an elbow fitting has 2, please input at least two Points in connectionLocations.");
                 return null;
             }
             Fitting clone = fittingObj.ShallowClone();

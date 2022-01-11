@@ -41,7 +41,7 @@ namespace BH.Engine.MEP
         {
             if(flowObj == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the centreline of a null flow object.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the centreline of a null flow object.");
                 return null;
             }
 

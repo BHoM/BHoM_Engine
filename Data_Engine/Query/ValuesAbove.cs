@@ -46,7 +46,7 @@ namespace BH.Engine.Data
         {
             if(table == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the values above from a null table.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the values above from a null table.");
                 return new List<CustomObject>();
             }
 
@@ -69,7 +69,7 @@ namespace BH.Engine.Data
         {
             if (table == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the values above from a null table.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the values above from a null table.");
                 return new List<CustomObject>();
             }
 

@@ -108,7 +108,7 @@ namespace BH.Engine.Data
 
             if (axis2Values.Count * axis1Values.Count != values.SelectMany(x => x).Count())
             {
-                Engine.Reflection.Compute.RecordWarning("Values and header count does not match. Some values might be missing from the table");
+                Engine.Base.Compute.RecordWarning("Values and header count does not match. Some values might be missing from the table");
             }
 
             for (int i = 0; i < Math.Min(axis1Values.Count, values.Count); i++)

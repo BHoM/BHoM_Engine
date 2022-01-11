@@ -43,7 +43,7 @@ namespace BH.Engine.Analytical
         {
             if (graph == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot remove isolated entities from a null graph.");
+                BH.Engine.Base.Compute.RecordError("Cannot remove isolated entities from a null graph.");
                 return null;
             }
 

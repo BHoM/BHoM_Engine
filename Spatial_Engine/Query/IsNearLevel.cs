@@ -106,7 +106,7 @@ namespace BH.Engine.Spatial
 
         private static bool IsNearLevel(this IElement element, Level level, double maxDistance)
         {
-            Reflection.Compute.RecordError($"IsNearLevel is not implemented for IElements of type: {element.GetType().Name}.");
+            Base.Compute.RecordError($"IsNearLevel is not implemented for IElements of type: {element.GetType().Name}.");
             return false;
         }
 

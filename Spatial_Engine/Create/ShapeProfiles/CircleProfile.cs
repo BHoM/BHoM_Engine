@@ -46,7 +46,7 @@ namespace BH.Engine.Spatial
         {
             if (diameter <= 0)
             {
-                Engine.Reflection.Compute.RecordError("Input length less or equal to 0");
+                Engine.Base.Compute.RecordError("Input length less or equal to 0");
                 return null;
             }
             List<ICurve> curves = CircleProfileCurves(diameter / 2);

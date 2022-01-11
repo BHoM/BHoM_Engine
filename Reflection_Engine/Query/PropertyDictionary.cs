@@ -36,7 +36,7 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordWarning("Cannot query the property dictionary of a null object. An empty dictionary will be returned.");
+                Base.Compute.RecordWarning("Cannot query the property dictionary of a null object. An empty dictionary will be returned.");
                 return new Dictionary<string, object>();
             }
 
@@ -60,7 +60,7 @@ namespace BH.Engine.Reflection
         {
             if(obj == null)
             {
-                Compute.RecordWarning("Cannot query the property dictionary of a null custom object.  An empty dictionary will be returned.");
+                Base.Compute.RecordWarning("Cannot query the property dictionary of a null custom object.  An empty dictionary will be returned.");
                 return new Dictionary<string, object>();
             }
 

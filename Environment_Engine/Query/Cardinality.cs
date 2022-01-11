@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
         {
             if (angleFromNorth > Math.PI * 2 || angleFromNorth < -Math.PI * 2)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("The angle entered is beyond the normally expected range for an angle in radians.");
+                BH.Engine.Base.Compute.RecordWarning("The angle entered is beyond the normally expected range for an angle in radians.");
             }
 
             Dictionary<int, List<string>> cardinalDirections = new Dictionary<int, List<string>>()
@@ -56,7 +56,7 @@ namespace BH.Engine.Environment
 
             if (!cardinalDirections.Keys.ToList().Contains(directions))
             {
-                BH.Engine.Reflection.Compute.RecordError(String.Format("The number of cardinal directions must be in [{0}]", string.Join(", ", cardinalDirections.Keys)));
+                BH.Engine.Base.Compute.RecordError(String.Format("The number of cardinal directions must be in [{0}]", string.Join(", ", cardinalDirections.Keys)));
                 return null;
             }
 
@@ -83,7 +83,7 @@ namespace BH.Engine.Environment
                 }
                 n++;
             }
-            BH.Engine.Reflection.Compute.RecordError(String.Format("No cardinal direction found that matches {0:F3} degrees (or {1:F3} radians from north).", angleFromNorth, angleFromNorth * Math.PI / 180));
+            BH.Engine.Base.Compute.RecordError(String.Format("No cardinal direction found that matches {0:F3} degrees (or {1:F3} radians from north).", angleFromNorth, angleFromNorth * Math.PI / 180));
             return null;
         }
     }

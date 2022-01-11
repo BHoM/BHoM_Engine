@@ -40,7 +40,7 @@ namespace BH.Engine.Spatial
         [Output("element2D", "The modified IElement2D which has unchanged properties and exchanged outline IElement1Ds.")]
         public static IElement2D ISetOutlineElements1D(this IElement2D element2D, List<IElement1D> newOutline)
         {
-            return Reflection.Compute.RunExtensionMethod(element2D, "SetOutlineElements1D", new object[] { newOutline }) as IElement2D;
+            return Base.Compute.RunExtensionMethod(element2D, "SetOutlineElements1D", new object[] { newOutline }) as IElement2D;
         }
 
         /******************************************/

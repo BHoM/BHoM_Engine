@@ -41,11 +41,11 @@ namespace BH.Engine.Matter
         {
             if(elementM == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the solid volume of a null element.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null element.");
                 return 0;
             }
 
-            return (double)Reflection.Compute.RunExtensionMethod(elementM, "SolidVolume");
+            return (double)Base.Compute.RunExtensionMethod(elementM, "SolidVolume");
         }
 
         /******************************************/

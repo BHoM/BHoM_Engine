@@ -41,7 +41,7 @@ namespace BH.Engine.Acoustic
         {
             if(revTime == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot query the time constant for a null rev time.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the time constant for a null rev time.");
                 return 0;
             }
 

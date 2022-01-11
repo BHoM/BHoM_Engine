@@ -129,7 +129,7 @@ namespace BH.Engine.Geometry
         {
             if (!region.IsClosed(tolerance) || refRegions.Any(x => !x.IsClosed()))
             {
-                Reflection.Compute.RecordError("Boolean Difference works on closed regions.");
+                Base.Compute.RecordError("Boolean Difference works on closed regions.");
                 return new List<Polyline> { region };
             }
 
@@ -281,13 +281,13 @@ namespace BH.Engine.Geometry
 
             if (region is NurbsCurve || region is Ellipse || refRegionsList.Any(x => x is NurbsCurve || x is Ellipse))
             {
-                Reflection.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanDifference.");
+                Base.Compute.RecordError("NurbsCurves and ellipses are not implemented for BooleanDifference.");
                 return null;
             }
 
             if (!region.IIsClosed(tolerance) || refRegionsList.Any(x => !x.IIsClosed()))
             {
-                Reflection.Compute.RecordError("Boolean Difference works on closed regions.");
+                Base.Compute.RecordError("Boolean Difference works on closed regions.");
                 if (region is PolyCurve)
                     return new List<PolyCurve> { region as PolyCurve };
                 else

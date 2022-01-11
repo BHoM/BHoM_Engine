@@ -59,7 +59,7 @@ namespace BH.Engine.Physical
 
             if (!element.Location.IIsLinear() || !other.Location.IIsLinear())
             {
-                Engine.Reflection.Compute.RecordWarning("No merge comparison avalible for non-linear IFramingElements.");
+                Engine.Base.Compute.RecordWarning("No merge comparison avalible for non-linear IFramingElements.");
                 return false;
             }
 
