@@ -26,8 +26,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -35,6 +36,7 @@ namespace BH.Engine.Reflection
         /**** Interface Methods                         ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IItem(System.Object, System.Int32)")]
         public static object IItem(this object obj, int index)
         {
             return Item(obj as dynamic, index);
@@ -44,6 +46,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(System.Collections.Generic.List<System.Object>, System.Int32)")]
         public static object Item<T>(this List<T> list, int index)
         {
             if (list == null)
@@ -69,6 +72,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object>, System.Int32)")]
         public static object Item<T>(this Output<T> output, int index)
         {
             if (index == 0)
@@ -79,6 +83,7 @@ namespace BH.Engine.Reflection
 
         /*************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2>(this Output<T1, T2> output, int index)
         {
             switch (index)
@@ -94,6 +99,7 @@ namespace BH.Engine.Reflection
 
         /*************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2, T3>(this Output<T1, T2, T3> output, int index)
         {
             switch (index)
@@ -111,6 +117,7 @@ namespace BH.Engine.Reflection
 
         /*************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object, System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2, T3, T4>(this Output<T1, T2, T3, T4> output, int index)
         {
             switch (index)
@@ -130,6 +137,7 @@ namespace BH.Engine.Reflection
 
         /*************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object, System.Object, System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2, T3, T4, T5>(this Output<T1, T2, T3, T4, T5> output, int index)
         {
             switch (index)
@@ -151,6 +159,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object, System.Object, System.Object, System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2, T3, T4, T5, T6>(this Output<T1, T2, T3, T4, T5, T6> output, int index)
         {
             switch (index)
@@ -174,6 +183,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2, T3, T4, T5, T6, T7>(this Output<T1, T2, T3, T4, T5, T6, T7> output, int index)
         {
             switch (index)
@@ -199,6 +209,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2, T3, T4, T5, T6, T7, T8>(this Output<T1, T2, T3, T4, T5, T6, T7, T8> output, int index)
         {
             switch (index)
@@ -226,6 +237,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this Output<T1, T2, T3, T4, T5, T6, T7, T8, T9> output, int index)
         {
             switch (index)
@@ -255,6 +267,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Item(BH.oM.Reflection.Output<System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object, System.Object>, System.Int32)")]
         public static object Item<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this Output<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> output, int index)
         {
             switch (index)
