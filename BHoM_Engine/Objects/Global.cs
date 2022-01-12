@@ -75,7 +75,7 @@ namespace BH.Engine.Base
             // Reflect the assemblies that have already been loaded.
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
-                Compute.LoadAssembly(asm);
+                Compute.ExtractAssembly(asm);
             }
         }
 
@@ -86,7 +86,7 @@ namespace BH.Engine.Base
 
         private static void ReflectAssemblyOnLoad(object sender, AssemblyLoadEventArgs args)
         {
-            Compute.LoadAssembly(args?.LoadedAssembly);
+            Compute.ExtractAssembly(args?.LoadedAssembly);
         }
 
         /***************************************************/
