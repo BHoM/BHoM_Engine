@@ -40,10 +40,10 @@ namespace BH.Test.Serialiser
 
         public static List<Type> ObjectTypesToTest()
         {
-            Engine.Reflection.Compute.LoadAllAssemblies();
+            Engine.Base.Compute.LoadAllAssemblies();
 
             // It feels like the BHoMTypeList method should already return a clean list of Type but it doesn't at the moment
-            return Engine.Reflection.Query.BHoMTypeList().Where(x => {
+            return Engine.Base.Query.BHoMTypeList().Where(x => {
                 return typeof(IObject).IsAssignableFrom(x)
                   && !x.IsAbstract
                   && !x.IsDeprecated()
