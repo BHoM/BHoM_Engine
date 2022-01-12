@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -43,18 +43,18 @@ namespace BH.Engine.Facade
         /***************************************************/
         /****          Public Methods                   ****/
         /***************************************************/
-
-        [Description("Returns effective U-Value of a collection of openings calculated using the Single Assessment Method (Using Psi-tj). Requires center of opening U-value and frame Psi-tj value as OpeningConstruction and FrameEdgeProperty fragments.")]
+        
+        [Description("Returns effective U-Value of a collection of openings calculated using the Area Weighting Method. Requires center of opening U-value, frame U-value and edge U-value as OpeningConstruction and FrameEdgeProperty fragments.")]
         [Input("openings", "Openings to find U-value for.")]
-        [Output("effectiveUValue", "Effective total U-value result of opening calculated using SAM.")]
-        public static OverallUValue UValueOpeningsSAM(this List<Opening> openings)
+        [Output("effectiveUValue", "Effective total U-value result of openings calculated using CAM.")]
+        public static OverallUValue UValueOpeningsAW(this List<Opening> openings)
         {
             double uValueProduct = 0;
             double totalArea = 0;
             foreach (Opening opening in openings)
             {
                 double area = opening.Area();
-                uValueProduct += opening.UValueOpeningSAM().UValue * area;
+                uValueProduct += opening.UValueOpeningAW().UValue * area;
                 totalArea += area;
             }
             if (totalArea == 0)
@@ -63,7 +63,7 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            double effectiveUValue =  uValueProduct / totalArea;
+            double effectiveUValue = uValueProduct / totalArea;
             OverallUValue result = new OverallUValue(effectiveUValue, openings.Select(x => x.BHoM_Guid as IComparable).ToList());
             return result;
         }

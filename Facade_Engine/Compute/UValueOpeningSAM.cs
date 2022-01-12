@@ -44,7 +44,7 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns effective U-Value of opening calculated using the Single Assessment Method (Using Psi-tj). Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
+        [Description("Returns effective U-Value of opening calculated using the Single Assessment Method (Using Psi-tj). Requires center of opening U-value and frame Psi-tj value as OpeningConstruction and FrameEdgeProperty fragments.")]
         [Input("opening", "Opening to find U-value for.")]
         [Output("effectiveUValue", "Effective U-value result of opening caclulated using SAM.")]
         public static OverallUValue UValueOpeningSAM(this Opening opening)
@@ -57,7 +57,7 @@ namespace BH.Engine.Facade
 
             double area = opening.Area();
 
-            List<IFragment> uValues = opening.GetAllFragments(typeof(UValueGlassCentre));
+            List<IFragment> uValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassCentre));
             if (uValues.Count <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have U-value assigned.");
@@ -76,7 +76,7 @@ namespace BH.Engine.Facade
 
             foreach (FrameEdge frameEdge in frameEdges)
             {
-                List<IFragment> psiJoints = frameEdge.GetAllFragments(typeof(PsiJoint));
+                List<IFragment> psiJoints = frameEdge.FrameEdgeProperty.GetAllFragments(typeof(PsiJoint));
                 if (psiJoints.Count <= 0)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} does not have PsiJoint value assigned.");

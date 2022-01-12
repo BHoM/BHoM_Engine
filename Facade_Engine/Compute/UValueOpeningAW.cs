@@ -44,7 +44,7 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns effective U-Value of opening calculated using the Area Weighting Method. Requires center of opening U-value, frame U-value and edge U-value as Opening fragments.")]
+        [Description("Returns effective U-Value of opening calculated using the Area Weighting Method. Requires center of opening U-value, frame U-value and edge U-value as OpeningConstruction and FrameEdgeProperty fragments.")]
         [Input("opening", "Opening to find U-value for.")]
         [Output("effectiveUValue", "Effective U-value result of opening calculated using area weighting.")]
         public static OverallUValue UValueOpeningAW(this Opening opening)
@@ -55,7 +55,7 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            List<IFragment> glassUValues = opening.GetAllFragments(typeof(UValueGlassCentre));
+            List<IFragment> glassUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassCentre));
 
             if (glassUValues.Count <= 0)
             {
@@ -68,6 +68,19 @@ namespace BH.Engine.Facade
                 return null;
             }
             double glassUValue = (glassUValues[0] as UValueGlassCentre).UValue;
+
+            List<IFragment> glassEdgeUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassEdge));
+            if (glassEdgeUValues.Count <= 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass edge U-value assigned.");
+                return null;
+            }
+            if (glassEdgeUValues.Count > 1)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Glass edge U-value assigned.");
+                return null;
+            }
+            double glassEdgeUValue = (glassEdgeUValues[0] as UValueGlassEdge).UValue;
 
             List<FrameEdge> frameEdges = opening.Edges;
             List<double> frameAreas = new List<double>();
@@ -111,7 +124,7 @@ namespace BH.Engine.Facade
                 totEdgeArea += e_area;
                 totFrameArea += f_area;
 
-                List<IFragment> f_uValues = frameEdges[i].GetAllFragments(typeof(UValueFrame));
+                List<IFragment> f_uValues = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(UValueFrame));
                 if (f_uValues.Count <= 0)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Frame U-value assigned.");
@@ -124,20 +137,6 @@ namespace BH.Engine.Facade
                 }
                 double frameUValue = (f_uValues[0] as UValueFrame).UValue;
                 frameUValues.Add(frameUValue);
-
-                List<IFragment> e_uValues = frameEdges[i].GetAllFragments(typeof(UValueGlassEdge));
-                if (e_uValues.Count <= 0)
-                {
-                    BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Frame U-value assigned.");
-                    return null;
-                }
-                if (e_uValues.Count > 1)
-                {
-                    BH.Engine.Reflection.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Frame U-value assigned.");
-                    return null;
-                }
-                double edgeUValue = (e_uValues[0] as UValueGlassEdge).UValue;
-                edgeUValues.Add(edgeUValue);
             }
 
             double glassArea = opening.Area() - totEdgeArea - totFrameArea;
@@ -147,7 +146,7 @@ namespace BH.Engine.Facade
             for (int i = 0; i < frameUValues.Count; i++)
             {
                 FrameUValProduct += (frameUValues[i] * frameAreas[i]);
-                EdgeUValProduct += (edgeUValues[i] * edgeAreas[i]);
+                EdgeUValProduct += (glassEdgeUValue * edgeAreas[i]);
             }
 
             double totArea = opening.Area();

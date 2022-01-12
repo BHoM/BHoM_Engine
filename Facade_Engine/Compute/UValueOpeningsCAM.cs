@@ -44,7 +44,7 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns effective U-Value of a collection of openings calculated using the Component Assessment Method (Using Psi-g). Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
+        [Description("Returns effective U-Value of a collection of openings calculated using the Component Assessment Method (Using Psi-g). Requires center of opening U-value and frame Psi-tj value as OpeningConstruction and FrameEdgeProperty fragments..")]
         [Input("openings", "Openings to find U-value for.")]
         [Output("effectiveUValue", "Effective total U-value result of openings calculated using CAM.")]
         public static OverallUValue UValueOpeningsCAM(this List<Opening> openings)
