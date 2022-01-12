@@ -32,7 +32,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Base.Compute.RecordWarning(System.String)")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordWarning(System.String)")]
         public static bool RecordWarning(string message)
         {
             return RecordEvent(new Event { Message = message, Type = EventType.Warning });

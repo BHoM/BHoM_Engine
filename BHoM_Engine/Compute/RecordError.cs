@@ -32,7 +32,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Base.Compute.RecordError(System.String)")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordError(System.String)")]
         public static bool RecordError(string message)
         {
             return RecordEvent(new Event { Message = message, Type = EventType.Error });
