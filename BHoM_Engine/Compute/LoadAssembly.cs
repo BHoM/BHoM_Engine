@@ -59,32 +59,6 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
-
-        [Description("Records the given assembly in the Global collection of loaded assemblies, then extracts types and methods from it and adds them to relevant collections in the Global class.")]
-        [Input("assembly", "Assembly to be reflected.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ReflectAssembly(System.Reflection.Assembly)")]
-        public static void LoadAssembly(Assembly assembly)
-        {
-            if (assembly == null || assembly.ReflectionOnly)
-                return;
-
-            lock (Global.AssemblyReflectionLock)
-            {
-                if (Global.AllAssemblies.ContainsKey(assembly.FullName))
-                    return;
-
-                Global.AllAssemblies[assembly.FullName] = assembly;
-                if (assembly.IsBHoM())
-                {
-                    Global.BHoMAssemblies[assembly.FullName] = assembly;
-                    ExtractTypes(assembly);
-                    ExtractMethods(assembly);
-                }
-            }
-        }
-
-
-        /***************************************************/
         /****              Private methods              ****/
         /***************************************************/
 
