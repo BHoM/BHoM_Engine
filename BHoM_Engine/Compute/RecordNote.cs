@@ -32,51 +32,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordEvent(System.String, BH.oM.Base.Debugging.EventType)")]
-        public static bool RecordEvent(string message, EventType type = EventType.Unknown)
-        {
-            return RecordEvent(new Event { Message = message, Type = type });
-        }
-
-        /***************************************************/
-
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordEvent(BH.oM.Base.Debugging.Event)")]
-        public static bool RecordEvent(Event newEvent)
-        {
-            if (newEvent == null)
-            {
-                Compute.RecordError("Cannot record a null event.");
-                return false;
-            }
-
-            string trace = System.Environment.StackTrace;
-            newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
-
-            Log log = Query.DebugLog();
-            log.AllEvents.Add(newEvent);
-            log.CurrentEvents.Add(newEvent);
-
-            return true;
-        }
-
-        /***************************************************/
-
-        [PreviousVersion("5.1", "BH.Engine.Base.Compute.RecordError(System.String)")]
-        public static bool RecordError(string message)
-        {
-            return RecordEvent(new Event { Message = message, Type = EventType.Error });
-        }
-
-        /***************************************************/
-
-        [PreviousVersion("5.1", "BH.Engine.Base.Compute.RecordWarning(System.String)")]
-        public static bool RecordWarning(string message)
-        {
-            return RecordEvent(new Event { Message = message, Type = EventType.Warning });
-        }
-
-        /***************************************************/
-
         [PreviousVersion("5.1", "BH.Engine.Base.Compute.RecordNote(System.String)")]
         public static bool RecordNote(string message)
         {
