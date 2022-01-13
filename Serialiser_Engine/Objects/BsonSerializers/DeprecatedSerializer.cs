@@ -32,6 +32,7 @@ using System;
 using System.Reflection;
 using BH.Engine.Serialiser.Objects;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Serialiser.BsonSerializers
 {
@@ -59,6 +60,24 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             if (newDoc == null || newDoc.Equals(doc))
             {
+                string newType = newDoc["_t"].AsString;
+                if (newType.Contains("[["))
+                {
+                    // If the object is of a generic type, try one last time by ensuring that the assembly name is provided
+                    try
+                    {
+                        string baseType = newType.Split(new char[] { '[' }).First();
+                        List<Type> matchingTypes = BH.Engine.Base.Create.AllTypes(baseType, true);
+                        if (matchingTypes.Count == 1)
+                        {
+                            string assemblyName = matchingTypes.First().Assembly?.FullName;
+                            newDoc["_t"] += "," + assemblyName;
+                            return Convert.FromBson(newDoc);
+                        }
+                    }
+                    catch { }
+                }
+
                 Engine.Base.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
                 context.Reader.ReturnToBookmark(bookmark);
                 IBsonSerializer customSerializer = BsonSerializer.LookupSerializer(typeof(CustomObject));
