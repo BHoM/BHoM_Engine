@@ -21,7 +21,6 @@
  */
 
 using BH.oM.Geometry;
-using BH.oM.Geometry.SettingOut;
 
 namespace BH.Engine.Geometry
 {
@@ -84,14 +83,6 @@ namespace BH.Engine.Geometry
         {
             return curve;
         }
-
-        /***************************************************/
-
-        public static ICurve Geometry(this Grid grid)
-        {
-            return grid?.Curve;
-        }
-
 
         /***************************************************/
         /****              Interface Methods            ****/

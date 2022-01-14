@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 using BH.oM.Geometry;
 using BH.oM.Environment.Elements;
 using BH.oM.Architecture.Elements;
-using BH.oM.Geometry.SettingOut;
+using BH.oM.Spatial.SettingOut;
 
 using BH.Engine.Geometry;
 using BH.oM.Base;
@@ -50,16 +50,16 @@ namespace BH.Engine.Environment
         [MultiOutput(1, "levelsInUse", "A sublist of the BHoM Levels that have Room.")]
         [MultiOutput(2, "regionsNotMapped", "A collection of BHoM Regions which did not sit neatly on any of the provided levels")]
         [PreviousInputNames("regions", "spaces, rooms")]
-        public static Output<List<List<IRegion>>, List<oM.Geometry.SettingOut.Level>, List<IRegion>> MapToLevel(List<IRegion> regions, List<oM.Geometry.SettingOut.Level> levels, int decimals = 6)
+        public static Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> MapToLevel(List<IRegion> regions, List<oM.Spatial.SettingOut.Level> levels, int decimals = 6)
         {
             List<List<IRegion>> regionsByLevel = new List<List<IRegion>>();
-            List<oM.Geometry.SettingOut.Level> levelsInUse = new List<oM.Geometry.SettingOut.Level>();
+            List<oM.Spatial.SettingOut.Level> levelsInUse = new List<oM.Spatial.SettingOut.Level>();
             List<IRegion> regionsNotByLevel = new List<IRegion>();
-            List<oM.Geometry.SettingOut.Level> roundedLevels = new List<oM.Geometry.SettingOut.Level>();            
+            List<oM.Spatial.SettingOut.Level> roundedLevels = new List<oM.Spatial.SettingOut.Level>();            
 
             for (int x = 0; x < levels.Count; x++)
             {
-                oM.Geometry.SettingOut.Level lvl = levels[x].DeepClone();
+                oM.Spatial.SettingOut.Level lvl = levels[x].DeepClone();
                 lvl.Elevation = Math.Round(lvl.Elevation, decimals); 
                 roundedLevels.Add(lvl); //Round the levels
             }
@@ -72,7 +72,7 @@ namespace BH.Engine.Environment
                 BoundingBox bbox = region.Perimeter.IBounds();
                 double zLevel = Math.Round(bbox.Min.Z, decimals);
 
-                oM.Geometry.SettingOut.Level roundedLevel = roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault();
+                oM.Spatial.SettingOut.Level roundedLevel = roundedLevels.Where(x => x.Elevation == zLevel).FirstOrDefault();
                 if (roundedLevel == null)
                 {
                     regionsNotByLevel.Add(region);
@@ -98,7 +98,7 @@ namespace BH.Engine.Environment
             foreach (KeyValuePair<double, List<IRegion>> kvp in mappedRooms.OrderBy(x => x.Key))
                 regionsByLevel.Add(kvp.Value);
 
-            Output<List<List<IRegion>>, List<oM.Geometry.SettingOut.Level>, List<IRegion>> output = new Output<List<List<IRegion>>, List<oM.Geometry.SettingOut.Level>, List<IRegion>>
+            Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> output = new Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>>
             {
                 Item1 = regionsByLevel,
                 Item2 = levelsInUse.OrderBy(x => x.Elevation).Distinct().ToList(),
@@ -117,10 +117,10 @@ namespace BH.Engine.Environment
         [MultiOutput(0, "regionsByLevel", "A collection of BHoM Regions grouped by levels.")]
         [MultiOutput(1, "levelsInUse", "A sublist of the BHoM Levels that have Room.")]
         [MultiOutput(2, "regionsNotMapped", "A collection of BHoM Regions which did not sit neatly on any of the provided levels")]
-        public static Output<List<List<IRegion>>, List<oM.Geometry.SettingOut.Level>, List<IRegion>> MaptoLevel(List<IRegion> regions, int decimals = 6)
+        public static Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> MaptoLevel(List<IRegion> regions, int decimals = 6)
         {
-            List<oM.Geometry.SettingOut.Level> levels = Create.Levels(regions);
-            Output<List<List<IRegion>>, List<oM.Geometry.SettingOut.Level>, List<IRegion>> output = MapToLevel(regions, levels, decimals);
+            List<oM.Spatial.SettingOut.Level> levels = Create.Levels(regions);
+            Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> output = MapToLevel(regions, levels, decimals);
 
             return output;
         }

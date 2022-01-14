@@ -20,9 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
+using BH.Engine.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using BH.oM.Spatial.SettingOut;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
@@ -54,6 +55,20 @@ namespace BH.Engine.Spatial
         public static IElement1D ISetGeometry(this IElement1D element1D, ICurve curve)
         {
             return Base.Compute.RunExtensionMethod(element1D, "SetGeometry", new object[] { curve }) as IElement1D;
+        }
+
+        /******************************************/
+
+        [Description("Modifies the geometry of a Grid to be the provided curve.")]
+        [Input("element1D", "The Grid to modify the geomerty of.")]
+        [Input("curve", "The new geometry curve for the Grid.")]
+        [Output("Grid", "A Grid with the curve updated.")]
+        [PreviousVersion("5.1", "BH.Engine.Geometry.Modify.SetGeometry(BH.oM.Spatial.SettingOut.Grid, BH.oM.Geometry.ICurve)")]
+        public static Grid SetGeometry(this Grid grid, ICurve curve)
+        {
+            Grid clone = grid.ShallowClone();
+            clone.Curve = curve.DeepClone();
+            return clone;
         }
 
         /******************************************/

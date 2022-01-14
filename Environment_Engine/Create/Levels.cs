@@ -32,7 +32,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using BH.oM.Geometry.SettingOut;
+using BH.oM.Spatial.SettingOut;
 
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
@@ -60,10 +60,10 @@ namespace BH.Engine.Environment
                 double minLevel = regionPolyline.MinimumLevel(decimals);
                 double maxLevel = regionPolyline.MaximumLevel(decimals);
 
-                levels.Add(BH.Engine.Geometry.Create.Level(Math.Round(minLevel, decimals)));
+                levels.Add(BH.Engine.Spatial.Create.Level(Math.Round(minLevel, decimals)));
 
                 if (minLevel != maxLevel)
-                    levels.Add(BH.Engine.Geometry.Create.Level(Math.Round(maxLevel, decimals)));                   
+                    levels.Add(BH.Engine.Spatial.Create.Level(Math.Round(maxLevel, decimals)));                   
             }
 
             return levels;

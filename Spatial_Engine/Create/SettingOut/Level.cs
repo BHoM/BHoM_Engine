@@ -20,13 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Geometry.SettingOut;
-using BH.oM.Quantities.Attributes;
+using BH.oM.Spatial.SettingOut;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Geometry.SettingOut
+namespace BH.Engine.Spatial
 {
     public static partial class Create
     {
@@ -34,40 +32,34 @@ namespace BH.Engine.Geometry.SettingOut
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Grid in the XY Plane from a curve.")]
-        [Input("curve", "Curve to be used as grid curve. Will be projected to the XY Plane.")]
-        [Input("name", "Optional name of the Grid.")]
-        [Output("grid", "A Grid in the XY Plane.")]
-        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Grid(BH.oM.Geometry.ICurve)")]
-        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Grid(BH.oM.Geometry.ICurve, System.String)")]
-        public static Grid Grid(ICurve curve, string name = "")
+        [Description("Creates a Level object based on a provided elevation.")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Level(System.Double)")]
+        [PreviousVersion("5.1", "BH.Engine.Geometry.Create.Level(System.Double)")]
+        public static Level Level(double elevation)
         {
-            return new Grid
+            return new Level
             {
-                Curve = Geometry.Modify.IProject(curve, BH.oM.Geometry.Plane.XY),
-                Name = name,
+                Elevation = elevation
             };
         }
 
         /***************************************************/
 
-        [Description("Creates a linear Grid in the XY Plane from a point and a vector.")]
-        [Input("origin", "Origin point of the grid line.")]
-        [Input("direction", "Direction of the grid. Will be projected to the XY plane and unitized.")]
-        [Input("length", "Length of the output Grid line.", typeof(Length))]
-        [Input("name", "Optional name of the Grid.")]
-        [Output("grid", "A Grid in the XY Plane.")]
-        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.Double)")]
-        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Grid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, System.String, System.Double)")]
-        public static Grid Grid(Point origin, Vector direction, double length = 20, string name = "")
+        [Description("Creates a Level object based on a provided elevation and name.")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Level(System.Double, System.String)")]
+        [PreviousVersion("5.1", "BH.Engine.Geometry.Create.Level(System.Double, System.String)")]
+        public static Level Level(double elevation, string name)
         {
-            Point projectedOrigin = origin.Project(Plane.XY);
-            Line line = new Line { Start = projectedOrigin, End = projectedOrigin + new Vector { X = direction.X, Y = direction.Y, Z = 0 }.Normalise() * length };
-            return new Grid { Curve = line, Name = name };
+            return new Level
+            {
+                Elevation = elevation,
+                Name = name,
+            };
         }
 
         /***************************************************/
     }
 }
+
 
 

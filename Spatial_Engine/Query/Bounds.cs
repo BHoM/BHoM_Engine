@@ -43,7 +43,7 @@ namespace BH.Engine.Spatial
         [Output("bounds", "A BoundingBox encapsulating the Point definition of the IElement0D.")]
         public static BoundingBox Bounds(this IElement0D element0D)
         {
-            return Geometry.Query.Bounds(element0D.IGeometry());
+            return Engine.Geometry.Query.Bounds(element0D.IGeometry());
         }
 
 
@@ -56,7 +56,7 @@ namespace BH.Engine.Spatial
         [Output("bounds", "A BoundingBox encapsulating the ICurve definition of the IElement1D.")]
         public static BoundingBox Bounds(this IElement1D element1D)
         {
-            return Geometry.Query.IBounds(element1D.IGeometry());
+            return Engine.Geometry.Query.IBounds(element1D.IGeometry());
         }
 
 
@@ -74,9 +74,9 @@ namespace BH.Engine.Spatial
             if (elementCurves.Count == 0)
                 return null;
 
-            BoundingBox box = Geometry.Query.IBounds(elementCurves[0]);
+            BoundingBox box = Engine.Geometry.Query.IBounds(elementCurves[0]);
             for (int i = 1; i < elementCurves.Count; i++)
-                box += Geometry.Query.IBounds(elementCurves[i]);
+                box += Engine.Geometry.Query.IBounds(elementCurves[i]);
 
             return box;
         }

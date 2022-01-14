@@ -27,7 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-using BH.oM.Geometry.SettingOut;
+using BH.oM.Spatial.SettingOut;
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Environment.Elements;

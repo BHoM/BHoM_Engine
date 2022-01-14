@@ -36,7 +36,7 @@ using System.ComponentModel;
 
 using BH.Engine.Base;
 
-using BH.oM.Geometry.SettingOut;
+using BH.oM.Spatial.SettingOut;
 
 namespace BH.Engine.Environment
 {
