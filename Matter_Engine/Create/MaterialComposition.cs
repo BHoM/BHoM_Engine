@@ -35,7 +35,7 @@ using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
 using BH.oM.Quantities.Attributes;
-using BH.Engine.Base.Objects;
+using BH.Engine.Base;
 using BH.oM.Base;
 
 namespace BH.Engine.Matter
@@ -53,6 +53,15 @@ namespace BH.Engine.Matter
         [Output("materialComposition", "A material composition composed of the provided materials and ratios scaled so that their sum equals one.")]
         public static MaterialComposition MaterialComposition(IEnumerable<Material> materials, IEnumerable<double> ratios)
         {
+            if (materials.IsNullOrEmpty() || ratios.IsNullOrEmpty())
+                return null;
+
+            if (materials.Count() != ratios.Count())
+            {
+                Base.Compute.RecordError("Requires the same number of materials as ratios to create a MaterialComposition.");
+                return null;
+            }
+
             if (Math.Abs(1 - ratios.Sum()) > Tolerance.Distance)
             {
                 double factor = 1 / ratios.Sum();
