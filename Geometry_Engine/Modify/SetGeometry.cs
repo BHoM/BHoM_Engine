@@ -22,7 +22,6 @@
 
 using BH.Engine.Base;
 using BH.oM.Geometry;
-using BH.oM.Geometry.SettingOut;
 
 namespace BH.Engine.Geometry
 {
@@ -84,15 +83,6 @@ namespace BH.Engine.Geometry
         public static ICurve SetGeometry(this PolyCurve curve, ICurve newCurve)
         {
             return newCurve.DeepClone();
-        }
-
-        /***************************************************/
-
-        public static Grid SetGeometry(this Grid grid, ICurve curve)
-        {
-            Grid clone = grid.ShallowClone();
-            clone.Curve = curve.DeepClone();
-            return clone;
         }
 
         /***************************************************/

@@ -53,7 +53,7 @@ namespace BH.Engine.Spatial
         [Output("cPoints", "The control points of the defining geometry for the one dimensional representation.")]
         public static List<Point> ControlPoints(this IElement1D element1D)
         {
-            return Geometry.Query.IControlPoints(element1D.IGeometry());
+            return Engine.Geometry.Query.IControlPoints(element1D.IGeometry());
         }
 
 
@@ -68,7 +68,7 @@ namespace BH.Engine.Spatial
         [Output("cPoints", "The control points of all the defining geometry for the element curve representation.")]
         public static List<Point> ControlPoints(this IElement2D element2D, bool externalOnly = false)
         {
-            List<Point> pts = Geometry.Query.ControlPoints(element2D.OutlineCurve());
+            List<Point> pts = Engine.Geometry.Query.ControlPoints(element2D.OutlineCurve());
             if (!externalOnly)
             {
                 foreach (IElement2D e in element2D.IInternalElements2D())

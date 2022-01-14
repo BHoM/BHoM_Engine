@@ -23,6 +23,8 @@
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
+using BH.oM.Spatial.SettingOut;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Spatial
@@ -51,6 +53,18 @@ namespace BH.Engine.Spatial
         public static ICurve IGeometry(this IElement1D element1D)
         {
             return Base.Compute.RunExtensionMethod(element1D, "Geometry") as ICurve;
+        }
+
+        /******************************************/
+
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Query.Geometry(BH.oM.Architecture.Elements.Grid)")]
+        [PreviousVersion("5.1", "BH.Engine.Geometry.Query.Geometry(BH.oM.Spatial.SettingOut.Grid)")]
+        [Description("Queries the defining Curve from the grid.")]
+        [Input("element1D", "The Grid to get the defining curve from.")]
+        [Output("curve", "The Grids base geometrical curve object.")]
+        public static ICurve Geometry(this Grid grid)
+        {
+            return grid?.Curve;
         }
 
         /******************************************/

@@ -168,7 +168,7 @@ namespace BH.Engine.Spatial
         public static List<Point> PointLayout(this LinearLayout layout2D, IEnumerable<ICurve> hostRegionCurves, IEnumerable<ICurve> openingCurves = null)
         {
             Point refPoint = ReferencePoint(hostRegionCurves, openingCurves, layout2D.ReferencePoint);
-            BoundingBox bounds = Geometry.Query.Bounds(hostRegionCurves.Select(x => x.IBounds()).ToList());
+            BoundingBox bounds = Engine.Geometry.Query.Bounds(hostRegionCurves.Select(x => x.IBounds()).ToList());
             refPoint = refPoint + layout2D.Offset * AlignOffsetVector(Vector.ZAxis.CrossProduct(layout2D.Direction), refPoint, bounds.Centre());
             Line axis = new Line { Start = refPoint, End = refPoint + layout2D.Direction, Infinite = true };
 
@@ -195,7 +195,7 @@ namespace BH.Engine.Spatial
         public static List<Point> PointLayout(this MultiLinearLayout layout2D, IEnumerable<ICurve> hostRegionCurves, IEnumerable<ICurve> openingCurves = null)
         {
             Point refPoint = ReferencePoint(hostRegionCurves, openingCurves, layout2D.ReferencePoint);
-            BoundingBox bounds = Geometry.Query.Bounds(hostRegionCurves.Select(x => x.IBounds()).ToList());
+            BoundingBox bounds = Engine.Geometry.Query.Bounds(hostRegionCurves.Select(x => x.IBounds()).ToList());
             Vector offsetDir = AlignOffsetVector(Vector.ZAxis.CrossProduct(layout2D.Direction), refPoint, bounds.Centre());
             refPoint = refPoint + layout2D.Offset * offsetDir;
             int remainingPoints = layout2D.NumberOfPoints;
@@ -340,7 +340,7 @@ namespace BH.Engine.Spatial
             {
                 return CentroidWithOpeings(hostRegionCurves.ToList(), openingCurves.ToList());
             }
-            BoundingBox bounds = Geometry.Query.Bounds(hostRegionCurves.Select(x => x.IBounds()).ToList());
+            BoundingBox bounds = Engine.Geometry.Query.Bounds(hostRegionCurves.Select(x => x.IBounds()).ToList());
 
             switch (referencePoint)
             {
@@ -372,7 +372,7 @@ namespace BH.Engine.Spatial
         private static Point CentroidWithOpeings(List<ICurve> hostRegionCurves, List<ICurve> openingCurves)
         {
             if (hostRegionCurves.Count == 1 && openingCurves == null || openingCurves.Count == 0)
-                return Geometry.Query.ICentroid(hostRegionCurves[0]);
+                return Engine.Geometry.Query.ICentroid(hostRegionCurves[0]);
             else
             {
 
@@ -380,24 +380,24 @@ namespace BH.Engine.Spatial
                 double y = 0;
                 double z = 0;
                 double area = 0;
-                List<PolyCurve> extents = Geometry.Compute.BooleanUnion(hostRegionCurves);
+                List<PolyCurve> extents = Engine.Geometry.Compute.BooleanUnion(hostRegionCurves);
 
                 foreach (ICurve c in extents)
                 {
-                    Point tmp = Geometry.Query.ICentroid(c);
-                    double eArea = Geometry.Query.IArea(c);
+                    Point tmp = Engine.Geometry.Query.ICentroid(c);
+                    double eArea = Engine.Geometry.Query.IArea(c);
                     x += tmp.X * eArea;
                     y += tmp.Y * eArea;
                     z += tmp.Z * eArea;
                     area += eArea;
                 }
 
-                List<PolyCurve> openings = Geometry.Compute.BooleanUnion(openingCurves);
+                List<PolyCurve> openings = Engine.Geometry.Compute.BooleanUnion(openingCurves);
 
                 foreach (ICurve o in openings)
                 {
-                    Point oTmp = Geometry.Query.ICentroid(o);
-                    double oArea = Geometry.Query.IArea(o);
+                    Point oTmp = Engine.Geometry.Query.ICentroid(o);
+                    double oArea = Engine.Geometry.Query.IArea(o);
                     x -= oTmp.X * oArea;
                     y -= oTmp.Y * oArea;
                     z -= oTmp.Z * oArea;

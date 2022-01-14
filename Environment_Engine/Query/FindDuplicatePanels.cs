@@ -36,7 +36,7 @@ using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
-using BH.oM.Geometry.SettingOut;
+using BH.oM.Spatial.SettingOut;
 
 using BH.Engine.Base;
 

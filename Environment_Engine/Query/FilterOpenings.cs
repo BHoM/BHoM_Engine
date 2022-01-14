@@ -39,7 +39,7 @@ using BH.Engine.Base;
 using BH.oM.Physical.Elements;
 using BH.Engine.Geometry;
 
-using BH.oM.Geometry.SettingOut;
+using BH.oM.Spatial.SettingOut;
  
 
 namespace BH.Engine.Environment

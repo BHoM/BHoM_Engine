@@ -24,7 +24,7 @@ using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Base.Attributes;
-using BH.oM.Geometry.SettingOut;
+using BH.oM.Spatial.SettingOut;
 using System.ComponentModel;
 using System;
 

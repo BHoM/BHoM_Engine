@@ -22,7 +22,6 @@
 
 using BH.Engine.Geometry;
 using BH.oM.Architecture.BuildersWork;
-using BH.oM.Architecture.Elements;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Base.Attributes;
@@ -36,16 +35,6 @@ namespace BH.Engine.Architecture
     {
         /***************************************************/
         /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Extracts geometry of the given Grid.")]
-        [Input("grid", "Grid to be queried for its geometry.")]
-        [Output("Geometry of the input Grid.")]
-        public static ICurve Geometry(this Grid grid)
-        {
-            return grid?.Curve;
-        }
-
         /***************************************************/
 
         [Description("Extracts geometry of the given Theatron.")]

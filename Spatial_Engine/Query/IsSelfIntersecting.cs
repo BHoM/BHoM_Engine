@@ -54,7 +54,7 @@ namespace BH.Engine.Spatial
         [Output("A boolean which is true if the IElement1Ds curve is self intersecting.")]
         public static bool IsSelfIntersecting(this IElement1D element1D, double tolerance = Tolerance.Distance)
         {
-            return Geometry.Query.IIsSelfIntersecting(element1D.IGeometry(), tolerance);
+            return Engine.Geometry.Query.IIsSelfIntersecting(element1D.IGeometry(), tolerance);
         }
 
 
@@ -68,12 +68,12 @@ namespace BH.Engine.Spatial
         [Output("A boolean which is true if any of the IElement2Ds element curves are self intersecting.")]
         public static bool IsSelfIntersecting(this IElement2D element2D, double tolerance = Tolerance.Distance)
         {
-            if (Geometry.Query.IIsSelfIntersecting(element2D.OutlineCurve(), tolerance))
+            if (Engine.Geometry.Query.IIsSelfIntersecting(element2D.OutlineCurve(), tolerance))
                 return true;
 
             foreach (PolyCurve internalOutline in element2D.InternalOutlineCurves())
             {
-                if (Geometry.Query.IIsSelfIntersecting(internalOutline, tolerance))
+                if (Engine.Geometry.Query.IIsSelfIntersecting(internalOutline, tolerance))
                     return true;
             }
 
