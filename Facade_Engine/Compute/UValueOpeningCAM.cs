@@ -44,7 +44,7 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns effective U-Value of opening calculated using the Component Assessment Method (Using Psi-g). Requires center of opening U-value as Opening fragment and frame Psi-tj value as list of Edge fragments.")]
+        [Description("Returns effective U-Value of opening calculated using the Component Assessment Method (Using Psi-g). Requires center of opening U-value and frame Psi-tj value as OpeningConstruction and FrameEdgeProperty fragments.")]
         [Input("opening", "Opening to find U-value for.")]
         [Output("effectiveUValue", "Effective U-value result of opening calculated using CAM.")]
         public static OverallUValue UValueOpeningCAM(this Opening opening)
@@ -57,10 +57,10 @@ namespace BH.Engine.Facade
             
             double glassArea = opening.ComponentAreas().Item1;
 
-            List<IFragment> glassUValues = opening.GetAllFragments(typeof(UValueGlassCentre));
+            List<IFragment> glassUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassCentre));
             if (glassUValues.Count <= 0)
             {
-                BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-value assigned.");
+                BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have a Glass U-value assigned.");
                 return null;
             }
             if (glassUValues.Count > 1)
@@ -104,7 +104,7 @@ namespace BH.Engine.Facade
                 frameAreas.Add(area);
                 psigLengths.Add(innerLength);
 
-                List<IFragment> uValues = frameEdges[i].GetAllFragments(typeof(UValueFrame));
+                List<IFragment> uValues = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(UValueFrame));
                 if (uValues.Count <= 0)
                 {
                     BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Frame U-value assigned.");
@@ -118,7 +118,7 @@ namespace BH.Engine.Facade
                 double frameUValue = (uValues[0] as UValueFrame).UValue;
                 frameUValues.Add(frameUValue);
                 
-                List<IFragment> psiGs = frameEdges[i].GetAllFragments(typeof(PsiGlassEdge));
+                List<IFragment> psiGs = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(PsiGlassEdge));
                 if (psiGs.Count <= 0)
                 {
                     BH.Engine.Base.Compute.RecordError($"One or more FrameEdges belonging to {opening.BHoM_Guid} does not have PsiG value assigned.");
