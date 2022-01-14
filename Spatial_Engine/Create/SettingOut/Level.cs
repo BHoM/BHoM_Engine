@@ -33,7 +33,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Creates a Level object based on a provided elevation.")]
-        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Level(System.Double)")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Elements.Create.Level(System.Double)")]
         [PreviousVersion("5.1", "BH.Engine.Geometry.Create.Level(System.Double)")]
         public static Level Level(double elevation)
         {
@@ -46,7 +46,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Creates a Level object based on a provided elevation and name.")]
-        [PreviousVersion("5.1", "BH.Engine.Architecture.Create.Level(System.Double, System.String)")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Elements.Create.Level(System.Double, System.String)")]
         [PreviousVersion("5.1", "BH.Engine.Geometry.Create.Level(System.Double, System.String)")]
         public static Level Level(double elevation, string name)
         {
