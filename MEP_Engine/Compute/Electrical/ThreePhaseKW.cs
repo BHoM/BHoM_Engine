@@ -28,7 +28,7 @@ using BH.oM.Architecture.Elements;
 using BH.Engine.Reflection;
 using System;
 
-namespace BH.Engine.MEP.HVAC.ASHRAE_15
+namespace BH.Engine.MEP.Electrical
 {
     public static partial class Compute
     {
@@ -36,22 +36,36 @@ namespace BH.Engine.MEP.HVAC.ASHRAE_15
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the ventilation free opening area [sqft] required for ventilation of partially enclosed mechanical rooms with refrigeration equipment per ASHRAE 15, Part 8.")]
-        [Input("massOfRefrigerant", "mass of refrigerant of largest sysem [lbs]")]
-        [Output("ventilationFreeArea", "ventilation free opening area required [sqft]")]
-        public static double PartiallyEnclosed(double massOfRefrigerant)
+        [Description("Calculates kilowatts for three phase equipment from volts, amps, and power factor.")]
+        [Input("voltage", " [V]")]
+        [Input("amperage", " [A]")]
+        [Input("powerFactor", " power factor")]
+        [Output("kilowatts", "[kW]")]
+        public static double ThreePhaseKW(double voltage, double amperage, double powerFactor)
         {
-            if(massOfRefrigerant == double.NaN)
+            if(voltage == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null mass of refrigerant value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null voltage value");
+                return -1;
+            }
+
+            if (amperage == double.NaN)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null amperage value");
+                return -1;
+            }
+
+            if (powerFactor == double.NaN)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null powerFactor value");
                 return -1;
             }
 
 
-            double ventilationFreeArea = Math.Pow(massOfRefrigerant, 0.5);
+            double kilowatts = (Math.Sqrt(3) * voltage * amperage * powerFactor)/1000;
 
 
-            return ventilationFreeArea;
+            return kilowatts;
         }
 
         /***************************************************/

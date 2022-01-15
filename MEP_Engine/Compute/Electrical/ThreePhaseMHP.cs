@@ -28,7 +28,7 @@ using BH.oM.Architecture.Elements;
 using BH.Engine.Reflection;
 using System;
 
-namespace BH.Engine.MEP.HVAC.ASHRAE_15
+namespace BH.Engine.MEP.Electrical
 {
     public static partial class Compute
     {
@@ -36,22 +36,29 @@ namespace BH.Engine.MEP.HVAC.ASHRAE_15
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the ventilation free opening area [sqft] required for ventilation of partially enclosed mechanical rooms with refrigeration equipment per ASHRAE 15, Part 8.")]
-        [Input("massOfRefrigerant", "mass of refrigerant of largest sysem [lbs]")]
-        [Output("ventilationFreeArea", "ventilation free opening area required [sqft]")]
-        public static double PartiallyEnclosed(double massOfRefrigerant)
+        [Description("Calculates MHP (Motor Horsepower) for three phase equipment from BHP and motor-drive efficiency")]
+        [Input("brakeHorsepower", "brakeHorsepower [hp] of three phase equipment")]
+        [Input("motor_driveEfficiency", "motor-drive efficiency in decimal form (ex. 0.8)")]
+        [Output("MHP", "[hp]")]
+        public static double ThreePhaseMHP(double brakeHorsepower, double motor_driveEfficiency)
         {
-            if(massOfRefrigerant == double.NaN)
+            if(brakeHorsepower == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null mass of refrigerant value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null brake horsepower value");
+                return -1;
+            }
+
+            if (motor_driveEfficiency == double.NaN)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null motor-drive efficiency value");
                 return -1;
             }
 
 
-            double ventilationFreeArea = Math.Pow(massOfRefrigerant, 0.5);
+            double MHP = (brakeHorsepower)/motor_driveEfficiency;
 
 
-            return ventilationFreeArea;
+            return MHP;
         }
 
         /***************************************************/

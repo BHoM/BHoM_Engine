@@ -43,7 +43,7 @@ namespace BH.Engine.MEP.HVAC.ASHRAE_15
         {
             if(massOfRefrigerant == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null airflow value");
+                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null mass of refrigerant value");
                 return -1;
             }
 
