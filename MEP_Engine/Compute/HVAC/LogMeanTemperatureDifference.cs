@@ -37,7 +37,7 @@ namespace BH.Engine.MEP.HVAC
         /***************************************************/
 
         [Description("Calculates the log mean temperature difference given the inlet and outlet temperatures of both sides of the heat exchanger.")]
-        [Input("type", " input an integer value indicating type. counterfCold [0] or parallel [1] ")]
+        [Input("type", " input an integer value indicating type. counterflow [0] or parallel [1] ")]
         [Input("tempHotIn", "tempHotIn [F]")]
         [Input("tempHotOut", "tempHotOut [F]")]
         [Input("tempColdIn", "tempColdIn [F]")]
