@@ -41,7 +41,7 @@ namespace BH.Engine.Spatial
         [PreviousVersion("5.1", "BH.Engine.Architecture.Query.Geometry(BH.oM.Spatial.SettingOut.Grid)")]
         [PreviousVersion("5.1", "BH.Engine.Geometry.Query.Geometry(BH.oM.Spatial.SettingOut.Grid)")]
         [Description("Queries the defining Curve from the grid.")]
-        [Input("element1D", "The Grid to get the defining curve from.")]
+        [Input("grid", "The Grid to get the defining curve from.")]
         [Output("curve", "The Grids base geometrical curve object.")]
         public static ICurve Geometry(this Grid grid)
         {

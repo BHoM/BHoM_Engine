@@ -60,7 +60,7 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Modifies the geometry of a Grid to be the provided curve.")]
-        [Input("element1D", "The Grid to modify the geomerty of.")]
+        [Input("grid", "The Grid to modify the geomerty of.")]
         [Input("curve", "The new geometry curve for the Grid.")]
         [Output("Grid", "A Grid with the curve updated.")]
         [PreviousVersion("5.1", "BH.Engine.Geometry.Modify.SetGeometry(BH.oM.Spatial.SettingOut.Grid, BH.oM.Geometry.ICurve)")]
