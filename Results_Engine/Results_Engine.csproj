@@ -23,7 +23,6 @@
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
     <ProjectReference Include="..\Graphics_Engine\Graphics_Engine.csproj" />
-    <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
