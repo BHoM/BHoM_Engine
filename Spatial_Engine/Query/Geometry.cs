@@ -56,7 +56,7 @@ namespace BH.Engine.Spatial
         public static CompositeGeometry Geometry(this IProfile profile)
         {
             if (profile?.Edges == null)
-                return new CompositeGeometry();
+                return null;
             else
                 return new CompositeGeometry { Elements = profile.Edges.ToList<IGeometry>() };
         }
