@@ -24,13 +24,43 @@ using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Spatial.SettingOut;
+using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Spatial
 {
     public static partial class Query
     {
+        /******************************************/
+        /****  Public Methods                  ****/
+        /******************************************/
+
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Query.Geometry(BH.oM.Architecture.Elements.Grid)")]
+        [PreviousVersion("5.1", "BH.Engine.Architecture.Query.Geometry(BH.oM.Spatial.SettingOut.Grid)")]
+        [PreviousVersion("5.1", "BH.Engine.Geometry.Query.Geometry(BH.oM.Spatial.SettingOut.Grid)")]
+        [Description("Queries the defining Curve from the grid.")]
+        [Input("element1D", "The Grid to get the defining curve from.")]
+        [Output("curve", "The Grids base geometrical curve object.")]
+        public static ICurve Geometry(this Grid grid)
+        {
+            return grid?.Curve;
+        }
+
+        /******************************************/
+
+        [Description("Queries edge curves from an IProfile.")]
+        [Input("profile", "The profile to get the geometry from.")]
+        [Output("edges", "The edge curves of the profile as a CompositeGeometry.")]
+        public static CompositeGeometry Geometry(this IProfile profile)
+        {
+            if (profile?.Edges == null)
+                return new CompositeGeometry();
+            else
+                return new CompositeGeometry { Elements = profile.Edges.ToList<IGeometry>() };
+        }
+
         /******************************************/
         /****            IElement0D            ****/
         /******************************************/
@@ -57,18 +87,7 @@ namespace BH.Engine.Spatial
 
         /******************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Architecture.Query.Geometry(BH.oM.Architecture.Elements.Grid)")]
-        [PreviousVersion("5.1", "BH.Engine.Architecture.Query.Geometry(BH.oM.Spatial.SettingOut.Grid)")]
-        [PreviousVersion("5.1", "BH.Engine.Geometry.Query.Geometry(BH.oM.Spatial.SettingOut.Grid)")]
-        [Description("Queries the defining Curve from the grid.")]
-        [Input("element1D", "The Grid to get the defining curve from.")]
-        [Output("curve", "The Grids base geometrical curve object.")]
-        public static ICurve Geometry(this Grid grid)
-        {
-            return grid?.Curve;
-        }
 
-        /******************************************/
     }
 }
 
