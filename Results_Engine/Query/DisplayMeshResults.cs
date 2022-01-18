@@ -228,7 +228,7 @@ namespace BH.Engine.Results
                         System.Drawing.Color colour = gradient.Color(faceValues[i], from, to);
                         //Store face indecies for newly added vertecies
                         List<int> faceIndecies = new List<int>();
-                        int vertsCount = verts.Count - 1;
+                        int vertsCount = verts.Count;
                         foreach (int nodeIndex in mesh.Faces[i].NodeListIndices)
                         {
                             verts.Add(new RenderPoint()
