@@ -280,7 +280,7 @@ namespace BH.Engine.Results
             {
                 //If incorrect type, raise error message with suggestions of property types that works for the current MeshElementResult type
                 Base.Compute.RecordError($"Property {prop} is not a valid property for results of type {typeof(T).Name}." + 
-                    $"Try one of the following: {typeof(T).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => x.PropertyType == typeof(double)).Select(x => x.Name).Aggregate((a, b) => a + " ," + b)}");
+                    $"Try one of the following: {typeof(T).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => x.PropertyType == typeof(double)).Select(x => x.Name).Aggregate((a, b) => a + ", " + b)}");
                 return null;
             }
 
