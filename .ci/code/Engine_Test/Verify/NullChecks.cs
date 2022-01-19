@@ -46,6 +46,8 @@ namespace BH.Test.Engine
 
         public static TestResult NullChecks()
         {
+            BH.Engine.Base.Compute.LoadAllAssemblies();
+
             // Ignore because of stack overflow or need to install external libraries
             List<string> toIgnore = new List<string> { "MachineLearning", "Python", "LifeCycleAssessment.Query.GetEvaluationValue" };
 
@@ -114,15 +116,28 @@ namespace BH.Test.Engine
             {
                 inputs = method.GetParameters().Select(x => x.ParameterType).Select(t =>
                 {
+                    
                     if (t == typeof(string))
                         return "";
+                    else if (t.IsValueType) // It is acceptable to consider that lists will not be null
+                        return Activator.CreateInstance(t);
+
+                    if (t.Name == $"HashSet`1")
+                    {
+                        Type listType = typeof(HashSet<>).MakeGenericType(new Type[] { t.GetGenericArguments().First() });
+                        return Activator.CreateInstance(listType);
+                    }
+                    else if (t.Name == "Dictionary`2")
+                    {
+                        Type listType = typeof(Dictionary<,>).MakeGenericType(t.GetGenericArguments());
+                        return Activator.CreateInstance(listType);
+                    }
                     else if (t.GetInterfaces().Any(x => x.Name == "IEnumerable`1"))
                     {
                         Type listType = typeof(List<>).MakeGenericType(new Type[] { t.GetGenericArguments().First() });
                         return Activator.CreateInstance(listType);
                     }
-                    if (t.IsValueType) // It is acceptable to consider that lists will not be null
-                        return Activator.CreateInstance(t);
+
                     else
                         return null;
                 }).ToArray();
