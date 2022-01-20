@@ -38,7 +38,9 @@
     "BH.Engine.Structure.Query.EmbodiedCarbon(BH.oM.Structure.Elements.Bar)": "Method removed as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit.",
     "BH.Engine.Structure.Create.TieReinforcement(System.Double, System.Double, System.Int32)": "Method removed as part of complete refactoring of reinforcement handling in Structure_oM.",
     "BH.Engine.Structure.Create.LayerReinforcement(System.Double, System.Double, System.Int32, System.Boolean)": "Method removed as part of complete refactoring of reinforcement handling in Structure_oM.",
-    "BH.Engine.Structure.Create.PerimeterReinforcement(System.Double, System.Int32, BH.oM.Structure.SectionProperties.Reinforcement.ReinforcementPattern) ": "Method removed as part of complete refactoring of reinforcement handling in Structure_oM."
+    "BH.Engine.Structure.Create.PerimeterReinforcement(System.Double, System.Int32, BH.oM.Structure.SectionProperties.Reinforcement.ReinforcementPattern) ": "Method removed as part of complete refactoring of reinforcement handling in Structure_oM.",
+    "BH.Engine.Structure.Create.Panel(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Structure.Elements.Opening>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)": "Method that use a mixture of geometry and objects between edges and openings removed.",
+    "BH.Engine.Structure.Create.Panel(System.Collections.Generic.List<BH.oM.Structure.Elements.Edge>, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, System.String)": "Method that use a mixture of geometry and objects between edges and openings removed."
   },
   "MessageForNoUpgrade": {
   }
