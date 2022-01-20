@@ -50,12 +50,12 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            Bar clone = bar.DeepClone() as Bar;
+            Bar clone = bar.DeepClone();
 
             // Default the Bars end if the input is an Point
             if (newElements0D[0] is Point)
             {
-                clone.StartNode = Create.Node(newElements0D[0] as Point);
+                clone.StartNode = new Node { Position = newElements0D[0] as Point };
                 if (clone.Release != null)
                     clone.Release.StartRelease = Create.FixConstraint6DOF();
             }
@@ -65,7 +65,7 @@ namespace BH.Engine.Structure
             // Default the Bars end if the input is an Point
             if (newElements0D[1] is Point)
             {
-                clone.EndNode = Create.Node(newElements0D[1] as Point);
+                clone.EndNode = new Node { Position = newElements0D[1] as Point };
                 if (clone.Release != null)
                     clone.Release.EndRelease = Create.FixConstraint6DOF();
             }
