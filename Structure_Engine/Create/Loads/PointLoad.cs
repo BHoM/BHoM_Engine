@@ -40,6 +40,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Structure.Create.PointForce(BH.oM.Structure.Loads.Loadcase, BH.oM.Base.BHoMGroup<BH.oM.Structure.Elements.Node>, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Structure.Loads.LoadAxis, System.String)")]
         [Description("Creates a point load to be applied to Nodes.")]
         [InputFromProperty("loadcase")]
         [InputFromProperty("group", "Objects")]
@@ -70,6 +71,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Structure.Create.PointForce(BH.oM.Structure.Loads.Loadcase, System.Collections.Generic.IEnumerable<BH.oM.Structure.Elements.Node>, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, BH.oM.Structure.Loads.LoadAxis, System.String)")]
         [Description("Creates a point load to be applied to Nodes.")]
         [InputFromProperty("loadcase")]
         [Input("objects", "The collection of Nodes the load should be applied to.")]
@@ -90,26 +92,6 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - ToBeRemoved               ****/
-        /***************************************************/
-
-        [ToBeRemoved("2.3", "Method and class name updated from PointForce to PointLoad")]
-        public static PointLoad PointForce(Loadcase loadcase, BHoMGroup<Node> group, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
-        {
-            return PointLoad(loadcase, group, force, moment, axis, name);
-
-        }
-
-        /***************************************************/
-
-        [ToBeRemoved("2.3", "Method and class name updated from PointForce to PointLoad")]
-        public static PointLoad PointForce(Loadcase loadcase, IEnumerable<Node> objects, Vector force = null, Vector moment = null, LoadAxis axis = LoadAxis.Global, string name = "")
-        {
-            return PointLoad(loadcase, objects, force, moment, axis, name);
-        }
-
-        /***************************************************/
-
     }
 }
 
