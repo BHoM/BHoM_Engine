@@ -35,7 +35,10 @@
     "BH.Engine.Structure.Query.DampingRatio(BH.oM.Physical.Materials.Material)": "Method from prototype stage of material refactoring removed. To access the damping ratio from a Physical material, extract the structural material fragment and access the Damping ratio from it.",
     "BH.Engine.Structure.Results.Create.MeshResult(BH.oM.Structure.Results.MeshResultSmoothingType, BH.oM.Structure.Results.MeshResultLayer, System.Double, BH.oM.Structure.Results.MeshResultType, BH.oM.Geometry.CoordinateSystem.Cartesian, System.Collections.Generic.IEnumerable<System.Object>, System.Collections.Generic.IEnumerable<System.Object>)": "Filter requests have been disabled from use for pulling forces from analysis models. Please use the MeshResultRequest instead.",
     "BH.Engine.Structure.Query.EmbodiedCarbon(BH.oM.Structure.Elements.Panel)": "Method removed as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit.",
-    "BH.Engine.Structure.Query.EmbodiedCarbon(BH.oM.Structure.Elements.Bar)": "Method removed as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit."
+    "BH.Engine.Structure.Query.EmbodiedCarbon(BH.oM.Structure.Elements.Bar)": "Method removed as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit.",
+    "BH.Engine.Structure.Create.TieReinforcement(System.Double, System.Double, System.Int32)": "Method removed as part of complete refactoring of reinforcement handling in Structure_oM.",
+    "BH.Engine.Structure.Create.LayerReinforcement(System.Double, System.Double, System.Int32, System.Boolean)": "Method removed as part of complete refactoring of reinforcement handling in Structure_oM.",
+    "BH.Engine.Structure.Create.PerimeterReinforcement(System.Double, System.Int32, BH.oM.Structure.SectionProperties.Reinforcement.ReinforcementPattern) ": "Method removed as part of complete refactoring of reinforcement handling in Structure_oM."
   },
   "MessageForNoUpgrade": {
   }
