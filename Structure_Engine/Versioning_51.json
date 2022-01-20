@@ -31,8 +31,11 @@
     "BH.Engine.Structure.Query.LoadType(BH.oM.Structure.Loads.AreaUniformlyDistributedLoad)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
     "BH.Engine.Structure.Query.LoadType(BH.oM.Structure.Loads.AreaUniformTemperatureLoad)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
     "BH.Engine.Structure.Query.CaseType(BH.oM.Structure.Loads.LoadCombination)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
-    "BH.Engine.Structure.Query.CaseType(BH.oM.Structure.Loads.Loadcase)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting."
-
+    "BH.Engine.Structure.Query.CaseType(BH.oM.Structure.Loads.Loadcase)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
+    "BH.Engine.Structure.Query.DampingRatio(BH.oM.Physical.Materials.Material)": "Method from prototype stage of material refactoring removed. To access the damping ratio from a Physical material, extract the structural material fragment and access the Damping ratio from it.",
+    "BH.Engine.Structure.Results.Create.MeshResult(BH.oM.Structure.Results.MeshResultSmoothingType, BH.oM.Structure.Results.MeshResultLayer, System.Double, BH.oM.Structure.Results.MeshResultType, BH.oM.Geometry.CoordinateSystem.Cartesian, System.Collections.Generic.IEnumerable<System.Object>, System.Collections.Generic.IEnumerable<System.Object>)": "Filter requests have been disabled from use for pulling forces from analysis models. Please use the MeshResultRequest instead.",
+    "BH.Engine.Structure.Query.EmbodiedCarbon(BH.oM.Structure.Elements.Panel)": "Method removed as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit.",
+    "BH.Engine.Structure.Query.EmbodiedCarbon(BH.oM.Structure.Elements.Bar)": "Method removed as part of removal of EmbodiedCarbon from MaterialFragments to avoid conflicts and overlap with LCA_Toolkit."
   },
   "MessageForNoUpgrade": {
   }
