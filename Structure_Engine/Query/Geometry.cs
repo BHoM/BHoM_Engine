@@ -58,6 +58,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.SectionProperties.SteelSection)")]
         [Description("Gets the geometry of a GeometricalSection as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
         [Input("section", "GeometricalSection to get outline geometry from.")]
         [Output("outlines", "The geometry of the GeometricalSection as its outline in the global XY plane.")]
@@ -113,20 +114,6 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - ToBeRemoved               ****/
-        /***************************************************/
-
-        [ToBeRemoved("3.1", "Replaced with method for base interface IGeometricalSection.")]
-        public static IGeometry Geometry(this SteelSection section)
-        {
-            if (section?.SectionProfile?.Edges == null)
-                return new CompositeGeometry();
-            else
-                return new CompositeGeometry { Elements = section.SectionProfile.Edges.ToList<IGeometry>() };
-        }
-
-        /***************************************************/
-
     }
 
 }
