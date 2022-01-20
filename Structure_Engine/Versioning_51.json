@@ -29,7 +29,9 @@
     "BH.Engine.Structure.Query.LoadType(BH.oM.Structure.Loads.BarPrestressLoad)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
     "BH.Engine.Structure.Query.LoadType(BH.oM.Structure.Loads.BarPointLoad)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
     "BH.Engine.Structure.Query.LoadType(BH.oM.Structure.Loads.AreaUniformlyDistributedLoad)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
-    "BH.Engine.Structure.Query.LoadType(BH.oM.Structure.Loads.AreaUniformTemperatureLoad)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting."
+    "BH.Engine.Structure.Query.LoadType(BH.oM.Structure.Loads.AreaUniformTemperatureLoad)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
+    "BH.Engine.Structure.Query.CaseType(BH.oM.Structure.Loads.LoadCombination)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting.",
+    "BH.Engine.Structure.Query.CaseType(BH.oM.Structure.Loads.Loadcase)": "Old method for enum not used in any part of the code. Purpose to easy type switching which is better solved by dynamic casting."
 
   },
   "MessageForNoUpgrade": {
