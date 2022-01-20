@@ -113,7 +113,7 @@ namespace BH.Engine.Structure
                 case LoadType.PointForce:
                     {
                         BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
-                        return PointForce(loadcase, group, force, moment, axis, groupName);
+                        return PointLoad(loadcase, group, force, moment, axis, groupName);
                     }
                 case LoadType.PointDisplacement:
                     {
