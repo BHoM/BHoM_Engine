@@ -108,7 +108,7 @@ namespace BH.Engine.Structure
                 case LoadType.Selfweight:
                     {
                         BHoMGroup<BHoMObject> group = new BHoMGroup<BHoMObject>() { Name = groupName };
-                        return GravityLoad(loadcase, force, group, groupName);
+                        return new GravityLoad { Loadcase = loadcase, GravityDirection = force, Objects = group, Name = groupName };
                     }
                 case LoadType.PointForce:
                     {
@@ -139,7 +139,7 @@ namespace BH.Engine.Structure
                 case LoadType.BarTemperature:
                     {
                         BHoMGroup<Bar> group = new BHoMGroup<Bar>() { Name = groupName };
-                        return BarUniformTemperatureLoad(loadcase, mag, group, axis, isProjected, groupName);
+                        return new BarUniformTemperatureLoad { Loadcase = loadcase, TemperatureChange = mag, Objects = group, Axis = axis, Projected = isProjected, Name = groupName };
                     }
                 case LoadType.AreaUniformLoad:
                     {

@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
                 return null;
 
             FEMesh feMesh = new FEMesh();
-            feMesh.Nodes = mesh.Vertices.Select(x => Node(x)).ToList();
+            feMesh.Nodes = mesh.Vertices.Select(x => (Node)x).ToList();
 
             foreach (Face face in mesh.Faces)
             {
