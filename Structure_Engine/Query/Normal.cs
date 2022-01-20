@@ -119,15 +119,16 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - ToBeRemoved               ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         [ToBeRemoved("3.1", "ToBeRemoved by method targeting IElement2D.")]
         [Description("Returns the Panels local z-axis, a vector orthogonal to the plane of the Panel. This is found by fitting a plane through all the edge curves and taking the Normal from this plane.")]
         [Input("panel", "The Panel to evaluate the normal of.")]
         [Output("normal", "Vector representing the local z-axis Panel.")]
-        public static Vector Normal(this Panel panel)
+        private static Vector Normal(this Panel panel)
         {
+            //Method kept here private to enable dynamic casting from IAreaElement
             return Engine.Spatial.Query.Normal(panel);
         }
 

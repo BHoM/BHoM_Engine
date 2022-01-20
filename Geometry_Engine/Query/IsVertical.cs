@@ -33,6 +33,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Structure.Query.IsVertical(BH.oM.Geometry.Line)")]
         [Description("Evaluates whether a line is vertical from its start- and endpoints projected 2d-distance")]
         [Input("line", "The line to determine the verticality of")]
         [Output("isVertical", "If it is vertical, as defined in the wiki: https://github.com/BHoM/documentation/wiki/BHoM-Structural-Conventions")]
