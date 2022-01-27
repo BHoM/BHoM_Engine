@@ -140,21 +140,19 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static Cvalue CvalueResult(Spectator current, Point focal, double cvalue)
         {
-            Cvalue result = new Cvalue();
-            result.ObjectId = current.BHoM_Guid;
             Vector d = current.Head.PairOfEyes.ReferenceLocation - focal;
 
-            result.AbsoluteDist = d.Length();
-            result.Focalpoint = focal;
-            result.HorizDist = Geometry.Create.Vector(d.X, d.Y, 0).Length();
-            result.HeightAbovePitch = current.Head.PairOfEyes.ReferenceLocation.Z - focal.Z;
+            double absoluteDist = d.Length();
+            double horizDist = Geometry.Create.Vector(d.X, d.Y, 0).Length();
+            double heightAbovePitch = current.Head.PairOfEyes.ReferenceLocation.Z - focal.Z;
 
+            double cValue;
             if (!m_CvalueExists)//
-                result.CValue = m_CvalueSettings.DefaultCValue;
+                cValue = m_CvalueSettings.DefaultCValue;
             else
-                result.CValue = cvalue;
+                cValue = cvalue;
 
-            return result;
+            return new Cvalue(current.BHoM_Guid, "", 0, cvalue, horizDist, heightAbovePitch, absoluteDist, focal);
 
         }
         /***************************************************/
