@@ -100,8 +100,6 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static Evalue EvalueResult(Spectator s, Vector rowVector, Vector viewVect, Polyline playingArea, EvalueSettings settings)
         {
-            Evalue result = new Evalue();
-
             Vector viewY = Geometry.Query.CrossProduct(viewVect, rowVector);
             viewY = viewY.Normalise();
 
@@ -117,6 +115,9 @@ namespace BH.Engine.Humans.ViewQuality
             Point Vp0 = new Point();
             Point Vp1 = new Point();
             //loop to get widest horizontal and vertical angles and vectors
+
+            double horizViewAng = 0;
+            double vertViewAng = 0;
             for (int i = 0; i < playingArea.ControlPoints.Count; i++)
             {
                 Point controlPi = playingArea.ControlPoints[i];
@@ -133,34 +134,37 @@ namespace BH.Engine.Humans.ViewQuality
                         vtestAng = Geometry.Query.Angle(iComp, jComp, vertPln);
                         if (htestAng > Math.PI) htestAng = Math.PI * 2 - htestAng;
                         if (vtestAng > Math.PI) vtestAng = Math.PI * 2 - vtestAng;
-                        if (result.HorizViewAng < htestAng)
+                        if (horizViewAng < htestAng)
                         {
-                            result.HorizViewAng = htestAng;
+                            horizViewAng = htestAng;
                             Hp0 = playingArea.ControlPoints[i];
                             Hp1 = playingArea.ControlPoints[j];
                         }
-                        if (result.VertViewAng < vtestAng)
+                        if (vertViewAng < vtestAng)
                         {
-                            result.VertViewAng = vtestAng;
+                            vertViewAng = vtestAng;
                             Vp0 = playingArea.ControlPoints[i];
                             Vp1 = playingArea.ControlPoints[j];
                         }
                     }
                 }
             }
-            result.HorizViewAng = result.HorizViewAng * 57.2958;
-            result.VertViewAng = result.VertViewAng * 57.2958;
-            result.VertViewVectors[0] = (Vp0 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
-            result.VertViewVectors[1] = (Vp1 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
-            result.HorizViewVectors[0] = (Hp0 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
-            result.HorizViewVectors[1] = (Hp1 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
+            horizViewAng = horizViewAng * 57.2958;
+            vertViewAng = vertViewAng * 57.2958;
+            Vector[] vertViewVectors = new Vector[2];
+            vertViewVectors[0] = (Vp0 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
+            vertViewVectors[1] = (Vp1 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
+            Vector[] horizViewVectors = new Vector[2];
+            horizViewVectors[0] = (Hp0 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
+            horizViewVectors[1] = (Hp1 - s.Head.PairOfEyes.ReferenceLocation).Normalise();
 
+            double torsion = 0;
             if (settings.ViewType == EvalueViewEnum.ToPoint)
             {
-                result.Torsion = Geometry.Query.Angle(s.Head.PairOfEyes.ViewDirection, viewVect) * 57.2958;
+                torsion = Geometry.Query.Angle(s.Head.PairOfEyes.ViewDirection, viewVect) * 57.2958;
             }
 
-            return result;
+            return new Evalue("", "", 0, torsion, horizViewAng, horizViewVectors, vertViewVectors, vertViewAng);
         }
 
         /***************************************************/

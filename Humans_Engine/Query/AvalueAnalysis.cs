@@ -148,10 +148,7 @@ namespace BH.Engine.Humans.ViewQuality
 
         private static Avalue ClipView(Spectator spectator, Vector viewVect, Polyline activityArea)
         {
-            Avalue result = new Avalue();
-
-            result.ObjectId = spectator.BHoM_Guid;
-            result.ReferencePoint = spectator.Head.PairOfEyes.ReferenceLocation;
+            Point referencePoint = spectator.Head.PairOfEyes.ReferenceLocation;
 
             Vector rowV = Geometry.Query.CrossProduct(Vector.ZAxis, spectator.Head.PairOfEyes.ViewDirection);
             Vector viewY = Geometry.Query.CrossProduct(viewVect, rowV);
@@ -167,10 +164,10 @@ namespace BH.Engine.Humans.ViewQuality
 
             //get the ConeOfVision
             TransformMatrix transform = Geometry.Create.OrientationMatrixGlobalToLocal(local);
-            result.ConeOfVision = m_AvalueSettings.EffectiveConeOfVision.Transform(transform);
+            Polyline coneOfVision = m_AvalueSettings.EffectiveConeOfVision.Transform(transform);
 
             //planes where the calculation takes place
-            Plane viewPlane = result.ConeOfVision.FitPlane();
+            Plane viewPlane = coneOfVision.FitPlane();
             //make sure normal is viewvect
             viewPlane.Normal = viewVect;
 
@@ -178,33 +175,35 @@ namespace BH.Engine.Humans.ViewQuality
             Polyline clippedArea = ReduceActivityArea(viewPlane, activityArea);
 
             //project the pitch
-            result.FullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
+            Polyline fullActivityArea = ProjectPolylineToPlane(viewPlane, clippedArea, spectator.Head.PairOfEyes.ReferenceLocation);
 
             //clip the projected pitch against the view cone
-            result.ClippedActivityArea = ClipActivityArea(result.FullActivityArea, result.ConeOfVision);
+            Polyline clippedActivityArea = ClipActivityArea(fullActivityArea, coneOfVision);
 
             //calculate the avalue
-            result.AValue = result.ClippedActivityArea.Area() / result.ConeOfVision.Area() * 100;
+            double aValue = clippedActivityArea.Area() / coneOfVision.Area() * 100;
 
             //clip heads in front
+            double occulsion = 0;
+            List<Polyline> occludingHeads = new List<Polyline>();
             if (m_AvalueSettings.CalculateOcclusion)
             {
                 List<Spectator> infront = GetSpectatorsInfront(spectator, m_ConeOfVisionAngle);
                 if (infront.Count > 0)
                 {
 
-                    List<Polyline> occludingClippedHeads = ClipHeads(infront, spectator, viewPlane, result.ClippedActivityArea);
+                    List<Polyline> occludingClippedHeads = ClipHeads(infront, spectator, viewPlane, clippedActivityArea);
                     if (occludingClippedHeads.Count > 0)
                     {
-                        result.OccludingHeads = occludingClippedHeads;
-                        result.Occulsion = occludingClippedHeads.Sum(x => x.Area()) / result.ConeOfVision.Area() * 100;
+                        occludingHeads = occludingClippedHeads;
+                        occulsion = occludingClippedHeads.Sum(x => x.Area()) / coneOfVision.Area() * 100;
                     }
 
                 }
 
             }
 
-            return result;
+            return new Avalue(spectator.BHoM_Guid, "", 0, aValue, occulsion, fullActivityArea, clippedActivityArea, coneOfVision, referencePoint, occludingHeads);
         }
 
         /***************************************************/
