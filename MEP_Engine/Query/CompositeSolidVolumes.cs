@@ -24,6 +24,9 @@ using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.MEP.System;
+using System.Collections.Generic;
+using System.Linq;
+using BH.oM.MEP.System.SectionProperties;
 
 namespace BH.Engine.MEP
 {
@@ -69,6 +72,65 @@ namespace BH.Engine.MEP
             }
 
             if (duct.SectionProperty.InsulationSolidArea <= 0)
+            {
+                Engine.Base.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
+            }
+
+            Output<double, double, double> output = new Output<double, double, double>
+            {
+                Item1 = elementSolidVolume,
+                Item2 = insulationSolidVolume,
+                Item3 = liningSolidVolume,
+            };
+            return output;
+        }
+
+        /***************************************************/
+
+        [Description("Queries the solid volume of a Duct by multiplying the section profile's solid area by the element's length.")]
+        [Input("duct", "The Duct to query solid volume.")]
+        [MultiOutput(0, "elementSolidVolume", "SolidVolume of the Element itself within a compiled SectionProfile.")]
+        [MultiOutput(1, "insulationSolidVolume", "The solid volume of the Duct's exterior insulation.")]
+        [MultiOutput(2, "liningSolidVolume", "The solid volume of the Duct's interior lining.")]
+        public static Output<double, double, double> CompositeSolidVolumes(this List<Duct> duct)
+        {
+            int ductCount = duct.Count();
+            List<double> lengthList = duct.Select(x => x.Length()).ToList();
+            int lenghtListCount = lengthList.Count();
+
+            if (ductCount != lenghtListCount)
+            {
+                Engine.Base.Compute.RecordError("There is a list length mismatch that will produce a miscalculation unless resolved between the number of ducts within the input list and extracted length list counts.");
+                return null;
+            }
+
+            List<double> elementSolidArea = duct.Select(x => x.SectionProperty).Select(y => y.ElementSolidArea).ToList();
+            List<double> insulationSolidArea = duct.Select(x => x.SectionProperty).Select(y => y.InsulationSolidArea).ToList();
+            List<double> liningSolidArea = duct.Select(x => x.SectionProperty).Select(y => y.LiningSolidArea).ToList();
+            double length = lengthList.Sum();
+            double elementSolidVolume = elementSolidArea.Sum() * length; 
+            double insulationSolidVolume = insulationSolidArea.Sum() * length;
+            double liningSolidVolume = liningSolidArea.Sum() * length;
+            int sectionCount = duct.Select(x => x.SectionProperty).ToList().Count();
+
+            if (sectionCount <= 0)
+            {
+                Engine.Base.Compute.RecordError($"No section property defined on element {duct.Select(x => x.BHoM_Guid)}.");
+                return null;
+            }
+
+            //SolidArea = 0 user feedback.
+            if (elementSolidVolume <= 0)
+            {
+                Engine.Base.Compute.RecordNote("ElementSolidArea is 0. Returning 0 for ElementSolidVolume.");
+            }
+
+            if (liningSolidVolume <= 0)
+            {
+                Engine.Base.Compute.RecordNote("LiningSolidArea is 0. Returning 0 for LiningSolidVolume.");
+            }
+
+            if (insulationSolidVolume <= 0)
             {
                 Engine.Base.Compute.RecordNote("InsulationSolidArea is 0. Returning 0 for InsulationSolidVolume.");
             }
