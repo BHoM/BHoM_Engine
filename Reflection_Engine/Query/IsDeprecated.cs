@@ -27,6 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Reflection
 {
@@ -36,7 +37,9 @@ namespace BH.Engine.Reflection
         /**** Interface Methods                         ****/
         /***************************************************/
 
-        [ToBeRemoved("5.1", "The IsDeprecated function will be removed as the Deprecated Attribute no longer exists. All uses of this function will return false - as no objects or methods can have the Deprecated Attribute going forward so no method or object can be deprecated.")]
+        [Description("Checks whether an object has been marked as deprecated, indicating it is no longer valid to be used.")]
+        [Input("obj", "The object to check the deprecated status of.")]
+        [Output("isDeprecated", "True if the object is set to be replaced or removed, false otherwise.")]
         public static bool IIsDeprecated(this object obj)
         {
             if (obj == null)
@@ -50,6 +53,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Checks whether a method has been marked as deprecated, indicating it is no longer valid to be used.")]
+        [Input("method", "The method to check the deprecated status of.")]
+        [Output("isDeprecated", "True if the method is set to be replaced or removed, false otherwise.")]
         public static bool IsDeprecated(this MethodBase method)
         {
             if (method == null)
@@ -71,6 +77,9 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Checks whether a type has been marked as deprecated, indicating it is no longer valid to be used.")]
+        [Input("type", "The type to check the deprecated status of.")]
+        [Output("isDeprecated", "True if the type is set to be replaced or removed, false otherwise.")]
         public static bool IsDeprecated(this Type type)
         {
             if (type == null)
