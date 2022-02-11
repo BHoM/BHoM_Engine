@@ -24,6 +24,7 @@ using BH.oM.Base.Debugging;
 using System;
 using System.Collections.Generic;
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
@@ -34,6 +35,9 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RemoveEvent(BH.oM.Base.Debugging.Event)")]
+        [Description("Removes an event from the BHoM event log.")]
+        [Input("newEvent", "Event to be removed.")]
+        [Output("success", "True if the event is removed successfully.")]
         public static bool RemoveEvent(Event newEvent)
         {
             lock (Global.DebugLogLock)
@@ -48,6 +52,9 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RemoveEvents(System.Collections.Generic.List<BH.oM.Base.Debugging.Event>)")]
+        [Description("Removes a set of events from the BHoM event log.")]
+        [Input("events", "Events to be removed.")]
+        [Output("success", "True if the events are removed successfully.")]
         public static bool RemoveEvents(List<Event> events)
         {
             lock (Global.DebugLogLock)

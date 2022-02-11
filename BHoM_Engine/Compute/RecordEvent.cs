@@ -23,6 +23,7 @@
 using BH.oM.Base.Debugging;
 using BH.oM.Base.Attributes;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
@@ -33,6 +34,10 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordEvent(System.String, BH.oM.Base.Debugging.EventType)")]
+        [Description("Records an event in the BHoM event log.")]
+        [Input("message", "Message related to the event to be logged.")]
+        [Input("type", "Type of the event to be logged.")]
+        [Output("success", "True if the event is logged successfully.")]
         public static bool RecordEvent(string message, EventType type = EventType.Unknown)
         {
             return RecordEvent(new Event { Message = message, Type = type });
@@ -41,6 +46,9 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordEvent(BH.oM.Base.Debugging.Event)")]
+        [Description("Records an event in the BHoM event log.")]
+        [Input("newEvent", "Event to be logged.")]
+        [Output("success", "True if the event is logged successfully.")]
         public static bool RecordEvent(Event newEvent)
         {
             if (newEvent == null)
