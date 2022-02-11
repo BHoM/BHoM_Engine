@@ -52,11 +52,15 @@ namespace BH.Engine.Base
             string trace = System.Environment.StackTrace;
             newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
 
-            Log log = Query.DebugLog();
-            log.AllEvents.Add(newEvent);
-            log.CurrentEvents.Add(newEvent);
-
-            return true;
+            lock (Global.DebugLogLock)
+            {
+                Log log = Query.DebugLog();
+                log.AllEvents.Add(newEvent);
+                log.CurrentEvents.Add(newEvent);
+                return true;
+            }
         }
+
+        /***************************************************/
     }
 }

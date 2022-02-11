@@ -38,8 +38,11 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AllEvents()")]
         public static List<Event> AllEvents()
         {
-            Log log = DebugLog();
-            return log.AllEvents.ToList();
+            lock (Global.DebugLogLock)
+            {
+                Log log = DebugLog();
+                return log.AllEvents.ToList();
+            }
         }
 
 
@@ -48,8 +51,11 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Query.CurrentEvents()")]
         public static List<Event> CurrentEvents()
         {
-            Log log = DebugLog();
-            return log.CurrentEvents.ToList();
+            lock (Global.DebugLogLock)
+            {
+                Log log = DebugLog();
+                return log.CurrentEvents.ToList();
+            }
         }
 
 

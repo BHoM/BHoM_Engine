@@ -36,10 +36,13 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RemoveEvent(BH.oM.Base.Debugging.Event)")]
         public static bool RemoveEvent(Event newEvent)
         {
-            Log log = Query.DebugLog();
-            bool success = log.AllEvents.Remove(newEvent);
-            success &= log.CurrentEvents.Remove(newEvent);
-            return success;
+            lock (Global.DebugLogLock)
+            {
+                Log log = Query.DebugLog();
+                bool success = log.AllEvents.Remove(newEvent);
+                success &= log.CurrentEvents.Remove(newEvent);
+                return success;
+            }
         }
 
         /***************************************************/
@@ -47,15 +50,18 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RemoveEvents(System.Collections.Generic.List<BH.oM.Base.Debugging.Event>)")]
         public static bool RemoveEvents(List<Event> events)
         {
-            Log log = Query.DebugLog();
-            bool success = true;
-            foreach (Event e in events)
+            lock (Global.DebugLogLock)
             {
-                success &= log.AllEvents.Remove(e);
-                success &= log.CurrentEvents.Remove(e);
+                Log log = Query.DebugLog();
+                bool success = true;
+                foreach (Event e in events)
+                {
+                    success &= log.AllEvents.Remove(e);
+                    success &= log.CurrentEvents.Remove(e);
+                }
+
+                return success;
             }
-            
-            return success;
         }
 
         /***************************************************/

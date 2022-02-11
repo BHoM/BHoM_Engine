@@ -62,6 +62,8 @@ namespace BH.Engine.Base
 
         internal static object AssemblyReflectionLock { get; } = new object();
 
+        internal static object DebugLogLock { get; } = new object();
+
 
         /***************************************************/
         /****            Static constructor             ****/

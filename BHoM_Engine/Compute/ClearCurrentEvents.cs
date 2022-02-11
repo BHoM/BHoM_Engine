@@ -38,9 +38,12 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ClearCurrentEvents()")]
         public static bool ClearCurrentEvents()
         {
-            Log log = Query.DebugLog();
-            log.CurrentEvents.Clear();
-            return true;
+            lock (Global.DebugLogLock)
+            {
+                Log log = Query.DebugLog();
+                log.CurrentEvents.Clear();
+                return true;
+            }
         }
 
         /***************************************************/

@@ -37,10 +37,13 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Query.DebugLog()")]
         internal static Log DebugLog()
         {
-            if (m_DebugLog == null)
-                m_DebugLog = new Log();
+            lock (Global.DebugLogLock)
+            {
+                if (m_DebugLog == null)
+                    m_DebugLog = new Log();
 
-            return m_DebugLog;
+                return m_DebugLog;
+            }
         }
 
 
@@ -48,9 +51,7 @@ namespace BH.Engine.Base
         /**** Private Fields                            ****/
         /***************************************************/
 
-        [ThreadStatic]
         private static Log m_DebugLog = new Log();
-
 
         /***************************************************/
     }
