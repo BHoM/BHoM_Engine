@@ -54,16 +54,6 @@ namespace BH.Engine.Data
             return node?.Children ?? new List<DomainTree<T>>();
         }
 
-        /***************************************************/
-
-        //[Description("Gets the child nodes of this node.")]
-        //[Input("node", "The node to query for its children.")]
-        //[Output("nodes", "Child nodes of the input node.")]
-        public static List<Tree<T>> Children<T>(this Tree<T> node)
-        {
-            return node?.Children?.Values?.ToList() ?? new List<Tree<T>>();
-        }
-
 
         /***************************************************/
         /**** Private Methods                           ****/
