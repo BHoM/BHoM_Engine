@@ -25,6 +25,7 @@ using BH.oM.Base.Debugging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace BH.Engine.Base
@@ -36,6 +37,8 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ClearCurrentEvents()")]
+        [Description("Clears the current event log buffer.")]
+        [Output("success", "True if the buffer is cleared successfully.")]
         public static bool ClearCurrentEvents()
         {
             lock (Global.DebugLogLock)
