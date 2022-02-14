@@ -205,17 +205,19 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.Type != type).ToList();
         }
 
-        [Description("Returns a collection of Environment Panels that match the provided type as the first output, and the panels which don't match the provided type as the second output")]
+        [Description("Returns a collection of Environment Panels that match the provided types as the first output, and the panels which don't match the provided types as the second output")]
         [Input("panels", "A collection of Environment Panels")]
-        [Input("type", "A Panel Type to filter by from the Panel Type enum")]
-        [MultiOutput(0, "panelsMatchingType", "A collection of Environment Panels that match the provided type")]
-        [MultiOutput(1, "panelsNotMatchingType", "A collection of Environment Panel that DO NOT match the provided type")]
-        public static Output<List<Panel>, List<Panel>> FilterPanelsByType(this List<Panel> panels, PanelType type)
+        [Input("types", "One or more Panel Types to filter by from the Panel Type enum")]
+        [MultiOutput(0, "panelsMatchingType", "A collection of Environment Panels that match the provided types")]
+        [MultiOutput(1, "panelsNotMatchingType", "A collection of Environment Panel that DO NOT match the provided types")]
+        [PreviousVersion("5.1", "BH.Engine.Environment.Query.FilterPanelsByType(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Environment.Elements.PanelType)")]
+        [PreviousInputNames("types", "type")]
+        public static Output<List<Panel>, List<Panel>> FilterPanelsByType(this List<Panel> panels, params PanelType[] types)
         {
             return new Output<List<Panel>, List<Panel>>
             {
-                Item1 = panels.Where(x => x.Type == type).ToList(),
-                Item2 = panels.Where(x => x.Type != type).ToList(),
+                Item1 = panels.Where(x => types.Contains(x.Type)).ToList(),
+                Item2 = panels.Where(x => !types.Contains(x.Type)).ToList(),
             };
         }
     }
