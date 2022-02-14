@@ -212,7 +212,7 @@ namespace BH.Engine.Environment
         [MultiOutput(1, "panelsNotMatchingType", "A collection of Environment Panel that DO NOT match the provided types")]
         [PreviousVersion("5.1", "BH.Engine.Environment.Query.FilterPanelsByType(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Environment.Elements.PanelType)")]
         [PreviousInputNames("types", "type")]
-        public static Output<List<Panel>, List<Panel>> FilterPanelsByType(this List<Panel> panels, params PanelType[] types)
+        public static Output<List<Panel>, List<Panel>> FilterPanelsByType(this List<Panel> panels, List<PanelType> types)
         {
             return new Output<List<Panel>, List<Panel>>
             {
