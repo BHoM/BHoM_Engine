@@ -56,11 +56,10 @@ namespace BH.Engine.Results
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
-        public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<TMeshElementResult>> meshResults,
+        public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResults<TNode, TFace>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<IMeshElementResult>> meshResults,
                       Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
             where TNode : INode
             where TFace : IFace
-            where TMeshElementResult : IMeshElementResult
         {
             if (meshes == null || meshes.Count() < 1)
             {
@@ -90,7 +89,7 @@ namespace BH.Engine.Results
             List<IMesh<TNode, TFace>> meshList = meshes.ToList();
 
             // Map the MeshResults to Meshes
-            List<List<IMeshResult<TMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", identifier, caseFilter);
+            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", identifier, caseFilter);
             Func<IMeshElementResult, double> propertyFuction = GetPropertFunc(meshResults.First().Results.First() as dynamic, meshResultDisplay);
 
             if (propertyFuction == null)
@@ -128,11 +127,10 @@ namespace BH.Engine.Results
 
         [Description("Applies colour to a single IMesh based on a single MeshResult, i.e stress or force etc.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
-        private static RenderMesh DisplayMeshResults<TNode, TFace, TMeshElementResult>(this IMesh<TNode, TFace> mesh, IMeshResult<TMeshElementResult> meshResult, Type identifier,
+        private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, IMeshResult<IMeshElementResult> meshResult, Type identifier,
                                              Func<IMeshElementResult, double> propertyFuction, Gradient gradient, double from, double to)
             where TNode : INode
             where TFace : IFace
-            where TMeshElementResult : IMeshElementResult
         {
             if (mesh?.Nodes == null || mesh?.Faces == null || mesh.Nodes.Count < 1 || mesh.Faces.Count < 1)
             {
@@ -156,7 +154,7 @@ namespace BH.Engine.Results
                 smoothingType = (MeshResultSmoothingType)smoothing;
 
             // Order the MeshNodeResults by the IMesh Nodes or faces depending on smoothing
-            List<List<TMeshElementResult>> tempMappedElementResults;
+            List<List<IMeshElementResult>> tempMappedElementResults;
             if (smoothingType == MeshResultSmoothingType.ByFiniteElementCentres)
                 tempMappedElementResults = mesh.Faces.MapResults(meshResult.Results, nameof(IMeshElementResult.MeshFaceId), identifier);
             else
