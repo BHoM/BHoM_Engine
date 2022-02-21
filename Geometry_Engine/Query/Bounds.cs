@@ -488,15 +488,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Returns an empty BoundingBox as a face requires a Mesh for its bounds to be calculated.")]
-        public static BoundingBox Bounds(this Face face)
-        {
-            //Method here for completeness and to avoid non-sensical errors to be thrown by the UIs.
-            return new BoundingBox();
-        }
-
-        /***************************************************/
-
         [Description("Returns the global world axis oriented enclosing BoundingBox for all the inner elements of the provided CompositeGeometry.")]
         public static BoundingBox Bounds(this CompositeGeometry group)
         {
