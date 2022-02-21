@@ -75,9 +75,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static BoundingBox Bounds(this Basis basis)
+        {
+            return new BoundingBox();
+        }
+
+        /***************************************************/
+
         public static BoundingBox Bounds(this BoundingBox boundingBox)
         {
             return boundingBox == null ? null : boundingBox.DeepClone();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox Bounds(this TransformMatrix matrix)
+        {
+            return new BoundingBox();
         }
 
         /***************************************************/
@@ -453,6 +467,13 @@ namespace BH.Engine.Geometry
         public static BoundingBox Bounds(this Mesh mesh)
         {
             return mesh?.Vertices?.Bounds();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox Bounds(this Face face)
+        {
+            return new BoundingBox();
         }
 
         /***************************************************/
