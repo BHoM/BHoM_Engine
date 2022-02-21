@@ -27,6 +27,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -36,6 +37,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                 ****/
         /***************************************************/
 
+        [Description("Returns the global world axis oriented BoundingBox of the Plane. If the Plane is parallel to any of the world axis, the returned BoundingBox will be an infinite flat box in the plane. If not, the rturned box will be infinite box in all coordinate directions.")]
         public static BoundingBox Bounds(this Plane plane)
         {
             if (plane == null || plane.Normal == null)
@@ -50,6 +52,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented BoundingBox of the Point. Will be a singluar BoundingBox with Min and Max value set to the Point.")]
         public static BoundingBox Bounds(this Point pt)
         {
             return pt == null ? null : new BoundingBox { Min = pt, Max = pt };
@@ -57,6 +60,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented BoundingBox of the Vector, treating the Vector as a positional Vector. Will be a singluar BoundingBox with Min and Max value set to the Vector.")]
         public static BoundingBox Bounds(this Vector vector)
         {
             if (vector == null)
@@ -68,6 +72,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented BoundingBox of the Cartesian coordinate system. If the coordinate system is parallel to any of the world axis, the returned BoundingBox will be an infinite flat box in the plane. If not, the rturned box will be infinite box in all coordinate directions.")]
         public static BoundingBox Bounds(this Cartesian coordinateSystem)
         {
             return coordinateSystem == null ? null : ((Plane)coordinateSystem).Bounds();
@@ -75,6 +80,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented BoundingBox of the Basis as an empty BoundingBox.")]
         public static BoundingBox Bounds(this Basis basis)
         {
             return new BoundingBox();
@@ -82,22 +88,18 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the BoundingBox of the BoundingBox as a clone of the provided box.")]
         public static BoundingBox Bounds(this BoundingBox boundingBox)
         {
             return boundingBox == null ? null : boundingBox.DeepClone();
         }
 
-        /***************************************************/
-
-        public static BoundingBox Bounds(this TransformMatrix matrix)
-        {
-            return new BoundingBox();
-        }
 
         /***************************************************/
         /**** public Computation - Curves              ****/
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the curve, i.e. the box with the smallest volume within which all the curve points lie.")]
         public static BoundingBox Bounds(this Arc arc)
         {
             if (arc == null || arc.CoordinateSystem == null)
@@ -223,6 +225,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the curve, i.e. the box with the smallest volume within which all the curve points lie.")]
         public static BoundingBox Bounds(this Circle circle)
         {
             if (circle == null)
@@ -245,6 +248,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the curve, i.e. the box with the smallest volume within which all the curve points lie.")]
         public static BoundingBox Bounds(this Ellipse ellipse)
         {
             if (ellipse == null)
@@ -274,6 +278,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the curve, i.e. the box with the smallest volume within which all the curve points lie.")]
         public static BoundingBox Bounds(this Line line)
         {
             if (line == null || line.Start == null || line.End == null)
@@ -288,6 +293,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented BoundingBox for all control points of the NurbsCurve. Note that this is not the minimum eclosing box of the NurbsCurve.")]
         public static BoundingBox Bounds(this NurbsCurve curve)
         {
             return curve == null ? null : curve.ControlPoints.Bounds();
@@ -295,6 +301,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on all the inner curves of the PolyCurve, i.e. the box with the smallest volume within which all the curve points lie.")]
         public static BoundingBox Bounds(this PolyCurve curve)
         {
             if (curve == null || curve.Curves == null)
@@ -314,6 +321,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the curve, i.e. the box with the smallest volume within which all the curve points lie.")]
         public static BoundingBox Bounds(this Polyline curve)
         {
             return curve == null ? null : curve.ControlPoints.Bounds();
@@ -324,6 +332,7 @@ namespace BH.Engine.Geometry
         /**** public Computation - Surfaces            ****/
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the surface, i.e. the box with the smallest volume within which all the surface points lie.")]
         public static BoundingBox Bounds(this Extrusion surface)
         {
             if (surface == null || surface.Direction == null)
@@ -335,6 +344,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the surface, i.e. the box with the smallest volume within which all the surface points lie.")]
         public static BoundingBox Bounds(this Loft surface)
         {
             if (surface == null || surface.Curves == null)
@@ -354,6 +364,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented BoundingBox for all control points of the NurbsSurface. Note that this is not the minimum eclosing box of the NurbsSurface.")]
         public static BoundingBox Bounds(this NurbsSurface surface)
         {
             return surface == null ? null : new List<Point>(surface.ControlPoints).Bounds();
@@ -361,6 +372,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the surface, i.e. the box with the smallest volume within which all the surface points lie.")]
         public static BoundingBox Bounds(this Pipe surface)
         {
             if (surface == null || surface.Centreline == null)
@@ -377,6 +389,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the surface, i.e. the box with the smallest volume within which all the surface points lie.")]
         public static BoundingBox Bounds(this PolySurface surface)
         {
             if (surface == null)
@@ -396,6 +409,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points on the surface, i.e. the box with the smallest volume within which all the surface points lie.")]
         public static BoundingBox Bounds(this PlanarSurface surface)
         {
             if (surface == null || surface.ExternalBoundary == null)
@@ -415,6 +429,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Others                  ****/
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for the provided points, i.e. the box with the smallest volume within which all points lie.")]
         public static BoundingBox Bounds(this List<Point> pts)
         {
             if (pts == null || pts.Count == 0)
@@ -440,6 +455,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all the provided BoundingBoxes, i.e. the box with the smallest volume within which all BoundingBoxes lie lie.")]
         public static BoundingBox Bounds(this List<BoundingBox> boxes)
         {
             if (boxes == null || boxes.Count == 0)
@@ -464,6 +480,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all verices of the mesh, i.e. the box with the smallest volume within which all the mesh vertices lie.")]
         public static BoundingBox Bounds(this Mesh mesh)
         {
             return mesh?.Vertices?.Bounds();
@@ -471,13 +488,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns an empty BoundingBox as a face requires a Mesh for its bounds to be calculated.")]
         public static BoundingBox Bounds(this Face face)
         {
+            //Method here for completeness and to avoid non-sensical errors to be thrown by the UIs.
             return new BoundingBox();
         }
 
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all the inner elements of the provided CompositeGeometry.")]
         public static BoundingBox Bounds(this CompositeGeometry group)
         {
             if (group == null)
@@ -500,6 +520,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Returns the global world axis oriented enclosing BoundingBox for all points of the geometry, i.e. the box with the smallest volume within which all the points on the geometry lie.")]
         public static BoundingBox IBounds(this IGeometry geometry)
         {
             if (geometry == null)
@@ -511,6 +532,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static BoundingBox Bounds(this TransformMatrix matrix)
+        {
+            //Method added to bypass the error message
+            return new BoundingBox();
+        }
+
         /***************************************************/
 
         private static BoundingBox Bounds(IGeometry geometry)
