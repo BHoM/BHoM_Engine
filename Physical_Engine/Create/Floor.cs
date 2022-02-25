@@ -40,7 +40,7 @@ namespace BH.Engine.Physical
         [Description("Creates a physical floor element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
         [Input("location", "Location surface which represents the outer geometry of the floor. Should not contain any openings")]
         [Input("construction", "Construction representing the thickness and materiality of the floor")]
-        [Input("openings", "Openings of the floor. Could be simple voids or more detailed obejcts")]
+        [Input("openings", "Openings of the floor. Could be simple voids or more detailed objects")]
         [Input("offset", "Represents the positioning of the construction in relation to the location surface of the floor")]
         [Input("name", "The name of the floor, default empty string")]
         [Output("Floor", "The created physical floor")]

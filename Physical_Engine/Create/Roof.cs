@@ -51,7 +51,7 @@ namespace BH.Engine.Physical
         [Description("Creates a physical Roof element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
         [Input("construction", "Construction representing the thickness and materiality of the Roof")]
         [Input("location", "Location surface which represents the outer geometry of the Roof. Should not contain any openings")]
-        [Input("openings", "Openings of the Roof. Could be simple voids or more detailed obejcts")]
+        [Input("openings", "Openings of the Roof. Could be simple voids or more detailed objects")]
         [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Roof")]
         [Input("name", "The name of the roof, default empty string")]
         [Output("Roof", "The created physical Roof")]
