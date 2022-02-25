@@ -59,7 +59,7 @@ namespace BH.Engine.Results
                 return new List<List<TResult>>();
             }
 
-            //Check if no identifier has been provided. If this is the case, identifiers are searched for on the obejcts
+            //Check if no identifier has been provided. If this is the case, identifiers are searched for on the objects
             identifier = objects.First().FindIdentifier(identifier);
 
             //Filter the results based on case

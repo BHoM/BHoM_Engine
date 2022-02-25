@@ -75,7 +75,7 @@ namespace BH.Engine.Structure
 
         private static IEnumerable<ICurve> Edges(this IAreaElement element)
         {
-            Base.Compute.RecordWarning("Can not extract edges for obejcts of type " + element.GetType().FullName);
+            Base.Compute.RecordWarning("Can not extract edges for objects of type " + element.GetType().FullName);
             return new List<ICurve>();
         }
 
