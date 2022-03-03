@@ -47,17 +47,18 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
+        [PreviousInputNames("objectIdentifier", "identifier")]
         [Description("Applies colour to IMesh based on MeshResult.")]
         [Input("meshes", "Meshes to colour.")]
         [Input("meshResults", "The MeshResults to colour by.")]
-        [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned for an IAdapterId to be used.")]
+        [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Which cases to colour by, default is all.")]
         [Input("meshResultDisplay", "Which kind of results to colour by.")]
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
         public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResults<TNode, TFace>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<IMeshElementResult>> meshResults,
-                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
+                      object objectIdentifier = null, List<string> caseFilter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
             where TNode : INode
             where TFace : IFace
         {
@@ -82,15 +83,12 @@ namespace BH.Engine.Results
 
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();
-            
-            //Check if no identifier has been provided. If this is the case, identifiers are searched for in the objects
-            identifier = meshes.First().FindIdentifier(identifier);
 
             List<IMesh<TNode, TFace>> meshList = meshes.ToList();
 
             // Map the MeshResults to Meshes
-            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", identifier, caseFilter);
-            Func<IMeshElementResult, double> propertyFuction = GetPropertFunc(meshResults.First().Results.First() as dynamic, meshResultDisplay);
+            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", objectIdentifier, caseFilter);
+            Func<IResultItem, double> propertyFuction = meshResults.First().ResultItemValueProperty(meshResultDisplay);
 
             if (propertyFuction == null)
             {
@@ -101,7 +99,7 @@ namespace BH.Engine.Results
                 };
             }
             
-            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(z => propertyFuction(z)))));
+            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(propertyFuction))));
 
             List<List<RenderMesh>> result = new List<List<RenderMesh>>();
 
@@ -110,7 +108,7 @@ namespace BH.Engine.Results
                 result.Add(new List<RenderMesh>());
                 for (int j = 0; j < mappedResults[i].Count; j++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, propertyFuction, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
+                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], objectIdentifier, propertyFuction, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
                 }
             }
 
@@ -127,8 +125,8 @@ namespace BH.Engine.Results
 
         [Description("Applies colour to a single IMesh based on a single MeshResult, i.e stress or force etc.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
-        private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, IMeshResult<IMeshElementResult> meshResult, Type identifier,
-                                             Func<IMeshElementResult, double> propertyFuction, Gradient gradient, double from, double to)
+        private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, IMeshResult<IMeshElementResult> meshResult, object identifier,
+                                             Func<IResultItem, double> propertyFuction, IGradient gradient, double from, double to)
             where TNode : INode
             where TFace : IFace
         {
@@ -167,8 +165,9 @@ namespace BH.Engine.Results
                     //  all nodes are expected to have FaceIds
                     List<Dictionary<IComparable, double>> nodeValuePairs = tempMappedElementResults.Select(x => x.ToDictionary(y => y.MeshFaceId, y => propertyFuction(y))).ToList();
                     //  put the Faces in a Dictionary<FaceId,Face>
-                    Dictionary<object, Face> faceDictionaryResult = mesh.Faces.ToDictionary(x => x.FindFragment<IAdapterId>(identifier).Id, x => x.Geometry());
-                    Dictionary<object, Face> faceDictionaryRefrence = new Dictionary<object, Face>(faceDictionaryResult);
+                    Func<TFace, string> faceIdentifierFunc = GetObjectIdentifier(mesh.Faces.First(), identifier);
+                    Dictionary<string, Face> faceDictionaryResult = mesh.Faces.ToDictionary(x => faceIdentifierFunc(x), x => x.Geometry());
+                    Dictionary<string, Face> faceDictionaryRefrence = new Dictionary<string, Face>(faceDictionaryResult);
 
                     // Add all verticies to a list with their colour and update the Faces
                     for (int k = 0; k < mesh.Nodes.Count; k++)
@@ -181,8 +180,8 @@ namespace BH.Engine.Results
                                 Colour = gradient.Color(faceRelatedValue.Value, from, to)
                             });
                             // Face management, faceResult points to verts and faceReference points to mesh.Nodes
-                            Face faceResult = faceDictionaryResult[faceRelatedValue.Key];
-                            Face faceReference = faceDictionaryRefrence[faceRelatedValue.Key];
+                            Face faceResult = faceDictionaryResult[faceRelatedValue.Key.ToString()];
+                            Face faceReference = faceDictionaryRefrence[faceRelatedValue.Key.ToString()];
                             Face newFace = new Face()
                             {
                                 A = faceReference.A == k ? verts.Count - 1 : faceResult.A,
@@ -190,7 +189,7 @@ namespace BH.Engine.Results
                                 C = faceReference.C == k ? verts.Count - 1 : faceResult.C,
                                 D = faceReference.IsQuad() ? faceReference.D == k ? verts.Count - 1 : faceResult.D : -1
                             };
-                            faceDictionaryResult[faceRelatedValue.Key] = newFace;
+                            faceDictionaryResult[faceRelatedValue.Key.ToString()] = newFace;
                         }
                     }
                     faces = faceDictionaryResult.Select(x => x.Value).ToList();
@@ -264,32 +263,6 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        [Description("Gets a compiled getter for extracting a doble property with the provided name from the type T. This is to improve the performance for extracting the inner result values.")]
-        private static Func<IMeshElementResult, double> GetPropertFunc<T>(T meshElemResult, string prop) where T : IMeshElementResult
-        {
-            //Get the property to evaluate
-            var propInfo = typeof(T).GetProperty(prop);
-
-            //Get the get method from the property
-            MethodInfo getMethod = propInfo?.GetGetMethod();
-
-            //Check that the property exists, has a get method and is of double type.
-            if (getMethod == null || propInfo.PropertyType != typeof(double))
-            {
-                //If incorrect type, raise error message with suggestions of property types that works for the current MeshElementResult type
-                Base.Compute.RecordError($"Property {prop} is not a valid property for results of type {typeof(T).Name}." + 
-                    $"Try one of the following: {typeof(T).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => x.PropertyType == typeof(double)).Select(x => x.Name).Aggregate((a, b) => a + ", " + b)}");
-                return null;
-            }
-
-            //Compile the getter method for the property into a delegate
-            Func<T, double> funcT = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), getMethod);
-
-            //Return a fuction that casts the IMeshELementResult to T and calls the getmethod on the object for the property.
-            return x => funcT((T)x);
-        }
-
-        /***************************************************/
     }
 }
 
