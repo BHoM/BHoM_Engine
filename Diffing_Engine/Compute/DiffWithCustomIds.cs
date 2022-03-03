@@ -163,12 +163,12 @@ namespace BH.Engine.Diffing
                     {
                         foreach (var customComparer in diffingConfig.CustomObjectDifferencesComparers)
                         {
-                            ObjectDifferences customObjectDifferences = customComparer.Invoke(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
+                            List<PropertyDifference> customObjectDifferences = customComparer.Invoke(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
 
                             if (objectDifferences == null)
                                 objectDifferences = new ObjectDifferences() { PastObject = correspondingPastObj, FollowingObject = followingObj };
 
-                            objectDifferences.Differences.AddRange(customObjectDifferences.Differences);
+                            objectDifferences.Differences.AddRange(customObjectDifferences);
                         }
                     }
 
