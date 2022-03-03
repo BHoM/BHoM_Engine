@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -35,39 +35,32 @@ namespace BH.Engine.Graphics
     public static partial class Modify
     {
         /***************************************************/
-        /****           Public Methods                  ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Sets up the properties of a GradientOptions object for usage.")]
-        [Input("gradientOptions", "GradientOptions object to modify.")]
-        [Input("allValues", "The values to set gradient auto range from. Optional if range is already set.")]
-        [Input("defaultGradient", "Sets which gradient to use as default if no gradient is already set. Defaults to BlueToRed.")]
-        [Output("gradientOptions", "A GradientOptions object which is ready for usage.")]
-        public static GradientOptions ApplyGradientOptions(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, string defaultGradient = "BlueToRed")
+        [Description("")]
+        [Input("", "")]
+        [Output("", "")]
+        public static void ApplyGradientCentering(this GradientOptions gradientOptions)
         {
-            
             if (gradientOptions == null)
+                return;
+
+            switch (gradientOptions.GradientCenteringOptions)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot apply gradientOptions because gradientOptions is null or invalid.");
-                return null;
+                case GradientCenteringOptions.Symmetric:
+                    gradientOptions.UpperBound = Math.Max(Math.Abs(gradientOptions.UpperBound), Math.Abs(gradientOptions.LowerBound));
+                    gradientOptions.LowerBound = -gradientOptions.UpperBound;
+                    break;
+                case GradientCenteringOptions.Asymmetric:
+                    gradientOptions.Gradient = gradientOptions.Gradient.CenterGradientAsymmetric(gradientOptions.LowerBound, gradientOptions.UpperBound);
+                    break;
+                case GradientCenteringOptions.None:
+                default:
+                    break;
             }
-
-            GradientOptions result = gradientOptions.ShallowClone();
-
-            //Set up the bounds of the Gradient
-            result.SetGradientBounds(allValues);
-
-            // Sets a default gradient if none is already set
-            result.SetDefaultGradient(defaultGradient);
-
-            // Centering Options
-            result.ApplyGradientCentering();
-
-            return result;
         }
 
         /***************************************************/
-
     }
 }
-
