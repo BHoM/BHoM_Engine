@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.Engine.Base;
+using System.Reflection;
 
 namespace BH.Engine.Results
 {
@@ -37,14 +38,16 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
+        [PreviousInputNames("objectIdentifier", "identifier")]
+        [PreviousInputNames("resultIdentifier", "whichId")]
         [Description("Matches results to BHoMObjects. The output consists of a list of items corresponding to the list of BHoMObjects supplied. Each item in the output list is a list of results matching the relevant BHoMObject. The results will be matched by the ID of the object stored in the Fragments and the ObjectId of the result. If no results are found, an empty list will be provided. Note that NO compatibility check between object type and result type will be made.")]
         [Input("objects", "The objects to find results for.")]
         [Input("results", "The collection of results to search in.")]
-        [Input("whichId", "The name of the object identifier to group results by. Defaults to ObjectId.")]
-        [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
+        [Input("resultIdentifier", "Property of the IResult used to map the result to the Object. Defaults to ObjectId.")]
+        [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string whichId = nameof(IObjectIdResult.ObjectId), Type identifier = null, List<string> caseFilter = null) 
+        public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string resultIdentifier = nameof(IObjectIdResult.ObjectId), object objectIdentifier = null, List<string> caseFilter = null)
             where TResult : IResult
             where TObject : IBHoMObject
         {
@@ -59,8 +62,10 @@ namespace BH.Engine.Results
                 return new List<List<TResult>>();
             }
 
-            //Check if no identifier has been provided. If this is the case, identifiers are searched for on the objects
-            identifier = objects.First().FindIdentifier(identifier);
+            Func<TObject, string> objectIdFunction = GetObjectIdentifier(objects.First(), objectIdentifier as string);
+
+            if (objectIdFunction == null)
+                return new List<List<TResult>>();
 
             //Filter the results based on case
             IEnumerable<TResult> filteredRes;
@@ -72,22 +77,18 @@ namespace BH.Engine.Results
             else
                 filteredRes = results;
 
-            Dictionary<string, IGrouping<string, TResult>> resGroups;
 
-            //Group results by Id and turn to dictionary
-            // Add null check for when the property of the name in whichId does not exist?
-            resGroups = filteredRes.GroupBy(x => Base.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
+            Func<TResult, string> resultIdFunction = GetResultIdentifier(results.First(), resultIdentifier);
+            //Turn to Lookup based on the result ID function
+            //Add null check for when the property of the name in whichId does not exist?
+            var resGroups = filteredRes.ToLookup(resultIdFunction);
 
             List<List<TResult>> result = new List<List<TResult>>();
 
             //Run through and put results in List corresponding to objects
             foreach (TObject o in objects)
             {
-                IGrouping<string, TResult> outVal;
-                if (resGroups.TryGetValue(o.IdMatch(identifier), out outVal))
-                    result.Add(outVal.ToList());
-                else
-                    result.Add(new List<TResult>());
+                result.Add(resGroups[objectIdFunction(o)].ToList());
             }
 
             return result;
@@ -107,6 +108,57 @@ namespace BH.Engine.Results
                 return "";
 
             return ((IAdapterId)id).Id.ToString();
+        }
+
+        /***************************************************/
+
+        private static Func<T, string> GetObjectIdentifier<T>(this T obj, object identifier) where T : IBHoMObject
+        {
+            //Check if no identifier has been provided. If this is the case, identifiers are searched for on the objects
+            if (identifier == null || identifier.GetType() == typeof(Type))
+            {
+                identifier = obj.FindIdentifier(identifier as Type);
+                if (identifier != null)
+                {
+                    Type typeId = identifier as Type;
+                    return x => IdMatch(x, typeId);
+                }
+                else
+                    return null;
+            }
+            else if (identifier is string)
+            {
+                string idString = (identifier as string).ToLower();
+
+                if (idString == "name")
+                    return x => x.Name;
+
+                if (idString == "bhom_guid" || idString == "guid")
+                    return x => x.BHoM_Guid.ToString();
+
+                return x => Base.Query.PropertyValue(x, identifier as string).ToString();
+            }
+
+
+            Engine.Base.Compute.RecordError("Identifier should either be a IAdapterId type or a string corresponding to the property of the object used to be used to identify the object.");
+            return null;
+        }
+
+        /***************************************************/
+
+        private static Func<T, string> GetResultIdentifier<T>(this T obj, string identifier) where T : IResult
+        {
+            string idLower = identifier.ToLower();
+            if (idLower == nameof(IObjectIdResult.ObjectId).ToLower() && obj is IObjectIdResult)
+                return x => ((IObjectIdResult)x).ObjectId.ToString();
+
+            if (idLower == nameof(IMeshElementResult.NodeId).ToLower() && obj is IMeshElementResult)
+                return x => ((IMeshElementResult)x).NodeId.ToString();
+
+            if (idLower == nameof(IMeshElementResult.MeshFaceId).ToLower() && obj is IMeshElementResult)
+                return x => ((IMeshElementResult)x).MeshFaceId.ToString();
+
+            return x => Base.Query.PropertyValue(x, identifier).ToString();
         }
 
         /***************************************************/
