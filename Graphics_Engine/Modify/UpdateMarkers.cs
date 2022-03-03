@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -22,52 +22,39 @@
 
 using BH.Engine.Base;
 using BH.oM.Graphics;
-using BH.oM.Graphics.Colours;
-using BH.oM.Graphics.Enums;
 using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Collections.Generic;
+using System.Drawing;
+
 
 namespace BH.Engine.Graphics
 {
     public static partial class Modify
     {
         /***************************************************/
-        /****           Public Methods                  ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Sets up the properties of a GradientOptions object for usage.")]
-        [Input("gradientOptions", "GradientOptions object to modify.")]
-        [Input("allValues", "The values to set gradient auto range from. Optional if range is already set.")]
-        [Input("defaultGradient", "Sets which gradient to use as default if no gradient is already set. Defaults to BlueToRed.")]
-        [Output("gradientOptions", "A GradientOptions object which is ready for usage.")]
-        public static GradientOptions ApplyGradientOptions(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, string defaultGradient = "BlueToRed")
+        [Description("")]
+        [Input("", "")]
+        [Output("", "")]
+        public static void UpdateMarkers(this IGradient gradient, IEnumerable<Color> colors, IEnumerable<decimal> positions)
         {
-            
-            if (gradientOptions == null)
+            if (colors.Count() != positions.Count())
             {
-                BH.Engine.Base.Compute.RecordError("Cannot apply gradientOptions because gradientOptions is null or invalid.");
-                return null;
+                Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
             }
-
-            GradientOptions result = gradientOptions.ShallowClone();
-
-            //Set up the bounds of the Gradient
-            result.SetGradientBounds(allValues);
-
-            // Sets a default gradient if none is already set
-            result.SetDefaultGradient(defaultGradient);
-
-            // Centering Options
-            result.ApplyGradientCentering();
-
-            return result;
+            if (positions.Max() > 1 || positions.Min() < 0)
+            {
+                Engine.Base.Compute.RecordWarning("Gradients assumes positions between 0 and 1. Values outside this range will not be considered in colour interpolations");
+            }
+            gradient.Markers = new SortedDictionary<decimal, Color>(
+                    colors.Zip(positions, (c, p) => new { c, p })
+                    .ToDictionary(x => x.p, x => x.c));
         }
 
         /***************************************************/
-
     }
 }
-

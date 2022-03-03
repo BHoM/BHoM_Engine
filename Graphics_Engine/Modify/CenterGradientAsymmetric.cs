@@ -41,7 +41,7 @@ namespace BH.Engine.Graphics
         [Output("gradient", "A gradient with its middle colour set to 0 relative to the pair of boundary values.")]
         [PreviousInputNames("lowerBound", "from")]
         [PreviousInputNames("upperBound", "to")]
-        public static Gradient CenterGradientAsymmetric(this Gradient gradient, double lowerBound, double upperBound)
+        public static IGradient CenterGradientAsymmetric(this IGradient gradient, double lowerBound, double upperBound)
         {
             if (gradient?.Markers == null || gradient.Markers.Count < 2)
             {
@@ -49,22 +49,22 @@ namespace BH.Engine.Graphics
                 return null;
             }
 
-            Gradient result = gradient.ShallowClone();
+            IGradient result = gradient.ShallowClone();
 
             // Add a marker to avoid issues when deleting and transforming
             if (!result.Markers.ContainsKey((decimal)0.5))
-                result.Markers.Add((decimal)0.5, result.Color(0.5));
+                result.Markers.Add((decimal)0.5, result.IColor(0.5));
 
             if (upperBound <= 0)
             {
                 // Scale marker positions to span 0 to 2 and delete those above 1
-                result = Graphics.Create.Gradient(result.Markers.Where(x => x.Key <= (decimal)0.5).Select(x => x.Value),
+                result.UpdateMarkers(result.Markers.Where(x => x.Key <= (decimal)0.5).Select(x => x.Value),
                                                     result.Markers.Keys.Select(x => x * 2).Where(x => x <= 1));
             }
             else if (lowerBound >= 0)
             {
                 // Scale marker positions to span -1 to 1 and delete those below 0
-                result = Graphics.Create.Gradient(result.Markers.Where(x => x.Key >= (decimal)0.5).Select(x => x.Value),
+                result.UpdateMarkers(result.Markers.Where(x => x.Key >= (decimal)0.5).Select(x => x.Value),
                                                     result.Markers.Keys.Select(x => (x - 1) * 2 + 1).Where(x => x >= 0));
             }
             else
@@ -73,10 +73,10 @@ namespace BH.Engine.Graphics
                 decimal found = (decimal)(-lowerBound / (upperBound - lowerBound));
                 // scale marker positions below 'found' from: 0 to 0.5 => 0 to found
                 // scale marker positions above 'found' from: 0.5 to 1 => found to 1
-                result = Graphics.Create.Gradient(result.Markers.Values,
-                                                    result.Markers.Keys.Select(x => x > found ?
-                                                                                        (x - 1) * 2 * (1 - found) + 1 :
-                                                                                         x * 2 * found));
+                result.UpdateMarkers(result.Markers.Values,
+                                     result.Markers.Keys.Select(x => x > found ?
+                                                                (x - 1) * 2 * (1 - found) + 1 :
+                                                                 x * 2 * found));
             }
 
             return result;
