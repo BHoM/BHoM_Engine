@@ -535,6 +535,10 @@ namespace BH.Engine.Geometry
 
         private static BoundingBox Bounds(IGeometry geometry)
         {
+            object bounds;
+            if (Engine.Base.Compute.TryRunExtensionMethod(geometry, "Bounds", out bounds) && bounds is BoundingBox)
+                return bounds as BoundingBox;
+
             Base.Compute.RecordError($"Bounds is not implemented for IGeometry of type: {geometry.GetType().Name}.");
             return null;
         }
