@@ -23,6 +23,8 @@
 using BH.oM.Geometry;
 using BH.oM.Graphics;
 using System.Collections.Generic;
+using BH.Engine.Geometry;
+using System.Linq;
 
 namespace BH.Engine.Graphics
 {
@@ -96,6 +98,27 @@ namespace BH.Engine.Graphics
                 bb += Bounds(svg[i]);
 
             return bb;
+        }
+
+        /***************************************************/
+
+        public static BoundingBox Bounds(this RenderMesh renderMesh)
+        {
+            return renderMesh.Vertices.Select(x => x.Point).ToList().Bounds();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox Bounds(this RenderPoint renderPoint)
+        {
+            return renderPoint.Point.Bounds();
+        }
+
+        /***************************************************/
+
+        public static BoundingBox Bounds(this RenderGeometry renderGeometry)
+        {
+            return renderGeometry.Geometry.IBounds();
         }
 
         /***************************************************/
