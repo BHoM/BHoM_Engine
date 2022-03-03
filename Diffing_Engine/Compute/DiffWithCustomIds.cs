@@ -158,6 +158,20 @@ namespace BH.Engine.Diffing
                     // Determine the changed properties.
                     ObjectDifferences objectDifferences = Query.ObjectDifferences(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
 
+                    // Check if we specified a custom object comparer.
+                    if (diffingConfig.CustomObjectDifferencesComparers?.Any() ?? false)
+                    {
+                        foreach (var customComparer in diffingConfig.CustomObjectDifferencesComparers)
+                        {
+                            ObjectDifferences customObjectDifferences = customComparer.Invoke(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
+
+                            if (objectDifferences == null)
+                                objectDifferences = new ObjectDifferences() { PastObject = correspondingPastObj, FollowingObject = followingObj };
+
+                            objectDifferences.Differences.AddRange(customObjectDifferences.Differences);
+                        }
+                    }
+
                     if (objectDifferences != null && (objectDifferences.Differences?.Any() ?? false))
                     {
                         // It's been modified
