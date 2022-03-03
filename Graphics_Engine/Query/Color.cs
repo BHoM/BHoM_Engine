@@ -37,10 +37,10 @@ namespace BH.Engine.Graphics
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Gets a color from a gradient at the spacified position between 0 and 1")]
-        [Input("gradient", "The gradient to Query a Color from")]
-        [Input("val", "The number between 0 and 1 to use for interpolation of the markers colors")]
-        [Output("color", "The Color at the specified position")]
+        [Description("Gets a color from a gradient at the spacified position between 0 and 1.")]
+        [Input("gradient", "The gradient to Query a Color from.")]
+        [Input("val", "The number between 0 and 1 to use for interpolation of the markers colors.")]
+        [Output("color", "The Color at the specified position.")]
         public static Color Color(this Gradient gradient, double val)
         {
             if(gradient == null)
@@ -68,10 +68,10 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("Gets a color from a gradient at the spacified position between 0 and 1")]
-        [Input("gradient", "The gradient to Query a Color from")]
-        [Input("val", "The number between 0 and 1 to use for interpolation of the markers colors")]
-        [Output("color", "The Color at the specified position")]
+        [Description("Gets a color from a gradient at the spacified position between 0 and 1.")]
+        [Input("gradient", "The gradient to Query a Color from.")]
+        [Input("val", "The number between 0 and 1 to use for extracting the colour from the gradient.")]
+        [Output("color", "The Color at the specified position.")]
         public static Color Color(this SteppedGradient gradient, double val)
         {
             if (gradient == null)
@@ -89,12 +89,12 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("Gets a color from a gradient at the spacified position scaled between from and to")]
-        [Input("gradient", "The gradient to Query a Color from")]
-        [Input("val", "The number between 'from' and 'to' to use for interpolation of the markers colors")]
-        [Input("from", "The lower bound of 'val's rescaling to 0 to 1")]
-        [Input("to", "The upper bound of 'val's rescaling to 0 to 1")]
-        [Output("color", "The Color at the specified position")]
+        [Description("Gets a color from a gradient at the spacified position scaled between from and to.")]
+        [Input("gradient", "The gradient to Query a Color from.")]
+        [Input("val", "The number between 'from' and 'to' to use for extraction of colour from the gradient.")]
+        [Input("from", "The lower bound of 'val's rescaling to 0 to 1.")]
+        [Input("to", "The upper bound of 'val's rescaling to 0 to 1.")]
+        [Output("color", "The Color at the specified position.")]
         public static Color Color(this IGradient gradient, double val, double from, double to)
         {
             if (gradient == null)
@@ -110,10 +110,10 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [Description("Gets a color from a gradient at the spacified position between 0 and 1")]
-        [Input("gradient", "The gradient to Query a Color from")]
-        [Input("val", "The number between 0 and 1 to use for interpolation of the markers colors")]
-        [Output("color", "The Color at the specified position")]
+        [Description("Gets a color from a gradient at the spacified position between 0 and 1.")]
+        [Input("gradient", "The gradient to Query a Color from.")]
+        [Input("val", "The number between 0 and 1 to use for extracting the colour from the gradient.")]
+        [Output("color", "The Color at the specified position.")]
         public static Color IColor(this IGradient gradient, double val)
         {
             if (gradient == null)
