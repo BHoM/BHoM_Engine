@@ -38,9 +38,10 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("If the Gradient is null, sets the Gradient of the GradientOption to the a default Gradient by fetching the Library. If the gradient is already defined, no action is taken.")]
+        [Input("gradientOptions", "The GradientOptions to set the default Gradient value to if null.")]
+        [Input("defaultGradient", "The name of the default gradient to be used.")]
+        [Output("gradientOptions", "GradientOptions with applied default gradient.")]
         public static void SetDefaultGradient(this GradientOptions gradientOptions, string defaultGradient = "BlueToRed")
         {
             if (gradientOptions == null)

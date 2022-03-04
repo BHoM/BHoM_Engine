@@ -37,8 +37,9 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
+        [Description("Coverts a gradient to a stepped gradient by extracting colours in intervals.")]
+        [Input("gradient", "The gradient to covert. If already a stepped gradient, no action will be taken.")]
+        [Input("nbSteps", "Number of steps to be used. If -1, the markers of the provided gradient will be used.")]
         [Output("", "")]
         public static SteppedGradient ToSteppedGradient(this IGradient gradient, int nbSteps = -1)
         {
@@ -50,9 +51,9 @@ namespace BH.Engine.Graphics
 
             if (nbSteps == -1)
                 return new SteppedGradient { Markers = new SortedDictionary<decimal, System.Drawing.Color>(gradient.Markers) };
-            else
+            else if (nbSteps > 0)
             {
-                decimal stepSize = 1.0m / (decimal)(nbSteps+1);
+                decimal stepSize = 1.0m / (decimal)(nbSteps + 1);
                 double colourStepSize = 1.0 / (double)nbSteps;
                 SteppedGradient steppedGradient = new SteppedGradient();
                 for (int i = 0; i <= nbSteps; i++)
@@ -61,6 +62,11 @@ namespace BH.Engine.Graphics
                     steppedGradient.Markers[markerVal] = gradient.IColor(colourStepSize * i);
                 }
                 return steppedGradient;
+            }
+            else
+            {
+                Compute.RecordError("nbSteps needs to be either -1 for using the same markers as the provided gradient or a positive integer.");
+                return null;
             }
         }
 

@@ -38,9 +38,9 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Applies the GradientCenteringOptions of the gradient by either modifying the bounds or the markers of the gradient.")]
+        [Input("gradientOptions", "The GradientOptions to have its centering options applied.")]
+        [Output("gradientOptions", "GradientOptions with centering options applied.")]
         public static void ApplyGradientCentering(this GradientOptions gradientOptions)
         {
             if (gradientOptions == null)

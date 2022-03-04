@@ -96,6 +96,12 @@ namespace BH.Engine.Results
             // Map the Results to Objects
             List<List<IObjectResult>> mappedResults = objectList.MapResults(results, "ObjectId", objectIdentifier, caseFilter);
 
+            if (mappedResults.Count == 0 || mappedResults.All(x => x.Count == 0))
+            {
+                Engine.Base.Compute.RecordError("No results able to be mapped to the objects or all filtered out. Please check the inputs.");
+                return new Output<List<List<RenderGeometry>>, GradientOptions>();
+            }
+
             //Extract result value to display
             List<List<double>> resValues = mappedResults.Select(l => l.Select(resultPropertySelector).ToList()).ToList();
 
