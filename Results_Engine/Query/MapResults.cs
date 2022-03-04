@@ -62,7 +62,7 @@ namespace BH.Engine.Results
                 return new List<List<TResult>>();
             }
 
-            Func<TObject, string> objectIdFunction = GetObjectIdentifier(objects.First(), objectIdentifier as string);
+            Func<IBHoMObject, string> objectIdFunction = GetObjectIdentifier(objects.First(), objectIdentifier as string);
 
             if (objectIdFunction == null)
                 return new List<List<TResult>>();
@@ -112,11 +112,29 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        private static Func<T, string> GetObjectIdentifier<T>(this T obj, object identifier) where T : IBHoMObject
+        private static Func<IBHoMObject, string> GetObjectIdentifier(this IBHoMObject obj, object identifier)
         {
-            //Check if no identifier has been provided. If this is the case, identifiers are searched for on the objects
-            if (identifier == null || identifier.GetType() == typeof(Type))
+            //Check if no identifier has been provided. 
+            if (identifier == null)
             {
+                //If this is the case, identifiers are searched for on the objects
+                identifier = obj.FindIdentifier();
+                if (identifier != null)
+                {
+                    //If an adapterId identifier is found, use it
+                    Type typeId = identifier as Type;
+                    return x => IdMatch(x, typeId);
+                }
+                else
+                {
+                    //If not, rely on BHoM_Guid
+                    Engine.Base.Compute.RecordNote("No identifier found or specified. BHoM_Guid will be used to identify the Object.");
+                    return x => x.BHoM_Guid.ToString();
+                }
+            }
+            if(identifier.GetType() == typeof(Type))
+            {
+                //If identifier type provided is Type, check that the type is valid
                 identifier = obj.FindIdentifier(identifier as Type);
                 if (identifier != null)
                 {
@@ -128,14 +146,17 @@ namespace BH.Engine.Results
             }
             else if (identifier is string)
             {
+                //If string
                 string idString = (identifier as string).ToLower();
 
+                //Check if name or Guid. If so return property extractor as optimisation
                 if (idString == "name")
                     return x => x.Name;
 
                 if (idString == "bhom_guid" || idString == "guid")
                     return x => x.BHoM_Guid.ToString();
 
+                //If not, rely on the slower running but more generic PropertyValue
                 return x => Base.Query.PropertyValue(x, identifier as string).ToString();
             }
 
@@ -148,6 +169,7 @@ namespace BH.Engine.Results
 
         private static Func<T, string> GetResultIdentifier<T>(this T obj, string identifier) where T : IResult
         {
+            //If result type and identifier match for ObjectIdResult or MeshResult, create custom lamdas to speed things up
             string idLower = identifier.ToLower();
             if (idLower == nameof(IObjectIdResult.ObjectId).ToLower() && obj is IObjectIdResult)
                 return x => ((IObjectIdResult)x).ObjectId.ToString();
@@ -158,6 +180,7 @@ namespace BH.Engine.Results
             if (idLower == nameof(IMeshElementResult.MeshFaceId).ToLower() && obj is IMeshElementResult)
                 return x => ((IMeshElementResult)x).MeshFaceId.ToString();
 
+            //Fall back on PropertyValue
             return x => Base.Query.PropertyValue(x, identifier).ToString();
         }
 

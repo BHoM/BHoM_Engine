@@ -165,7 +165,7 @@ namespace BH.Engine.Results
                     //  all nodes are expected to have FaceIds
                     List<Dictionary<IComparable, double>> nodeValuePairs = tempMappedElementResults.Select(x => x.ToDictionary(y => y.MeshFaceId, y => propertyFuction(y))).ToList();
                     //  put the Faces in a Dictionary<FaceId,Face>
-                    Func<TFace, string> faceIdentifierFunc = GetObjectIdentifier(mesh.Faces.First(), identifier);
+                    Func<IBHoMObject, string> faceIdentifierFunc = GetObjectIdentifier(mesh.Faces.First(), identifier);
                     Dictionary<string, Face> faceDictionaryResult = mesh.Faces.ToDictionary(x => faceIdentifierFunc(x), x => x.Geometry());
                     Dictionary<string, Face> faceDictionaryRefrence = new Dictionary<string, Face>(faceDictionaryResult);
 
