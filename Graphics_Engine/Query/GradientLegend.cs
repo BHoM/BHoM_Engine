@@ -49,6 +49,9 @@ namespace BH.Engine.Graphics
         [Output("", "")]
         public static RenderMesh GradientLegend(this Gradient gradient, Cartesian baseCoordinates = null, double height = 10, double width = 1)
         {
+            if (gradient == null)
+                return null;
+
             //Default to world XY
             baseCoordinates = baseCoordinates ?? new Cartesian();
 
@@ -94,6 +97,9 @@ namespace BH.Engine.Graphics
         [Output("", "")]
         public static RenderMesh GradientLegend(this SteppedGradient gradient, Cartesian baseCoordinates = null, double height = 10, double width = 1)
         {
+            if (gradient == null)
+                return null;
+
             //Default to world XY
             baseCoordinates = baseCoordinates ?? new Cartesian();
 
@@ -164,6 +170,8 @@ namespace BH.Engine.Graphics
 
         public static RenderMesh IGradientLegend(this IGradient gradient, Cartesian baseCoordinates = null, double height = 10, double width = 1)
         {
+            if (gradient == null)
+                return null;
             return GradientLegend(gradient as dynamic, baseCoordinates, height, width);
         }
 
@@ -172,6 +180,9 @@ namespace BH.Engine.Graphics
         [Output("", "")]
         public static Output<RenderMesh, List<RenderText>> GradientLegend(this GradientOptions gradientOptions, Cartesian baseCoordinates = null, double height = 10, double gradientWidth = 1, double textSize = 0.2, int significantFigures = 4)
         {
+            if (gradientOptions == null)
+                return new Output<RenderMesh, List<RenderText>>();
+
             //Default to world XY
             baseCoordinates = baseCoordinates ?? new Cartesian();
 
@@ -204,6 +215,9 @@ namespace BH.Engine.Graphics
         [Output("", "")]
         public static Output<RenderMesh, List<RenderText>> GradientLegend(this GradientOptions gradientOptions, List<List<IObject>> objects, Cartesian baseCoordinates = null, double height = double.NaN, double gradientWidth = double.NaN, double textSize = double.NaN, int significantFigures = 4)
         {
+            if (gradientOptions == null)
+                return new Output<RenderMesh, List<RenderText>>();
+
             //Get the overall boundingbox of the input geometry
             List<BoundingBox> boxes = new List<BoundingBox>();
 
@@ -224,6 +238,11 @@ namespace BH.Engine.Graphics
             }
 
             BoundingBox bounds = boxes.Bounds();
+            if (bounds == null)
+            {
+                Base.Compute.RecordWarning("Not able to compute the total bounding box of the provided items.");
+                bounds = new BoundingBox();
+            }
 
             if (double.IsNaN(height))
                 height = 0.6 * (bounds.Max.Y - bounds.Min.Y);

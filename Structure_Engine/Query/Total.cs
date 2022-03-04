@@ -42,6 +42,8 @@ namespace BH.Engine.Structure
         [PreviousVersion("5.1", "BH.Engine.Results.Query.TotalDisplacement(BH.oM.Structure.Results.NodeDisplacement)")]
         public static double UTotal(this IDisplacement displacement)
         {
+            if (displacement == null)
+                return double.NaN;
             return Math.Sqrt(displacement.UX * displacement.UX + displacement.UY * displacement.UY + displacement.UZ * displacement.UZ);
         }
 
@@ -52,6 +54,8 @@ namespace BH.Engine.Structure
         [Output("UTot", "The total resolved rotational displacement of the result.")]
         public static double RTotal(this IDisplacement displacement)
         {
+            if (displacement == null)
+                return double.NaN;
             return Math.Sqrt(displacement.RX * displacement.RX + displacement.RY * displacement.RY + displacement.RZ * displacement.RZ);
         }
 
@@ -62,6 +66,8 @@ namespace BH.Engine.Structure
         [Output("UTot", "The total resolved translational displacement of the result.")]
         public static double UTotal(this IMeshDisplacement displacement)
         {
+            if (displacement == null)
+                return double.NaN;
             return Math.Sqrt(displacement.UXX * displacement.UXX + displacement.UYY * displacement.UYY + displacement.UZZ * displacement.UZZ);
         }
 
@@ -72,6 +78,8 @@ namespace BH.Engine.Structure
         [Output("UTot", "The total resolved rotational displacement of the result.")]
         public static double RTotal(this IMeshDisplacement displacement)
         {
+            if (displacement == null)
+                return double.NaN;
             return Math.Sqrt(displacement.RXX * displacement.RXX + displacement.RYY * displacement.RYY + displacement.RZZ * displacement.RZZ);
         }
 
@@ -83,6 +91,8 @@ namespace BH.Engine.Structure
         [PreviousVersion("5.1", "BH.Engine.Results.Query.FTotal(BH.oM.Structure.Results.GlobalReactions)")]
         public static double FTotal(this IReaction reaction)
         {
+            if (reaction == null)
+                return double.NaN;
             return Math.Sqrt(reaction.FX * reaction.FX + reaction.FY * reaction.FY + reaction.FZ * reaction.FZ);
         }
 
@@ -94,6 +104,8 @@ namespace BH.Engine.Structure
         [PreviousVersion("5.1", "BH.Engine.Results.Query.MTotal(BH.oM.Structure.Results.GlobalReactions)")]
         public static double MTotal(this IReaction reaction)
         {
+            if (reaction == null)
+                return double.NaN;
             return Math.Sqrt(reaction.MX * reaction.MX + reaction.MY * reaction.MY + reaction.MZ * reaction.MZ);
         }
 
@@ -104,6 +116,8 @@ namespace BH.Engine.Structure
         [Output("FTot", "The total resolved bending moment of the result.")]
         public static double MTotal(this BarForce force)
         {
+            if (force == null)
+                return double.NaN;
             return Math.Sqrt(force.MY * force.MY + force.MZ * force.MZ);
         }
 

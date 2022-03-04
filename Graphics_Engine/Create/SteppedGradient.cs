@@ -28,7 +28,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Graphics
 {
@@ -44,6 +44,9 @@ namespace BH.Engine.Graphics
         [Output("gradient", "A colour Gradient.")]
         public static SteppedGradient SteppedGradient(IEnumerable<Color> colors, IEnumerable<decimal> positions)
         {
+            if (colors.IsNullOrEmpty() || positions.IsNullOrEmpty())
+                return null;
+
             if (colors.Count() != positions.Count())
             {
                 Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");

@@ -45,6 +45,9 @@ namespace BH.Engine.Results
         [Output("func", "The result extraction function.")]
         public static Func<IResultItem, double> ResultItemValueProperty(this IResultItem result, string propertyName)
         {
+            if (result == null || propertyName == null)
+                return null;
+
             return ResultItemValuePropertyGeneric(result as dynamic, propertyName);
         }
 
@@ -56,6 +59,9 @@ namespace BH.Engine.Results
         [Output("func", "The result extraction function.")]
         public static Func<IResultItem, double> ResultItemValueProperty(this IResultCollection<IResultItem> result, string propertyName)
         {
+            if (result == null || propertyName == null)
+                return null;
+
             return ResultItemValueProperty(result.Results.First(), propertyName);
         }
 
@@ -67,6 +73,9 @@ namespace BH.Engine.Results
         [Output("func", "Dictionary of string, Func where the Key is the name of the property and the value is the compiled selector for extracting the proeprty from a result of the type.")]
         public static Dictionary<string, Func<T, double>> ResultItemValueProperties<T>(this T result) where T : IResultItem
         {
+            if (result == null)
+                return null;
+
             //Get the type of obejct to evaluate
             Type type = result.GetType();
 
@@ -132,7 +141,7 @@ namespace BH.Engine.Results
 
         public static Func<IResultItem, double> ResultItemValuePropertyGeneric<T>(this T result, string propertyName) where T : IResultItem
         {
-            if (result == null)
+            if (result == null || propertyName == null)
                 return null;
 
             //Get all properties of the type
