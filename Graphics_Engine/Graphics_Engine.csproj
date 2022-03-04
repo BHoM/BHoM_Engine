@@ -23,6 +23,7 @@
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
     <ProjectReference Include="..\Library_Engine\Library_Engine.csproj" />
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
+    <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -122,6 +122,29 @@ namespace BH.Engine.Graphics
         }
 
         /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        public static BoundingBox IBounds(this IRender render)
+        {
+            return Bounds(render as dynamic);
+        }
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        public static BoundingBox Bounds(this IRender render)
+        {
+            object bounds;
+            if (Engine.Base.Compute.TryRunExtensionMethod(render, "Bounds", out bounds) && bounds is BoundingBox)
+                return bounds as BoundingBox;
+
+            Base.Compute.RecordError($"Bounds is not implemented for IRender of type: {render.GetType().Name}.");
+            return null;
+        }
+
+        /***************************************************/
     }
 }
 
