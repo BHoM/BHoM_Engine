@@ -50,7 +50,6 @@ namespace BH.Engine.Base
             Type adapterIdType = o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
             if (adapterIdType == null)
             {
-                Base.Compute.RecordError("No Identifier found.");
                 return null;
             }
             else
@@ -68,7 +67,10 @@ namespace BH.Engine.Base
         {
             if (adapterIdType == null)
             {
-                return o.FindIdentifier();
+                Type identifier = o.FindIdentifier();
+                if(identifier == null)
+                    Base.Compute.RecordError("No Identifier found.");
+                return identifier;
             }
             else if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
             {
