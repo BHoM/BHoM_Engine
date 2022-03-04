@@ -46,7 +46,7 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Generates a list of coloured geometry based on provided BHoMObejcts and ObjectResults..")]
+        [Description("Generates a list of coloured geometry based on provided BHoMObejcts and ObjectResults.")]
         [Input("objects", "BHoMObjects to colour.")]
         [Input("results", "The IObjectResults to colour by.")]
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
@@ -97,7 +97,7 @@ namespace BH.Engine.Results
             List<List<IObjectResult>> mappedResults = objectList.MapResults(results, "ObjectId", objectIdentifier, caseFilter);
 
             //Extract result value to display
-            List<List<double>> resValues = mappedResults.Select(l => l.Select(x => resultPropertySelector(x)).ToList()).ToList();
+            List<List<double>> resValues = mappedResults.Select(l => l.Select(resultPropertySelector).ToList()).ToList();
 
             //Set up gradient based on values
             gradientOptions = gradientOptions.ApplyGradientOptions(resValues.SelectMany(x => x));
