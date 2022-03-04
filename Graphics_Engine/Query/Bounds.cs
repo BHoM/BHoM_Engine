@@ -104,6 +104,12 @@ namespace BH.Engine.Graphics
 
         public static BoundingBox Bounds(this RenderMesh renderMesh)
         {
+            if(renderMesh == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null RenderMesh.");
+                return null;
+            }
+
             return renderMesh.Vertices.Select(x => x.Point).ToList().Bounds();
         }
 
@@ -111,6 +117,12 @@ namespace BH.Engine.Graphics
 
         public static BoundingBox Bounds(this RenderPoint renderPoint)
         {
+            if (renderPoint == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null RenderPoint.");
+                return null;
+            }
+
             return renderPoint.Point.Bounds();
         }
 
@@ -118,6 +130,12 @@ namespace BH.Engine.Graphics
 
         public static BoundingBox Bounds(this RenderGeometry renderGeometry)
         {
+            if (renderGeometry == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null RenderGeometry.");
+                return null;
+            }
+
             return renderGeometry.Geometry.IBounds();
         }
 
@@ -127,6 +145,11 @@ namespace BH.Engine.Graphics
 
         public static BoundingBox IBounds(this IRender render)
         {
+            if (render == null)
+            {
+                Base.Compute.RecordError("Cannot query the bounding box of a null IRender.");
+                return null;
+            }
             return Bounds(render as dynamic);
         }
 
@@ -134,10 +157,10 @@ namespace BH.Engine.Graphics
         /**** Private Methods - Fallback                ****/
         /***************************************************/
 
-        public static BoundingBox Bounds(this IRender render)
+        private static BoundingBox Bounds(this IRender render)
         {
             object bounds;
-            if (Engine.Base.Compute.TryRunExtensionMethod(render, "Bounds", out bounds) && bounds is BoundingBox)
+            if (Base.Compute.TryRunExtensionMethod(render, "Bounds", out bounds) && bounds is BoundingBox)
                 return bounds as BoundingBox;
 
             Base.Compute.RecordError($"Bounds is not implemented for IRender of type: {render.GetType().Name}.");
