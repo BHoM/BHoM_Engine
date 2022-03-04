@@ -112,7 +112,7 @@ namespace BH.Engine.Results
 
 
                 //If the method is generic, it needs to be instaciated as generic.
-                //If the method is not generic, no action will be taken by the method called
+                //If the method is not generic, no action will be taken by MakeGenericFromInputs
                 MethodInfo finalMethod = method.MakeGenericFromInputs(new List<Type> { type });
 
                 //Turn to a function and store
