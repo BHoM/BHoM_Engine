@@ -29,6 +29,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.Results
 {
@@ -86,6 +87,37 @@ namespace BH.Engine.Results
                 //Compile the get method of the property into a function and store in dictionary, using the name of the property as the key.
                 //Pro-compiling into functions significantly increases the performance when retreiving result values
                 selectorsDict[info.Name] = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), info.GetGetMethod());
+            }
+
+            //Check all available methods that takes a result compatible with the type and returns a double
+            foreach (MethodInfo method in Base.Query.BHoMMethodList().Where(x => x.ReturnType == typeof(double)))
+            {
+                //Check that the method has exactly one argument
+                ParameterInfo[] para = method.GetParameters();
+                if (para.Length != 1)
+                    continue;
+
+                //Check that this argument is asignable from the type
+                if (!para[0].ParameterType.IsAssignableFromIncludeGenerics(type))
+                {
+                    if (para[0].ParameterType.ContainsGenericParameters)
+                    {
+                        Type[] genericParams = para[0].ParameterType.GetGenericParameterConstraints();
+                        if (!(genericParams.Length == 1 && genericParams[0].IsAssignableFrom(type)))
+                            continue;
+                    }
+                    else
+                        continue;
+                }
+
+
+                //If the method is generic, it needs to be instaciated as generic.
+                //If the method is not generic, no action will be taken by the method called
+                MethodInfo finalMethod = method.MakeGenericFromInputs(new List<Type> { type });
+
+                //Turn to a function and store
+                selectorsDict[method.Name] = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), finalMethod);
+
             }
 
             //Store in dictionary for further uses
