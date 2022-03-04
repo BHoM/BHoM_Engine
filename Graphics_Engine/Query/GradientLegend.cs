@@ -32,6 +32,9 @@ using System.ComponentModel;
 using System.Linq;
 using BH.Engine.Geometry;
 using System.Drawing;
+using BH.oM.Dimensional;
+using BH.Engine.Spatial;
+using BH.Engine.Base;
 
 namespace BH.Engine.Graphics
 {
@@ -96,7 +99,7 @@ namespace BH.Engine.Graphics
 
             RenderMesh mesh = new RenderMesh();
 
-            List<KeyValuePair<decimal,Color>> markerList = gradient.Markers.ToList();
+            List<KeyValuePair<decimal, Color>> markerList = gradient.Markers.ToList();
 
             for (int i = 0; i < markerList.Count; i++)
             {
@@ -178,7 +181,7 @@ namespace BH.Engine.Graphics
             List<RenderText> textMarkers = new List<RenderText>();
 
             //Loop through and add text along the markers.
-            foreach (KeyValuePair<decimal, System.Drawing.Color> marker in gradientOptions.Gradient.Markers)
+            foreach (KeyValuePair<decimal, Color> marker in gradientOptions.Gradient.Markers)
             {
                 Vector textTranslation = (double)marker.Key * height * baseCoordinates.Y + baseCoordinates.X * (gradientWidth + textSize);
                 textMarkers.Add(new RenderText
@@ -188,10 +191,57 @@ namespace BH.Engine.Graphics
                     Colour = System.Drawing.Color.Black,
                     Text = ToSignificantDigits((gradientOptions.LowerBound + (gradientOptions.UpperBound - gradientOptions.LowerBound) * (double)marker.Key), significantFigures)
                 });
-                
+
             }
 
             return new Output<RenderMesh, List<RenderText>> { Item1 = mesh, Item2 = textMarkers };
+        }
+
+        /***************************************************/
+
+        [Description("")]
+        [Input("", "")]
+        [Output("", "")]
+        public static Output<RenderMesh, List<RenderText>> GradientLegend(this GradientOptions gradientOptions, List<List<IObject>> objects, Cartesian baseCoordinates = null, double height = double.NaN, double gradientWidth = double.NaN, double textSize = double.NaN, int significantFigures = 4)
+        {
+            //Get the overall boundingbox of the input geometry
+            List<BoundingBox> boxes = new List<BoundingBox>();
+
+            foreach (IObject item in objects.SelectMany(x => x))
+            {
+                if (item is IGeometry)
+                    boxes.Add(((IGeometry)item).IBounds());
+                else if (item is IRender)
+                    boxes.Add(((IRender)item).IBounds());
+                else if (item is IElement)
+                    boxes.Add(((IElement)item).IBounds());
+                else if (item is IBHoMObject)
+                {
+                    IGeometry geom = ((IBHoMObject)item).IGeometry();
+                    if (geom != null)
+                        boxes.Add(geom.IBounds());
+                }
+            }
+
+            BoundingBox bounds = boxes.Bounds();
+
+            if (double.IsNaN(height))
+                height = 0.6 * (bounds.Max.Y - bounds.Min.Y);
+
+            if (baseCoordinates == null)
+            {
+                BH.oM.Geometry.Point basePt = new oM.Geometry.Point { Y = (bounds.Max.Y + bounds.Min.Y) / 2 - height / 2, X = bounds.Max.X + (bounds.Max.X - bounds.Min.X) / 10 };
+                baseCoordinates = new Cartesian();
+                baseCoordinates.Origin = basePt;
+            }
+
+            if (double.IsNaN(gradientWidth))
+                gradientWidth = height / 10;
+
+            if (double.IsNaN(textSize))
+                textSize = Math.Min(0.3 * height / gradientOptions.Gradient.Markers.Count, gradientWidth / 2);
+
+            return GradientLegend(gradientOptions, baseCoordinates, height, gradientWidth, textSize, significantFigures);
         }
 
         /***************************************************/
