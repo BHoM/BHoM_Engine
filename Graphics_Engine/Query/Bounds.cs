@@ -25,6 +25,7 @@ using BH.oM.Graphics;
 using System.Collections.Generic;
 using BH.Engine.Geometry;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Graphics
 {
@@ -34,6 +35,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Computes and returns the BoundingBox the SVGObject which is the concatenated BoudingBox of all Shapes contained within the object..")]
         public static BoundingBox Bounds(this SVGObject svg)
         {
             if(svg == null)
@@ -53,6 +55,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Computes and returns the full BoundingBox of all SVGObject in the provided list.")]
         public static BoundingBox Bounds(this List<SVGObject> svg)
         {
             if (svg == null)
@@ -71,6 +74,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Returns the BoundingBox the SVGDocuments which is the Canvas.")]
         public static BoundingBox Bounds(this SVGDocument svg)
         {
             if (svg == null)
@@ -84,6 +88,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Computes and returns the full BoundingBox of all SVGDocuments in the provided list.")]
         public static BoundingBox Bounds(this List<SVGDocument> svg)
         {
             if (svg == null)
@@ -102,6 +107,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Computes and returns the BoundingBox of the RenderMesh as the bounding box of all Vertices.")]
         public static BoundingBox Bounds(this RenderMesh renderMesh)
         {
             if(renderMesh == null)
@@ -115,6 +121,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Computes and returns the BoundingBox of the RenderPoint as the bounding box of its Point.")]
         public static BoundingBox Bounds(this RenderPoint renderPoint)
         {
             if (renderPoint == null)
@@ -128,6 +135,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Computes and returns the BoundingBox of the RenderGeometry as the bounding box of the its Geometry.")]
         public static BoundingBox Bounds(this RenderGeometry renderGeometry)
         {
             if (renderGeometry == null)
@@ -143,6 +151,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Computes and returns the BoundingBox of the IRender.")]
         public static BoundingBox IBounds(this IRender render)
         {
             if (render == null)
