@@ -37,15 +37,16 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static void UpdateMarkers(this IGradient gradient, IEnumerable<Color> colors, IEnumerable<decimal> positions)
+        [Description("Updates the markers of the gradient based on the provided colours and positions.")]
+        [Input("colours", "The colours of the new markers. Should be the same number of colours as positions.")]
+        [Input("positions", "The positions of the new markers. SHould be values between 0 and 1 and the same number of positions as colours.")]
+        [Output("gradient", "Gradient with updated markers.")]
+        public static void UpdateMarkers(this IGradient gradient, IEnumerable<Color> colours, IEnumerable<decimal> positions)
         {
-            if (gradient == null || colors.IsNullOrEmpty() || positions.IsNullOrEmpty())
+            if (gradient == null || colours.IsNullOrEmpty() || positions.IsNullOrEmpty())
                 return;
 
-            if (colors.Count() != positions.Count())
+            if (colours.Count() != positions.Count())
             {
                 Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
             }
@@ -54,7 +55,7 @@ namespace BH.Engine.Graphics
                 Engine.Base.Compute.RecordWarning("Gradients assumes positions between 0 and 1. Values outside this range will not be considered in colour interpolations");
             }
             gradient.Markers = new SortedDictionary<decimal, Color>(
-                    colors.Zip(positions, (c, p) => new { c, p })
+                    colours.Zip(positions, (c, p) => new { c, p })
                     .ToDictionary(x => x.p, x => x.c));
         }
 

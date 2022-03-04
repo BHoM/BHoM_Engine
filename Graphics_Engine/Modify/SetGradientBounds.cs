@@ -38,9 +38,10 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Sets the bounds of the gradient based on provided values. If the bounds are already set, no action will be taken. If not set, min and max values of the provided values will be used to set the Bounds.")]
+        [Input("gradientOptions", "The GradientOptions to set the bounds to.")]
+        [Input("allValues", "The values to use to update the gradient bounds.")]
+        [Output("gradientOptions", "GradientOptions with updated unset bounds.")]
         public static void SetGradientBounds(this GradientOptions gradientOptions, IEnumerable<double> allValues = null)
         {
             if (gradientOptions == null)

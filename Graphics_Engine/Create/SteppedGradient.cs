@@ -42,12 +42,12 @@ namespace BH.Engine.Graphics
         [Input("colours", "A list of colours for the gradient.")]
         [Input("positions", "A corresponding list of positions for the coloured markers between 0 and 1.")]
         [Output("gradient", "A colour Gradient.")]
-        public static SteppedGradient SteppedGradient(IEnumerable<Color> colors, IEnumerable<decimal> positions)
+        public static SteppedGradient SteppedGradient(IEnumerable<Color> colours, IEnumerable<decimal> positions)
         {
-            if (colors.IsNullOrEmpty() || positions.IsNullOrEmpty())
+            if (colours.IsNullOrEmpty() || positions.IsNullOrEmpty())
                 return null;
 
-            if (colors.Count() != positions.Count())
+            if (colours.Count() != positions.Count())
             {
                 Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
             }
@@ -58,7 +58,7 @@ namespace BH.Engine.Graphics
             return new SteppedGradient()
             {
                 Markers = new SortedDictionary<decimal, Color>(
-                    colors.Zip(positions, (c, p) => new { c, p })
+                    colours.Zip(positions, (c, p) => new { c, p })
                     .ToDictionary(x => x.p, x => x.c)
                     )
             };
