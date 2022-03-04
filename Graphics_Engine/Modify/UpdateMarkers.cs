@@ -42,6 +42,9 @@ namespace BH.Engine.Graphics
         [Output("", "")]
         public static void UpdateMarkers(this IGradient gradient, IEnumerable<Color> colors, IEnumerable<decimal> positions)
         {
+            if (gradient == null || colors.IsNullOrEmpty() || positions.IsNullOrEmpty())
+                return;
+
             if (colors.Count() != positions.Count())
             {
                 Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
