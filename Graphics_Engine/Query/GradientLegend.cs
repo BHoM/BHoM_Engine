@@ -178,10 +178,10 @@ namespace BH.Engine.Graphics
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static Output<RenderMesh, List<RenderText>> GradientLegend(this GradientOptions gradientOptions, Cartesian baseCoordinates = null, double height = 10, double gradientWidth = 1, double textSize = 0.2, int significantFigures = 4)
+        public static Output<RenderMesh, List<RenderText>, RenderText> GradientLegend(this GradientOptions gradientOptions, Cartesian baseCoordinates = null, double height = 10, double gradientWidth = 1, double textSize = 0.2, int significantFigures = 4)
         {
             if (gradientOptions == null)
-                return new Output<RenderMesh, List<RenderText>>();
+                return new Output<RenderMesh, List<RenderText>, RenderText>();
 
             //Default to world XY
             baseCoordinates = baseCoordinates ?? new Cartesian();
@@ -202,10 +202,23 @@ namespace BH.Engine.Graphics
                     Colour = System.Drawing.Color.Black,
                     Text = ToSignificantDigits((gradientOptions.LowerBound + (gradientOptions.UpperBound - gradientOptions.LowerBound) * (double)marker.Key), significantFigures)
                 });
-
             }
 
-            return new Output<RenderMesh, List<RenderText>> { Item1 = mesh, Item2 = textMarkers };
+            //If set, add name on top of gradient
+            RenderText title = null;
+            if (!string.IsNullOrWhiteSpace(gradientOptions.Name))
+            {
+                title = new RenderText
+                {
+                    Cartesian = baseCoordinates.Translate(baseCoordinates.Y * height * 1.1),
+                    Height = textSize,
+                    Colour = System.Drawing.Color.Black,
+                    Text = gradientOptions.Name
+                };
+            }
+
+
+            return new Output<RenderMesh, List<RenderText>, RenderText> { Item1 = mesh, Item2 = textMarkers, Item3 = title };
         }
 
         /***************************************************/
@@ -213,10 +226,10 @@ namespace BH.Engine.Graphics
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static Output<RenderMesh, List<RenderText>> GradientLegend(this GradientOptions gradientOptions, List<List<IObject>> objects, Cartesian baseCoordinates = null, double height = double.NaN, double gradientWidth = double.NaN, double textSize = double.NaN, int significantFigures = 4)
+        public static Output<RenderMesh, List<RenderText>, RenderText> GradientLegend(this GradientOptions gradientOptions, List<List<IObject>> objects, Cartesian baseCoordinates = null, double height = double.NaN, double gradientWidth = double.NaN, double textSize = double.NaN, int significantFigures = 4)
         {
             if (gradientOptions == null)
-                return new Output<RenderMesh, List<RenderText>>();
+                return new Output<RenderMesh, List<RenderText>, RenderText>();
 
             //Get the overall boundingbox of the input geometry
             List<BoundingBox> boxes = new List<BoundingBox>();
