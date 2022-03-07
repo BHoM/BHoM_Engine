@@ -216,19 +216,33 @@ namespace BH.Engine.Graphics
 
             List<RenderText> textMarkers = new List<RenderText>();
 
-            //Loop through and add text along the markers.
-            foreach (KeyValuePair<decimal, Color> marker in gradientOptions.Gradient.Markers)
+            if (!double.IsNaN(gradientOptions.LowerBound) && !double.IsNaN(gradientOptions.UpperBound))
             {
-                Vector textTranslation = (double)marker.Key * height * baseCoordinates.Y + baseCoordinates.X * (gradientWidth + textSize);
-                textMarkers.Add(new RenderText
-                {
-                    Cartesian = baseCoordinates.Translate(textTranslation),
-                    Height = textSize,
-                    Colour = System.Drawing.Color.Black,
-                    Text = ToSignificantDigits((gradientOptions.LowerBound + (gradientOptions.UpperBound - gradientOptions.LowerBound) * (double)marker.Key), significantFigures)
-                });
-            }
+                //Check maximimum number of decimals to be used.
+                //This is done to make sure really small numbers do not display with a multitude of decimals when max and min are large numbers
+                //Maximum number of decimals takes as number of significant figures + 2 -10 exponent of largest number
+                //This means that if the largest value is 2500 and significant figures is 4 the maximum allowed decimals will be 4+2-4=2 decimals
+                int maxNbDecimals = -(int)Math.Floor(Math.Log10(Math.Max(Math.Abs(gradientOptions.LowerBound), Math.Abs(gradientOptions.UpperBound)))) + significantFigures + 2;
+                maxNbDecimals = Math.Max(maxNbDecimals, 0); //Only allowed to round to positive or 0 number of decimal places
 
+                //Loop through and add text along the markers.
+                foreach (KeyValuePair<decimal, Color> marker in gradientOptions.Gradient.Markers)
+                {
+                    Vector textTranslation = (double)marker.Key * height * baseCoordinates.Y + baseCoordinates.X * (gradientWidth + textSize);
+                    double val = gradientOptions.LowerBound + (gradientOptions.UpperBound - gradientOptions.LowerBound) * (double)marker.Key;
+
+                    if (maxNbDecimals <= 15)    //Only alows rounding up to 15 decimal places. Added as a saftey check
+                        val = Math.Round(val, maxNbDecimals);
+
+                    textMarkers.Add(new RenderText
+                    {
+                        Cartesian = baseCoordinates.Translate(textTranslation),
+                        Height = textSize,
+                        Colour = System.Drawing.Color.Black,
+                        Text = ToSignificantDigits(val, significantFigures)
+                    });
+                }
+            }
             //If set, add name on top of gradient
             RenderText title = null;
             if (!string.IsNullOrWhiteSpace(gradientOptions.Name))
