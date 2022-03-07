@@ -79,7 +79,7 @@ namespace BH.Engine.Results
             //Get all properties of the type
             Dictionary<string, Func<T, double>> props = ResultItemValueProperties(result);
 
-            if (props.Count == 0)
+            if (props == null || props.Count == 0)
             {
                 Compute.RecordError($"No properties available for result of type {result.GetType()}");
                 return null;
