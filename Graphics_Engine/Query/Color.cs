@@ -89,6 +89,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Graphics.Query.Color(BH.oM.Graphics.Gradient, System.Double, System.Double, System.Double)")]
         [Description("Gets a color from a gradient at the spacified position scaled between from and to.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 'from' and 'to' to use for extraction of colour from the gradient.")]
