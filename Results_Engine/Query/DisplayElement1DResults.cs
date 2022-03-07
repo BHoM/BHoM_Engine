@@ -38,6 +38,7 @@ using BH.oM.Analytical.Results;
 using BH.oM.Analytical.Elements;
 using BH.oM.Graphics.Colours;
 using BH.oM.Dimensional;
+using BH.oM.Quantities.Attributes;
 using System.Drawing;
 
 namespace BH.Engine.Results
@@ -101,6 +102,15 @@ namespace BH.Engine.Results
                 gradientOptions = new GradientOptions();
             else
                 gradientOptions = gradientOptions.DeepClone();
+
+            //If unset, set name of gradient options to match property and unit
+            if (string.IsNullOrWhiteSpace(gradientOptions.Name))
+            {
+                gradientOptions.Name = displayProperty;
+                QuantityAttribute quantity = ResultItemValuePropertyUnit(results.First(), displayProperty);
+                if (quantity != null)
+                    gradientOptions.Name += $" [{quantity.SIUnit}]";
+            }
 
             gradientOptions.SetDefaultGradient();
 

@@ -37,6 +37,7 @@ using BH.Engine.Analytical;
 using BH.oM.Analytical.Results;
 using BH.oM.Analytical.Elements;
 using BH.oM.Graphics.Colours;
+using BH.oM.Quantities.Attributes;
  
 
 namespace BH.Engine.Results
@@ -100,6 +101,15 @@ namespace BH.Engine.Results
             }
             
             gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(propertyFuction))));
+
+            //If unset, set name of gradient options to match property and unit
+            if (string.IsNullOrWhiteSpace(gradientOptions.Name))
+            {
+                gradientOptions.Name = meshResultDisplay;
+                QuantityAttribute quantity = ResultItemValuePropertyUnit(meshResults.First(), meshResultDisplay);
+                if (quantity != null)
+                    gradientOptions.Name += $" [{quantity.SIUnit}]";
+            }
 
             List<List<RenderMesh>> result = new List<List<RenderMesh>>();
 

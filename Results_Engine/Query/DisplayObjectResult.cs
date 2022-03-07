@@ -37,6 +37,7 @@ using BH.Engine.Analytical;
 using BH.oM.Analytical.Results;
 using BH.oM.Analytical.Elements;
 using BH.oM.Graphics.Colours;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Results
 {
@@ -110,6 +111,15 @@ namespace BH.Engine.Results
             double from = gradientOptions.LowerBound;
             double to = gradientOptions.UpperBound;
             IGradient gradient = gradientOptions.Gradient;
+
+            //If unset, set name of gradient options to match property and unit
+            if (string.IsNullOrWhiteSpace(gradientOptions.Name))
+            {
+                gradientOptions.Name = displayProperty;
+                QuantityAttribute quantity = ResultItemValuePropertyUnit(results.First(), displayProperty);
+                if (quantity != null)
+                    gradientOptions.Name += $" [{quantity.SIUnit}]";
+            }
 
             List<List<RenderGeometry>> renderGeometries = new List<List<RenderGeometry>>();
             for (int i = 0; i < objectList.Count; i++)
