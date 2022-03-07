@@ -45,7 +45,7 @@ namespace BH.Engine.Results
         [Output("func", "The result extraction function.")]
         public static Func<IResultItem, double> ResultItemValueProperty(this IResultItem result, string propertyName)
         {
-            if (result == null || propertyName == null)
+            if (result == null)
                 return null;
 
             return ResultItemValuePropertyGeneric(result as dynamic, propertyName);
@@ -59,10 +59,10 @@ namespace BH.Engine.Results
         [Output("func", "The result extraction function.")]
         public static Func<IResultItem, double> ResultItemValueProperty(this IResultCollection<IResultItem> result, string propertyName)
         {
-            if (result == null || propertyName == null)
+            if (result == null)
                 return null;
 
-            return ResultItemValueProperty(result.Results.First(), propertyName);
+            return ResultItemValueProperty(result.Results.FirstOrDefault(), propertyName);
         }
 
         /***************************************************/
@@ -87,7 +87,7 @@ namespace BH.Engine.Results
 
             Func<T, double> func;
 
-            if (propertyName == null)
+            if (string.IsNullOrEmpty(propertyName))
             {
                 var first = props.First();
                 if(props.Count != 1)
