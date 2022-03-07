@@ -46,13 +46,27 @@ namespace BH.Engine.Results
         [Output("qantity", "The the extracted quantity attribute.")]
         public static QuantityAttribute ResultItemValuePropertyUnit(this IResultItem result, string propertyName)
         {
-            if (result == null || propertyName == null)
+            if (result == null)
                 return null;
 
             Dictionary<string, QuantityAttribute> attributes = ResultItemValuePropertiesUnits(result as dynamic);
 
+            if (attributes == null || attributes.Count == 0)
+            {
+                Compute.RecordError($"No properties available for result of type {result.GetType()}");
+                return null;
+            }
+
             QuantityAttribute attribute = null;
-            if (attributes != null)
+
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                var first = attributes.First();
+                if (attributes.Count != 1)
+                    Compute.RecordNote($"No property provided. {first.Key} will be used. Available properties for the type are: {attributes.Keys.Cast<string>().Aggregate((a, b) => a + ", " + b)}.");
+                attribute = first.Value;
+            }
+            else if (attributes != null)
             {
                 if (!attributes.TryGetValue(propertyName, out attribute))
                 {
@@ -72,7 +86,7 @@ namespace BH.Engine.Results
         [Output("qantity", "The the extracted quantity attribute.")]
         public static QuantityAttribute ResultItemValuePropertyUnit(this IResultCollection<IResultItem> result, string propertyName)
         {
-            if (result == null || propertyName == null)
+            if (result == null)
                 return null;
 
             return ResultItemValuePropertyUnit(result.Results.First(), propertyName);
