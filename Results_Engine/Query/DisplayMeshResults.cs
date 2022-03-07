@@ -102,7 +102,7 @@ namespace BH.Engine.Results
                 };
             }
             
-            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(propertyFuction))));
+            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(resultPropertySelector))));
 
             //If unset, set name of gradient options to match property and unit
             if (string.IsNullOrWhiteSpace(gradientOptions.Name))
