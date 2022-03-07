@@ -40,10 +40,11 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class.\n" +
-                     "Properties defined on a base class are ignored. Func<T,double> returned in a Dictionary with the proeprty name as the Key.")]
+        [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class. Properties defined on a base class are ignored.\n" +
+                     "Also extracts methods returning a double that has the result type as the only argument.\n" +         
+                     "Func<T,double> returned in a Dictionary with the property or method name as the Key.")]
         [Input("result", "The result type to extract property functions from.")]
-        [Output("func", "Dictionary of string, Func where the Key is the name of the property and the value is the compiled selector for extracting the proeprty from a result of the type.")]
+        [Output("func", "Dictionary of string, Func where the Key is the name of the property or method and the value is the compiled selector for extracting the value from a result of the type.")]
         public static Dictionary<string, Func<T, double>> ResultItemValueProperties<T>(this T result) where T : IResultItem
         {
             if (result == null)
@@ -126,6 +127,11 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
+        [Description("Extract all the QuantityAttributes for all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class. Properties defined on a base class are ignored.\n" +
+                     "Also extracts methods returning a double that has the result type as the only argument.\n" +
+                     "QuantityAttributes returned in a Dictionary with the property or method name as the Key.")]
+        [Input("result", "The result type to extract property and method QuantityAttributes from.")]
+        [Output("quantity", "Dictionary of string, QuantityAttributes where the Key is the name of the property or method and the value is the QuantityAttribute.")]
         public static Dictionary<string, QuantityAttribute> ResultItemValuePropertiesUnits(this IResultItem result)
         {
             if (result == null)
@@ -143,7 +149,8 @@ namespace BH.Engine.Results
             ResultItemValueProperties(result as dynamic);
 
             //Try extract again
-            m_resultValueUnits.TryGetValue(type, out selectors);
+            if (!m_resultValueUnits.TryGetValue(type, out selectors))
+                Base.Compute.RecordError($"Unable to extract units for properties for result of type {result.GetType()}");
 
             //Return units
             return selectors as Dictionary<string, QuantityAttribute>;

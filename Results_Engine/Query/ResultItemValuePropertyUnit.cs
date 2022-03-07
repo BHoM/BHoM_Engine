@@ -40,10 +40,10 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a Fuction for extracting a value from a result item.")]
-        [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
-        [Input("propertyName", "The name of the property to get the function for.")]
-        [Output("func", "The result extraction function.")]
+        [Description("Returns a QuantityAttribute corresponding to the ValueProperty of the provided result. This will be either a primary property of type double or a Method returning a double with only the type as an input.")]
+        [Input("result", "The result type to be used for extraction of the quantity attribute.")]
+        [Input("propertyName", "The name of the property or method to get the Qunatity attribute of.")]
+        [Output("qantity", "The the extracted quantity attribute.")]
         public static QuantityAttribute ResultItemValuePropertyUnit(this IResultItem result, string propertyName)
         {
             if (result == null || propertyName == null)
@@ -60,17 +60,16 @@ namespace BH.Engine.Results
                    $"Try one of the following: {attributes.Keys.Cast<string>().Aggregate((a, b) => a + ", " + b)}");
                 }
             }
-            else
-                Base.Compute.RecordError($"Unable to extract units for properties for result of type {result.GetType()}");
+           
             return attribute;
         }
 
         /***************************************************/
 
-        [Description("Returns a Fuction for extracting a value from a result item in the provided collection. The first item in the IResultCollection will be used to find the property to extract.")]
-        [Input("result", "The ResultCollection from with the first Result item is used to extract the type to generate the Func for value extraction.")]
-        [Input("propertyName", "The name of the property to get the function for.")]
-        [Output("func", "The result extraction function.")]
+        [Description("Returns a QuantityAttribute corresponding to the ValueProperty of the inner ResultItem of the provided ResultCollection. This will be either a primary property of type double or a Method returning a double with only the type as an input.")]
+        [Input("result", "The ResultCollection from with the first Result item is used to extract the QUantityAttribute.")]
+        [Input("propertyName", "The name of the property or method to get the Qunatity attribute of.")]
+        [Output("qantity", "The the extracted quantity attribute.")]
         public static QuantityAttribute ResultItemValuePropertyUnit(this IResultCollection<IResultItem> result, string propertyName)
         {
             if (result == null || propertyName == null)
