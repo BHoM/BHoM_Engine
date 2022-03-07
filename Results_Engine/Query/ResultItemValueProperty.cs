@@ -43,7 +43,9 @@ namespace BH.Engine.Results
         [Description("Returns a Fuction for extracting a value from a result item.")]
         [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
-        [Output("func", "The result extraction function.")]
+        [MultiOutput(0, "propertyName", "The name of the property or method function.")]
+        [MultiOutput(1, "func", "The result extraction function.")]
+        [MultiOutput(2, "quantity", "The quantity corresponding to the function and property.")]
         public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValueProperty(this IResultItem result, string propertyName)
         {
             if (result == null)
@@ -57,7 +59,9 @@ namespace BH.Engine.Results
         [Description("Returns a Fuction for extracting a value from a result item in the provided collection. The first item in the IResultCollection will be used to find the property to extract.")]
         [Input("result", "The ResultCollection from with the first Result item is used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
-        [Output("func", "The result extraction function.")]
+        [MultiOutput(0, "propertyName", "The name of the property or method function.")]
+        [MultiOutput(1, "func", "The result extraction function.")]
+        [MultiOutput(2, "quantity", "The quantity corresponding to the function and property.")]
         public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValueProperty(this IResultCollection<IResultItem> result, string propertyName)
         {
             if (result == null)
@@ -71,7 +75,9 @@ namespace BH.Engine.Results
         [Description("Returns a Fuction for extracting a value from a result item of type T.")]
         [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
-        [Output("func", "The result extraction function.")]
+        [MultiOutput(0, "propertyName", "The name of the property or method function.")]
+        [MultiOutput(1, "func", "The result extraction function.")]
+        [MultiOutput(2, "quantity", "The quantity corresponding to the function and property.")]
         public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValuePropertyGeneric<T>(this T result, string propertyName) where T : IResultItem
         {
             if (result == null)
