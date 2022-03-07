@@ -142,7 +142,7 @@ namespace BH.Engine.Diffing
                 object correspondingPastObj = null;
                 pastObjs_dict.TryGetValue(kv_foll.Key, out correspondingPastObj);
 
-                // If none is found, the current object is new.
+                // If no past object is found, the current object is new.
                 if (correspondingPastObj == null)
                 {
                     addedObjs.Add(kv_foll.Value);
@@ -163,7 +163,7 @@ namespace BH.Engine.Diffing
                     {
                         foreach (var customComparer in diffingConfig.CustomObjectDifferencesComparers)
                         {
-                            List<PropertyDifference> customObjectDifferences = customComparer.Invoke(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
+                            List<IPropertyDifference> customObjectDifferences = customComparer.Invoke(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
 
                             if (objectDifferences == null)
                                 objectDifferences = new ObjectDifferences() { PastObject = correspondingPastObj, FollowingObject = followingObj };
