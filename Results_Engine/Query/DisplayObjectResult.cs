@@ -52,11 +52,11 @@ namespace BH.Engine.Results
         [Input("results", "The IObjectResults to colour by.")]
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Which cases to colour by, default is all.")]
-        [Input("displayProperty", "THe name of the property on the result to colour by.")]
+        [Input("displayProperty", "The name of the property on the result to colour by. If nothing is provided, the first available property will be used.")]
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [MultiOutput(0, "results", "A List of Lists of RenderGeometry, where the outer list corresponds to the object and the inner list correspond to the matchis results..")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
-        public static Output<List<List<RenderGeometry>>, GradientOptions> DisplayObjectResult(this IEnumerable<IBHoMObject> objects, IEnumerable<IObjectResult> results, string displayProperty, object objectIdentifier = null, List<string> caseFilter = null, GradientOptions gradientOptions = null)
+        public static Output<List<List<RenderGeometry>>, GradientOptions> DisplayObjectResult(this IEnumerable<IBHoMObject> objects, IEnumerable<IObjectResult> results, string displayProperty = "", object objectIdentifier = null, List<string> caseFilter = null, GradientOptions gradientOptions = null)
         {
             if (objects == null || objects.Count() < 1)
             {
