@@ -63,7 +63,7 @@ namespace BH.Engine.Diffing
                 g => 
                 {
                     // By grouping by FullName, only one propertyDifference will be found per group.
-                    PropertyDifference firstPropertyDifference = g.ToList().FirstOrDefault();
+                    IPropertyDifference firstPropertyDifference = g.ToList().FirstOrDefault();
 
                     return new Tuple<object, object>(firstPropertyDifference.PastValue, firstPropertyDifference.FollowingValue);
                 });

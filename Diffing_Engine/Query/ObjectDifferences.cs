@@ -33,6 +33,7 @@ using kellerman = KellermanSoftware.CompareNetObjects;
 using System.Reflection;
 using BH.Engine.Base;
 using BH.Engine.Reflection;
+using System.Collections;
 
 namespace BH.Engine.Diffing
 {
@@ -75,7 +76,7 @@ namespace BH.Engine.Diffing
             kellermanComparer.Config.TypesToIgnore.Add(typeof(RevisionFragment)); // Never include the changes in RevisionFragment.
             kellermanComparer.Config.TypesToIgnore.AddRange(cc.TypeExceptions);
             kellermanComparer.Config.MembersToIgnore = cc.PropertyExceptions;
-            
+
             // Kellerman configuration for tolerance.
             // Setting Custom Tolerance for specific properties is complex with Kellerman. 
             // So instead, we set the Kellerman precision to capture all variations, that is by using the value 0.
@@ -122,13 +123,7 @@ namespace BH.Engine.Diffing
                     ComparisonInclusion comparisonInclusion = comparisonInclusionFromExtensionMethod as ComparisonInclusion;
                     if (comparisonInclusion != null && comparisonInclusion.Include)
                         // Add to the final result.
-                        result.Differences.Add(new PropertyDifference()
-                        {
-                            DisplayName = comparisonInclusion.DisplayName,
-                            PastValue = kellermanPropertyDifference.Object1,
-                            FollowingValue = kellermanPropertyDifference.Object2,
-                            FullName = propertyFullName
-                        });
+                        result.AddPropertyDifference(comparisonInclusion.DisplayName, kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName);
 
                     // Because a `ComparisonInclusion()` extension method was found, we've already determined if this difference was to be considered or not. Continue.
                     continue;
@@ -190,13 +185,7 @@ namespace BH.Engine.Diffing
                     continue;
 
                 // Add to the final result.
-                result.Differences.Add(new PropertyDifference()
-                {
-                    DisplayName = propertyDisplayName,
-                    PastValue = kellermanPropertyDifference.Object1,
-                    FollowingValue = kellermanPropertyDifference.Object2,
-                    FullName = propertyFullName
-                });
+                result.AddPropertyDifference(propertyDisplayName, kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName);
             }
 
             if (result.Differences.Count == 0)
@@ -207,6 +196,46 @@ namespace BH.Engine.Diffing
 
         /***************************************************/
         /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Removes square bracket indexing from property paths, e.g. `Bar.Fragments[0].Something` is returned as `Bar.Fragments.Something`.")]
+        private static void AddPropertyDifference(this ObjectDifferences objectDifferences, string propertyDiffDisplayName, object pastValue, object follValue, string fullName, string description = null)
+        {
+            description = string.IsNullOrWhiteSpace(description) ?
+                PropertyDifferenceDescription(objectDifferences.PastObject, propertyDiffDisplayName, pastValue, follValue)
+                : description;
+
+            objectDifferences.Differences.Add(new PropertyDifference()
+            {
+                DisplayName = propertyDiffDisplayName,
+                Description = description,
+                PastValue = pastValue,
+                FollowingValue = follValue,
+                FullName = fullName
+            }); ;
+        }
+
+        private static string PropertyDifferenceDescription(object pastObj, string propertyDiffDisplayName, object pastValue, object follValue)
+        {
+            if (pastValue is IEnumerable && follValue is IEnumerable)
+                return $"The collection stored in the property `{propertyDiffDisplayName}` of the `{pastObj.GetType().FullName}` was modified.";
+
+            Type t = pastValue.GetType();
+
+            if (t.IsPrimitive || (t == typeof(string)) || t.IsValueType)
+            {
+                if (pastValue != null && follValue == null)
+                    return $"The value assigned to the property `{propertyDiffDisplayName}` of the `{t.FullName}` was removed (made null). The property previously contained: {pastValue}.";
+
+                if (pastValue == null && follValue != null)
+                    return $"Some value was assigned to the property `{propertyDiffDisplayName}` of the `{t.FullName}` that was previously not populated (null). The property now contains: {follValue}.";
+
+                return $"The value assigned to the property `{propertyDiffDisplayName}` of the `{t.FullName}` was modified from {pastValue} to {follValue}.";
+            }
+
+            return $"The value assigned to the property `{propertyDiffDisplayName}` of the `{t.FullName}` was modified.";
+        }
+
         /***************************************************/
 
         [Description("Removes square bracket indexing from property paths, e.g. `Bar.Fragments[0].Something` is returned as `Bar.Fragments.Something`.")]
