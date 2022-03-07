@@ -220,7 +220,7 @@ namespace BH.Engine.Diffing
             if (pastValue is IEnumerable && follValue is IEnumerable)
                 return $"The collection stored in the property `{propertyDiffDisplayName}` of the `{pastObj.GetType().FullName}` was modified.";
 
-            Type t = pastValue.GetType();
+            Type t = pastValue?.GetType() ?? follValue?.GetType() ?? typeof(object);
 
             if (t.IsPrimitive || (t == typeof(string)) || t.IsValueType)
             {
