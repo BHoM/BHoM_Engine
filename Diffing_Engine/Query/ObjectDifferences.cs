@@ -207,7 +207,7 @@ namespace BH.Engine.Diffing
 
             objectDifferences.Differences.Add(new PropertyDifference()
             {
-                DisplayName = propertyDiffDisplayName,
+                Name = propertyDiffDisplayName,
                 Description = description,
                 PastValue = pastValue,
                 FollowingValue = follValue,
