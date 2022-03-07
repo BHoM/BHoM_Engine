@@ -147,6 +147,15 @@ namespace BH.Engine.Results
             else if (identifier is string)
             {
                 //If string
+
+                //Check if string is a type string in a BHoM namespace
+                if ((identifier as string).StartsWith("BH."))
+                {
+                    Type type = Create.Type(identifier as string, true);
+                    if (type != null)
+                        return GetObjectIdentifier(obj, type);
+                }
+
                 string idString = (identifier as string).ToLower();
 
                 //Check if name or Guid. If so return property extractor as optimisation
