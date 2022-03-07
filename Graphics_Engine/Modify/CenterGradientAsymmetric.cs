@@ -74,7 +74,7 @@ namespace BH.Engine.Graphics
                 // scale marker positions below 'found' from: 0 to 0.5 => 0 to found
                 // scale marker positions above 'found' from: 0.5 to 1 => found to 1
                 result.UpdateMarkers(result.Markers.Values,
-                                     result.Markers.Keys.Select(x => x > found ?
+                                     result.Markers.Keys.Select(x => x > 0.5m ?
                                                                 (x - 1) * 2 * (1 - found) + 1 :
                                                                  x * 2 * found));
             }
