@@ -35,10 +35,11 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [PreviousInputNames("displacement", "disp")]
         [Description("Gets the total resolved translational displacement of the three components of the result.")]
         [Input("displacement", "The displacement result to get the resolved rotation from.")]
-        [Output("UTot", "The total resolved translational displacement of the result.")]
+        [Output("UTot", "The total resolved translational displacement of the result.", typeof(oM.Quantities.Attributes.Length))]
         [PreviousVersion("5.1", "BH.Engine.Results.Query.TotalDisplacement(BH.oM.Structure.Results.NodeDisplacement)")]
         public static double UTotal(this IDisplacement displacement)
         {
@@ -51,7 +52,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the total resolved rotational displacement of the three components of the result.")]
         [Input("displacement", "The displacement result to get the resolved rotation from.")]
-        [Output("UTot", "The total resolved rotational displacement of the result.")]
+        [Output("UTot", "The total resolved rotational displacement of the result.", typeof(oM.Quantities.Attributes.Angle))]
         public static double RTotal(this IDisplacement displacement)
         {
             if (displacement == null)
@@ -63,7 +64,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the total resolved translational displacement of the three components of the result.")]
         [Input("displacement", "The displacement result to get the resolved translation from.")]
-        [Output("UTot", "The total resolved translational displacement of the result.")]
+        [Output("UTot", "The total resolved translational displacement of the result.", typeof(oM.Quantities.Attributes.Length))]
         public static double UTotal(this IMeshDisplacement displacement)
         {
             if (displacement == null)
@@ -75,7 +76,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the total resolved rotational displacement of the three components of the result.")]
         [Input("displacement", "The displacement result to get the resolved translation from.")]
-        [Output("UTot", "The total resolved rotational displacement of the result.")]
+        [Output("UTot", "The total resolved rotational displacement of the result.", typeof(oM.Quantities.Attributes.Angle))]
         public static double RTotal(this IMeshDisplacement displacement)
         {
             if (displacement == null)
@@ -87,7 +88,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the resolved reaction force of the three components of the result.")]
         [Input("reaction", "The reaction result to get the resolved total reaction force from.")]
-        [Output("FTot", "The total resolved reaction force of the result.")]
+        [Output("FTot", "The total resolved reaction force of the result.", typeof(oM.Quantities.Attributes.Force))]
         [PreviousVersion("5.1", "BH.Engine.Results.Query.FTotal(BH.oM.Structure.Results.GlobalReactions)")]
         public static double FTotal(this IReaction reaction)
         {
@@ -100,7 +101,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the resolved reaction moment of the three components of the result.")]
         [Input("reaction", "The reaction result to get the resolved total reaction moment from.")]
-        [Output("FTot", "The total resolved reaction moment of the result.")]
+        [Output("FTot", "The total resolved reaction moment of the result.", typeof(oM.Quantities.Attributes.Moment))]
         [PreviousVersion("5.1", "BH.Engine.Results.Query.MTotal(BH.oM.Structure.Results.GlobalReactions)")]
         public static double MTotal(this IReaction reaction)
         {
@@ -113,7 +114,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the resolved bending moment of the major and minor components of the result.")]
         [Input("reaction", "The BarForce result to get the resolved bending moment from.")]
-        [Output("FTot", "The total resolved bending moment of the result.")]
+        [Output("FTot", "The total resolved bending moment of the result.", typeof(oM.Quantities.Attributes.Moment))]
         public static double MTotal(this BarForce force)
         {
             if (force == null)
