@@ -89,9 +89,11 @@ namespace BH.Engine.Results
 
             // Map the MeshResults to Meshes
             List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", objectIdentifier, caseFilter);
-            Func<IResultItem, double> propertyFuction = meshResults.First().ResultItemValueProperty(meshResultDisplay);
+            //Get function for extracting property from results
+            var resPropSelectorAndQuantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
+            Func<IResultItem, double> resultPropertySelector = resPropSelectorAndQuantity?.Item2;
 
-            if (propertyFuction == null)
+            if (resultPropertySelector == null)
             {
                 return new Output<List<List<RenderMesh>>, GradientOptions>
                 {
@@ -105,8 +107,8 @@ namespace BH.Engine.Results
             //If unset, set name of gradient options to match property and unit
             if (string.IsNullOrWhiteSpace(gradientOptions.Name))
             {
-                gradientOptions.Name = meshResultDisplay;
-                QuantityAttribute quantity = ResultItemValuePropertyUnit(meshResults.First(), meshResultDisplay);
+                gradientOptions.Name = resPropSelectorAndQuantity.Item1;
+                QuantityAttribute quantity = resPropSelectorAndQuantity.Item3;
                 if (quantity != null)
                     gradientOptions.Name += $" [{quantity.SIUnit}]";
             }
@@ -118,7 +120,7 @@ namespace BH.Engine.Results
                 result.Add(new List<RenderMesh>());
                 for (int j = 0; j < mappedResults[i].Count; j++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], objectIdentifier, propertyFuction, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
+                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], objectIdentifier, resultPropertySelector, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
                 }
             }
 

@@ -42,10 +42,10 @@ namespace BH.Engine.Results
 
         [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class. Properties defined on a base class are ignored.\n" +
                      "Also extracts methods returning a double that has the result type as the only argument.\n" +         
-                     "Func<T,double> returned in a Dictionary with the property or method name as the Key.")]
+                     "Func<T,double> returned together with corresponding QuantityAttribute in a Dictionary with the property or method name as the Key.")]
         [Input("result", "The result type to extract property functions from.")]
-        [Output("func", "Dictionary of string, Func where the Key is the name of the property or method and the value is the compiled selector for extracting the value from a result of the type.")]
-        public static Dictionary<string, Func<T, double>> ResultItemValueProperties<T>(this T result) where T : IResultItem
+        [Output("func", "Dictionary of string, Tuple<Func,Quantity> where the Key is the name of the property or method and the value is the compiled selector for extracting the value from a result of the type with matching QuantityAttribute.")]
+        public static Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>> ResultItemValueProperties<T>(this T result) where T : IResultItem
         {
             if (result == null)
                 return null;
@@ -56,28 +56,28 @@ namespace BH.Engine.Results
             //Try extract previously evaluated properties
             object selectors;
             if (m_resultValueSelectors.TryGetValue(type, out selectors))
-                return selectors as Dictionary<string, Func<T, double>>;
+                return selectors as Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>>;
 
             //Get all properties of type double declared on the class
             List<PropertyInfo> properties = type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => x.PropertyType == typeof(double)).ToList();
 
             //Set up dictionary for storing the compiled functiones
-            Dictionary<string, Func<T, double>> selectorsDict = new Dictionary<string, Func<T, double>>();
-            Dictionary<string, QuantityAttribute> unitsDict = new Dictionary<string, QuantityAttribute>();
+            Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>> selectorsDict = new Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>>();
 
             //Loop through properties
             foreach (PropertyInfo info in properties)
             {
                 //Compile the get method of the property into a function and store in dictionary, using the name of the property as the key.
                 //Pro-compiling into functions significantly increases the performance when retreiving result values
-                selectorsDict[info.Name] = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), info.GetGetMethod());
+                Func<T, double> func = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), info.GetGetMethod());
 
                 //Store units
                 IEnumerable<QuantityAttribute> quantity = info.GetCustomAttributes<QuantityAttribute>();
+                QuantityAttribute attr = null;
                 if (quantity.Count() == 1)
-                    unitsDict[info.Name] = quantity.First();
-                else
-                    unitsDict[info.Name] = null;
+                    attr = quantity.First();
+
+                selectorsDict[info.Name] = new Tuple<Func<T, double>, QuantityAttribute>(func, attr);
             }
 
             //Check all available methods that takes a result compatible with the type and returns a double
@@ -101,13 +101,12 @@ namespace BH.Engine.Results
                         continue;
                 }
 
-
                 //If the method is generic, it needs to be instaciated as generic.
                 //If the method is not generic, no action will be taken by MakeGenericFromInputs
                 MethodInfo finalMethod = method.MakeGenericFromInputs(new List<Type> { type });
 
                 //Turn to a function and store
-                selectorsDict[method.Name] = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), finalMethod);
+                Func<T, double> func = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), finalMethod);
 
                 //Try get out and store quantity
                 QuantityAttribute quantity = null;
@@ -115,45 +114,12 @@ namespace BH.Engine.Results
                 if (outputAtr != null)
                     quantity = outputAtr.Classification as QuantityAttribute;
 
-                unitsDict[method.Name] = quantity;
+                selectorsDict[method.Name] = new Tuple<Func<T, double>, QuantityAttribute>(func, quantity);
             }
 
             //Store in dictionary for further uses
             m_resultValueSelectors[type] = selectorsDict;
-            m_resultValueUnits[type] = unitsDict;
-
             return selectorsDict;
-        }
-
-        /***************************************************/
-
-        [Description("Extract all the QuantityAttributes for all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class. Properties defined on a base class are ignored.\n" +
-                     "Also extracts methods returning a double that has the result type as the only argument.\n" +
-                     "QuantityAttributes returned in a Dictionary with the property or method name as the Key.")]
-        [Input("result", "The result type to extract property and method QuantityAttributes from.")]
-        [Output("quantity", "Dictionary of string, QuantityAttributes where the Key is the name of the property or method and the value is the QuantityAttribute.")]
-        public static Dictionary<string, QuantityAttribute> ResultItemValuePropertiesUnits(this IResultItem result)
-        {
-            if (result == null)
-                return null;
-
-            //Get the type of obejct to evaluate
-            Type type = result.GetType();
-
-            //Try extract previously evaluated properties
-            object selectors;
-            if (m_resultValueUnits.TryGetValue(type, out selectors))
-                return selectors as Dictionary<string, QuantityAttribute>;
-
-            //Run extraction method for properties, also handling extraction of quantity attributes
-            ResultItemValueProperties(result as dynamic);
-
-            //Try extract again
-            if (!m_resultValueUnits.TryGetValue(type, out selectors))
-                Base.Compute.RecordError($"Unable to extract units for properties for result of type {result.GetType()}");
-
-            //Return units
-            return selectors as Dictionary<string, QuantityAttribute>;
         }
 
         /***************************************************/
@@ -161,9 +127,7 @@ namespace BH.Engine.Results
         /***************************************************/
 
         private static Dictionary<Type, object> m_resultValueSelectors = new Dictionary<Type, object>();
-
-        private static Dictionary<Type, object> m_resultValueUnits = new Dictionary<Type, object>();
-
+        
         /***************************************************/
     }
 }

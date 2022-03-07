@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Analytical.Results;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Collections;
@@ -43,7 +44,7 @@ namespace BH.Engine.Results
         [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
         [Output("func", "The result extraction function.")]
-        public static Func<IResultItem, double> ResultItemValueProperty(this IResultItem result, string propertyName)
+        public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValueProperty(this IResultItem result, string propertyName)
         {
             if (result == null)
                 return null;
@@ -57,7 +58,7 @@ namespace BH.Engine.Results
         [Input("result", "The ResultCollection from with the first Result item is used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
         [Output("func", "The result extraction function.")]
-        public static Func<IResultItem, double> ResultItemValueProperty(this IResultCollection<IResultItem> result, string propertyName)
+        public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValueProperty(this IResultCollection<IResultItem> result, string propertyName)
         {
             if (result == null)
                 return null;
@@ -71,13 +72,13 @@ namespace BH.Engine.Results
         [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
         [Output("func", "The result extraction function.")]
-        public static Func<IResultItem, double> ResultItemValuePropertyGeneric<T>(this T result, string propertyName) where T : IResultItem
+        public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValuePropertyGeneric<T>(this T result, string propertyName) where T : IResultItem
         {
             if (result == null)
                 return null;
 
             //Get all properties of the type
-            Dictionary<string, Func<T, double>> props = ResultItemValueProperties(result);
+            Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>> props = ResultItemValueProperties(result);
 
             if (props == null || props.Count == 0)
             {
@@ -86,16 +87,25 @@ namespace BH.Engine.Results
             }
 
             Func<T, double> func;
+            QuantityAttribute attr;
 
+            Tuple<Func<T, double>, QuantityAttribute> propTuple;
             if (string.IsNullOrEmpty(propertyName))
             {
                 var first = props.First();
-                if(props.Count != 1)
+                if (props.Count != 1)
                     Compute.RecordNote($"No property provided. {first.Key} will be used. Available properties for the type are: {props.Keys.Cast<string>().Aggregate((a, b) => a + ", " + b)}.");
-                func = first.Value;
+                propertyName = first.Key;
+                func = first.Value.Item1;
+                attr = first.Value.Item2;
             }
             //Try find the property in the dictionary
-            else if (!props.TryGetValue(propertyName, out func))
+            else if (props.TryGetValue(propertyName, out propTuple))
+            {
+                func = propTuple.Item1;
+                attr = propTuple.Item2;
+            }
+            else
             {
                 //If not found, raise error
                 Base.Compute.RecordError($"Property {propertyName} is not a valid property for results of type {result.GetType().Name}." +
@@ -103,8 +113,12 @@ namespace BH.Engine.Results
                 return null;
             }
 
-            //Return new function where the Func<T,double> is called with the ResultItem being cast into T.
-            return r => func((T)r);
+            return new Output<string, Func<IResultItem, double>, QuantityAttribute>
+            {
+                Item1 = propertyName,    //Return the property name used. Returned to ensure defaul values can be extracted (for case where empty string is provided)
+                Item2 = r => func((T)r), //Return new function where the Func<T,double> is called with the ResultItem being cast into T.
+                Item3 = attr
+            };
         }
 
         /***************************************************/
