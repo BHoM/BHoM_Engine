@@ -132,7 +132,7 @@ namespace BH.Engine.Results
                     return x => x.BHoM_Guid.ToString();
                 }
             }
-            if(identifier.GetType() == typeof(Type))
+            else if(identifier is Type)
             {
                 //If identifier type provided is Type, check that the type is valid
                 identifier = obj.FindIdentifier(identifier as Type);
