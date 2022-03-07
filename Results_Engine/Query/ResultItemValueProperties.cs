@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Analytical.Results;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Collections;
@@ -39,7 +40,7 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class.\n" + 
+        [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class.\n" +
                      "Properties defined on a base class are ignored. Func<T,double> returned in a Dictionary with the proeprty name as the Key.")]
         [Input("result", "The result type to extract property functions from.")]
         [Output("func", "Dictionary of string, Func where the Key is the name of the property and the value is the compiled selector for extracting the proeprty from a result of the type.")]
@@ -61,6 +62,7 @@ namespace BH.Engine.Results
 
             //Set up dictionary for storing the compiled functiones
             Dictionary<string, Func<T, double>> selectorsDict = new Dictionary<string, Func<T, double>>();
+            Dictionary<string, QuantityAttribute> unitsDict = new Dictionary<string, QuantityAttribute>();
 
             //Loop through properties
             foreach (PropertyInfo info in properties)
@@ -68,6 +70,13 @@ namespace BH.Engine.Results
                 //Compile the get method of the property into a function and store in dictionary, using the name of the property as the key.
                 //Pro-compiling into functions significantly increases the performance when retreiving result values
                 selectorsDict[info.Name] = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), info.GetGetMethod());
+
+                //Store units
+                IEnumerable<QuantityAttribute> quantity = info.GetCustomAttributes<QuantityAttribute>();
+                if (quantity.Count() == 1)
+                    unitsDict[info.Name] = quantity.First();
+                else
+                    unitsDict[info.Name] = null;
             }
 
             //Check all available methods that takes a result compatible with the type and returns a double
@@ -99,12 +108,45 @@ namespace BH.Engine.Results
                 //Turn to a function and store
                 selectorsDict[method.Name] = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), finalMethod);
 
+                //Try get out and store quantity
+                QuantityAttribute quantity = null;
+                OutputAttribute outputAtr = method.GetCustomAttribute<OutputAttribute>();
+                if (outputAtr != null)
+                    quantity = outputAtr.Classification as QuantityAttribute;
+
+                unitsDict[method.Name] = quantity;
             }
 
             //Store in dictionary for further uses
             m_resultValueSelectors[type] = selectorsDict;
+            m_resultValueUnits[type] = unitsDict;
 
             return selectorsDict;
+        }
+
+        /***************************************************/
+
+        public static Dictionary<string, QuantityAttribute> ResultItemValuePropertiesUnits(this IResultItem result)
+        {
+            if (result == null)
+                return null;
+
+            //Get the type of obejct to evaluate
+            Type type = result.GetType();
+
+            //Try extract previously evaluated properties
+            object selectors;
+            if (m_resultValueUnits.TryGetValue(type, out selectors))
+                return selectors as Dictionary<string, QuantityAttribute>;
+
+            //Run extraction method for properties, also handling extraction of quantity attributes
+            ResultItemValueProperties(result as dynamic);
+
+            //Try extract again
+            m_resultValueUnits.TryGetValue(type, out selectors);
+
+            //Return units
+            return selectors as Dictionary<string, QuantityAttribute>;
         }
 
         /***************************************************/
@@ -112,6 +154,8 @@ namespace BH.Engine.Results
         /***************************************************/
 
         private static Dictionary<Type, object> m_resultValueSelectors = new Dictionary<Type, object>();
+
+        private static Dictionary<Type, object> m_resultValueUnits = new Dictionary<Type, object>();
 
         /***************************************************/
     }
