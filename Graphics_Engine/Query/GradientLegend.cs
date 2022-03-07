@@ -41,12 +41,15 @@ namespace BH.Engine.Graphics
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - Gradients                ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Constructs a RenderMesh corresponding to the gradient.")]
+        [Input("gradient", "The gradient to construct a gradient legend for. Markers on gradient will be used for position and colour of verticies in returned RenderMesh.")]
+        [Input("baseCoordinates", "The orientation and position of the returned RenderMesh. Will correspond to the bottom left corner. If nothing is provided, the global XY will be used.")]
+        [Input("height", "The full height of the returned RenderMesh.")]
+        [Input("width", "The width of the of the RenderMesh.")]
+        [Output("legend", "The RenderMesh corresponding to the gradient.")]
         public static RenderMesh GradientLegend(this Gradient gradient, Cartesian baseCoordinates = null, double height = 10, double width = 1)
         {
             if (gradient == null)
@@ -92,9 +95,12 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Constructs a RenderMesh corresponding to the gradient.")]
+        [Input("gradient", "The gradient to construct a gradient legend for. Markers on gradient will be used for position and colour of verticies in returned RenderMesh.")]
+        [Input("baseCoordinates", "The orientation and position of the returned RenderMesh. Will correspond to the bottom left corner. If nothing is provided, the global XY will be used.")]
+        [Input("height", "The full height of the returned RenderMesh.")]
+        [Input("width", "The width of the of the RenderMesh.")]
+        [Output("legend", "The RenderMesh corresponding to the gradient.")]
         public static RenderMesh GradientLegend(this SteppedGradient gradient, Cartesian baseCoordinates = null, double height = 10, double width = 1)
         {
             if (gradient == null)
@@ -167,7 +173,15 @@ namespace BH.Engine.Graphics
         }
 
         /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
 
+        [Description("Constructs a RenderMesh corresponding to the gradient.")]
+        [Input("gradient", "The gradient to construct a gradient legend for. Markers on gradient will be used for position and colour of verticies in returned RenderMesh.")]
+        [Input("baseCoordinates", "The orientation and position of the returned RenderMesh. Will correspond to the bottom left corner. If nothing is provided, the global XY will be used.")]
+        [Input("height", "The full height of the returned RenderMesh.")]
+        [Input("width", "The width of the of the RenderMesh.")]
+        [Output("legend", "The RenderMesh corresponding to the gradient.")]
         public static RenderMesh IGradientLegend(this IGradient gradient, Cartesian baseCoordinates = null, double height = 10, double width = 1)
         {
             if (gradient == null)
@@ -175,9 +189,20 @@ namespace BH.Engine.Graphics
             return GradientLegend(gradient as dynamic, baseCoordinates, height, width);
         }
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        /***************************************************/
+        /**** Public Methods - GradientOptions          ****/
+        /***************************************************/
+
+        [Description("Constructs a RenderMesh corresponding to the GradientOption with text markers corresponding to the numbers on the gradient markers.")]
+        [Input("gradientOptions", "The gradientOptions to construct a gradient legend for. Markers on Gradient will be used for position and colour of verticies in returned RenderMesh and text markers. Name of GradientOptions will be used as legend title.")]
+        [Input("baseCoordinates", "The orientation and position of the returned RenderMesh. Will correspond to the bottom left corner. If nothing is provided, the global XY will be used.")]
+        [Input("height", "The full height of the returned RenderMesh.")]
+        [Input("gradientWidth", "The width of the of the RenderMesh.")]
+        [Input("textSize", "The size of the text markers and title.")]
+        [Input("significantFigures", "Number of significant figures to be used for text markers.")]
+        [MultiOutput(0, "legend", "The RenderMesh corresponding to the gradient.")]
+        [MultiOutput(1, "markers", "Legend markers corresponding to values of the gradient option.")]
+        [MultiOutput(2, "title", "Title of the legend takes from Name of GradientOptions.")]
         public static Output<RenderMesh, List<RenderText>, RenderText> GradientLegend(this GradientOptions gradientOptions, Cartesian baseCoordinates = null, double height = 10, double gradientWidth = 1, double textSize = 0.2, int significantFigures = 4)
         {
             if (gradientOptions == null)
@@ -223,9 +248,17 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Constructs a RenderMesh corresponding to the GradientOption with text markers corresponding to the numbers on the gradient markers. Utilising input objects to calculate a bounding box to be used for automatic size and positioning of the gradient.")]
+        [Input("gradientOptions", "The gradientOptions to construct a gradient legend for. Markers on Gradient will be used for position and colour of verticies in returned RenderMesh and text markers. Name of GradientOptions will be used as legend title.")]
+        [Input("objects", "Objects used to calculate BoundingBox to be used for automatic positioning of the gradient legend.")]
+        [Input("baseCoordinates", "Override of automatic base coordinates. If nothing in provided, the base coordinates will be set to the right of the Bounding box (positive global X) in the global XY plane.")]
+        [Input("height", "Height override for the legend. Will use 80% of the bounding box Y direction depth if nothing is provided.")]
+        [Input("gradientWidth", "Gradient with override. Will use 1/10 of the height if nothing is provided.")]
+        [Input("textSize", "Text size override. Will use the minimum of 1/2 gradientwidth and 0.8*height/number of markers if nothing is provided.")]
+        [Input("significantFigures", "Number of significant figures to be used for text markers.")]
+        [MultiOutput(0, "legend", "The RenderMesh corresponding to the gradient.")]
+        [MultiOutput(1, "markers", "Legend markers corresponding to values of the gradient option.")]
+        [MultiOutput(2, "title", "Title of the legend takes from Name of GradientOptions.")]
         public static Output<RenderMesh, List<RenderText>, RenderText> GradientLegend(this GradientOptions gradientOptions, List<List<IObject>> objects, Cartesian baseCoordinates = null, double height = double.NaN, double gradientWidth = double.NaN, double textSize = double.NaN, int significantFigures = 4)
         {
             if (gradientOptions == null)
