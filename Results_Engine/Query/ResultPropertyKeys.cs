@@ -45,15 +45,15 @@ namespace BH.Engine.Results
             if (result == null)
                 return new List<string>();
 
-            if (result is IResultItem)
+            if (result is IResultCollection<IResultItem>)
             {
-                IDictionary dict = ResultItemValueProperties(result as dynamic);
+                IDictionary dict = ResultItemValueProperties((result as IResultCollection<IResultItem>).Results.FirstOrDefault() as dynamic);
                 if (dict != null)
                     return dict.Keys.Cast<string>().ToList();
             }
-            else if (result is IResultCollection<IResultItem>)
+            else if (result is IResultItem)
             {
-                IDictionary dict = ResultItemValueProperties((result as IResultCollection<IResultItem>).Results.FirstOrDefault() as dynamic);
+                IDictionary dict = ResultItemValueProperties(result as dynamic);
                 if (dict != null)
                     return dict.Keys.Cast<string>().ToList();
             }
