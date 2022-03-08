@@ -99,16 +99,56 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            string[] parts = name.Split('<', '>', ',').Select(x => x.Trim()).ToArray();
-            string[] arguments = parts.Skip(1).Where(x => x.Length > 0).ToArray();
+            //Looping through the string finding generic argument start and end
+            int counter = 0;
+            List<int> argsSplit = new List<int>();
+            int genericCounter = 0; //Counter of how deep into the generic hiearchy the loop currently is. For checking generics of generics
+            foreach (char c in name)
+            {
+                if (c == '<')   //Generic start char
+                {
+                    if (genericCounter == 0)    //If starting generic bracket, add as first splitpoint for the string
+                        argsSplit.Add(counter);
 
-            Type typeDefinition = Type(parts[0] + "`" + arguments.Length);
+                    genericCounter++;   //Increment the generic counter
+                }
+                else if (c == '>')  //Generic end char
+                {
+                    genericCounter--;   //Reduce the generic counter
+                    if (genericCounter == 0)    //If counter is 0, closing bracket should correspond to the first generic and split point added
+                        argsSplit.Add(counter);
+                }
+                else if (genericCounter == 1 && c == ',')   //If in the first level of generic heirachy, check for commas to add as additional splitting
+                {
+                    argsSplit.Add(counter);
+                }
+                counter++;
+            }
+
+            if (argsSplit.Count == 0)   //No split chars found, return null and error as type is not generic
+            {
+                Compute.RecordError("Provided string is not a generic type.");
+                return null;
+            }
+
+            List<string> arguments = new List<string>();
+
+            for (int i = 0; i < argsSplit.Count - 1; i++)
+            {
+                //Generic arguments will be defined between each split char
+                //Starting point at position of char + 1, length is difference between the position of split chars - 1
+                //Trim to remove starting and trailing whitespace
+                arguments.Add(name.Substring(argsSplit[i] + 1, argsSplit[i + 1] - argsSplit[i] - 1).Trim());    
+            }
+            //Main type definition as string up until the first split char (first '<').
+            //Number of generic arguments will be 1 less than the number of argsSplit count
+            Type typeDefinition = Type(name.Substring(0, argsSplit[0]) + "`" + (argsSplit.Count - 1));
             if (typeDefinition == null)
                 return null;
 
             try
             {
-                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());
+                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());    //Call to Type(x) will recursively call this method for inner generic types
             }
             catch
             {
