@@ -41,8 +41,9 @@ namespace BH.Engine.Graphics
         [Description("Sets the bounds of the gradient based on provided values. If the bounds are already set, no action will be taken. If not set, min and max values of the provided values will be used to set the Bounds.")]
         [Input("gradientOptions", "The GradientOptions to set the bounds to.")]
         [Input("allValues", "The values to use to update the gradient bounds. LowerBound will be set to Min value if it is NaN and UpperBound set to Max value if NaN.")]
+        [Input("gradientBoundsWarning", "If true, a warning will be raised if the bounds have been manually set and any of the provided values are outside of the bounds domain.")]
         [Output("gradientOptions", "GradientOptions with updated unset bounds.")]
-        public static void SetGradientBounds(this GradientOptions gradientOptions, IEnumerable<double> allValues = null)
+        public static void SetGradientBounds(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, bool gradientBoundsWarning = true)
         {
             if (gradientOptions == null)
                 return;
@@ -57,8 +58,13 @@ namespace BH.Engine.Graphics
             // Optional auto-domain
             if (double.IsNaN(gradientOptions.LowerBound))
                 gradientOptions.LowerBound = allValues.Min();
+            else if (gradientBoundsWarning && allValues.Any(x => x < gradientOptions.LowerBound))
+                Compute.RecordWarning("Some values are smaller than the preset LowerBound. Values below the LowerBound will get a colour equal to that of the LowerBound");
+
             if (double.IsNaN(gradientOptions.UpperBound))
                 gradientOptions.UpperBound = allValues.Max();
+            else if (gradientBoundsWarning && allValues.Any(x => x > gradientOptions.UpperBound))
+                Compute.RecordWarning("Some values are larger than the preset UpperBound. Values above the UpperBound will get a colour equal to that of the UpperBound");
         }
 
         /***************************************************/

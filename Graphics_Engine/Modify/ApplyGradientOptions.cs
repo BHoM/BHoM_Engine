@@ -38,12 +38,14 @@ namespace BH.Engine.Graphics
         /****           Public Methods                  ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Graphics.Modify.ApplyGradientOptions(BH.oM.Graphics.Colours.GradientOptions, System.Collections.Generic.IEnumerable<System.Double>, System.String)")]
         [Description("Sets up the properties of a GradientOptions object for usage.")]
         [Input("gradientOptions", "GradientOptions object to modify.")]
         [Input("allValues", "The values to set gradient auto range from. Optional if range is already set.")]
+        [Input("gradientBoundsWarning", "If true, a warning will be raised if the bounds have been manually set and any of the provided values are outside of the bounds domain.")]
         [Input("defaultGradient", "Sets which gradient to use as default if no gradient is already set. Defaults to BlueToRed.")]
         [Output("gradientOptions", "A GradientOptions object which is ready for usage.")]
-        public static GradientOptions ApplyGradientOptions(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, string defaultGradient = "BlueToRed")
+        public static GradientOptions ApplyGradientOptions(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, bool gradientBoundsWarning = true, string defaultGradient = "BlueToRed")
         {
             
             if (gradientOptions == null)
@@ -55,7 +57,7 @@ namespace BH.Engine.Graphics
             GradientOptions result = gradientOptions.ShallowClone();
 
             //Set up the bounds of the Gradient
-            result.SetGradientBounds(allValues);
+            result.SetGradientBounds(allValues, gradientBoundsWarning);
 
             // Sets a default gradient if none is already set
             result.SetDefaultGradient(defaultGradient);
