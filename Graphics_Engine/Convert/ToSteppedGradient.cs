@@ -40,7 +40,7 @@ namespace BH.Engine.Graphics
         [Description("Coverts a gradient to a stepped gradient by extracting colours in intervals.")]
         [Input("gradient", "The gradient to covert. If already a stepped gradient, no action will be taken.")]
         [Input("nbSteps", "Number of steps to be used. If -1, the markers of the provided gradient will be used.")]
-        [Output("", "")]
+        [Output("stepGradient", "The new stepped gradient.")]
         public static SteppedGradient ToSteppedGradient(this IGradient gradient, int nbSteps = -1)
         {
             if (gradient == null)
