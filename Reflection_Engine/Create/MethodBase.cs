@@ -92,6 +92,9 @@ namespace BH.Engine.Serialiser
                 {
                     List<Type> types = paramTypeNames.Select(x => Base.Create.Type(x)).ToList();
 
+                    if (types.Any(x => x == null))
+                        continue;
+
                     bool matching = true;
                     for (int i = 0; i < parameters.Length; i++)
                     {
