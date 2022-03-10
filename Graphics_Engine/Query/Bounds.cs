@@ -35,7 +35,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Computes and returns the BoundingBox the SVGObject which is the concatenated BoudingBox of all Shapes contained within the object..")]
+        [Description("Computes and returns the BoundingBox the SVGObject which is the concatenated BoudingBox of all Shapes contained within the object.")]
         public static BoundingBox Bounds(this SVGObject svg)
         {
             if(svg == null)
