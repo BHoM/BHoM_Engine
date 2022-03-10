@@ -96,7 +96,7 @@ namespace BH.Engine.Results
             List<IBHoMObject> objectList = objects.ToList();
 
             // Map the Results to Objects
-            List<List<IObjectResult>> mappedResults = objectList.MapResults(results, "ObjectId", objectIdentifier, filter);
+            List<List<IObjectResult>> mappedResults = objectList.MapResultsToObjects(results, "ObjectId", objectIdentifier, filter);
 
             if (mappedResults.Count == 0 || mappedResults.All(x => x.Count == 0))
             {

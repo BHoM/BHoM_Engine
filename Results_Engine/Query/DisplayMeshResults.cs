@@ -90,7 +90,7 @@ namespace BH.Engine.Results
             List<IMesh<TNode, TFace>> meshList = meshes.ToList();
 
             // Map the MeshResults to Meshes
-            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", objectIdentifier, filter);
+            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResultsToObjects(meshResults, "ObjectId", objectIdentifier, filter);
             //Get tuple with result name, property selector function and quantity attribute
             var resPropSelectorAndQuantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
             Func<IResultItem, double> resultPropertySelector = resPropSelectorAndQuantity?.Item2;
@@ -177,9 +177,9 @@ namespace BH.Engine.Results
             // Order the MeshNodeResults by the IMesh Nodes or faces depending on smoothing
             List<List<IMeshElementResult>> tempMappedElementResults;
             if (smoothingType == MeshResultSmoothingType.ByFiniteElementCentres)
-                tempMappedElementResults = mesh.Faces.MapResults(meshResult.Results, nameof(IMeshElementResult.MeshFaceId), identifier);
+                tempMappedElementResults = mesh.Faces.MapResultsToObjects(meshResult.Results, nameof(IMeshElementResult.MeshFaceId), identifier);
             else
-                tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, nameof(IMeshElementResult.NodeId), identifier);
+                tempMappedElementResults = mesh.Nodes.MapResultsToObjects(meshResult.Results, nameof(IMeshElementResult.NodeId), identifier);
 
             switch (smoothingType)
             {
