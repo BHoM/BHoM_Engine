@@ -53,12 +53,12 @@ namespace BH.Engine.Results
         [Input("objects", "BHoMObjects to colour. Should be IElement1D type of objects.")]
         [Input("results", "The IElement1DResult to colour by.")]
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
-        [Input("caseFilter", "Which cases to colour by, default is all.")]
+        [Input("filter", "Optional filter for the results. If nothing is provided, all results will be used.")]
         [Input("displayProperty", "The name of the property on the result to colour by. If nothing is provided, the first available property will be used.")]
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range. Gradient required to be a SteppedGradient type. The Gradient will be turned into a stepped gradient if another gradient type is provided.")]
         [MultiOutput(0, "results", "A List of Lists of RenderGeometry, where the outer list corresponds to the object and the inner list correspond to the result steps on the element.")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
-        public static Output<List<List<RenderGeometry>>, GradientOptions> DisplayElement1DResults(this IEnumerable<IBHoMObject> objects, IEnumerable<IElement1DResult> results, string displayProperty = "", object objectIdentifier = null, List<string> caseFilter = null, GradientOptions gradientOptions = null)
+        public static Output<List<List<RenderGeometry>>, GradientOptions> DisplayElement1DResults(this IEnumerable<IBHoMObject> objects, IEnumerable<IElement1DResult> results, string displayProperty = "", object objectIdentifier = null, ResultFilter filter = null, GradientOptions gradientOptions = null)
         {
             if (objects == null || objects.Count() < 1)
             {
@@ -95,7 +95,7 @@ namespace BH.Engine.Results
             List<IBHoMObject> objectList = objects.ToList();
 
             // Map the Results to Objects
-            List<List<IElement1DResult>> mappedResults = objectList.MapResults(results, "ObjectId", objectIdentifier, caseFilter);
+            List<List<IElement1DResult>> mappedResults = objectList.MapResults(results, "ObjectId", objectIdentifier, filter);
 
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();
@@ -278,5 +278,17 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
+
+        private static dynamic GroupingKey<T>(T result)
+        {
+            dynamic key = new System.Dynamic.ExpandoObject();
+
+            if (result is ICasedResult)
+                key.Case = ((ICasedResult)result).ResultCase;
+            if (result is ITimeStepResult)
+                key.TimeStep = ((ITimeStepResult)result).TimeStep;
+
+            return key;
+        }
     }
 }
