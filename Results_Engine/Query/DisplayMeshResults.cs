@@ -50,17 +50,18 @@ namespace BH.Engine.Results
 
         [PreviousVersion("5.1", "BH.Engine.Results.Query.DisplayMeshResults(System.Collections.Generic.IEnumerable<BH.oM.Analytical.Elements.IMesh<BH.oM.Analytical.Elements.INode, BH.oM.Analytical.Elements.IFace>>, System.Collections.Generic.IEnumerable<BH.oM.Analytical.Results.IMeshResult<BH.oM.Analytical.Results.IMeshElementResult>>, System.Type, System.Collections.Generic.List<System.String>, System.String, BH.oM.Graphics.Colours.GradientOptions)")]
         [PreviousInputNames("objectIdentifier", "identifier")]
+        [PreviousInputNames("filter", "caseFilter")]
         [Description("Applies colour to IMesh based on MeshResult.")]
         [Input("meshes", "Meshes to colour.")]
         [Input("meshResults", "The MeshResults to colour by.")]
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
-        [Input("caseFilter", "Which cases to colour by, default is all.")]
+        [Input("filter", "Optional filter for the results. If nothing is provided, all results will be used.")]
         [Input("meshResultDisplay", "Which kind of results to colour by.")]
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
         public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResults<TNode, TFace>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<IMeshElementResult>> meshResults,
-                      object objectIdentifier = null, List<string> caseFilter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
+                      object objectIdentifier = null, ResultFilter filter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
             where TNode : INode
             where TFace : IFace
         {
@@ -89,7 +90,7 @@ namespace BH.Engine.Results
             List<IMesh<TNode, TFace>> meshList = meshes.ToList();
 
             // Map the MeshResults to Meshes
-            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", objectIdentifier, caseFilter);
+            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", objectIdentifier, filter);
             //Get tuple with result name, property selector function and quantity attribute
             var resPropSelectorAndQuantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
             Func<IResultItem, double> resultPropertySelector = resPropSelectorAndQuantity?.Item2;
@@ -178,7 +179,7 @@ namespace BH.Engine.Results
                     //  all nodes are expected to have FaceIds
                     List<Dictionary<IComparable, double>> nodeValuePairs = tempMappedElementResults.Select(x => x.ToDictionary(y => y.MeshFaceId, y => propertyFuction(y))).ToList();
                     //  put the Faces in a Dictionary<FaceId,Face>
-                    Func<IBHoMObject, string> faceIdentifierFunc = GetObjectIdentifier(mesh.Faces.First(), identifier);
+                    Func<IBHoMObject, string> faceIdentifierFunc = ObjectIdentifier(mesh.Faces.First(), identifier);
                     Dictionary<string, Face> faceDictionaryResult = mesh.Faces.ToDictionary(x => faceIdentifierFunc(x), x => x.Geometry());
                     Dictionary<string, Face> faceDictionaryRefrence = new Dictionary<string, Face>(faceDictionaryResult);
 

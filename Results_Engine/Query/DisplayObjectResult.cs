@@ -51,12 +51,12 @@ namespace BH.Engine.Results
         [Input("objects", "BHoMObjects to colour.")]
         [Input("results", "The IObjectResults to colour by.")]
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
-        [Input("caseFilter", "Which cases to colour by, default is all.")]
+        [Input("filter", "Optional filter for the results. If nothing is provided, all results will be used.")]
         [Input("displayProperty", "The name of the property on the result to colour by. If nothing is provided, the first available property will be used.")]
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [MultiOutput(0, "results", "A List of Lists of RenderGeometry, where the outer list corresponds to the object and the inner list correspond to the matchis results..")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
-        public static Output<List<List<RenderGeometry>>, GradientOptions> DisplayObjectResult(this IEnumerable<IBHoMObject> objects, IEnumerable<IObjectResult> results, string displayProperty = "", object objectIdentifier = null, List<string> caseFilter = null, GradientOptions gradientOptions = null)
+        public static Output<List<List<RenderGeometry>>, GradientOptions> DisplayObjectResult(this IEnumerable<IBHoMObject> objects, IEnumerable<IObjectResult> results, string displayProperty = "", object objectIdentifier = null, ResultFilter filter = null, GradientOptions gradientOptions = null)
         {
             if (objects == null || objects.Count() < 1)
             {
@@ -81,8 +81,8 @@ namespace BH.Engine.Results
                 gradientOptions = new GradientOptions();
 
             //Get function for extracting property from results
-            var resPropSelectorAndQuantity = results.First().ResultItemValueProperty(displayProperty);
-            Func<IResultItem, double> resultPropertySelector = resPropSelectorAndQuantity?.Item2;
+            Output<string, Func<IResultItem,double>, QuantityAttribute> propName_selector_quantity = results.First().ResultItemValueProperty(displayProperty);
+            Func<IResultItem, double> resultPropertySelector = propName_selector_quantity?.Item2;
 
             if (resultPropertySelector == null)
             {
@@ -96,7 +96,7 @@ namespace BH.Engine.Results
             List<IBHoMObject> objectList = objects.ToList();
 
             // Map the Results to Objects
-            List<List<IObjectResult>> mappedResults = objectList.MapResults(results, "ObjectId", objectIdentifier, caseFilter);
+            List<List<IObjectResult>> mappedResults = objectList.MapResults(results, "ObjectId", objectIdentifier, filter);
 
             if (mappedResults.Count == 0 || mappedResults.All(x => x.Count == 0))
             {
@@ -116,8 +116,8 @@ namespace BH.Engine.Results
             //If unset, set name of gradient options to match property and unit
             if (string.IsNullOrWhiteSpace(gradientOptions.Name))
             {
-                gradientOptions.Name = resPropSelectorAndQuantity.Item1;
-                QuantityAttribute quantity = resPropSelectorAndQuantity.Item3;
+                gradientOptions.Name = propName_selector_quantity.Item1;
+                QuantityAttribute quantity = propName_selector_quantity.Item3;
                 if (quantity != null)
                     gradientOptions.Name += $" [{quantity.SIUnit}]";
             }
