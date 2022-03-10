@@ -41,7 +41,7 @@ namespace BH.Engine.Graphics
         [Input("gradient", "The gradient to convert. If it is already a stepped gradient, no action will be taken.")]
         [Input("steps", "(Optional, defaults to -1) Number of steps to be used. If -1, the markers of the provided gradient will be used.")]
         [Output("stepGradient", "The new stepped gradient.")]
-        public static SteppedGradient ToSteppedGradient(this IGradient gradient, int nbSteps = -1)
+        public static SteppedGradient ToSteppedGradient(this IGradient gradient, int steps = -1)
         {
             if (gradient == null)
                 return null;
@@ -49,14 +49,14 @@ namespace BH.Engine.Graphics
             if (gradient is SteppedGradient)
                 return gradient as SteppedGradient;
 
-            if (nbSteps == -1)
+            if (steps == -1)
                 return new SteppedGradient { Markers = new SortedDictionary<decimal, System.Drawing.Color>(gradient.Markers) };
-            else if (nbSteps > 0)
+            else if (steps > 0)
             {
-                decimal stepSize = 1.0m / (decimal)(nbSteps + 1);
-                double colourStepSize = 1.0 / (double)nbSteps;
+                decimal stepSize = 1.0m / (decimal)(steps + 1);
+                double colourStepSize = 1.0 / (double)steps;
                 SteppedGradient steppedGradient = new SteppedGradient();
-                for (int i = 0; i <= nbSteps; i++)
+                for (int i = 0; i <= steps; i++)
                 {
                     decimal markerVal = stepSize * i;
                     steppedGradient.Markers[markerVal] = gradient.IColor(colourStepSize * i);
