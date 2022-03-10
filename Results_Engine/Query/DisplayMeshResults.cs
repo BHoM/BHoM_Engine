@@ -160,10 +160,19 @@ namespace BH.Engine.Results
             List<RenderPoint> verts = new List<RenderPoint>();
             List<Face> faces;
 
-            object smoothing = Base.Query.PropertyValue(meshResult, "Smoothing");
-            MeshResultSmoothingType smoothingType = MeshResultSmoothingType.None;
-            if (smoothing is MeshResultSmoothingType)
-                smoothingType = (MeshResultSmoothingType)smoothing;
+            //TODO: refactor away the dependency on Structure_oM alltogether from this method
+            MeshResultSmoothingType smoothingType;
+            if (meshResult is BH.oM.Structure.Results.MeshResult)
+                smoothingType = (meshResult as BH.oM.Structure.Results.MeshResult).Smoothing;
+            else
+            {
+                MeshResultSmoothingType? smooth = GetSmoothingTypeByIdSet(meshResult.Results.FirstOrDefault());
+                if (smooth == null)
+                    return null;
+                else
+                    smoothingType = smooth.Value;
+            }
+                
 
             // Order the MeshNodeResults by the IMesh Nodes or faces depending on smoothing
             List<List<IMeshElementResult>> tempMappedElementResults;
@@ -274,6 +283,57 @@ namespace BH.Engine.Results
 
             return new RenderMesh() { Vertices = verts, Faces = faces };
         }
+
+        /***************************************************/
+
+        //Methods below added as a first atempt to sort the smoothening type issue for non-structural results.
+        //TODO to make this more generic going forward and to generalise the method.  
+
+        private static MeshResultSmoothingType? GetSmoothingTypeByIdSet(this IMeshElementResult res)
+        {
+            bool nodeSet = res.NodeId.IsIDSet();
+            bool faceSet = res.MeshFaceId.IsIDSet();
+
+            if (nodeSet)
+            {
+                if (faceSet)
+                    return MeshResultSmoothingType.None;
+                else
+                    return MeshResultSmoothingType.ByPanel;
+            }
+            else if (faceSet)
+                return MeshResultSmoothingType.ByFiniteElementCentres;
+            else
+            {
+                Engine.Base.Compute.RecordError($"Require at least one of the {nameof(IMeshElementResult.NodeId)} and {nameof(IMeshElementResult.MeshFaceId)} to be set to be able to display results.");
+                return null;
+            }
+        }
+
+        /***************************************************/
+
+        private static bool IsIDSet(this IComparable comp)
+        {
+            if (comp == null)
+                return false;   //Null as unset
+
+            if (m_numericTypes.Contains(comp.GetType()))    //For numeric types, check that value is larger or equal to 0
+                return comp as dynamic >= 0;
+            if (comp is string)
+                return !string.IsNullOrWhiteSpace(comp as string);  //String is not empty
+            if (comp is Guid)
+                return (Guid)comp != Guid.Empty;    //Guid is not empty
+            else
+                return !string.IsNullOrWhiteSpace(comp.ToString()); //All other types, turn to string and check not empty
+        }
+
+        /***************************************************/
+
+        private static HashSet<Type> m_numericTypes = new HashSet<Type>
+        {
+            typeof(int), typeof(uint), typeof(decimal), typeof(byte), typeof(sbyte),
+            typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(double)
+        };
 
         /***************************************************/
 
