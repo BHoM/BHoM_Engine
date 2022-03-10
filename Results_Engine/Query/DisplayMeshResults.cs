@@ -332,7 +332,7 @@ namespace BH.Engine.Results
         private static HashSet<Type> m_numericTypes = new HashSet<Type>
         {
             typeof(int), typeof(uint), typeof(decimal), typeof(byte), typeof(sbyte),
-            typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(double)
+            typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(double), typeof(float)
         };
 
         /***************************************************/
