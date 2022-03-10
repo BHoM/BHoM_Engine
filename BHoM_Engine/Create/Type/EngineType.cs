@@ -35,12 +35,12 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a BHoM type that matches the given name.")]
-        [Input("name", "Name to be searched for among all BHoM types.")]
+        [Description("Creates an Engine type that matches the given name.")]
+        [Input("name", "Name to be searched for among all Engine types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
-        [Output("type", "BHoM type that matches the given name.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Create.Type(System.String, System.Boolean)")]
-        public static Type Type(string name, bool silent = false)
+        [Output("type", "BHoM Engine type that matches the given name.")]
+        [PreviousVersion("5.1", "BH.Engine.Reflection.Create.EngineType(System.String, System.Boolean)")]
+        public static Type EngineType(string name, bool silent = false)
         {
             if (name == null)
             {
@@ -48,40 +48,34 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            Dictionary<string, List<Type>> typeDictionary = Query.BHoMTypeDictionary();
+            List<Type> methodTypeList = Query.EngineTypeList();
 
-            if (name.Contains('<'))
-                return GenericType(name, silent);
+            List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
 
-            List<Type> types = null;
-            if (!typeDictionary.TryGetValue(name, out types))
+            if (types.Count == 1)
+                return types[0];
+            else
             {
-                Type type = System.Type.GetType(name);
-                if (type == null && name.EndsWith("&"))
-                {
-                    type = Type(name.TrimEnd(new char[] { '&' }), true);
-                    if (type != null)
-                        type = type.MakeByRefType();
-                }
-                    
-
+                //Unique method not found in list, check if it can be extracted using the system Type
+                Type type = System.Type.GetType(name, silent);
                 if (type == null && !silent)
-                    Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                {
+                    if (types.Count == 0)
+                        Compute.RecordError($"A type corresponding to {name} cannot be found.");
+                    else
+                    {
+                        string message = "Ambiguous match: Multiple types correspond the the name provided: \n";
+                        foreach (Type t in types)
+                            message += "- " + t.FullName + "\n";
+
+                        message += "To get a Engine type from a specific Assembly, try adding ', NameOfTheAssmebly' at the end of the name string, or use the AllEngineTypes method to retreive all the types.";
+
+                        Compute.RecordError(message);
+                    }
+                }
 
                 return type;
             }
-            else if (types.Count == 1)
-                return types[0];
-            else if (!silent)
-            {
-                string message = "Ambiguous match: Multiple types correspond the the name provided: \n";
-                foreach (Type type in types)
-                    message += "- " + type.FullName + "\n";
-
-                Compute.RecordError(message);
-            }
-
-            return null;
         }
 
         /***************************************************/
