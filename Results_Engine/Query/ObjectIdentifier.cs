@@ -116,7 +116,7 @@ namespace BH.Engine.Results
             if (!o.Fragments.TryGetValue(identifier, out id))
                 return "";
 
-            return ((IAdapterId)id).Id.ToString();
+            return ((IAdapterId)id)?.Id?.ToString() ?? "";
         }
 
         /***************************************************/

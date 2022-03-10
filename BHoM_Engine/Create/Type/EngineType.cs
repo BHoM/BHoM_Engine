@@ -42,7 +42,7 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Create.EngineType(System.String, System.Boolean)")]
         public static Type EngineType(string name, bool silent = false)
         {
-            if (name == null)
+            if (string.IsNullOrWhiteSpace(name))
             {
                 Compute.RecordError("Cannot create a type from a null string.");
                 return null;
@@ -68,7 +68,7 @@ namespace BH.Engine.Base
                         foreach (Type t in types)
                             message += "- " + t.FullName + "\n";
 
-                        message += "To get a Engine type from a specific Assembly, try adding ', NameOfTheAssmebly' at the end of the name string, or use the AllEngineTypes method to retreive all the types.";
+                        message += "To get a Engine type from a specific Assembly, try adding ', NameOfTheAssmebly' at the end of the name string, or use the AllEngineTypes method to retrieve all the types.";
 
                         Compute.RecordError(message);
                     }
