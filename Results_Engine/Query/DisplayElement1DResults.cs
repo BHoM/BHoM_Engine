@@ -95,7 +95,7 @@ namespace BH.Engine.Results
             List<IBHoMObject> objectList = objects.ToList();
 
             // Map the Results to Objects
-            List<List<IElement1DResult>> mappedResults = objectList.MapResults(results, "ObjectId", objectIdentifier, filter);
+            List<List<IElement1DResult>> mappedResults = objectList.MapResultsToObjects(results, "ObjectId", objectIdentifier, filter);
 
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();

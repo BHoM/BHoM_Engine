@@ -49,7 +49,7 @@ namespace BH.Engine.Results
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("filter", "Optional filter for the results. If nothing is provided, all results will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string resultIdentifier = nameof(IObjectIdResult.ObjectId), object objectIdentifier = null, ResultFilter filter = null)
+        public static List<List<TResult>> MapResultsToObjects<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string resultIdentifier = nameof(IObjectIdResult.ObjectId), object objectIdentifier = null, ResultFilter filter = null)
             where TResult : IResult
             where TObject : IBHoMObject
         {
@@ -75,6 +75,9 @@ namespace BH.Engine.Results
             //Turn to Lookup based on the result ID function
             //Add null check for when the property of the name in whichId does not exist?
             ILookup<string, TResult> resGroups = filteredRes.ResultLookup(resultIdentifier);
+
+            if (resGroups == null)
+                return new List<List<TResult>>();
 
             List<List<TResult>> result = new List<List<TResult>>();
 
