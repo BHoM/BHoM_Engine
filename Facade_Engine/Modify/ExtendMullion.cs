@@ -47,11 +47,11 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Changes the depth of mullion represented as SectionProperties")]
-        [Input("FrameEdgeProperty", "FrameEdgeProperty with SectionProperties to modify and FrameExtensionBox fragment")]
-        [Input("MullionDepth", "New depth for mullion. Measured from interior face of glazing.")]
-        [Output("FrameEdgeProperty", "FrameEdgeProperty with modified SectionProperties depth")]
-        public static FrameEdgeProperty FrameEdgeProperty(this FrameEdgeProperty frameEdgeProp, double newDepth)
+        [Description("Changes the depth of section profiles within a FrameEdgeProperty")]
+        [Input("FrameEdgeProperty", "FrameEdgeProperty with section profiles to modify and FrameExtensionBox fragment")]
+        [Input("MullionDepth", "New depth for mullion.")]
+        [Output("ExtendedFrameEdgeProperty", "FrameEdgeProperty with modified section profile depth")]
+        public static FrameEdgeProperty ExtendMullion(this FrameEdgeProperty frameEdgeProp, double newDepth)
         {
             //Initial Checks
             if (frameEdgeProp == null || frameEdgeProp.SectionProperties == null)
@@ -71,7 +71,7 @@ namespace BH.Engine.Facade
             if (currentDepth > newDepth)
             {
                 BH.Engine.Base.Compute.RecordError($"New depth cannot be less than current mullion depth.");
-                return null;
+                return frameEdgeProp;
             }
 
             ICurve extBox = extensionBox.BoundingBoxCurve;

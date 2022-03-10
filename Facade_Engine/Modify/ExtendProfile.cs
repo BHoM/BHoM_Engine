@@ -47,20 +47,28 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Changes the depth of mullion represented as SectionProperties")]
-        [Input("FrameEdgeProperty", "FrameEdgeProperty with SectionProperties to modify and FrameExtensionBox fragment")]
-        [Input("MullionDepth", "New depth for mullion. Measured from interior face of glazing.")]
-        [Output("FrameEdgeProperty", "FrameEdgeProperty with modified SectionProperties depth")] //UPDATE
+        [Description("Changes the depth of profile relative to a given profile extension box")]
+        [Input("Profile", "Profile to modify")]
+        [Input("ExtensionBox", "ICurve containing cross secton edges to extend.")]
+        [Input("NewProfileDepth", "New depth for mullion. Measured from interior face of glazing.")]
+        [Output("ExtendedProfile", "Profile with extended edge curves")] //UPDATE
         public static IProfile ExtendProfile(this IProfile profile, ICurve extBox, double extDist)
         {
-            List<ICurve> profileCrv = new List<ICurve>(profile.Edges);
+            List<ICurve> profileCrvs = new List<ICurve>(profile.Edges);
             Vector vector = BH.Engine.Geometry.Create.Vector(extDist, 0, 0);
+            List<ICurve> newProfCrvs = new List<ICurve>();
 
-            foreach (ICurve crv in profileCrv)
+            foreach (ICurve crv in profileCrvs)
             {
                 List<Point> intersectionPts = Geometry.Query.ICurveIntersections(crv, extBox);
+                ICurve newCrv = crv;
+                
+                if (Geometry.Query.IIsContaining(extBox, crv)) //Why isn't this running with ICurves like stated
+                {
+                    newCrv = Geometry.Modify.ITranslate(crv, vector);
+                }
 
-                if(intersectionPts.Count >= 1)
+                else if (intersectionPts.Count >= 1)
                 {
                     if (!Geometry.Query.IIsLinear(crv))
                     {
@@ -71,19 +79,19 @@ namespace BH.Engine.Facade
                     Point strtPt = Geometry.Query.IStartPoint(crv);
                     if(endPt.X >= strtPt.X)
                     {
-                        Geometry.Modify.Translate(endPt, vector);
+                        Point newPt = Geometry.Modify.Translate(endPt, vector);
+                        newCrv = Engine.Geometry.Create.Line(strtPt, newPt);
                     }
                     else
                     {
-                        Geometry.Modify.Translate(strtPt, vector);
+                        Point newPt = Geometry.Modify.Translate(strtPt, vector);
+                        newCrv = Engine.Geometry.Create.Line(newPt, endPt);
                     }
                 }
-                else if (Geometry.Query.IIsContaining(extBox, crv)) //Why isn't this running with ICurves like stated
-                {
-                    Geometry.Modify.ITranslate(crv, vector);
-                }
+
+                newProfCrvs.Add(newCrv);
             }
-            IProfile newProfile = BH.Engine.Spatial.Create.FreeFormProfile(profileCrv,false);
+            IProfile newProfile = BH.Engine.Spatial.Create.FreeFormProfile(newProfCrvs,false);
             return newProfile;
         }
     }
