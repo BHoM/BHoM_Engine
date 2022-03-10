@@ -92,8 +92,8 @@ namespace BH.Engine.Results
             // Map the MeshResults to Meshes
             List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResultsToObjects(meshResults, "ObjectId", objectIdentifier, filter);
             //Get tuple with result name, property selector function and quantity attribute
-            var resPropSelectorAndQuantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
-            Func<IResultItem, double> resultPropertySelector = resPropSelectorAndQuantity?.Item2;
+            Output<string, Func<IResultItem, double>, QuantityAttribute> propName_selector_quantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
+            Func<IResultItem, double> resultPropertySelector = propName_selector_quantity?.Item2;
 
             if (resultPropertySelector == null)
             {
@@ -109,8 +109,8 @@ namespace BH.Engine.Results
             //If unset, set name of gradient options to match property and unit
             if (string.IsNullOrWhiteSpace(gradientOptions.Name))
             {
-                gradientOptions.Name = resPropSelectorAndQuantity.Item1;
-                QuantityAttribute quantity = resPropSelectorAndQuantity.Item3;
+                gradientOptions.Name = propName_selector_quantity.Item1;
+                QuantityAttribute quantity = propName_selector_quantity.Item3;
                 if (quantity != null)
                     gradientOptions.Name += $" [{quantity.SIUnit}]";
             }

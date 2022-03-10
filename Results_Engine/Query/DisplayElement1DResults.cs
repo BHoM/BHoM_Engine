@@ -80,8 +80,8 @@ namespace BH.Engine.Results
             }
 
             //Get function for extracting property from results
-            var resPropSelectorAndQuantity = results.First().ResultItemValueProperty(displayProperty);
-            Func<IResultItem, double> resultPropertySelector = resPropSelectorAndQuantity?.Item2;
+            Output<string, Func<IResultItem, double>, QuantityAttribute> propName_selector_quantity = results.First().ResultItemValueProperty(displayProperty);
+            Func<IResultItem, double> resultPropertySelector = propName_selector_quantity?.Item2;
 
             if (resultPropertySelector == null)
             {
@@ -105,8 +105,8 @@ namespace BH.Engine.Results
             //If unset, set name of gradient options to match property and unit
             if (string.IsNullOrWhiteSpace(gradientOptions.Name))
             {
-                gradientOptions.Name = resPropSelectorAndQuantity.Item1;
-                QuantityAttribute quantity = resPropSelectorAndQuantity.Item3;
+                gradientOptions.Name = propName_selector_quantity.Item1;
+                QuantityAttribute quantity = propName_selector_quantity.Item3;
                 if (quantity != null)
                     gradientOptions.Name += $" [{quantity.SIUnit}]";
             }
