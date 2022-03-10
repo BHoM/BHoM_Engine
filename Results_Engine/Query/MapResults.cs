@@ -48,7 +48,7 @@ namespace BH.Engine.Results
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string resultIdentifier = nameof(IObjectIdResult.ObjectId), object objectIdentifier = null, List<string> caseFilter = null)
+        public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string resultIdentifier = nameof(IObjectIdResult.ObjectId), object objectIdentifier = null, ResultFilter filter = null)
             where TResult : IResult
             where TObject : IBHoMObject
         {
@@ -63,26 +63,17 @@ namespace BH.Engine.Results
                 return new List<List<TResult>>();
             }
 
-            Func<IBHoMObject, string> objectIdFunction = GetObjectIdentifier(objects.First(), objectIdentifier as string);
+            Func<IBHoMObject, string> objectIdFunction = ObjectIdentifier(objects.First(), objectIdentifier as string);
 
             if (objectIdFunction == null)
                 return new List<List<TResult>>();
 
-            //Filter the results based on case
-            IEnumerable<TResult> filteredRes;
-            if (caseFilter != null && caseFilter.Count > 0)
-            {
-                HashSet<string> caseHash = new HashSet<string>(caseFilter); //Turn to hashset for performance boost
-                filteredRes = results.OfType<ICasedResult>().Where(x => caseHash.Contains(x.ResultCase.ToString())).OfType<TResult>();
-            }
-            else
-                filteredRes = results;
+            //Filter the results based on provided filter
+            IEnumerable<TResult> filteredRes = results.FilterResults(filter);
 
-
-            Func<TResult, string> resultIdFunction = GetResultIdentifier(results.First(), resultIdentifier);
             //Turn to Lookup based on the result ID function
             //Add null check for when the property of the name in whichId does not exist?
-            var resGroups = filteredRes.ToLookup(resultIdFunction);
+            ILookup<string, TResult> resGroups = filteredRes.ResultLookup(resultIdentifier);
 
             List<List<TResult>> result = new List<List<TResult>>();
 
@@ -95,107 +86,7 @@ namespace BH.Engine.Results
             return result;
         }
 
-
-        /***************************************************/
-        /****           Private Methods                 ****/
-        /***************************************************/
-
-        [Description("Gets the AdapterIdName from an object.")]
-        [Output("adapterIdName ", "The AdapterIdName of the specified identifier.")]
-        private static string IdMatch(this IBHoMObject o, Type identifier)
-        {
-            IFragment id;
-            if (!o.Fragments.TryGetValue(identifier, out id))
-                return "";
-
-            return ((IAdapterId)id).Id.ToString();
-        }
-
-        /***************************************************/
-
-        private static Func<IBHoMObject, string> GetObjectIdentifier(this IBHoMObject obj, object identifier)
-        {
-            //Check if no identifier has been provided. 
-            if (identifier == null)
-            {
-                //If this is the case, identifiers are searched for on the objects
-                identifier = obj.FindIdentifier();
-                if (identifier != null)
-                {
-                    //If an adapterId identifier is found, use it
-                    Type typeId = identifier as Type;
-                    return x => IdMatch(x, typeId);
-                }
-                else
-                {
-                    //If not, rely on BHoM_Guid
-                    Engine.Base.Compute.RecordNote("No identifier found or specified. BHoM_Guid will be used to identify the Object.");
-                    return x => x.BHoM_Guid.ToString();
-                }
-            }
-            else if(identifier is Type)
-            {
-                //If identifier type provided is Type, check that the type is valid
-                identifier = obj.FindIdentifier(identifier as Type);
-                if (identifier != null)
-                {
-                    Type typeId = identifier as Type;
-                    return x => IdMatch(x, typeId);
-                }
-                else
-                    return null;
-            }
-            else if (identifier is string)
-            {
-                //If string
-
-                //Check if string is a type string in a BHoM namespace
-                if ((identifier as string).StartsWith("BH."))
-                {
-                    Type type = Create.Type(identifier as string, true);
-                    if (type != null)
-                        return GetObjectIdentifier(obj, type);
-                }
-
-                string idString = (identifier as string).ToLower();
-
-                //Check if name or Guid. If so return property extractor as optimisation
-                if (idString == "name")
-                    return x => x.Name;
-
-                if (idString == "bhom_guid" || idString == "guid")
-                    return x => x.BHoM_Guid.ToString();
-
-                //If not, rely on the slower running but more generic PropertyValue
-                return x => Base.Query.PropertyValue(x, identifier as string).ToString();
-            }
-
-
-            Engine.Base.Compute.RecordError("Identifier should either be a IAdapterId type or a string corresponding to the property of the object used to be used to identify the object.");
-            return null;
-        }
-
-        /***************************************************/
-
-        private static Func<T, string> GetResultIdentifier<T>(this T obj, string identifier) where T : IResult
-        {
-            //If result type and identifier match for ObjectIdResult or MeshResult, create custom lamdas to speed things up
-            string idLower = identifier.ToLower();
-            if (idLower == nameof(IObjectIdResult.ObjectId).ToLower() && obj is IObjectIdResult)
-                return x => ((IObjectIdResult)x).ObjectId.ToString();
-
-            if (idLower == nameof(IMeshElementResult.NodeId).ToLower() && obj is IMeshElementResult)
-                return x => ((IMeshElementResult)x).NodeId.ToString();
-
-            if (idLower == nameof(IMeshElementResult.MeshFaceId).ToLower() && obj is IMeshElementResult)
-                return x => ((IMeshElementResult)x).MeshFaceId.ToString();
-
-            //Fall back on PropertyValue
-            return x => Base.Query.PropertyValue(x, identifier).ToString();
-        }
-
-        /***************************************************/
-
+        /***************************************************/ 
     }
 }
 
