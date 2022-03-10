@@ -41,12 +41,13 @@ namespace BH.Engine.Results
         [PreviousVersion("5.1", "BH.Engine.Results.Query.MapResults(System.Collections.Generic.IEnumerable<BH.oM.Base.IBHoMObject>, System.Collections.Generic.IEnumerable<BH.oM.Analytical.Results.IResult>, System.String, System.Type, System.Collections.Generic.List<System.String>)")]
         [PreviousInputNames("objectIdentifier", "identifier")]
         [PreviousInputNames("resultIdentifier", "whichId")]
+        [PreviousInputNames("filter", "caseFilter")]
         [Description("Matches results to BHoMObjects. The output consists of a list of items corresponding to the list of BHoMObjects supplied. Each item in the output list is a list of results matching the relevant BHoMObject. The results will be matched by the ID of the object stored in the Fragments and the ObjectId of the result. If no results are found, an empty list will be provided. Note that NO compatibility check between object type and result type will be made.")]
         [Input("objects", "The objects to find results for.")]
         [Input("results", "The collection of results to search in.")]
         [Input("resultIdentifier", "Property of the IResult used to map the result to the Object. Defaults to ObjectId.")]
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
-        [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
+        [Input("filter", "Optional filter for the results. If nothing is provided, all results will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
         public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string resultIdentifier = nameof(IObjectIdResult.ObjectId), object objectIdentifier = null, ResultFilter filter = null)
             where TResult : IResult
