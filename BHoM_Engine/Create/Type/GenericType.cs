@@ -42,7 +42,7 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Create.GenericType(System.String, System.Boolean)")]
         public static Type GenericType(string name, bool silent = false)
         {
-            if (name == null)
+            if (string.IsNullOrWhiteSpace(name))
             {
                 Compute.RecordError("Cannot create a type from a null string.");
                 return null;
