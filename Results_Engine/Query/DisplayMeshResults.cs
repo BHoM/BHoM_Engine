@@ -90,7 +90,7 @@ namespace BH.Engine.Results
 
             // Map the MeshResults to Meshes
             List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", objectIdentifier, caseFilter);
-            //Get function for extracting property from results
+            //Get tuple with result name, property selector function and quantity attribute
             var resPropSelectorAndQuantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
             Func<IResultItem, double> resultPropertySelector = resPropSelectorAndQuantity?.Item2;
 
