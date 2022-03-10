@@ -37,9 +37,9 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the result value carrying proeprties available for the result type provided. Currently only supported for IResultItem and IResultCollection<IResultItem> type results.")]
+        [Description("Returns the result value carrying properties available for the result type provided. Currently only supported for IResultItem and IResultCollection<IResultItem> type results.")]
         [Input("result", "The result to fetch applicable result properties from.")]
-        [Output("props", "Resulve value carrying properties for the result type.")]
+        [Output("props", "Result value carrying properties for the result type.")]
         public static List<string> ResultPropertyKeys(this IResult result)
         {
             if (result == null)
