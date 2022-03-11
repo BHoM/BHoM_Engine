@@ -47,7 +47,7 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Changes the depth of profile relative to a given profile extension box.")]
+        [Description("Changes the depth of profile relative to a given profile extension box, extending it in the +X direction.")]
         [Input("profile", "Profile to modify.")]
         [Input("extBox", "ICurve containing cross secton edges to extend.")]
         [Input("extDist", "Amount to extend the profile.")]
@@ -63,7 +63,7 @@ namespace BH.Engine.Facade
                 List<Point> intersectionPts = Geometry.Query.ICurveIntersections(crv, extBox);
                 ICurve newCrv = crv;
                 
-                if (Geometry.Query.IIsContaining(extBox, crv)) //Why isn't this running with ICurves like stated
+                if (Geometry.Query.IIsContaining(extBox, crv))
                 {
                     newCrv = Geometry.Modify.ITranslate(crv, vector);
                 }
