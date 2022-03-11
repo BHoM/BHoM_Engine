@@ -50,7 +50,7 @@ namespace BH.Engine.Facade
         [Description("Changes the depth of profile relative to a given profile extension box.")]
         [Input("profile", "Profile to modify.")]
         [Input("extBox", "ICurve containing cross secton edges to extend.")]
-        [Input("newDepth", "New depth for mullion. Measured from interior face of glazing.")]
+        [Input("extDist", "Amount to extend the profile.")]
         [Output("profile", "Profile with extended edge curves.")]
         public static IProfile ExtendProfile(this IProfile profile, ICurve extBox, double extDist)
         {
