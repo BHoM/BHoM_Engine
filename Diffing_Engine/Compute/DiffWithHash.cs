@@ -86,8 +86,6 @@ namespace BH.Engine.Diffing
             if (InputObjectsNullOrEmpty(pastObjects, followingObjs, out outputDiff, diffingConfig))
                 return outputDiff;
 
-            BaseComparisonConfig bcc = diffConfigCopy.ComparisonConfig;
-
             if (storeHash)
             {
                 // Clone objects for immutability in the UI.

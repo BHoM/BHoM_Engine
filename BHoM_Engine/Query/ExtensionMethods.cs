@@ -37,21 +37,20 @@ namespace BH.Engine.Base
         [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExtensionMethods(System.Type, System.String)")]
         public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
         {
-            List<MethodInfo> result = new List<MethodInfo>();
-            var relevantMethods = BHoMMethodList().Where(x => x.Name == methodName);
+            List<MethodInfo> methods = new List<MethodInfo>();
 
-            foreach (MethodInfo method in relevantMethods)
+            foreach (MethodInfo method in BHoMMethodList().Where(x => x.Name == methodName))
             {
                 ParameterInfo[] param = method.GetParameters();
 
                 if (param.Length > 0)
                 {
                     if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        result.Add(method);
+                        methods.Add(method);
                 }
             }
 
-            return result;
+            return methods;
         }
 
         /***************************************************/
