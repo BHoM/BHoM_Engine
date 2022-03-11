@@ -21,9 +21,11 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -34,7 +36,13 @@ namespace BH.Engine.Reflection
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        
+        [Description("Gathers all the properties of the input object, their value and their FullNames; then, groups the FullNames and Values of each property per their nesting level.")]
+        [Input("obj", "Object you want to get all properties for.")]
+        [Input("typeFilter", "(Optional, defaults to null) Filter only properties of this type.")]
+        [Input("declaringTypeFilter", "(Optional, defaults to null) Only filter properties that belong to this type.")]
+        [Input("maxNesting", "(Optional, defaults to -1) If -1, get all properties at any nesting level. Otherwise, limit the gathering to the specified level.")]
+        [Output("dict", "Dictionary whose key is the property Path, and whose Value is another Dictionary, whose Key is the FullName of the property, and whose Value is the Value of the property.")]
         public static Dictionary<string, Dictionary<string, object>> PropertyFullNameValueGroups(this object obj, Type typeFilter = null, Type declaringTypeFilter = null, int maxNesting = -1)
         {
             if (typeFilter != null)
@@ -57,6 +65,11 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Gathers all the properties of specified type from the input object, their value and their FullNames; then, groups the FullNames and Values of each property per their nesting level.")]
+        [Input("obj", "Object you want to get all properties for.")]
+        [Input("declaringTypeFilter", "(Optional, defaults to null) Only filter properties that belong to this type.")]
+        [Input("maxNesting", "(Optional, defaults to -1) If -1, get all properties at any nesting level. Otherwise, limit the gathering to the specified level.")]
+        [Output("dict", "Dictionary whose key is the property Path, and whose Value is another Dictionary, whose Key is the FullName of the property, and whose Value is the Value of the property.")]
         public static Dictionary<string, Dictionary<string, T>> PropertyFullNameValueGroups<T>(this object obj, Type declaringTypeFilter = null, int maxNesting = -1)
         {
             var propertyFullNameValueDictionary = PropertyFullNameValueDictionary<T>(obj, declaringTypeFilter, maxNesting, true);
