@@ -22,11 +22,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using System.Linq;
+using Mono.Cecil;
+using Mono.Reflection;
+using BH.Engine.Base;
+using System.ComponentModel;
 using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
@@ -34,22 +38,19 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExtensionMethods(System.Type, System.String)")]
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        [Description("Determines whether a type is of a primitive C# type.")]
+        [Input("type", "Type to be determined.")]
+        [Input("includeStrings", "(Optional, defaults to true) Whether strings should count as primitive types.")]
+        [Input("includeValueTypes", "(Optional, defaults to true) Whether value types should count as primitive types.")]
+        public static bool IsPrimitive(this Type type, bool includeStrings = true, bool includeValueTypes = true)
         {
-            List<MethodInfo> result = new List<MethodInfo>();
-            var relevantMethods = BHoMMethodList().Where(x => x.Name == methodName);
+            bool result = type.IsPrimitive;
 
-            foreach (MethodInfo method in relevantMethods)
-            {
-                ParameterInfo[] param = method.GetParameters();
+            if (includeStrings)
+                result |= type == typeof(string);
 
-                if (param.Length > 0)
-                {
-                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        result.Add(method);
-                }
-            }
+            if (includeValueTypes)
+                result |= type.IsValueType;
 
             return result;
         }
