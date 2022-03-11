@@ -54,7 +54,7 @@ namespace BH.Engine.Facade
         public static FrameEdgeProperty ExtendMullion(this FrameEdgeProperty frameEdgeProp, double newDepth)
         {
             //Initial Checks
-            if (frameEdgeProp == null || frameEdgeProp.SectionProperties == null)
+            if (frameEdgeProp == null || frameEdgeProp.SectionProperties == null || newDepth == double.NaN)
                 return null;
 
             List<IFragment> extensionBoxes = frameEdgeProp.GetAllFragments(typeof(FrameExtensionBox));

@@ -54,6 +54,10 @@ namespace BH.Engine.Facade
         [Output("profile", "Profile with extended edge curves.")]
         public static IProfile ExtendProfile(this IProfile profile, ICurve extBox, double extDist)
         {
+            //Initial Checks
+            if (profile == null || extBox == null || extDist == double.NaN)
+                return null; 
+            
             List<ICurve> profileCrvs = new List<ICurve>(profile.Edges);
             Vector vector = BH.Engine.Geometry.Create.Vector(extDist, 0, 0);
             List<ICurve> newProfCrvs = new List<ICurve>();
