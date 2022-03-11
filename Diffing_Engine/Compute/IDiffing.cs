@@ -73,6 +73,12 @@ namespace BH.Engine.Diffing
                 }
             }
 
+            BaseComparisonConfig bcc = dc.ComparisonConfig;
+
+            // Do some preliminary filtering based on TypeExceptions and NamespaceExceptions, if they were specified.
+            if (bcc != null && ((bcc.TypeExceptions?.Any() ?? false) || (bcc.NamespaceExceptions?.Any() ?? false)))
+                PreliminaryFiltering(bcc, pastObjs, followingObjs);
+
             // Get only the BHoMObjects from the input objects.
             IEnumerable<IBHoMObject> bHoMObjects_past = pastObjs.OfType<IBHoMObject>();
             IEnumerable<IBHoMObject> bHoMObjects_following = followingObjs.OfType<IBHoMObject>();

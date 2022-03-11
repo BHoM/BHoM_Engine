@@ -20,13 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
@@ -34,27 +35,34 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExtensionMethods(System.Type, System.String)")]
-        public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
+        public static Dictionary<string, Dictionary<string, object>> PropertyFullNameValueGroups(this object obj, Type typeFilter = null, Type declaringTypeFilter = null, int maxNesting = -1)
         {
-            List<MethodInfo> result = new List<MethodInfo>();
-            var relevantMethods = BHoMMethodList().Where(x => x.Name == methodName);
-
-            foreach (MethodInfo method in relevantMethods)
+            if (typeFilter != null)
             {
-                ParameterInfo[] param = method.GetParameters();
+                var currentMethod = MethodBase.GetCurrentMethod();
 
-                if (param.Length > 0)
-                {
-                    if (param[0].ParameterType.IsAssignableFromIncludeGenerics(type))
-                        result.Add(method);
-                }
+                var result = currentMethod.DeclaringType.GetMethods()
+                    .First(mi => mi.Name == currentMethod.Name && mi.GetGenericArguments().Length == 1)
+                    .MakeGenericMethod(typeFilter).Invoke(null, new object[] { obj, declaringTypeFilter, maxNesting }) as IDictionary;
+
+                Dictionary<string, Dictionary<string, object>> output = new Dictionary<string, Dictionary<string, object>>();
+
+                return result as Dictionary<string, Dictionary<string, object>>;
             }
 
-            return result;
+            var propertyFullNameValueDictionary = PropertyFullNameValueDictionary<object>(obj, declaringTypeFilter, maxNesting, true);
+
+            return propertyFullNameValueDictionary as Dictionary<string, Dictionary<string, object>>;
         }
 
         /***************************************************/
+
+        public static Dictionary<string, Dictionary<string, T>> PropertyFullNameValueGroups<T>(this object obj, Type declaringTypeFilter = null, int maxNesting = -1)
+        {
+            var propertyFullNameValueDictionary = PropertyFullNameValueDictionary<T>(obj, declaringTypeFilter, maxNesting, true);
+
+            return propertyFullNameValueDictionary as Dictionary<string, Dictionary<string, T>>;
+        }
     }
 }
 

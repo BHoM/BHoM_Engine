@@ -81,6 +81,7 @@ namespace BH.Engine.Diffing
             if (followingObjects == null) followingObjects = new List<object>();
             if (followingObjectsIds == null) followingObjectsIds = new List<string>();
             if (diffingConfig == null) diffingConfig = new DiffingConfig();
+            BaseComparisonConfig bcc = diffingConfig.ComparisonConfig;
 
             // Check if we do not allow duplicate Ids
             // (we do not allow duplicate Ids by default – it may make sense in rare cases with Ids imported from some software that allows duplicates).
@@ -121,6 +122,9 @@ namespace BH.Engine.Diffing
                 if (recordEvents) BH.Engine.Base.Compute.RecordError($"The number of input `{nameof(followingObjects)}` must be the same as the number of input `{nameof(followingObjectsIds)}`.");
                 return null;
             }
+
+            // Do some preliminary filtering based on TypeExceptions and NamespaceExceptions, if they were specified.
+            PreliminaryFiltering(bcc, pastObjects, followingObjects, pastObjectsIds, followingObjectsIds);
 
             // Make dictionary with object ids to speed up/simplify the lookups.
             Dictionary<string, object> pastObjs_dict = pastObjectsIds.Zip(pastObjects, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
@@ -163,7 +167,8 @@ namespace BH.Engine.Diffing
                     {
                         foreach (var customComparer in diffingConfig.CustomObjectDifferencesComparers)
                         {
-                            List<IPropertyDifference> customObjectDifferences = customComparer.Invoke(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
+                            List<IPropertyDifference> customObjectDifferences = new List<IPropertyDifference>();
+                            customObjectDifferences = customComparer.Invoke(correspondingPastObj, followingObj, diffingConfig.ComparisonConfig);
 
                             if (objectDifferences == null)
                                 objectDifferences = new ObjectDifferences() { PastObject = correspondingPastObj, FollowingObject = followingObj };
@@ -272,6 +277,69 @@ namespace BH.Engine.Diffing
             }
 
             return new Diff(addedObjs, removedObjs, modifiedObjs, diffingConfig, modifiedObjectsDifferences, unchangedObjs);
+        }
+
+        /***************************************************/
+
+        private static void PreliminaryFiltering(BaseComparisonConfig bcc, IEnumerable<object> pastObjects, IEnumerable<object> followingObjects, IEnumerable<string> pastObjectsIds = null, IEnumerable<string> followingObjectsIds = null)
+        {
+            if (bcc == null)
+                return;
+
+            if ((!bcc.TypeExceptions?.Any() ?? true) && (!bcc.NamespaceExceptions?.Any() ?? true))
+                return;
+
+            // ToList for indexing reasons.
+            List<object> pastObjsList = pastObjects.ToList();
+            List<object> followingObjsList = followingObjects.ToList();
+            List<string> pastObjectsIdsList = pastObjectsIds?.ToList();
+            List<string> followingObjectsIdsList = followingObjectsIds?.ToList();
+
+            // Filter the input objects based on the TypeExceptions.
+            List<object> filteredPastObjs = new List<object>();
+            List<string> filteredPastObjsIds = new List<string>();
+
+            List<object> filteredFollowingObjs = new List<object>();
+            List<string> filteredFollowingObjsIds = new List<string>();
+
+            for (int i = 0; i < pastObjects.Count(); i++)
+            {
+                object pastObject = pastObjsList[i];
+                Type pastObjType = pastObject.GetType();
+
+                if (bcc?.TypeExceptions?.Any(te => te.IsAssignableFrom(pastObjType)) ?? false)
+                    continue;
+
+                if (bcc?.NamespaceExceptions?.Any(ne => ne.StartsWith(pastObjType.Namespace)) ?? false)
+                    continue;
+
+                filteredPastObjs.Add(pastObject);
+
+                if (pastObjectsIdsList != null)
+                    filteredPastObjsIds.Add((string)pastObjectsIdsList[i]);
+            }
+
+            for (int i = 0; i < followingObjects.Count(); i++)
+            {
+                object followingObject = followingObjsList[i];
+                Type followingObjType = followingObject.GetType();
+
+                if (bcc?.TypeExceptions?.Any(te => te.IsAssignableFrom(followingObjType)) ?? false)
+                    continue;
+
+                if (bcc?.NamespaceExceptions?.Any(ne => ne.StartsWith(followingObjType.Namespace)) ?? false)
+                    continue;
+
+                filteredFollowingObjs.Add(followingObject);
+
+                if (followingObjectsIdsList != null)
+                    filteredFollowingObjsIds.Add((string)followingObjectsIdsList[i]);
+            }
+
+            pastObjects = filteredPastObjs;
+            followingObjects = filteredFollowingObjs;
+            pastObjectsIds = filteredPastObjsIds;
+            followingObjectsIds = filteredFollowingObjsIds;
         }
     }
 }
