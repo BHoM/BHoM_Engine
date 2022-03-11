@@ -47,10 +47,10 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Changes the depth of section profiles within a FrameEdgeProperty")]
-        [Input("FrameEdgeProperty", "FrameEdgeProperty with section profiles to modify and FrameExtensionBox fragment")]
-        [Input("MullionDepth", "New depth for mullion.")]
-        [Output("ExtendedFrameEdgeProperty", "FrameEdgeProperty with modified section profile depth")]
+        [Description("Changes the depth of section profiles within a FrameEdgeProperty.")]
+        [Input("frameEdgeProp", "FrameEdgeProperty with section profiles to modify and FrameExtensionBox fragment.")]
+        [Input("newDepth", "New depth for mullion.")]
+        [Output("frameEdgeProp", "FrameEdgeProperty with modified section profile depth.")]
         public static FrameEdgeProperty ExtendMullion(this FrameEdgeProperty frameEdgeProp, double newDepth)
         {
             //Initial Checks
