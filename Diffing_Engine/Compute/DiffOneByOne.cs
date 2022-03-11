@@ -70,12 +70,7 @@ namespace BH.Engine.Diffing
 
             // Clone objects for immutability in the UI.
             List<object> pastObjects_cloned = BH.Engine.Base.Query.DeepClone(pastObjects).ToList();
-            List<object> followingObjects_cloned = BH.Engine.Base.Query.DeepClone(followingObjects).ToList();
-
-            // Do some preliminary filtering based on TypeExceptions and NamespaceExceptions, if they were specified.
-            BaseComparisonConfig bcc = diffConfigCopy.ComparisonConfig;
-            if (bcc != null && ((bcc.TypeExceptions?.Any() ?? false) || (bcc.NamespaceExceptions?.Any() ?? false)))
-                PreliminaryFiltering(bcc, pastObjects_cloned, followingObjects_cloned);
+            List<object> currentObjects_cloned = BH.Engine.Base.Query.DeepClone(followingObjects).ToList();
 
             List<object> modifiedObjects = new List<object>();
             List<object> unchangedObjects = new List<object>();
@@ -85,15 +80,15 @@ namespace BH.Engine.Diffing
             List<ObjectDifferences> modifiedObjectDifferences = new List<ObjectDifferences>();
             for (int i = 0; i < pastObjects_cloned.Count(); i++)
             {
-                ObjectDifferences objectDifferences = Query.ObjectDifferences(pastObjects_cloned[i], followingObjects_cloned[i], diffConfigCopy.ComparisonConfig);
+                ObjectDifferences objectDifferences = Query.ObjectDifferences(pastObjects_cloned[i], currentObjects_cloned[i], diffConfigCopy.ComparisonConfig);
 
                 if (objectDifferences != null && (objectDifferences.Differences?.Any() ?? false))
                 {
-                    modifiedObjects.Add(followingObjects_cloned[i]);
+                    modifiedObjects.Add(currentObjects_cloned[i]);
                     anyChangeDetected = true;
                 }
                 else if (diffConfigCopy.IncludeUnchangedObjects)
-                    unchangedObjects.Add(followingObjects_cloned[i]);
+                    unchangedObjects.Add(currentObjects_cloned[i]);
 
                 modifiedObjectDifferences.Add(objectDifferences);
             }
