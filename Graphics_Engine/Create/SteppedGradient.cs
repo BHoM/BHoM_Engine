@@ -20,56 +20,54 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
+using BH.oM.Geometry;
 using BH.oM.Graphics;
-using BH.oM.Graphics.Colours;
-using BH.oM.Graphics.Enums;
 using BH.oM.Base.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
+
+using BH.Engine.Base;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Modify
+    public static partial class Create
     {
         /***************************************************/
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Graphics.Modify.ApplyGradientOptions(BH.oM.Graphics.Colours.GradientOptions, System.Collections.Generic.IEnumerable<System.Double>, System.String)")]
-        [Description("Sets up the properties of a GradientOptions object for usage.")]
-        [Input("gradientOptions", "GradientOptions object to modify.")]
-        [Input("allValues", "The values to set gradient auto range from. Optional if range is already set.")]
-        [Input("gradientBoundsWarning", "If true, a warning will be raised if the bounds have been manually set and any of the provided values are outside of the bounds domain.")]
-        [Input("defaultGradient", "Sets which gradient to use as default if no gradient is already set. Defaults to BlueToRed.")]
-        [Output("gradientOptions", "A GradientOptions object which is ready for usage.")]
-        public static GradientOptions ApplyGradientOptions(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, bool gradientBoundsWarning = true, string defaultGradient = "BlueToRed")
+        [Description("Creates a colour gradient with colour values corresponding to values between 0 and 1.")]
+        [Input("colours", "A list of colours for the gradient.")]
+        [Input("positions", "A corresponding list of positions for the coloured markers between 0 and 1.")]
+        [Output("gradient", "A colour Gradient.")]
+        public static SteppedGradient SteppedGradient(IEnumerable<Color> colours, IEnumerable<decimal> positions)
         {
-            
-            if (gradientOptions == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot apply gradientOptions because gradientOptions is null or invalid.");
+            if (colours.IsNullOrEmpty() || positions.IsNullOrEmpty())
                 return null;
+
+            if (colours.Count() != positions.Count())
+            {
+                Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
             }
-
-            GradientOptions result = gradientOptions.ShallowClone();
-
-            //Set up the bounds of the Gradient
-            result.SetGradientBounds(allValues, gradientBoundsWarning);
-
-            // Sets a default gradient if none is already set
-            result.SetDefaultGradient(defaultGradient);
-
-            // Centering Options
-            result.ApplyGradientCentering();
-
-            return result;
+            if (positions.Max() > 1 || positions.Min() < 0)
+            {
+                Engine.Base.Compute.RecordWarning("Gradients assumes positions between 0 and 1. Values outside this range will not be considered in colour interpolations");
+            }
+            return new SteppedGradient()
+            {
+                Markers = new SortedDictionary<decimal, Color>(
+                    colours.Zip(positions, (c, p) => new { c, p })
+                    .ToDictionary(x => x.p, x => x.c)
+                    )
+            };
         }
 
         /***************************************************/
 
     }
 }
+
+
 

@@ -37,6 +37,7 @@ using BH.Engine.Analytical;
 using BH.oM.Analytical.Results;
 using BH.oM.Analytical.Elements;
 using BH.oM.Graphics.Colours;
+using BH.oM.Quantities.Attributes;
  
 
 namespace BH.Engine.Results
@@ -47,17 +48,20 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Results.Query.DisplayMeshResults(System.Collections.Generic.IEnumerable<BH.oM.Analytical.Elements.IMesh<BH.oM.Analytical.Elements.INode, BH.oM.Analytical.Elements.IFace>>, System.Collections.Generic.IEnumerable<BH.oM.Analytical.Results.IMeshResult<BH.oM.Analytical.Results.IMeshElementResult>>, System.Type, System.Collections.Generic.List<System.String>, System.String, BH.oM.Graphics.Colours.GradientOptions)")]
+        [PreviousInputNames("objectIdentifier", "identifier")]
+        [PreviousInputNames("filter", "caseFilter")]
         [Description("Applies colour to IMesh based on MeshResult.")]
         [Input("meshes", "Meshes to colour.")]
         [Input("meshResults", "The MeshResults to colour by.")]
-        [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned for an IAdapterId to be used.")]
-        [Input("caseFilter", "Which cases to colour by, default is all.")]
+        [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
+        [Input("filter", "Optional filter for the results. If nothing is provided, all results will be used.")]
         [Input("meshResultDisplay", "Which kind of results to colour by.")]
         [Input("gradientOptions", "How to color the mesh, null defaults to `BlueToRed` with automatic range.")]
         [MultiOutput(0, "results", "A List of Lists of RenderMeshes, where there is one List per provided mesh and one element per meshResult that matched that mesh.")]
         [MultiOutput(1, "gradientOptions", "The gradientOptions that were used to colour the meshes.")]
         public static Output<List<List<RenderMesh>>, GradientOptions> DisplayMeshResults<TNode, TFace>(this IEnumerable<IMesh<TNode, TFace>> meshes, IEnumerable<IMeshResult<IMeshElementResult>> meshResults,
-                      Type identifier = null, List<string> caseFilter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
+                      object objectIdentifier = null, ResultFilter filter = null, string meshResultDisplay = "", GradientOptions gradientOptions = null)
             where TNode : INode
             where TFace : IFace
         {
@@ -82,17 +86,16 @@ namespace BH.Engine.Results
 
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();
-            
-            //Check if no identifier has been provided. If this is the case, identifiers are searched for in the objects
-            identifier = meshes.First().FindIdentifier(identifier);
 
             List<IMesh<TNode, TFace>> meshList = meshes.ToList();
 
             // Map the MeshResults to Meshes
-            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResults(meshResults, "ObjectId", identifier, caseFilter);
-            Func<IMeshElementResult, double> propertyFuction = GetPropertFunc(meshResults.First().Results.First() as dynamic, meshResultDisplay);
+            List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResultsToObjects(meshResults, "ObjectId", objectIdentifier, filter);
+            //Get tuple with result name, property selector function and quantity attribute
+            Output<string, Func<IResultItem, double>, QuantityAttribute> propName_selector_quantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
+            Func<IResultItem, double> resultPropertySelector = propName_selector_quantity?.Item2;
 
-            if (propertyFuction == null)
+            if (resultPropertySelector == null)
             {
                 return new Output<List<List<RenderMesh>>, GradientOptions>
                 {
@@ -101,7 +104,16 @@ namespace BH.Engine.Results
                 };
             }
             
-            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(z => propertyFuction(z)))));
+            gradientOptions = gradientOptions.ApplyGradientOptions(mappedResults.SelectMany(x => x.SelectMany(y => y.Results.Select(resultPropertySelector))));
+
+            //If unset, set name of gradient options to match property and unit
+            if (string.IsNullOrWhiteSpace(gradientOptions.Name))
+            {
+                gradientOptions.Name = propName_selector_quantity.Item1;
+                QuantityAttribute quantity = propName_selector_quantity.Item3;
+                if (quantity != null)
+                    gradientOptions.Name += $" [{quantity.SIUnit}]";
+            }
 
             List<List<RenderMesh>> result = new List<List<RenderMesh>>();
 
@@ -110,7 +122,7 @@ namespace BH.Engine.Results
                 result.Add(new List<RenderMesh>());
                 for (int j = 0; j < mappedResults[i].Count; j++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], identifier, propertyFuction, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
+                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], objectIdentifier, resultPropertySelector, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
                 }
             }
 
@@ -127,8 +139,8 @@ namespace BH.Engine.Results
 
         [Description("Applies colour to a single IMesh based on a single MeshResult, i.e stress or force etc.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
-        private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, IMeshResult<IMeshElementResult> meshResult, Type identifier,
-                                             Func<IMeshElementResult, double> propertyFuction, Gradient gradient, double from, double to)
+        private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, IMeshResult<IMeshElementResult> meshResult, object identifier,
+                                             Func<IResultItem, double> propertyFuction, IGradient gradient, double from, double to)
             where TNode : INode
             where TFace : IFace
         {
@@ -148,17 +160,26 @@ namespace BH.Engine.Results
             List<RenderPoint> verts = new List<RenderPoint>();
             List<Face> faces;
 
-            object smoothing = Base.Query.PropertyValue(meshResult, "Smoothing");
-            MeshResultSmoothingType smoothingType = MeshResultSmoothingType.None;
-            if (smoothing is MeshResultSmoothingType)
-                smoothingType = (MeshResultSmoothingType)smoothing;
+            //TODO: refactor away the dependency on Structure_oM alltogether from this method
+            MeshResultSmoothingType smoothingType;
+            if (meshResult is BH.oM.Structure.Results.MeshResult)
+                smoothingType = (meshResult as BH.oM.Structure.Results.MeshResult).Smoothing;
+            else
+            {
+                MeshResultSmoothingType? smooth = GetSmoothingTypeByIdSet(meshResult.Results.FirstOrDefault());
+                if (smooth == null)
+                    return null;
+                else
+                    smoothingType = smooth.Value;
+            }
+                
 
             // Order the MeshNodeResults by the IMesh Nodes or faces depending on smoothing
             List<List<IMeshElementResult>> tempMappedElementResults;
             if (smoothingType == MeshResultSmoothingType.ByFiniteElementCentres)
-                tempMappedElementResults = mesh.Faces.MapResults(meshResult.Results, nameof(IMeshElementResult.MeshFaceId), identifier);
+                tempMappedElementResults = mesh.Faces.MapResultsToObjects(meshResult.Results, nameof(IMeshElementResult.MeshFaceId), identifier);
             else
-                tempMappedElementResults = mesh.Nodes.MapResults(meshResult.Results, nameof(IMeshElementResult.NodeId), identifier);
+                tempMappedElementResults = mesh.Nodes.MapResultsToObjects(meshResult.Results, nameof(IMeshElementResult.NodeId), identifier);
 
             switch (smoothingType)
             {
@@ -167,8 +188,9 @@ namespace BH.Engine.Results
                     //  all nodes are expected to have FaceIds
                     List<Dictionary<IComparable, double>> nodeValuePairs = tempMappedElementResults.Select(x => x.ToDictionary(y => y.MeshFaceId, y => propertyFuction(y))).ToList();
                     //  put the Faces in a Dictionary<FaceId,Face>
-                    Dictionary<object, Face> faceDictionaryResult = mesh.Faces.ToDictionary(x => x.FindFragment<IAdapterId>(identifier).Id, x => x.Geometry());
-                    Dictionary<object, Face> faceDictionaryRefrence = new Dictionary<object, Face>(faceDictionaryResult);
+                    Func<IBHoMObject, string> faceIdentifierFunc = ObjectIdentifier(mesh.Faces.First(), identifier);
+                    Dictionary<string, Face> faceDictionaryResult = mesh.Faces.ToDictionary(x => faceIdentifierFunc(x), x => x.Geometry());
+                    Dictionary<string, Face> faceDictionaryRefrence = new Dictionary<string, Face>(faceDictionaryResult);
 
                     // Add all verticies to a list with their colour and update the Faces
                     for (int k = 0; k < mesh.Nodes.Count; k++)
@@ -181,8 +203,8 @@ namespace BH.Engine.Results
                                 Colour = gradient.Color(faceRelatedValue.Value, from, to)
                             });
                             // Face management, faceResult points to verts and faceReference points to mesh.Nodes
-                            Face faceResult = faceDictionaryResult[faceRelatedValue.Key];
-                            Face faceReference = faceDictionaryRefrence[faceRelatedValue.Key];
+                            Face faceResult = faceDictionaryResult[faceRelatedValue.Key.ToString()];
+                            Face faceReference = faceDictionaryRefrence[faceRelatedValue.Key.ToString()];
                             Face newFace = new Face()
                             {
                                 A = faceReference.A == k ? verts.Count - 1 : faceResult.A,
@@ -190,7 +212,7 @@ namespace BH.Engine.Results
                                 C = faceReference.C == k ? verts.Count - 1 : faceResult.C,
                                 D = faceReference.IsQuad() ? faceReference.D == k ? verts.Count - 1 : faceResult.D : -1
                             };
-                            faceDictionaryResult[faceRelatedValue.Key] = newFace;
+                            faceDictionaryResult[faceRelatedValue.Key.ToString()] = newFace;
                         }
                     }
                     faces = faceDictionaryResult.Select(x => x.Value).ToList();
@@ -264,32 +286,57 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        [Description("Gets a compiled getter for extracting a doble property with the provided name from the type T. This is to improve the performance for extracting the inner result values.")]
-        private static Func<IMeshElementResult, double> GetPropertFunc<T>(T meshElemResult, string prop) where T : IMeshElementResult
+        //Methods below added as a first atempt to sort the smoothening type issue for non-structural results.
+        //TODO to make this more generic going forward and to generalise the method.  
+
+        private static MeshResultSmoothingType? GetSmoothingTypeByIdSet(this IMeshElementResult res)
         {
-            //Get the property to evaluate
-            var propInfo = typeof(T).GetProperty(prop);
+            bool nodeSet = res.NodeId.IsIDSet();
+            bool faceSet = res.MeshFaceId.IsIDSet();
 
-            //Get the get method from the property
-            MethodInfo getMethod = propInfo?.GetGetMethod();
-
-            //Check that the property exists, has a get method and is of double type.
-            if (getMethod == null || propInfo.PropertyType != typeof(double))
+            if (nodeSet)
             {
-                //If incorrect type, raise error message with suggestions of property types that works for the current MeshElementResult type
-                Base.Compute.RecordError($"Property {prop} is not a valid property for results of type {typeof(T).Name}." + 
-                    $"Try one of the following: {typeof(T).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => x.PropertyType == typeof(double)).Select(x => x.Name).Aggregate((a, b) => a + ", " + b)}");
+                if (faceSet)
+                    return MeshResultSmoothingType.None;
+                else
+                    return MeshResultSmoothingType.ByPanel;
+            }
+            else if (faceSet)
+                return MeshResultSmoothingType.ByFiniteElementCentres;
+            else
+            {
+                Engine.Base.Compute.RecordError($"Require at least one of the {nameof(IMeshElementResult.NodeId)} and {nameof(IMeshElementResult.MeshFaceId)} to be set to be able to display results.");
                 return null;
             }
-
-            //Compile the getter method for the property into a delegate
-            Func<T, double> funcT = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), getMethod);
-
-            //Return a fuction that casts the IMeshELementResult to T and calls the getmethod on the object for the property.
-            return x => funcT((T)x);
         }
 
         /***************************************************/
+
+        private static bool IsIDSet(this IComparable comp)
+        {
+            if (comp == null)
+                return false;   //Null as unset
+
+            if (m_numericTypes.Contains(comp.GetType()))    //For numeric types, check that value is larger or equal to 0
+                return comp as dynamic >= 0;
+            if (comp is string)
+                return !string.IsNullOrWhiteSpace(comp as string);  //String is not empty
+            if (comp is Guid)
+                return (Guid)comp != Guid.Empty;    //Guid is not empty
+            else
+                return !string.IsNullOrWhiteSpace(comp.ToString()); //All other types, turn to string and check not empty
+        }
+
+        /***************************************************/
+
+        private static HashSet<Type> m_numericTypes = new HashSet<Type>
+        {
+            typeof(int), typeof(uint), typeof(decimal), typeof(byte), typeof(sbyte),
+            typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(double), typeof(float)
+        };
+
+        /***************************************************/
+
     }
 }
 

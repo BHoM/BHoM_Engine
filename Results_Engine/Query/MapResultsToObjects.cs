@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.Engine.Base;
+using System.Reflection;
 
 namespace BH.Engine.Results
 {
@@ -37,14 +38,18 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
+        [PreviousVersion("5.1", "BH.Engine.Results.Query.MapResults(System.Collections.Generic.IEnumerable<BH.oM.Base.IBHoMObject>, System.Collections.Generic.IEnumerable<BH.oM.Analytical.Results.IResult>, System.String, System.Type, System.Collections.Generic.List<System.String>)")]
+        [PreviousInputNames("objectIdentifier", "identifier")]
+        [PreviousInputNames("resultIdentifier", "whichId")]
+        [PreviousInputNames("filter", "caseFilter")]
         [Description("Matches results to BHoMObjects. The output consists of a list of items corresponding to the list of BHoMObjects supplied. Each item in the output list is a list of results matching the relevant BHoMObject. The results will be matched by the ID of the object stored in the Fragments and the ObjectId of the result. If no results are found, an empty list will be provided. Note that NO compatibility check between object type and result type will be made.")]
         [Input("objects", "The objects to find results for.")]
         [Input("results", "The collection of results to search in.")]
-        [Input("whichId", "The name of the object identifier to group results by. Defaults to ObjectId.")]
-        [Input("identifier", "The type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
-        [Input("caseFilter", "Optional filter for the case. If nothing is provided, all cases will be used.")]
+        [Input("resultIdentifier", "Property of the IResult used to map the result to the Object. Defaults to ObjectId.")]
+        [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
+        [Input("filter", "Optional filter for the results. If nothing is provided, all results will be used.")]
         [Output("results", "Results as a List of List where each inner list corresponds to one BHoMObject based on the input order.")]
-        public static List<List<TResult>> MapResults<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string whichId = nameof(IObjectIdResult.ObjectId), Type identifier = null, List<string> caseFilter = null) 
+        public static List<List<TResult>> MapResultsToObjects<TResult, TObject>(this IEnumerable<TObject> objects, IEnumerable<TResult> results, string resultIdentifier = nameof(IObjectIdResult.ObjectId), object objectIdentifier = null, ResultFilter filter = null)
             where TResult : IResult
             where TObject : IBHoMObject
         {
@@ -59,58 +64,33 @@ namespace BH.Engine.Results
                 return new List<List<TResult>>();
             }
 
-            //Check if no identifier has been provided. If this is the case, identifiers are searched for on the objects
-            identifier = objects.First().FindIdentifier(identifier);
+            Func<IBHoMObject, string> objectIdFunction = ObjectIdentifier(objects.First(), objectIdentifier as string);
 
-            //Filter the results based on case
-            IEnumerable<TResult> filteredRes;
-            if (caseFilter != null && caseFilter.Count > 0)
-            {
-                HashSet<string> caseHash = new HashSet<string>(caseFilter); //Turn to hashset for performance boost
-                filteredRes = results.OfType<ICasedResult>().Where(x => caseHash.Contains(x.ResultCase.ToString())).OfType<TResult>();
-            }
-            else
-                filteredRes = results;
+            if (objectIdFunction == null)
+                return new List<List<TResult>>();
 
-            Dictionary<string, IGrouping<string, TResult>> resGroups;
+            //Filter the results based on provided filter
+            IEnumerable<TResult> filteredRes = results.FilterResults(filter);
 
-            //Group results by Id and turn to dictionary
-            // Add null check for when the property of the name in whichId does not exist?
-            resGroups = filteredRes.GroupBy(x => Base.Query.PropertyValue(x, whichId).ToString()).ToDictionary(x => x.Key);
+            //Turn to Lookup based on the result ID function
+            //Add null check for when the property of the name in whichId does not exist?
+            ILookup<string, TResult> resGroups = filteredRes.ResultLookup(resultIdentifier);
+
+            if (resGroups == null)
+                return new List<List<TResult>>();
 
             List<List<TResult>> result = new List<List<TResult>>();
 
             //Run through and put results in List corresponding to objects
             foreach (TObject o in objects)
             {
-                IGrouping<string, TResult> outVal;
-                if (resGroups.TryGetValue(o.IdMatch(identifier), out outVal))
-                    result.Add(outVal.ToList());
-                else
-                    result.Add(new List<TResult>());
+                result.Add(resGroups[objectIdFunction(o)].ToList());
             }
 
             return result;
         }
 
-
-        /***************************************************/
-        /****           Private Methods                 ****/
-        /***************************************************/
-
-        [Description("Gets the AdapterIdName from an object.")]
-        [Output("adapterIdName ", "The AdapterIdName of the specified identifier.")]
-        private static string IdMatch(this IBHoMObject o, Type identifier)
-        {
-            IFragment id;
-            if (!o.Fragments.TryGetValue(identifier, out id))
-                return "";
-
-            return ((IAdapterId)id).Id.ToString();
-        }
-
-        /***************************************************/
-
+        /***************************************************/ 
     }
 }
 

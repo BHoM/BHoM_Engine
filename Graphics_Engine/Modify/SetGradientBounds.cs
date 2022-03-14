@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -35,41 +35,38 @@ namespace BH.Engine.Graphics
     public static partial class Modify
     {
         /***************************************************/
-        /****           Public Methods                  ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Graphics.Modify.ApplyGradientOptions(BH.oM.Graphics.Colours.GradientOptions, System.Collections.Generic.IEnumerable<System.Double>, System.String)")]
-        [Description("Sets up the properties of a GradientOptions object for usage.")]
-        [Input("gradientOptions", "GradientOptions object to modify.")]
-        [Input("allValues", "The values to set gradient auto range from. Optional if range is already set.")]
+        [Description("Sets the bounds of the gradient based on provided values. If the bounds are already set, no action will be taken. If not set, min and max values of the provided values will be used to set the Bounds.")]
+        [Input("gradientOptions", "The GradientOptions to set the bounds to.")]
+        [Input("allValues", "The values to use to update the gradient bounds. LowerBound will be set to Min value if it is NaN and UpperBound set to Max value if NaN.")]
         [Input("gradientBoundsWarning", "If true, a warning will be raised if the bounds have been manually set and any of the provided values are outside of the bounds domain.")]
-        [Input("defaultGradient", "Sets which gradient to use as default if no gradient is already set. Defaults to BlueToRed.")]
-        [Output("gradientOptions", "A GradientOptions object which is ready for usage.")]
-        public static GradientOptions ApplyGradientOptions(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, bool gradientBoundsWarning = true, string defaultGradient = "BlueToRed")
+        [Output("gradientOptions", "GradientOptions with updated unset bounds.")]
+        public static void SetGradientBounds(this GradientOptions gradientOptions, IEnumerable<double> allValues = null, bool gradientBoundsWarning = true)
         {
-            
             if (gradientOptions == null)
+                return;
+
+            // Checks if bounds exist or can be automatically set
+            if ((double.IsNaN(gradientOptions.UpperBound) || double.IsNaN(gradientOptions.LowerBound)) && (allValues == null || allValues.Count() < 1))
             {
-                BH.Engine.Base.Compute.RecordError("Cannot apply gradientOptions because gradientOptions is null or invalid.");
-                return null;
+                BH.Engine.Base.Compute.RecordError("No bounds have been manually set for Gradient, and no values are provided by which to set them.");
+                return;
             }
 
-            GradientOptions result = gradientOptions.ShallowClone();
+            // Optional auto-domain
+            if (double.IsNaN(gradientOptions.LowerBound))
+                gradientOptions.LowerBound = allValues.Min();
+            else if (gradientBoundsWarning && allValues.Any(x => x < gradientOptions.LowerBound))
+                Compute.RecordWarning("Some values are smaller than the preset LowerBound. Values below the LowerBound will get a colour equal to that of the LowerBound");
 
-            //Set up the bounds of the Gradient
-            result.SetGradientBounds(allValues, gradientBoundsWarning);
-
-            // Sets a default gradient if none is already set
-            result.SetDefaultGradient(defaultGradient);
-
-            // Centering Options
-            result.ApplyGradientCentering();
-
-            return result;
+            if (double.IsNaN(gradientOptions.UpperBound))
+                gradientOptions.UpperBound = allValues.Max();
+            else if (gradientBoundsWarning && allValues.Any(x => x > gradientOptions.UpperBound))
+                Compute.RecordWarning("Some values are larger than the preset UpperBound. Values above the UpperBound will get a colour equal to that of the UpperBound");
         }
 
         /***************************************************/
-
     }
 }
-

@@ -23,6 +23,9 @@
 using BH.oM.Geometry;
 using BH.oM.Graphics;
 using System.Collections.Generic;
+using BH.Engine.Geometry;
+using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Graphics
 {
@@ -32,6 +35,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Computes and returns the BoundingBox the SVGObject which is the concatenated BoudingBox of all Shapes contained within the object.")]
         public static BoundingBox Bounds(this SVGObject svg)
         {
             if(svg == null)
@@ -51,6 +55,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Computes and returns the full BoundingBox of all SVGObject in the provided list.")]
         public static BoundingBox Bounds(this List<SVGObject> svg)
         {
             if (svg == null)
@@ -69,6 +74,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Returns the BoundingBox the SVGDocuments which is the Canvas.")]
         public static BoundingBox Bounds(this SVGDocument svg)
         {
             if (svg == null)
@@ -82,6 +88,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
+        [Description("Computes and returns the full BoundingBox of all SVGDocuments in the provided list.")]
         public static BoundingBox Bounds(this List<SVGDocument> svg)
         {
             if (svg == null)
@@ -96,6 +103,77 @@ namespace BH.Engine.Graphics
                 bb += Bounds(svg[i]);
 
             return bb;
+        }
+
+        /***************************************************/
+
+        [Description("Computes and returns the BoundingBox of the RenderMesh as the bounding box of all Vertices.")]
+        public static BoundingBox Bounds(this RenderMesh renderMesh)
+        {
+            if(renderMesh == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null RenderMesh.");
+                return null;
+            }
+
+            return renderMesh.Vertices.Select(x => x.Point).ToList().Bounds();
+        }
+
+        /***************************************************/
+
+        [Description("Computes and returns the BoundingBox of the RenderPoint as the bounding box of its Point.")]
+        public static BoundingBox Bounds(this RenderPoint renderPoint)
+        {
+            if (renderPoint == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null RenderPoint.");
+                return null;
+            }
+
+            return renderPoint.Point.Bounds();
+        }
+
+        /***************************************************/
+
+        [Description("Computes and returns the BoundingBox of the RenderGeometry as the bounding box of the its Geometry.")]
+        public static BoundingBox Bounds(this RenderGeometry renderGeometry)
+        {
+            if (renderGeometry == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null RenderGeometry.");
+                return null;
+            }
+
+            return renderGeometry.Geometry.IBounds();
+        }
+
+        /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        [Description("Computes and returns the BoundingBox of the IRender.")]
+        public static BoundingBox IBounds(this IRender render)
+        {
+            if (render == null)
+            {
+                Base.Compute.RecordError("Cannot query the bounding box of a null IRender.");
+                return null;
+            }
+            return Bounds(render as dynamic);
+        }
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static BoundingBox Bounds(this IRender render)
+        {
+            object bounds;
+            if (Base.Compute.TryRunExtensionMethod(render, "Bounds", out bounds) && bounds is BoundingBox)
+                return bounds as BoundingBox;
+
+            Base.Compute.RecordError($"Bounds is not implemented for IRender of type: {render.GetType().Name}.");
+            return null;
         }
 
         /***************************************************/

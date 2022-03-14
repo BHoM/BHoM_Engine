@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.ComponentModel;
 
 namespace BH.Engine.Serialiser
 {
@@ -34,6 +35,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
+        [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
         public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypeNames)
         {
             if(type == null)
@@ -92,6 +94,9 @@ namespace BH.Engine.Serialiser
                 {
                     List<Type> types = paramTypeNames.Select(x => Base.Create.Type(x)).ToList();
 
+                    if (types.Any(x => x == null))
+                        continue;
+
                     bool matching = true;
                     for (int i = 0; i < parameters.Length; i++)
                     {
@@ -145,6 +150,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
+        [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
         public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
         {
             if (type == null)

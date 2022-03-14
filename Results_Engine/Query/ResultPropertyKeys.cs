@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -20,16 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Analytical.Results;
+using System;
+using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
+using System.Linq;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Results
 {
     public static partial class Query
     {
@@ -37,52 +37,34 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Tries to find an IAdapterId on the object.")]
-        [Input("o", "The object to search for an IAdapterId.")]
-        [Output("identifier", "First plausible identifier present on the object.")]
-        public static Type FindIdentifier(this IBHoMObject o)
+        [Description("Returns the result value carrying properties available for the result type provided. Currently only supported for IResultItem and IResultCollection<IResultItem> type results.")]
+        [Input("result", "The result to fetch applicable result properties from.")]
+        [Output("props", "Result value carrying properties for the result type.")]
+        public static List<string> ResultPropertyKeys(this IResult result)
         {
-            if (o == null)
+            if (result == null)
+                return new List<string>();
+
+            if (result is IResultCollection<IResultItem>)
             {
-                Base.Compute.RecordError("Provided object is null. Cannot extract identifier.");
-                return null;
+                IDictionary dict = ResultItemValueProperties((result as IResultCollection<IResultItem>).Results.FirstOrDefault() as dynamic);
+                if (dict != null)
+                    return dict.Keys.Cast<string>().ToList();
             }
-            Type adapterIdType = o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
-            if (adapterIdType == null)
+            else if (result is IResultItem)
             {
-                return null;
+                IDictionary dict = ResultItemValueProperties(result as dynamic);
+                if (dict != null)
+                    return dict.Keys.Cast<string>().ToList();
             }
             else
             {
-                Base.Compute.RecordNote($"Auto-generated Identifier as {adapterIdType.Name}.");
-                return adapterIdType;
+                Engine.Base.Compute.RecordError($"Unsupported result type. Currently only suporting {nameof(IResultItem)} and {nameof(IResultCollection<IResultItem>)} type results.");
             }
+
+            return new List<string>();
         }
 
         /***************************************************/
-
-        [Description("Tries to find a AdapterIdType on the object if no input is provided.")]
-        [Output("adapterIdType", "First plausible identifier present on the object or provided.")]
-        public static Type FindIdentifier(this IBHoMObject o, Type adapterIdType)
-        {
-            if (adapterIdType == null)
-            {
-                Type identifier = o.FindIdentifier();
-                if(identifier == null)
-                    Base.Compute.RecordError("No Identifier found.");
-                return identifier;
-            }
-            else if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
-            {
-                Base.Compute.RecordError("The provided adapterIdType need to be a type of IAdapterId.");
-                return null;
-            }
-            return adapterIdType;
-        }
-
-        /***************************************************/
-
     }
 }
-
-

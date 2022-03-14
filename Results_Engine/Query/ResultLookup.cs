@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -20,16 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Analytical.Results;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Results
 {
     public static partial class Query
     {
@@ -37,52 +36,19 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Tries to find an IAdapterId on the object.")]
-        [Input("o", "The object to search for an IAdapterId.")]
-        [Output("identifier", "First plausible identifier present on the object.")]
-        public static Type FindIdentifier(this IBHoMObject o)
+        [Description("Creates a Lookup (similar to a Dictionary<string, List<T>>) of the result based on the provided identifier.")]
+        [Input("results", "Collection of results to be turned into a Lookup.")]
+        [Input("resultIdentifier", "Property of the obejct to use as lookup key.")]
+        [Output("lookup", "The created lookup. The key will correspond to the property and value will be all results matching theis key.")]
+        public static ILookup<string, T> ResultLookup<T>(this IEnumerable<T> results, string resultIdentifier) where T : IResult
         {
-            if (o == null)
-            {
-                Base.Compute.RecordError("Provided object is null. Cannot extract identifier.");
+            if (results == null || string.IsNullOrWhiteSpace(resultIdentifier))
                 return null;
-            }
-            Type adapterIdType = o.Fragments.FirstOrDefault(fr => fr is IAdapterId)?.GetType();
-            if (adapterIdType == null)
-            {
-                return null;
-            }
-            else
-            {
-                Base.Compute.RecordNote($"Auto-generated Identifier as {adapterIdType.Name}.");
-                return adapterIdType;
-            }
+
+            Func<T, string> resultIdFunction = ResultIdentifier(results.First(), resultIdentifier);
+            return results.ToLookup(resultIdFunction);
         }
 
         /***************************************************/
-
-        [Description("Tries to find a AdapterIdType on the object if no input is provided.")]
-        [Output("adapterIdType", "First plausible identifier present on the object or provided.")]
-        public static Type FindIdentifier(this IBHoMObject o, Type adapterIdType)
-        {
-            if (adapterIdType == null)
-            {
-                Type identifier = o.FindIdentifier();
-                if(identifier == null)
-                    Base.Compute.RecordError("No Identifier found.");
-                return identifier;
-            }
-            else if (!typeof(IAdapterId).IsAssignableFrom(adapterIdType))
-            {
-                Base.Compute.RecordError("The provided adapterIdType need to be a type of IAdapterId.");
-                return null;
-            }
-            return adapterIdType;
-        }
-
-        /***************************************************/
-
     }
 }
-
-
