@@ -97,7 +97,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        private static void PropertyFullNameValueDictionary<T>(string fullPath, int nesting, object obj, Type declaringTypeFilter, int maxNesting, Dictionary<string, Dictionary<string, T>> result)
+        private static void PropertyFullNameValueDictionary<T>(string fullPath, int nesting, object obj, Type declaringTypeFilter, int maxNesting, Dictionary<string, Dictionary<string, T>> result, PropertyInfo pInfo = null)
         {
             if (obj == null)
                 return;
@@ -116,8 +116,9 @@ namespace BH.Engine.Reflection
                 {
                     string subPropFullName = $"{fullPath}.{prop.Name}";
 
-                    if (typeof(T).IsAssignableFrom(prop.PropertyType) && (declaringTypeFilter == null || declaringTypeFilter.IsAssignableFrom(prop.DeclaringType)))
-                        result.AddToResult<T>((T)prop.GetValue(obj), fullPath, subPropFullName);
+                    if (typeof(T).IsAssignableFrom(prop.PropertyType))
+                        if (declaringTypeFilter == null || declaringTypeFilter.IsAssignableFrom(prop.DeclaringType))
+                            result.AddToResult<T>((T)prop.GetValue(obj), fullPath, subPropFullName);
 
                     nesting++;
 
@@ -125,31 +126,32 @@ namespace BH.Engine.Reflection
                         continue;
 
                     if (maxNesting < 0 || maxNesting < nesting)
-                        if (declaringTypeFilter == null || declaringTypeFilter.IsAssignableFrom(prop.DeclaringType))
+                    {
+                        object propValue = null;
+                        try
                         {
-                            object propValue = null;
-                            try
-                            {
-                                propValue = prop.GetValue(obj);
-                            }
-                            catch { }
-
-                            PropertyFullNameValueDictionary<T>(subPropFullName, nesting, propValue, declaringTypeFilter, maxNesting, result);
+                            propValue = prop.GetValue(obj);
+                            PropertyFullNameValueDictionary<T>(subPropFullName, nesting, propValue, declaringTypeFilter, maxNesting, result, prop);
                         }
+                        catch { }
+                    }
                 }
             }
             else
             {
+                Type listType = objType.GetGenericArguments().FirstOrDefault();
+
                 for (int i = 0; i < iList.Count; i++)
                 {
                     var listItem = iList[i];
 
                     string subPropFullName = $"{fullPath}[{i}]";
 
-                    if (typeof(T).IsAssignableFrom(listItem.GetType()))
-                        result.AddToResult<T>((T)listItem, fullPath, subPropFullName);
+                    if (listType != null && typeof(T).IsAssignableFrom(listType))
+                        if (declaringTypeFilter == null || declaringTypeFilter.IsAssignableFrom(pInfo.DeclaringType))
+                            result.AddToResult<T>((T)listItem, fullPath, subPropFullName);
 
-                    PropertyFullNameValueDictionary<T>(subPropFullName, nesting, listItem, declaringTypeFilter, maxNesting, result);
+                    PropertyFullNameValueDictionary<T>(subPropFullName, nesting, listItem, declaringTypeFilter, maxNesting, result, pInfo);
                 }
             }
         }
