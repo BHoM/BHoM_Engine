@@ -45,6 +45,9 @@ namespace BH.Engine.Reflection
         [Output("dict", "Dictionary whose key is the FullName of the property, and whose Value is the Value of the property.")]
         public static Dictionary<string, object> PropertyFullNameValueDictionary(this object obj, Type typeFilter = null, Type declaringTypeFilter = null, int maxNesting = -1)
         {
+            if (obj == null)
+                return new Dictionary<string, object>();
+
             if (typeFilter != null)
             {
                 var currentMethod = MethodBase.GetCurrentMethod();
@@ -63,12 +66,14 @@ namespace BH.Engine.Reflection
 
         [Description("Gathers all the properties of the input object, and puts them in a Dictionary with their FullNames and Value.")]
         [Input("obj", "Object you want to get all properties for.")]
-        [Input("typeFilter", "(Optional, defaults to null) Filter only properties of this type.")]
         [Input("declaringTypeFilter", "(Optional, defaults to null) Only filter properties that belong to this type.")]
         [Input("maxNesting", "(Optional, defaults to -1) If -1, get all properties at any nesting level. Otherwise, limit the gathering to the specified level.")]
         [Output("dict", "Dictionary whose key is the FullName of the property, and whose Value is the Value of the property.")]
         public static Dictionary<string, T> PropertyFullNameValueDictionary<T>(this object obj, Type declaringTypeFilter = null, int maxNesting = -1)
         {
+            if (obj == null)
+                return new Dictionary<string, T>();
+
             var propertyFullNameValueDictionary = PropertyFullNameValueDictionary<T>(obj, declaringTypeFilter, maxNesting, false);
 
             return propertyFullNameValueDictionary as Dictionary<string, T>;

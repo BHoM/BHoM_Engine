@@ -45,6 +45,9 @@ namespace BH.Engine.Reflection
         [Output("dict", "Dictionary whose key is the property Path, and whose Value is another Dictionary, whose Key is the FullName of the property, and whose Value is the Value of the property.")]
         public static Dictionary<string, Dictionary<string, object>> PropertyFullNameValueGroups(this object obj, Type typeFilter = null, Type declaringTypeFilter = null, int maxNesting = -1)
         {
+            if (obj == null)
+                return new Dictionary<string, Dictionary<string, object>>();
+
             if (typeFilter != null)
             {
                 var currentMethod = MethodBase.GetCurrentMethod();
@@ -72,6 +75,9 @@ namespace BH.Engine.Reflection
         [Output("dict", "Dictionary whose key is the property Path, and whose Value is another Dictionary, whose Key is the FullName of the property, and whose Value is the Value of the property.")]
         public static Dictionary<string, Dictionary<string, T>> PropertyFullNameValueGroups<T>(this object obj, Type declaringTypeFilter = null, int maxNesting = -1)
         {
+            if (obj == null)
+                return new Dictionary<string, Dictionary<string, T>>();
+
             var propertyFullNameValueDictionary = PropertyFullNameValueDictionary<T>(obj, declaringTypeFilter, maxNesting, true);
 
             return propertyFullNameValueDictionary as Dictionary<string, Dictionary<string, T>>;
