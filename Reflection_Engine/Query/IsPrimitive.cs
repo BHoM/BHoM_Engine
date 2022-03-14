@@ -44,6 +44,9 @@ namespace BH.Engine.Reflection
         [Input("includeValueTypes", "(Optional, defaults to true) Whether value types should count as primitive types.")]
         public static bool IsPrimitive(this Type type, bool includeStrings = true, bool includeValueTypes = true)
         {
+            if (type == null)
+                return false;
+
             bool result = type.IsPrimitive;
 
             if (includeStrings)
