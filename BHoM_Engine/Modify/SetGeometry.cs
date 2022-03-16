@@ -22,6 +22,8 @@
 
 using BH.oM.Base;
 using BH.oM.Geometry;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Base
 {
@@ -31,8 +33,17 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Tries to set the geometry to the object. The type of geometry needs to be compatible with the object. If the method fails to set the geometry, it will return the incoming object without modification.")]
+        [Input("obj", "The object to set the geometry to.")]
+        [Input("geometry", "The geometry to set to the object. The type of geometry needs to be compatible with the object.")]
+        [Output("obj", "The object with updated geometry.")]
         public static IBHoMObject ISetGeometry(this IBHoMObject obj, IGeometry geometry)
         {
+            if (obj == null)
+            {
+                Compute.RecordError("Connat set geometry to a null object");
+                return null;
+            }
             return SetGeometry(obj as dynamic, geometry);
         }
 
@@ -43,6 +54,15 @@ namespace BH.Engine.Base
 
         private static IBHoMObject SetGeometry(this IBHoMObject obj, IGeometry geometry)
         {
+            object result;
+            if (Compute.TryRunExtensionMethod(obj, "SetGeometry", new object[] { geometry }, out result))
+                return result as IBHoMObject;
+            else
+            {
+                string geomType = geometry == null ? "null geometry" : $"geometry of type {geometry.GetType().Name}";
+                Compute.RecordError($"Cannot set {geomType} to a {obj.GetType().Name}");
+            }
+
             return obj;
         }
 
