@@ -41,7 +41,7 @@ namespace BH.Engine.Base
         {
             if (obj == null)
             {
-                Compute.RecordError("Connat set geometry to a null object");
+                Compute.RecordError("Cannot set geometry to a null object.");
                 return null;
             }
             return SetGeometry(obj as dynamic, geometry);
@@ -60,7 +60,7 @@ namespace BH.Engine.Base
             else
             {
                 string geomType = geometry == null ? "null geometry" : $"geometry of type {geometry.GetType().Name}";
-                Compute.RecordError($"Cannot set {geomType} to a {obj.GetType().Name}");
+                Compute.RecordError($"Cannot set {geomType} to a {obj.GetType().Name}.");
             }
 
             return obj;
