@@ -47,7 +47,7 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Generates a list of coloured geometry based on provided BHoMObejcts and ObjectResults.")]
+        [Description("Generates a list of coloured geometry based on provided BHoMObjects and ObjectResults.")]
         [Input("objects", "BHoMObjects to colour.")]
         [Input("results", "The IObjectResults to colour by.")]
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
@@ -80,9 +80,9 @@ namespace BH.Engine.Results
             if (gradientOptions == null)
                 gradientOptions = new GradientOptions();
 
-            //Get function for extracting property from results
-            Output<string, Func<IResultItem,double>, QuantityAttribute> propName_selector_quantity = results.First().ResultItemValueProperty(displayProperty);
-            Func<IResultItem, double> resultPropertySelector = propName_selector_quantity?.Item2;
+            //Get tuple with result name, property selector function and quantity attribute
+            Output<string, Func<IResult, double>, QuantityAttribute> propName_selector_quantity = results.First().ResultValueProperty(displayProperty, filter);
+            Func<IResult, double> resultPropertySelector = propName_selector_quantity?.Item2;
 
             if (resultPropertySelector == null)
             {

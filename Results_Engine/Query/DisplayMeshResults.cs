@@ -92,8 +92,9 @@ namespace BH.Engine.Results
             // Map the MeshResults to Meshes
             List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResultsToObjects(meshResults, "ObjectId", objectIdentifier, filter);
             //Get tuple with result name, property selector function and quantity attribute
-            Output<string, Func<IResultItem, double>, QuantityAttribute> propName_selector_quantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
-            Func<IResultItem, double> resultPropertySelector = propName_selector_quantity?.Item2;
+            Output<string, Func<IResult, double>, QuantityAttribute> propName_selector_quantity = meshResults.First().ResultValueProperty(meshResultDisplay, filter);
+            Func<IResult, double> resultPropertySelector = propName_selector_quantity?.Item2;
+
 
             if (resultPropertySelector == null)
             {
@@ -140,7 +141,7 @@ namespace BH.Engine.Results
         [Description("Applies colour to a single IMesh based on a single MeshResult, i.e stress or force etc.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
         private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, IMeshResult<IMeshElementResult> meshResult, object identifier,
-                                             Func<IResultItem, double> propertyFuction, IGradient gradient, double from, double to)
+                                             Func<IResult, double> propertyFuction, IGradient gradient, double from, double to)
             where TNode : INode
             where TFace : IFace
         {
