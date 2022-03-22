@@ -46,45 +46,103 @@ namespace BH.Engine.Results
         [MultiOutput(0, "propertyName", "The name of the property or method function.")]
         [MultiOutput(1, "func", "The result extraction function.")]
         [MultiOutput(2, "quantity", "The quantity corresponding to the function and property.")]
-        public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValueProperty(this IResultItem result, string propertyName)
+        public static Output<string, Func<IResult, double>, QuantityAttribute> ResultValueProperty(this IResult result, string propertyName, ResultFilter filter = null)
         {
             if (result == null)
                 return null;
 
-            return ResultItemValuePropertyGeneric(result as dynamic, propertyName);
-        }
-
-        /***************************************************/
-
-        [Description("Returns a Fuction for extracting a value from a result item in the provided collection. The first item in the IResultCollection will be used to find the property to extract.")]
-        [Input("result", "The ResultCollection from with the first Result item is used to extract the type to generate the Func for value extraction.")]
-        [Input("propertyName", "The name of the property to get the function for.")]
-        [MultiOutput(0, "propertyName", "The name of the property or method function.")]
-        [MultiOutput(1, "func", "The result extraction function.")]
-        [MultiOutput(2, "quantity", "The quantity corresponding to the function and property.")]
-        public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValueProperty(this IResultCollection<IResultItem> result, string propertyName)
-        {
-            if (result == null)
+            if (result is IResultCollection<IResult>)
+            {
+                //For collections, recursively call the method to find inner identifiers
+                return ResultValueProperty((result as IResultCollection<IResult>).Results.FirstOrDefault(), propertyName, filter);
+            }
+            else if (result is IResultSeries)
+            {
+                if (filter == null)
+                {
+                    filter = new ResultFilter();
+                    Engine.Base.Compute.RecordNote($"No filter provided. Default index {filter.ResultSeriesIndex} for filter will be used. To control which index to use, please provide a result filter with index set.");
+                }
+                return CastFunctionToIResult(ResultValuePropertySeries(result as dynamic, propertyName, filter.ResultSeriesIndex) as dynamic);
+            }
+            else if (result is IResultItem)
+            {
+                return CastFunctionToIResult(ResultValuePropertyItem(result as dynamic, propertyName) as dynamic);
+            }
+            else
+            {
+                Engine.Base.Compute.RecordError("Unsupported result type.");
                 return null;
-
-            return ResultItemValueProperty(result.Results.FirstOrDefault(), propertyName);
+            }
         }
 
         /***************************************************/
 
-        [Description("Returns a Fuction for extracting a value from a result item of type T.")]
+
+        [Description("Returns a Fuction for extracting a value from a result item.")]
         [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
         [MultiOutput(0, "propertyName", "The name of the property or method function.")]
         [MultiOutput(1, "func", "The result extraction function.")]
         [MultiOutput(2, "quantity", "The quantity corresponding to the function and property.")]
-        public static Output<string, Func<IResultItem, double>, QuantityAttribute> ResultItemValuePropertyGeneric<T>(this T result, string propertyName) where T : IResultItem
+        public static Output<string, Func<T, double>, QuantityAttribute> ResultValuePropertyItem<T>(this T result, string propertyName) where T : IResultItem
+        {
+            if (result == null)
+                return null;
+
+            return ResultValuePropertyGeneric<T, double>(result, propertyName);
+        }
+
+        /***************************************************/
+
+        [Description("Returns a Fuction for extracting a value from a result item.")]
+        [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
+        [Input("propertyName", "The name of the property to get the function for.")]
+        [MultiOutput(0, "propertyName", "The name of the property or method function.")]
+        [MultiOutput(1, "func", "The result extraction function.")]
+        [MultiOutput(2, "quantity", "The quantity corresponding to the function and property.")]
+        public static Output<string, Func<T, double>, QuantityAttribute> ResultValuePropertySeries<T>(this T result, string propertyName, int seriesIndex) where T : IResultSeries
+        {
+            if (result == null)
+                return null;
+
+            Output<string, Func<T, IReadOnlyList<double>>, QuantityAttribute> listFunction = ResultValuePropertyGeneric<T, IReadOnlyList<double>>(result, propertyName);
+            return new Output<string, Func<T, double>, QuantityAttribute>
+            {
+                Item1 = listFunction.Item1,
+                Item2 = x => listFunction.Item2(x)[seriesIndex],    //Return function that takes the nth item in the extracted IReadOnlyList<double>
+                Item3 = listFunction.Item3
+            };
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Method for adding a cast to T from IResult for the the function. Required to make the functions simpler to use and avoid generics to be used in visualisation methods for example.")]
+        private static Output<string, Func<IResult, double>, QuantityAttribute> CastFunctionToIResult<T>(this Output<string, Func<T, double>, QuantityAttribute> func) where T : IResult
+        {
+            if (func == null)
+                return null;
+
+            return new Output<string, Func<IResult, double>, QuantityAttribute>
+            {
+                Item1 = func.Item1,
+                Item2 = x => func.Item2((T)x),  //Return new function where the Func<T,double> is called with the IResult being cast into T.
+                Item3 = func.Item3
+            };
+        }
+
+        /***************************************************/
+
+        [Description("Extracts the property selector with adjoining quantity of type P and provided name. If no property name is provided, the first property is returned.")]
+        private static Output<string, Func<T, P>, QuantityAttribute> ResultValuePropertyGeneric<T, P>(this T result, string propertyName) where T : IResult
         {
             if (result == null)
                 return null;
 
             //Get all properties of the type
-            Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>> props = ResultItemValueProperties(result);
+            Dictionary<string, Tuple<Func<T, P>, QuantityAttribute>> props = ResultValueProperties<T, P>(result);
 
             if (props == null || props.Count == 0)
             {
@@ -92,10 +150,10 @@ namespace BH.Engine.Results
                 return null;
             }
 
-            Func<T, double> func;
+            Func<T, P> func;
             QuantityAttribute attr;
 
-            Tuple<Func<T, double>, QuantityAttribute> propTuple;
+            Tuple<Func<T, P>, QuantityAttribute> propTuple;
             if (string.IsNullOrEmpty(propertyName))
             {
                 var first = props.First();
@@ -119,14 +177,15 @@ namespace BH.Engine.Results
                 return null;
             }
 
-            return new Output<string, Func<IResultItem, double>, QuantityAttribute>
+            return new Output<string, Func<T, P>, QuantityAttribute>
             {
-                Item1 = propertyName,    //Return the property name used. Returned to ensure defaul values can be extracted (for case where empty string is provided)
-                Item2 = r => func((T)r), //Return new function where the Func<T,double> is called with the ResultItem being cast into T.
+                Item1 = propertyName,    //Return the property name used. Returned to ensure default values can be extracted (for case where empty string is provided)
+                Item2 = func,
                 Item3 = attr
             };
         }
 
         /***************************************************/
+
     }
 }
