@@ -38,7 +38,7 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Gets a function taking an IBHoMObejct and returning a string used to identify the object in relation to Results. Method used for maping results to obejcts.")]
+        [Description("Gets a function taking an IBHoMObject and returning a string used to identify the object in relation to Results. Method used for maping results to objects.")]
         [Input("obj", "The object to get an identifier from.")]
         [Input("identifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
         [Output("func", "The function used to identify the object.")]
