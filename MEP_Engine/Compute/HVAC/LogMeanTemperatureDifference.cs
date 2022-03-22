@@ -37,51 +37,52 @@ namespace BH.Engine.MEP.HVAC
         /***************************************************/
 
         [Description("Calculates the log mean temperature difference given the inlet and outlet temperatures of both sides of the heat exchanger.")]
-        [Input("type", " input an integer value indicating type. counterflow [0] or parallel [1] ")]
-        [Input("tempHotIn", "tempHotIn [F]")]
-        [Input("tempHotOut", "tempHotOut [F]")]
-        [Input("tempColdIn", "tempColdIn [F]")]
-        [Input("tempColdOut", "tempColdOut [F]")]
+        [Input("heatExchangerType", " input an integer value indicating type. counterflow [0] or parallel [1] ")]  //todo: change to enum
+        [Input("temperatureHotIn", "temperatureHotIn [F]")]
+        [Input("temperatureHotOut", "temperatureHotOut [F]")]
+        [Input("temperatureColdIn", "temperatureColdIn [F]")]
+        [Input("temperatureColdOut", "temperatureColdOut [F]")]
         [Output("logMeanTemperatureDifference", "LMTD [F]")]
-        public static double LogMeanTemperatureDifference(int type, double tempHotIn, double tempHotOut, double tempColdIn, double tempColdOut)
+        //todo: change temperature to temperature, change type to heatExchangerType,
+        public static double LogMeanTemperatureDifference(int heatExchangerType, double temperatureHotIn, double temperatureHotOut, double temperatureColdIn, double temperatureColdOut)
         {
-            if (type != 0 || type != 1)
+            if (heatExchangerType != 0 || heatExchangerType!= 1)
             {
                 BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null type value. Ensure value is either [0] for counterfCold or [1] for parallel");
                 return -1;
             }
 
-            if (tempHotIn == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null tempHotIn value");
-                return -1;
-            }
-            if (tempHotOut == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null tempHotOut value");
-                return -1;
-            }
-            if (tempColdIn == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null tempColdIn value");
-                return -1;
-            }
-            if (tempColdOut == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null tempColdOut value");
-                return -1;
-            }
+            //if (temperatureHotIn == double.NaN)
+            //{
+            //    BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null temperatureHotIn value");
+            //    return -1;
+            //}
+            //if (temperatureHotOut == double.NaN)
+            //{
+            //    BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null temperatureHotOut value");
+            //    return -1;
+            //}
+            //if (temperatureColdIn == double.NaN)
+            //{
+            //    BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null temperatureColdIn value");
+            //    return -1;
+            //}
+            //if (temperatureColdOut == double.NaN)
+            //{
+            //    BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null temperatureColdOut value");
+            //    return -1;
+            //}
 
-            double logMeanTemperatureDifference = double.NaN;
+            double logMeanTemperatureDifference = 0;
 
-            if (type == 0)
+            if (heatExchangerType == 0)
             {
-                logMeanTemperatureDifference = ((tempHotOut-tempColdIn)-(tempHotIn-tempColdOut))/ Math.Log((tempHotOut-tempColdIn)/(tempHotIn-tempColdOut));
+                logMeanTemperatureDifference = ((temperatureHotOut-temperatureColdIn)-(temperatureHotIn-temperatureColdOut))/ Math.Log((temperatureHotOut-temperatureColdIn)/(temperatureHotIn-temperatureColdOut));
 
             }
-            if (type == 1)
+            if (heatExchangerType == 1)
             {
-                logMeanTemperatureDifference = ((tempHotOut - tempColdOut) - (tempHotIn - tempColdIn)) / Math.Log((tempHotOut - tempColdOut) / (tempHotIn - tempColdIn));
+                logMeanTemperatureDifference = ((temperatureHotOut - temperatureColdOut) - (temperatureHotIn - temperatureColdIn)) / Math.Log((temperatureHotOut - temperatureColdOut) / (temperatureHotIn - temperatureColdIn));
 
             }
 

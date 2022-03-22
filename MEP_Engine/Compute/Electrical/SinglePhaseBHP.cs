@@ -68,7 +68,7 @@ namespace BH.Engine.MEP.Electrical
                 return -1;
             }
 
-
+            //TODO: no acronymns, spell out BHP spell out ACH
             double BHP = (voltage * amperage * powerFactor * deviceEfficiency)/746;
 
 
