@@ -25,7 +25,7 @@ using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Base;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 using BH.oM.Geometry;
 using BH.oM.Structure.Results;
 using BH.oM.Graphics;
@@ -115,16 +115,17 @@ namespace BH.Engine.Results
                     gradientOptions.Name += $" [{quantity.SIUnit}]";
             }
 
-            List<List<RenderMesh>> result = new List<List<RenderMesh>>();
-
-            for (int i = 0; i < meshList.Count; i++)
+            //Paralell execution of mesh display generation to improve performance
+            //Parallel queries run as ordered to ensure the resulting render meshes are output in the same order as the incoming meshes
+            List<List<RenderMesh>> result = meshList.AsParallel().AsOrdered().Zip(mappedResults.AsParallel().AsOrdered(), (mesh, res) =>
             {
-                result.Add(new List<RenderMesh>());
-                for (int j = 0; j < mappedResults[i].Count; j++)
+                List<RenderMesh> resultMeshes = new List<RenderMesh>();
+                for (int i = 0; i < res.Count; i++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], objectIdentifier, resultPropertySelector, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
+                    resultMeshes.Add(mesh.DisplayMeshResults(res[i], objectIdentifier, resultPropertySelector, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
                 }
-            }
+                return resultMeshes;
+            }).ToList();
 
             return new Output<List<List<RenderMesh>>, GradientOptions>
             {
