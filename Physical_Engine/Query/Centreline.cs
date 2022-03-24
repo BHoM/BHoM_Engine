@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Physical.Reinforcement.BS8666;
 using BH.oM.Quantities.Attributes;
@@ -1138,7 +1138,7 @@ namespace BH.Engine.Physical
 
         private static ICurve Centreline(IShapeCode shapeCode)
         {
-            Reflection.Compute.RecordError("ShapeCode not recognised or supported.");
+            Base.Compute.RecordError("ShapeCode not recognised or supported.");
             return null;
         }
 

@@ -27,7 +27,7 @@ using System.ComponentModel;
 using BH.Engine.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.Reinforcement;
 
 
