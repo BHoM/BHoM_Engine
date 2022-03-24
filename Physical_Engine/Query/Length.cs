@@ -24,7 +24,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Physical.Reinforcement.BS8666;
 using BH.oM.Quantities.Attributes;
@@ -88,7 +88,7 @@ namespace BH.Engine.Physical
         private static double Length(this ShapeCode15 shapeCode)
         {
             if (Math.Acos(shapeCode.D / shapeCode.A) > Math.PI / 4)
-                Engine.Reflection.Compute.RecordWarning("Bend angle is greater than 45 degrees, please use the Centreline method and measure the length of the curve instead.");
+                Engine.Base.Compute.RecordWarning("Bend angle is greater than 45 degrees, please use the Centreline method and measure the length of the curve instead.");
             
             return shapeCode.IsNull() ? 0 : shapeCode.A + shapeCode.C;
         }
@@ -314,7 +314,7 @@ namespace BH.Engine.Physical
 
         private static double ILength(this IShapeCode shapeCode)
         {
-            Reflection.Compute.RecordError("The ShapeCode is not recognised and the Length has not been calculated.");
+            Base.Compute.RecordError("The ShapeCode is not recognised and the Length has not been calculated.");
             return 0;
         }
 

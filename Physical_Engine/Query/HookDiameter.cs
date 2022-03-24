@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -61,12 +61,12 @@ namespace BH.Engine.Physical
                 case "BS8666":
                     if (shapeCode.Diameter > 0.050)
                     {
-                        Reflection.Compute.RecordWarning("Bars that are greater than 50mm cannot be bent using a standard mandrel.");
+                        Base.Compute.RecordWarning("Bars that are greater than 50mm cannot be bent using a standard mandrel.");
                     }
 
                     return Math.Ceiling((3 * shapeCode.Diameter + 2 * shapeCode.BendRadius) / 0.005) * 0.005;
                 default:
-                    Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
+                    Base.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;
             }
         }

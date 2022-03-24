@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -61,7 +61,7 @@ namespace BH.Engine.Physical
                 case "BS8666":
                     return m_BS8666MaximumRadiusBendingRadius.LinearInterpolate(shapeCode.Diameter);
                 default:
-                    Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
+                    Base.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;
             }
         }
@@ -78,12 +78,12 @@ namespace BH.Engine.Physical
 
             if(x < reference.ElementAt(0).Key)
             {
-                Reflection.Compute.RecordError("The value is less than the lowest reference key and therefore cannot be interpolated.");
+                Base.Compute.RecordError("The value is less than the lowest reference key and therefore cannot be interpolated.");
                 return 0;
             }
             if (x > reference.ElementAt(reference.Count-1).Key)
             {
-                Reflection.Compute.RecordError("The value is greater than the largest reference key and therefore cannot be interpolated.");
+                Base.Compute.RecordError("The value is greater than the largest reference key and therefore cannot be interpolated.");
                 return 0;
             }
 

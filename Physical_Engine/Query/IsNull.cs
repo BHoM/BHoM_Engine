@@ -27,7 +27,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using BH.Engine.Geometry;
 using BH.oM.Physical.Reinforcement;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -87,7 +87,7 @@ namespace BH.Engine.Physical
 
         private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
         {
-            Reflection.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
+            Base.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
         }
 
     }
