@@ -27,7 +27,7 @@ using System.ComponentModel;
 using BH.oM.Geometry;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Physical.Reinforcement.BS8666;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -43,7 +43,7 @@ namespace BH.Engine.Physical
         {
             if (a < Tolerance.Distance || b < Tolerance.Distance || c < Tolerance.Distance)
             {
-                Reflection.Compute.RecordError("One or more of the parameters given is zero and therefore the ShapeCode cannot be created.");
+                Base.Compute.RecordError("One or more of the parameters given is zero and therefore the ShapeCode cannot be created.");
                 return null;
             }
 
@@ -51,7 +51,7 @@ namespace BH.Engine.Physical
 
             if (bendRadius < minimumBendRadius)
             {
-                Reflection.Compute.RecordWarning("BendRadius provided was less than the minimum scheduling radius. This has been set based on the standard which is determined from the ShapeCode namespace.");
+                Base.Compute.RecordWarning("BendRadius provided was less than the minimum scheduling radius. This has been set based on the standard which is determined from the ShapeCode namespace.");
                 bendRadius = minimumBendRadius;
             }
 

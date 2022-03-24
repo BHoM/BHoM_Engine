@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -82,7 +82,7 @@ namespace BH.Engine.Physical
                     else
                         return 3.5 * diameter;
                 default:
-                    Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
+                    Base.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;
             }
         }

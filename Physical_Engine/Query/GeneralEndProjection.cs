@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Physical
 {
@@ -63,7 +63,7 @@ namespace BH.Engine.Physical
                 case "BS8666":
                     return Math.Max(5 * shapeCode.Diameter, 0.090) + shapeCode.Diameter + shapeCode.SchedulingRadius();
                 default:
-                    Reflection.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
+                    Base.Compute.RecordError("Standard not recognised or supported, the scheduling radius could not be calculated.");
                     return 0;
             }
         }
