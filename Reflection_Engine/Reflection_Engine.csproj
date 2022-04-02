@@ -7,7 +7,7 @@
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<RootNamespace>BH.Engine.Reflection</RootNamespace>
-	<FileVersion>5.1.0.0</FileVersion>
+	<FileVersion>5.2.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
