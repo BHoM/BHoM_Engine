@@ -34,7 +34,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.DebugLog()")]
         internal static Log DebugLog()
         {
             lock (Global.DebugLogLock)

@@ -40,7 +40,6 @@ namespace BH.Engine.Base
         [Input("methods", "The list of extentionmethods to sort. Will assume the first inputparameter of the methods to be of a type assignable from the provided Type")]
         [Input("type", "Type to check closeness to. Assumed to match first input parameter of the methods")]
         [Output("metods", "Sorted methods")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Modify.SortExtensionMethods(System.Collections.Generic.IEnumerable<System.Reflection.MethodInfo>, System.Type)")]
         public static List<MethodInfo> SortExtensionMethods(this IEnumerable<MethodInfo> methods, Type type)
         {
             if (methods == null || methods.Count() == 0)

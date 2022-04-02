@@ -39,7 +39,6 @@ namespace BH.Engine.Base
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
         [Output("type", "BHoM generic type that matches the given name.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Create.GenericType(System.String, System.Boolean)")]
         public static Type GenericType(string name, bool silent = false)
         {
             if (string.IsNullOrWhiteSpace(name))

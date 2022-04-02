@@ -34,7 +34,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExtensionMethods(System.Type, System.String)")]
         public static List<MethodInfo> ExtensionMethods(this Type type, string methodName)
         {
             List<MethodInfo> methods = new List<MethodInfo>();

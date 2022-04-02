@@ -33,7 +33,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.CurrentAssemblyFolder()")]
         public static string CurrentAssemblyFolder()
         {
             return System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

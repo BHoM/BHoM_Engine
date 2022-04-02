@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.MakeGenericFromInputs(System.Reflection.MethodInfo, System.Collections.Generic.List<System.Type>)")]
         public static MethodInfo MakeGenericFromInputs(this MethodInfo method, List<Type> inputTypes)
         {
             if(method == null)

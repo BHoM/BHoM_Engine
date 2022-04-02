@@ -35,7 +35,6 @@ namespace BH.Engine.Base
         [Description("Checks whether a given assembly is a BHoM engine assembly.")]
         [Input("assembly", "Assembly to be checked whether it is a BHoM engine assembly.")]
         [Output("isEngine", "True if the input assembly is a BHoM engine assembly.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsEngineAssembly(System.Reflection.Assembly)")]
         public static bool IsEngineAssembly(this Assembly assembly)
         {
             return assembly != null && assembly.GetName().Name.IsEngineAssembly();
@@ -46,7 +45,6 @@ namespace BH.Engine.Base
         [Description("Checks whether a given assembly name follows the BHoM engine assembly naming convention.")]
         [Input("assemblyName", "Assembly name to be checked whether it follows the BHoM engine assembly naming convention.")]
         [Output("isEngine", "True if the input assembly name follows the BHoM engine assembly naming convention.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsEngineAssembly(System.String)")]
         public static bool IsEngineAssembly(this string assemblyName)
         {
             return assemblyName != null && (assemblyName.EndsWith("_Engine") || assemblyName.Contains("_Engine_"));

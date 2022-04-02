@@ -39,7 +39,6 @@ namespace BH.Engine.Base
 		[Description("Get all the Properties and Sub properties of the given object in their full name form.")]
 		[Input("obj", "Object to get the properties from.")]
 		[Input("maxDepth", "(Optional, defaults to 100) Maximum property nesting level.")]
-		[PreviousVersion("5.1", "BH.Engine.Reflection.Query.GetAllPropertyFullNames(System.Object, System.Int32)")]
 		public static HashSet<string> GetAllPropertyFullNames(this object obj, int maxDepth = 100)
 		{
 			if (obj == null || maxDepth < 1)
@@ -58,7 +57,6 @@ namespace BH.Engine.Base
 		[Input("maxDepth", "(Optional, defaults to 100) Maximum property nesting level.")]
 		[Input("cached", "(Optional, defaults to true) If true, caches the FullNames found for a type," +
 			"so that if the same type is encountered again in the same session the computation is faster.")]
-		[PreviousVersion("5.1", "BH.Engine.Reflection.Query.GetAllPropertyFullNames(System.Type, System.Int32, System.Boolean)")]
 		public static HashSet<string> GetAllPropertyFullNames(this Type type, int maxDepth = 100, bool cached = true)
 		{
 			if (maxDepth < 1)

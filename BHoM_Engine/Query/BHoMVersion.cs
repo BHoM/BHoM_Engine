@@ -34,7 +34,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMVersion()")]
         public static string BHoMVersion()
         {
             if (m_BHoMVersion.Length > 0)

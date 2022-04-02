@@ -38,7 +38,6 @@ namespace BH.Engine.Graphics
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Graphics.Modify.ApplyGradientOptions(BH.oM.Graphics.Colours.GradientOptions, System.Collections.Generic.IEnumerable<System.Double>, System.String)")]
         [Description("Sets up the properties of a GradientOptions object for usage.")]
         [Input("gradientOptions", "GradientOptions object to modify.")]
         [Input("allValues", "The values to set gradient auto range from. Optional if range is already set.")]

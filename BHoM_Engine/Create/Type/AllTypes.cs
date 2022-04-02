@@ -39,7 +39,6 @@ namespace BH.Engine.Base
         [Input("name", "Name to be searched for among all reflected types.")]
         [Input("silent", "If true, the error about no types found will be suppressed, otherwise it will be raised.")]
         [Output("types", "All reflected types that match the given name.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Create.AllTypes(System.String, System.Boolean)")]
         public static List<Type> AllTypes(string name, bool silent = false)
         {
             if (name == null)
