@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AllEvents()")]
         [Description("Gets all events stored in the lifetime of the BHoM event log (equal to lifetime of the process).")]
         [Output("events", "All events stored in the lifetime of the BHoM event log.")]
         public static List<Event> AllEvents()
@@ -51,7 +50,6 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.CurrentEvents()")]
         [Description("Gets the events from the BHoM event log that are related to the current action.")]
         [Output("events", "Events from the BHoM event log that are related to the current action.")]
         public static List<Event> CurrentEvents()

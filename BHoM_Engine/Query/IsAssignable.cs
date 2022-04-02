@@ -39,7 +39,6 @@ namespace BH.Engine.Base
         [Input("assignableTo", "The type to check if it can be assigned to.")]
         [Input("assignableFrom", "The type to check if it can be assigned from.")]
         [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsAssignableFromIncludeGenerics(System.Type, System.Type)")]
         public static bool IsAssignableFromIncludeGenerics(this Type assignableTo, Type assignableFrom)
         {
             if(assignableTo == null || assignableFrom == null)
@@ -62,7 +61,6 @@ namespace BH.Engine.Base
         [Input("givenType", "The type to check if it can be assigned to the generic type.")]
         [Input("genericType", "The generic type to check assignability to.")]
         [Output("result", "Returns true if the given type can be assigned to the generic type.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsAssignableToGenericType(System.Type, System.Type)")]
         public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
         {
             //Check nulls
@@ -104,7 +102,6 @@ namespace BH.Engine.Base
         [Input("assignableTo", "The type to check if it can be assigned to.")]
         [Input("assignableFrom", "The type to check if it can be assigned from.")]
         [Output("result", "Returns true if 'assignableTo' is assignable from 'assignableFrom'.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsAssignableFromIncludeGenericsAndRefTypes(System.Type, System.Type)")]
         public static bool IsAssignableFromIncludeGenericsAndRefTypes(this Type assignableTo, Type assignableFrom)
         {
             if (assignableTo == null || assignableFrom == null)

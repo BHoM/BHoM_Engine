@@ -41,7 +41,6 @@ namespace BH.Engine.Base
         [Input("iBHoMObject", "A generic IBHoMObject object")]
         [Input("fragmentType", "The type of fragment to be queried and returned. If not specified, the generic type is taken.")]
         [Output("fragment", "The instance of that Fragment if it exists on the object, null otherwise")]
-        [PreviousVersion("5.1", "BH.Engine.Environment.Query.FindFragment(BH.oM.Environment.IEnvironmentObject, System.Type)")]
         public static T FindFragment<T>(this IBHoMObject iBHoMObject, Type fragmentType = null)
         {
             if (fragmentType == null)

@@ -40,7 +40,6 @@ namespace BH.Engine.Base
         [Description("Attempts to load an assembly under the given path.")]
         [Input("assemblyPath", "Path from which the assembly is meant to be loaded.")]
         [Output("assembly", "The assembly under the given path, if it exists and has been loaded to BHoM (at any point in time), otherwise null.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.LoadAssembly(System.String)")]
         public static Assembly LoadAssembly(string assemblyPath)
         {
             try

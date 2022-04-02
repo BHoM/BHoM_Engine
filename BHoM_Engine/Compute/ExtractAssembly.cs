@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -39,7 +39,6 @@ namespace BH.Engine.Base
 
         [Description("Records the given assembly in the Global collection of loaded assemblies, then extracts types and methods from it and adds them to relevant collections in the Global class.")]
         [Input("assembly", "Assembly to be reflected.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ReflectAssembly(System.Reflection.Assembly)")]
         public static void ExtractAssembly(Assembly assembly)
         {
             if (assembly == null || assembly.ReflectionOnly)

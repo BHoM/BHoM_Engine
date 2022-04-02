@@ -48,7 +48,6 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Results.Query.DisplayMeshResults(System.Collections.Generic.IEnumerable<BH.oM.Analytical.Elements.IMesh<BH.oM.Analytical.Elements.INode, BH.oM.Analytical.Elements.IFace>>, System.Collections.Generic.IEnumerable<BH.oM.Analytical.Results.IMeshResult<BH.oM.Analytical.Results.IMeshElementResult>>, System.Type, System.Collections.Generic.List<System.String>, System.String, BH.oM.Graphics.Colours.GradientOptions)")]
         [PreviousInputNames("objectIdentifier", "identifier")]
         [PreviousInputNames("filter", "caseFilter")]
         [Description("Applies colour to IMesh based on MeshResult.")]

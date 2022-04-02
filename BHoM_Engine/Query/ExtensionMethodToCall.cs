@@ -40,7 +40,6 @@ namespace BH.Engine.Base
         [Input("target", "First argument of the method to find.")]
         [Input("methodName", "The name of the method to be sought.")]
         [Output("method", "Most suitable extension method with requested target, name and parameters. If no method was found, null is returned.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExtensionMethodToCall(System.Object, System.String)")]
         public static MethodInfo ExtensionMethodToCall(this object target, string methodName)
         {
             return ExtensionMethodToCall(methodName, new object[] { target });
@@ -54,7 +53,6 @@ namespace BH.Engine.Base
         [Input("methodName", "The name of the method to be sought.")]
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
         [Output("method", "Most suitable extension method with requested target, name and parameters. If no method was found, null is returned.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExtensionMethodToCall(System.Object, System.String, System.Object[])")]
         public static MethodInfo ExtensionMethodToCall(this object target, string methodName, object[] parameters)
         {
             return ExtensionMethodToCall(methodName, new object[] { target }.Concat(parameters).ToArray());

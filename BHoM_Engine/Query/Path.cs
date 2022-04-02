@@ -35,7 +35,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Path(System.Type)")]
         public static string Path(this Type type)
         {
             if(type == null)
@@ -49,7 +48,6 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.Path(System.Reflection.MethodBase, System.Boolean, System.Boolean)")]
         public static string Path(this MethodBase method, bool userReturnTypeForCreate = true, bool useExtentionType = false) 
         {
             if(method == null)

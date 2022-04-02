@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -33,7 +33,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordEvent(System.String, BH.oM.Base.Debugging.EventType)")]
         [Description("Records an event in the BHoM event log.")]
         [Input("message", "Message related to the event to be logged.")]
         [Input("type", "Type of the event to be logged.")]
@@ -45,7 +44,6 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RecordEvent(BH.oM.Base.Debugging.Event)")]
         [Description("Records an event in the BHoM event log.")]
         [Input("newEvent", "Event to be logged.")]
         [Output("success", "True if the event is logged successfully.")]

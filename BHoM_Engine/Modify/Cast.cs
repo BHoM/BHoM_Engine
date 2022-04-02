@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Modify.CastGeneric(System.Collections.Generic.IEnumerable<System.Object>, System.Type)")]
         public static object CastGeneric<T>(this IEnumerable<T> source, Type genericType)
         {
             return typeof(System.Linq.Enumerable).GetMethod("Cast").MakeGenericMethod(genericType).Invoke(null, new object[] { source });

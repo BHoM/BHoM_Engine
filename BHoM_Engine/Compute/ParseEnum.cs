@@ -40,7 +40,6 @@ namespace BH.Engine.Base
         [Description("Converts a string into its corresponding enum of type T")]
         [Input("value", "String representation of the enum to be created")]
         [Output("Enum of type T with a value matching the input string")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ParseEnum(System.String)")]
         public static T ParseEnum<T>(string value)
         {
             object result = ParseEnum(typeof(T), value);
@@ -56,7 +55,6 @@ namespace BH.Engine.Base
         [Input("enumType", "Type of enum to be created")]
         [Input("value", "String representation of the enum to be created")]
         [Output("Enum of type enumType with a value matching the input string")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ParseEnum(System.Type, System.String)")]
         public static object ParseEnum(Type enumType, string value)
         {
             if (Enum.IsDefined(enumType, value))

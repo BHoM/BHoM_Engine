@@ -40,7 +40,6 @@ namespace BH.Engine.Base
         [Input("target", "The object to find and run the extension method for.")]
         [Input("methodName", "The name of the method to be run.")]
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RunExtensionMethod(System.Object, System.String)")]
         public static object RunExtensionMethod(object target, string methodName)
         {
             MethodInfo method = Query.ExtensionMethodToCall(target, methodName);
@@ -55,7 +54,6 @@ namespace BH.Engine.Base
         [Input("methodName", "The name of the method to be run.")]
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RunExtensionMethod(System.Object, System.String, System.Object[])")]
         public static object RunExtensionMethod(object target, string methodName, object[] parameters)
         {
             MethodInfo method = Query.ExtensionMethodToCall(target, methodName, parameters);
@@ -69,7 +67,6 @@ namespace BH.Engine.Base
         [Input("target", "The object to run the extension method on.")]
         [Input("method", "The method to be run.")]
         [Output("result", "The result of the method execution. If no or invalid method was provided, null is returned.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RunExtensionMethod(System.Object, System.Reflection.MethodInfo)")]
         public static object RunExtensionMethod(object target, MethodInfo method)
         {
             return RunExtensionMethod(method, new object[] { target });
@@ -83,7 +80,6 @@ namespace BH.Engine.Base
         [Input("method", "The method to be run.")]
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
         [Output("result", "The result of the method execution. If no or invalid method was provided, null is returned.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.RunExtensionMethod(System.Object, System.Reflection.MethodInfo, System.Object[])")]
         public static object RunExtensionMethod(object target, MethodInfo method, object[] parameters)
         {
             return RunExtensionMethod(method, new object[] { target }.Concat(parameters).ToArray());

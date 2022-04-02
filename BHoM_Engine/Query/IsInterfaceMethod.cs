@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsInterfaceMethod(System.Reflection.MethodBase)")]
         public static bool IsInterfaceMethod(this MethodBase method)
         {
             if (method == null || method is ConstructorInfo)
