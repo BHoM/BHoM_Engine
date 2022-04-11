@@ -37,7 +37,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical floor element. For elements for structral analytical applications, you  look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel.")]
+        [Description("Creates a physical floor element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel.")]
         [Input("location", "Location surface which represents the outer geometry of the floor. Should not contain any openings.")]
         [Input("construction", "Construction representing the thickness and materiality of the floor.")]
         [Input("openings", "Openings of the floor. Could be simple voids or more detailed objects.")]
