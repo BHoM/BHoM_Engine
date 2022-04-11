@@ -41,7 +41,7 @@ namespace BH.Engine.Data
 
         [Description("Generates a Table from a list of BHoMObjects. To generate a custom table, use this in conjunction with CustomObjects")]
         [Input("name", "Name of the table")]
-        [Input("bhomObjects", "The list of BHoMObejcts to turn into a Table")]
+        [Input("bhomObjects", "The list of BHoMObjects to turn into a Table")]
         [Input("ignoreName", "Toggles whether to skip the name property or not, defaults to false")]
         [Input("ignoreGuid", "Toggles whether to skip the name Guid or not, defaults to false")]
         [Input("ignoreTags", "Toggles whether to skip the name Tags or not, defaults to false")]

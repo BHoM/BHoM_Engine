@@ -48,13 +48,13 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Creates a physical Roof element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
-        [Input("construction", "Construction representing the thickness and materiality of the Roof")]
-        [Input("location", "Location surface which represents the outer geometry of the Roof. Should not contain any openings")]
-        [Input("openings", "Openings of the Roof. Could be simple voids or more detailed objects")]
-        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Roof")]
-        [Input("name", "The name of the roof, default empty string")]
-        [Output("Roof", "The created physical Roof")]
+        [Description("Creates a physical Roof element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel.")]
+        [Input("construction", "Construction representing the thickness and materiality of the Roof.")]
+        [Input("location", "Location surface which represents the outer geometry of the Roof. Should not contain any openings.")]
+        [Input("openings", "Openings of the Roof. Could be simple voids or more detailed objects.")]
+        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Roof.")]
+        [Input("name", "The name of the roof, default empty string.")]
+        [Output("Roof", "The created physical Roof.")]
         public static Roof Roof(IConstruction construction, oM.Geometry.ISurface location, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
             openings = openings ?? new List<IOpening>();
@@ -71,16 +71,16 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Creates physical roof based on given construction, external and internal edges")]
-        [Input("construction", "Construction of the roof")]
-        [Input("edges", "External edges of the roof (Profile - planar closed curve)")]
+        [Description("Creates physical roof based on given construction, external and internal edges.")]
+        [Input("construction", "Construction of the roof.")]
+        [Input("edges", "External edges of the roof (Profile - planar closed curve).")]
         [Input("internalEdges", "Internal edges of openings etc.")]
-        [Output("roof", "A physical roof")]
+        [Output("roof", "A physical roof.")]
         public static Roof Roof(IConstruction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
         {
             if (construction == null || edges == null)
             {
-                Base.Compute.RecordError("Physical Roof could not be created because some input data are null");
+                Base.Compute.RecordError("Physical Roof could not be created because some input data are null.");
                 return null;
             }
 
@@ -91,7 +91,7 @@ namespace BH.Engine.Physical
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
             if (aPlanarSurface == null)
             {
-                Base.Compute.RecordError("Physical Roof could not be created because invalid geometry of edges");
+                Base.Compute.RecordError("Physical Roof could not be created because invalid geometry of edges.");
                 return null;
             }
 
