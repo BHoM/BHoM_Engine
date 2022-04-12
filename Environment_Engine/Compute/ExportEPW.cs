@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
 
             if (!Directory.Exists(directoryName))
             {
-                Base.Compute.RecordError("The filepath to outputPath does not exist. Please provide a valid filepath.");
+                Base.Compute.RecordError($"The following path does not appear to exist: {directoryName}. Please ensure that this path exists, and try again.");
                 return null;
             }
 
