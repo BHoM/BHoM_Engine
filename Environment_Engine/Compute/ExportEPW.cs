@@ -45,7 +45,9 @@ namespace BH.Engine.Environment
             if (weatherfile == null)
                 return "";
 
-            if (!Directory.Exists(outputPath))
+            string directoryName = Path.GetDirectoryName(outputPath);
+
+            if (!Directory.Exists(directoryName))
             {
                 Base.Compute.RecordError("The filepath to outputPath does not exist. Please provide a valid filepath.");
                 return null;
