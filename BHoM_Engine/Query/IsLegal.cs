@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsLegal(System.Reflection.MethodInfo)")]
         public static bool IsLegal(this MethodInfo method)
         {
             if (method == null)
@@ -56,7 +55,6 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IsLegal(System.Type)")]
         public static bool IsLegal(this Type type) //TODO: Check if there is a better way to do this, instead of using a try-catch
         {
             if (type == null)

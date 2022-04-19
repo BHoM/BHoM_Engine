@@ -48,7 +48,6 @@ namespace BH.Engine.Base
         [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
         [Input("result", "Result of the method invocation, if the method had been invoked. If no method is found this is null.")]
         [Output("True if a method was found and an invocation was attempted. False otherwise.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.TryRunExtensionMethod(System.Object, System.String, System.Object&)")]
         public static bool TryRunExtensionMethod(this object obj, string methodName, out object result)
         {
             result = null;
@@ -71,7 +70,6 @@ namespace BH.Engine.Base
         [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
         [Input("result", "Result of the method invocation, if the method had been invoked. If no method is found this is null.")]
         [Output("True if a method was found and an invocation was attempted. False otherwise.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.TryRunExtensionMethod(System.Object, System.String, System.Object[], System.Object&)")]
         public static bool TryRunExtensionMethod(this object obj, string methodName, object[] parameters, out object result)
         {
             result = null;

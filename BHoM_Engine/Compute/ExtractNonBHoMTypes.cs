@@ -39,7 +39,6 @@ namespace BH.Engine.Base
 
         [Description("Extracts all types from an already loaded non-BHoM assembly and adds them to the Global collection of all reflected types.")]
         [Input("assembly", "Non-BHoM assembly with the types to be reflected.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ReflectNonBHoMTypes(System.Reflection.Assembly)")]
         public static void ExtractNonBHoMTypes(Assembly assembly)
         {
             if (assembly == null || !Global.AllAssemblies.ContainsKey(assembly.FullName) || assembly.ReflectionOnly)
@@ -66,7 +65,6 @@ namespace BH.Engine.Base
 
         [Description("Extracts all types from an already loaded non-BHoM assembly under the given name and adds them to the Global collection of all reflected types.")]
         [Input("assemblyName", "Name of the non-BHoM assembly with the types to be reflected.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Compute.ReflectNonBHoMTypes(System.String)")]
         public static void ExtractNonBHoMTypes(string assemblyName)
         {
             Assembly asm = Global.AllAssemblies.Values.FirstOrDefault(x => x.GetName().Name == assemblyName);

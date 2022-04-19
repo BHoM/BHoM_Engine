@@ -39,7 +39,6 @@ namespace BH.Engine.Base
         [Input("fragment", "Any fragment object implementing the IFragment interface to append to the object.")]
         [Input("replace", "If set to true and the object already contains a fragment of the type being added, the fragment will be replaced by this instance.")]
         [Output("iBHoMObject", "The BHoM object with the added fragment.")]
-        [PreviousVersion("5.1", "BH.Engine.Environment.Modify.AddFragment(BH.oM.Environment.IEnvironmentObject, BH.oM.Base.IFragment)")]
         public static IBHoMObject AddFragment(this IBHoMObject iBHoMObject, IFragment fragment, bool replace = false)
         {
             if (iBHoMObject == null || fragment == null)
