@@ -40,6 +40,7 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Results.Query.ResultItemValueProperties(BH.oM.Analytical.Results.IResultItem)")]
         [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class. Properties defined on a base class are ignored.\n" +
                      "Also extracts methods returning a double that has the result type as the only argument.\n" +
                      "Func<T,double> returned together with corresponding QuantityAttribute in a Dictionary with the property or method name as the Key.")]

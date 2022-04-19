@@ -40,6 +40,8 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Results.Query.ResultItemValueProperty(BH.oM.Analytical.Results.IResultItem, System.String)")]
+        [PreviousVersion("5.2", "BH.Engine.Results.Query.ResultItemValueProperty(BH.oM.Analytical.Results.IResultCollection<BH.oM.Analytical.Results.IResultItem>, System.String)")]
         [Description("Returns a Fuction for extracting a value from a result item.")]
         [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
@@ -78,7 +80,7 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-
+        [PreviousVersion("5.2", "BH.Engine.Results.Query.ResultItemValuePropertyGeneric(BH.oM.Analytical.Results.IResultItem, System.String)")]
         [Description("Returns a Fuction for extracting a value from a result item.")]
         [Input("result", "The result used to extract the type to generate the Func for value extraction.")]
         [Input("propertyName", "The name of the property to get the function for.")]
