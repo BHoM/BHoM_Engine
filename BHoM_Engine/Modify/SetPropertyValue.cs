@@ -42,7 +42,6 @@ namespace BH.Engine.Base
         [Input("propName", "name of the property to set the value of")]
         [Input("value", "new value of the property. \nIf left empty, the value for that property will be cleared \n(enumerables will be emptied, primitives will be set to their default value, and objects will be set to null)")]
         [Output("result", "New object with its property changed to the new value")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Modify.SetPropertyValue(System.Object, System.String, System.Object)")]
         public static object SetPropertyValue(this object obj, string propName, object value = null)
         {
             if(obj == null)

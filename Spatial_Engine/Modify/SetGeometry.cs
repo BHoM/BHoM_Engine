@@ -63,7 +63,6 @@ namespace BH.Engine.Spatial
         [Input("grid", "The Grid to modify the geomerty of.")]
         [Input("curve", "The new geometry curve for the Grid.")]
         [Output("Grid", "A Grid with the curve updated.")]
-        [PreviousVersion("5.1", "BH.Engine.Geometry.Modify.SetGeometry(BH.oM.Spatial.SettingOut.Grid, BH.oM.Geometry.ICurve)")]
         public static Grid SetGeometry(this Grid grid, ICurve curve)
         {
             Grid clone = grid.ShallowClone();

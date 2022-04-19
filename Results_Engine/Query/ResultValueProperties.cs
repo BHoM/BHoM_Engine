@@ -40,36 +40,69 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Results.Query.ResultItemValueProperties(BH.oM.Analytical.Results.IResultItem)")]
         [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type double that is defined on the class. Properties defined on a base class are ignored.\n" +
-                     "Also extracts methods returning a double that has the result type as the only argument.\n" +         
+                     "Also extracts methods returning a double that has the result type as the only argument.\n" +
                      "Func<T,double> returned together with corresponding QuantityAttribute in a Dictionary with the property or method name as the Key.")]
         [Input("result", "The result type to extract property functions from.")]
         [Output("func", "Dictionary of string, Tuple<Func,Quantity> where the Key is the name of the property or method and the value is the compiled selector for extracting the value from a result of the type with matching QuantityAttribute.")]
-        public static Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>> ResultItemValueProperties<T>(this T result) where T : IResultItem
+        public static Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>> ResultValuePropertiesItem<T>(this T result) where T : IResultItem
         {
             if (result == null)
                 return null;
 
-            //Get the type of obejct to evaluate
+            return ResultValueProperties<T, double>(result);
+        }
+
+        /***************************************************/
+
+        [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type IReadOnlyList<double> that is defined on the class. Properties defined on a base class are ignored.\n" +
+                     "Also extracts methods returning a double that has the result type as the only argument.\n" +
+                     "Func<T,IReadOnlyList<double>> returned together with corresponding QuantityAttribute in a Dictionary with the property or method name as the Key.")]
+        [Input("result", "The result type to extract property functions from.")]
+        [Output("func", "Dictionary of string, Tuple<Func,Quantity> where the Key is the name of the property or method and the value is the compiled selector for extracting the value from a result of the type with matching QuantityAttribute.")]
+        public static Dictionary<string, Tuple<Func<T, IReadOnlyList<double>>, QuantityAttribute>> ResultValuePropertiesSeries<T>(this T result) where T : IResultSeries
+        {
+            if (result == null)
+                return null;
+
+            return ResultValueProperties<T, IReadOnlyList<double>>(result);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Extract all potential result carrying property getters from a result class, i.e. properties of type P that is defined on the class. Properties defined on a base class are ignored.\n" +
+                     "Also extracts methods returning a double that has the result type as the only argument.\n" +         
+                     "Func<T,P> returned together with corresponding QuantityAttribute in a Dictionary with the property or method name as the Key.")]
+        [Input("result", "The result type to extract property functions from.")]
+        [Output("func", "Dictionary of string, Tuple<Func,Quantity> where the Key is the name of the property or method and the value is the compiled selector for extracting the value from a result of the type with matching QuantityAttribute.")]
+        private static Dictionary<string, Tuple<Func<T, P>, QuantityAttribute>> ResultValueProperties<T,P>(this T result) where T : IResult
+        {
+            if (result == null)
+                return null;
+
+            //Get the type of object to evaluate
             Type type = result.GetType();
 
             //Try extract previously evaluated properties
             object selectors;
             if (m_resultValueSelectors.TryGetValue(type, out selectors))
-                return selectors as Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>>;
+                return selectors as Dictionary<string, Tuple<Func<T, P>, QuantityAttribute>>;
 
             //Get all properties of type double declared on the class
-            List<PropertyInfo> properties = type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => x.PropertyType == typeof(double)).ToList();
+            List<PropertyInfo> properties = type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).Where(x => typeof(P).IsAssignableFrom(x.PropertyType)).ToList();
 
             //Set up dictionary for storing the compiled functiones
-            Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>> selectorsDict = new Dictionary<string, Tuple<Func<T, double>, QuantityAttribute>>();
+            Dictionary<string, Tuple<Func<T, P>, QuantityAttribute>> selectorsDict = new Dictionary<string, Tuple<Func<T, P>, QuantityAttribute>>(StringComparer.OrdinalIgnoreCase);
 
             //Loop through properties
             foreach (PropertyInfo info in properties)
             {
                 //Compile the get method of the property into a function and store in dictionary, using the name of the property as the key.
                 //Pro-compiling into functions significantly increases the performance when retreiving result values
-                Func<T, double> func = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), info.GetGetMethod());
+                Func<T, P> func = (Func<T, P>)Delegate.CreateDelegate(typeof(Func<T, P>), info.GetGetMethod());
 
                 //Store units
                 IEnumerable<QuantityAttribute> quantity = info.GetCustomAttributes<QuantityAttribute>();
@@ -77,15 +110,19 @@ namespace BH.Engine.Results
                 if (quantity.Count() == 1)
                     attr = quantity.First();
 
-                selectorsDict[info.Name] = new Tuple<Func<T, double>, QuantityAttribute>(func, attr);
+                selectorsDict[info.Name] = new Tuple<Func<T, P>, QuantityAttribute>(func, attr);
             }
 
             //Check all available methods that takes a result compatible with the type and returns a double
-            foreach (MethodInfo method in Base.Query.BHoMMethodList().Where(x => x.ReturnType == typeof(double)))
+            foreach (MethodInfo method in Base.Query.BHoMMethodList().Where(x => typeof(P).IsAssignableFrom(x.ReturnType)))
             {
                 //Check that the method has exactly one argument
                 ParameterInfo[] para = method.GetParameters();
                 if (para.Length != 1)
+                    continue;
+
+                //check that the first argument is a result argument (to filter out methods accepting object for example)
+                if (!typeof(IResult).IsAssignableFrom(para[0].ParameterType))
                     continue;
 
                 //Check that this argument is asignable from the type
@@ -106,7 +143,7 @@ namespace BH.Engine.Results
                 MethodInfo finalMethod = method.MakeGenericFromInputs(new List<Type> { type });
 
                 //Turn to a function and store
-                Func<T, double> func = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), finalMethod);
+                Func<T, P> func = (Func<T, P>)Delegate.CreateDelegate(typeof(Func<T, P>), finalMethod);
 
                 //Try get out and store quantity
                 QuantityAttribute quantity = null;
@@ -114,7 +151,7 @@ namespace BH.Engine.Results
                 if (outputAtr != null)
                     quantity = outputAtr.Classification as QuantityAttribute;
 
-                selectorsDict[method.Name] = new Tuple<Func<T, double>, QuantityAttribute>(func, quantity);
+                selectorsDict[method.Name] = new Tuple<Func<T, P>, QuantityAttribute>(func, quantity);
             }
 
             //Store in dictionary for further uses

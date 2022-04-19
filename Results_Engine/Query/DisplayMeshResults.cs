@@ -25,7 +25,7 @@ using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Base;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 using BH.oM.Geometry;
 using BH.oM.Structure.Results;
 using BH.oM.Graphics;
@@ -48,7 +48,6 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Results.Query.DisplayMeshResults(System.Collections.Generic.IEnumerable<BH.oM.Analytical.Elements.IMesh<BH.oM.Analytical.Elements.INode, BH.oM.Analytical.Elements.IFace>>, System.Collections.Generic.IEnumerable<BH.oM.Analytical.Results.IMeshResult<BH.oM.Analytical.Results.IMeshElementResult>>, System.Type, System.Collections.Generic.List<System.String>, System.String, BH.oM.Graphics.Colours.GradientOptions)")]
         [PreviousInputNames("objectIdentifier", "identifier")]
         [PreviousInputNames("filter", "caseFilter")]
         [Description("Applies colour to IMesh based on MeshResult.")]
@@ -92,8 +91,9 @@ namespace BH.Engine.Results
             // Map the MeshResults to Meshes
             List<List<IMeshResult<IMeshElementResult>>> mappedResults = meshList.MapResultsToObjects(meshResults, "ObjectId", objectIdentifier, filter);
             //Get tuple with result name, property selector function and quantity attribute
-            Output<string, Func<IResultItem, double>, QuantityAttribute> propName_selector_quantity = meshResults.First().ResultItemValueProperty(meshResultDisplay);
-            Func<IResultItem, double> resultPropertySelector = propName_selector_quantity?.Item2;
+            Output<string, Func<IResult, double>, QuantityAttribute> propName_selector_quantity = meshResults.First().ResultValueProperty(meshResultDisplay, filter);
+            Func<IResult, double> resultPropertySelector = propName_selector_quantity?.Item2;
+
 
             if (resultPropertySelector == null)
             {
@@ -115,16 +115,17 @@ namespace BH.Engine.Results
                     gradientOptions.Name += $" [{quantity.SIUnit}]";
             }
 
-            List<List<RenderMesh>> result = new List<List<RenderMesh>>();
-
-            for (int i = 0; i < meshList.Count; i++)
+            //Paralell execution of mesh display generation to improve performance
+            //Parallel queries run as ordered to ensure the resulting render meshes are output in the same order as the incoming meshes
+            List<List<RenderMesh>> result = meshList.AsParallel().AsOrdered().Zip(mappedResults.AsParallel().AsOrdered(), (mesh, res) =>
             {
-                result.Add(new List<RenderMesh>());
-                for (int j = 0; j < mappedResults[i].Count; j++)
+                List<RenderMesh> resultMeshes = new List<RenderMesh>();
+                for (int i = 0; i < res.Count; i++)
                 {
-                    result[i].Add(meshList[i].DisplayMeshResults(mappedResults[i][j], objectIdentifier, resultPropertySelector, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
+                    resultMeshes.Add(mesh.DisplayMeshResults(res[i], objectIdentifier, resultPropertySelector, gradientOptions.Gradient, gradientOptions.LowerBound, gradientOptions.UpperBound));
                 }
-            }
+                return resultMeshes;
+            }).ToList();
 
             return new Output<List<List<RenderMesh>>, GradientOptions>
             {
@@ -140,7 +141,7 @@ namespace BH.Engine.Results
         [Description("Applies colour to a single IMesh based on a single MeshResult, i.e stress or force etc.")]
         [Output("renderMesh", "A coloured RenderMesh.")]
         private static RenderMesh DisplayMeshResults<TNode, TFace>(this IMesh<TNode, TFace> mesh, IMeshResult<IMeshElementResult> meshResult, object identifier,
-                                             Func<IResultItem, double> propertyFuction, IGradient gradient, double from, double to)
+                                             Func<IResult, double> propertyFuction, IGradient gradient, double from, double to)
             where TNode : INode
             where TFace : IFace
         {

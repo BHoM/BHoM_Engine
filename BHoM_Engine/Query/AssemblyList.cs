@@ -36,7 +36,6 @@ namespace BH.Engine.Base
 
         [Description("Returns all BHoM assemblies loaded in the current domain.")]
         [Output("assemblies", "List of BHoM assemblies loaded in the current domain.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMAssemblyList()")]
         public static List<Assembly> BHoMAssemblyList()
         {
             return Global.BHoMAssemblies.Values.ToList();
@@ -46,7 +45,6 @@ namespace BH.Engine.Base
 
         [Description("Returns all assemblies loaded in the current domain.")]
         [Output("assemblies", "List of all assemblies loaded in the current domain.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AllAssemblyList()")]
         public static List<Assembly> AllAssemblyList()
         {
             return Global.AllAssemblies.Values.ToList();

@@ -34,7 +34,6 @@ namespace BH.Engine.Graphics
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Graphics.Modify.CenterGradientAsymmetric(BH.oM.Graphics.Gradient, System.Double, System.Double)")]
         [Description("Sets the colour in the middle of a gradient to 0 relative to a pair of boundary values.")]
         [Input("gradient", "The gradient to modify.")]
         [Input("lowerBound", "The lower bound that the gradient will be used with.")]

@@ -36,7 +36,6 @@ namespace BH.Engine.Base
 
         [Description("Returns all BHoM methods loaded in the current domain.")]
         [Output("methods", "List of BHoM methods loaded in the current domain.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMMethodList()")]
         public static List<MethodInfo> BHoMMethodList()
         {
             return Global.BHoMMethodList.ToList();
@@ -46,7 +45,6 @@ namespace BH.Engine.Base
 
         [Description("Returns all methods loaded in the current domain.")]
         [Output("methods", "List of all methods loaded in the current domain.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AllMethodList()")]
         public static List<MethodBase> AllMethodList()
         {
             return Global.AllMethodList.ToList();
@@ -56,7 +54,6 @@ namespace BH.Engine.Base
 
         [Description("Returns all external methods loaded in the current domain.")]
         [Output("methods", "List of external methods loaded in the current domain.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.ExternalMethodList()")]
         public static List<MethodBase> ExternalMethodList()
         {
             return Global.ExternalMethodList.ToList();

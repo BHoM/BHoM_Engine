@@ -39,7 +39,6 @@ namespace BH.Engine.Base
         [Input("name", "Name to be searched for among all BHoM types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
         [Output("type", "BHoM type that matches the given name.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Create.Type(System.String, System.Boolean)")]
         public static Type Type(string name, bool silent = false)
         {
             if (name == null)

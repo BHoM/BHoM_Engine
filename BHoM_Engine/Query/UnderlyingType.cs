@@ -38,7 +38,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.UnderlyingType(System.Type)")]
         public static UnderlyingType UnderlyingType(this Type type)
         {
             if (type == null)

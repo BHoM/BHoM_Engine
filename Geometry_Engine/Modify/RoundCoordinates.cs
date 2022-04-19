@@ -64,7 +64,6 @@ namespace BH.Engine.Geometry
         [Input("point", "The BHoM Geometry Point to modify.")]
         [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
         [Output("point", "The modified BHoM Geometry Point.")]
-        [PreviousVersion("5.1", "BH.Engine.Geometry.Modify.RoundPoint(BH.oM.Geometry.Point, System.Int32)")]
         public static Point RoundCoordinates(this Point point, int decimalPlaces = 6)
         {
             return new Point

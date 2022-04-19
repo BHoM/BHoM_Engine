@@ -38,7 +38,7 @@ namespace BH.Engine.Results
 
         [Description("Creates a Lookup (similar to a Dictionary<string, List<T>>) of the result based on the provided identifier.")]
         [Input("results", "Collection of results to be turned into a Lookup.")]
-        [Input("resultIdentifier", "Property of the obejct to use as lookup key.")]
+        [Input("resultIdentifier", "Property of the object to use as lookup key.")]
         [Output("lookup", "The created lookup. The key will correspond to the property and value will be all results matching theis key.")]
         public static ILookup<string, T> ResultLookup<T>(this IEnumerable<T> results, string resultIdentifier) where T : IResult
         {

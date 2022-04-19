@@ -36,7 +36,6 @@ namespace BH.Engine.Base
 
         [Description("Returns a dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
         [Output("typeDictionary", "Dictionary with all BHoM types loaded in the current domain as values and their names as keys.")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.BHoMTypeDictionary()")]
         public static Dictionary<string, List<Type>> BHoMTypeDictionary()
         {
             return Global.BHoMTypeDictionary.ToDictionary(x => x.Key, x => x.Value);

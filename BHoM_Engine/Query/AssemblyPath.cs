@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Return the path of the assembly containing this item")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.IAssemblyPath(System.Object)")]
         public static string IAssemblyPath(this object item)
         {
             return AssemblyPath(item as dynamic);
@@ -47,7 +46,6 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Return the path of the assembly containing this method")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AssemblyPath(System.Reflection.MethodBase)")]
         public static string AssemblyPath(this MethodBase method)
         {
             return method.DeclaringType.Assembly.Location;
@@ -56,7 +54,6 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Return the path of the assembly containing this type")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AssemblyPath(System.Type)")]
         public static string AssemblyPath(this Type type)
         {
             return type.Assembly.Location;
@@ -65,7 +62,6 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Return the path of the assembly containing this type of object")]
-        [PreviousVersion("5.1", "BH.Engine.Reflection.Query.AssemblyPath(System.Object)")]
         public static string AssemblyPath(object item)
         {
             return item.GetType().AssemblyPath();

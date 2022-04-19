@@ -49,7 +49,7 @@ namespace BH.Engine.Results
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Colours a IElement1D type BHoMObject based on the provided result and choosen property. The obejct will be coloured in ranges along the element depending on how the results vary along the element. Linear interpolation will be used to determine the step changes in colour.")]
+        [Description("Colours a IElement1D type BHoMObject based on the provided result and choosen property. The object will be coloured in ranges along the element depending on how the results vary along the element. Linear interpolation will be used to determine the step changes in colour.")]
         [Input("objects", "BHoMObjects to colour. Should be IElement1D type of objects.")]
         [Input("results", "The IElement1DResult to colour by.")]
         [Input("objectIdentifier", "Should either be a string specifying what property on the object that should be used to map the objects to the results, or a type of IAdapterId fragment to be used to extract the object identification, i.e. which fragment type to look for to find the identifier of the object. If no identifier is provided, the object will be scanned an IAdapterId to be used.")]
@@ -80,8 +80,8 @@ namespace BH.Engine.Results
             }
 
             //Get function for extracting property from results
-            Output<string, Func<IResultItem, double>, QuantityAttribute> propName_selector_quantity = results.First().ResultItemValueProperty(displayProperty);
-            Func<IResultItem, double> resultPropertySelector = propName_selector_quantity?.Item2;
+            Output<string, Func<IResult, double>, QuantityAttribute> propName_selector_quantity = results.First().ResultValueProperty(displayProperty, filter);
+            Func<IResult, double> resultPropertySelector = propName_selector_quantity?.Item2;
 
             if (resultPropertySelector == null)
             {
@@ -135,25 +135,7 @@ namespace BH.Engine.Results
 
             List<List<RenderGeometry>> renderGeometries = new List<List<RenderGeometry>>();
 
-            for (int i = 0; i < objectList.Count; i++)
-            {
-                ICurve curve = objectList[i].IGeometry() as ICurve;
-                List<RenderGeometry> resultDisplays = new List<RenderGeometry>();
-
-                foreach (List<IElement1DResult> objRes in GroupResults(mappedResults[i]))
-                {
-                    List<Tuple<double, double, Color>> ranges = GetColourRanges(objRes.OrderBy(x => x.Position).ToList(), resultPropertySelector, scaledMarkers);
-                    foreach (var range in ranges)
-                    {
-                        resultDisplays.Add(new RenderGeometry
-                        {
-                            Geometry = new Line { Start = curve.IPointAtParameter(range.Item1), End = curve.IPointAtParameter(range.Item2) },
-                            Colour = range.Item3
-                        });
-                    }
-                }
-                renderGeometries.Add(resultDisplays);
-            }
+            renderGeometries = objectList.AsParallel().AsOrdered().Zip(mappedResults.AsParallel().AsOrdered(), (obj, res) => ObjectResults(obj, res, resultPropertySelector, scaledMarkers)).ToList();
 
             return new Output<List<List<RenderGeometry>>, GradientOptions>
             {
@@ -163,8 +145,32 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-        private static List<Tuple<double, double, Color>> GetColourRanges(List<IElement1DResult> results, Func<IResultItem, double> selector, List<Tuple<double, Color>> markers)
+        private static List<RenderGeometry> ObjectResults(IBHoMObject obj, List<IElement1DResult> results, Func<IResult, double> resultPropertySelector, List<Tuple<double, Color>> scaledMarkers)
+        {
+            ICurve curve = obj.IGeometry() as ICurve;
+            List<RenderGeometry> resultDisplays = new List<RenderGeometry>();
+
+            foreach (List<IElement1DResult> objRes in GroupResults(results))
+            {
+                List<Tuple<double, double, Color>> ranges = GetColourRanges(objRes.OrderBy(x => x.Position).ToList(), resultPropertySelector, scaledMarkers);
+                foreach (var range in ranges)
+                {
+                    resultDisplays.Add(new RenderGeometry
+                    {
+                        Geometry = new Line { Start = curve.IPointAtParameter(range.Item1), End = curve.IPointAtParameter(range.Item2) },
+                        Colour = range.Item3
+                    });
+                }
+            }
+            return resultDisplays;
+        }
+
+        /***************************************************/
+
+        private static List<Tuple<double, double, Color>> GetColourRanges(List<IElement1DResult> results, Func<IResult, double> selector, List<Tuple<double, Color>> markers)
         {
 
             //Temporary storage of ranges of the element to colour pointing at what colour item that should be used for that range

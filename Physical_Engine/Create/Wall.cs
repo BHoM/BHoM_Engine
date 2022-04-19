@@ -43,22 +43,22 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates physical wall based on given construction, bottom curve and height")]
-        [Input("construction", "Construction of the wall")]
-        [Input("bottomEdge", "Curve representing bottom edge of the wall")]
-        [Input("height", "Wall height")]
-        [Output("wall", "A physical wall")]
+        [Description("Creates physical wall based on given construction, bottom curve and height.")]
+        [Input("construction", "Construction of the wall.")]
+        [Input("bottomEdge", "Curve representing bottom edge of the wall.")]
+        [Input("height", "Wall height.")]
+        [Output("wall", "A physical wall.")]
         public static Wall Wall(IConstruction construction, ICurve bottomEdge, double height)
         {
             if (construction == null || bottomEdge == null || height <= 0)
             {
-                Base.Compute.RecordError("Physical Wall could not be created because some input data are null");
+                Base.Compute.RecordError("Physical Wall could not be created because some input data are null.");
                 return null;
             }
 
             if (Geometry.Query.IIsClosed(bottomEdge))
             {
-                Base.Compute.RecordError("Physical Wall could not be created because bottom edge cannot be closed curve");
+                Base.Compute.RecordError("Physical Wall could not be created because bottom edge cannot be closed curve.");
                 return null;
             }
             
@@ -78,13 +78,13 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
-        [Input("line", "Base line of the wall")]
-        [Input("height", "Height of the wall")]
-        [Input("construction", "Construction representing the thickness and materiality of the Wall")]
-        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall")]
-        [Input("name", "The name of the wall, default empty string")]
-        [Output("Wall", "The created physical Wall")]
+        [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel.")]
+        [Input("line", "Base line of the wall.")]
+        [Input("height", "Height of the wall.")]
+        [Input("construction", "Construction representing the thickness and materiality of the Wall.")]
+        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall.")]
+        [Input("name", "The name of the wall, default empty string.")]
+        [Output("Wall", "The created physical Wall.")]
         public static Wall Wall(Line line, double height, IConstruction construction, Offset offset = Offset.Undefined, string name = "")
         {
             if(line == null)
@@ -114,23 +114,23 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Creates physical wall object")]
-        [Input("construction", "Construction of the wall")]
-        [Input("edges", "External edges of the wall (Profile - planar closed curve)")]
-        [Input("internalEdges", "Internal edges of wall (profile)")]
-        [Output("wall", "A physical wall")]
+        [Description("Creates physical wall object.")]
+        [Input("construction", "Construction of the wall.")]
+        [Input("edges", "External edges of the wall (Profile - planar closed curve).")]
+        [Input("internalEdges", "Internal edges of wall (profile).")]
+        [Output("wall", "A physical wall.")]
         public static Wall Wall(IConstruction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
         {
             if (construction == null || edges == null)
             {
-                Base.Compute.RecordError("Physical Wall could not be created because some input data are null");
+                Base.Compute.RecordError("Physical Wall could not be created because some input data are null.");
                 return null;
             }
 
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges);
             if (aPlanarSurface == null)
             {
-                Base.Compute.RecordError("Physical Wall could not be created because invalid geometry of edges");
+                Base.Compute.RecordError("Physical Wall could not be created because invalid geometry of edges.");
                 return null;
             }
 
@@ -143,13 +143,13 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel")]
-        [Input("location", "Location surface which represents the outer geometry of the Wall. Should not contain any openings")]
-        [Input("construction", "Construction representing the thickness and materiality of the Wall")]
-        [Input("openings", "Openings of the Wall. Could be simple voids or more detailed objects")]
-        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall")]
-        [Input("name", "The name of the wall, default empty string")]
-        [Output("Wall", "The created physical Wall")]
+        [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel.")]
+        [Input("location", "Location surface which represents the outer geometry of the Wall. Should not contain any openings.")]
+        [Input("construction", "Construction representing the thickness and materiality of the Wall.")]
+        [Input("openings", "Openings of the Wall. Could be simple voids or more detailed objects.")]
+        [Input("offset", "Represents the positioning of the construction in relation to the location surface of the Wall.")]
+        [Input("name", "The name of the wall, default empty string.")]
+        [Output("Wall", "The created physical Wall.")]
         public static Wall Wall(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
             openings = openings ?? new List<IOpening>();
@@ -166,10 +166,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Creates physical wall object")]
-        [Input("construction", "Construction of the wall")]
-        [Input("edges", "External edges of the wall (Profile - planar closed curve)")]
-        [Output("wall", "A physical wall")]
+        [Description("Creates physical wall object.")]
+        [Input("construction", "Construction of the wall.")]
+        [Input("edges", "External edges of the wall (Profile - planar closed curve).")]
+        [Output("wall", "A physical wall.")]
         public static Wall Wall(IConstruction construction, ICurve edges)
         {
             return Wall(construction, edges, null);

@@ -38,7 +38,6 @@ namespace BH.Engine.Results
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Results.Query.MapResults(System.Collections.Generic.IEnumerable<BH.oM.Base.IBHoMObject>, System.Collections.Generic.IEnumerable<BH.oM.Analytical.Results.IResult>, System.String, System.Type, System.Collections.Generic.List<System.String>)")]
         [PreviousInputNames("objectIdentifier", "identifier")]
         [PreviousInputNames("resultIdentifier", "whichId")]
         [PreviousInputNames("filter", "caseFilter")]
