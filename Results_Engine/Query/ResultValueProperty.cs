@@ -109,10 +109,24 @@ namespace BH.Engine.Results
                 return null;
 
             Output<string, Func<T, IReadOnlyList<double>>, QuantityAttribute> listFunction = ResultValuePropertyGeneric<T, IReadOnlyList<double>>(result, propertyName);
+
+            //Return function that takes the nth item in the extracted IReadOnlyList<double>
+            Func<T, double> func = x =>
+             {
+                 IReadOnlyList<double> values = listFunction.Item2(x);
+                 if (values.Count > seriesIndex)
+                     return values[seriesIndex];
+                 else
+                 {
+                     Engine.Base.Compute.RecordError($"Provided {nameof(ResultFilter.ResultSeriesIndex)} is larger than the number of results on the provided {nameof(IResultSeries)}. {nameof(double.NaN)} value returned.");
+                     return double.NaN;
+                 }
+ 
+             };
             return new Output<string, Func<T, double>, QuantityAttribute>
             {
                 Item1 = listFunction.Item1,
-                Item2 = x => listFunction.Item2(x)[seriesIndex],    //Return function that takes the nth item in the extracted IReadOnlyList<double>
+                Item2 = func,    
                 Item3 = listFunction.Item3
             };
         }

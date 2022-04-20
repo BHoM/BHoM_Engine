@@ -45,6 +45,9 @@ namespace BH.Engine.Results
             if (results == null || string.IsNullOrWhiteSpace(resultIdentifier))
                 return null;
 
+            if (!results.Any())
+                return Enumerable.Empty<T>().ToLookup(x => default(string));
+
             Func<T, string> resultIdFunction = ResultIdentifier(results.First(), resultIdentifier);
             return results.ToLookup(resultIdFunction);
         }
