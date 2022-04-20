@@ -49,6 +49,12 @@ namespace BH.Engine.Graphics
                 return System.Drawing.Color.Transparent;
             }
 
+            if (double.IsNaN(val))
+            {
+                BH.Engine.Base.Compute.RecordWarning("Trying to query a colour for a NaN value. Transparent colour returned.");
+                return System.Drawing.Color.Transparent;
+            }
+
             // keep val in the domain
             val = val > 1 ? 1 : val < 0 ? 0 : val;
 
@@ -77,6 +83,12 @@ namespace BH.Engine.Graphics
             if (gradient == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the colour of a null gradient.");
+                return System.Drawing.Color.Transparent;
+            }
+
+            if (double.IsNaN(val))
+            {
+                BH.Engine.Base.Compute.RecordWarning("Trying to query a colour for a NaN value. Transparent colour returned.");
                 return System.Drawing.Color.Transparent;
             }
 
