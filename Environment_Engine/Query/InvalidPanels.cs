@@ -57,7 +57,7 @@ namespace BH.Engine.Environment
                     listPanels[0].Add(p);
 
                 //check if panel shade has no adj spaces
-                if ((p.Type == PanelType.Shade || p.Type == PanelType.SolarPanel) && p.ConnectedSpaces.Count != 0)
+                if ((p.Type.IsShade() || p.Type == PanelType.SolarPanel) && p.ConnectedSpaces.Count != 0)
                     listPanels[1].Add(p);
 
                 //check if internal panles got two adj spaces
