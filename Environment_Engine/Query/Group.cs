@@ -60,7 +60,7 @@ namespace BH.Engine.Environment
             List<Panel> curtainWall = panels.Where(x => x.Type == PanelType.CurtainWall).ToList();
             List<Panel> floor = panels.Where(x => x.Type == PanelType.Floor || x.Type == PanelType.FloorExposed || x.Type == PanelType.FloorInternal || x.Type == PanelType.FloorRaised || x.Type == PanelType.SlabOnGrade).ToList();
             List<Panel> roof = panels.Where(x => x.Type == PanelType.Roof).ToList();
-            List<Panel> shade = panels.Where(x => x.Type == PanelType.Shade).ToList();
+            List<Panel> shade = panels.Where(x => x.IsShade()).ToList();
             List<Panel> solarPanel = panels.Where(x => x.Type == PanelType.SolarPanel).ToList();
             List<Panel> undergroundPanel = panels.Where(x => x.Type == PanelType.UndergroundCeiling || x.Type == PanelType.UndergroundSlab || x.Type == PanelType.UndergroundWall).ToList();
             List<Panel> wall = panels.Where(x => x.Type == PanelType.Wall || x.Type == PanelType.WallExternal || x.Type == PanelType.WallInternal).ToList();

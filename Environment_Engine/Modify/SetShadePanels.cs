@@ -42,15 +42,22 @@ namespace BH.Engine.Environment
 
         [Description("Returns the shade panels represented by Environment Panels with no adj spaces and fixes PanelType")]
         [Input("panels", "A collection of Environment Panels")]
+        [Input("panelType", "A panelType enum.")]
         [Output("shadePanels", "BHoM Environment panel representing the shade")]
-        public static List<Panel> SetShadePanels(this List<Panel> panels)
+        public static List<Panel> SetShadePanels(this List<Panel> panels, PanelType panelType = PanelType.Shade)
         {
+            if (!panelType.IsShade())
+            {
+                Base.Compute.RecordError("Provided panel type is not a valid shade type. Please provide a valid shade type to set.");
+                return null;
+            }
+
             //Find the panel(s) without connected spaces and set as shade
             List<Panel> shadePanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
             foreach (Panel panel in shadePanels)
             {
                 if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 0)
-                    panel.Type = PanelType.Shade;
+                    panel.Type = panelType;
             }
 
             return shadePanels;
