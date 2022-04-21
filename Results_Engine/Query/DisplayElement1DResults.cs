@@ -153,7 +153,7 @@ namespace BH.Engine.Results
             ICurve curve = obj.IGeometry() as ICurve;
             List<RenderGeometry> resultDisplays = new List<RenderGeometry>();
 
-            foreach (List<IElement1DResult> objRes in GroupResults(results))
+            foreach (List<IElement1DResult> objRes in results.GroupByScenario())
             {
                 List<Tuple<double, double, Color>> ranges = GetColourRanges(objRes.OrderBy(x => x.Position).ToList(), resultPropertySelector, scaledMarkers);
                 foreach (var range in ranges)
@@ -266,35 +266,5 @@ namespace BH.Engine.Results
         }
 
         /***************************************************/
-
-        private static List<List<T>> GroupResults<T>(this IEnumerable<T> results) where T : IResult
-        {
-            if (results.FirstOrDefault() is ICasedResult)
-            {
-                if (results.FirstOrDefault() is ITimeStepResult)
-                    return results.GroupBy(x => new { ((ICasedResult)x).ResultCase, ((ITimeStepResult)x).TimeStep }).Select(x => x.ToList()).ToList();
-                else
-                    return results.GroupBy(x => ((ICasedResult)x).ResultCase).Select(x => x.ToList()).ToList();
-            }
-            else if (results.FirstOrDefault() is ITimeStepResult)
-                return results.GroupBy(x => ((ITimeStepResult)x).TimeStep).Select(x => x.ToList()).ToList();
-            else
-                return new List<List<T>> { results.ToList() };
-
-        }
-
-        /***************************************************/
-
-        private static dynamic GroupingKey<T>(T result)
-        {
-            dynamic key = new System.Dynamic.ExpandoObject();
-
-            if (result is ICasedResult)
-                key.Case = ((ICasedResult)result).ResultCase;
-            if (result is ITimeStepResult)
-                key.TimeStep = ((ITimeStepResult)result).TimeStep;
-
-            return key;
-        }
     }
 }
