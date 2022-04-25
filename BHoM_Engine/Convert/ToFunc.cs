@@ -134,7 +134,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [Description("Compiles the getter of the PropertyInfo into a Func<object,object> by creating a delegate of the type matching the property type and owning type and casting to obejct. No Type match checking will be done by the function; an exception will be thrown if the function is used with a type that is not compatible with it.")]
+        [Description("Compiles only the getter of the PropertyInfo into a callable `Func<object, object>`. This is a delegate of the getter method, which can be invoked like a property selector by providing an instance of the property owner type. No Type match checking will be done by the function; an exception will be thrown if the Func is used with a type that is not compatible with the PropertyInfo.")]
         public static Func<object, object> ToFunc(this PropertyInfo prop)
         {
             if (prop == null)
