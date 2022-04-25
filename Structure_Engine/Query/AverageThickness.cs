@@ -102,6 +102,18 @@ namespace BH.Engine.Structure
             return 0;
         }
 
+        /***************************************************/
+
+        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [Input("property", "The property to evaluate the average thickness of.")]
+        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
+        public static double AverageThickness(this Layered property)
+        {
+            return property.IsNull() ? 0 : property.Layers.Sum(x => x.Thickness);
+        }
+
+        /***************************************************/
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
