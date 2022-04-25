@@ -109,6 +109,9 @@ namespace BH.Engine.Structure
         [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
         public static double AverageThickness(this Layered property)
         {
+            if (property.Layers.Any(x => x.Material == null))
+                Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. Thickness has been reported including this layer as void space.");
+
             return property.IsNull() ? 0 : property.Layers.Sum(x => x.Thickness);
         }
 
