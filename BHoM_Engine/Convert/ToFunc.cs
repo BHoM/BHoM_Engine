@@ -25,6 +25,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
@@ -127,6 +128,30 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Compiles the property info into a Func<object,object> by creating a delegate of the type matching the property type and owning type and casting to obejct. No Type match checking will be done by the function; an exception will be thrown if the function is used with a type that is not compatible with it.")]
+        public static Func<object, object> ToFunc(this PropertyInfo prop)
+        {
+            var method = typeof(Query)
+                      .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+                      .Single(m => m.Name == nameof(CompileCastProperty) && m.IsGenericMethodDefinition && m.GetParameters().Count() == 1);
+
+            MethodInfo generic = method.MakeGenericMethod(new Type[] { prop.DeclaringType, prop.PropertyType });
+            return (Func<object, object>)generic.Invoke(null, new object[] { prop });
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Creates a delegate of type Func<T,P> that matches that of the provided PropertyInfo. Returns a Func<object,object> that casts the object into a T.")]
+        private static Func<object, object> CompileCastProperty<T, P>(PropertyInfo prop)
+        {
+            Func<T, P> func = (Func<T, P>)Delegate.CreateDelegate(typeof(Func<T, P>), prop.GetGetMethod());
+            return x => func((T)x);
+        }
+
+        /***************************************************/
+
         // Adds support for ByRef types like `System.Double&`
         private static Type GetTypeIfRef(this Type t)
         {
@@ -135,6 +160,8 @@ namespace BH.Engine.Base
 
             return t;
         }
+
+        /***************************************************/
     }
 }
 
