@@ -75,6 +75,17 @@ namespace BH.Engine.Structure
             return 0;
         }
 
+        /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this Layered property)
+        {
+            return property.IsNull() ? 0 : property.Layers.Sum(x => x.Thickness);
+        }
+
+        /***************************************************/
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
