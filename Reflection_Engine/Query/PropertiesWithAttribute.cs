@@ -49,9 +49,10 @@ namespace BH.Engine.Reflection
                 Engine.Base.Compute.RecordError("Cannot extract properties using a null type or null attributeType.");
                 return new List<PropertyInfo>();
             }
+            
             if (!typeof(Attribute).IsAssignableFrom(attributeType))
             {
-                Engine.Base.Compute.RecordError("attributeType need to be a type of attribute.");
+                Engine.Base.Compute.RecordError($"{nameof(attributeType)} needs to be of type {typeof(Attribute).FullName}.");
                 return new List<PropertyInfo>();
             }
 
@@ -61,6 +62,7 @@ namespace BH.Engine.Reflection
             {
                 attributeProperties.AddRange(PropertiesWithAttribute(type.BaseType, attributeType, true, false));   //Only require interfaces to be checked on top level object
             }
+            
             if (checkInterfaces)
             {
                 foreach (Type interfaceType in type.GetInterfaces())
