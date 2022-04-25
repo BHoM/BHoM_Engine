@@ -35,6 +35,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Converts the provided MethodBase into a compiled Func.")]
         public static Func<object[], object> ToFunc(this MethodBase method)
         {
             if (method is MethodInfo)
@@ -46,6 +47,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Converts the provided MethodInfo into a compiled Func by creation and compilation of the expression tree corresponding to the method. Methods returning void will return a boolean value, always true.")]
         public static Func<object[], object> ToFunc(this MethodInfo method)
         {
             if(method == null)
@@ -91,6 +93,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Converts the provided ConstructorInfo into a compiled Func by creation and compilation of the expression tree corresponding to the method.")]
         public static Func<object[], object> ToFunc(this ConstructorInfo ctor)
         {
             if(ctor == null)
@@ -107,6 +110,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Converts the Action into a Func that calls the Action and returns true.")]
         public static Func<object[], object> ToFunc(this Action<object[]> act)
         {
             return inputs => { act(inputs); return true; };
@@ -114,6 +118,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Converts the provided Func into a new Func where the inputs have been simplified into a single array.")]
         public static Func<object[], object> ToFunc(this Func<object, object[], object> func)
         {
             return inputs => { return func(inputs[0], inputs.Skip(1).ToArray()); };
@@ -121,6 +126,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Converts the provided Action into a  Func where the inputs have been simplified into a single array. Function will call the Action and return true.")]
         public static Func<object[], object> ToFunc(this Action<object, object[]> act)
         {
             return inputs => { act(inputs[0], inputs.Skip(1).ToArray()); return true; };
@@ -131,6 +137,9 @@ namespace BH.Engine.Base
         [Description("Compiles the property info into a Func<object,object> by creating a delegate of the type matching the property type and owning type and casting to obejct. No Type match checking will be done by the function; an exception will be thrown if the function is used with a type that is not compatible with it.")]
         public static Func<object, object> ToFunc(this PropertyInfo prop)
         {
+            if (prop == null)
+                return null;
+
             var method = typeof(Query)
                       .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
                       .Single(m => m.Name == nameof(CompileCastProperty) && m.IsGenericMethodDefinition && m.GetParameters().Count() == 1);
