@@ -156,7 +156,7 @@ namespace BH.Engine.Results
 
         /***************************************************/
 
-        [Description("Creates a delagate of type Func<T,P> that matches that of the provided propertyinfo. Returns a Func<obejct,object> that casts the object into a T.")]
+        [Description("Creates a delegate of type Func<T,P> that matches that of the provided PropertyInfo. Returns a Func<object,object> that casts the object into a T.")]
         private static Func<object, object> CompileCastProperty<T, P>(PropertyInfo prop)
         {
             Func<T, P> func = (Func<T, P>)Delegate.CreateDelegate(typeof(Func<T, P>), prop.GetGetMethod());
