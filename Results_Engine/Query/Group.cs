@@ -79,7 +79,7 @@ namespace BH.Engine.Results
             if (results == null || !results.Any())
                 return new List<List<T>>();
 
-            return GroupByMultipleSelectors(results, IdentifierFunctions(results.First().GetType(), typeof(ScenarioIdentifierAttribute)));
+            return GroupByMultipleSelectors(results, IdentifierGetters(results.First().GetType(), typeof(ScenarioIdentifierAttribute)));
         }
 
         /***************************************************/
@@ -92,7 +92,7 @@ namespace BH.Engine.Results
             if (results == null || !results.Any())
                 return new List<List<T>>();
 
-            return GroupByMultipleSelectors(results, IdentifierFunctions(results.First().GetType(), typeof(ObjectIdentifierAttribute)));
+            return GroupByMultipleSelectors(results, IdentifierGetters(results.First().GetType(), typeof(ObjectIdentifierAttribute)));
         }
 
         /***************************************************/
@@ -105,7 +105,7 @@ namespace BH.Engine.Results
             if (results == null || !results.Any())
                 return new List<List<T>>();
 
-            return GroupByMultipleSelectors(results, IdentifierFunctions(results.First().GetType(), typeof(IdentifierAttribute)));
+            return GroupByMultipleSelectors(results, IdentifierGetters(results.First().GetType(), typeof(IdentifierAttribute)));
         }
 
         /***************************************************/
@@ -125,7 +125,7 @@ namespace BH.Engine.Results
         /***************************************************/
 
         [Description("Gets a list of compiled selectors corresponding to all properties with the attribute type on the type. Allows the attribute type to be defined on an interface of the object type.")]
-        private static List<Func<object, object>> IdentifierFunctions(Type type, Type attributeType)
+        private static List<Func<object, object>> IdentifierGetters(Type type, Type attributeType)
         {
             Tuple<Type, Type> key = new Tuple<Type, Type>(type, attributeType);
             List<Func<object, object>> funcs;
@@ -141,27 +141,7 @@ namespace BH.Engine.Results
             return funcs;
         }
 
-        /***************************************************/
 
-        [Description("Compiles the property info into a Func<object,object>.")]
-        private static Func<object, object> ToFunc(this PropertyInfo prop)
-        {
-            var method = typeof(Query)
-                      .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
-                      .Single(m => m.Name == nameof(CompileCastProperty) && m.IsGenericMethodDefinition && m.GetParameters().Count() == 1);
-
-            MethodInfo generic = method.MakeGenericMethod(new Type[] { prop.DeclaringType, prop.PropertyType });
-            return (Func<object, object>)generic.Invoke(null, new object[] { prop });
-        }
-
-        /***************************************************/
-
-        [Description("Creates a delegate of type Func<T,P> that matches that of the provided PropertyInfo. Returns a Func<object,object> that casts the object into a T.")]
-        private static Func<object, object> CompileCastProperty<T, P>(PropertyInfo prop)
-        {
-            Func<T, P> func = (Func<T, P>)Delegate.CreateDelegate(typeof(Func<T, P>), prop.GetGetMethod());
-            return x => func((T)x);
-        }
 
         /***************************************************/
         /**** Private Fields                            ****/
