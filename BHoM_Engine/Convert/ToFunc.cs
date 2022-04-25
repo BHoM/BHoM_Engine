@@ -140,7 +140,7 @@ namespace BH.Engine.Base
             if (prop == null)
                 return null;
 
-            var method = typeof(Query)
+            var method = typeof(Convert)
                       .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
                       .Single(m => m.Name == nameof(CompileCastProperty) && m.IsGenericMethodDefinition && m.GetParameters().Count() == 1);
 
