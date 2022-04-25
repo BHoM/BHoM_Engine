@@ -60,6 +60,20 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the mass per area for the property as its thickness mutiplied by the density.")]
+        [Input("property", "The Layered property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this Layered property)
+        {
+            double density = 0;
+            foreach (Layer layer in property.Layers)
+                density += layer == null ? 0 : layer.Thickness * layer.Material.Density;
+
+            return density;
+        }
+
+        /***************************************************/
+
         [NotImplemented]
         [Description("Gets the mass per area for a LoadingPanelProperty. This will always return 0.")]
         [Input("loadingPanelProperty", "The LoadingPanelProperty property to calculate the mass per area for.")]
