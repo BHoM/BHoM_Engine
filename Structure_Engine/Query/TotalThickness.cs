@@ -82,9 +82,13 @@ namespace BH.Engine.Structure
         [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
         public static double TotalThickness(this Layered property)
         {
+            if (property.IsNull())
+                return 0;
+
             if (property.Layers.Any(x => x.Material == null))
                 Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. Thickness has been reported including this layer as void space.");
-            return property.IsNull() ? 0 : property.Layers.Sum(x => x.Thickness);
+
+            return property.Layers.Sum(x => x.Thickness);
         }
 
         /***************************************************/
