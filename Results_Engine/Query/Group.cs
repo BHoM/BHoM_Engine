@@ -113,11 +113,11 @@ namespace BH.Engine.Results
         /***************************************************/
 
         [Description("Groups by multiple selectors by contiously grouping by each provided selector.")]
-        private static List<List<T>> GroupByMultipleSelectors<T>(this IEnumerable<T> results, IEnumerable<Func<object, object>> funcs)
+        private static List<List<T>> GroupByMultipleSelectors<T>(this IEnumerable<T> results, IEnumerable<Func<object, object>> selectors)
         {
             IEnumerable<IEnumerable<T>> listGroup = new List<IEnumerable<T>>() { results };
-            foreach (var func in funcs)
-                listGroup = listGroup.Select(x => x.GroupBy(y => func(y))).SelectMany(x => x);
+            foreach (var selector in selectors)
+                listGroup = listGroup.Select(x => x.GroupBy(y => selector(y))).SelectMany(x => x);
 
             return listGroup.Select(x => x.ToList()).ToList();
         }
