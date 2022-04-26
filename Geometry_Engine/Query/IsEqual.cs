@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
 
         public static bool IsEqual(this Point pt, Point other, double tolerance = Tolerance.Distance)
         {
-            return pt.Distance(other) < tolerance;
+            return pt.SquareDistance(other) < tolerance * tolerance;
         }
 
         /***************************************************/
