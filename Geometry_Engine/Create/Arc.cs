@@ -122,7 +122,7 @@ namespace BH.Engine.Geometry
         public static Arc RandomArc(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomArc(rnd, box);
         }
@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
         public static Arc RandomArc(Point from, int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomArc(from, rnd, box);
         }
@@ -193,13 +193,24 @@ namespace BH.Engine.Geometry
 
         }
 
+        /***************************************************/
+        /**** Private Method                            ****/
+        /***************************************************/
+
+        private static int NextSeed()
+        {
+            lock (m_randomLock)
+            {
+                return m_Random.Next();
+            }
+        }
 
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
         private static Random m_Random = new Random();
-        
+        private static object m_randomLock = new object();
         /***************************************************/
     }
 }

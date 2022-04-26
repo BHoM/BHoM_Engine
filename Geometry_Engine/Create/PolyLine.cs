@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
         public static Polyline RandomPolyline(int seed = -1, BoundingBox box = null, int minNbCPs = 3, int maxNbCPs = 20)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomPolyline(rnd, box, minNbCPs, maxNbCPs);
         }
@@ -81,7 +81,7 @@ namespace BH.Engine.Geometry
         public static Polyline RandomPolyline(Point from, int seed = -1, BoundingBox box = null, int minNbCPs = 3, int maxNbCPs = 20)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomPolyline(from, rnd, box, minNbCPs, maxNbCPs);
         }

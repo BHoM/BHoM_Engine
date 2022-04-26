@@ -34,7 +34,7 @@ namespace BH.Engine.Geometry
         public static ICurve RandomCurve(int seed = -1, BoundingBox box = null, bool closed = false)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomCurve(rnd, box, closed);
         }
@@ -64,7 +64,7 @@ namespace BH.Engine.Geometry
         public static ICurve RandomCurve(Point from, int seed = -1, BoundingBox box = null, bool closed = false)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomCurve(from, rnd, box, closed);
         }

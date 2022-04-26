@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
         public static PolyCurve RandomPolyCurve(int seed = -1, BoundingBox box = null, int minNbCurves = 2, int maxNbCurves = 10)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomPolyCurve(rnd, box, minNbCurves, maxNbCurves);
         }

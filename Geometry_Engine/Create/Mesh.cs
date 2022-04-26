@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
         public static Mesh RandomMesh(int seed = -1, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomMesh(rnd, box, minNbCPs, maxNbCPs);
         }
