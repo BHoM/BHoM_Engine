@@ -252,6 +252,9 @@ namespace BH.Engine.Geometry
                 onCurvePoints.RemoveAt(0);
             }
 
+            bool isClosed = curve.IIsClosed(tolerance);
+            bool isClockwise = curve.IIsClockwise(curve.INormal(), tolerance);
+
             while (i <= onCurvePoints.Count)
             {
                 List<ICurve> subResultList = new List<ICurve>();
@@ -261,12 +264,12 @@ namespace BH.Engine.Geometry
                     subResultList.Add(tmpResult[j]);
                     if (i < onCurvePoints.Count)
                     {
-                        if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IStartPoint().IsEqual(onCurvePoints[i])))
+                        if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]) || (isClosed && !isClockwise && tmpResult[j].IStartPoint().IsEqual(onCurvePoints[i])))
                         {
                             j++;
                             break;
                         }
-                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IEndPoint().IsEqual(curve.StartPoint())))
+                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()) || (isClosed && !isClockwise && tmpResult[j].IEndPoint().IsEqual(curve.StartPoint())))
                         {
                             j++;
                             break;
