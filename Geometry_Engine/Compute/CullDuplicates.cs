@@ -35,6 +35,17 @@ namespace BH.Engine.Geometry
 
         public static List<Point> CullDuplicates(this List<Point> points, double maxDist = Tolerance.Distance)
         {
+            int count = points.Count;
+
+            if (count <= 1)
+                return points;
+            if (count == 2)
+            {
+                if (points[0].SquareDistance(points[1]) < maxDist * maxDist)
+                    return new List<Point> { (points[0] + points[1]) / 2 };
+                else
+                    return points;
+            }
             List<List<Point>> clusteredPoints = points.PointClustersDBSCAN(maxDist);
             return clusteredPoints.Select(x => x.Average()).ToList();
         }
