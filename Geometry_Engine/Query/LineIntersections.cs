@@ -39,12 +39,7 @@ namespace BH.Engine.Geometry
         {
             double sqTol = tolerance * tolerance;
 
-            Line l1 = line1.DeepClone();
-            Line l2 = line2.DeepClone();
-            l1.Infinite |= useInfiniteLines;
-            l2.Infinite |= useInfiniteLines;
-            BH.oM.Base.Output<double, double> intParamsOutput = l1.SkewLineProximity(l2, angleTolerance);
-
+            BH.oM.Base.Output<double, double> intParamsOutput = line1.SkewLineProximity(line2, angleTolerance);
             if (intParamsOutput == null)
                 return null;
             else
@@ -53,15 +48,17 @@ namespace BH.Engine.Geometry
                 double t1 = intParams[0];
                 double t2 = intParams[1];
                 
-                Point intPt1 = l1.Start + t1 * (l1.End - l1.Start);
-                Point intPt2 = l2.Start + t2 * (l2.End - l2.Start);
+                Point intPt1 = line1.Start + t1 * (line1.End - line1.Start);
+                Point intPt2 = line2.Start + t2 * (line2.End - line2.Start);
 
                 if (intPt1.SquareDistance(intPt2) <= sqTol)
                 {
+                    bool line1Infinite = line1.Infinite || useInfiniteLines;
+                    bool line2Infinte = line2.Infinite || useInfiniteLines;
                     Point intPt = (intPt1 + intPt2) * 0.5;
-                    if (!l1.Infinite && ((t1 < 0 && l1.Start.SquareDistance(intPt) > sqTol) || (t1 > 1 && l1.End.SquareDistance(intPt) > sqTol)))
+                    if (!line1Infinite && ((t1 < 0 && line1.Start.SquareDistance(intPt) > sqTol) || (t1 > 1 && line1.End.SquareDistance(intPt) > sqTol)))
                         return null;
-                    if (!l2.Infinite && ((t2 < 0 && l2.Start.SquareDistance(intPt) > sqTol) || (t2 > 1 && l2.End.SquareDistance(intPt) > sqTol)))
+                    if (!line2Infinte && ((t2 < 0 && line2.Start.SquareDistance(intPt) > sqTol) || (t2 > 1 && line2.End.SquareDistance(intPt) > sqTol)))
                         return null;
 
                     return intPt;
