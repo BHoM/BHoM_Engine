@@ -63,7 +63,7 @@ namespace BH.Engine.Geometry
         public static Vector RandomVector(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomVector(rnd, box);
         }
@@ -90,7 +90,7 @@ namespace BH.Engine.Geometry
         public static Vector RandomVectorInPlane(Plane plane, bool normalise = false, int seed = -1)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomVectorInPlane(plane, rnd, normalise);
         }

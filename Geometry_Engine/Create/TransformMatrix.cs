@@ -151,7 +151,7 @@ namespace BH.Engine.Geometry
         public static TransformMatrix RandomMatrix(int seed = -1, double minVal = -1, double maxVal = 1)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomMatrix(rnd, minVal, maxVal);
         }

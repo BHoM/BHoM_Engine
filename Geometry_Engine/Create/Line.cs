@@ -60,7 +60,7 @@ namespace BH.Engine.Geometry
         public static Line RandomLine(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomLine(rnd, box);
         }
@@ -81,7 +81,7 @@ namespace BH.Engine.Geometry
         public static Line RandomLine(Point from, int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomLine(from, rnd, box);
         }

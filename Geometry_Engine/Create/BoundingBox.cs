@@ -75,7 +75,7 @@ namespace BH.Engine.Geometry
         public static BoundingBox RandomBoundingBox(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomBoundingBox(rnd, box);
         }

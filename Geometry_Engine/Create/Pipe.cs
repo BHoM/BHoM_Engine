@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
         public static Pipe RandomPipe(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextSeed();
             Random rnd = new Random(seed);
             return RandomPipe(rnd, box);
         }
