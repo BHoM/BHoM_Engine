@@ -59,7 +59,6 @@ namespace BH.Engine.Geometry
 
             return new BoundingBox { Min = new Point { X = minX, Y = minY, Z = minZ }, Max = new Point { X = maxX, Y = maxY, Z = maxZ } };
         }
-        
 
         /***************************************************/
         /****          public Methods - Lines           ****/
@@ -378,19 +377,21 @@ namespace BH.Engine.Geometry
         /***          Private methods                    ***/
         /***************************************************/
 
-        private static Boolean IsSimilarSegment(this ICurve curve, ICurve refCurve, double tolerance = Tolerance.Distance)
+        private static bool IsSimilarSegment(this ICurve curve, ICurve refCurve, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;
             Point sp = curve.IStartPoint();
             Point rsp = refCurve.IStartPoint();
-            Point mp = curve.IPointAtParameter(0.5);
-            Point rmp = refCurve.IPointAtParameter(0.5);
             Point ep = curve.IEndPoint();
             Point rep = refCurve.IEndPoint();
-
-            return mp.SquareDistance(rmp) <= sqTol && 
-                   ((sp.SquareDistance(rsp) <= sqTol && ep.SquareDistance(rep) <= sqTol) ||
-                   (sp.SquareDistance(rep) <= sqTol && ep.SquareDistance(rsp) <= sqTol));
+            if ((sp.SquareDistance(rsp) <= sqTol && ep.SquareDistance(rep) <= sqTol) ||
+                   (sp.SquareDistance(rep) <= sqTol && ep.SquareDistance(rsp) <= sqTol))
+            {
+                Point mp = curve.IPointAtParameter(0.5);
+                Point rmp = refCurve.IPointAtParameter(0.5);
+                return mp.SquareDistance(rmp) <= sqTol;
+            }
+            return false;
         }
 
         /***************************************************/      
