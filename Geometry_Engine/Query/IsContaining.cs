@@ -83,14 +83,14 @@ namespace BH.Engine.Geometry
             if (pts.Count == 0)
                 return false;
 
-            bool flag = true;
-            foreach (Point pt in pts)
-                if (!box.IsContaining(pt, acceptOnEdge, tolerance))
-                {
-                    flag = false;
-                }
 
-            return flag;
+            foreach (Point pt in pts)
+            {
+                if (!box.IsContaining(pt, acceptOnEdge, tolerance))
+                    return false;
+            }
+
+            return true;
         }
 
         /***************************************************/
@@ -137,10 +137,13 @@ namespace BH.Engine.Geometry
         public static bool IsContaining(this Polyline curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             // Todo:
-            // check boundingBox/proximity at the beginning!
             // project to 2D & rewrite methods to 2D to improve performance
             // - to be replaced with a general method for a nurbs curve?
             // - could be done with a ray instead of an infinite line!
+
+            BoundingBox box = curve.Bounds();
+            if (points.Any(x => !box.IsContaining(x, true, tolerance)))
+                return false;
 
             if (curve.IsClosed(tolerance))
             {
