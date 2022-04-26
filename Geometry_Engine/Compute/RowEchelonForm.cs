@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
         {
             // Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
 
-            double[,] matrix = (double[,])imatrix.DeepClone();
+            double[,] matrix = (double[,])imatrix.Clone();
             int lead = 0, rowCount = matrix.GetLength(0), columnCount = matrix.GetLength(1);
 
             for (int r = 0; r < rowCount; r++)
