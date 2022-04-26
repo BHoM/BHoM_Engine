@@ -70,19 +70,23 @@ namespace BH.Engine.Geometry
             if (curves.Count < 2)
                 return false;
 
+            List<BoundingBox> boxes = curves.Select(x => x.Bounds()).ToList();
             bool closed = curve.IsClosed();
             for (int i = 0; i < curves.Count - 1; i++)
             {
                 for (int j = i + 1; j < curves.Count; j++)
                 {
-                    foreach (Point intPt in curves[i].LineIntersections(curves[j]))
+                    if (boxes[i].IsInRange(boxes[j]))
                     {
-                        if (j == i + 1 && intPt.SquareDistance(curves[i].End) <= tolerance && intPt.SquareDistance(curves[j].Start) <= tolerance)
-                            continue;
-                        else if (closed && i == 0 && j == curves.Count - 1 && intPt.SquareDistance(curves[i].Start) <= tolerance && intPt.SquareDistance(curves[j].End) <= tolerance)
-                            continue;
-                        else
-                            return true;
+                        foreach (Point intPt in curves[i].LineIntersections(curves[j]))
+                        {
+                            if (j == i + 1 && intPt.SquareDistance(curves[i].End) <= tolerance && intPt.SquareDistance(curves[j].Start) <= tolerance)
+                                continue;
+                            else if (closed && i == 0 && j == curves.Count - 1 && intPt.SquareDistance(curves[i].Start) <= tolerance && intPt.SquareDistance(curves[j].End) <= tolerance)
+                                continue;
+                            else
+                                return true;
+                        }
                     }
                 }
             }
@@ -101,20 +105,24 @@ namespace BH.Engine.Geometry
             if (curves.Count == 1)
                 return curves[0].IIsSelfIntersecting(tolerance);
 
+            List<BoundingBox> boxes = curves.Select(x => x.IBounds()).ToList();
             bool closed = curve.IsClosed();
             double sqTolerance = tolerance * tolerance;
             for (int i = 0; i < curves.Count - 1; i++)
             {
                 for (int j = i + 1; j < curves.Count; j++)
                 {
-                    foreach (Point intPt in curves[i].ICurveIntersections(curves[j], tolerance))
+                    if (boxes[i].IsInRange(boxes[j]))
                     {
-                        if (j == i + 1 && intPt.SquareDistance(curves[i].IEndPoint()) <= tolerance && intPt.SquareDistance(curves[j].IStartPoint()) <= tolerance)
-                            continue;
-                        else if (closed && i == 0 && j == curves.Count - 1 && intPt.SquareDistance(curves[i].IStartPoint()) <= tolerance && intPt.SquareDistance(curves[j].IEndPoint()) <= tolerance)
-                            continue;
-                        else
-                            return true;
+                        foreach (Point intPt in curves[i].ICurveIntersections(curves[j], tolerance))
+                        {
+                            if (j == i + 1 && intPt.SquareDistance(curves[i].IEndPoint()) <= tolerance && intPt.SquareDistance(curves[j].IStartPoint()) <= tolerance)
+                                continue;
+                            else if (closed && i == 0 && j == curves.Count - 1 && intPt.SquareDistance(curves[i].IStartPoint()) <= tolerance && intPt.SquareDistance(curves[j].IEndPoint()) <= tolerance)
+                                continue;
+                            else
+                                return true;
+                        }
                     }
                 }
             }

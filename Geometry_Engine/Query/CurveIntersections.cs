@@ -201,11 +201,19 @@ namespace BH.Engine.Geometry
         public static List<Point> ICurveIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
             List<Point> result = new List<Point>();
-            foreach (ICurve c1 in curve1.ISubParts())
+            List<ICurve> subCurves1 = curve1.ISubParts().ToList();
+            List<ICurve> subCurves2 = curve2.ISubParts().ToList();
+            List<BoundingBox> boxes1 = subCurves1.Select(x => x.IBounds()).ToList();
+            List<BoundingBox> boxes2 = subCurves2.Select(x => x.IBounds()).ToList();
+
+            for (int i = 0; i < subCurves1.Count; i++)
             {
-                foreach (ICurve c2 in curve2.ISubParts())
+                for (int j = 0; j < subCurves2.Count; j++)
                 {
-                    result.AddRange(CurveIntersections(c1 as dynamic, c2 as dynamic, tolerance));
+                    if (boxes1[i].IsInRange(boxes2[j], tolerance))
+                    {
+                        result.AddRange(CurveIntersections(subCurves1[i] as dynamic, subCurves2[j] as dynamic, tolerance));
+                    }
                 }
             }
             return result.CullDuplicates(tolerance);
