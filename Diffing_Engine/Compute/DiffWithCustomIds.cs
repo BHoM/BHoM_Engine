@@ -263,7 +263,7 @@ namespace BH.Engine.Diffing
                         $"\nThis can also happen if the input objects come from models that were completely re-created between revisions (i.e. their IDs are completely different). In this latter case, the Diffing worked successfully but you may want to use a different ID.");
             }
 
-            if (followingObjectsIds.Intersect(pastObjectsIds).Any() && diffingConfig.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
+            if (followingObjectsIds.Intersect(pastObjectsIds).Any() && diffingConfig.ComparisonConfig?.PropertiesToConsider?.Any() == true && !modifiedObjs.Any())
             {
                 // If no modified object was found and some PropertiesToConsider was specified,
                 // add a Note to remind the user that if no differences were found it's probably because of that.
