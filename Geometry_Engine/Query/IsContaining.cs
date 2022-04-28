@@ -174,14 +174,14 @@ namespace BH.Engine.Geometry
                         Point pPt = pt.Project(p);
                         if (pPt.SquareDistance(pt) <= sqTol)
                         {
-                            Point end = p.Origin.DeepClone();
+                            Point end = p.Origin;
                             Vector direction = (end - pPt).Normalise();
                             while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
                             {
-                                end = p.Origin.Translate(Create.RandomVectorInPlane(p, true));
-                                direction = (end - pPt).Normalise();
+                                direction = Create.RandomVectorInPlane(p, true);
                             }
 
+                            end = pPt.Translate(direction);
                             Line ray = new Line { Start = pPt, End = end };
                             ray.Infinite = true;
                             List<Point> intersects = new List<Point>();
@@ -295,14 +295,14 @@ namespace BH.Engine.Geometry
                 if (pPt.SquareDistance(pt) > sqTol) // not on the same plane
                     return false;
 
-                Point end = p.Origin.DeepClone();   // Avrage of control points
+                Point end = p.Origin;  // Avrage of control points
                 Vector direction = (end - pPt).Normalise();     // Gets a line cutting through the curves and the point
                 while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle)) // not zeroa or parallel to edges
                 {
-                    end = p.Origin.Translate(Create.RandomVectorInPlane(p, true));
-                    direction = (end - pPt).Normalise();
+                    direction = Create.RandomVectorInPlane(p, true);
                 }
 
+                end = pPt.Translate(direction);
                 Line ray = new Line { Start = pPt, End = end };
                 ray.Infinite = true;
                 List<Point> intersects = new List<Point>();
