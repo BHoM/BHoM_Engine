@@ -23,6 +23,9 @@
 using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -32,6 +35,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a Line based on its origin and normal vector.")]
+        [InputFromProperty("origin")]
+        [InputFromProperty("normal")]
+        [Output("plane", "The created Plane.")]
         public static Plane Plane(Point origin, Vector normal)
         {
             return new Plane { Origin = origin, Normal = normal };
@@ -39,6 +46,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a Plane passing through the three points. Orgin of the plane will be set to the first point.")]
+        [Input("p1", "First point that the plane pass through. Will be used as the origin of the created plane.")]
+        [Input("p2", "Second point that the plane pass through.")]
+        [Input("p3", "Third point that the plane pass through.")]
+        [Output("plane", "The created Plane.")]
         public static Plane Plane(Point p1, Point p2, Point p3)
         {
             Vector normal = Query.CrossProduct(p2 - p1, p3 - p1).Normalise();
@@ -50,6 +62,10 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random Line based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The origin created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("plane", "The generated random Line.")]
         public static Plane RandomPlane(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
@@ -60,6 +76,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Plane using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The origin created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("plane", "The generated random Plane.")]
         public static Plane RandomPlane(Random rnd, BoundingBox box = null)
         {
             return new Plane

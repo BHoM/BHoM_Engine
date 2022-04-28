@@ -22,6 +22,9 @@
 
 using BH.oM.Geometry;
 using System;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -31,6 +34,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a Extrusion based on its core properties.")]
+        [InputFromProperty("curve")]
+        [InputFromProperty("direction")]
+        [InputFromProperty("capped")]
+        [Output("extrusion", "The created Extrusion.")]
         public static Extrusion Extrusion(ICurve curve, Vector direction, bool capped = true)
         {
             return new Extrusion
@@ -46,6 +54,10 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random Extrusion based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("extrusion", "The generated random Extrusion.")]
         public static Extrusion RandomExtrusion(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
@@ -56,6 +68,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Extrusion using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("extrusion", "The generated random Extrusion.")]
         public static Extrusion RandomExtrusion(Random rnd, BoundingBox box = null)
         {
             if (box == null)
