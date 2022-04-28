@@ -71,8 +71,8 @@ namespace BH.Engine.Diffing
             int globalSignificantFigures = int.MaxValue)
         {
             // Check if we specified CustomTolerances and if this difference is a number difference.
-            if (globalNumericTolerance != double.MinValue || globalSignificantFigures != int.MaxValue
-                || (namedNumericTolerances?.Any() ?? false) || (namedSignificantFigures?.Any() ?? false)
+            if ((globalNumericTolerance != double.MinValue || globalSignificantFigures != int.MaxValue
+                || (namedNumericTolerances?.Any() ?? false) || (namedSignificantFigures?.Any() ?? false))
                 && (number1?.GetType().IsNumeric() ?? false) && (number2?.GetType().IsNumeric() ?? false)) // GetType() is slow; call only after checking that any custom tolerance is present.
             {
                 // We have specified some custom tolerance in the ComparisonConfig AND this property difference is numeric.
