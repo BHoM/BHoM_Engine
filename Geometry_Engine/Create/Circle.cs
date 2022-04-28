@@ -23,6 +23,9 @@
 using BH.oM.Geometry;
 using System;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -32,6 +35,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a Circle aligned with the XY plane based on its core properties.")]
+        [InputFromProperty("centre")]
+        [InputFromProperty("radius")]
+        [Output("circle", "The created Circle.")]
         public static Circle Circle(Point centre, double radius = 0)
         {
             return new Circle
@@ -43,6 +50,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Create a Circle based on its core properties.")]
+        [InputFromProperty("centre")]
+        [InputFromProperty("normal")]
+        [InputFromProperty("radius")]
+        [Output("circle", "The created Circle.")]
         public static Circle Circle(Point centre, Vector normal, double radius = 0)
         {
             return new Circle
@@ -52,9 +64,15 @@ namespace BH.Engine.Geometry
                 Radius = radius
             };
         }
-        
+
         /***************************************************/
 
+        [Description("Create a Circle that is passing through the three provided points.")]
+        [Input("pt1", "First point on the circle.")]
+        [Input("pt2", "Second point on the circle.")]
+        [Input("pt3", "Third point on the circle.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("circle", "The created Circle.")]
         public static Circle Circle(Point pt1, Point pt2, Point pt3, double tolerance = Tolerance.Distance)
         {
             Vector v1 = pt1 - pt3;
@@ -76,6 +94,10 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random Circle based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("circle", "The generated random Circle.")]
         public static Circle RandomCircle(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
@@ -86,6 +108,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Circle using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("circle", "The generated random Circle.")]
         public static Circle RandomCircle(Random rnd, BoundingBox box = null)
         {
             if (box == null)

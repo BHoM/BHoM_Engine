@@ -24,6 +24,9 @@ using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +36,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a PolyCurve based on a collection of curves. Note that there is no requirement of a BHoM polycurve to be contructed of joined segments.")]
+        [InputFromProperty("curves")]
+        [Output("pCurve", "The created PolyCurve.")]
         public static PolyCurve PolyCurve(IEnumerable<ICurve> curves)
         {
             return new PolyCurve { Curves = curves.ToList() };
@@ -43,6 +49,12 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random PolyCurve based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("minNbCurves", "Minimun number of curves in the random PolyCurve.")]
+        [Input("maxNbCurves", "Maximum number of curves in the random PolyCurve.")]
+        [Output("pCurve", "The generated random PolyCurve.")]
         public static PolyCurve RandomPolyCurve(int seed = -1, BoundingBox box = null, int minNbCurves = 2, int maxNbCurves = 10)
         {
             if (seed == -1)
@@ -53,6 +65,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random PolyCurve using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("minNbCurves", "Minimun number of curves in the random PolyCurve.")]
+        [Input("maxNbCurves", "Maximum number of curves in the random PolyCurve.")]
+        [Output("pCurve", "The generated random PolyCurve.")]
         public static PolyCurve RandomPolyCurve(Random rnd, BoundingBox box = null, int minNbCurves = 2, int maxNbCurves = 10)
         {
             List<ICurve> curves = new List<ICurve>();

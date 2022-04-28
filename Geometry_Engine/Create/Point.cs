@@ -23,6 +23,9 @@
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -32,6 +35,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a Point based on its coordinates.")]
+        [InputFromProperty("x")]
+        [InputFromProperty("y")]
+        [InputFromProperty("z")]
+        [Output("point", "The created Point.")]
         public static Point Point(double x = 0, double y = 0, double z = 0)
         {
             return new Point { X = x, Y = y, Z = z };
@@ -39,43 +47,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a Point from a Vector, assuming the vector is a Position vector from the global origin.")]
+        [Input("v", "The position vector to create a point to create a point based on.")]
+        [Output("point", "The created Point.")]
         public static Point Point(Vector v)
         {
             return new Point { X = v.X, Y = v.Y, Z = v.Z };
         }
 
-
-        /***************************************************/
-        /**** Random Geometry                           ****/
         /***************************************************/
 
-        public static Point RandomPoint(int seed = -1, BoundingBox box = null)
-        {
-            if (seed == -1)
-                seed = NextSeed();
-            Random rnd = new Random(seed);
-            return RandomPoint(new Random(seed), box);
-        }
-
-        /***************************************************/
-
-        public static Point RandomPoint(Random rnd, BoundingBox box = null)
-        {
-            if (box != null)
-            {
-                return new Point
-                {
-                    X = box.Min.X + rnd.NextDouble() * (box.Max.X - box.Min.X),
-                    Y = box.Min.Y + rnd.NextDouble() * (box.Max.Y - box.Min.Y),
-                    Z = box.Min.Z + rnd.NextDouble() * (box.Max.Z - box.Min.Z)
-                };
-            }
-            else
-                return new Point { X = rnd.NextDouble(), Y = rnd.NextDouble(), Z = rnd.NextDouble() };
-        }
-
-        /***************************************************/
-
+        [Description("Creates a two dimensional grid of points along the two provided vectors.")]
+        [Input("start", "Base point of the grid.")]
+        [Input("dir1", "First direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
+        [Input("dir2", "Second direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
+        [Input("nbPts1", "Number of points along the first direction.")]
+        [Input("nbPts2", "Number of points along the second direction.")]
+        [Output("grid", "The created grid of points as a nested list, where each inner list corresponds to all values along the first vector.")]
         public static List<List<Point>> PointGrid(Point start, Vector dir1, Vector dir2, int nbPts1, int nbPts2)
         {
             List<List<Point>> pts = new List<List<Point>>();
@@ -91,7 +79,45 @@ namespace BH.Engine.Geometry
 
             return pts;
         }
-        
+
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
+        /***************************************************/
+
+        [Description("Creates a random Point based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("point", "The generated random Point.")]
+        public static Point RandomPoint(int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = NextSeed();
+            Random rnd = new Random(seed);
+            return RandomPoint(new Random(seed), box);
+        }
+
+        /***************************************************/
+
+        [Description("Creates a random Point using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("point", "The generated random Point.")]
+        public static Point RandomPoint(Random rnd, BoundingBox box = null)
+        {
+            if (box != null)
+            {
+                return new Point
+                {
+                    X = box.Min.X + rnd.NextDouble() * (box.Max.X - box.Min.X),
+                    Y = box.Min.Y + rnd.NextDouble() * (box.Max.Y - box.Min.Y),
+                    Z = box.Min.Z + rnd.NextDouble() * (box.Max.Z - box.Min.Z)
+                };
+            }
+            else
+                return new Point { X = rnd.NextDouble(), Y = rnd.NextDouble(), Z = rnd.NextDouble() };
+        }
+
         /***************************************************/
     }
 }

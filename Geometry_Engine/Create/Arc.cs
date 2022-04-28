@@ -25,6 +25,8 @@ using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Linq;
 using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -34,6 +36,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates an Arc based on its core properties.")]
+        [InputFromProperty("coordinateSystem")]
+        [InputFromProperty("radius")]
+        [InputFromProperty("startAngle")]
+        [InputFromProperty("endAngle")]
+        [Output("arc", "The created Arc.")]
         public static Arc Arc(Cartesian coordinateSystem, double radius, double startAngle, double endAngle)
         {
             return new Arc
@@ -47,6 +55,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates an Arc from a start and end point as well as a point along its length.")]
+        [Input("start", "Start point of the Arc.")]
+        [Input("middle", "Point somehwere along the arc between the start and end point.")]
+        [Input("end", "End point of the Arc.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("arc", "The created Arc.")]
         public static Arc Arc(Point start, Point middle, Point end, double tolerance = Tolerance.Distance)
         {
             Vector v1 = start - middle;
@@ -81,6 +95,11 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Creates an arc by centre, start and end points. Only able to create arcs with angle < 180 degress")]
+        [Input("centre", "Centre point of the arc.")]
+        [Input("start", "Start point of the Arc.")]
+        [Input("end", "End point of the Arc.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("arc", "The created Arc.")]
         public static Arc ArcByCentre(Point centre, Point start, Point end, double tolerance = Tolerance.Distance)
         {
             double radius = start.Distance(centre);
@@ -119,6 +138,10 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random Arc based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("arc", "The generated random Arc.")]
         public static Arc RandomArc(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
@@ -129,6 +152,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Arc using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("arc", "The generated random Arc.")]
         public static Arc RandomArc(Random rnd, BoundingBox box = null)
         {
             Circle circle = RandomCircle(rnd, box);
@@ -146,6 +173,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Arc with a set start point based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("from", "The start point of the Arc.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("arc", "The generated random Arc.")]
         public static Arc RandomArc(Point from, int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
@@ -156,6 +188,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Arc with a set start point using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("from", "The start point of the Arc.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Output("arc", "The generated random Arc.")]
         public static Arc RandomArc(Point from, Random rnd, BoundingBox box = null)
         {
             Point centre;
@@ -197,6 +234,7 @@ namespace BH.Engine.Geometry
         /**** Private Method                            ****/
         /***************************************************/
 
+        [Description("Gets next seed for random generation.")]
         private static int NextSeed()
         {
             lock (m_randomLock)
