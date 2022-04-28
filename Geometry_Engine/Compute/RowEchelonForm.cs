@@ -24,6 +24,8 @@ using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +35,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Computes and returns the (Reduced) Row Echelon Form of the provided 2D double array (matrix).")]
+        [Input("imatrix", "The matrix, as a 2D double array, compute the (reduced) row echelon form of.")]
+        [Input("reduced", "If true the returned matrix will have a reduced echelon form. If false, the matrix well have a row echelon form.")]
+        [Input("tolerance", "Tolerance used to determine if a value in the matrix is 0.")]
+        [Output("ref", "The provided matrix in (reduced) row echelon form.")]
         public static double[,] RowEchelonForm(this double[,] imatrix, bool reduced = true, double tolerance = Tolerance.Distance)
         {
             // Strongly inspired by https://rosettacode.org/wiki/Reduced_row_echelon_form
@@ -93,53 +100,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static int CountNonZeroRows(this double[,] matrix, double tolerance = Tolerance.Distance)
-        {
-            int m = matrix.GetLength(0);
-            int n = matrix.GetLength(1);
-            int c = 0;
-
-            for (int i = 0; i < m; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    if (Math.Abs(matrix[i, j]) >= tolerance)
-                    {
-                        c++;
-                        break;
-                    }
-                }
-            }
-
-            return c;
-        }
-
-        /***************************************************/
-
-        public static double REFTolerance(this double[,] matrix, double tolerance = Tolerance.Distance)
-        {
-            int d1 = matrix.GetLength(0);
-            int d2 = matrix.GetLength(1);
-            double maxRowSum = 0;
-
-            for (int i = 0; i < d1; i++)
-            {
-                double rowSum = 0;
-                for (int j = 0; j < d2; j++)
-                {
-                    rowSum += Math.Abs(matrix[i, j]);
-                }
-                maxRowSum = Math.Max(maxRowSum, rowSum);
-            }
-
-            double result = tolerance * Math.Max(d1, d2) * maxRowSum;
-            if (result >= 1)
-                result = 1 - tolerance;
-
-            return result;
-        }
-
-        /***************************************************/
     }
 }
 
