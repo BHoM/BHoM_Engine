@@ -26,6 +26,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -35,6 +36,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                 ****/
         /***************************************************/
 
+        [Description("Checks if the two Planes are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Plane plane, Plane other, double tolerance = Tolerance.Distance)
         {
             return plane.Normal.IsEqual(other.Normal, tolerance)
@@ -43,6 +45,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Points are geometrically equal, i.e. if they are within the tolerance distance of each other.")]
         public static bool IsEqual(this Point pt, Point other, double tolerance = Tolerance.Distance)
         {
             return pt.SquareDistance(other) < tolerance * tolerance;
@@ -50,6 +53,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Vector are geometrically equal, i.e. if they are within the tolerance distance of each other.")]
         public static bool IsEqual(this Vector vector, Vector other, double tolerance = Tolerance.Distance)
         {
             return vector.Distance(other) < tolerance;
@@ -57,6 +61,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Bases are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Basis basis, Basis other, double tolerance = Tolerance.Distance)
         {
             return basis.X.IsEqual(other.X, tolerance)
@@ -66,6 +71,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Cartesian Coordinate Systems are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Cartesian coordinateSystem, Cartesian other, double tolerance = Tolerance.Distance)
         {
             return coordinateSystem.Origin.IsEqual(other.Origin, tolerance)
@@ -79,6 +85,7 @@ namespace BH.Engine.Geometry
         /**** public Computation - Curves              ****/
         /***************************************************/
 
+        [Description("Checks if the two Arcs are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Arc arc, Arc other, double tolerance = Tolerance.Distance)
         {
             return arc.CoordinateSystem.IsEqual(other.CoordinateSystem, tolerance)
@@ -89,6 +96,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Circles are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Circle circle, Circle other, double tolerance = Tolerance.Distance)
         {
             return Math.Abs(circle.Radius - other.Radius) < tolerance
@@ -98,6 +106,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Ellipses are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Ellipse ellipse, Ellipse other, double tolerance = Tolerance.Distance)
         {
             return Math.Abs(ellipse.Radius1 - other.Radius1) < tolerance
@@ -109,6 +118,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Lines are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Line line, Line other, double tolerance = Tolerance.Distance)
         {
             return line.Start.IsEqual(other.Start, tolerance)
@@ -116,7 +126,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
+        [Description("Checks if the two NurbsCurves are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this NurbsCurve curve, NurbsCurve other, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.Count == other.ControlPoints.Count
@@ -129,6 +139,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two PolyCurves are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this PolyCurve curve, PolyCurve other, double tolerance = Tolerance.Distance)
         {
             return curve.Curves.Count == other.Curves.Count
@@ -137,6 +148,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Polylines are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Polyline curve, Polyline other, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.Count == other.ControlPoints.Count
@@ -148,6 +160,7 @@ namespace BH.Engine.Geometry
         /**** public Computation - Surfaces            ****/
         /***************************************************/
 
+        [Description("Checks if the two Extrusions are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Extrusion surface, Extrusion other, double tolerance = Tolerance.Distance)
         {
             return surface.Capped == other.Capped
@@ -157,6 +170,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Lofts are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Loft surface, Loft other, double tolerance = Tolerance.Distance)
         {
             return surface.Curves.Count == other.Curves.Count
@@ -165,6 +179,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two PlanarSurfaces are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this PlanarSurface surface, PlanarSurface other, double tolerance = Tolerance.Distance)
         {
             if ((surface.InternalBoundaries != null ^ other.InternalBoundaries != null) &&
@@ -182,6 +197,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Pipes are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Pipe surface, Pipe other, double tolerance = Tolerance.Distance)
         {
             return surface.Capped == other.Capped
@@ -191,6 +207,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two PolySurfaces are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this PolySurface surface, PolySurface other, double tolerance = Tolerance.Distance)
         {
             return surface.Surfaces.Count == other.Surfaces.Count
@@ -202,6 +219,7 @@ namespace BH.Engine.Geometry
         /**** public Methods - Others                   ****/
         /***************************************************/
 
+        [Description("Checks if the two TransformMatrices are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this TransformMatrix transform, TransformMatrix other, double tolerance = Tolerance.Distance)
         {
             return (transform.Matrix.IsEqual(other.Matrix));
@@ -209,6 +227,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two double[]s are geometrically equal, i.e. if all of their values are within tolerance of each other.")]
         public static bool IsEqual(this double[,] matrix, double[,] other, double tolerance = Tolerance.Distance)
         {
             int h = matrix.GetLength(0);
@@ -230,6 +249,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two BoundingBoxes are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this BoundingBox box, BoundingBox other, double tolerance = Tolerance.Distance)
         {
             return box.Min.IsEqual(other.Min, tolerance)
@@ -238,6 +258,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Face are geometrically equal, i.e. their face indecies are the same.")]
         public static bool IsEqual(this Face face, Face other, double tolerance = Tolerance.Distance)
         {
             return face.A == other.A && face.B == other.B && face.C == other.C && face.D == other.D;
@@ -245,6 +266,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two Meshes are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this Mesh mesh, Mesh other, double tolerance = Tolerance.Distance)
         {
             return mesh.Vertices.Count == other.Vertices.Count
@@ -255,6 +277,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the two CompositeGeometry are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IsEqual(this CompositeGeometry group, CompositeGeometry other, double tolerance = Tolerance.Distance)
         {
             return group.Elements.Count == other.Elements.Count
@@ -266,6 +289,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Checks if the two Geometries are of the same type and are geometrically equal, i.e. if all of their properties are within tolerance of each other.")]
         public static bool IIsEqual(this IGeometry geometry, IGeometry other, double tolerance = Tolerance.Distance)
         {
             if (geometry.GetType() != other.GetType())
