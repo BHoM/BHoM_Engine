@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random IGeometry based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("geom", "The generated random IGeometry.")]
         public static IGeometry RandomGeometry(int seed = -1, BoundingBox box = null)
         {
@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random IGeometry using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("geom", "The generated random IGeometry.")]
         public static IGeometry RandomGeometry(Random rnd, BoundingBox box = null)
         {
@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
         [Description("Creates a random IGeometry of the specified type using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("type", "Type of geometry to create. Must be a type of IGeometry.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("geom", "The generated random IGeometry.")]
         public static IGeometry RandomGeometry(Type type, Random rnd, BoundingBox box = null)
         {

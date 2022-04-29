@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random PolySurface based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Input("minNbSurfaces", "Minimun number of surfaces in the random PolySurface.")]
         [Input("maxNbSurfaces", "Maximum number of surfaces in the random PolySurface.")]
         [Output("pSurface", "The generated random PolySurface.")]
@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random PolySurface using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Input("minNbSurfaces", "Minimun number of surfaces in the random PolySurface.")]
         [Input("maxNbSurfaces", "Maximum number of surfaces in the random PolySurface.")]
         [Output("pSurface", "The generated random PolySurface.")]
