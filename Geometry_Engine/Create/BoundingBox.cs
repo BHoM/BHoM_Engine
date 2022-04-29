@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
         {
             //TODO: SHould this be changed to
             //1. Use absolute values
-            //2. Use half vector length instead of full.
+            //2. Use half vector length instead of full.?
             return new BoundingBox
             {
                 Min = new Point { X = centre.X - extent.X, Y = centre.Y - extent.Y, Z = centre.Z - extent.Z },
