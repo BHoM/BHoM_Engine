@@ -272,7 +272,6 @@ namespace BH.Engine.Geometry
         [Input("region", "First region to intersect.")]
         [Input("refRegion", "Second region ot intersect.")]
         [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
-        [Input("angleTolerance", "Angle tolerance to be used in the method.", typeof(Length))]
         [Output("inter", "The Polycurve region(s) corresponding to the overlap(s) of the two provided regions.")]
         public static List<PolyCurve> BooleanIntersection(this ICurve region, ICurve refRegion, double tolerance = Tolerance.Distance)
         {
