@@ -47,6 +47,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousInputNames("p","v")]
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Create.Vector(BH.oM.Geometry.Point, System.String)")]
         [Description("Creates a Vector that is the position Vector to the point from the global origin, e.g. a Vector with the same coordinates as the provided Point.")]
         [Input("p", "The point to create the position vector to.")]
         [Output("vec", "The created Vector.")]
@@ -64,13 +65,6 @@ namespace BH.Engine.Geometry
         public static Vector Vector(Point a, Point b)
         {
             return b - a;
-        }
-
-        /***************************************************/
-
-        public static Vector Vector(Point v, string name)   //Will delete and verison this method in separate commit.
-        {
-            return new Vector { X = v.X, Y = v.Y, Z = v.Z };
         }
 
         /***************************************************/
