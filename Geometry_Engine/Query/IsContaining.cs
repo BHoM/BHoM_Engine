@@ -167,13 +167,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousInputNames("curve","curve1")]
         [Description("Checks if the colleciton of Points are all contained within the curve. For a Line this will always return false.")]
         [Input("curve", "The Line to check. For a Line this methods will always return false.")]
         [Input("points", "The points to check. For a line this method will always return false.")]
         [Input("acceptOnEdge", "Not used by this method. A Line is not an enclosed region, hence even points that are on the curve will be deemed to be outside.")]
         [Input("tolerance", "Not used by this method. A Line is not an enclosed region, hence even points that are on the curve will be deemed to be outside.", typeof(Length))]
         [Output("isContaining", "Returns true if all of the provided points are inside the curve. For a Line this always returns false.")]
-        public static bool IsContaining(this Line curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        public static bool IsContaining(this Line curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             return false;
         }
