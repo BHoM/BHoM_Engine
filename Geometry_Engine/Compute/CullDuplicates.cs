@@ -24,6 +24,9 @@ using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +36,10 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
+        [Description("Culls all duplicate points in the list by grouping all points that are within the maximum provided distance from one another and returning the average point in each group.")]
+        [Input("points", "The collection of points to cull duplicates from.")]
+        [Input("maxDist", "The maximum allowable distance between two points for them to be deemed the same point.", typeof(Length))]
+        [Output("points", "The collection of points with all duplicates removed. For cases when points have been deemed duplicates of each other, average points of these duplicate points will be returned.")]
         public static List<Point> CullDuplicates(this List<Point> points, double maxDist = Tolerance.Distance)
         {
             int count = points.Count;
@@ -42,7 +49,7 @@ namespace BH.Engine.Geometry
             if (count == 2)
             {
                 if (points[0].SquareDistance(points[1]) < maxDist * maxDist)
-                    return new List<Point> { (points[0] + points[1]) / 2 };
+                    return new List<Point> { (points[0] + points[1]) / 2.0 };
                 else
                     return points;
             }

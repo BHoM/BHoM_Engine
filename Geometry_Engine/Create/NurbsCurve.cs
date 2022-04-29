@@ -51,6 +51,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
+        [Description("Not yet implemented method for generating random nurbs curve.")]
         public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
         {
             throw new NotImplementedException();

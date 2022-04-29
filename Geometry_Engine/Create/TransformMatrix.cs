@@ -108,7 +108,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Creates a ScaleMatrix for a non-uniform scaling based on a scale vector and a reference point.")]
-        [Input("centre", "The centre of the rotation.")]
+        [Input("refPoint", "Base point of the scaling.")]
         [Input("scaleVector", "The scale vector used to determine by how much the geometry should be scaled in each direction.")]
         [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix ScaleMatrix(Point refPoint, Vector scaleVector)
