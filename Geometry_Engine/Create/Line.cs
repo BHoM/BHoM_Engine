@@ -70,7 +70,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random Line based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("line", "The generated random Line.")]
         public static Line RandomLine(int seed = -1, BoundingBox box = null)
         {
@@ -84,7 +84,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random Line using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("line", "The generated random Line.")]
         public static Line RandomLine(Random rnd, BoundingBox box = null)
         {
@@ -100,7 +100,7 @@ namespace BH.Engine.Geometry
         [Description("Creates a random Line with a set start point based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("from", "The start point of the Line.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("line", "The generated random Line.")]
         public static Line RandomLine(Point from, int seed = -1, BoundingBox box = null)
         {
@@ -115,7 +115,7 @@ namespace BH.Engine.Geometry
         [Description("Creates a random Line with a set start point using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("from", "The start point of the Line.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("line", "The generated random Line.")]
         public static Line RandomLine(Point from, Random rnd, BoundingBox box = null)
         {

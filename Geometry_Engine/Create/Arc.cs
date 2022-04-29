@@ -140,7 +140,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random Arc based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("arc", "The generated random Arc.")]
         public static Arc RandomArc(int seed = -1, BoundingBox box = null)
         {
@@ -154,7 +154,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random Arc using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("arc", "The generated random Arc.")]
         public static Arc RandomArc(Random rnd, BoundingBox box = null)
         {
@@ -176,7 +176,7 @@ namespace BH.Engine.Geometry
         [Description("Creates a random Arc with a set start point based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("from", "The start point of the Arc.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("arc", "The generated random Arc.")]
         public static Arc RandomArc(Point from, int seed = -1, BoundingBox box = null)
         {
@@ -191,7 +191,7 @@ namespace BH.Engine.Geometry
         [Description("Creates a random Arc with a set start point using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("from", "The start point of the Arc.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("arc", "The generated random Arc.")]
         public static Arc RandomArc(Point from, Random rnd, BoundingBox box = null)
         {

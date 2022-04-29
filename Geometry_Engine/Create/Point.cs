@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Creates a Point from a Vector, assuming the vector is a Position vector from the global origin.")]
+        [Description("Creates a Point from a Vector, assuming the vector is a Position vector from the global origin, e.g. a Point with the same coordinates as the provided Vector.")]
         [Input("v", "The position vector to create a point to create a point based on.")]
         [Output("point", "The created Point.")]
         public static Point Point(Vector v)
@@ -87,7 +87,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random Point based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("point", "The generated random Point.")]
         public static Point RandomPoint(int seed = -1, BoundingBox box = null)
         {
@@ -101,7 +101,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random Point using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the goemetry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("point", "The generated random Point.")]
         public static Point RandomPoint(Random rnd, BoundingBox box = null)
         {

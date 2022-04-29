@@ -22,6 +22,9 @@
 
 using BH.oM.Geometry;
 using System;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -31,6 +34,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a Vector based on its coordinates.")]
+        [InputFromProperty("x")]
+        [InputFromProperty("y")]
+        [InputFromProperty("z")]
+        [Output("vec", "The created Vector.")]
         public static Vector Vector(double x = 0, double y = 0, double z = 0)
         {
             return new Vector { X = x, Y = y, Z = z };
@@ -38,13 +46,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Vector(Point v)
+        [PreviousInputNames("p","v")]
+        [Description("Creates a Vector that is the position Vector to the point from the global origin, e.g. a Vector with the same coordinates as the provided Point.")]
+        [Input("p", "The point to create the position vector to.")]
+        [Output("vec", "The created Vector.")]
+        public static Vector Vector(Point p)
         {
-            return new Vector { X = v.X, Y = v.Y, Z = v.Z };
+            return new Vector { X = p.X, Y = p.Y, Z = p.Z };
         }
 
         /***************************************************/
 
+        [Description("Creates a Vector between two Points.")]
+        [Input("a", "The start point of the Vector.")]
+        [Input("b", "The end point of the Vector.")]
+        [Output("vec", "The created Vector.")]
         public static Vector Vector(Point a, Point b)
         {
             return b - a;
@@ -52,14 +68,19 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector Vector(Point v,string name)
+        public static Vector Vector(Point v, string name)   //Will delete and verison this method in separate commit.
         {
             return new Vector { X = v.X, Y = v.Y, Z = v.Z };
         }
+
         /***************************************************/
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random Vector based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The  vector coordinates created will be limited to the bounding box. If no box is provided, values between -1 and 1 will be used when generating properties for the geometry.")]
+        [Output("vec", "The generated random Vector.")]
         public static Vector RandomVector(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
@@ -70,6 +91,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Vector using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The vector coordinates created will be limited to the bounding box. If no box is provided, values between -1 and 1 will be used when generating properties for the geometry.")]
+        [Output("vec", "The generated random Vector.")]
         public static Vector RandomVector(Random rnd, BoundingBox box = null)
         {
             if (box != null)
@@ -87,6 +112,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Vector in the provided plane, e.g a vector that is orthogonal to the normal of the plane, based on a seed. If no seed is provided, a random one will be generated.")]
+        [Input("plane", "The plane that the vector should be contained to.")]
+        [Input("normalise", "If true the created vector will be a unit vector (length 1).")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Output("vec", "The generated random Vector in the plane.")]
         public static Vector RandomVectorInPlane(Plane plane, bool normalise = false, int seed = -1)
         {
             if (seed == -1)
@@ -97,6 +127,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a random Vector in the provided plane, e.g a vector that is orthogonal to the normal of the plane, using the provided Random class.")]
+        [Input("plane", "The plane that the vector should be contained to.")]
+        [Input("normalise", "If true the created vector will be a unit vector (length 1).")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Output("vec", "The generated random Vector in the plane.")]
         public static Vector RandomVectorInPlane(Plane plane, Random rnd, bool normalise = false)
         {
             Vector v1 = RandomVector(rnd);
