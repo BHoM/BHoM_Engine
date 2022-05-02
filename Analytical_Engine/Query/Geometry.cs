@@ -193,7 +193,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Graph if it comprises of entities that inherit from IElement0D. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a Graph as its relation curve arrows. For relations between entities of IElement0D types and outmatic curve is created if it does not exist. Method required for automatic display in UI packages.")]
         [Input("graph", "Graph to get the geometry from.")]
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
         public static CompositeGeometry Geometry(this Graph graph)
@@ -204,36 +204,36 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
+            Dictionary<Guid, Point> element0DGeoms = graph.Entities.Where(x => x.Value is IElement0D).ToDictionary(x => x.Key, x => ((IElement0D)x.Value).IGeometry());
+
+            bool relNoGeom = false;
             List<IGeometry> geometries = new List<IGeometry>();
-            Graph geometricGraph = graph?.IProjectGraph(new GeometricProjection());
-
-            if (geometricGraph?.Entities?.Count == 0 || geometricGraph?.Relations?.Count == 0)
-                return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
-
-            return SpatialGraphGeometry(graph);
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static CompositeGeometry SpatialGraphGeometry(Graph spatialGraph)
-        {
-            List<IGeometry> geometries = new List<IGeometry>();
-
-            foreach (KeyValuePair<System.Guid, IBHoMObject> kvp in spatialGraph?.Entities)
+            foreach (Relation relation in graph.Relations)
             {
-                if (kvp.Value is IElement0D)
+                if (relation != null)
                 {
-                    IElement0D entity = kvp.Value as IElement0D;
-                    geometries.Add(entity.IGeometry());
+                    Point sourcePt, targetPt;
+                    if (relation.Curve != null)
+                        geometries.Add(relation.RelationArrow());   //If Relation have a curve defined, use it to display
+                    else if (element0DGeoms.TryGetValue(relation.Source, out sourcePt) && element0DGeoms.TryGetValue(relation.Target, out targetPt))
+                        geometries.Add(new Relation { Curve = new Line { Start = sourcePt, End = targetPt } }.RelationArrow());  //Relation between two IElement0Ds - Generate a curve between them and draw arrow
+                    else
+                        relNoGeom = true;   //Some relations can not be displayed automatically, flag to raise warning
                 }
             }
-            foreach (IRelation relation in spatialGraph?.Relations)
-                geometries.Add(relation?.RelationArrow());
 
-            return BH.Engine.Geometry.Create.CompositeGeometry(geometries);
+            geometries.AddRange(element0DGeoms.Values); //Add Points representing IElement0Ds to the list
+
+            if(relNoGeom)   //Raise warning if relations that could not be displayed was found
+                Base.Compute.RecordWarning("Geometry is only displayed for Relations that either have their Curve set or span between entities that are IElement0D.");
+
+
+            return new CompositeGeometry { Elements = geometries };
+
         }
+
+        /***************************************************/
+
         
     }
 }
