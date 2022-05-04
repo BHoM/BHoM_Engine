@@ -82,7 +82,7 @@ namespace BH.Engine.Diffing
             if (followingObjects == null) followingObjects = new List<object>();
             if (followingObjectsIds == null) followingObjectsIds = new List<string>();
             if (diffingConfig == null) diffingConfig = new DiffingConfig();
-            diffingConfig.ComparisonConfig.SetNewEmptyIEnumPropsIfNull();
+            diffingConfig.ComparisonConfig = diffingConfig.ComparisonConfig.SetNewEmptyIEnumPropsIfNull();
 
             // Check if we do not allow duplicate Ids
             // (we do not allow duplicate Ids by default – it may make sense in rare cases with Ids imported from some software that allows duplicates).

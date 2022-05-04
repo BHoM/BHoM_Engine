@@ -25,24 +25,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using System.Collections;
+using BH.Engine.Base;
 
 namespace BH.Engine.Reflection
 {
     public static partial class Modify
     {
-        [Description("Iterates the properties of an object; if the property type is a subtype of IEnumerable and it is null, " +
-            "this method replaces the null with a new empty IEnumerable of the correct type." +
-            "The method uses the default parameterless constructor of the property type's IEnumerable, so if the IEnumerable requires any input parameter, this method will return an error.")]
-        [Input("obj", "Object whose properties are examined. Any property that is null and whose type is a subtype of IEnumerable will have its value replaced with a new empty IEnumerable of the correct type.")]
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Returns a deepclone of the object, whose IEnumerable properties are replaced with new IEnumerables of the correct type if they are null." +
+            "\nThe method uses the default parameterless constructor of the property type's IEnumerable," +
+            "so if a property's IEnumerable type requires any input parameter, this method will not set that property.")]
+        [Input("obj", "Object whose properties that are null and whose type is a subtype of IEnumerable will be replaced with a new empty IEnumerable of the correct type.")]
+        [Input("warningForUnset", "(Optional, defaults to true) If false, the method does not return a warning when a certain property could not be set.")]
         [Output("obj", "Object with the null IEnumerable properties replaced with empty IEnumerables of the correct type.")]
-        public static void SetNewEmptyIEnumPropsIfNull(this object obj)
+        public static T SetNewEmptyIEnumPropsIfNull<T>(this T obj, bool warningForUnset = true) where T : class
         {
-            var props = obj.GetType().GetProperties();
+            T deepClone = obj.DeepClone();
+
+            var props = deepClone.GetType().GetProperties();
             foreach (var prop in props)
             {
                 if (!prop.CanRead || prop.GetMethod.GetParameters().Count() > 0 || !prop.CanWrite)
@@ -56,15 +63,30 @@ namespace BH.Engine.Reflection
                     {
                         object newEmptyIEnumerable = System.Activator.CreateInstance(prop.PropertyType);
 
-                        prop.SetValue(obj, newEmptyIEnumerable);
+                        prop.SetValue(deepClone, newEmptyIEnumerable);
                     }
                     catch
                     {
-                        BH.Engine.Base.Compute.RecordWarning($"Null property `{prop.Name}` of type `{prop.DeclaringType.FullName}` could not be set to a new empty `{prop.PropertyType.FullName}`.");
+                        if (warningForUnset)
+                            BH.Engine.Base.Compute.RecordWarning($"Null property `{prop.Name}` of type `{prop.DeclaringType.FullName}` could not be set to a new empty `{prop.PropertyType.FullName}`.");
                     }
                 }
             }
+
+            return deepClone;
+        }
+
+        /***************************************************/
+
+        [Description("Returns a deepclone of the object, whose IEnumerable properties are replaced with new IEnumerables of the correct type if they are null." +
+            "\nThe method uses the default parameterless constructor of the property type's IEnumerable," +
+            "so if a property's IEnumerable type requires any input parameter, this method will not set that property.")]
+        [Input("obj", "Object whose properties that are null and whose type is a subtype of IEnumerable will be replaced with a new empty IEnumerable of the correct type.")]
+        [Input("warningForUnset", "(Optional, defaults to true) If false, the method does not return a warning when a certain property could not be set.")]
+        [Output("obj", "Object with the null IEnumerable properties replaced with empty IEnumerables of the correct type.")]
+        public static object SetNewEmptyIEnumPropsIfNull(this object obj, bool warningForUnset = true)
+        {
+            return SetNewEmptyIEnumPropsIfNull<object>(obj, warningForUnset);
         }
     }
 }
-
