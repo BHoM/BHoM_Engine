@@ -78,18 +78,5 @@ namespace BH.Engine.Reflection
 
             return deepClone;
         }
-
-        /***************************************************/
-
-        [Description("Returns a deepclone of the object, whose IEnumerable properties are replaced with new IEnumerables of the correct type if they are null." +
-            "\nThe method uses the default parameterless constructor of the property type's IEnumerable," +
-            "so if a property's IEnumerable type requires any input parameter, this method will not set that property.")]
-        [Input("obj", "Object whose properties that are null and whose type is a subtype of IEnumerable will be replaced with a new empty IEnumerable of the correct type.")]
-        [Input("warningForUnset", "(Optional, defaults to true) If false, the method does not return a warning when a certain property could not be set.")]
-        [Output("obj", "Object with the null IEnumerable properties replaced with empty IEnumerables of the correct type.")]
-        public static object SetNewEmptyIEnumPropsIfNull(this object obj, bool warningForUnset = true)
-        {
-            return SetNewEmptyIEnumPropsIfNull<object>(obj, warningForUnset);
-        }
     }
 }
