@@ -47,6 +47,9 @@ namespace BH.Engine.Reflection
         [Output("obj", "Object with the null IEnumerable properties replaced with empty IEnumerables of the correct type.")]
         public static T SetNewEmptyIEnumPropsIfNull<T>(this T obj, bool warningForUnset = true) where T : class
         {
+            if (obj == null)
+                return null;
+
             T deepClone = obj.DeepClone();
 
             var props = deepClone.GetType().GetProperties();
