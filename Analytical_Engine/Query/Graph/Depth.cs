@@ -87,11 +87,13 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Analytical.Query.Depth(BH.oM.Analytical.Elements.Graph, System.Guid)")]
         [Description("Returns the Dictionary of entity depths in a Graph given a start entity. The query uses breadth first search, each key value pair in the resulting dictionary is in the form <entity, depth>.")]
         [Input("graph", "The graph to extract the depth dictionary from.")]
         [Input("startEntity", "The Guid of the entity from which the depth dictionary is created.")]
+        [Input("relationDirection", "Optional RelationDirection used to determine the direction that relations can be traversed. Defaults to Forwards indicating traversal is from source to target.")]
         [Output("depths", "A Dictionary of the depths of the entities in the Graph.")]
-        public static Dictionary<Guid, int> Depth(this Graph graph, Guid startEntity)
+        public static Dictionary<Guid, int> Depth(this Graph graph, Guid startEntity, RelationDirection relationDirection = RelationDirection.Forwards)
         {
             if(graph == null)
             {
@@ -99,9 +101,10 @@ namespace BH.Engine.Analytical
                 return new Dictionary<Guid, int>();
             }
 
-            Dictionary<Guid, List<Guid>> adjacency = graph.Adjacency();
-            return Depth(adjacency, startEntity);
+            return graph.Adjacency(relationDirection).Depth(startEntity);
         }
+
+        /***************************************************/
     }
 }
 
