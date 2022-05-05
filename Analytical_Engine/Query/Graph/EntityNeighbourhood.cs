@@ -31,6 +31,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace BH.Engine.Analytical
 {
@@ -77,54 +78,74 @@ namespace BH.Engine.Analytical
                 return null;
             }
 
-            if(entity == null)
+            if (entity == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot search from a null entity.");
                 return null;
             }
 
-            List<Graph> subGraphs = new List<Graph>();
-            m_Adjacency = graph.Adjacency(relationDirection);
-            m_AccessibleEntities = new List<Guid>();
-            m_AccessibleRelations = new List<Guid>();
-
-            //add start entity
-            m_AccessibleEntities.Add(entity.BHoM_Guid);
-
-            graph.Traverse(entity.BHoM_Guid, maximumDepth, 0, relationDirection);
-
-            Graph subgraph = new Graph();
-            foreach(Guid guid in m_AccessibleEntities)
+            if (!graph.Entities.ContainsKey(entity.BHoM_Guid))
             {
-                if (!subgraph.Entities.ContainsKey(guid))
-                    subgraph.Entities.Add(guid, graph.Entities[guid].DeepClone());
+                Engine.Base.Compute.RecordError("Graph does not contain provided entity.");
+                return null;
             }
 
-            foreach (Guid guid in m_AccessibleRelations)
+            Dictionary<Guid, List<Guid>> adjecency = graph.Adjacency(relationDirection);
+            //Get depth map of all entities in relation to the current
+            Dictionary<Guid, int> depths = adjecency.Depth(entity.BHoM_Guid);
+            //Extract all entities with depth less than maximum
+            Dictionary<Guid, IBHoMObject> entities = depths.Where(x => x.Value <= maximumDepth).ToDictionary(x => x.Key, x => graph.Entities[x.Key]);
+
+            //Lookup based on outer key as source and inner key as target for relations
+            ILookup<Guid, ILookup<Guid, IRelation>> sourceTargetLookup = graph.Relations.GroupBy(x => x.Source).ToDictionary(x => x.Key, x => x.ToLookup(y => y.Target)).ToLookup(x => x.Key, x => x.Value);
+
+            List<IRelation> relations = new List<IRelation>();
+
+            //Loop through all adjaciencies and add relations matching
+            foreach (KeyValuePair<Guid, List<Guid>> kvp in adjecency)
             {
-                if (!subgraph.Relations.Any(r => r.BHoM_Guid.Equals(guid)))
-                    subgraph.Relations.Add(graph.Relations.Find(r => r.BHoM_Guid.Equals(guid)));
+                int depth;
+                if (depths.TryGetValue(kvp.Key, out depth) && depth < maximumDepth)
+                {
+                    foreach (Guid guid in kvp.Value)
+                    {
+                        //Extract all relations that match the adjaciency
+                        relations.AddRange(sourceTargetLookup.Relations(kvp.Key, guid, relationDirection));
+                    }
+                }
             }
-            
-            return subgraph;
+
+            //Return new graph
+            return new Graph
+            {
+                Entities = entities,
+                Relations = relations.GroupBy(x => x.BHoM_Guid).Select(x => x.First()).ToList() //Unique Relations
+            };
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private static void Traverse(this Graph graph, Guid entity, int maxDepth, int currentDepth, RelationDirection relationDirection)
+
+
+        private static IEnumerable<IRelation> Relations(this ILookup<Guid, ILookup<Guid, IRelation>> sourceTargetLookup, Guid from, Guid to, RelationDirection direction)
         {
-            if (currentDepth >= maxDepth)
-                return;
-            foreach (Guid c in m_Adjacency[entity])
+             switch (direction)
             {
-                m_AccessibleEntities.Add(c);
-                m_AccessibleRelations.AddRange(graph.Relation(entity, c, relationDirection));
-                graph.Traverse(c, maxDepth, currentDepth + 1, relationDirection);
+                case RelationDirection.Forwards:
+                    return sourceTargetLookup[from].SelectMany(x => x[to]);
+                case RelationDirection.Backwards:
+                    return sourceTargetLookup[to].SelectMany(x => x[from]);
+                case RelationDirection.Both:
+                default:
+                    IEnumerable<IRelation> relations = sourceTargetLookup[from].SelectMany(x => x[to]);
+                    return relations.Concat(sourceTargetLookup[to].SelectMany(x => x[from]));
             }
         }
 
+
         /***************************************************/
+
         private static Graph SetSubGraph(this Graph graph, Guid sourceEntity, List<Guid> entityAdjacency, RelationDirection relationDirection)
         {
 
@@ -141,11 +162,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
 
-        private static List<Guid> m_AccessibleEntities = new List<Guid>();
-        private static List<Guid> m_AccessibleRelations = new List<Guid>();
 
     }
 }
