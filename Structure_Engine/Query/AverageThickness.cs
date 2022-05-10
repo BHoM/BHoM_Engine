@@ -120,6 +120,35 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [Input("property", "The property to evaluate the average thickness of.")]
+        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
+        public static double AverageThickness(this SlabOnDeck property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            double t = property.DeckTopWidth;
+            double b = property.DeckBottomWidth;
+            double h = property.DeckHeight;
+            double s = property.DeckSpacing;
+
+            return property.Thickness + h * (b + (s - (b + t)) / 2) / s;
+        }
+
+        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [Input("property", "The property to evaluate the average thickness of.")]
+        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
+        public static double AverageThickness(this CorrugatedDeck property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.Thickness * property.VolumeFactor;
+        }
+
+        /***************************************************/
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/

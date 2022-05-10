@@ -100,6 +100,36 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Calculates the mass per area for the property as the sum of the masses of the slab and the deck.")]
+        [Input("property", "The Layered property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this SlabOnDeck property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            double slabDensity = property.Material.IsNull() ? 0 : property.AverageThickness() * property.Material.Density;
+
+            double deckDensity = property.DeckMaterial.IsNull() ? 0 : property.DeckThickness * property.DeckVolumeFactor * property.Material.Density;
+
+            return slabDensity + deckDensity;
+        }
+
+        /***************************************************/
+
+        [Description("Calculates the mass per area for the property as the sum of the masses of the slab and the deck.")]
+        [Input("property", "The Layered property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this CorrugatedDeck property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.Material.IsNull() ? 0 : property.Thickness * property.VolumeFactor * property.Material.Density;
+        }
+
+        /***************************************************/
+
         [PreviousInputNames("property","loadingPanelProperty")]
         [Description("Gets the mass per area for a LoadingPanelProperty. This will always return 0.")]
         [Input("property", "The LoadingPanelProperty property to calculate the mass per area for.")]
