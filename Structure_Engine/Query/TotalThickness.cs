@@ -93,6 +93,32 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this SlabOnDeck property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.Thickness + property.DeckHeight;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this CorrugatedDeck property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.Height;
+        }
+
+        /***************************************************/
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
