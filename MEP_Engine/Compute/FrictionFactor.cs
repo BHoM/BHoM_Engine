@@ -60,13 +60,19 @@ namespace BH.Engine.MEP
 
             double componentA = Math.Pow(2.457 * Math.Log(1/(Math.Pow(7/reynoldsNumber,0.9)+(0.27*surfaceRoughness/circularDiameter))),16);
             double componentB = Math.Pow((37530/reynoldsNumber),16);
-
-
             
-            double frictionFactor = 8 * Math.Pow(Math.Pow(8/reynoldsNumber,12)+ (1/Math.Pow(componentA + componentB,1.5)),1/12);
+            //testing PEMDAS
+/*            double componenentFF1 = (1 / Math.Pow(componentA + componentB, 1.5));
+            double componenentFF2 = Math.Pow(8 / reynoldsNumber, 12);
+            double componenentFF3 = componenentFF1 + componenentFF2;
+            double componenentFF4 = Math.Pow(componenentFF3, (1D / 12));
+            double componenentFF5 = 8 * componenentFF4;
+            output = componenentFF5;*/
+
+            double frictionFactor = 8 * Math.Pow(Math.Pow(8 / reynoldsNumber, 12) + (1 / Math.Pow(componentA + componentB, 1.5)), 1D / 12);
             output = frictionFactor;
-           
-           
+
+
             return output;
         }
 
