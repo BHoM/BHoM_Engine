@@ -406,6 +406,32 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Generates a default description for the SurfaceProperty as 'Thickness of MaterialName on DeckName DeckMaterialName corrugated deck with height and thickness'.")]
+        [Input("property", "The SurfaceProperty to get a default description for.")]
+        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
+        public static string Description(this SlabOnDeck p)
+        {
+            if (p == null)
+                return "null property";
+
+            return $"{p.Thickness:G3} thick of {p.Material.DescriptionOrName()} on {p.DeckName} {p.DeckMaterial.DescriptionOrName()} corrugated deck with height: {p.DeckHeight:G3} and thickness: {p.DeckThickness:G3}";
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the SurfaceProperty as 'MaterialName corrugated deck with thickness, height, spacing, top flute width, and bottom flute width'.")]
+        [Input("property", "The SurfaceProperty to get a default description for.")]
+        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
+        public static string Description(this CorrugatedDeck p)
+        {
+            if (p == null)
+                return "null property";
+
+            return $"{p.Material.DescriptionOrName()} corrugated deck with  thickness: {p.Thickness:G3}, height: {p.Height:G3}, spacing: {p.Spacing}, top flute width: {p.TopWidth}, and bottom flute width: {p.BottomWidth}.";
+        }
+
+        /***************************************************/
         /**** Public Methods - Constraints              ****/
         /***************************************************/
 
