@@ -57,13 +57,16 @@ namespace BH.Engine.MEP
             ///For standard air and temperature between 4C and 38C, it is acceptable to use the equation below.
             if (fluidKinematicViscosity == double.NaN)
             {
+                //convert to mm
+                circularDiameter *= 1000;
                 reynoldsNumber = 66.4* circularDiameter * fluidVelocity;
                 output = reynoldsNumber;
 
                 return output;
             }
 
-
+            //convert to mm
+            circularDiameter *= 1000;
 
             reynoldsNumber = (circularDiameter * fluidVelocity) / (1000 * fluidKinematicViscosity);
             output = reynoldsNumber;
