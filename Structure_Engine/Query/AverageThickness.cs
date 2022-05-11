@@ -133,7 +133,7 @@ namespace BH.Engine.Structure
             double h = property.DeckHeight;
             double s = property.DeckSpacing;
 
-            return property.Thickness + h * (b + (s - (b + t)) / 2) / s;
+            return property.Thickness + h * (b + (s - (b + t)) / 2) / s + property.DeckThickness * property.DeckVolumeFactor;
         }
 
         [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
