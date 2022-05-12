@@ -127,6 +127,8 @@ namespace BH.Engine.Data
                     obj.Name = row[col].ToString();
                 else if (col.ColumnName == "Tags")
                     obj.Tags = (HashSet<string>)row[col];
+                else if (col.ColumnName == "BHoM_Guid")
+                    obj.BHoM_Guid = (Guid)row[col];
                 else
                     obj.CustomData[col.ColumnName] = row[col];
             }
