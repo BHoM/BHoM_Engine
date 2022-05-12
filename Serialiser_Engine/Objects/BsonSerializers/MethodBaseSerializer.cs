@@ -166,10 +166,12 @@ namespace BH.Engine.Serialiser.BsonSerializers
                     {
                         try
                         {
-                            if (methodName == ".ctor")
-                                method = type.GetConstructor(types.ToArray());
-                            else
-                                method = type.GetMethod(methodName, types.ToArray());
+                            Type[] typesArray = types.ToArray();
+                            if (typesArray != null)
+                                if (methodName == ".ctor")
+                                    method = type.GetConstructor(typesArray);
+                                else
+                                    method = type.GetMethod(methodName, typesArray);
                         }
                         catch { }
                     }
