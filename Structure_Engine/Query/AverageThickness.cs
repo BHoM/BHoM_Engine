@@ -128,12 +128,16 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
+            //Assuming a thin but non-zero deck, with deck height measured center to center of deck flutes.
+            //Thus, the concrete above the centerline surface of the deck is reduced by half the effective deck thickness,
+            //and the total volume of material includes the effective deck thickness.
+
             double t = property.DeckTopWidth;
             double b = property.DeckBottomWidth;
             double h = property.DeckHeight;
             double s = property.DeckSpacing;
 
-            return property.Thickness + h * (b + (s - (b + t)) / 2) / s + property.DeckThickness * property.DeckVolumeFactor;
+            return property.Thickness + h * (b + (s - (b + t)) / 2) / s + (property.DeckThickness * property.DeckVolumeFactor)/2;
         }
 
         [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
