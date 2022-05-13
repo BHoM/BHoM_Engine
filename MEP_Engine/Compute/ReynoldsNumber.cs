@@ -32,7 +32,7 @@ namespace BH.Engine.MEP
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates thereynolds number for a duct given fluid velocity, duct circular diameter, and fluid kinematic viscotity. Typically used in pressure drop calculations")]
+        [Description("Calculates the reynolds number for a duct given fluid velocity, duct circular diameter, and fluid kinematic viscotity. Typically used in pressure drop calculations")]
         [Input("fluidVelocity", "fluid flow velocity [m/s]")]
         [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area., [m]")]
         [Input("fluidKinematicViscosity", "fluid kinematice viscosity [m2/s]")]
