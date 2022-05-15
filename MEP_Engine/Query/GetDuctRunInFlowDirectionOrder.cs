@@ -43,68 +43,8 @@ namespace BH.Engine.MEP
         [Input("ductsAndFittings", "List of ducts and fittings")]
         public static List<BHoMObject> GetDuctRunInFlowDirectionOrder(List<Fitting> fittings, List<Duct> ducts, Duct firstDuct)
         {
-            List<Fitting> connectedFittings = GetFittingConnections(fittings, ducts);
+            List<Fitting> ConnectedFittings = new List<Fitting>();
 
-            List<BHoMObject> ductRunFinal = OrderDuctRun(ducts, firstDuct, connectedFittings);
-
-
-            return ductRunFinal;
-            /***************************************************/
-        }
-
-        private static List<BHoMObject> OrderDuctRun(List<Duct> ducts, Duct firstDuct, List<Fitting> connectedFittings)
-        {
-            List<BHoMObject> _ductRunFinal = new List<BHoMObject>();
-
-            _ductRunFinal.Add(firstDuct);
-
-            for (int i = 0; i <= ducts.Count; i++)
-            {
-                foreach (Duct duct in ducts)
-                {
-                    if (_ductRunFinal.Contains(duct))
-                    {
-                        foreach (Fitting fitting in connectedFittings)
-                        {
-                            if (fitting.ConnectionObjects[0] == duct)
-                            {
-                                if (!_ductRunFinal.Contains(fitting))
-                                {
-                                    _ductRunFinal.Insert(_ductRunFinal.IndexOf(duct), (Fitting)fitting);
-                                    if (!_ductRunFinal.Contains(fitting.ConnectionObjects[1]))
-                                    {
-                                        _ductRunFinal.Insert(_ductRunFinal.IndexOf(fitting), (Duct)fitting.ConnectionObjects[1]);
-                                    }
-                                }
-
-                            }
-                            if (fitting.ConnectionObjects[1] == duct)
-                            {
-                                if (!_ductRunFinal.Contains(fitting))
-                                {
-                                    _ductRunFinal.Insert(_ductRunFinal.IndexOf(duct), (Fitting)fitting);
-                                    if (!_ductRunFinal.Contains(fitting.ConnectionObjects[0]))
-                                    {
-                                        _ductRunFinal.Insert(_ductRunFinal.IndexOf(fitting), (Duct)fitting.ConnectionObjects[0]);
-                                    }
-                                }
-
-                            }
-                        }
-
-
-                    }
-
-
-                }
-
-            }
-            return _ductRunFinal;
-        }
-
-        private static List<Fitting> GetFittingConnections(List<Fitting> fittings, List<Duct> ducts)
-        {
-            List<Fitting> _connectedFittings = new List<Fitting>();
             //Ideally only two fitting connections...
             foreach (Fitting fitting in fittings)
             {
@@ -121,11 +61,62 @@ namespace BH.Engine.MEP
                         }
                     }
                 }
-                _connectedFittings.Add(fitting);
+                ConnectedFittings.Add(fitting);
+            }
+
+
+            List<BHoMObject> ductRunFinal = new List<BHoMObject>();
+
+
+            ductRunFinal.Add(firstDuct);
+
+            for (int i = 0; i <= ducts.Count; i++)
+            {
+                foreach (Duct duct in ducts)
+                {
+                    if (ductRunFinal.Contains(duct))
+                    {
+                        foreach (Fitting fitting in ConnectedFittings)
+                        {
+                            if (fitting.ConnectionObjects[0] == duct)
+                            {
+                                if (!ductRunFinal.Contains(fitting))
+                                {
+                                    ductRunFinal.Insert(ductRunFinal.IndexOf(duct), (Fitting)fitting);
+                                    if (!ductRunFinal.Contains(fitting.ConnectionObjects[1]))
+                                    {
+                                        ductRunFinal.Insert(ductRunFinal.IndexOf(fitting), (Duct)fitting.ConnectionObjects[1]);
+                                    }
+                                }
+
+                            }
+                            if (fitting.ConnectionObjects[1] == duct)
+                            {
+                                if (!ductRunFinal.Contains(fitting))
+                                {
+                                    ductRunFinal.Insert(ductRunFinal.IndexOf(duct), (Fitting)fitting);
+                                    if (!ductRunFinal.Contains(fitting.ConnectionObjects[0]))
+                                    {
+                                        ductRunFinal.Insert(ductRunFinal.IndexOf(fitting), (Duct)fitting.ConnectionObjects[0]);
+                                    }
+                                }
+
+                            }
+                        }
+
+
+                    }
+
+
+                }
 
             }
-            return _connectedFittings;
+
+
+            return ductRunFinal;
+            /***************************************************/
         }
+
     }
 }
 
