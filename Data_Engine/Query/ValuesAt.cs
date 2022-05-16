@@ -126,7 +126,7 @@ namespace BH.Engine.Data
                 if (col.ColumnName == "Name")
                     obj.Name = row[col].ToString();
                 else if (col.ColumnName == "Tags")
-                    obj.Tags = (HashSet<string>)row[col];
+                    obj.Tags = row[col] as HashSet<string> ?? new HashSet<string>();
                 else if (col.ColumnName == "BHoM_Guid")
                     obj.BHoM_Guid = (Guid)row[col];
                 else
