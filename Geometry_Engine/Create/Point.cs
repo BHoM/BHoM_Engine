@@ -85,21 +85,21 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
-        [Description("Creates a random Point based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Description("Creates a random Point based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resulting geometry will be contained within the box.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
         [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("point", "The generated random Point.")]
         public static Point RandomPoint(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = NextSeed();
+                seed = NextRandomSeed();
             Random rnd = new Random(seed);
             return RandomPoint(new Random(seed), box);
         }
 
         /***************************************************/
 
-        [Description("Creates a random Point using the provided Random class. If Box is provided, the resuling geometry will be contained within the box.")]
+        [Description("Creates a random Point using the provided Random class. If Box is provided, the resulting geometry will be contained within the box.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
         [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
         [Output("point", "The generated random Point.")]

@@ -36,10 +36,10 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        [Description("Culls all duplicate points in the list by grouping all points that are within the maximum provided distance from one another and returning the average point in each group.")]
+        [Description("Culls all duplicate points in the list by grouping all points that are within the maximum provided distance from one another and returning the average point in each group. A DBScan algorithm is used to determine if considered duplicates. This means that chains of close points will be determined the same, even if two individual points in this chain can have a distance between them that is larger than the tolerance, as long as they both are within tolerance of another point in the same group.")]
         [Input("points", "The collection of points to cull duplicates from.")]
         [Input("maxDist", "The maximum allowable distance between two points for them to be deemed the same point.", typeof(Length))]
-        [Output("points", "The collection of points with all duplicates removed. For cases when points have been deemed duplicates of each other, average points of these duplicate points will be returned.")]
+        [Output("points", "The collection of points with all duplicates removed. For cases when points have been deemed duplicates of each other, average point per each group of duplicates will be returned.")]
         public static List<Point> CullDuplicates(this List<Point> points, double maxDist = Tolerance.Distance)
         {
             int count = points.Count;

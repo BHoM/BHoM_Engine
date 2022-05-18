@@ -35,10 +35,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Computes a tolerance to be used to check if a vlue is zero when computing the RowEchelonForm based on a distance tolerance. Attempts to find a value that gives a result for, for example, Coplanar and Colinear checks that matches the distance tolerance provided.")]
-        [Input("matrix", "The matrix to calculate the tolerance for.")]
-        [Input("tolerance", "Distance tolerance as a baseline for the row echelon form tolerance.")]
-        [Output("refTol", "The computed tolerance matching the provided matrix and distance tolerance.")]
+        [Description("Computes a tolerance to be used to check if a value is zero when computing the RowEchelonForm based on a distance tolerance. Attempts to find a numerical equivalent value of the provided geometrical tolerance, i.e. the value that would give correct results for, for example, Coplanar and Colinear checks assuming a given geometrical tolerance.")]
+        [Input("matrix", "The matrix to calculate the numerical tolerance for.")]
+        [Input("tolerance", "Distance tolerance as a baseline for the row echelon form numerical tolerance.")]
+        [Output("refTol", "The computed numerical tolerance matching the provided matrix and distance tolerance.")]
         public static double REFTolerance(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
             int d1 = matrix.GetLength(0);

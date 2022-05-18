@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
 
         [Description("Checks if a Point is inside a BoundingBox within tolerance.")]
         [Input("box", "The BoundingBox to check for point containment.")]
-        [Input("pt", "The Point to check if it is inside the box")]
+        [Input("pt", "The Point to check if it is inside the box.")]
         [Input("acceptOnEdge", "If true, the Point is deemed to be contained if it is on the edge of the BoundingBox. If false, the point needs to be fully inside the box, not allowing it to touch any of the faces within tolerance.")]
         [Input("tolerance", "Tolerance to be used to check if the point is on the edge of the box. A point within tolerance distance away from one of the faces of the box is deemed to be on the edge.", typeof(Length))]
         [Output("isContaining", "Returns true if the Point is inside the BoundingBox.")]
@@ -96,7 +96,7 @@ namespace BH.Engine.Geometry
 
         [Description("Checks if a collection of Points are all inside a Bounding box within tolerance. If a single point is outside the box, the method will return false.")]
         [Input("box", "The BoundingBox to check for point containment.")]
-        [Input("pts", "The points to check all are inside the box")]
+        [Input("pts", "The points to check all are inside the box.")]
         [Input("acceptOnEdge", "If true, a point is deemed to be contained if it is on the edge of the box. If false, the point needs to be fully inside the box, not allowing it to touch any of the faces within tolerance.")]
         [Input("tolerance", "Tolerance to be used to check if a point is on the edge of the box. A point within tolerance distance away from one of the faces of the box is deemed to be on the edge.", typeof(Length))]
         [Output("isContaining", "Returns true if all of the Points are inside the BoundingBox.")]
@@ -119,7 +119,7 @@ namespace BH.Engine.Geometry
 
         [Description("Checks if the geometry is inside the BoundingBox within tolerance by checking if the Bounds of the geometry is inside the provided BoundingBox.")]
         [Input("box", "The BoundingBox to check for point containment.")]
-        [Input("geometry", "The Geometry to check if it is inside the box")]
+        [Input("geometry", "The Geometry to check if it is inside the box.")]
         [Input("acceptOnEdge", "If true, the Geometry is deemed to be contained if it is touching the edge of the BoundingBox. If false, the geometry needs to be fully inside the box, not allowing it to touch any of the faces within tolerance.")]
         [Input("tolerance", "Tolerance to be used to check if the geometry is on the edge of the box. A geometry within tolerance distance away from one of the faces of the box is deemed to be on the edge.", typeof(Length))]
         [Output("isContaining", "Returns true if the geometry is inside the BoundingBox.")]
@@ -540,7 +540,7 @@ namespace BH.Engine.Geometry
 
         [Description("Checks if the geometry is inside the Cuboid within tolerance by checking if the Bounds of the geometry in the coordinate system of the Cuboid is inside the provided Cuboid.")]
         [Input("cuboid", "The Cuboid to check for point containment.")]
-        [Input("geometry", "The Geometry to check if it is inside the Cuboid")]
+        [Input("geometry", "The Geometry to check if it is inside the Cuboid.")]
         [Input("acceptOnEdge", "If true, the Geometry is deemed to be contained if it is touching the edge of the Cuboid. If false, the geometry needs to be fully inside the Cuboid, not allowing it to touch any of the faces within tolerance.")]
         [Input("tolerance", "Tolerance to be used to check if the geometry is on the edge of the Cuboid. A geometry within tolerance distance away from one of the faces of the Cuboid is deemed to be on the edge.", typeof(Length))]
         [Output("isContaining", "Returns true if the geometry is inside the Cuboid.")]
