@@ -333,7 +333,7 @@ namespace BH.Engine.Structure
             longReif = new List<LongitudinalReinforcement>();
             tranReif = new List<TransverseReinforcement>();
 
-            if (section == null)
+            if (section == null || section.RebarIntent == null)
             {
                 longCover = 0;
                 tranCover = 0;
