@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using BH.oM.Base;
+using BH.Engine.Base;
 
 namespace BH.Engine.MEP
 {
@@ -45,21 +46,14 @@ namespace BH.Engine.MEP
         {
             List<Fitting> ConnectedFittings = new List<Fitting>();
 
-            //Ideally only two fitting connections...
             foreach (Fitting fitting in fittings)
             {
                 fitting.ConnectionObjects = new List<Duct>();
 
                 foreach (var fittingConnection in fitting.ConnectionsLocation)
                 {
-                    foreach (var duct in ducts)
-                    {
-                        if ((duct.StartPoint.X == fittingConnection.X && duct.StartPoint.Y == fittingConnection.Y && duct.StartPoint.Z == fittingConnection.Z) ||
-                            (duct.EndPoint.X == fittingConnection.X && duct.EndPoint.Y == fittingConnection.Y && duct.EndPoint.Z == fittingConnection.Z))
-                        {
-                            fitting.ConnectionObjects.Add(duct);
-                        }
-                    }
+                    fitting.ConnectionObjects.AddRange(ducts.Where(duct => (duct.StartPoint.X == fittingConnection.X && duct.StartPoint.Y == fittingConnection.Y && duct.StartPoint.Z == fittingConnection.Z) ||
+                                                                                                    (duct.EndPoint.X == fittingConnection.X && duct.EndPoint.Y == fittingConnection.Y && duct.EndPoint.Z == fittingConnection.Z)));
                 }
                 ConnectedFittings.Add(fitting);
             }
@@ -67,6 +61,10 @@ namespace BH.Engine.MEP
 
             List<BHoMObject> ductRunFinal = new List<BHoMObject>();
 
+            ///This might need to be building off any connected duct fitting. Match the duct fitting connections of 0 side to 1 side.
+            ///Do I need reflection for this to work?
+            ///var initialDuct = ducts.Where(x =>
+            ///BH.Engine.Adapters.Revit.Query.GetRevitParameterValue(x, "ElementId") == BH.Engine.Adapters.Revit.Query.GetRevitParameterValue(firstDuct, "ElementId")).First();
 
             ductRunFinal.Add(firstDuct);
 
@@ -78,29 +76,23 @@ namespace BH.Engine.MEP
                     {
                         foreach (Fitting fitting in ConnectedFittings)
                         {
-                            if (fitting.ConnectionObjects[0] == duct)
+                            if (fitting.ConnectionObjects[0] == duct && !ductRunFinal.Contains(fitting))
                             {
-                                if (!ductRunFinal.Contains(fitting))
+                                ductRunFinal.Insert(ductRunFinal.IndexOf(duct), fitting);
+                                if (!ductRunFinal.Contains(fitting.ConnectionObjects[1]))
                                 {
-                                    ductRunFinal.Insert(ductRunFinal.IndexOf(duct), (Fitting)fitting);
-                                    if (!ductRunFinal.Contains(fitting.ConnectionObjects[1]))
-                                    {
-                                        ductRunFinal.Insert(ductRunFinal.IndexOf(fitting), (Duct)fitting.ConnectionObjects[1]);
-                                    }
+                                    ductRunFinal.Insert(ductRunFinal.IndexOf(fitting), (Duct)fitting.ConnectionObjects[1]);
                                 }
-
                             }
-                            if (fitting.ConnectionObjects[1] == duct)
-                            {
-                                if (!ductRunFinal.Contains(fitting))
-                                {
-                                    ductRunFinal.Insert(ductRunFinal.IndexOf(duct), (Fitting)fitting);
-                                    if (!ductRunFinal.Contains(fitting.ConnectionObjects[0]))
-                                    {
-                                        ductRunFinal.Insert(ductRunFinal.IndexOf(fitting), (Duct)fitting.ConnectionObjects[0]);
-                                    }
-                                }
 
+
+                            if (fitting.ConnectionObjects[1] == duct && !ductRunFinal.Contains(fitting))
+                            {
+                                ductRunFinal.Insert(ductRunFinal.IndexOf(duct), fitting);
+                                if (!ductRunFinal.Contains(fitting.ConnectionObjects[0]))
+                                {
+                                    ductRunFinal.Insert(ductRunFinal.IndexOf(fitting), (Duct)fitting.ConnectionObjects[0]);
+                                }
                             }
                         }
 
@@ -111,7 +103,6 @@ namespace BH.Engine.MEP
                 }
 
             }
-
 
             return ductRunFinal;
             /***************************************************/

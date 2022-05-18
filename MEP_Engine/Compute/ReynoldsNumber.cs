@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+
 using System;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
@@ -32,15 +33,17 @@ namespace BH.Engine.MEP
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the reynolds number for a duct given fluid velocity, duct circular diameter, and fluid kinematic viscotity. Typically used in pressure drop calculations")]
+        [Description("Calculates the reynolds number for a duct given fluid velocity, duct circular diameter, and fluid kinematic viscotity. Typically used in pressure drop calculations. If Reynolds number is ommited, default values apply. From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 20 and 21.")]
         [Input("fluidVelocity", "fluid flow velocity [m/s]")]
-        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area., [m]")]
-        [Input("fluidKinematicViscosity", "fluid kinematice viscosity [m2/s]")]
+        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area. [m]")]
+        [Input("fluidKinematicViscosity", "fluid kinematice viscosity [m2/s], ")]
         [Output("reynoldsNumber", "The reynolds number for fluid flow through the flow area.[unitless]")]
         public static double ReynoldsNumber(double fluidVelocity, double circularDiameter, double fluidKinematicViscosity = double.NaN)
         {
             double output;
             double reynoldsNumber;
+            //convert to mm
+            circularDiameter *= 1000;
 
             if (fluidVelocity == double.NaN)
             {
@@ -57,16 +60,11 @@ namespace BH.Engine.MEP
             ///For standard air and temperature between 4C and 38C, it is acceptable to use the equation below.
             if (fluidKinematicViscosity == double.NaN)
             {
-                //convert to mm
-                circularDiameter *= 1000;
                 reynoldsNumber = 66.4* circularDiameter * fluidVelocity;
                 output = reynoldsNumber;
 
                 return output;
             }
-
-            //convert to mm
-            circularDiameter *= 1000;
 
             reynoldsNumber = (circularDiameter * fluidVelocity) / (1000 * fluidKinematicViscosity);
             output = reynoldsNumber;

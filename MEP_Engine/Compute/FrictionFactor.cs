@@ -35,8 +35,8 @@ namespace BH.Engine.MEP
         [Description("Calculates the  friction factor for a duct given reynolds number, circular diameter, and surface roughness. Typically used in pressure drop calculations")]
         [Input("reynoldsNumber", "Reynolds number, [unitless]")]
         [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area., [m]")]
-        [Input("surfaceRoughness", "Surfae roughness [m]")]
-        [Output("circularFlowAreaVelocity", "The velocity of the fluid through the flow area.")]
+        [Input("surfaceRoughness", "Surface roughness [m]")]
+        [Output("frictionFactor", "The friction factor, unitless.")]
         public static double FrictionFactor(double reynoldsNumber, double circularDiameter, double surfaceRoughness)
         {
             double output;
@@ -58,8 +58,8 @@ namespace BH.Engine.MEP
                 return -1;
             }
 
-            double componentA = Math.Pow(2.457 * Math.Log(1/(Math.Pow(7/reynoldsNumber,0.9)+(0.27*surfaceRoughness/circularDiameter))),16);
-            double componentB = Math.Pow((37530/reynoldsNumber),16);
+            double componentA = Math.Pow(2.457 * Math.Log(1.0/(Math.Pow(7.0/reynoldsNumber,0.9)+(0.27*surfaceRoughness/circularDiameter))),16);
+            double componentB = Math.Pow((37530.0/reynoldsNumber),16);
             
             //testing PEMDAS
 /*            double componenentFF1 = (1 / Math.Pow(componentA + componentB, 1.5));
@@ -69,7 +69,7 @@ namespace BH.Engine.MEP
             double componenentFF5 = 8 * componenentFF4;
             output = componenentFF5;*/
 
-            double frictionFactor = 8 * Math.Pow(Math.Pow(8 / reynoldsNumber, 12) + (1 / Math.Pow(componentA + componentB, 1.5)), 1D / 12);
+            double frictionFactor = 8 * Math.Pow(Math.Pow(8.0 / reynoldsNumber, 12) + (1.0 / Math.Pow(componentA + componentB, 1.5)), 1.0 / 12);
             output = frictionFactor;
 
 
