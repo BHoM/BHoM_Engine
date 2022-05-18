@@ -37,13 +37,13 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates and returns the intersection point of two Lines. If the lines are colienar or no intersection point can be found, null is returned.")]
+        [Description("Calculates and returns the intersection point of two Lines. If the lines are collinear or no intersection point can be found, null is returned.")]
         [Input("line1", "First Line to intersect.")]
         [Input("line2", "Second Line to intersect.")]
         [Input("useInfiniteLines", "If true or if a lines Infinite property is true, a intersection point found that is outside the domain of that lines start and end point is accepted. If false, and the lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point, if not, null is returned.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Input("angleTolerance", "Angle tolerance to be used in the method. Used for checking if the lines are colinear", typeof(Angle))]
-        [Output("interPt", "The intersection point of the two Lines. If no intersection point is found, null is returned.")]
+        [Input("angleTolerance", "Angle tolerance to be used in the method. Used for checking if the lines are collinear", typeof(Angle))]
+        [Output("intersection", "The intersection point of the two Lines. If no intersection point is found, null is returned.")]
         public static Point LineIntersection(this Line line1, Line line2, bool useInfiniteLines = false, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             double sqTol = tolerance * tolerance;
@@ -84,7 +84,7 @@ namespace BH.Engine.Geometry
         [Input("line2", "Second Line to intersect.")]
         [Input("useInfiniteLines", "If true or if a lines Infinite property is true, a intersection point found that is outside the domain of that lines start and end point is accepted. If false, and the lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Output("interPts", "The intersection points of the two Lines.")]
+        [Output("intersections", "The intersection points of the two Lines.")]
         public static List<Point> LineIntersections(this Line line1, Line line2, bool useInfiniteLines = false, double tolerance = Tolerance.Distance)
         {
             List<Point> result = new List<Point>();
@@ -127,7 +127,7 @@ namespace BH.Engine.Geometry
         [Input("lines", "Collection of lines to get all intersections from.")]
         [Input("useInfiniteLine", "If true or if a lines Infinite property is true, a intersection point found that is outside the domain of that lines start and end point is accepted. If false, and the lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Output("interPts", "All intersection points of collection of Lines.")]
+        [Output("intersections", "All intersection points of collection of Lines.")]
         public static List<Point> LineIntersections(this List<Line> lines, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             // TODO: implement PointMatrix for proximity analysis
@@ -163,7 +163,7 @@ namespace BH.Engine.Geometry
         [Input("line", "Line to intersect with the Arc.")]
         [Input("useInfiniteLine", "If true or if the Infinite property of the Line is true, a intersection point found that is outside the domain of the Lines start and end point is accepted. If false, and the Lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Output("interPts", "The intersection points of the Arc and the Line.")]
+        [Output("intersections", "The intersection points of the Arc and the Line.")]
         public static List<Point> LineIntersections(this Arc arc, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = line.DeepClone();
@@ -207,12 +207,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Calculates and returns the intersection points of a Line and an Circle.")]
+        [Description("Calculates and returns the intersection points of a Line and a Circle.")]
         [Input("circle", "Circle to intersect with the Line.")]
         [Input("line", "Line to intersect with the Circle.")]
         [Input("useInfiniteLine", "If true or if the Infinite property of the Line is true, a intersection point found that is outside the domain of the Lines start and end point is accepted. If false, and the Lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Output("interPts", "The intersection points of the Circle and the Line.")]
+        [Output("intersections", "The intersection points of the Circle and the Line.")]
         public static List<Point> LineIntersections(this Circle circle, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = line.DeepClone();
@@ -258,12 +258,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Calculates and returns the intersection points of a Line and an Polyline.")]
+        [Description("Calculates and returns the intersection points of a Line and a Polyline.")]
         [Input("curve", "Polyline to intersect with the Line.")]
         [Input("line", "Line to intersect with the Polyline.")]
         [Input("useInfiniteLine", "If true or if the Infinite property of the Line is true, a intersection point found that is outside the domain of the Lines start and end point is accepted. If false, and the Lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Output("interPts", "The intersection points of the Polyline and the Line.")]
+        [Output("intersections", "The intersection points of the Polyline and the Line.")]
         public static List<Point> LineIntersections(this Polyline curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = line.DeepClone();
@@ -282,12 +282,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Calculates and returns the intersection points of a Line and an PolyCurve.")]
+        [Description("Calculates and returns the intersection points of a Line and a PolyCurve.")]
         [Input("curve", "PolyCurve to intersect with the Line.")]
         [Input("line", "Line to intersect with the PolyCurve.")]
         [Input("useInfiniteLine", "If true or if the Infinite property of the Line is true, a intersection point found that is outside the domain of the Lines start and end point is accepted. If false, and the Lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Output("interPts", "The intersection points of the PolyCurve and the Line.")]
+        [Output("intersections", "The intersection points of the PolyCurve and the Line.")]
         public static List<Point> LineIntersections(this PolyCurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = line.DeepClone();
@@ -308,8 +308,8 @@ namespace BH.Engine.Geometry
         [Input("curve1", "First Polyline to intersect with the second Polyline.")]
         [Input("curve2", "Second Polyline to intersect with the first Polyline.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Input("angleTolerance", "Angle tolerance to be used in the method. Used for checking if the lines are colinear", typeof(Angle))]
-        [Output("interPts", "The intersection points of the PolyCurve and the Line.")]
+        [Input("angleTolerance", "Angle tolerance to be used in the method. Used for checking if the polyline segments are collinear.", typeof(Angle))]
+        [Output("intersections", "The intersection points of the two Polylines.")]
         public static List<Point> LineIntersections(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             List<Point> iPts = new List<Point>();
@@ -338,7 +338,7 @@ namespace BH.Engine.Geometry
         [Input("line", "Line to intersect with the ICurve.")]
         [Input("useInfiniteLine", "If true or if the Infinite property of the Line is true, a intersection point found that is outside the domain of the Lines start and end point is accepted. If false, and the Lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Output("interPts", "The intersection points of the ICurve and the Line.")]
+        [Output("intersections", "The intersection points of the ICurve and the Line.")]
         public static List<Point> ILineIntersections(this ICurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             return LineIntersections(curve as dynamic, line, useInfiniteLine, tolerance);

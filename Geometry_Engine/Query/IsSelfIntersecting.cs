@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
         [Description("Checks if any part of the the Curve is intersecting with any other part of the curve. A Line is by definition never self intersecting, hence this method always returns false.")]
         [Input("curve", "The curve to check for self intersection. A for a Line, this method always returns false.")]
         [Input("tolerance", "Distance tolerance to be used by the method. For a Line this in unused.", (typeof(Length)))]
-        [Output("isInter", "Returns true if the Curve is self intersecting. For a Line this always returns false.")]
+        [Output("isIntersecting", "Returns true if the Curve is self intersecting. For a Line this always returns false.")]
         public static bool IsSelfIntersecting(this Line curve, double tolerance = Tolerance.Distance)
         {
             return false;
@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
         [Description("Checks if any part of the the Curve is intersecting with any other part of the curve. For an Arc this is true if the angle range is larger than 2 PI, i.e. if the curve is overlapping itself.")]
         [Input("curve", "The curve to check for self intersection.")]
         [Input("tolerance", "Distance tolerance to be used by the method. For an Arc this in unused.", (typeof(Length)))]
-        [Output("isInter", "Returns true if the Curve is self intersecting.")]
+        [Output("isIntersecting", "Returns true if the Curve is self intersecting.")]
         public static bool IsSelfIntersecting(this Arc curve, double tolerance = Tolerance.Distance)
         {
             return Math.Abs(curve.StartAngle - curve.EndAngle) > 2 * Math.PI;
@@ -61,7 +61,7 @@ namespace BH.Engine.Geometry
         [Description("Checks if any part of the the Curve is intersecting with any other part of the curve. A Circle is by definition never self intersecting, hence this method always returns false.")]
         [Input("curve", "The curve to check for self intersection. A for a Circle, this method always returns false.")]
         [Input("tolerance", "Distance tolerance to be used by the method. For a Circle this in unused.", (typeof(Length)))]
-        [Output("isInter", "Returns true if the Curve is self intersecting. For a Circle this always returns false.")]
+        [Output("isIntersecting", "Returns true if the Curve is self intersecting. For a Circle this always returns false.")]
         public static bool IsSelfIntersecting(this Circle curve, double tolerance = Tolerance.Distance)
         {
             return false;
@@ -72,7 +72,7 @@ namespace BH.Engine.Geometry
         [Description("Checks if any part of the the Curve is intersecting with any other part of the curve. An Ellipse is by definition never self intersecting, hence this method always returns false.")]
         [Input("curve", "The curve to check for self intersection. A for an Ellipse, this method always returns false.")]
         [Input("tolerance", "Distance tolerance to be used by the method. For an Ellipse this in unused.", (typeof(Length)))]
-        [Output("isInter", "Returns true if the Curve is self intersecting. For an Ellipse this always returns false.")]
+        [Output("isIntersecting", "Returns true if the Curve is self intersecting. For an Ellipse this always returns false.")]
         public static bool IsSelfIntersecting(this Ellipse curve, double tolerance = Tolerance.Distance)
         {
             return false;
@@ -83,7 +83,7 @@ namespace BH.Engine.Geometry
         [Description("Checks if any part of the the Polyline is intersecting with any other part of the curve.")]
         [Input("curve", "The Polyline to check for self intersection.")]
         [Input("tolerance", "Distance tolerance to be used by the method.", (typeof(Length)))]
-        [Output("isInter", "Returns true if the Curve is self intersecting.")]
+        [Output("isIntersecting", "Returns true if the Curve is self intersecting.")]
         public static bool IsSelfIntersecting(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             double sqTolerance = tolerance * tolerance;
@@ -121,7 +121,7 @@ namespace BH.Engine.Geometry
         [Description("Checks if any part of the the PolyCurve is intersecting with any other part of the curve.")]
         [Input("curve", "The PolyCurve to check for self intersection.")]
         [Input("tolerance", "Distance tolerance to be used by the method.", (typeof(Length)))]
-        [Output("isInter", "Returns true if the Curve is self intersecting.")]
+        [Output("isIntersecting", "Returns true if the Curve is self intersecting.")]
         public static bool IsSelfIntersecting(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             List<ICurve> curves = curve.SubParts().Where(x => x.ILength() > tolerance).ToList();
@@ -164,7 +164,7 @@ namespace BH.Engine.Geometry
         [Description("Checks if any part of the the ICurve is intersecting with any other part of the curve.")]
         [Input("curve", "The ICurve to check for self intersection.")]
         [Input("tolerance", "Distance tolerance to be used by the method.", (typeof(Length)))]
-        [Output("isInter", "Returns true if the Curve is self intersecting.")]
+        [Output("isIntersecting", "Returns true if the Curve is self intersecting.")]
         public static bool IIsSelfIntersecting(this ICurve curve, double tolerance = Tolerance.Distance)
         {
             return IsSelfIntersecting(curve as dynamic, tolerance);

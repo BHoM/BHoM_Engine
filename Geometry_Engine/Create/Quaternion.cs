@@ -74,7 +74,7 @@ namespace BH.Engine.Geometry
         public static Quaternion RandomQuaternion(int seed = -1)
         {
             if (seed == -1)
-                seed = NextSeed();
+                seed = NextRandomSeed();
             Random rnd = new Random(seed);
             return RandomQuaternion(new Random(seed));
         }

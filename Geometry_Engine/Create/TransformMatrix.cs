@@ -55,17 +55,17 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Creates a Translation matrix from the provided Vector.")]
-        [Input("vector", "The Vector corresponding to the seeked translation.")]
+        [Input("translation", "The Vector corresponding to the seeked translation.")]
         [Output("transform", "The created TransformMatrix.")]
-        public static TransformMatrix TranslationMatrix(Vector vector)
+        public static TransformMatrix TranslationMatrix(Vector translation)
         {
             return new TransformMatrix
             {
                 Matrix = new double[,]
                 {
-                    {  1,  0,  0,  vector.X   },
-                    {  0,  1,  0,  vector.Y   },
-                    {  0,  0,  1,  vector.Z   },
+                    {  1,  0,  0,  translation.X   },
+                    {  0,  1,  0,  translation.Y   },
+                    {  0,  0,  1,  translation.Z   },
                     {  0,  0,  0,  1   }
                 }
             };
@@ -131,7 +131,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Creates a TransformMatrix corresponding to a projection of the geometry on to the plane along a vector. If not vector is provided, the projection will be along the normal of the plane.")]
+        [Description("Creates a TransformMatrix corresponding to a projection of the geometry on to the plane along a vector. If no vector is provided, the projection will be along the normal of the plane.")]
         [Input("plane", "The plane to project the geometry to.")]
         [Input("vector", "Optional vector to project along. The normal of the plane will be used if nothing is provided.")]
         [Output("transform", "The created TransformMatrix.")]
@@ -226,13 +226,13 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random TransformMatrix based on a seed. If no seed is provided, a random one will be generated.")]
         [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
-        [Input("minVal", "Minimum value to be used for each position in the created random matrix.")]
-        [Input("maxVal", "Maximum value to be used for each position in the created random matrix.")]
+        [Input("minVal", "Minimum value to be used for each element in the created random matrix.")]
+        [Input("maxVal", "Maximum value to be used for each element in the created random matrix.")]
         [Output("transform", "The generated random TransformMatrix.")]
         public static TransformMatrix RandomMatrix(int seed = -1, double minVal = -1, double maxVal = 1)
         {
             if (seed == -1)
-                seed = NextSeed();
+                seed = NextRandomSeed();
             Random rnd = new Random(seed);
             return RandomMatrix(rnd, minVal, maxVal);
         }
@@ -241,8 +241,8 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a random TransformMatrix using the provided Random class.")]
         [Input("rnd", "Random object to be used to generate the random geometry.")]
-        [Input("minVal", "Minimum value to be used for each position in the created random matrix.")]
-        [Input("maxVal", "Maximum value to be used for each position in the created random matrix.")]
+        [Input("minVal", "Minimum value to be used for each element in the created random matrix.")]
+        [Input("maxVal", "Maximum value to be used for each element in the created random matrix.")]
         [Output("transform", "The generated random TransformMatrix.")]
         public static TransformMatrix RandomMatrix(Random rnd, double minVal = -1, double maxVal = 1)
         {
