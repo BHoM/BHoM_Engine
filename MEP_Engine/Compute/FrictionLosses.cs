@@ -32,7 +32,7 @@ namespace BH.Engine.MEP
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the  friction losses for a duct given friction factor, duct length, circular diameter, fluid density, and fluid velocity. Typically used in pressure drop calculations")]
+        [Description("Calculates the  friction losses for a duct given friction factor, duct length, circular diameter, fluid density, and fluid velocity. Typically used in pressure drop calculations. From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 18 -- Darcy Equation.")]
         [Input("frictionFactor", "friction factor, [unitless]")]
         [Input("ductLength", "length of duct [m]")]
         [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area., [m]")]

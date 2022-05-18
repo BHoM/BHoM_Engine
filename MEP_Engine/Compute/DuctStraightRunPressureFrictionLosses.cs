@@ -36,7 +36,7 @@ namespace BH.Engine.MEP
         [Input("ductLength", "length of duct [m]")]
         [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area., [m]")]
         [Input("volumetricFlowRate", "Volumetric flow rate of fluid through fluid flow area.")]
-        [Input("surfaceRoughness", "Surfae roughness [m]")]
+        [Input("surfaceRoughness", "Surface roughness [m]")]
         [Input("fluidDensity", "fluid density [kg/m3]")]
         [Input("fluidKinematicViscosity", "fluid kinematice viscosity [m2/s]")]
         [Output("frictionLosses", "The friction losses due to fluid flow through the flow area.[pa]")]
@@ -81,12 +81,12 @@ namespace BH.Engine.MEP
             
             
 
-            double _circularFlowAreaVelocity = CircularFlowAreaVelocity(volumetricFlowRate,circularDiameter);
-            double _reynoldsNumber = ReynoldsNumber(_circularFlowAreaVelocity, circularDiameter, fluidKinematicViscosity);
-            double _frictionFactor = FrictionFactor(_reynoldsNumber, circularDiameter, surfaceRoughness);
+            double circularFlowAreaVelocity = CircularFlowAreaVelocity(volumetricFlowRate,circularDiameter);
+            double reynoldsNumber = ReynoldsNumber(circularFlowAreaVelocity, circularDiameter, fluidKinematicViscosity);
+            double frictionFactor = FrictionFactor(reynoldsNumber, circularDiameter, surfaceRoughness);
             //convert to mm
             circularDiameter *= 1000;
-            double frictionLosses = (1000 * _frictionFactor*ductLength/circularDiameter) * (fluidDensity/2D) * Math.Pow(_circularFlowAreaVelocity,2);
+            double frictionLosses = (1000 * frictionFactor*ductLength/circularDiameter) * (fluidDensity/2D) * Math.Pow(circularFlowAreaVelocity,2);
             output = frictionLosses;
            
            

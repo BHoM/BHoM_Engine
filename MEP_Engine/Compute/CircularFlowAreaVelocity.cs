@@ -33,9 +33,9 @@ namespace BH.Engine.MEP
         /***************************************************/
 
         [Description("Calculates the circular flow area velocity given a volumetric flow rate and circular diameter. Typically used in pressure drop calculations")]
-        [Input("volumetricFlowRate", "Volumetric flow rate of fluid through fluid flow area.")]
-        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area.")]
-        [Output("circularFlowAreaVelocity", "The velocity of the fluid through the flow area.")]
+        [Input("volumetricFlowRate", "Volumetric flow rate of fluid through fluid flow area.[m3/s]")]
+        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area. [m]")]
+        [Output("circularFlowAreaVelocity", "The velocity of the fluid through the flow area. [m/s]")]
         public static double CircularFlowAreaVelocity(double volumetricFlowRate, double circularDiameter)
         {
             double output;
@@ -51,8 +51,8 @@ namespace BH.Engine.MEP
                 return -1;
             }
 
-            double circularArea = Math.PI * Math.Pow((circularDiameter / 2),2);
-            double velocity = volumetricFlowRate / circularArea;
+            double circularArea = Math.PI * Math.Pow((circularDiameter / 2.0),2);
+            double velocity = ((volumetricFlowRate/1000.0) / circularArea) ;
             output = velocity;
            
            
