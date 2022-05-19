@@ -50,6 +50,9 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+    <Reference Include="Structure_oM">
+      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Structure_oM.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

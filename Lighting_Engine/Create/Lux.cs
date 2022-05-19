@@ -32,8 +32,8 @@ using System.ComponentModel;
 using BH.oM.Geometry;
 using BH.oM.Spatial;
 using BH.oM.Lighting.Elements;
-using BH.oM.Lighting.Results;
 using BH.oM.Lighting.Results.Mesh;
+using BH.oM.Lighting.Results.Illuminance;
 using BH.oM.Structure.Results;
 
 using BH.Engine.Geometry;
@@ -46,9 +46,9 @@ namespace BH.Engine.Lighting
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static BH.oM.Lighting.Results.Mesh.MeshResult MeshResult(List<BH.oM.Lighting.Results.Mesh.MeshElementResult> results, IComparable objectId, IComparable resultCase, MeshResultSmoothingType smoothing)
+        public static BH.oM.Lighting.Results.Mesh.MeshElementResult Lux(double lux, IComparable objectId, IComparable nodeId, IComparable meshFaceId, IComparable resultCase, MeshResultSmoothingType smoothing)
         {
-            return new BH.oM.Lighting.Results.Mesh.MeshResult(objectId, resultCase, results, smoothing);
+            return new Lux(objectId, nodeId, meshFaceId, resultCase, lux, smoothing);
         }
 
 
