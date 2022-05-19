@@ -341,6 +341,9 @@ namespace BH.Engine.Geometry
         [Output("intersections", "The intersection points of the ICurve and the Line.")]
         public static List<Point> ILineIntersections(this ICurve curve, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
+            if (curve == null || line == null)
+                return new List<Point>();
+
             return LineIntersections(curve as dynamic, line, useInfiniteLine, tolerance);
         }
 

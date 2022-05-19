@@ -59,6 +59,8 @@ namespace BH.Engine.Geometry
         [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix TranslationMatrix(Vector translation)
         {
+            if (translation == null)
+                return null;
             return new TransformMatrix
             {
                 Matrix = new double[,]
