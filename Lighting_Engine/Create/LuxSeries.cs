@@ -23,8 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
@@ -32,9 +30,9 @@ using System.ComponentModel;
 using BH.oM.Geometry;
 using BH.oM.Spatial;
 using BH.oM.Lighting.Elements;
+using BH.oM.Lighting.Results;
 using BH.oM.Lighting.Results.Mesh;
 using BH.oM.Lighting.Results.Illuminance;
-using BH.oM.Structure.Results;
 
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
@@ -46,7 +44,7 @@ namespace BH.Engine.Lighting
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static BH.oM.Lighting.Results.Mesh.MeshElementResult LuxSeries(List<double> lux, IComparable objectId, IComparable nodeId, IComparable meshFaceId, IComparable resultCase, MeshResultSmoothingType smoothing)
+        public static MeshElementResult LuxSeries(List<double> lux, IComparable objectId, IComparable nodeId, IComparable meshFaceId, IComparable resultCase, MeshResultSmoothingType smoothing)
         {
             return new LuxSeries(objectId, nodeId, meshFaceId, resultCase, lux, smoothing);
         }
