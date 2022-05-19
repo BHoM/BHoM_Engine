@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns true if the Bar has a concrete section with reinforcement intent defined with at least one IBarReinforcement in it. False if not, or if the Bar, ConcreteSection or BarRebarIntent is null.")]
+        [Description("Returns true if the Bar has a ConcreteSection with BarRebarIntent defined with at least one IBarReinforcement in it. False if the Bar, ConcreteSection or BarRebarIntent is null or the IBarReinforcement count is zero.")]
         [Input("bar", "The Bar to check for reinforcement.")]
         [Output("hasReinforcement", "Returns true if the Bar has reinforcement assigned, false otherwise.")]
         public static bool HasReinforcement(this Bar bar)
@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns true if the ConcreteSection has reinforcement intent defined with at least one IBarReinforcement in it. False if not, or if the ConcreteSection or BarRebarIntent is null.")]
+        [Description("Returns true if the ConcreteSection has BarRebarIntent defined with at least one IBarReinforcement in it.  False if the ConcreteSection or BarRebarIntent is null or the IBarReinforcement count is zero.")]
         [Input("bar", "The ConcreteSection to check for reinforcement.")]
         [Output("hasReinforcement", "Returns true if the Bar has reinforcement assigned, false otherwise.")]
         public static bool HasReinforcement(this ConcreteSection section)
