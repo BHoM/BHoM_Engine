@@ -54,6 +54,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousInputNames("translation", "vector")]
         [Description("Creates a Translation matrix from the provided Vector.")]
         [Input("translation", "The Vector corresponding to the seeked translation.")]
         [Output("transform", "The created TransformMatrix.")]
