@@ -34,37 +34,77 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousInputNames("property","constantThickness")]
         [Description("Calculates the mass per area for the property as its thickness mutiplied by the density.")]
-        [Input("constantThickness", "The ConstantThickness property to calculate the mass per area for.")]
+        [Input("property", "The ConstantThickness property to calculate the mass per area for.")]
         [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
-        public static double MassPerArea(this ConstantThickness constantThickness)
+        public static double MassPerArea(this ConstantThickness property)
         {
-            return constantThickness.IsNull() ? 0 : constantThickness.Thickness * constantThickness.Material.Density;
+            if (property.IsNull())
+                return 0;
+
+            return property.Material.IsNull() ? 0 : property.Thickness * property.Material.Density;
         }
 
         /***************************************************/
 
-        [NotImplemented]
-        public static double MassPerArea(this Ribbed ribbedProperty)
+        [Description("Calculates the mass per area for the property as its average thickness mutiplied by the density.")]
+        [Input("property", "The Ribbed property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this Ribbed property)
         {
-            throw new NotImplementedException();
+            if (property.IsNull())
+                return 0;
+
+            return property.Material.IsNull() ? 0 : property.AverageThickness() * property.Material.Density;
         }
 
         /***************************************************/
 
-        [NotImplemented]
-        public static double MassPerArea(this Waffle ribbedProperty)
+        [Description("Calculates the mass per area for the property as its average thickness mutiplied by the density.")]
+        [Input("property", "The waffle property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this Waffle property)
         {
-            throw new NotImplementedException();
+            if (property.IsNull())
+                return 0;
+
+            return property.Material.IsNull() ? 0 : property.AverageThickness() * property.Material.Density;
         }
 
         /***************************************************/
 
-        [NotImplemented]
+        [Description("Calculates the mass per area for the property as the sum of each layer's thickness multiplied by its density.")]
+        [Input("property", "The Layered property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this Layered property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            double density = 0;
+            bool nullMat = false;
+            foreach (Layer layer in property.Layers)
+            {
+                if (layer.Material == null)
+                    nullMat = true;
+                else
+                    density += layer.Thickness * layer.Material.Density;
+            }
+
+            if (nullMat)
+                Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. Mass has been reported assuming this is a void.");
+
+            return density;
+        }
+
+        /***************************************************/
+
+        [PreviousInputNames("property","loadingPanelProperty")]
         [Description("Gets the mass per area for a LoadingPanelProperty. This will always return 0.")]
-        [Input("loadingPanelProperty", "The LoadingPanelProperty property to calculate the mass per area for.")]
+        [Input("property", "The LoadingPanelProperty property to calculate the mass per area for.")]
         [Output("massPerArea", "The mass per area for the property. THis will always return 0 for a LoadingPanelProperty.", typeof(MassPerUnitArea))]
-        public static double MassPerArea(this LoadingPanelProperty loadingPanelProperty)
+        public static double MassPerArea(this LoadingPanelProperty property)
         {
             return 0;
         }

@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Profiles                 ****/
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'I Hegiht x Width x WebThickness x FlangeThickness'.")]
+        [Description("Generates a default description for the profile as 'I Height x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this ISectionProfile profile)
@@ -59,7 +59,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'Box Hegiht x Width x Thickness'.")]
+        [Description("Generates a default description for the profile as 'Box Height x Width x Thickness'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this BoxProfile profile)
@@ -72,7 +72,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'Angle Hegiht x Width x WebThickness x FlangeThickness'.")]
+        [Description("Generates a default description for the profile as 'Angle Height x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this AngleProfile profile)
@@ -85,7 +85,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'Channel Hegiht x Width x WebThickness x FlangeThickness'.")]
+        [Description("Generates a default description for the profile as 'Channel Height x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this ChannelProfile profile)
@@ -111,7 +111,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'FabBox Hegiht x Width x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
+        [Description("Generates a default description for the profile as 'FabBox Height x Width x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this FabricatedBoxProfile profile)
@@ -125,7 +125,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'GenFabBox Hegiht x TotalWidth x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
+        [Description("Generates a default description for the profile as 'GenFabBox Height x TotalWidth x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this GeneralisedFabricatedBoxProfile profile)
@@ -153,7 +153,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'FabI Hegiht x TopFlangeWidth x BotFLangeWidth x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
+        [Description("Generates a default description for the profile as 'FabI Height x TopFlangeWidth x BotFLangeWidth x WebThickness x TopFlangeThickness x BotFlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this FabricatedISectionProfile profile)
@@ -180,7 +180,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'Rectangle Hegiht x Width x CornerRadius'.")]
+        [Description("Generates a default description for the profile as 'Rectangle Height x Width x CornerRadius'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this RectangleProfile profile)
@@ -193,7 +193,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Generates a default description for the profile as 'T Hegiht x Width x WebThickness x FlangeThickness'.")]
+        [Description("Generates a default description for the profile as 'T Height x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to get a default description for.")]
         [Output("desc", "The generated description for the profile based on its dimensions.")]
         public static string Description(this TSectionProfile profile)
@@ -380,6 +380,29 @@ namespace BH.Engine.Structure
                 return "null property";
 
             return "LoadingPanel Application: " + property.LoadApplication + " RefEdge: " + property.ReferenceEdge;
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the SurfaceProperty as 'Shell with Layers: <Thickness - Material> - Base Material: <Material>'.")]
+        [Input("property", "The SurfaceProperty to get a default description for.")]
+        [Output("desc", "The generated description for the property.")]
+        public static string Description(this Layered property)
+        {
+            if (property == null)
+                return "null property";
+
+            List<string> layers = new List<string>() { };
+
+            foreach (Layer layer in property.Layers)
+            {
+                if (property == null)
+                    layers.Add("null layer");
+                else
+                    layers.Add($"THK {layer.Thickness:G3} - {CheckGetMaterialName(layer.Material)}");
+            }
+
+            return $"Shell with layers: {String.Join(", ", layers)} - Base Material: {CheckGetMaterialName(property.Material)}";
         }
 
         /***************************************************/
