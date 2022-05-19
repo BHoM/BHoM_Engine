@@ -53,8 +53,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns true if the ConcreteSection has BarRebarIntent defined with at least one IBarReinforcement in it.  False if the ConcreteSection or BarRebarIntent is null or the IBarReinforcement count is zero.")]
-        [Input("bar", "The ConcreteSection to check for reinforcement.")]
-        [Output("hasReinforcement", "Returns true if the Bar has reinforcement assigned, false otherwise.")]
+        [Input("section", "The ConcreteSection to check for reinforcement.")]
+        [Output("hasReinforcement", "Returns true if the ConcreteSection has reinforcement assigned, false otherwise.")]
         public static bool HasReinforcement(this ConcreteSection section)
         {
             if (section == null)
