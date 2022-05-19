@@ -53,6 +53,8 @@ namespace BH.Engine.Geometry
         [Output("vector", "The created Vector.")]
         public static Vector Vector(Point p)
         {
+            if (p == null)
+                return null;
             return new Vector { X = p.X, Y = p.Y, Z = p.Z };
         }
 
