@@ -23,8 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
@@ -34,7 +32,7 @@ using BH.oM.Spatial;
 using BH.oM.Lighting.Elements;
 using BH.oM.Lighting.Results;
 using BH.oM.Lighting.Results.Mesh;
-using BH.oM.Structure.Results;
+using BH.oM.Lighting.Results.Illuminance;
 
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
@@ -46,9 +44,9 @@ namespace BH.Engine.Lighting
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static BH.oM.Lighting.Results.Mesh.MeshResult MeshResult(List<BH.oM.Lighting.Results.Mesh.MeshElementResult> results, IComparable objectId, IComparable resultCase, MeshResultSmoothingType smoothing)
+        public static MeshResult MeshResult(List<MeshElementResult> results, IComparable objectId, IComparable resultCase, MeshResultSmoothingType smoothing)
         {
-            return new BH.oM.Lighting.Results.Mesh.MeshResult(objectId, resultCase, results, smoothing);
+            return new MeshResult(objectId, resultCase, results, smoothing);
         }
 
 
