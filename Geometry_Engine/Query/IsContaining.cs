@@ -25,6 +25,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -34,6 +36,14 @@ namespace BH.Engine.Geometry
         /**** Public Methods - BoundingBox              ****/
         /***************************************************/
 
+        [Description("Checks if a BoundingBox if fully contained within another BoundingBox within tolerance.")]
+        [Input("box1", "The outer BoundingBox, e.g. the BoundingBox to check if it is containing the second BoundingBox.")]
+        [Input("box2", "The inner BoundingBox, e.g. that BoundingBox to check if it is contained in the first BoundingBox.")]
+        [Input("acceptOnEdge", "If true, faces of the box overlapping within tolerance are accepted. If false, the second box needs to be strictly smaller in all dimensions compared to the first box.")]
+        [Input("tolerance", "Tolerance to be used to check if faces of the boxes overlap.\n" +
+               "If accept on edge is true, the minimum values of box2 needs to be larger or equal to the minimum values of box1 - tolerance and the maximum values of box2 needs to be smaller or equal to the maximum values of box1 + tolerance.\n" +
+               "If accept on edge is false, the minimum values of box2 needs to be larger than the minimum values of box1 + tolerance and the maximum values of box2 needs to be smaller than the maximum values of box1 - tolerance.", typeof(Length))]
+        [Output("isContaining", "Returns true if the second box is fully inside the first box within tolerance.")]
         public static bool IsContaining(this BoundingBox box1, BoundingBox box2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             Point max1 = box1.Max;
@@ -57,6 +67,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if a Point is inside a BoundingBox within tolerance.")]
+        [Input("box", "The BoundingBox to check for point containment.")]
+        [Input("pt", "The Point to check if it is inside the box.")]
+        [Input("acceptOnEdge", "If true, the Point is deemed to be contained if it is on the edge of the BoundingBox. If false, the point needs to be fully inside the box, not allowing it to touch any of the faces within tolerance.")]
+        [Input("tolerance", "Tolerance to be used to check if the point is on the edge of the box. A point within tolerance distance away from one of the faces of the box is deemed to be on the edge.", typeof(Length))]
+        [Output("isContaining", "Returns true if the Point is inside the BoundingBox.")]
         public static bool IsContaining(this BoundingBox box, Point pt, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             Point max = box.Max;
@@ -78,23 +94,35 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if a collection of Points are all inside a Bounding box within tolerance. If a single point is outside the box, the method will return false.")]
+        [Input("box", "The BoundingBox to check for point containment.")]
+        [Input("pts", "The points to check all are inside the box.")]
+        [Input("acceptOnEdge", "If true, a point is deemed to be contained if it is on the edge of the box. If false, the point needs to be fully inside the box, not allowing it to touch any of the faces within tolerance.")]
+        [Input("tolerance", "Tolerance to be used to check if a point is on the edge of the box. A point within tolerance distance away from one of the faces of the box is deemed to be on the edge.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the Points are inside the BoundingBox.")]
         public static bool IsContaining(this BoundingBox box, List<Point> pts, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (pts.Count == 0)
                 return false;
 
-            bool flag = true;
-            foreach (Point pt in pts)
-                if (!box.IsContaining(pt, acceptOnEdge, tolerance))
-                {
-                    flag = false;
-                }
 
-            return flag;
+            foreach (Point pt in pts)
+            {
+                if (!box.IsContaining(pt, acceptOnEdge, tolerance))
+                    return false;
+            }
+
+            return true;
         }
 
         /***************************************************/
 
+        [Description("Checks if the geometry is inside the BoundingBox within tolerance by checking if the Bounds of the geometry is inside the provided BoundingBox.")]
+        [Input("box", "The BoundingBox to check for point containment.")]
+        [Input("geometry", "The Geometry to check if it is inside the box.")]
+        [Input("acceptOnEdge", "If true, the Geometry is deemed to be contained if it is touching the edge of the BoundingBox. If false, the geometry needs to be fully inside the box, not allowing it to touch any of the faces within tolerance.")]
+        [Input("tolerance", "Tolerance to be used to check if the geometry is on the edge of the box. A geometry within tolerance distance away from one of the faces of the box is deemed to be on the edge.", typeof(Length))]
+        [Output("isContaining", "Returns true if the geometry is inside the BoundingBox.")]
         public static bool IsContaining(this BoundingBox box, IGeometry geometry, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             return box.IsContaining(geometry.IBounds(), acceptOnEdge, tolerance);
@@ -105,6 +133,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curve / points           ****/
         /***************************************************/
 
+        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Input("curve", "The Arc to check if it is containing all of the provided points. If the Arc is not closed, i.e. not a Circle, the method will return false.")]
+        [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
+        [Input("acceptOnEdge", "If true, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
         public static bool IsContaining(this Arc curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (!curve.IsClosed(tolerance)) return false;
@@ -114,6 +148,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Input("curve", "The Circle to check if it is containing all of the provided points.")]
+        [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
+        [Input("acceptOnEdge", "If true, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
         public static bool IsContaining(this Circle curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             Plane p = new Plane { Origin = curve.Centre, Normal = curve.Normal };
@@ -127,20 +167,36 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsContaining(this Line curve1, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        [PreviousInputNames("curve","curve1")]
+        [Description("Checks if the colleciton of Points are all contained within the curve. For a Line this will always return false.")]
+        [Input("curve", "The Line to check. For a Line this methods will always return false.")]
+        [Input("points", "The points to check. For a line this method will always return false.")]
+        [Input("acceptOnEdge", "Not used by this method. A Line is not an enclosed region, hence even points that are on the curve will be deemed to be outside.")]
+        [Input("tolerance", "Not used by this method. A Line is not an enclosed region, hence even points that are on the curve will be deemed to be outside.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the provided points are inside the curve. For a Line this always returns false.")]
+        public static bool IsContaining(this Line curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             return false;
         }
 
         /***************************************************/
 
+        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Input("curve", "The Polyline to check if it is containing all of the provided points. If the Polyline is not closed or planar, the method will return false.")]
+        [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
+        [Input("acceptOnEdge", "If true and the curve is closed, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
         public static bool IsContaining(this Polyline curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             // Todo:
-            // check boundingBox/proximity at the beginning!
             // project to 2D & rewrite methods to 2D to improve performance
             // - to be replaced with a general method for a nurbs curve?
             // - could be done with a ray instead of an infinite line!
+
+            BoundingBox box = curve.Bounds();
+            if (points.Any(x => !box.IsContaining(x, true, tolerance)))
+                return false;
 
             if (curve.IsClosed(tolerance))
             {
@@ -174,10 +230,10 @@ namespace BH.Engine.Geometry
                             Vector direction = (end - pPt).Normalise();
                             while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle))
                             {
-                                end = end.Translate(Create.RandomVectorInPlane(p, true));
-                                direction = (end - pPt).Normalise();
+                                direction = Create.RandomVectorInPlane(p, true);
                             }
 
+                            end = pPt.Translate(direction);
                             Line ray = new Line { Start = pPt, End = end };
                             ray.Infinite = true;
                             List<Point> intersects = new List<Point>();
@@ -249,6 +305,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Input("curve", "The PolyCurve to check if it is containing all of the provided points. If the PolyCurve is not closed or planar, the method will return false.")]
+        [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
+        [Input("acceptOnEdge", "If true and the curve is closed, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
         public static bool IsContaining(this PolyCurve curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             // Todo:
@@ -291,14 +353,14 @@ namespace BH.Engine.Geometry
                 if (pPt.SquareDistance(pt) > sqTol) // not on the same plane
                     return false;
 
-                Point end = p.Origin;   // Avrage of control points
+                Point end = p.Origin;  // Avrage of control points
                 Vector direction = (end - pPt).Normalise();     // Gets a line cutting through the curves and the point
                 while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle)) // not zeroa or parallel to edges
                 {
-                    end = end.Translate(Create.RandomVectorInPlane(p, true));
-                    direction = (end - pPt).Normalise();
+                    direction = Create.RandomVectorInPlane(p, true);
                 }
 
+                end = pPt.Translate(direction);
                 Line ray = new Line { Start = pPt, End = end };
                 ray.Infinite = true;
                 List<Point> intersects = new List<Point>();
@@ -357,15 +419,27 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curve / curve            ****/
         /***************************************************/
 
+        [Description("Checks if a curve is contained within another the curve. The curves need to be co-planar for the method to be able to return true.")]
+        [Input("curve1", "The Arc to check if it is containing the second curve. Needs to be coplanar with the second curve. If the Arc is not closed, i.e. not a Circle, the method will return false.")]
+        [Input("curve2", "The curve to check if it is contained within the the first curve. Needs to be coplanar with the first curve.")]
+        [Input("acceptOnEdge", "If true, a the inner curve is allowed to touch the outer curve within tolerance. If false, all points of the second curve needs to be fully inside the first curve and are not allowed to be within tolerance distance from the first curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points on the second are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if the second curve is inside the first curve.")]
         public static bool IsContaining(this Arc curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (!curve1.IsClosed(tolerance)) return false;
             Circle circle = new Circle { Centre = curve1.Centre(), Radius = curve1.Radius, Normal = curve1.FitPlane().Normal };
-            return circle.IsContaining(curve2);
+            return circle.IsContaining(curve2, acceptOnEdge, tolerance);
         }
 
         /***************************************************/
 
+        [Description("Checks if a curve is contained within another the curve. The curves need to be co-planar for the method to be able to return true.")]
+        [Input("curve1", "The Circle to check if it is containing the second curve. Needs to be coplanar with the second curve.")]
+        [Input("curve2", "The curve to check if it is contained within the the first curve. Needs to be coplanar with the first curve.")]
+        [Input("acceptOnEdge", "If true, a the inner curve is allowed to touch the outer curve within tolerance. If false, all points of the second curve needs to be fully inside the first curve and are not allowed to be within tolerance distance from the first curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points on the second are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if the second curve is inside the first curve.")]
         public static bool IsContaining(this Circle curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (curve2 is Line || curve2 is Polyline) return curve1.IsContaining(curve2.IControlPoints(), acceptOnEdge, tolerance);
@@ -389,6 +463,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if curve is contained within the Curve. For a Line this will always return false.")]
+        [Input("curve1", "The Line to check if it is containing the other curve. For a Line this methods will always return false.")]
+        [Input("curve2", "The curve to check if it inside the first curve. For a line this method will always return false.")]
+        [Input("acceptOnEdge", "Not used by this method. A Line is not an enclosed region, hence even a overlapping line will be deemed to be outside.")]
+        [Input("tolerance", "Not used by this method. A Line is not an enclosed region, hence even a overlapping line will be deemed to be outside.", typeof(Length))]
+        [Output("isContaining", "Returns true if the second curve is inside the first curve. For a Line this always returns false.")]
+
         public static bool IsContaining(this Line curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             return false;
@@ -396,6 +477,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if a curve is contained within another the curve. The curves need to be co-planar for the method to be able to return true.")]
+        [Input("curve1", "The Polyline to check if it is containing the second curve. Needs to be closed and coplanar with the second curve.")]
+        [Input("curve2", "The curve to check if it is contained within the the first curve. Needs to be coplanar with the first curve.")]
+        [Input("acceptOnEdge", "If true, a the inner curve is allowed to touch the outer curve within tolerance. If false, all points of the second curve needs to be fully inside the first curve and are not allowed to be within tolerance distance from the first curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points on the second are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if the second curve is inside the first curve.")]
         public static bool IsContaining(this Polyline curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (!curve1.IsClosed(tolerance)) return false;
@@ -420,6 +507,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if a curve is contained within another the curve. The curves need to be co-planar for the method to be able to return true.")]
+        [Input("curve1", "The PolyCurve to check if it is containing the second curve. Needs to be closed and coplanar with the second curve.")]
+        [Input("curve2", "The curve to check if it is contained within the the first curve. Needs to be coplanar with the first curve.")]
+        [Input("acceptOnEdge", "If true, a the inner curve is allowed to touch the outer curve within tolerance. If false, all points of the second curve needs to be fully inside the first curve and are not allowed to be within tolerance distance from the first curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points on the second are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if the second curve is inside the first curve.")]
         public static bool IsContaining(this PolyCurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             if (!curve1.IsClosed(tolerance)) return false;
@@ -445,6 +538,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Cuboid                   ****/
         /***************************************************/
 
+        [Description("Checks if the geometry is inside the Cuboid within tolerance by checking if the Bounds of the geometry in the coordinate system of the Cuboid is inside the provided Cuboid.")]
+        [Input("cuboid", "The Cuboid to check for point containment.")]
+        [Input("geometry", "The Geometry to check if it is inside the Cuboid.")]
+        [Input("acceptOnEdge", "If true, the Geometry is deemed to be contained if it is touching the edge of the Cuboid. If false, the geometry needs to be fully inside the Cuboid, not allowing it to touch any of the faces within tolerance.")]
+        [Input("tolerance", "Tolerance to be used to check if the geometry is on the edge of the Cuboid. A geometry within tolerance distance away from one of the faces of the Cuboid is deemed to be on the edge.", typeof(Length))]
+        [Output("isContaining", "Returns true if the geometry is inside the Cuboid.")]
         public static bool IsContaining(this Cuboid cuboid, IGeometry geometry, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(cuboid.CoordinateSystem);
@@ -458,6 +557,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Input("curve", "The PolyCurve to check if it is containing all of the provided points. If the PolyCurve is not closed or planar, the method will return false.")]
+        [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
+        [Input("acceptOnEdge", "If true and the curve is closed, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
         public static bool IIsContaining(this ICurve curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             return IsContaining(curve as dynamic, points, acceptOnEdge, tolerance);
@@ -465,6 +570,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if a curve is contained within another the curve. The curves need to be co-planar for the method to be able to return true.")]
+        [Input("curve1", "The curve to check if it is containing the second curve. Needs to be closed and coplanar with the second curve.")]
+        [Input("curve2", "The curve to check if it is contained within the the first curve. Needs to be coplanar with the first curve.")]
+        [Input("acceptOnEdge", "If true, a the inner curve is allowed to touch the outer curve within tolerance. If false, all points of the second curve needs to be fully inside the first curve and are not allowed to be within tolerance distance from the first curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points on the second are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if the second curve is inside the first curve.")]
         public static bool IIsContaining(this ICurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
             return IsContaining(curve1 as dynamic, curve2 as dynamic, acceptOnEdge, tolerance);

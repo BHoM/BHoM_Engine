@@ -33,6 +33,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates an BoundingBox based on its core properties.")]
+        [InputFromProperty("min")]
+        [InputFromProperty("max")]
+        [Output("box", "The created BoundingBox.")]
         public static BoundingBox BoundingBox(Point min, Point max)
         {
             return new BoundingBox
@@ -44,8 +48,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a bounding box based on a centre point and vector controling the extents of the bounding box.")]
         public static BoundingBox BoundingBox(Point centre, Vector extent)
         {
+            //TODO: SHould this be changed to
+            //1. Use absolute values
+            //2. Use half vector length instead of full.?
             return new BoundingBox
             {
                 Min = new Point { X = centre.X - extent.X, Y = centre.Y - extent.Y, Z = centre.Z - extent.Z },
@@ -72,16 +80,24 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random BoundingBox based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resulting geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Output("box", "The generated random BoundingBox.")]
         public static BoundingBox RandomBoundingBox(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextRandomSeed();
             Random rnd = new Random(seed);
             return RandomBoundingBox(rnd, box);
         }
 
         /***************************************************/
 
+        [Description("Creates a random BoundingBox using the provided Random class. If Box is provided, the resulting geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Output("box", "The generated random BoundingBox.")]
         public static BoundingBox RandomBoundingBox(Random rnd, BoundingBox box = null)
         {
             Point p1 = RandomPoint(rnd, box);

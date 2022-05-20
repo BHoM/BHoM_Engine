@@ -27,6 +27,8 @@ using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Base.Attributes;
 using BH.Engine.Base;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -36,6 +38,11 @@ namespace BH.Engine.Geometry
         /****          Split curve at points            ****/
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("arc", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<Arc> SplitAtPoints(this Arc arc, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (!points.Any())
@@ -86,6 +93,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("circle", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<ICurve> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
         {
 
@@ -155,6 +167,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("line", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<Line> SplitAtPoints(this Line line, List<Point> points, double tolerance = Tolerance.Distance)
         {
             List<Line> result = new List<Line>();
@@ -184,6 +201,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("curve", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<PolyCurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (points.Count == 0)
@@ -252,6 +274,9 @@ namespace BH.Engine.Geometry
                 onCurvePoints.RemoveAt(0);
             }
 
+            bool isClosed = curve.IIsClosed(tolerance);
+            bool isClockwise = curve.IIsClockwise(curve.INormal(), tolerance);
+
             while (i <= onCurvePoints.Count)
             {
                 List<ICurve> subResultList = new List<ICurve>();
@@ -261,12 +286,12 @@ namespace BH.Engine.Geometry
                     subResultList.Add(tmpResult[j]);
                     if (i < onCurvePoints.Count)
                     {
-                        if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IStartPoint().IsEqual(onCurvePoints[i])))
+                        if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]) || (isClosed && !isClockwise && tmpResult[j].IStartPoint().IsEqual(onCurvePoints[i])))
                         {
                             j++;
                             break;
                         }
-                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IEndPoint().IsEqual(curve.StartPoint())))
+                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()) || (isClosed && !isClockwise && tmpResult[j].IEndPoint().IsEqual(curve.StartPoint())))
                         {
                             j++;
                             break;
@@ -299,6 +324,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("curve", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<Polyline> SplitAtPoints(this Polyline curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (points.Count == 0)
@@ -365,6 +395,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("curve", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<ICurve> ISplitAtPoints(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             List<ICurve> result = new List<ICurve>();

@@ -22,6 +22,9 @@
 
 using BH.oM.Geometry;
 using System;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -31,19 +34,29 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static ISurface RandomSurface(int seed = -1, BoundingBox box = null)
-        {
-            if (seed == -1)
-                seed = m_Random.Next();
-            Random rnd = new Random(seed);
-            return RandomSurface(rnd, box);
-        }
-
 
         /***************************************************/
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random ISurface based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resulting geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Output("surface", "The generated random ISurface.")]
+        public static ISurface RandomSurface(int seed = -1, BoundingBox box = null)
+        {
+            if (seed == -1)
+                seed = NextRandomSeed();
+            Random rnd = new Random(seed);
+            return RandomSurface(rnd, box);
+        }
+
+        /***************************************************/
+
+        [Description("Creates a random ISurface using the provided Random class. If Box is provided, the resulting geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Output("surface", "The generated random ISurface.")]
         public static ISurface RandomSurface(Random rnd, BoundingBox box = null)
         {
             int nb = rnd.Next(4);
