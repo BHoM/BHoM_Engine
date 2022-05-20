@@ -20,44 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
-using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
         /***************************************************/
-        /**** public Methods - Vectors                  ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Culls all duplicate points in the list by grouping all points that are within the maximum provided distance from one another and returning the average point in each group. A DBScan algorithm is used to determine if considered duplicates. This means that chains of close points will be determined the same, even if two individual points in this chain can have a distance between them that is larger than the tolerance, as long as they both are within tolerance of another point in the same group.")]
-        [Input("points", "The collection of points to cull duplicates from.")]
-        [Input("maxDist", "The maximum allowable distance between two points for them to be deemed the same point.", typeof(Length))]
-        [Output("points", "The collection of points with all duplicates removed. For cases when points have been deemed duplicates of each other, average point per each group of duplicates will be returned.")]
-        public static List<Point> CullDuplicates(this List<Point> points, double maxDist = Tolerance.Distance)
+        [Description("Counts the number of rows in the matrix that contain at least on non-zero value.")]
+        [Input("matrix","The matrix to evaluate.")]
+        [Input("tolerance", "Tolerance to be used to determine if the value is zero. A value of the matrix that has a magnitude less than this tolerance will be deemed as a zero value.")]
+        [Output("count", "The number of non-zero rows of the matrix.")]
+        public static int CountNonZeroRows(this double[,] matrix, double tolerance = Tolerance.Distance)
         {
-            int count = points.Count;
+            int m = matrix.GetLength(0);
+            int n = matrix.GetLength(1);
+            int c = 0;
 
-            if (count <= 1)
-                return points;
-            if (count == 2)
+            for (int i = 0; i < m; i++)
             {
-                if (points[0].SquareDistance(points[1]) < maxDist * maxDist)
-                    return new List<Point> { (points[0] + points[1]) / 2.0 };
-                else
-                    return points;
+                for (int j = 0; j < n; j++)
+                {
+                    if (Math.Abs(matrix[i, j]) >= tolerance)
+                    {
+                        c++;
+                        break;
+                    }
+                }
             }
-            List<List<Point>> clusteredPoints = points.PointClustersDBSCAN(maxDist);
-            return clusteredPoints.Select(x => x.Average()).ToList();
+
+            return c;
         }
 
         /***************************************************/
+
     }
 }
 

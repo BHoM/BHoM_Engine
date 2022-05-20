@@ -24,6 +24,9 @@ using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +36,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a PolyCurve based on a collection of surfaces. Note that there is no requirement of a BHoM PolySurface to be contructed of joined surfaces.")]
+        [InputFromProperty("surfaces")]
+        [Output("pSurface", "The created PolySurface.")]
         public static PolySurface PolySurface(IEnumerable<ISurface> surfaces)
         {
             return new PolySurface { Surfaces = surfaces.ToList() };
@@ -43,16 +49,28 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random PolySurface based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resulting geometry will be contained within the box. The resulting PolySurface can be disjointed, e.g. it can be made of disconnected surfaces.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Input("minNbSurfaces", "Minimun number of surfaces in the random PolySurface.")]
+        [Input("maxNbSurfaces", "Maximum number of surfaces in the random PolySurface.")]
+        [Output("pSurface", "The generated random PolySurface.")]
         public static PolySurface RandomPolySurface(int seed = -1, BoundingBox box = null, int minNbSurfaces = 2, int maxNbSurfaces = 10)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextRandomSeed();
             Random rnd = new Random(seed);
             return RandomPolySurface(rnd, box, minNbSurfaces, maxNbSurfaces);
         }
 
         /***************************************************/
 
+        [Description("Creates a random PolySurface using the provided Random class. If Box is provided, the resulting geometry will be contained within the box. The resulting PolySurface can be disjointed, e.g. it can be made of disconnected surfaces.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Input("minNbSurfaces", "Minimun number of surfaces in the random PolySurface.")]
+        [Input("maxNbSurfaces", "Maximum number of surfaces in the random PolySurface.")]
+        [Output("pSurface", "The generated random PolySurface.")]
         public static PolySurface RandomPolySurface(Random rnd, BoundingBox box = null, int minNbSurfaces = 2, int maxNbSurfaces = 10)
         {
             List<ISurface> surfaces = new List<ISurface>();

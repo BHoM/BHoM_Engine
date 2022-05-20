@@ -22,6 +22,9 @@
 
 using BH.oM.Geometry;
 using System;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -31,6 +34,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a Quaternion based on its core properties.")]
+        [InputFromProperty("x")]
+        [InputFromProperty("y")]
+        [InputFromProperty("z")]
+        [InputFromProperty("w")]
+        [Output("quaternion", "The created Quaternion.")]
         public static Quaternion Quaternion(double x, double y, double z, double w)
         {
             return new Quaternion { X = x, Y = y, Z = z, W = w };
@@ -38,6 +47,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a Quaternion based an vector axis and an angle. Used when computing the rotation matrix.")]
+        [Input("axis", "Axis for the rotation Quaternion.")]
+        [Input("angle", "Angle for the rotation Quaternion.", typeof(Angle))]
+        [Output("quaternion", "The created Quaternion.")]
         public static Quaternion Quaternion(Vector axis, double angle)
         {
             double sin = Math.Sin(angle / 2);
@@ -55,16 +68,22 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random Quaternion with values between 0 and 1 based on a seed. If no seed is provided, a random one will be generated.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Output("quaternion", "The generated random Quaternion.")]
         public static Quaternion RandomQuaternion(int seed = -1)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextRandomSeed();
             Random rnd = new Random(seed);
             return RandomQuaternion(new Random(seed));
         }
 
         /***************************************************/
 
+        [Description("Creates a random Quaternion with values between 0 and 1 using the provided Random class.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Output("quaternion", "The generated random Quaternion.")]
         public static Quaternion RandomQuaternion(Random rnd)
         {
             return new Quaternion { X = rnd.NextDouble(), Y = rnd.NextDouble(), Z = rnd.NextDouble(), W = rnd.NextDouble() }.Normalise();
