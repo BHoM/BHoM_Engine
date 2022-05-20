@@ -53,19 +53,19 @@ namespace BH.Engine.Results
             IEnumerable<T> filteredRes = results;
 
             if (filter.ResultCaseFilters != null && filter.ResultCaseFilters.Count > 0)
-                filteredRes = results.OfType<ICasedResult>().Where(x => filter.ResultCaseFilters.Contains(x.ResultCase?.ToString())).OfType<T>();
+                filteredRes = filteredRes.OfType<ICasedResult>().Where(x => filter.ResultCaseFilters.Contains(x.ResultCase?.ToString())).OfType<T>();
 
             if (filter.TimeStepFilters != null && filter.TimeStepFilters.Count > 0)
-                filteredRes = results.OfType<ITimeStepResult>().Where(x => filter.TimeStepFilters.Contains(x.TimeStep)).OfType<T>();
+                filteredRes = filteredRes.OfType<ITimeStepResult>().Where(x => filter.TimeStepFilters.Contains(x.TimeStep)).OfType<T>();
 
             if (filter.ObjectIDFilters != null && filter.ObjectIDFilters.Count > 0)
-                filteredRes = results.OfType<IObjectIdResult>().Where(x => filter.ObjectIDFilters.Contains(x.ObjectId?.ToString())).OfType<T>();
+                filteredRes = filteredRes.OfType<IObjectIdResult>().Where(x => filter.ObjectIDFilters.Contains(x.ObjectId?.ToString())).OfType<T>();
 
             if (filter.NodeIDFilters != null && filter.NodeIDFilters.Count > 0)
-                filteredRes = results.OfType<IMeshElementResult>().Where(x => filter.NodeIDFilters.Contains(x.NodeId?.ToString())).OfType<T>();
+                filteredRes = filteredRes.OfType<IMeshElementResult>().Where(x => filter.NodeIDFilters.Contains(x.NodeId?.ToString())).OfType<T>();
 
             if (filter.MeshFaceIDFilters != null && filter.MeshFaceIDFilters.Count > 0)
-                filteredRes = results.OfType<IMeshElementResult>().Where(x => filter.MeshFaceIDFilters.Contains(x.MeshFaceId?.ToString())).OfType<T>();
+                filteredRes = filteredRes.OfType<IMeshElementResult>().Where(x => filter.MeshFaceIDFilters.Contains(x.MeshFaceId?.ToString())).OfType<T>();
 
 
             return filteredRes;
