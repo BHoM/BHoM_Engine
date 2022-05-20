@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
         [Output("surface", "A new PlanarSurface with ExternalBoundary from the provided PlanarSurface and InternalBoundaries matching the provided openings.")]
         public static PlanarSurface SetInternalElements2D(this PlanarSurface surface, List<IElement2D> openings)
         {
-            if (surface == null || openings == null || !openings.Any())
+            if (surface == null || openings == null)
                 return surface;
 
             List<ICurve> openingCurves = openings.Cast<PlanarSurface>().Select(x => x.ExternalBoundary).ToList();
