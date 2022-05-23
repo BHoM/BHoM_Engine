@@ -41,7 +41,8 @@ namespace BH.Engine.Results
                      "If TimeStepFilters contains items, only results of type ITimeStepResult will be returned that has a TimeStep matching any items in the TimeStepFilters.\n" +
                      "If ObjectIDFilters contains items, only results of type IObjectIdResult will be returned that has a ObjectId matching any items in the ObjectIDFilters.\n" +
                      "If NodeIDFilters contains items, only results of type IMeshElementResult will be returned that has a NodeId matching any items in the NodeIDFilters.\n" +
-                     "If MeshFaceIDFilters contains items, only results of type IMeshElementResult will be returned that has a MeshFaceId matching any items in the MeshFaceIDFilters.")]
+                     "If MeshFaceIDFilters contains items, only results of type IMeshElementResult will be returned that has a MeshFaceId matching any items in the MeshFaceIDFilters.\n" +
+                     "If multiple filter collections contains items, all those filter collections apply. For example, if ResultCaseFilters and ObjectIDFilters both are defined, the results returned will be filtered based on both the requirements mentioned above, including the requirement on the results to implement both IObjectIdResult and ICasedResult.")]
         [Input("results", "Results to filter.")]
         [Input("filter", "Filtering to be applied to the result.")]
         [Output("filteredResults", "The filtered results.")]
