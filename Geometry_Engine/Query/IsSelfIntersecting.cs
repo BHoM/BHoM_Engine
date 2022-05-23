@@ -156,6 +156,27 @@ namespace BH.Engine.Geometry
             return false;
         }
 
+        /***************************************************/
+
+        [Description("Checks if any part of the the Polygon is intersecting with any other part of the curve. A Polygon is checked to not be self intersecting at creation, hence this method always returns false.")]
+        [Input("curve", "The curve to check for self intersection. A for a Polygon, this method always returns false.")]
+        [Input("tolerance", "Distance tolerance to be used by the method. For a Polygon this in unused.", (typeof(Length)))]
+        [Output("isIntersecting", "Returns true if the Polygon is self intersecting. For a Polygon this always returns false.")]
+        public static bool IsSelfIntersecting(this Polygon curve, double tolerance = Tolerance.Distance)
+        {
+            return false;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if any part of the the BoundaryCurve is intersecting with any other part of the curve. A BoundaryCurve is checked to not be self intersecting at creation, hence this method always returns false.")]
+        [Input("curve", "The curve to check for self intersection. A for a Polygon, this method always returns false.")]
+        [Input("tolerance", "Distance tolerance to be used by the method. For a Polygon this in unused.", (typeof(Length)))]
+        [Output("isIntersecting", "Returns true if the BoundaryCurve is self intersecting. For a BoundaryCurve this always returns false.")]
+        public static bool IsSelfIntersecting(this BoundaryCurve curve, double tolerance = Tolerance.Distance)
+        {
+            return false;
+        }
 
         /***************************************************/
         /**** Public Methods = Interfaces               ****/
