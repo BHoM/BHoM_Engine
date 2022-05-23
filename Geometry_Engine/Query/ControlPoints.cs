@@ -25,6 +25,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -91,6 +92,17 @@ namespace BH.Engine.Geometry
             return curve.ControlPoints;
         }
 
+        /***************************************************/
+
+        [Description("Gets the controlpoints of the Polygon. These will be the Vertices of the Polygon, with the first point duplicated as the last control point.")]
+        [Input("curve", "The Polygon to extract the ControlPoints from.")]
+        [Output("points", "The controlpoints of the Polygon. The first and last point will be the same.")]
+        public static List<Point> ControlPoints(this Polygon curve)
+        {
+            List<Point> controlPoints =  curve.Vertices.ToList();
+            controlPoints.Add(controlPoints[0]);
+            return controlPoints;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
