@@ -37,7 +37,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        //TODO: Remove when PlanarSurface will implement IElement2D
         [Description("Queries the centre of area for a PlanarSurface.")]
         [Input("surface", "The PlanarSurface to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
@@ -89,23 +88,24 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Centroid(BH.oM.Geometry.Polyline, System.Double)")]
         [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting Polyline.")]
         [Input("curve", "The Polyline to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of a region enclosed by given Polyline.")]
-        public static Point Centroid(this Polyline curve, double tolerance = Tolerance.Distance)
+        public static Point Centroid(this IPolyline curve, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsPlanar(tolerance))
+            if (!curve.IIsPlanar(tolerance))
             {
                 Base.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
                 return null;
             }
-            else if (!curve.IsClosed(tolerance))
+            else if (!curve.IIsClosed(tolerance))
             {
                 Base.Compute.RecordError("Input curve is not closed. Cannot calculate centroid.");
                 return null;
             }
-            else if (curve.IsSelfIntersecting(tolerance))
+            else if (curve.IIsSelfIntersecting(tolerance))
             {
                 Base.Compute.RecordError("Input curve is self-intersecting. Cannot calculate centroid.");
                 return null;
@@ -114,7 +114,8 @@ namespace BH.Engine.Geometry
             double xc, yc, zc;
             double xc0 = 0, yc0 = 0, zc0 = 0;
 
-            Point pA = curve.ControlPoints[0];
+            List<Point> controlPoints = curve.IControlPoints();
+            Point pA = controlPoints[0];
 
             Vector normal = Normal(curve, tolerance);
 
@@ -122,10 +123,10 @@ namespace BH.Engine.Geometry
             if (normal == null)
                 return null;
 
-            for (int i = 1; i < curve.ControlPoints.Count - 2; i++)
+            for (int i = 1; i < controlPoints.Count - 2; i++)
             {
-                Point pB = curve.ControlPoints[i];
-                Point pC = curve.ControlPoints[i + 1];
+                Point pB = controlPoints[i];
+                Point pC = controlPoints[i + 1];
 
                 double triangleArea = Area(pB - pA, pC - pA);
 
@@ -154,29 +155,30 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Centroid(BH.oM.Geometry.PolyCurve, System.Double)")]
         [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting PolyCurve.")]
         [Input("curve", "The PolyCurve to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
         [Output("centroid", "The Point at the centre of area enclosed by given PolyCurve.")]
-        public static Point Centroid(this PolyCurve curve, double tolerance = Tolerance.Distance)
+        public static Point Centroid(this IPolyCurve curve, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsPlanar(tolerance))
+            if (!curve.IIsPlanar(tolerance))
             {
                 Base.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
                 return null;
             }
-            else if (!curve.IsClosed(tolerance))
+            else if (!curve.IIsClosed(tolerance))
             {
                 Base.Compute.RecordError("Input curve is not closed. Cannot calculate centroid.");
                 return null;
             }
-            else if (curve.IsSelfIntersecting(tolerance))
+            else if (curve.IIsSelfIntersecting(tolerance))
             {
                 Base.Compute.RecordError("Input curve is self-intersecting. Cannot calculate centroid.");
                 return null;
             }
 
-            List<ICurve> curveSubParts = curve.SubParts();
+            List<ICurve> curveSubParts = curve.ISubParts().ToList();
 
             if (curveSubParts.Count == 1 && curveSubParts[0] is Circle)
                 return (curveSubParts[0] as Circle).Centre;
