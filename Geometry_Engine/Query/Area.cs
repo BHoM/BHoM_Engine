@@ -61,7 +61,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Arc to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-        
         public static double Area(this Arc curve, double tolerance = Tolerance.Distance)
         {
             if (curve == null)
@@ -85,7 +84,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Circle to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-
         public static double Area(this Circle curve, double tolerance = Tolerance.Distance)
         {
             if (curve == null)
@@ -121,7 +119,6 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Line to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-
         public static double Area(this Line curve, double tolerance = Tolerance.Distance)
         {
             Base.Compute.RecordWarning("Cannot calculate area for an open curve.");
@@ -130,36 +127,36 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.PolyCurve, System.Double)")]
         [Description("Calculates the area of the provided geometry.")]
         [Input("curve", "The PolyCurve to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-        
-        public static double Area(this PolyCurve curve, double tolerance = Tolerance.Distance)
+        public static double Area(this IPolyCurve curve, double tolerance = Tolerance.Distance)
         {
             if (curve == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query area as the geometry is null.");
                 return double.NaN;
             }
-            
-            if (curve.Curves.Count == 1 && curve.Curves[0] is Circle)
-                return (curve.Curves[0] as Circle).Area(tolerance);
+            List<ICurve> curves = curve.ICurves();
+            if (curves.Count == 1 && curves[0] is Circle)
+                return (curves[0] as Circle).Area(tolerance);
 
-            if (!curve.IsClosed(tolerance))
+            if (!curve.IIsClosed(tolerance))
             {
                 Base.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
             }
 
-            Plane p = curve.FitPlane(tolerance);
+            Plane p = curve.IFitPlane(tolerance);
             if (p == null)
                 return 0.0;              // points are collinear
 
-            Point sPt = curve.StartPoint();
+            Point sPt = curve.IStartPoint();
             double area = 0;
 
-            foreach (ICurve c in curve.SubParts())
+            foreach (ICurve c in curve.ISubParts())
             {
                 if (c is NurbsCurve)
                 {
@@ -191,12 +188,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Polyline, System.Double)")]
         [Description("Calculates the area of the provided geometry.")]
         [Input("curve", "The Polyline to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-
-        public static double Area(this Polyline curve, double tolerance = Tolerance.Distance)
+        public static double Area(this IPolyline curve, double tolerance = Tolerance.Distance)
         {
             if (curve == null)
             {
@@ -204,13 +201,13 @@ namespace BH.Engine.Geometry
                 return double.NaN;
             }
             
-            if (!curve.IsClosed(tolerance))
+            if (!curve.IIsClosed(tolerance))
             {
                 Base.Compute.RecordWarning("Cannot calculate area for an open curve.");
                 return 0;
             }
 
-            List<Point> pts = curve.ControlPoints;
+            List<Point> pts = curve.IControlPoints();
             int ptsCount = pts.Count;
             if (ptsCount < 4)
                 return 0.0;
