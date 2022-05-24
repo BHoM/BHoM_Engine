@@ -55,11 +55,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Point> DiscontinuityPoints(this PolyCurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.PolyCurve, System.Double, System.Double)")]
+        public static List<Point> DiscontinuityPoints(this IPolyCurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             List<Point> result = new List<Point>();
-            List<ICurve> curves = curve.SubParts().Where(c => !(c is Circle || c is Ellipse)).ToList();
-            bool closed = curve.IsClosed(distanceTolerance);
+            List<ICurve> curves = curve.ISubParts().Where(c => !(c is Circle || c is Ellipse)).ToList();
+            bool closed = curve.IIsClosed(distanceTolerance);
 
             if (curves.Count == 0)
                 return result;
@@ -85,16 +86,17 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<Point> DiscontinuityPoints(this Polyline curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.Polyline, System.Double, System.Double)")]
+        public static List<Point> DiscontinuityPoints(this IPolyline curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            List<Point> ctrlPts = new List<Point>(curve.ControlPoints);
+            List<Point> ctrlPts = new List<Point>(curve.IControlPoints());
 
             if (ctrlPts.Count < 3)
                 return ctrlPts;
 
             double sqTol = distanceTolerance * distanceTolerance;
             int j = 0;
-            if (!curve.IsClosed(distanceTolerance))
+            if (!curve.IIsClosed(distanceTolerance))
                 j += 2;
 
             for (int i = j; i < ctrlPts.Count; i++)

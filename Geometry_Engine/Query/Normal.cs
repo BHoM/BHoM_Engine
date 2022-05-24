@@ -107,18 +107,19 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Normal(BH.oM.Geometry.Polyline, System.Double)")]
         [Description("Returns a vector normal to the plane of a given curve, oriented according to the right hand rule. Works only for closed, planar curves.")]
         [Input("curve", "The Polyline to get the normal to.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
         [Output("normal", "Vector normal to the plane of a curve.")]
-        public static Vector Normal(this Polyline curve, double tolerance = Tolerance.Distance)
+        public static Vector Normal(this IPolyline curve, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsPlanar(tolerance))
+            if (!curve.IIsPlanar(tolerance))
             {
                 Base.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
                 return null;
             }
-            else if (!curve.IsClosed(tolerance))
+            else if (!curve.IIsClosed(tolerance))
             {
                 Base.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
                 return null;
@@ -127,12 +128,13 @@ namespace BH.Engine.Geometry
             //else if (curve.IsSelfIntersecting(tolerance))
             //    Base.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
 
-            Point avg = curve.ControlPoints.Average();
+            List<Point> ctrlPts = curve.IControlPoints();
+            Point avg = ctrlPts.Average();
             Vector normal = new Vector();
 
             //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
-            for (int i = 0; i < curve.ControlPoints.Count - 1; i++)
-                normal += (curve.ControlPoints[i] - avg).CrossProduct(curve.ControlPoints[i + 1] - avg);
+            for (int i = 0; i < ctrlPts.Count - 1; i++)
+                normal += (ctrlPts[i] - avg).CrossProduct(ctrlPts[i + 1] - avg);
 
             if (normal.Length() < tolerance)
             {
@@ -152,11 +154,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Normal(BH.oM.Geometry.PolyCurve, System.Double)")]
         [Description("Returns a vector normal to the plane of a given curve, oriented according to the right hand rule. Works only for closed and planar curves.")]
         [Input("curve", "The PolyCurve to get the normal to.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
         [Output("normal", "Vector normal to the plane of a curve.")]
-        public static Vector Normal(this PolyCurve curve, double tolerance = Tolerance.Distance)
+        public static Vector Normal(this IPolyCurve curve, double tolerance = Tolerance.Distance)
         {
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
             if (crvs.Any(x => x is NurbsCurve))
@@ -165,12 +168,12 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (!curve.IsPlanar(tolerance))
+            if (!curve.IIsPlanar(tolerance))
             {
                 Base.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
                 return null;
             }
-            else if (!curve.IsClosed(tolerance))
+            else if (!curve.IIsClosed(tolerance))
             {
                 Base.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
                 return null;

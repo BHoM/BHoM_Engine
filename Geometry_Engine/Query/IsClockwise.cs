@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using BH.oM.Base.Attributes;
 using BH.Engine.Base;
 
 namespace BH.Engine.Geometry
@@ -34,9 +35,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static bool IsClockwise(this Polyline polyline, Vector normal, double tolerance = Tolerance.Distance)
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.IsClockwise(BH.oM.Geometry.Polyline, BH.oM.Geometry.Vector, System.Double)")]
+        public static bool IsClockwise(this IPolyline polyline, Vector normal, double tolerance = Tolerance.Distance)
         {
-            if (!polyline.IsClosed(tolerance))
+            if (!polyline.IIsClosed(tolerance))
                 throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
 
             List<Point> cc = polyline.DiscontinuityPoints(tolerance);
@@ -64,13 +66,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static bool IsClockwise(this PolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
+        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.IsClockwise(BH.oM.Geometry.PolyCurve, BH.oM.Geometry.Vector, System.Double)")]
+        public static bool IsClockwise(this IPolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
         {
-            if (!curve.IsClosed(tolerance))
+            if (!curve.IIsClosed(tolerance))
                 throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
             
             List<Point> cPts = new List<Point> { curve.IStartPoint() };
-            foreach (ICurve c in curve.SubParts())
+            foreach (ICurve c in curve.ISubParts())
             {
                 if (c is Line)
                     cPts.Add(c.IEndPoint());
