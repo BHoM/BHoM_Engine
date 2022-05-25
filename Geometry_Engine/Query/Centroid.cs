@@ -24,7 +24,7 @@ using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using BH.Engine.Reflection;
+using BH.Engine.Data;
 using BH.oM.Base.Attributes;
 using BH.oM.Base;
 using System.ComponentModel;
@@ -63,24 +63,17 @@ namespace BH.Engine.Geometry
             Point centroid = new Point();
             double area = 0;
 
-            foreach (ICurve outline in outlines.BooleanUnion(tolerance))
-            {
-                double outlineArea = outline.IArea();
-                centroid += (outline.ICentroid() * outlineArea);
-                area += outlineArea;
-            }
+            double outlineArea, openingArea;
+            Point outlineCentroid = outlines.CurveListCentroid(out outlineArea, tolerance);
 
-            foreach (ICurve opening in openings.BooleanUnion(tolerance))
+            Point openingCentroid = openings.CurveListCentroid(out openingArea, tolerance);
+            area = outlineArea - openingArea;
+            return new Point
             {
-                Point openingCentroid = opening.ICentroid();
-                double openingArea = opening.IArea();
-                centroid.X -= openingCentroid.X * openingArea;
-                centroid.Y -= openingCentroid.Y * openingArea;
-                centroid.Z -= openingCentroid.Z * openingArea;
-                area -= openingArea;
-            }
-
-            return centroid / area;
+                X = (outlineCentroid.X - openingCentroid.X) / area,
+                Y = (outlineCentroid.Y - openingCentroid.Y) / area,
+                Z = (outlineCentroid.Z - openingCentroid.Z) / area,
+            };
         }
 
 
@@ -341,6 +334,49 @@ namespace BH.Engine.Geometry
             Double length = (4 * arc.Radius * Math.Pow(Math.Sin(alpha / 2), 3)) / (3 * (alpha - Math.Sin(alpha)));
 
             return o + ((v / arc.Radius) * length);
+        }
+
+        /***************************************************/
+
+        private static Point CurveListCentroid(this IEnumerable<ICurve> boundaryCurves, out double area, double tolerance)
+        {
+            Point centroid = new Point();
+            area = 0;
+            List<ICurve> curveList = boundaryCurves == null ? new List<ICurve>() : boundaryCurves.ToList();
+            if (curveList.Count == 1)    //If only one outline curve provided, just add it. No need for additional clustering/uninon
+            {
+                ICurve outline = curveList[0];
+                double outlineArea = outline.IArea();
+                centroid += (outline.ICentroid() * outlineArea);
+                area += outlineArea;
+            }
+            else if (curveList.Count > 1)    //If more than one outline, some processing required
+            {
+                //Cluster curves based on boundingboxes overlapping
+                List<List<ICurve>> clusterCurves = Data.Compute.DomainTreeClusters(curveList, x => x.IBounds().DomainBox(), (a, b) => a.SquareDistance(b) < tolerance * tolerance, (a, b) => true, 1);
+
+                foreach (List<ICurve> curves in clusterCurves)  //For each cluster
+                {
+                    if (curves.Count == 1)  //If only one curve in cluster, simply add it
+                    {
+                        ICurve outline = curves.First();
+                        double outlineArea = outline.IArea();
+                        centroid += (outline.ICentroid() * outlineArea);
+                        area += outlineArea;
+                    }
+                    else
+                    {
+                        foreach (ICurve outline in curves.BooleanUnion(tolerance))  //More than one curve in cluster, run BooleanUnion
+                        {
+                            double outlineArea = outline.IArea();
+                            centroid += (outline.ICentroid() * outlineArea);
+                            area += outlineArea;
+                        }
+                    }
+                }
+            }
+
+            return centroid;
         }
 
         /***************************************************/
