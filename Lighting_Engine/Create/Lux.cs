@@ -44,7 +44,7 @@ namespace BH.Engine.Lighting
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static MeshElementResult Lux(double lux, IComparable objectId, IComparable nodeId, IComparable meshFaceId, IComparable resultCase, MeshResultSmoothingType smoothing)
+        public static MeshElementResult Lux(List<double> lux, IComparable objectId, IComparable nodeId, IComparable meshFaceId, IComparable resultCase, MeshResultSmoothingType smoothing)
         {
             return new Lux(objectId, nodeId, meshFaceId, resultCase, lux, smoothing);
         }
