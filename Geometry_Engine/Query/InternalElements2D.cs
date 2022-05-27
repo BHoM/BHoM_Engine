@@ -41,6 +41,9 @@ namespace BH.Engine.Geometry
         [Output("elements", "The list of the internal IElement2Ds of the PlanarSurface, i.e. a list of PlanarSurfaces with ExternalBoundary matching the InternalBoundaries of the PlanarSurface provided.")]
         public static List<IElement2D> InternalElements2D(this PlanarSurface surface)
         {
+            if (surface == null || surface.InternalBoundaries == null)
+                return new List<IElement2D>();
+
             return surface.InternalBoundaries.Select(x => new PlanarSurface(x, new List<ICurve>())).ToList<IElement2D>();
         }
 
