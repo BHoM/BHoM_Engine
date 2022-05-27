@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a new Element2D, appropriate to the input type. For this case the appropriate type for the PlanarSurface will be a new PlanarSurface with a null ExternalBoundary and empty list of InternalBoundaries. \n" +
+        [Description("Creates a a new PlanarSurface that can be used as internal element for another PlanarSurface. The resulting PlanarSurface will have a null ExternalBoundary and empty list of InternalBoundaries. The resulting PlanarSurface is casted to IElement2D for generalization purposes.  \n" +
                      "Method required for any IElement2D that contians internal IElement2Ds.")]
         [Input("surface", "PlanarSurface just used to determine the appropriate type of IElement2D to create.")]
         [Output("opening", "The created Opening as a IElement2D.")]
