@@ -42,6 +42,9 @@ namespace BH.Engine.Geometry
         [Output("elements", "Outline elements of the PlanarSurface, i.e. the ExternalEdges sub parts of the PlanarSurface.")]
         public static List<IElement1D> OutlineElements1D(this PlanarSurface surface)
         {
+            if (surface == null || surface.ExternalBoundary == null)
+                return new List<IElement1D>();
+
             return surface.ExternalBoundary.ISubParts().ToList<IElement1D>();
         }
 
