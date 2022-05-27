@@ -240,6 +240,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Try get out the curve as suitable type of IBoundary curve. Method assumes curves to have been pre-checked for validity (Closed, planar, non-self intersecting)")]
         private static ICurve TryGetBoundaryCurve(this ICurve curve, double tolerance)
         {
             if (curve is IBoundary)
@@ -248,6 +249,10 @@ namespace BH.Engine.Geometry
             }
             else if (curve is PolyCurve)
             {
+                PolyCurve pCurve = curve as PolyCurve;
+                if (pCurve.Curves.Count == 1)
+                    return TryGetBoundaryCurve(pCurve.Curves[0], tolerance);
+
                 List<ICurve> subParts = curve.ISubParts().ToList();
                 if (subParts.Any(x => x is NurbsCurve))
                     return curve;
