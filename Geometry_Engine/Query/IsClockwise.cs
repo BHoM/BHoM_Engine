@@ -24,7 +24,9 @@ using BH.oM.Geometry;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;
 
 namespace BH.Engine.Geometry
@@ -36,6 +38,11 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("5.2", "BH.Engine.Geometry.Query.IsClockwise(BH.oM.Geometry.Polyline, BH.oM.Geometry.Vector, System.Double)")]
+        [Description("Checks if the segments of the IPolyline are defined in a clockwise order around the provided normal vector. Curve needs to be closed for the method to function.")]
+        [Input("polyline", "The closed IPolyline to check if it is defined in a clockwise manner in relation to the Vector.")]
+        [Input("normal", "The normal vector to check against.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("isClockwise", "Returns true if the IPolyline is defined clockwise around the provided normal.")]
         public static bool IsClockwise(this IPolyline polyline, Vector normal, double tolerance = Tolerance.Distance)
         {
             if (!polyline.IIsClosed(tolerance))
@@ -67,6 +74,11 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("5.2", "BH.Engine.Geometry.Query.IsClockwise(BH.oM.Geometry.PolyCurve, BH.oM.Geometry.Vector, System.Double)")]
+        [Description("Checks if the segments of the IPolyCurve are defined in a clockwise order around the provided normal vector. Curve needs to be closed for the method to function.")]
+        [Input("curve", "The closed IPolyCurve to check if it is defined in a clockwise manner in relation to the Vector.")]
+        [Input("normal", "The normal vector to check against.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("isClockwise", "Returns true if the IPolyCurve is defined clockwise around the provided normal.")]
         public static bool IsClockwise(this IPolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
         {
             if (!curve.IIsClosed(tolerance))
@@ -100,6 +112,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the segments of the Polyline are defined in a clockwise if inspected from the provided view point.\n" + 
+                     "This is done by projecting the point to the plane of the curve and creating a normal vector from the view point to the projected point. The segments of the Polyline are then checked if they are defined clockwise around this vector.\n" + 
+                     "Curve needs to be closed and the point needs to be outside the plane of the curve for the method to function.")]
+        [Input("polyline", "The closed Polyline to check if it is defined in a clockwise manner in relation to the view Point.")]
+        [Input("viewPoint", "The the point from where the the curve is to be checked. Requires the curve to not be in the plane of the curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("isClockwise", "Returns true if the Polyline is defined clockwise when inspected from the provided viewpoint.")]
         public static bool IsClockwise(this Polyline polyline, Point viewPoint, double tolerance = Tolerance.Distance)
         {
             Plane plane = polyline.FitPlane(tolerance);
@@ -111,6 +130,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the segments of the PolyCurve are defined in a clockwise if inspected from the provided view point.\n" +
+             "This is done by projecting the point to the plane of the curve and creating a normal vector from the view point to the projected point. The segments of the PolyCurve are then checked if they are defined clockwise around this vector.\n" +
+             "Curve needs to be closed and the point needs to be outside the plane of the curve for the method to function.")]
+        [Input("polyline", "The closed PolyCurve to check if it is defined in a clockwise manner in relation to the view Point.")]
+        [Input("viewPoint", "The the point from where the the curve is to be checked. Requires the curve to not be in the plane of the curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("isClockwise", "Returns true if the PolyCurve is defined clockwise when inspected from the provided viewpoint.")]
         public static bool IsClockwise(this PolyCurve curve, Point viewPoint, double tolerance = Tolerance.Distance)
         {
             Plane plane = curve.FitPlane(tolerance);
@@ -120,8 +146,13 @@ namespace BH.Engine.Geometry
             return IsClockwise(curve, vector);
         }
 
-         /***************************************************/
+        /***************************************************/
 
+        [Description("Checks if the Arc is defined in a clockwise order around the provided axis Vector.")]
+        [Input("curve", "The Arc to check if it is defined in a clockwise manner in relation to the Vector.")]
+        [Input("axis", "The axis vector to check against.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("isClockwise", "Returns true if the Arc is defined clockwise around the provided axis.")]
         public static bool IsClockwise(this Arc arc, Vector axis, double tolerance = Tolerance.Distance)
         {
             Vector normal = arc.CoordinateSystem.Z;
@@ -130,6 +161,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Checks if the Circle is defined in a clockwise order around the provided axis Vector.")]
+        [Input("curve", "The Circle to check if it is defined in a clockwise manner in relation to the Vector.")]
+        [Input("axis", "The axis vector to check against.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("isClockwise", "Returns true if the Circle is defined clockwise around the provided axis.")]
         public static bool IsClockwise(this Circle curve, Vector axis, double tolerance = Tolerance.Distance)
         {
             return axis.DotProduct(curve.Normal()) > 0;
@@ -139,6 +175,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Checks if the ICurve is defined in a clockwise order around the provided axis Vector.")]
+        [Input("curve", "The ICurve to check if it is defined in a clockwise manner in relation to the Vector.")]
+        [Input("axis", "The axis vector to check against.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("isClockwise", "Returns true if the ICurve is defined clockwise around the provided axis.")]
         public static bool IIsClockwise(this ICurve curve, Vector axis, double tolerance = Tolerance.Distance)
         {
             return IsClockwise(curve as dynamic, axis, tolerance);
