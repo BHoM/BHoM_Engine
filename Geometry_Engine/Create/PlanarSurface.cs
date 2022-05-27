@@ -151,7 +151,10 @@ namespace BH.Engine.Geometry
             {
                 Base.Compute.RecordWarning("At least one of the internalBoundaries is not contained by the externalBoundary. And have been disregarded.");
             }
-            
+
+            externalBoundary = externalBoundary.TryGetBoundaryCurve(tolerance);
+            internalBoundaries = internalBoundaries.Select(x => x.TryGetBoundaryCurve(tolerance)).ToList();
+
             //------------------Return-Valid-Surface------------------------//
             return new PlanarSurface(externalBoundary, internalBoundaries);
         }
@@ -169,6 +172,37 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
+            List<ICurve> checkedCurves = boundaryCurves.ValidateCurves(tolerance);
+
+            
+            if (checkedCurves.Count == 0)
+            {
+                Base.Compute.RecordError("Planar surface could not be created because all input boundary curves are invalid (null, unsupported type, non-planar, not closed within the tolerance).");
+                return new List<PlanarSurface>();
+            }
+
+            List<List<ICurve>> distributed = Compute.DistributeOutlines(checkedCurves, tolerance);
+
+            List<PlanarSurface> surfaces = new List<PlanarSurface>();
+            for (int i = 0; i < distributed.Count; i++)
+            {
+                PlanarSurface srf = new PlanarSurface(
+                    distributed[i][0],
+                    distributed[i].Skip(1).ToList()
+                );
+
+                surfaces.Add(srf);
+            }
+            
+            return surfaces;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<ICurve> ValidateCurves(this List<ICurve> boundaryCurves, double tolerance)
+        {
             //--------------Null-Boundary-Curves-----------------------//
             int count = boundaryCurves.Count;
             List<ICurve> checkedCurves = boundaryCurves.Where(x => x != null).ToList();
@@ -193,28 +227,48 @@ namespace BH.Engine.Geometry
             if (checkedCurves.Count != count)
                 Base.Compute.RecordWarning("Some of the input boundary curves were not closed within the tolerance and have been ignored on planar surface creation. Please make sure if the output is correct and tweak the input tolerance if needed.");
 
-            if (checkedCurves.Count == 0)
-            {
-                Base.Compute.RecordError("Planar surface could not be created because all input boundary curves are invalid (null, unsupported type, non-planar, not closed within the tolerance).");
-                return new List<PlanarSurface>();
-            }
 
-            List<List<ICurve>> distributed = Compute.DistributeOutlines(checkedCurves, tolerance);
+            //--------------Self-intersecting-Boundary-Curves-----------------------//
+            count = checkedCurves.Count;
+            checkedCurves = checkedCurves.Where(x => !x.IIsSelfIntersecting(tolerance)).ToList();
+            if (checkedCurves.Count != count)
+                Base.Compute.RecordWarning("Some of the input boundary curves were self-intersecting within the tolerance and have been ignored on planar surface creation. Please make sure if the output is correct and tweak the input tolerance if needed.");
 
-            List<PlanarSurface> surfaces = new List<PlanarSurface>();
-            for (int i = 0; i < distributed.Count; i++)
-            {
-                PlanarSurface srf = new PlanarSurface(
-                    distributed[i][0],
-                    distributed[i].Skip(1).ToList()
-                );
 
-                surfaces.Add(srf);
-            }
-            
-            return surfaces;
+            return checkedCurves.Select(x => x.TryGetBoundaryCurve(tolerance)).ToList();
         }
-        
+
+        /***************************************************/
+
+        private static ICurve TryGetBoundaryCurve(this ICurve curve, double tolerance)
+        {
+            if (curve is IBoundary)
+            {
+                return curve;
+            }
+            else if (curve is PolyCurve)
+            {
+                List<ICurve> subParts = curve.ISubParts().ToList();
+                if (subParts.Any(x => x is NurbsCurve))
+                    return curve;
+
+                if (subParts.Count == 1)
+                    return TryGetBoundaryCurve(subParts[0], tolerance);
+
+                return new BoundaryCurve(Compute.IJoin(subParts, tolerance).First().Curves);
+            }
+            else if (curve is Polyline)
+            {
+                Polyline pLine = curve as Polyline;
+                return new Polygon(pLine.ControlPoints.GetRange(0, pLine.ControlPoints.Count - 1));
+            }
+            else
+            {
+                return curve;
+            }    
+
+        }
+
         /***************************************************/
     }
 }
