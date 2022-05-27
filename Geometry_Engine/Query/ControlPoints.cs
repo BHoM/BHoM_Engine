@@ -35,6 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Gets points at start, quarter, mid thre quarters and end points on the Arc.")]
+        [Input("curve", "The Arc to get control points from.")]
+        [Output("pts", "Points at start, quarter, mid, three quarters and end along the Arc.")]
         public static List<Point> ControlPoints(this Arc curve)
         {
             //TODO: Should this give back the control points of an arc in nurbs form?
@@ -43,6 +46,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets points at start, quarter, mid thre quarters and end points on the Circle.")]
+        [Input("curve", "The Circle to get control points from.")]
+        [Output("pts", "Points at start, quarter, mid, three quarters and end along the Circle.")]
         public static List<Point> ControlPoints(this Circle curve)
         {
             //TODO: Should this give back the control points of a circle in nurbs form?
@@ -51,6 +57,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets points at the vertices and co-vertices of the Ellipse.")]
+        [Input("curve", "The Ellipse to get control points from.")]
+        [Output("pts", "Points at the vertices and co-vertices of the Ellipse.")]
         public static List<Point> ControlPoints(this Ellipse curve)
         {
             //TODO: Should this give back the control points of a circle in nurbs form?
@@ -66,6 +75,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the start and end points of the Line.")]
+        [Input("curve", "The Line to get control points from.")]
+        [Output("pts", "The start and end points of the Line.")]
         public static List<Point> ControlPoints(this Line curve)
         {
             return new List<Point> { curve.Start, curve.End };
@@ -73,6 +85,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the ControlPoints of the NurbsCurve. Note that these points might not be on the curve.")]
+        [Input("curve", "The NurbsCurve to get control points from.")]
+        [Output("pts", "The ControlPoints of the NurbsCurve.")]
         public static List<Point> ControlPoints(this NurbsCurve curve)
         {
             return curve.ControlPoints;
@@ -80,6 +95,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the ControlPoints of the PolyCurve as the ControlPoints of all of its inner curves.")]
+        [Input("curve", "The PolyCurve to get control points from.")]
+        [Output("pts", "The ControlPoints of the PolyCurve.")]
         public static List<Point> ControlPoints(this PolyCurve curve)
         {
             return curve.Curves.SelectMany((x, i) => x.IControlPoints().Skip((i > 0) ? 1 : 0)).ToList();
@@ -87,6 +105,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the ControlPoints of the Polyline.")]
+        [Input("curve", "The Polyline to get control points from.")]
+        [Output("pts", "The ControlPoints of the Polyline.")]
         public static List<Point> ControlPoints(this Polyline curve)
         {
             return curve.ControlPoints;
@@ -108,6 +129,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Gets the ControlPoints of the ICurve. Result will depend on the curve provided. Note that for NurbsCurves might not returns curves that are on the curve.")]
+        [Input("curve", "The ICurve to get control points from.")]
+        [Output("pts", "The ControlPoints of the ICurve.")]
         public static List<Point> IControlPoints(this ICurve curve)
         {
             return ControlPoints(curve as dynamic);
