@@ -44,9 +44,9 @@ namespace BH.Engine.Lighting
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static MeshResult MeshResult(List<MeshElementResult> results, IComparable objectId, IComparable resultCase, MeshResultSmoothingType smoothing)
+        public static MeshResult MeshResult(List<MeshElementResult> results, IComparable objectId, IComparable resultCase)
         {
-            return new MeshResult(objectId, resultCase, results, smoothing);
+            return new MeshResult(objectId, resultCase, results);
         }
 
 
