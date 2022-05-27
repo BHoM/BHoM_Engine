@@ -28,6 +28,7 @@ using BH.Engine.Data;
 using BH.oM.Base.Attributes;
 using BH.oM.Base;
 using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -39,7 +40,7 @@ namespace BH.Engine.Geometry
 
         [Description("Queries the centre of area for a PlanarSurface.")]
         [Input("surface", "The PlanarSurface to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
         [Output("centroid", "The Point at the centre of given PlanarSurface.")]
         public static Point Centroid(this PlanarSurface surface, double tolerance = Tolerance.Distance)
         {
@@ -54,7 +55,7 @@ namespace BH.Engine.Geometry
         [Description("Queries the combined centre of area enclosed by a set of ICurves with an optional set of openings.\nTo give a correct result all input curves must be planar, coplanar, closed and non-self-intersecting.\nOpening curves should also be inside of outline curves.")]
         [Input("outlines", "Set of planar, coplanar, closed and non-self-intersecting ICurves to get the combined centre of area of.")]
         [Input("openings", "Set of planar, coplanar, closed and non-self-intersecting ICurves illustrating openings in initial set of outlines.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
         [Output("centroid", "The Point at the centre of given geometry.")]
         public static Point Centroid(this IEnumerable<ICurve> outlines, IEnumerable<ICurve> openings = null, double tolerance = Tolerance.Distance)
         {
@@ -84,7 +85,7 @@ namespace BH.Engine.Geometry
         [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Centroid(BH.oM.Geometry.Polyline, System.Double)")]
         [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting Polyline.")]
         [Input("curve", "The Polyline to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
         [Output("centroid", "The Point at the centre of a region enclosed by given Polyline.")]
         public static Point Centroid(this IPolyline curve, double tolerance = Tolerance.Distance)
         {
@@ -151,7 +152,7 @@ namespace BH.Engine.Geometry
         [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Centroid(BH.oM.Geometry.PolyCurve, System.Double)")]
         [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting PolyCurve.")]
         [Input("curve", "The PolyCurve to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
         [Output("centroid", "The Point at the centre of area enclosed by given PolyCurve.")]
         public static Point Centroid(this IPolyCurve curve, double tolerance = Tolerance.Distance)
         {
@@ -264,7 +265,7 @@ namespace BH.Engine.Geometry
 
         [Description("Queries the centre of area for an Ellipse.")]
         [Input("ellipse", "The Ellipse to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
         [Output("centroid", "The Point at the centre of given Ellipse.")]
         public static Point Centroid(this Ellipse ellipse, double tolerance = Tolerance.Distance)
         {
@@ -275,7 +276,7 @@ namespace BH.Engine.Geometry
 
         [Description("Queries the centre of area for a Circle.")]
         [Input("circle", "The Circle to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
         [Output("centroid", "The Point at the centre of given Circle.")]
         public static Point Centroid(this Circle circle, double tolerance = Tolerance.Distance)
         {
@@ -286,7 +287,7 @@ namespace BH.Engine.Geometry
 
         [Description("Queries the centre of area for a Line.")]
         [Input("line", "The Line to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
         [Output("centroid", "The Point at the centre of given Line.")]
         public static Point Centroid(this Line line, double tolerance = Tolerance.Distance)
         {
@@ -300,7 +301,7 @@ namespace BH.Engine.Geometry
 
         [Description("Interface method that queries the centre of area for any ICurve.")]
         [Input("curve", "The ICurve to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance")]
+        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
         [Output("centroid", "The Point at the centre of given ICurve.")]
         public static Point ICentroid(this ICurve curve, double tolerance = Tolerance.Distance)
         {

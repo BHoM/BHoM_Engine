@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -38,6 +39,7 @@ namespace BH.Engine.Geometry
         [Description("Creates a PlanarSurface based on boundary curves. Only processing done by this method is checking (co)planarity and that the curves are closed. Internal edges will be assumed to be inside the External.")]
         [Input("externalBoundary", "The outer boundary curve of the surface. Needs to be closed and planar.")]
         [Input("internalBoundaries", "Optional internal boundary curves descibing any openings inside the external. All internal edges need to be closed and co-planar with the external edge.")]
+        [Input("tolerance", "Distance tolerance used for checking the validity of the inputs for PlanarSurface creation.", typeof(Length))]
         [Output("PlanarSurface", "Planar surface corresponding to the provided edge curves.")]
         public static PlanarSurface PlanarSurface(ICurve externalBoundary, List<ICurve> internalBoundaries = null, double tolerance = Tolerance.Distance)
         {
@@ -163,6 +165,7 @@ namespace BH.Engine.Geometry
         
         [Description("Distributes the edge curve and creates a set of boundary planar surfaces.")]
         [Input("boundaryCurves", "Boundary curves to be used. Non-planar and non-closed curves are ignored.")]
+        [Input("tolerance", "Distance tolerance used for checking the validity of the inputs for PlanarSurface creation.", typeof(Length))]
         [Output("PlanarSurface", "List of planar surfaces created.")]
         public static List<PlanarSurface> PlanarSurface(List<ICurve> boundaryCurves, double tolerance = Tolerance.Distance)
         {
@@ -240,7 +243,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Try get out the curve as suitable type of IBoundary curve. Method assumes curves to have been pre-checked for validity (Closed, planar, non-self intersecting)")]
+        [Description("Try get out the curve as suitable type of IBoundary curve. Method assumes curves to have been pre-checked for validity (Closed, planar, non-self intersecting).")]
         private static ICurve TryGetBoundaryCurve(this ICurve curve, double tolerance)
         {
             if (curve is IBoundary)
