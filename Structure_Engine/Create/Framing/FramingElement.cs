@@ -81,13 +81,15 @@ namespace BH.Engine.Structure
                     break;
             }
 
-            List<IReinforcingBar> reinforcement = bar.ReinforcingBars();
 
-            if (reinforcement.Count != 0)
+            if (bar.HasReinforcement())
             {
-                framingElement.Fragments.Add(new ReinforcementFragment { ReinforcingBars = reinforcement });
+                List<IReinforcingBar> reinforcement = bar.ReinforcingBars();
+                if (reinforcement.Count != 0)
+                {
+                    framingElement.Fragments.Add(new ReinforcementFragment { ReinforcingBars = reinforcement });
+                }
             }
-
             return framingElement;
         }
 
