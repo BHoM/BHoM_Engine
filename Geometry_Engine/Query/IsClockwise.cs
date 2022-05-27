@@ -133,7 +133,7 @@ namespace BH.Engine.Geometry
         [Description("Checks if the segments of the PolyCurve are defined in a clockwise if inspected from the provided view point.\n" +
              "This is done by projecting the point to the plane of the curve and creating a normal vector from the view point to the projected point. The segments of the PolyCurve are then checked if they are defined clockwise around this vector.\n" +
              "Curve needs to be closed and the point needs to be outside the plane of the curve for the method to function.")]
-        [Input("polyline", "The closed PolyCurve to check if it is defined in a clockwise manner in relation to the view Point.")]
+        [Input("curve", "The closed PolyCurve to check if it is defined in a clockwise manner in relation to the view Point.")]
         [Input("viewPoint", "The the point from where the the curve is to be checked. Requires the curve to not be in the plane of the curve.")]
         [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("isClockwise", "Returns true if the PolyCurve is defined clockwise when inspected from the provided viewpoint.")]
@@ -149,7 +149,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Checks if the Arc is defined in a clockwise order around the provided axis Vector.")]
-        [Input("curve", "The Arc to check if it is defined in a clockwise manner in relation to the Vector.")]
+        [Input("arc", "The Arc to check if it is defined in a clockwise manner in relation to the Vector.")]
         [Input("axis", "The axis vector to check against.")]
         [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("isClockwise", "Returns true if the Arc is defined clockwise around the provided axis.")]
