@@ -41,7 +41,7 @@ namespace BH.Engine.Data
         [Input("number", "A double to round")]
         [Input("decimals", "The number of decimals to round to - default 3 decimal places (e.g. round 3.14159 to 3.141")]
         [Output("number", "The double number rounded to the specified number of decimal places")]
-        public static double Round(this double number, int decimals = 3)
+        public static double Round(this double number, int decimals = 0)
         {
             return Math.Round(number, decimals);
         }
