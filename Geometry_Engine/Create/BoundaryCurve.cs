@@ -55,7 +55,7 @@ namespace BH.Engine.Geometry
 
             if (subParts.Any(x => x is NurbsCurve))
             {
-                Engine.Base.Compute.RecordError("Input curves contaisn NubrsCurves which cannot be validated. BoundaryCurve not created.");
+                Engine.Base.Compute.RecordError("Input curves include NurbsCurves whose validation is not supported. BoundaryCurve not created.");
                 return null;
             }
 
