@@ -45,6 +45,17 @@ namespace BH.Engine.Geometry
         [Output("isClockwise", "Returns true if the IPolyline is defined clockwise around the provided normal.")]
         public static bool IsClockwise(this IPolyline polyline, Vector normal, double tolerance = Tolerance.Distance)
         {
+            if (polyline == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot evaluate IsClockwise for a null curve. False returned.");
+                return false;
+            }
+            if (normal == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot evaluate if a curve is clockwise around a null normal vector. False returned.");
+                return false;
+            }
+
             if (!polyline.IIsClosed(tolerance))
                 throw new Exception("The polyline is not closed. IsClockwise method is relevant only to closed curves.");
 
@@ -81,6 +92,18 @@ namespace BH.Engine.Geometry
         [Output("isClockwise", "Returns true if the IPolyCurve is defined clockwise around the provided normal.")]
         public static bool IsClockwise(this IPolyCurve curve, Vector normal, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot evaluate IsClockwise for a null curve. False returned.");
+                return false;
+            }
+            if (normal == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot evaluate if a curve is clockwise around a null normal vector. False returned.");
+                return false;
+            }
+
+
             if (!curve.IIsClosed(tolerance))
                 throw new Exception("The curve is not closed. IsClockwise method is relevant only to closed curves.");
             

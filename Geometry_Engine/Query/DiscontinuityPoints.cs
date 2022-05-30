@@ -43,6 +43,11 @@ namespace BH.Engine.Geometry
         [Output("discPoints", "The list of discontinuity points.")]
         public static List<Point> DiscontinuityPoints(this Arc curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Input curve is null. Discontinuity points can not be evaluated.");
+                return new List<Point>();
+            }
             return new List<Point> { curve.StartPoint(), curve.EndPoint() };
         }
 
@@ -79,6 +84,11 @@ namespace BH.Engine.Geometry
         [Output("discPoints", "The list of discontinuity points.")]
         public static List<Point> DiscontinuityPoints(this Line curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Input curve is null. Discontinuity points can not be evaluated.");
+                return new List<Point>();
+            }
             return new List<Point> { curve.Start, curve.End };
         }
 
@@ -92,6 +102,11 @@ namespace BH.Engine.Geometry
         [Output("discPoints", "The list of discontinuity points.")]
         public static List<Point> DiscontinuityPoints(this IPolyCurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Input curve is null. Discontinuity points can not be evaluated.");
+                return new List<Point>();
+            }
             List<Point> result = new List<Point>();
             List<ICurve> curves = curve.ISubParts().Where(c => !(c is Circle || c is Ellipse)).ToList();
             bool closed = curve.IIsClosed(distanceTolerance);
@@ -128,6 +143,11 @@ namespace BH.Engine.Geometry
         [Output("discPoints", "The list of discontinuity points.")]
         public static List<Point> DiscontinuityPoints(this IPolyline curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Input curve is null. Discontinuity points can not be evaluated.");
+                return new List<Point>();
+            }
             List<Point> ctrlPts = new List<Point>(curve.IControlPoints());
 
             if (ctrlPts.Count < 3)
@@ -169,6 +189,11 @@ namespace BH.Engine.Geometry
         [Output("discPoints", "The list of discontinuity points.")]
         public static List<Point> IDiscontinuityPoints(this ICurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Input curve is null. Discontinuity points can not be evaluated.");
+                return new List<Point>();
+            }
             return DiscontinuityPoints(curve as dynamic, distanceTolerance, angleTolerance);
         }
 

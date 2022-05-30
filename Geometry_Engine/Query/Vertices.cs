@@ -64,6 +64,11 @@ namespace BH.Engine.Geometry
         [Output("vertices", "Vertices of the Polyline.")]
         public static List<Point> Vertices(this Polyline pLine, double tolerance = Tolerance.Distance)
         {
+            if (pLine == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot get vertices from a null curve.");
+                return new List<Point>();
+            }
             if (!pLine.IsClosed(tolerance))
             {
                 Base.Compute.RecordError("Input curve is not closed. Verticies not defined.");
@@ -81,6 +86,11 @@ namespace BH.Engine.Geometry
         [Output("vertices", "Vertices of the Polyline.")]
         public static List<Point> Vertices(this Polygon pGon, double tolerance = Tolerance.Distance)
         {
+            if (pGon == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot get vertices from a null curve.");
+                return new List<Point>();
+            }
             return pGon.Vertices.ToList();
         }
 
@@ -94,6 +104,11 @@ namespace BH.Engine.Geometry
         [Output("vertices", "Vertices of the IPolyline.")]
         public static List<Point> IVertices(this IPolyline pline, double tolerance = Tolerance.Distance)
         {
+            if (pline == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot get vertices from a null curve.");
+                return new List<Point>();
+            }
             return Vertices(pline as dynamic, tolerance);
         }
 
