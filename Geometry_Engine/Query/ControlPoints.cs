@@ -120,6 +120,11 @@ namespace BH.Engine.Geometry
         [Output("points", "The controlpoints of the Polygon. The first and last point will be the same.")]
         public static List<Point> ControlPoints(this Polygon curve)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot extract control points from a null curve.");
+                return new List<Point>();
+            }
             List<Point> controlPoints =  curve.Vertices.ToList();
             controlPoints.Add(controlPoints[0]);
             return controlPoints;

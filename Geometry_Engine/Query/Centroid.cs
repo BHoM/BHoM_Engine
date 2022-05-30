@@ -89,6 +89,12 @@ namespace BH.Engine.Geometry
         [Output("centroid", "The Point at the centre of a region enclosed by given Polyline.")]
         public static Point Centroid(this IPolyline curve, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Base.Compute.RecordError("Input curve is null. Cannot calculate centroid.");
+                return null;
+            }
+
             if (!curve.IIsPlanar(tolerance))
             {
                 Base.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");
@@ -156,6 +162,12 @@ namespace BH.Engine.Geometry
         [Output("centroid", "The Point at the centre of area enclosed by given PolyCurve.")]
         public static Point Centroid(this IPolyCurve curve, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Base.Compute.RecordError("Input curve is null. Cannot calculate centroid.");
+                return null;
+            }
+
             if (!curve.IIsPlanar(tolerance))
             {
                 Base.Compute.RecordError("Input curve is not planar. Cannot calculate centroid.");

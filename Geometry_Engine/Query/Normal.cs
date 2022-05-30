@@ -114,6 +114,11 @@ namespace BH.Engine.Geometry
         [Output("normal", "Vector normal to the plane of a curve.")]
         public static Vector Normal(this IPolyline curve, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot compute the normal of a null curve.");
+                return null;
+            }
             if (!curve.IIsPlanar(tolerance))
             {
                 Base.Compute.RecordError("A single normal vector is not unambiguously definable for non-planar curves.");
@@ -161,6 +166,11 @@ namespace BH.Engine.Geometry
         [Output("normal", "Vector normal to the plane of a curve.")]
         public static Vector Normal(this IPolyCurve curve, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot compute the normal of a null curve.");
+                return null;
+            }
             List<ICurve> crvs = new List<ICurve>(curve.ISubParts());
             if (crvs.Any(x => x is NurbsCurve))
             {
@@ -234,6 +244,11 @@ namespace BH.Engine.Geometry
         [Output("normal", "Vector normal to the plane of a curve.")]
         public static Vector Normal(this Circle curve, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot compute the normal of a null curve.");
+                return null;
+            }
             return curve.Normal;
         }
 
@@ -245,6 +260,11 @@ namespace BH.Engine.Geometry
         [Output("normal", "Vector normal to the plane of a curve.")]
         public static Vector Normal(this Ellipse curve, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot compute the normal of a null curve.");
+                return null;
+            }
             Vector normal = (curve.Axis1).CrossProduct(curve.Axis2);
             return normal;
         }
@@ -257,6 +277,11 @@ namespace BH.Engine.Geometry
         [Output("normal", "Vector normal to the plane of a curve.")]
         public static Vector Normal(this Arc curve, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot compute the normal of a null curve.");
+                return null;
+            }
             if (curve.Angle() > 0)
                 return curve.CoordinateSystem.Z;
             else
@@ -273,6 +298,11 @@ namespace BH.Engine.Geometry
         [Output("normal", "Vector normal to the surface.")]
         public static Vector Normal(this PlanarSurface surface)
         {
+            if (surface == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot compute the normal of a null surface.");
+                return null;
+            }
             return surface.ExternalBoundary.INormal();
         }
 
@@ -287,6 +317,11 @@ namespace BH.Engine.Geometry
         [Output("normal", "Vector normal to the plane of a curve.")]
         public static Vector INormal(this ICurve curve, double tolerance = Tolerance.Distance)
         {
+            if (curve == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot compute the normal of a null curve.");
+                return null;
+            }
             return Normal(curve as dynamic, tolerance);
         }
 
