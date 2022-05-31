@@ -44,6 +44,13 @@ namespace BH.Engine.Lighting
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
+        [Description("Create a Lux result for a specific node or face. This can be a list of values corresponding to values per a series of timesteps.")]
+        [Input("objectId", "The id of the mesh the result belongs to.")]
+        [Input("nodeId", "The id of the node the result belongs to. If the result is face based, this value should be null.")]
+        [Input("meshFaceId", "The id of the face the result belongs to. If the result is node based, this value should be null.")]
+        [Input("resultCase", "The case that this result relates to.")]
+        [Output("luxResult", "The created Lux MeshElementResult.")]
         public static MeshElementResult Lux(List<double> lux, IComparable objectId, IComparable nodeId, IComparable meshFaceId, IComparable resultCase)
         {
             return new Lux(objectId, nodeId, meshFaceId, resultCase, lux);
