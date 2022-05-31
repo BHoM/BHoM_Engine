@@ -44,6 +44,12 @@ namespace BH.Engine.Lighting
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
+        [Description("Create a MeshResult containing a collection of Lighting-based MeshElementResults corresponding to a specific mesh object and result case.")]
+        [Input("results", "A collection of MeshELementResults that make up this MeshResult. These are typically either face-based or node-based.")]
+        [Input("objectId", "The id of the mesh that the results relate to.")]
+        [Input("resultCase", "The case that this result relates to.")]
+        [Output("meshResult", "The created MeshResult.")]
         public static MeshResult MeshResult(List<MeshElementResult> results, IComparable objectId, IComparable resultCase)
         {
             return new MeshResult(objectId, resultCase, results);
