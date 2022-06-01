@@ -225,6 +225,22 @@ namespace BH.Engine.Library
                 {
                     string filePathName = Path.Combine(internalPath, Path.GetFileNameWithoutExtension(path));
                     AddToPathDictionary(filePathName, filePathName);
+
+                    //Check for existence of ToOld to allow old paths to be used as wall to acess the library.
+                    //This is only checked for for distributed Datasets, that is, when the source folder is the main BHoM Dataset folder.
+                    if (sourceFolder == m_sourceFolder)
+                    {
+                        Dictionary<string, List<string>> tolOldPaths = Engine.Versioning.Query.DatasetToOldPaths();
+                        List<string> oldPaths;
+                        if (tolOldPaths != null && tolOldPaths.TryGetValue(filePathName, out oldPaths))
+                        {
+                            foreach (string oldPath in oldPaths)
+                            {
+                                AddToPathDictionary(oldPath, filePathName);
+                            }
+                        }
+                    }
+
                     //Check that the file path has not already been added. If so, the one added first governs.
                     if (!m_libraryStrings.ContainsKey(filePathName))
                         m_libraryStrings[filePathName] = File.ReadAllLines(path);
