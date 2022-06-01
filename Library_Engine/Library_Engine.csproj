@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
     <ProjectReference Include="..\Serialiser_Engine\Serialiser_Engine.csproj" />
+    <ProjectReference Include="..\Versioning_Engine\Versioning_Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,11 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Versioning_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Versioning_oM.dll</HintPath>
+	  <Private>false</Private>
+	  <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
 
