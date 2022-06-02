@@ -73,12 +73,13 @@ namespace BH.Engine.Environment
         [Input("pt", "The point being checked to see if it is contained within the bounds of the panel")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
         [Output("isContaining", "True if the point is contained within the panel, false if it is not")]
-        public static bool IsContaining(this Panel panel, Point pt, bool acceptOnEdges = false)
+        [PreviousVersion("5.2", "BH.Engine.Environment.Query.IsContaining(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.Point, System.Boolean)")]
+        public static bool IsContaining(this Panel panel, Point pt, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panel == null || pt == null)
                 return false;
 
-            return new List<Panel> { panel }.IsContaining(pt, acceptOnEdges);
+            return new List<Panel> { panel }.IsContaining(pt, acceptOnEdges, tolerance);
         }
 
         [Description("Defines whether a collection of Environment Panels contains a provided point")]
@@ -86,7 +87,8 @@ namespace BH.Engine.Environment
         [Input("point", "The point being checked to see if it is contained within the bounds of the panels")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not")]
-        public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false)
+        [PreviousVersion("5.2", "BH.Engine.Environment.Query.IsContaining(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Geometry.Point, System.Boolean)")]
+        public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if(panels == null)
             {
@@ -102,12 +104,12 @@ namespace BH.Engine.Environment
 
             List<Plane> planes = new List<Plane>();
             foreach (Panel be in panels)
-                planes.Add(be.Polyline().IControlPoints().FitPlane());
+                planes.Add(be.Polyline().IControlPoints().FitPlane(tolerance));
 
             List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point))
+            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, acceptOnEdges, tolerance))
                 return false;
 
             //We need to check one line that starts in the point and end outside the bounding box
@@ -137,13 +139,14 @@ namespace BH.Engine.Environment
             {
                 if (planes[x] != null)
                 {
-                    if ((BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], false)) == null) continue;
+                    if ((BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], false, tolerance)) == null)
+                        continue;
 
                     List<Point> intersectingPoints = new List<oM.Geometry.Point>();
-                    intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x]));
+                    intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], true, tolerance));
                     Polyline pLine = panels[x].Polyline();
 
-                    if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, 1e-05))
+                    if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, tolerance))
                         intersectPoints.AddRange(intersectingPoints);
                 }
             }
@@ -158,7 +161,8 @@ namespace BH.Engine.Environment
                     List<Line> subParts = p.Polyline().ISubParts() as List<Line>;
                     foreach (Line l in subParts)
                     {
-                        if (l.IsOnCurve(point)) isContained = true;
+                        if (l.IsOnCurve(point))
+                            isContained = true;
                     }
                 }
             }

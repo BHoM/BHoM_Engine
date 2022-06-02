@@ -41,7 +41,8 @@ namespace BH.Engine.Results
                      "If TimeStepFilters contains items, only results of type ITimeStepResult will be returned that has a TimeStep matching any items in the TimeStepFilters.\n" +
                      "If ObjectIDFilters contains items, only results of type IObjectIdResult will be returned that has a ObjectId matching any items in the ObjectIDFilters.\n" +
                      "If NodeIDFilters contains items, only results of type IMeshElementResult will be returned that has a NodeId matching any items in the NodeIDFilters.\n" +
-                     "If MeshFaceIDFilters contains items, only results of type IMeshElementResult will be returned that has a MeshFaceId matching any items in the MeshFaceIDFilters.")]
+                     "If MeshFaceIDFilters contains items, only results of type IMeshElementResult will be returned that has a MeshFaceId matching any items in the MeshFaceIDFilters.\n" +
+                     "If multiple filter collections contains items, all those filter collections apply. For example, if ResultCaseFilters and ObjectIDFilters both are defined, the results returned will be filtered based on both the requirements mentioned above, including the requirement on the results to implement both IObjectIdResult and ICasedResult.")]
         [Input("results", "Results to filter.")]
         [Input("filter", "Filtering to be applied to the result.")]
         [Output("filteredResults", "The filtered results.")]
@@ -53,19 +54,19 @@ namespace BH.Engine.Results
             IEnumerable<T> filteredRes = results;
 
             if (filter.ResultCaseFilters != null && filter.ResultCaseFilters.Count > 0)
-                filteredRes = results.OfType<ICasedResult>().Where(x => filter.ResultCaseFilters.Contains(x.ResultCase?.ToString())).OfType<T>();
+                filteredRes = filteredRes.OfType<ICasedResult>().Where(x => filter.ResultCaseFilters.Contains(x.ResultCase?.ToString())).OfType<T>();
 
             if (filter.TimeStepFilters != null && filter.TimeStepFilters.Count > 0)
-                filteredRes = results.OfType<ITimeStepResult>().Where(x => filter.TimeStepFilters.Contains(x.TimeStep)).OfType<T>();
+                filteredRes = filteredRes.OfType<ITimeStepResult>().Where(x => filter.TimeStepFilters.Contains(x.TimeStep)).OfType<T>();
 
             if (filter.ObjectIDFilters != null && filter.ObjectIDFilters.Count > 0)
-                filteredRes = results.OfType<IObjectIdResult>().Where(x => filter.ObjectIDFilters.Contains(x.ObjectId?.ToString())).OfType<T>();
+                filteredRes = filteredRes.OfType<IObjectIdResult>().Where(x => filter.ObjectIDFilters.Contains(x.ObjectId?.ToString())).OfType<T>();
 
             if (filter.NodeIDFilters != null && filter.NodeIDFilters.Count > 0)
-                filteredRes = results.OfType<IMeshElementResult>().Where(x => filter.NodeIDFilters.Contains(x.NodeId?.ToString())).OfType<T>();
+                filteredRes = filteredRes.OfType<IMeshElementResult>().Where(x => filter.NodeIDFilters.Contains(x.NodeId?.ToString())).OfType<T>();
 
             if (filter.MeshFaceIDFilters != null && filter.MeshFaceIDFilters.Count > 0)
-                filteredRes = results.OfType<IMeshElementResult>().Where(x => filter.MeshFaceIDFilters.Contains(x.MeshFaceId?.ToString())).OfType<T>();
+                filteredRes = filteredRes.OfType<IMeshElementResult>().Where(x => filter.MeshFaceIDFilters.Contains(x.MeshFaceId?.ToString())).OfType<T>();
 
 
             return filteredRes;

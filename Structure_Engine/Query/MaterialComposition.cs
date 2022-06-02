@@ -110,27 +110,30 @@ namespace BH.Engine.Structure
             List<double> areas = new List<double>();
             List<Material> materials = new List<Material>();
 
-            //TODO: Resolve for stirups as well
-            foreach (LongitudinalReinforcement reinforcement in sectionProperty.RebarIntent.BarReinforcement.OfType<LongitudinalReinforcement>())
+            if (sectionProperty?.RebarIntent?.BarReinforcement != null)
             {
-                //Calculate reinforcement area for a section cut
-                double reinArea = reinforcement.Area();
+                //TODO: Resolve for stirups as well
+                foreach (LongitudinalReinforcement reinforcement in sectionProperty.RebarIntent.BarReinforcement.OfType<LongitudinalReinforcement>())
+                {
+                    //Calculate reinforcement area for a section cut
+                    double reinArea = reinforcement.Area();
 
-                //Scale area with distribution along the length
-                double factor = Math.Min(reinforcement.EndLocation - reinforcement.StartLocation, 1);
-                reinArea *= factor;
+                    //Scale area with distribution along the length
+                    double factor = Math.Min(reinforcement.EndLocation - reinforcement.StartLocation, 1);
+                    reinArea *= factor;
 
-                //Subtract reinforcement area from the section area
-                sectionArea -= reinArea;
-                areas.Add(reinArea);
-                Material reifMaterial;
+                    //Subtract reinforcement area from the section area
+                    sectionArea -= reinArea;
+                    areas.Add(reinArea);
+                    Material reifMaterial;
 
-                if (reinforcement.Material != null)
-                    reifMaterial = Physical.Create.Material(reinforcement.Material);
-                else
-                    reifMaterial = new Material();
+                    if (reinforcement.Material != null)
+                        reifMaterial = Physical.Create.Material(reinforcement.Material);
+                    else
+                        reifMaterial = new Material();
 
-                materials.Add(reifMaterial);
+                    materials.Add(reifMaterial);
+                }
             }
 
             if (materials.Count == 0)

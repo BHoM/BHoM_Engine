@@ -20,44 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
+using BH.oM.Dimensional;
 using System.Linq;
+using BH.oM.Geometry;
+using System.Collections.Generic;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Creates an NurbsCurve based on its core properties.")]
-        [InputFromProperty("controlPoints")]
-        [InputFromProperty("weights")]
-        [InputFromProperty("knots")]
-        [Output("curve", "The created NurbsCurve.")]
-        public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> knots)
+        [Description("Gets the edge elements from an PlanarSurface defining the boundary of the element. Method required for all IElement2Ds. \n" +
+             "For an PlanarSurface this will return a list of its Curves coresponding to the SubParts of the ExternalBoundary of the PlanarSurface.")]
+        [Input("surface", "The PlanarSurface to get outline elements from.")]
+        [Output("elements", "Outline elements of the PlanarSurface, i.e. the ExternalEdges sub parts of the PlanarSurface.")]
+        public static List<IElement1D> OutlineElements1D(this PlanarSurface surface)
         {
-            return new NurbsCurve { ControlPoints = controlPoints.ToList(), Knots = knots.ToList(), Weights = weights.ToList() };
-        }
+            if (surface == null || surface.ExternalBoundary == null)
+                return new List<IElement1D>();
 
-
-        /***************************************************/
-        /**** Random Geometry                           ****/
-        /***************************************************/
-
-        [NotImplemented]
-        [Description("Not yet implemented method for generating random nurbs curve.")]
-        public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
+            return surface.ExternalBoundary.ISubParts().ToList<IElement1D>();
         }
 
         /***************************************************/
+
     }
 }
+
 

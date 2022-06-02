@@ -20,12 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
+
 
 namespace BH.Engine.Geometry
 {
@@ -35,29 +36,18 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates an NurbsCurve based on its core properties.")]
-        [InputFromProperty("controlPoints")]
-        [InputFromProperty("weights")]
-        [InputFromProperty("knots")]
-        [Output("curve", "The created NurbsCurve.")]
-        public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> knots)
+        [Description("Creates a a new PlanarSurface that can be used as internal element for another PlanarSurface. The resulting PlanarSurface will have a null ExternalBoundary and empty list of InternalBoundaries. The resulting PlanarSurface is casted to IElement2D for generalization purposes.  \n" +
+                     "Method required for any IElement2D that contians internal IElement2Ds.")]
+        [Input("surface", "PlanarSurface just used to determine the appropriate type of IElement2D to create.")]
+        [Output("opening", "The created Opening as a IElement2D.")]
+        public static IElement2D NewInternalElement2D(this PlanarSurface surface)
         {
-            return new NurbsCurve { ControlPoints = controlPoints.ToList(), Knots = knots.ToList(), Weights = weights.ToList() };
-        }
-
-
-        /***************************************************/
-        /**** Random Geometry                           ****/
-        /***************************************************/
-
-        [NotImplemented]
-        [Description("Not yet implemented method for generating random nurbs curve.")]
-        public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
+            return new PlanarSurface(null, new System.Collections.Generic.List<ICurve>());
         }
 
         /***************************************************/
     }
 }
+
+
 

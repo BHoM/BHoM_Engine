@@ -23,6 +23,9 @@
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using System;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -32,6 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a TransformMatrix corresponding to the provided Quaternion. Used to create part of the Rotation matrix.")]
+        [Input("q", "The Quaternion to create the TransformMatrix matrix from.")]
+        [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix TransformMatrix(Quaternion q)
         {
             return new TransformMatrix
@@ -48,15 +54,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static TransformMatrix TranslationMatrix(Vector vector)
+        [PreviousInputNames("translation", "vector")]
+        [Description("Creates a Translation matrix from the provided Vector.")]
+        [Input("translation", "The Vector corresponding to the seeked translation.")]
+        [Output("transform", "The created TransformMatrix.")]
+        public static TransformMatrix TranslationMatrix(Vector translation)
         {
+            if (translation == null)
+                return null;
             return new TransformMatrix
             {
                 Matrix = new double[,]
                 {
-                    {  1,  0,  0,  vector.X   },
-                    {  0,  1,  0,  vector.Y   },
-                    {  0,  0,  1,  vector.Z   },
+                    {  1,  0,  0,  translation.X   },
+                    {  0,  1,  0,  translation.Y   },
+                    {  0,  0,  1,  translation.Z   },
                     {  0,  0,  0,  1   }
                 }
             };
@@ -64,6 +76,8 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a Identity TransformMatrix, e.g. a Matrix with 1 values on the main diagonal and all other values 0.")]
+        [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix IdentityMatrix()
         {
             return new TransformMatrix
@@ -80,6 +94,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a RotationMatrix corresponding to a rotation with the specifiend angle around the provided vector axis and centre point.")]
+        [Input("centre", "The centre of the rotation.")]
+        [Input("axis", "The axis to rotate around.")]
+        [Input("angle", "The angle of the rotation.", typeof(Angle))]
+        [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix RotationMatrix(Point centre, Vector axis, double angle)
         {
             TransformMatrix rotation = TransformMatrix(Quaternion(axis.Normalise(), angle));
@@ -91,6 +110,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a ScaleMatrix for a non-uniform scaling based on a scale vector and a reference point.")]
+        [Input("refPoint", "Base point of the scaling.")]
+        [Input("scaleVector", "The scale vector used to determine by how much the geometry should be scaled in each direction.")]
+        [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix ScaleMatrix(Point refPoint, Vector scaleVector)
         {
             TransformMatrix move1 = TranslationMatrix(oM.Geometry.Point.Origin - refPoint);
@@ -111,6 +134,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a TransformMatrix corresponding to a projection of the geometry on to the plane along a vector. If no vector is provided, the projection will be along the normal of the plane.")]
+        [Input("plane", "The plane to project the geometry to.")]
+        [Input("vector", "Optional vector to project along. The normal of the plane will be used if nothing is provided.")]
+        [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix ProjectionMatrix(Plane plane, Vector vector = null)
         {
             Point x = new Point() { X = 1 };
@@ -148,29 +175,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static TransformMatrix RandomMatrix(int seed = -1, double minVal = -1, double maxVal = 1)
-        {
-            if (seed == -1)
-                seed = m_Random.Next();
-            Random rnd = new Random(seed);
-            return RandomMatrix(rnd, minVal, maxVal);
-        }
-
-        /***************************************************/
-
-        public static TransformMatrix RandomMatrix(Random rnd, double minVal = -1, double maxVal = 1)
-        {
-            double[,] matrix = new double[4, 4];
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 4; j++)
-                    matrix[i, j] = minVal + rnd.NextDouble() * (maxVal - minVal);
-            matrix[3, 3] = 1;
-
-            return new TransformMatrix { Matrix = matrix };
-        }
-
-        /***************************************************/
-
+        [Description("Creates a TransformMatrix corresponding to a orientation of the geometry from Global coordinates, with origin at {0,0,0} to the local system provided.")]
+        [Input("csTo", "The cartesian coordinate system to orient the geometry to.")]
+        [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix OrientationMatrixGlobalToLocal(Cartesian csTo)
         {
             Vector XWorld = new Vector { X = 1, Y = 0, Z = 0 };
@@ -197,16 +204,58 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Creates a TransformMatrix corresponding to a orientation of the geometry to Global coordinates, with origin at {0,0,0} from the local system provided.")]
+        [Input("csFrom", "The cartesian coordinate system to orient the geometry from.")]
+        [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix OrientationMatrixLocalToGlobal(Cartesian csFrom)
         {
             return OrientationMatrixGlobalToLocal(csFrom).Invert();
         }
-    
+
         /***************************************************/
 
+        [Description("Creates a TransformMatrix corresponding to a orientation of the geometry from one local coordinate system to another.")]
+        [Input("csFrom", "The cartesian coordinate system to orient the geometry from.")]
+        [Input("csTo", "The cartesian coordinate system to orient the geometry to.")]
+        [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix OrientationMatrix(this Cartesian csFrom, Cartesian csTo)
         {
             return OrientationMatrixGlobalToLocal(csTo) * OrientationMatrixLocalToGlobal(csFrom);
+        }
+
+        /***************************************************/
+        /**** Random Geometry                           ****/
+        /***************************************************/
+
+        [Description("Creates a random TransformMatrix based on a seed. If no seed is provided, a random one will be generated.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("minVal", "Minimum value to be used for each element in the created random matrix.")]
+        [Input("maxVal", "Maximum value to be used for each element in the created random matrix.")]
+        [Output("transform", "The generated random TransformMatrix.")]
+        public static TransformMatrix RandomMatrix(int seed = -1, double minVal = -1, double maxVal = 1)
+        {
+            if (seed == -1)
+                seed = NextRandomSeed();
+            Random rnd = new Random(seed);
+            return RandomMatrix(rnd, minVal, maxVal);
+        }
+
+        /***************************************************/
+
+        [Description("Creates a random TransformMatrix using the provided Random class.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("minVal", "Minimum value to be used for each element in the created random matrix.")]
+        [Input("maxVal", "Maximum value to be used for each element in the created random matrix.")]
+        [Output("transform", "The generated random TransformMatrix.")]
+        public static TransformMatrix RandomMatrix(Random rnd, double minVal = -1, double maxVal = 1)
+        {
+            double[,] matrix = new double[4, 4];
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 4; j++)
+                    matrix[i, j] = minVal + rnd.NextDouble() * (maxVal - minVal);
+            matrix[3, 3] = 1;
+
+            return new TransformMatrix { Matrix = matrix };
         }
 
         /***************************************************/

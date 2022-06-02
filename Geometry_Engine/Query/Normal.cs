@@ -123,8 +123,9 @@ namespace BH.Engine.Geometry
                 Base.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
                 return null;
             }
-            else if (curve.IsSelfIntersecting(tolerance))
-                Base.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
+            //Turning of check as shown to be an extreme performance burden. To be handled more long term in https://github.com/BHoM/BHoM_Engine/issues/2803
+            //else if (curve.IsSelfIntersecting(tolerance))
+            //    Base.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
 
             Point avg = curve.ControlPoints.Average();
             Vector normal = new Vector();
@@ -174,9 +175,10 @@ namespace BH.Engine.Geometry
                 Base.Compute.RecordError("A single normal vector is not unambiguously definable for open curves.");
                 return null;
             }
-            else if (curve.IsSelfIntersecting(tolerance))
-                Base.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
-            
+            //Turning of check as shown to be an extreme performance burden. To be handled more long term in https://github.com/BHoM/BHoM_Engine/issues/2803
+            //else if (curve.IsSelfIntersecting(tolerance))     
+            //    Base.Compute.RecordWarning("Input curve is self-intersecting. Resulting normal vector might be flipped.");
+
             if (crvs.Count() == 0)
                 return null;
             else if (crvs.Count() == 1)

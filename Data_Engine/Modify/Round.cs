@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -20,44 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
+using System.Collections.Generic;
 
-namespace BH.Engine.Geometry
+using BH.oM.Base;
+using BH.oM.Base.Attributes;
+
+namespace BH.Engine.Data
 {
-    public static partial class Create
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [PreviousVersion("5.2", "BH.Engine.Adapters.TAS.Modify.Round(System.Single, System.Int32)")]
+        [PreviousVersion("5.2", "BH.Engine.Adapters.TAS.Modify.Round(System.Double, System.Int32)")]
 
-        [Description("Creates an NurbsCurve based on its core properties.")]
-        [InputFromProperty("controlPoints")]
-        [InputFromProperty("weights")]
-        [InputFromProperty("knots")]
-        [Output("curve", "The created NurbsCurve.")]
-        public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> knots)
+        [Description("Returns a double number rounded to the specified number of decimal places")]
+        [Input("number", "A double to round")]
+        [Input("decimals", "The number of decimals to round to - default 3 decimal places (e.g. round 3.14159 to 3.141")]
+        [Output("number", "The double number rounded to the specified number of decimal places")]
+        public static double Round(this double number, int decimals = 0)
         {
-            return new NurbsCurve { ControlPoints = controlPoints.ToList(), Knots = knots.ToList(), Weights = weights.ToList() };
-        }
-
-
-        /***************************************************/
-        /**** Random Geometry                           ****/
-        /***************************************************/
-
-        [NotImplemented]
-        [Description("Not yet implemented method for generating random nurbs curve.")]
-        public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
+            return Math.Round(number, decimals);
         }
 
         /***************************************************/
     }
 }
-

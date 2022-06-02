@@ -20,44 +20,36 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
+using System.Collections.Generic;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Creates an NurbsCurve based on its core properties.")]
-        [InputFromProperty("controlPoints")]
-        [InputFromProperty("weights")]
-        [InputFromProperty("knots")]
-        [Output("curve", "The created NurbsCurve.")]
-        public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> knots)
+        [Description("Gets inner IElement2Ds from a PlanarSurface. Method required for all IElement2Ds. \n" +
+         "For a PlanarSurface this method will return a list of new PlanarSurfaces with ExternalBoundary corresponding to the InternalBoundaries of the PlanarSurface being queried.")]
+        [Input("surface", "The PlanarSurface to get internal IElement2Ds from.")]
+        [Output("elements", "The list of the internal IElement2Ds of the PlanarSurface, i.e. a list of PlanarSurfaces with ExternalBoundary matching the InternalBoundaries of the PlanarSurface provided.")]
+        public static List<IElement2D> InternalElements2D(this PlanarSurface surface)
         {
-            return new NurbsCurve { ControlPoints = controlPoints.ToList(), Knots = knots.ToList(), Weights = weights.ToList() };
-        }
+            if (surface == null || surface.InternalBoundaries == null)
+                return new List<IElement2D>();
 
-
-        /***************************************************/
-        /**** Random Geometry                           ****/
-        /***************************************************/
-
-        [NotImplemented]
-        [Description("Not yet implemented method for generating random nurbs curve.")]
-        public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
-        {
-            throw new NotImplementedException();
+            return surface.InternalBoundaries.Select(x => new PlanarSurface(x, new List<ICurve>())).ToList<IElement2D>();
         }
 
         /***************************************************/
     }
 }
+
+
 

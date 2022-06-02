@@ -20,46 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using System;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
-using System.ComponentModel;
 using BH.oM.Base.Attributes;
-using BH.oM.Quantities.Attributes;
+using System.ComponentModel;
+using BH.Engine.Geometry;
+using BH.Engine.Base;
+
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Compute
+    public static partial class Modify
     {
         /***************************************************/
-        /**** public Methods - Vectors                  ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Culls all duplicate points in the list by grouping all points that are within the maximum provided distance from one another and returning the average point in each group. A DBScan algorithm is used to determine if considered duplicates. This means that chains of close points will be determined the same, even if two individual points in this chain can have a distance between them that is larger than the tolerance, as long as they both are within tolerance of another point in the same group.")]
-        [Input("points", "The collection of points to cull duplicates from.")]
-        [Input("maxDist", "The maximum allowable distance between two points for them to be deemed the same point.", typeof(Length))]
-        [Output("points", "The collection of points with all duplicates removed. For cases when points have been deemed duplicates of each other, average point per each group of duplicates will be returned.")]
-        public static List<Point> CullDuplicates(this List<Point> points, double maxDist = Tolerance.Distance)
+        [Description("Sets the Outline Element1Ds of an PlanarSurface, i.e. the ExternalBoundary. Method required for all IElement2Ds.\n" +
+                     "The provided edges all need to be ICurves and should form a closed loop. No checking for planarity is made by the method.\n" +
+                     "The Method will return a new PlanarSurface with the provided edges as ExternalBoundary and InternalBoundaries set to those of the provided PlanarSurface.\n" +
+                     "This means that the method could provide a PlanarSurface that have an ExternalBoundary that is not co-planar with the InternalBoundaries. This is required for the IElement workflow to work.")]
+        [Input("surface", "The PlanarSurface to update the ExternalEdge of.")]
+        [Input("edges", "A list of IElement1Ds which all should be of a type of ICurve.")]
+        [Output("surface", "A new PlanarSurface with ExternalBoundary matching the provided edges and InternalBoundaries from the provided PlanarSurface.")]
+        public static PlanarSurface SetOutlineElements1D(this PlanarSurface surface, IEnumerable<IElement1D> edges)
         {
-            int count = points.Count;
+            if (surface == null || edges == null || !edges.Any())
+                return surface;
 
-            if (count <= 1)
-                return points;
-            if (count == 2)
-            {
-                if (points[0].SquareDistance(points[1]) < maxDist * maxDist)
-                    return new List<Point> { (points[0] + points[1]) / 2.0 };
-                else
-                    return points;
-            }
-            List<List<Point>> clusteredPoints = points.PointClustersDBSCAN(maxDist);
-            return clusteredPoints.Select(x => x.Average()).ToList();
+            ICurve externalEdge = Geometry.Compute.IJoin(edges.Cast<ICurve>().ToList()).First();
+
+            return new PlanarSurface(externalEdge, surface.InternalBoundaries);
         }
 
         /***************************************************/
+
     }
 }
-
 
 
