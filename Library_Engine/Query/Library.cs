@@ -230,15 +230,7 @@ namespace BH.Engine.Library
                     //This is only checked for for distributed Datasets, that is, when the source folder is the main BHoM Dataset folder.
                     if (sourceFolder == m_sourceFolder)
                     {
-                        Dictionary<string, List<string>> tolOldPaths = Engine.Versioning.Query.DatasetToOldPaths();
-                        List<string> oldPaths;
-                        if (tolOldPaths != null && tolOldPaths.TryGetValue(filePathName, out oldPaths))
-                        {
-                            foreach (string oldPath in oldPaths)
-                            {
-                                AddToPathDictionary(oldPath, filePathName);
-                            }
-                        }
+                        AddOldPaths(filePathName, filePathName);
                     }
 
                     //Check that the file path has not already been added. If so, the one added first governs.
@@ -286,6 +278,23 @@ namespace BH.Engine.Library
 
             if (!string.IsNullOrWhiteSpace(basePath))
                 AddToPathDictionary(basePath, dictionaryPath);
+        }
+
+        /***************************************************/
+
+        private static void AddOldPaths(string path, string dictionaryPath)
+        {
+            Dictionary<string, List<string>> tolOldPaths = Versioning.Query.DatasetToOldPaths();
+            List<string> oldPaths;
+            if (tolOldPaths != null && tolOldPaths.TryGetValue(path, out oldPaths))
+            {
+                foreach (string oldPath in oldPaths)
+                {
+                    AddToPathDictionary(oldPath, dictionaryPath);
+                    //Recursively add old paths
+                    AddOldPaths(oldPath, dictionaryPath);
+                }
+            }
         }
 
         /***************************************************/
