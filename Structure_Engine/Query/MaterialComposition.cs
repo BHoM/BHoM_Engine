@@ -151,6 +151,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this Layered property)
         {
             if (property.Layers.Any(x => x.Material == null)) //cull any null layers, raise a warning.            
@@ -162,6 +165,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this SlabOnDeck property)
         {
             if (property.IsNull() || property.Material.IsNull() || property.DeckMaterial.IsNull())
@@ -194,7 +201,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+
+
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition IMaterialComposition(this ISurfaceProperty property)
         {
             if (property.IsNull())
@@ -216,6 +227,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the MaterialComposition for homogenous properties. Multi-material properties will not be reported correctly.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         private static MaterialComposition MaterialComposition(this ISurfaceProperty property)
         {
             if (property.IsNull() || property.Material.IsNull())

@@ -40,6 +40,7 @@ namespace BH.Engine.Structure
         [Input("slabMaterial", "The material to cast on the deck, generally concrete.")]
         [Input("name", "A name for the slab on deck property.")]
         [Input("type", "The usage for the property, default is slab.")]
+        [Output("property", "The resulting SlabOnDeck property.")]
 
         public static SlabOnDeck SlabOnDeck(CorrugatedDeck deck, double thicknessOverFlutes, IMaterialFragment slabMaterial = null, string name = "", PanelType type = PanelType.Slab)
         {
