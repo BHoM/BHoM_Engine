@@ -88,6 +88,7 @@ namespace BH.Engine.Versioning
                                 }
                             }
                         }
+
                         if (datasetUpgrade.Contains("ToOld"))
                         {
                             BsonDocument toOld = datasetUpgrade["ToOld"] as BsonDocument;
