@@ -197,13 +197,14 @@ namespace BH.Engine.Library
         [Description("Loops through all subfolders of default library folder and any additional userpaths and reads all json files contained within.")]
         private static void GetPathsAndLoadLibraries()
         {
+            Dictionary<string, List<string>> tolOldPaths = Versioning.Query.DatasetToOldPaths();
             //Load all libraries from default path
-            GetPathsAndLoadLibraries(m_sourceFolder, "", "");
+            GetPathsAndLoadLibraries(m_sourceFolder, "", "", tolOldPaths);
 
             //Load all libraries from userpaths
             foreach (string path in UserPaths())
             {
-                GetPathsAndLoadLibraries(path, "", "");
+                GetPathsAndLoadLibraries(path, "", "", null);   //No versioning supported for user libraries
             }
 
         }
@@ -211,7 +212,7 @@ namespace BH.Engine.Library
         /***************************************************/
 
         [Description("Loop through all subfolders of provided source folder and extract all json files contained within.")]
-        private static void GetPathsAndLoadLibraries(string sourceFolder, string folderPath, string basePath)
+        private static void GetPathsAndLoadLibraries(string sourceFolder, string folderPath, string basePath, Dictionary<string, List<string>> tolOldPaths)
         {
             string internalPath = Path.Combine(basePath, folderPath);
             string folder = Path.Combine(sourceFolder, internalPath);
@@ -228,9 +229,9 @@ namespace BH.Engine.Library
 
                     //Check for existence of ToOld to allow old paths to be used as wall to acess the library.
                     //This is only checked for for distributed Datasets, that is, when the source folder is the main BHoM Dataset folder.
-                    if (sourceFolder == m_sourceFolder)
+                    if (tolOldPaths != null && sourceFolder == m_sourceFolder)
                     {
-                        AddOldPaths(filePathName, filePathName);
+                        AddOldPaths(filePathName, filePathName, tolOldPaths);
                     }
 
                     //Check that the file path has not already been added. If so, the one added first governs.
@@ -243,7 +244,7 @@ namespace BH.Engine.Library
 
             foreach (string dictPath in Directory.GetDirectories(folder))
             {
-                GetPathsAndLoadLibraries(sourceFolder, Path.GetFileName(dictPath), internalPath);
+                GetPathsAndLoadLibraries(sourceFolder, Path.GetFileName(dictPath), internalPath, tolOldPaths);
             }
         }
 
@@ -282,9 +283,9 @@ namespace BH.Engine.Library
 
         /***************************************************/
 
-        private static void AddOldPaths(string path, string dictionaryPath)
+        private static void AddOldPaths(string path, string dictionaryPath, Dictionary<string, List<string>> tolOldPaths)
         {
-            Dictionary<string, List<string>> tolOldPaths = Versioning.Query.DatasetToOldPaths();
+
             List<string> oldPaths;
             if (tolOldPaths != null && tolOldPaths.TryGetValue(path, out oldPaths))
             {
@@ -292,7 +293,7 @@ namespace BH.Engine.Library
                 {
                     AddToPathDictionary(oldPath, dictionaryPath);
                     //Recursively add old paths
-                    AddOldPaths(oldPath, dictionaryPath);
+                    AddOldPaths(oldPath, dictionaryPath, tolOldPaths);
                 }
             }
         }
