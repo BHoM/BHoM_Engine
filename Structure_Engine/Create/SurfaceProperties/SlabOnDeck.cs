@@ -23,6 +23,8 @@
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Base.Attributes;
 using BH.oM.Structure.MaterialFragments;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -31,13 +33,29 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        
+        [Description("Creates a SlabOnDeck SurfaceProperty based on a CorrugatedDeck and some quantity of material cast on top of it.")]
+        [Input("deck", "The corrugated deck on which the slab is cast.")]
+        [Input("thicknessOverFlutes", "The thickness of material above the top flute of the deck. This must be positive.", typeof(Length))]
+        [Input("slabMaterial", "The material to cast on the deck, generally concrete.")]
+        [Input("name", "A name for the slab on deck property.")]
+        [Input("type", "The usage for the property, default is slab.")]
 
-        public static SlabOnDeck Waffle(CorrugatedDeck deck, double thicknessOverFlutes, IMaterialFragment slabMaterial = null, string name = "", PanelType type = PanelType.Undefined)
+        public static SlabOnDeck SlabOnDeck(CorrugatedDeck deck, double thicknessOverFlutes, IMaterialFragment slabMaterial = null, string name = "", PanelType type = PanelType.Slab)
         {
+            if (deck.IsNull())
+                return null;
+
+            if (thicknessOverFlutes <= 0)
+            {
+                Base.Compute.RecordError("Thickness over flutes must be greater than zero.");
+                return null;
+            }
+
             return new SlabOnDeck
             {
                 Name = name,
-                Thickness = thicknessOverFlutes,
+                SlabThickness = thicknessOverFlutes,
                 Material = slabMaterial,
                 DeckName = deck.Name,
                 DeckMaterial = deck.Material,

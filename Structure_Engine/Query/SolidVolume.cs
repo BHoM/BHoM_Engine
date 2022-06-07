@@ -73,7 +73,7 @@ namespace BH.Engine.Structure
             }
 
             double area = areaElement.IArea();
-            double thickness = areaElement.Property.IAverageThickness();
+            double thickness = areaElement.Property.IVolumePerArea();
 
             return area * thickness;
         }
