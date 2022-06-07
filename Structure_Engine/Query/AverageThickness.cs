@@ -36,20 +36,22 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [PreviousVersion("5.2", "BH.Engine.Structure.Query.AverageThickness(BH.oM.Structure.SurfaceProperties.ConstantThickness)")]
+        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(this ConstantThickness property)
+        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this ConstantThickness property)
         {
             return property.IsNull() ? 0 : property.Thickness;
         }
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [PreviousVersion("5.2", "BH.Engine.Structure.Query.AverageThickness(BH.oM.Structure.SurfaceProperties.Ribbed)")]
+        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(this Ribbed property)
+        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this Ribbed property)
         {
             if (property.IsNull())
                 return 0;
@@ -66,10 +68,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [PreviousVersion("5.2", "BH.Engine.Structure.Query.AverageThickness(BH.oM.Structure.SurfaceProperties.Waffle)")]
+        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(this Waffle property)
+        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this Waffle property)
         {
             if (property.IsNull())
                 return 0;
@@ -93,10 +96,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [PreviousVersion("5.2", "BH.Engine.Structure.Query.AverageThickness(BH.oM.Structure.SurfaceProperties.LoadingPanelProperty)")]
+        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(this LoadingPanelProperty property)
+        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this LoadingPanelProperty property)
         {
             Base.Compute.RecordWarning("Structural IAreaElements are defined without volume.");
             return 0;
@@ -104,26 +108,28 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [PreviousVersion("5.2", "BH.Engine.Structure.Query.AverageThickness(BH.oM.Structure.SurfaceProperties.Layered)")]
+        [Description("Gets the average solid thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(this Layered property)
+        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this Layered property)
         {
             if (property.IsNull())
                 return 0;
 
             if (property.Layers.Any(x => x.Material == null))
-                Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. Thickness has been reported including this layer as void space.");
+                Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. VolumePerArea excludes this layer, assuming it is void space.");
 
-            return property.Layers.Sum(x => x.Thickness);
+            return property.Layers.Where(x => x.Material != null).Sum(x => x.Thickness);
         }
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [PreviousVersion("5.2", "BH.Engine.Structure.Query.AverageThickness(BH.oM.Structure.SurfaceProperties.SlabOnDeck)")]
+        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(this SlabOnDeck property)
+        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this SlabOnDeck property)
         {
             if (property.IsNull())
                 return 0;
@@ -137,13 +143,14 @@ namespace BH.Engine.Structure
             double h = property.DeckHeight;
             double s = property.DeckSpacing;
 
-            return property.Thickness + h * (b + (s - (b + t)) / 2) / s + (property.DeckThickness * property.DeckVolumeFactor)/2;
+            return property.SlabThickness + h * (b + (s - (b + t)) / 2) / s + (property.DeckThickness * property.DeckVolumeFactor)/2;
         }
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [PreviousVersion("5.2", "BH.Engine.Structure.Query.AverageThickness(BH.oM.Structure.SurfaceProperties.CorrugatedDeck)")]
+        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double AverageThickness(this CorrugatedDeck property)
+        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this CorrugatedDeck property)
         {
             if (property.IsNull())
                 return 0;
@@ -158,12 +165,13 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Gets the average thickness of the property as if it was applied to an infinite plane.")]
+        [PreviousVersion("5.2","BH.Engine.Structure.Query.IAverageThickness(BH.oM.Structure.SurfaceProperties.ISurfaceProperty")]
+        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("averageThickness", "the average thickness of the property as if it was applied to an infinite plane.", typeof(Length))]
-        public static double IAverageThickness(this ISurfaceProperty property)
+        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double IVolumePerArea(this ISurfaceProperty property)
         {
-            return property.IsNull() ? 0 : AverageThickness(property as dynamic);
+            return property.IsNull() ? 0 : VolumePerArea(property as dynamic);
         }
 
 
@@ -171,9 +179,9 @@ namespace BH.Engine.Structure
         /**** Private Methods - Fallbacks               ****/
         /***************************************************/
 
-        private static double AverageThickness(this ISurfaceProperty property)
+        private static double VolumePerArea(this ISurfaceProperty property)
         {
-            Base.Compute.RecordError(property.GetType().Name + " does not have an implementation for AverageThickness. Returning NaN.");
+            Base.Compute.RecordError(property.GetType().Name + " does not have an implementation for VolumePerArea. Returning NaN.");
             return double.NaN;
         }
 

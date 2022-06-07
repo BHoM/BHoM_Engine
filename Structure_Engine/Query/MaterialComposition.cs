@@ -27,6 +27,7 @@ using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
+using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.Reinforcement;
 using System.Collections.Generic;
 using System;
@@ -88,8 +89,7 @@ namespace BH.Engine.Structure
 
             if (reinfDensity == null)
             {
-                Material mat = Physical.Create.Material(areaElement.Property.Material);
-                return (MaterialComposition)mat;
+                return areaElement.Property.IMaterialComposition();
             }
             else
             {
@@ -150,6 +150,39 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        public static MaterialComposition MaterialComposition(this Layered property)
+        {
+            if (property.Layers.Any(x => x.Material == null)) //cull any null layers, raise a warning.            
+                Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. VolumePerArea excludes this layer, assuming it is void space.");
+            
+            IEnumerable<Layer> solidLayers = property.Layers.Where(x => x.Material != null); //filter to only layers which are solid.
+            return Matter.Create.MaterialComposition(solidLayers.Select(x => Physical.Create.Material(x.Material)), solidLayers.Select(x => x.Thickness));
+        }
+
+        /***************************************************/
+
+        public static MaterialComposition MaterialComposition(this SlabOnDeck property)
+        {
+            if (property.IsNull() || property.Material.IsNull() || property.DeckMaterial.IsNull())
+            {
+                Engine.Base.Compute.RecordError("The MaterialComposition could not be queried as one or more Materials was not assigned.");
+                return null;
+            }
+
+            double deckVolume = property.DeckThickness * property.DeckVolumeFactor;
+            double slabVolume = property.VolumePerArea() - deckVolume;
+
+            return Matter.Create.MaterialComposition(
+                new List<Material>() {
+                    Physical.Create.Material(property.Material),
+                    Physical.Create.Material(property.DeckMaterial)
+                },
+                new List<double>() { slabVolume, deckVolume }
+                );
+        }
+
+        /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
@@ -160,6 +193,17 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        public static MaterialComposition IMaterialComposition(this ISurfaceProperty property)
+        {
+            if (property.IsNull())
+                return null;
+
+            return MaterialComposition(property as dynamic);
+        }
+
+        /***************************************************/
         /**** Private methods - Default                 ****/
         /***************************************************/
 
@@ -167,6 +211,19 @@ namespace BH.Engine.Structure
         private static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
         {
             return sectionProperty.IsNull() ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
+        }
+
+        /***************************************************/
+
+        [Description("Gets the MaterialComposition for homogenous properties. Multi-material properties will not be reported correctly.")]
+        private static MaterialComposition MaterialComposition(this ISurfaceProperty property)
+        {
+            if (property.IsNull() || property.Material.IsNull())
+            {
+                Engine.Base.Compute.RecordError("The MaterialComposition could not be queried as a Material was not assigned.");
+                return null;
+            }
+            return Matter.Create.MaterialComposition(property.Material);
         }
 
         /***************************************************/
@@ -202,6 +259,11 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+
+
+
+
 
     }
 }

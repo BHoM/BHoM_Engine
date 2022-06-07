@@ -56,7 +56,7 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
-            return property.Material.IsNull() ? 0 : property.AverageThickness() * property.Material.Density;
+            return property.Material.IsNull() ? 0 : property.VolumePerArea() * property.Material.Density;
         }
 
         /***************************************************/
@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
-            return property.Material.IsNull() ? 0 : property.AverageThickness() * property.Material.Density;
+            return property.Material.IsNull() ? 0 : property.VolumePerArea() * property.Material.Density;
         }
 
         /***************************************************/
@@ -108,13 +108,11 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
-            //Assuming a thin but non-zero deck, with deck height measured center to center of deck flutes.
-            //Thus, the concrete above the centerline surface of the deck is reduced by half the effective deck thickness.
             double deckThickness = property.DeckThickness * property.DeckVolumeFactor;
-            double slabThickness = property.AverageThickness() - deckThickness / 2;
+            double slabThickness = property.VolumePerArea() - deckThickness;
 
+            double deckDensity = property.DeckMaterial.IsNull() ? 0 : deckThickness * property.DeckMaterial.Density;
             double slabDensity = property.Material.IsNull() ? 0 : slabThickness * property.Material.Density;
-            double deckDensity = property.DeckMaterial.IsNull() ? 0 : deckThickness * property.Material.Density;
 
             return slabDensity + deckDensity;
         }

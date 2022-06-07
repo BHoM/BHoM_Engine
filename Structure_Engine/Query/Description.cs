@@ -415,7 +415,7 @@ namespace BH.Engine.Structure
             if (p == null)
                 return "null property";
 
-            return $"{p.Thickness:G3} thick of {p.Material.DescriptionOrName()} on {p.DeckName} {p.DeckMaterial.DescriptionOrName()} corrugated deck with height: {p.DeckHeight:G3} and thickness: {p.DeckThickness:G3}";
+            return $"{p.SlabThickness:G3} thick of {p.Material.DescriptionOrName()} on {p.DeckName} {p.DeckMaterial.DescriptionOrName()} corrugated deck with height: {p.DeckHeight:G3} and thickness: {p.DeckThickness:G3}";
         }
 
         /***************************************************/
