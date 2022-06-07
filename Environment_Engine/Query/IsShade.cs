@@ -32,7 +32,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("Acertain whether a given panel type is an acceptable shade type.")]
+        [Description("Ascertain whether a given PanelType is a type of shade.")]
         [Input("panelType", "PanelType to determine if it's a shade type or not.")]
         [Output("isShade", "Will return true if the provided panel type is a shade type.")]
         public static bool IsShade(this PanelType panelType)
@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
             return shadeTypes.Contains(panelType);
         }
 
-        [Description("Acertain whether a given panel is a shading panel.")]
+        [Description("Ascertain whether a given panel is a shading panel.")]
         [Input("panel", "Panel to determine if it's a shade type or not.")]
         [Output("isShade", "Will return true if the panel is a shade type.")]
         public static bool IsShade(this Panel panel)
