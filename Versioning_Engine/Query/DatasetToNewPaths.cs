@@ -62,62 +62,71 @@ namespace BH.Engine.Versioning
 
             foreach (string folder in upgradeFolders)
             {
-                string filePath = Path.Combine(folder, "Upgrades.json");
-
-                if (File.Exists(filePath))
+                try
                 {
-                    string json = File.ReadAllText(filePath);
-                    BsonDocument upgrades = null;
-                    if (!BsonDocument.TryParse(json, out upgrades))
+
+
+                    string filePath = Path.Combine(folder, "Upgrades.json");
+
+                    if (File.Exists(filePath))
                     {
-                        continue;
+                        string json = File.ReadAllText(filePath);
+                        BsonDocument upgrades = null;
+                        if (!BsonDocument.TryParse(json, out upgrades))
+                        {
+                            continue;
+                        }
+
+                        if (upgrades.Contains("Dataset"))
+                        {
+                            BsonDocument datasetUpgrade = upgrades["Dataset"] as BsonDocument;
+                            if (datasetUpgrade.Contains("ToNew"))
+                            {
+                                BsonDocument toNew = datasetUpgrade["ToNew"] as BsonDocument;
+                                if (toNew != null)
+                                {
+                                    Dictionary<string, string> itemUpgrades = toNew.ToDictionary(x => x.Name, x => x.Value.AsString);
+                                    foreach (KeyValuePair<string, string> upgrade in itemUpgrades)
+                                    {
+                                        m_DatasetToNewPaths[upgrade.Key] = upgrade.Value;
+                                    }
+                                }
+                            }
+
+                            if (datasetUpgrade.Contains("ToOld"))
+                            {
+                                BsonDocument toOld = datasetUpgrade["ToOld"] as BsonDocument;
+                                if (toOld != null)
+                                {
+                                    Dictionary<string, string> itemUpgrades = toOld.ToDictionary(x => x.Name, x => x.Value.AsString);
+                                    foreach (KeyValuePair<string, string> upgrade in itemUpgrades)
+                                    {
+                                        if (!m_DatasetToOldPaths.ContainsKey(upgrade.Key))
+                                            m_DatasetToOldPaths[upgrade.Key] = new List<string> { upgrade.Value };
+                                        else
+                                            m_DatasetToOldPaths[upgrade.Key].Add(upgrade.Value);
+                                    }
+                                }
+                            }
+
+                            if (datasetUpgrade.Contains("MessageForDeleted"))
+                            {
+                                BsonDocument toNew = datasetUpgrade["MessageForDeleted"] as BsonDocument;
+                                if (toNew != null)
+                                {
+                                    Dictionary<string, string> itemUpgrades = toNew.ToDictionary(x => x.Name, x => x.Value.AsString);
+                                    foreach (KeyValuePair<string, string> upgrade in itemUpgrades)
+                                    {
+                                        m_DatasetToMessageForDeleted[upgrade.Key] = upgrade.Value;
+                                    }
+                                }
+                            }
+                        }
                     }
-
-                    if (upgrades.Contains("Dataset"))
-                    {
-                        BsonDocument datasetUpgrade = upgrades["Dataset"] as BsonDocument;
-                        if (datasetUpgrade.Contains("ToNew"))
-                        {
-                            BsonDocument toNew = datasetUpgrade["ToNew"] as BsonDocument;
-                            if (toNew != null)
-                            {
-                                Dictionary<string, string> itemUpgrades = toNew.ToDictionary(x => x.Name, x => x.Value.AsString);
-                                foreach (KeyValuePair<string, string> upgrade in itemUpgrades)
-                                {
-                                    m_DatasetToNewPaths[upgrade.Key] = upgrade.Value;
-                                }
-                            }
-                        }
-
-                        if (datasetUpgrade.Contains("ToOld"))
-                        {
-                            BsonDocument toOld = datasetUpgrade["ToOld"] as BsonDocument;
-                            if (toOld != null)
-                            {
-                                Dictionary<string, string> itemUpgrades = toOld.ToDictionary(x => x.Name, x => x.Value.AsString);
-                                foreach (KeyValuePair<string, string> upgrade in itemUpgrades)
-                                {
-                                    if (!m_DatasetToOldPaths.ContainsKey(upgrade.Key))
-                                        m_DatasetToOldPaths[upgrade.Key] = new List<string> { upgrade.Value };
-                                    else
-                                        m_DatasetToOldPaths[upgrade.Key].Add(upgrade.Value);
-                                }
-                            }
-                        }
-
-                        if (datasetUpgrade.Contains("MessageForDeleted"))
-                        {
-                            BsonDocument toNew = datasetUpgrade["MessageForDeleted"] as BsonDocument;
-                            if (toNew != null)
-                            {
-                                Dictionary<string, string> itemUpgrades = toNew.ToDictionary(x => x.Name, x => x.Value.AsString);
-                                foreach (KeyValuePair<string, string> upgrade in itemUpgrades)
-                                {
-                                    m_DatasetToMessageForDeleted[upgrade.Key] = upgrade.Value;
-                                }
-                            }
-                        }
-                    }
+                }
+                catch (Exception e)
+                {
+                    Engine.Base.Compute.RecordError("Failed to extract Dataset upgrade files.");
                 }
             }
         }
