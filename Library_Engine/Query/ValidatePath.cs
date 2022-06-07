@@ -39,7 +39,7 @@ namespace BH.Engine.Library
         [Description("Validates that the provided string is a valid full library path, and atempts to upgrade the path if it is not. Returns the input path if valid, or failing to upgrade. Returns the upgraded path if an upgrade is possible.")]
         [Input("fullLibraryName", "The full library path to the particular Library to validate. Only full paths supported, not super paths or partial paths to libraries.")]
         [Output("path", "Returns the input path if valid or failing to upgrade. Returns the upgraded path if able to upgrade.")]
-        public static string ValidatePath(string fullLibraryName)
+        public static string ValidatePath(string fullLibraryName, string versionFrom = "")
         {
             List<string> fullLibraryNames = LibraryNames();
             if (fullLibraryNames.Contains(fullLibraryName))
@@ -48,20 +48,22 @@ namespace BH.Engine.Library
             string newName = fullLibraryName;
             string upgradedName;
             Dictionary<string, string> datasetUpgrades = Engine.Versioning.Query.DatasetToNewPaths();
+            //Loops through the dataset upgrades recursively, making sure chained upgrades are captured
             while (datasetUpgrades.TryGetValue(newName, out upgradedName))
             {
                 newName = upgradedName;
             }
 
-            if (newName == null || !fullLibraryNames.Contains(newName))
+            if (string.IsNullOrWhiteSpace(newName) || !fullLibraryNames.Contains(newName))  //No upgrade found, or the upgrade found is not valid.
             {
                 Engine.Base.Compute.RecordError($"The dataset {fullLibraryName} is not a valid full path library and no valid upgrade could be found.");
+                
                 return fullLibraryName;
             }
             else
             {
                 string newVersion = Engine.Base.Query.BHoMVersion();
-                string oldVersion = "?.?";
+                string oldVersion = string.IsNullOrWhiteSpace(versionFrom) ? "?.?" : versionFrom;
                 string message = $"{fullLibraryName} from version {oldVersion} has been upgraded to {newName} (version {newVersion})";
 
                 BH.Engine.Base.Compute.RecordEvent(new VersioningEvent
