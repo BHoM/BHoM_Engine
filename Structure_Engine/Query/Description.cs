@@ -410,12 +410,12 @@ namespace BH.Engine.Structure
         [Description("Generates a default description for the SurfaceProperty as 'Thickness of MaterialName on DeckName DeckMaterialName corrugated deck with height and thickness'.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
-        public static string Description(this SlabOnDeck p)
+        public static string Description(this SlabOnDeck property)
         {
-            if (p == null)
+            if (property == null)
                 return "null property";
 
-            return $"{p.SlabThickness:G3} thick of {p.Material.DescriptionOrName()} on {p.DeckName} {p.DeckMaterial.DescriptionOrName()} corrugated deck with height: {p.DeckHeight:G3} and thickness: {p.DeckThickness:G3}";
+            return $"{property.SlabThickness:G3} thick of {property.Material.DescriptionOrName()} on {property.DeckName} {property.DeckMaterial.DescriptionOrName()} corrugated deck with height: {property.DeckHeight:G3} and thickness: {property.DeckThickness:G3}";
         }
 
         /***************************************************/
@@ -423,12 +423,12 @@ namespace BH.Engine.Structure
         [Description("Generates a default description for the SurfaceProperty as 'MaterialName corrugated deck with thickness, height, spacing, top flute width, and bottom flute width'.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
-        public static string Description(this CorrugatedDeck p)
+        public static string Description(this CorrugatedDeck property)
         {
-            if (p == null)
+            if (property == null)
                 return "null property";
 
-            return $"{p.Material.DescriptionOrName()} corrugated deck with  thickness: {p.Thickness:G3}, height: {p.Height:G3}, spacing: {p.Spacing}, top flute width: {p.TopWidth}, and bottom flute width: {p.BottomWidth}.";
+            return $"{property.Material.DescriptionOrName()} corrugated deck with  thickness: {property.Thickness:G3}, height: {property.Height:G3}, spacing: {property.Spacing}, top flute width: {property.TopWidth}, and bottom flute width: {property.BottomWidth}.";
         }
 
         /***************************************************/
