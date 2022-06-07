@@ -56,8 +56,25 @@ namespace BH.Engine.Library
 
             if (string.IsNullOrWhiteSpace(newName) || !fullLibraryNames.Contains(newName))  //No upgrade found, or the upgrade found is not valid.
             {
-                Engine.Base.Compute.RecordError($"The dataset {fullLibraryName} is not a valid full path library and no valid upgrade could be found.");
-                
+                Dictionary<string, string> messageForDeleted = Engine.Versioning.Query.DatasetToMessageForDeleted();
+                string message;
+                if (messageForDeleted.TryGetValue(fullLibraryName, out message) ||  //Try find message for deleted for provided name
+                   (!string.IsNullOrWhiteSpace(newName) && messageForDeleted.TryGetValue(newName, out message)))    //If cant be found, and new name is not null, try finding message for delted from new name
+                {
+                    BH.Engine.Base.Compute.RecordEvent(new VersioningEvent
+                    {
+                        OldDocument = fullLibraryName,
+                        NewDocument = "Dataset has been removed with the following message: " + message,
+                        OldVersion = string.IsNullOrWhiteSpace(versionFrom) ? "?.?" : versionFrom,
+                        NewVersion = Engine.Base.Query.BHoMVersion(),
+                        Message = "Dataset has been removed with the following message: " + message
+                    });
+                    Engine.Base.Compute.RecordError(message);
+                }
+                else 
+                {
+                    Engine.Base.Compute.RecordError($"The dataset {fullLibraryName} is not a valid full path library and no valid upgrade could be found.");
+                }
                 return fullLibraryName;
             }
             else
