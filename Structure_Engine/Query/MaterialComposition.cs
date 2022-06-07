@@ -100,6 +100,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a ConcreteSection's MaterialComposition, taking into account any LongitudinalReinforcement.")]
+        [Input("property", "The ConcreteSection to query.")]
+        [Output("materialComposition", "The MaterialComposition of the ConcreteSection.")]
         public static MaterialComposition MaterialComposition(this ConcreteSection sectionProperty)
         {
             if (sectionProperty.IsNull())
@@ -194,6 +196,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a SectionProperty's MaterialComposition.")]
+        [Input("property", "The SectionProperty to query.")]
+        [Output("materialComposition", "The MaterialComposition of the SectionProperty.")]
         public static MaterialComposition IMaterialComposition(this ISectionProperty sectionProperty)
         {
             return sectionProperty.IsNull() ? null : MaterialComposition(sectionProperty as dynamic);
@@ -219,6 +223,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a SectionProperty's homogeneous MaterialComposition.")]
+        [Input("property", "The SectionProperty to query.")]
+        [Output("materialComposition", "The MaterialComposition of the SectionProperty.")]
         private static MaterialComposition MaterialComposition(this ISectionProperty sectionProperty)
         {
             return sectionProperty.IsNull() ? null : (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
