@@ -55,7 +55,7 @@ namespace BH.Engine.Versioning
         {
             m_DatasetToNewPaths = new Dictionary<string, string>();
             m_DatasetToOldPaths = new Dictionary<string, List<string>>();
-
+            m_DatasetToMessageForDeleted = new Dictionary<string, string>();
             string upgraderFolder = Path.Combine(Base.Query.BHoMFolder(), "..", "Upgrades");
 
             List<string> upgradeFolders = Directory.GetDirectories(upgraderFolder, "BHoMUpgrader*", SearchOption.TopDirectoryOnly).OrderBy(x => x).ToList();
@@ -104,6 +104,19 @@ namespace BH.Engine.Versioning
                                 }
                             }
                         }
+
+                        if (datasetUpgrade.Contains("MessageForDeleted"))
+                        {
+                            BsonDocument toNew = datasetUpgrade["MessageForDeleted"] as BsonDocument;
+                            if (toNew != null)
+                            {
+                                Dictionary<string, string> itemUpgrades = toNew.ToDictionary(x => x.Name, x => x.Value.AsString);
+                                foreach (KeyValuePair<string, string> upgrade in itemUpgrades)
+                                {
+                                    m_DatasetToMessageForDeleted[upgrade.Key] = upgrade.Value;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -115,6 +128,7 @@ namespace BH.Engine.Versioning
 
         private static Dictionary<string, string> m_DatasetToNewPaths = null;
         private static Dictionary<string, List<string>> m_DatasetToOldPaths = null;
+        private static Dictionary<string, string> m_DatasetToMessageForDeleted = null;
 
         /***************************************************/
     }
