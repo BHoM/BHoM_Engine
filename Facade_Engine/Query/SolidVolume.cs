@@ -91,7 +91,7 @@ namespace BH.Engine.Facade
                 constructionThickness = panel.Construction.IThickness();
 
             double volume = panel.Area() * constructionThickness;
-            return volume + panel.Openings.Sum(x => x.SolidVolume());
+            return volume + panel.Openings.Sum(x => x.SolidVolume()) + panel.ExternalEdges.Sum(x => x.SolidVolume());
         }
 
 
