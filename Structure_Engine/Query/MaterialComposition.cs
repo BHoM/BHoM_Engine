@@ -85,16 +85,12 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            ReinforcementDensity reinfDensity = areaElement.FindFragment<ReinforcementDensity>();
+            if (areaElement.FindFragment<PanelRebarIntent>() != null)
+                Engine.Base.Compute.RecordWarning("The areaElement has a PanelRebarIntent, which will not be included in the MaterialComposition. Please account for replacement of concrete volume with reinforcement externally.");
 
-            if (reinfDensity == null)
-            {
-                return areaElement.Property.IMaterialComposition();
-            }
-            else
-            {
-                return areaElement.Property.Material.MaterialComposition(reinfDensity);
-            }
+            ReinforcementDensity reinfDensity = areaElement.FindFragment<ReinforcementDensity>();
+            
+            return areaElement.Property.IMaterialComposition(reinfDensity);
         }
 
         /***************************************************/
@@ -102,20 +98,20 @@ namespace BH.Engine.Structure
         [Description("Returns a ConcreteSection's MaterialComposition, taking into account any LongitudinalReinforcement.")]
         [Input("property", "The ConcreteSection to query.")]
         [Output("materialComposition", "The MaterialComposition of the ConcreteSection.")]
-        public static MaterialComposition MaterialComposition(this ConcreteSection sectionProperty)
+        public static MaterialComposition MaterialComposition(this ConcreteSection property)
         {
-            if (sectionProperty.IsNull())
+            if (property.IsNull())
                 return null;
 
-            double sectionArea = sectionProperty.Area;
+            double sectionArea = property.Area;
 
             List<double> areas = new List<double>();
             List<Material> materials = new List<Material>();
 
-            if (sectionProperty?.RebarIntent?.BarReinforcement != null)
+            if (property?.RebarIntent?.BarReinforcement != null)
             {
                 //TODO: Resolve for stirups as well
-                foreach (LongitudinalReinforcement reinforcement in sectionProperty.RebarIntent.BarReinforcement.OfType<LongitudinalReinforcement>())
+                foreach (LongitudinalReinforcement reinforcement in property.RebarIntent.BarReinforcement.OfType<LongitudinalReinforcement>())
                 {
                     //Calculate reinforcement area for a section cut
                     double reinArea = reinforcement.Area();
@@ -140,12 +136,12 @@ namespace BH.Engine.Structure
 
             if (materials.Count == 0)
             {
-                return (MaterialComposition)Physical.Create.Material(sectionProperty.Material);
+                return (MaterialComposition)Physical.Create.Material(property.Material);
             }
             else
             {
                 areas.Insert(0, sectionArea);
-                materials.Insert(0, Physical.Create.Material(sectionProperty.Material));
+                materials.Insert(0, Physical.Create.Material(property.Material));
 
                 return Engine.Matter.Compute.AggregateMaterialComposition(materials.Select(x => (MaterialComposition)x), areas);
             }
@@ -155,9 +151,16 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
-        public static MaterialComposition MaterialComposition(this Layered property)
+        public static MaterialComposition MaterialComposition(this Layered property, ReinforcementDensity reinforcementDensity = null)
         {
+            if (property.IsNull())
+                return null;
+
+            if (reinforcementDensity != null)
+                Base.Compute.RecordWarning("the layered property has a ReinforcementDensity which will not be included in the MaterialComposition, because it is not known which layer to replace. Please account for this reinforcement externally.");
+
             if (property.Layers.Any(x => x.Material == null)) //cull any null layers, raise a warning.            
                 Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. VolumePerArea excludes this layer, assuming it is void space.");
             
@@ -167,20 +170,51 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
+        public static MaterialComposition MaterialComposition(this CorrugatedDeck property, ReinforcementDensity reinforcementDensity = null)
+        {
+            if (reinforcementDensity != null)
+                Base.Compute.RecordWarning("the CorrugatedDeck property has a ReinforcementDensity which will not be included in the MaterialComposition, because it is inconceivable.");
+
+            return property.IsNull() ? null : (MaterialComposition)Physical.Create.Material(property.Material);
+        }
+
+        /***************************************************/
+
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
-        public static MaterialComposition MaterialComposition(this SlabOnDeck property)
+        public static MaterialComposition MaterialComposition(this SlabOnDeck property, ReinforcementDensity reinforcementDensity = null)
         {
             if (property.IsNull() || property.Material.IsNull() || property.DeckMaterial.IsNull())
             {
-                Engine.Base.Compute.RecordError("The MaterialComposition could not be queried as one or more Materials was not assigned.");
                 return null;
             }
 
             double deckVolume = property.DeckThickness * property.DeckVolumeFactor;
             double slabVolume = property.VolumePerArea() - deckVolume;
+
+            if (reinforcementDensity != null && reinforcementDensity.Material != null)
+            {
+                MaterialComposition slabComposition = property.Material.MaterialComposition(reinforcementDensity);
+
+                double rebarVolume = slabVolume * slabComposition.Ratios[1];
+                slabVolume -= rebarVolume;
+
+                return Matter.Create.MaterialComposition(
+                    new List<Material>() {
+                    Physical.Create.Material(property.Material),
+                    Physical.Create.Material(property.DeckMaterial),
+                    Physical.Create.Material(reinforcementDensity.Material)
+                    },
+                    new List<double>() { slabVolume, deckVolume, rebarVolume }
+                    ) ;
+            }
 
             return Matter.Create.MaterialComposition(
                 new List<Material>() {
@@ -198,9 +232,9 @@ namespace BH.Engine.Structure
         [Description("Returns a SectionProperty's MaterialComposition.")]
         [Input("property", "The SectionProperty to query.")]
         [Output("materialComposition", "The MaterialComposition of the SectionProperty.")]
-        public static MaterialComposition IMaterialComposition(this ISectionProperty sectionProperty)
+        public static MaterialComposition IMaterialComposition(this ISectionProperty property)
         {
-            return sectionProperty.IsNull() ? null : MaterialComposition(sectionProperty as dynamic);
+            return property.IsNull() ? null : MaterialComposition(property as dynamic);
         }
 
         /***************************************************/
@@ -210,12 +244,12 @@ namespace BH.Engine.Structure
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
-        public static MaterialComposition IMaterialComposition(this ISurfaceProperty property)
+        public static MaterialComposition IMaterialComposition(this ISurfaceProperty property, ReinforcementDensity reinforcementDensity = null)
         {
             if (property.IsNull())
                 return null;
 
-            return MaterialComposition(property as dynamic);
+            return MaterialComposition(property as dynamic, reinforcementDensity);
         }
 
         /***************************************************/
@@ -232,18 +266,24 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the MaterialComposition for homogenous properties. Multi-material properties will not be reported correctly.")]
+        [Description("Gets the MaterialComposition for homogenous SurfaceProperties. Multi-material properties will not be reported correctly.")]
         [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
-        private static MaterialComposition MaterialComposition(this ISurfaceProperty property)
+        private static MaterialComposition MaterialComposition(this ISurfaceProperty property, ReinforcementDensity reinforcementDensity = null)
         {
             if (property.IsNull() || property.Material.IsNull())
             {
                 Engine.Base.Compute.RecordError("The MaterialComposition could not be queried as a Material was not assigned.");
                 return null;
             }
-            return Matter.Create.MaterialComposition(property.Material);
+
+            if (reinforcementDensity == null)
+                return (MaterialComposition)Physical.Create.Material(property.Material);
+            else
+                return property.Material.MaterialComposition(reinforcementDensity);
         }
+
 
         /***************************************************/
         /**** Private methods                           ****/
