@@ -102,13 +102,13 @@ namespace BH.Engine.Facade
 
             if (panel.Construction == null)
             {
-                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + " does not have a construction assigned");
+                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + " does not have a construction assigned.");
                 return null;
             }
 
             if (panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
             {
-                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + "'s construction has a thicnkess of 0. MaterialComposition requires a panel construction with a thickness to work.");
+                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + "'s construction has a thickness of 0. MaterialComposition requires a panel construction with a thickness to work.");
                 return null;
             }
 
@@ -124,18 +124,23 @@ namespace BH.Engine.Facade
             List<MaterialComposition> matComps = new List<MaterialComposition>() { pMat };
             List<double> volumes = new List<double>() { panel.SolidVolume() };
 
-            if (panel.ExternalEdges != null && !panel.ExternalEdges.Any(x => x.FrameEdgeProperty != null))
+            if (panel.ExternalEdges != null)
+            {
                 foreach (FrameEdge extEdge in panel.ExternalEdges)
                 {
-                    MaterialComposition matComp = extEdge.MaterialComposition();
-                    if (matComp != null)
+                    if (extEdge.FrameEdgeProperty != null)
                     {
-                        matComps.Add(matComp);
-                        double edgeVol = extEdge.SolidVolume();
-                        volumes.Add(edgeVol);
-                        volumes[0] -= edgeVol;
+                        MaterialComposition matComp = extEdge.MaterialComposition();
+                        if (matComp != null)
+                        {
+                            matComps.Add(matComp);
+                            double edgeVol = extEdge.SolidVolume();
+                            volumes.Add(edgeVol);
+                            volumes[0] -= edgeVol;
+                        }
                     }
                 }
+            }
 
             if (panel.Openings != null && panel.Openings.Count != 0)
             {
@@ -151,7 +156,6 @@ namespace BH.Engine.Facade
                         volumes[0] -= tempVolume;
                     }
                 }
-
 
                 return Matter.Compute.AggregateMaterialComposition(matComps, volumes);
             }
@@ -173,15 +177,15 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            if (opening.OpeningConstruction == null)
+            if (opening.OpeningConstruction == null || (opening.OpeningConstruction.IThickness() < oM.Geometry.Tolerance.Distance))
             {
                 if (opening.Edges == null || !opening.Edges.Any(x => x.FrameEdgeProperty != null))
                 {
-                    Engine.Base.Compute.RecordError("Opening " + opening.BHoM_Guid + " does not have any constructions assigned");
+                    Engine.Base.Compute.RecordError("Opening " + opening.BHoM_Guid + " does not have any valid constructions assigned");
                     return null;
                 }
                 else
-                    Engine.Base.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have an opening construction assigned. Material Composition is being calculated based on frame edges only.");
+                    Engine.Base.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have a valid opening construction assigned. Material Composition is being calculated based on frame edges only.");
             }
 
             List<Layer> layers = (List<Layer>)Base.Query.PropertyValue(opening.OpeningConstruction, "Layers");
@@ -197,7 +201,7 @@ namespace BH.Engine.Facade
 
             double glazedVolume = 0;
 
-            if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() > oM.Geometry.Tolerance.Distance && layers != null)
+            if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() >= oM.Geometry.Tolerance.Distance && layers != null)
             {
                 if (opening.Edges != null && opening.Edges.Count != 0)
                 {
