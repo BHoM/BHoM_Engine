@@ -59,7 +59,7 @@ namespace BH.Engine.Library
                 Dictionary<string, string> messageForDeleted = Engine.Versioning.Query.DatasetToMessageForDeleted();
                 string message;
                 if (messageForDeleted.TryGetValue(fullLibraryName, out message) ||  //Try find message for deleted for provided name
-                   (!string.IsNullOrWhiteSpace(newName) && messageForDeleted.TryGetValue(newName, out message)))    //If cant be found, and new name is not null, try finding message for delted from new name
+                   (!string.IsNullOrWhiteSpace(newName) && messageForDeleted.TryGetValue(newName, out message)))    //If cant be found, and new name is not null, try finding message for deleted from new name
                 {
                     BH.Engine.Base.Compute.RecordEvent(new VersioningEvent
                     {
