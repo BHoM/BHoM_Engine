@@ -64,8 +64,6 @@ namespace BH.Engine.Versioning
             {
                 try
                 {
-
-
                     string filePath = Path.Combine(folder, "Upgrades.json");
 
                     if (File.Exists(filePath))
