@@ -111,17 +111,18 @@ namespace BH.Engine.Facade
             double glazedVolume = 0;
             double frameVolume = 0;
 
+            if (opening.Edges != null && opening.Edges.Count != 0)
+                foreach (FrameEdge edge in opening.Edges)
+                {
+                    frameVolume += edge.SolidVolume();
+                }
+
             if (opening.OpeningConstruction != null)
             {
-                if (opening.Edges != null && opening.Edges.Count != 0)
+                if (frameVolume>0)
                 {
                     double glazedArea = opening.ComponentAreas().Item1;
                     glazedVolume = glazedArea * opening.OpeningConstruction.IThickness();
-                    
-                    foreach (FrameEdge edge in opening.Edges)
-                    {
-                        frameVolume += edge.SolidVolume();
-                    }
                 }
                 else
                     glazedVolume = opening.Area() * opening.OpeningConstruction.IThickness();
