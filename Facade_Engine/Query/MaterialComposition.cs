@@ -100,9 +100,15 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            if (panel.Construction == null || panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
+            if (panel.Construction == null)
             {
                 BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + " does not have a construction assigned");
+                return null;
+            }
+
+            if (panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
+            {
+                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + "'s construction has a thicnkess of 0. MaterialComposition requires a panel construction with a thickness to work.");
                 return null;
             }
 
@@ -115,11 +121,25 @@ namespace BH.Engine.Facade
             }
 
             MaterialComposition pMat = panel.Construction.IMaterialComposition();
+            List<MaterialComposition> matComps = new List<MaterialComposition>() { pMat };
+            List<double> volumes = new List<double>() { panel.SolidVolume() };
+
+            if (panel.ExternalEdges != null && !panel.ExternalEdges.Any(x => x.FrameEdgeProperty != null))
+                foreach (FrameEdge extEdge in panel.ExternalEdges)
+                {
+                    MaterialComposition matComp = extEdge.MaterialComposition();
+                    if (matComp != null)
+                    {
+                        matComps.Add(matComp);
+                        double edgeVol = extEdge.SolidVolume();
+                        volumes.Add(edgeVol);
+                        volumes[0] -= edgeVol;
+                    }
+                }
 
             if (panel.Openings != null && panel.Openings.Count != 0)
             {
-                List<MaterialComposition> matComps = new List<MaterialComposition>() { pMat };
-                List<double> volumes = new List<double>() { panel.SolidVolume() };
+
                 foreach (Opening opening in panel.Openings)
                 {
                     MaterialComposition matComp = opening.MaterialComposition();
