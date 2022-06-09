@@ -55,7 +55,7 @@ namespace BH.Engine.Facade
         {
             if (curtainWall == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null curtain wall.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the Material Composition of a null curtain wall.");
                 return null;
             }
 
@@ -144,7 +144,6 @@ namespace BH.Engine.Facade
 
             if (panel.Openings != null && panel.Openings.Count != 0)
             {
-
                 foreach (Opening opening in panel.Openings)
                 {
                     MaterialComposition matComp = opening.MaterialComposition();
@@ -155,12 +154,10 @@ namespace BH.Engine.Facade
                         volumes.Add(tempVolume);
                         volumes[0] -= tempVolume;
                     }
-                }
-
-                return Matter.Compute.AggregateMaterialComposition(matComps, volumes);
+                }  
             }
 
-            return pMat;
+            return Matter.Compute.AggregateMaterialComposition(matComps, volumes);
         }
 
 
@@ -179,9 +176,9 @@ namespace BH.Engine.Facade
 
             if (opening.OpeningConstruction == null || (opening.OpeningConstruction.IThickness() < oM.Geometry.Tolerance.Distance))
             {
-                if (opening.Edges == null || !opening.Edges.Any(x => x.FrameEdgeProperty != null))
+                if (opening.Edges == null || !opening.Edges.Any(x => x.FrameEdgeProperty != null) || !opening.Edges.Any(x=>x.FrameEdgeProperty.SectionProperties.Count() != 0))
                 {
-                    Engine.Base.Compute.RecordError("Opening " + opening.BHoM_Guid + " does not have any valid constructions assigned");
+                    Engine.Base.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have a frame edge property assigned to get material composition from.");
                     return null;
                 }
                 else
@@ -262,8 +259,8 @@ namespace BH.Engine.Facade
 
             if (frameEdge.FrameEdgeProperty == null || frameEdge.FrameEdgeProperty.SectionProperties.Count() == 0)
             {
-                Engine.Base.Compute.RecordWarning("FrameEdge " + frameEdge.BHoM_Guid + " does not have a frame edge property assigned to get material composition from, so the material composition returned is empty.");
-                return new MaterialComposition(new List<Material>() { new Material() }, new List<double> { 1 } ); ;
+                Engine.Base.Compute.RecordWarning("FrameEdge " + frameEdge.BHoM_Guid + " does not have a frame edge property assigned to get material composition from.");
+                return null;
             }
 
             if (frameEdge.FrameEdgeProperty.SectionProperties.Any(x => x.Material == null))
