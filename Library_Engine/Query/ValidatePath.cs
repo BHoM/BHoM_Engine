@@ -39,7 +39,7 @@ namespace BH.Engine.Library
         [Description("Validates that the provided string is a valid full library path, and atempts to upgrade the path if it is not. Returns the input path if valid, or failing to upgrade. Returns the upgraded path if an upgrade is possible.")]
         [Input("fullLibraryName", "The full library path to the particular Library to validate. Only full paths supported, not super paths or partial paths to libraries.")]
         [Output("path", "Returns the input path if valid or failing to upgrade. Returns the upgraded path if able to upgrade.")]
-        public static string ValidatePath(string fullLibraryName, string versionFrom = "")
+        public static string ValidatePath(this string fullLibraryName, string versionFrom = "")
         {
             List<string> fullLibraryNames = LibraryNames();
             if (fullLibraryNames.Contains(fullLibraryName))
