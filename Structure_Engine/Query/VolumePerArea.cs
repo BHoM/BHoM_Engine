@@ -165,7 +165,7 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [PreviousVersion("5.2","BH.Engine.Structure.Query.IAverageThickness(BH.oM.Structure.SurfaceProperties.ISurfaceProperty")]
+        [PreviousVersion("5.2","BH.Engine.Structure.Query.IAverageThickness(BH.oM.Structure.SurfaceProperties.ISurfaceProperty)")]
         [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("property", "The property to evaluate the average thickness of.")]
         [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
