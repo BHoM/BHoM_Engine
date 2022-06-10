@@ -228,7 +228,7 @@ namespace BH.Engine.Diffing
             {
                 bool addedObjectDescription = false;
 
-                objectDescription = "Object ";
+                objectDescription = objectDifferences.PastObject is CustomObject ? "CustomObject " : "Object ";
 
                 if (includeObjName)
                 {
@@ -237,12 +237,12 @@ namespace BH.Engine.Diffing
 
                     if (!string.IsNullOrWhiteSpace(pastObjName) && pastObjName == follObjName)
                     {
-                        objectDescription += $"with Name `{pastObjName}` ";
+                        objectDescription += $"with {nameof(IBHoMObject.Name)} `{pastObjName}` ";
                         addedObjectDescription = true;
                     }
                 }
 
-                if (includeObjType)
+                if (includeObjType && !(objectDifferences.PastObject is CustomObject))
                 {
                     objectDescription += $"of type `{objectDifferences.PastObject.GetType().FullName}` ";
                     addedObjectDescription = true;
