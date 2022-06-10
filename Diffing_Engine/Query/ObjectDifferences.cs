@@ -266,23 +266,18 @@ namespace BH.Engine.Diffing
                     objectDescription = "";
             }
 
-            // If required, add in the FullName of the modified object Type.
-            string typeDescription = "";
-            if (includeObjType)
-                typeDescription = $" of the `{t.FullName}`";
-
             if (t.IsPrimitive || (t == typeof(string)) || t.IsValueType)
             {
                 if (pastValue != null && follValue == null)
-                    return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}`{typeDescription} was removed (made null); it previously contained `{pastValue}`.";
+                    return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}` was removed (made null); it previously contained `{pastValue}`.";
 
                 if (pastValue == null && follValue != null)
-                    return $"{objectDescription}Some value was assigned to the property `{propertyDiffDisplayName}`{typeDescription} that was previously not populated (null). The property now contains: {follValue}.";
+                    return $"{objectDescription}Some value was assigned to the property `{propertyDiffDisplayName}` that was previously not populated (null). The property now contains: {follValue}.";
 
-                return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}`{typeDescription} was modified from `{pastValue}` to `{follValue}`.";
+                return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}` was modified from `{pastValue}` to `{follValue}`.";
             }
 
-            return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}`{typeDescription} was modified.";
+            return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}` was modified.";
         }
 
         /***************************************************/
