@@ -259,8 +259,8 @@ namespace BH.Engine.Facade
 
             if (frameEdge.FrameEdgeProperty == null || frameEdge.FrameEdgeProperty.SectionProperties.Count() == 0)
             {
-                Engine.Base.Compute.RecordWarning("FrameEdge " + frameEdge.BHoM_Guid + " does not have a frame edge property assigned to get material composition from.");
-                return null;
+                Engine.Base.Compute.RecordWarning("FrameEdge " + frameEdge.BHoM_Guid + " does not have a frame edge property assigned to get material composition from, so the material composition returned is empty.");
+                return new MaterialComposition(new List<Material>() { new Material() }, new List<double> { 1 }); ;
             }
 
             if (frameEdge.FrameEdgeProperty.SectionProperties.Any(x => x.Material == null))
