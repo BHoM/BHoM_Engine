@@ -71,15 +71,14 @@ namespace BH.Engine.Environment
         [Description("Defines whether an Environment Panel contains a provided point")]
         [Input("panel", "An Environment Panel to check with")]
         [Input("pt", "The point being checked to see if it is contained within the bounds of the panel")]
-        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
         [Output("isContaining", "True if the point is contained within the panel, false if it is not")]
         [PreviousVersion("5.2", "BH.Engine.Environment.Query.IsContaining(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.Point, System.Boolean)")]
-        public static bool IsContaining(this Panel panel, Point pt, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        public static bool IsContaining(this Panel panel, Point pt, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panel == null || pt == null)
                 return false;
 
-            return new List<Panel> { panel }.IsContaining(pt, acceptOnEdges, tolerance);
+            return new List<Panel> { panel }.IsContaining(pt, true, tolerance);
         }
 
         [Description("Defines whether a collection of Environment Panels contains a provided point")]
