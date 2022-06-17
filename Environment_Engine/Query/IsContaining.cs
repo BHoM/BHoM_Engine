@@ -109,7 +109,7 @@ namespace BH.Engine.Environment
             List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, acceptOnEdges, tolerance))
+            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, true, tolerance))
                 return false;
 
             //We need to check one line that starts in the point and end outside the bounding box
