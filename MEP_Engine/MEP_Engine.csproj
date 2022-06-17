@@ -18,7 +18,9 @@
   </Target>
 
   <ItemGroup>
+    <ProjectReference Include="..\Analytical_Engine\Analytical_Engine.csproj" />
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
     <ProjectReference Include="..\Matter_Engine\Matter_Engine.csproj" />
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
@@ -40,6 +42,9 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
