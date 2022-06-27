@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -34,8 +34,6 @@ namespace BH.Engine.Data
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [PreviousVersion("5.2", "BH.Engine.Adapters.TAS.Modify.Round(System.Single, System.Int32)")]
-        [PreviousVersion("5.2", "BH.Engine.Adapters.TAS.Modify.Round(System.Double, System.Int32)")]
 
         [Description("Returns a double number rounded to the specified number of decimal places")]
         [Input("number", "A double to round")]
