@@ -39,17 +39,14 @@ namespace BH.Engine.Geometry
         [Input("surfaces", "A list of PlanarSurfaces to filter by a given Normal vector.")]
         [Input("vector", "The Vector to filter by.")]
         [Input("tolerance", "Angle tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Angle.")]
-        [Output("filtered_geom", "A list of PlanarSurfaces where each surface Normal is within the tolerance angle of the given vector.")]
+        [Output("matchingSurfaces", "A list of PlanarSurfaces where each surface Normal is within the tolerance angle of the given vector.")]
         public static List<PlanarSurface> FilterByNormal(this List<PlanarSurface> surfaces, Vector vector, double tolerance = Tolerance.Angle)
         {
             List<PlanarSurface> matchingSurfaces = new List<PlanarSurface>();
             foreach (PlanarSurface srf in surfaces)
             {
-
                 if (Math.Abs(Query.Angle(vector, srf.Normal())) < tolerance)
-                {
                     matchingSurfaces.Add(srf);
-                }
             }
             return matchingSurfaces;
         }
