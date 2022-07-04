@@ -152,7 +152,7 @@ namespace BH.Engine.Humans.ViewQuality
             else
                 cValue = cvalue;
 
-            return new Cvalue(current.BHoM_Guid, "", 0, cvalue, horizDist, heightAbovePitch, absoluteDist, focal);
+            return new Cvalue(current.BHoM_Guid, "", 0, cValue, horizDist, heightAbovePitch, absoluteDist, focal);
 
         }
         /***************************************************/
