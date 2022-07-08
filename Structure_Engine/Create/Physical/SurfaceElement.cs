@@ -43,10 +43,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical IFramingElement from a Bar. The framing element will be assigned a ConstantFramingProperty based on the SectionProperty of the Bar and have a type based on the structural usage.")]
-        [Input("bar", "The Bar to use as the base for the framing element.")]
-        [Input("structuralUsage", "Used to determine which type of framing element that should be constructed.")]
-        [Output("framing", "The created physical FramingElement based on the Bar element provided.")]
+        [Description("Creates a physical Wall from a Panel. The Wall will be assigned a Construction based on the SurfaceProperty of the Panel.")]
+        [Input("panel", "The Panel to use as the base for the framing element.")]
+        [Output("wall", "The created physical Wall based on the Panel element provided.")]
         public static BHPE.Wall Wall(Panel panel)
         {
             if (panel.IsNull())
@@ -79,6 +78,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a physical Floor from a Panel. The Floor will be assigned a Construction based on the SurfaceProperty of the Panel.")]
+        [Input("panel", "The Panel to use as the base for the framing element.")]
+        [Output("floor", "The created physical Floor based on the Panel element provided.")]
         public static BHPE.Floor Floor(Panel panel)
         {
             if (panel.IsNull())
@@ -110,7 +113,12 @@ namespace BH.Engine.Structure
             return surfaceElement;
         }
 
+        /***************************************************/
 
+        [Description("Creates a physical surface element from a Panel. The Floor will be assigned a Construction based on the SurfaceProperty of the Panel, and the PanelType of the SufaceProperty will determine what type of surface element to create, unless overridden.")]
+        [Input("panel", "The Panel to use as the base for the framing element.")]
+        [Input("structuralUsage", "The type of surface element to create. if Undefined, the type will be based on the panel's SurfaceProperty.")]
+        [Output("surfaceElement", "The created surface element based on the Panel element provided.")]
         public static BHPE.ISurface SurfaceElement(Panel panel, StructuralUsage2D structuralUsage = StructuralUsage2D.Undefined)
         {
             if (structuralUsage == StructuralUsage2D.Undefined)
@@ -137,10 +145,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static BHPE.Void Void(Opening opening)
-        {
-            return new BHPE.Void() { Location = Geometry.Create.PlanarSurface(opening.Edges.Select(edge => edge.Curve).FirstOrDefault()) };
-        }
     }
 }
 
