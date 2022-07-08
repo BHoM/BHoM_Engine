@@ -37,11 +37,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a ConstantFramingProperty from a ISectionProperty and orientation angle. Extracts the SectionProfile (if existing) and Structural MaterialFragment and creates a physical material with the same name.")]
-        [Input("sectionProperty", "Structural section property to extract profile and material from. For explicit sections lacking a profile only the material will get extracted.")]
-        [Input("orientationAngle", "Defines the sections rotation around its own axis.", typeof(Angle))]
-        [Input("name", "Name of the property. If null/empty the name of the section property will be used.")]
-        [Output("FramingProperty", "The constructed physical Constant Framing Property to be used with IFramingElements such as Beams/Columns/Bracing.")]
+        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction IConstruction(this ISurfaceProperty property)
         {
             if (property.IsNull())
@@ -51,6 +49,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction Construction(this ConstantThickness property)
         {
             if (property.IsNull())
@@ -65,6 +67,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction Construction(this CorrugatedDeck property)
         {
             if (property.IsNull())
@@ -81,6 +87,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction Construction(this Layered property)
         {
             if (property.IsNull())
@@ -95,6 +105,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction Construction(this Ribbed property)
         {
             if (property.IsNull())
@@ -113,6 +127,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction Construction(this SlabOnDeck property)
         {
             if (property.IsNull())
@@ -134,6 +152,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction Construction(this Waffle property)
         {
             if (property.IsNull())
@@ -152,11 +174,19 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction Construction(this ISurfaceProperty property)
         {
             Base.Compute.RecordError($"Construction() not implemented for type {property.GetType()}.");
             return null;
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
         private static oM.Physical.Materials.Material GetMaterial(this ISurfaceProperty property)
         {
@@ -175,6 +205,8 @@ namespace BH.Engine.Structure
 
             return material;
         }
+
+        /***************************************************/
 
         private static oM.Physical.Materials.Material GetMaterial(this oM.Structure.SurfaceProperties.Layer layer)
         {
