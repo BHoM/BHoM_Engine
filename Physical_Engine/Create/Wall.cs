@@ -127,10 +127,14 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges);
+            List<ICurve> aInternalCurveList = null;
+            if (internalEdges != null && internalEdges.Count() > 0)
+                aInternalCurveList = internalEdges.ToList().ConvertAll(x => x as ICurve);
+
+            PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
             if (aPlanarSurface == null)
             {
-                Base.Compute.RecordError("Physical Wall could not be created because invalid geometry of edges.");
+                Base.Compute.RecordError("Physical Wall could not be created because of invalid geometry of edges.");
                 return null;
             }
 
