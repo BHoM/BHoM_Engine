@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Input("panel", "The Panel to use as the base for the framing element.")]
         [Input("structuralUsage", "The type of surface element to create. if Undefined, the type will be based on the panel's SurfaceProperty.")]
         [Output("surfaceElement", "The created surface element based on the Panel element provided.")]
-        public static BHPE.ISurface SurfaceElement(Panel panel, StructuralUsage2D structuralUsage = StructuralUsage2D.Undefined)
+        public static BHPE.ISurface ISurface(Panel panel, StructuralUsage2D structuralUsage = StructuralUsage2D.Undefined)
         {
             if (structuralUsage == StructuralUsage2D.Undefined)
             {
