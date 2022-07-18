@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <FileVersion>5.3.0.0</FileVersion>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <Version>5.0.0</Version>
     <Authors>BHoM</Authors>
@@ -19,6 +21,8 @@
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
 
