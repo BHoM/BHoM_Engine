@@ -44,6 +44,7 @@ namespace BH.Engine.Environment
         [Input("panels", "A collection of Environment Panels.")]
         [Input("shadeType", "The type of shade to assign to the shade panels.")]
         [Output("shadePanels", "BHoM Environment panel representing the shade.")]
+        [PreviousVersion("5.3", "BH.Engine.Environment.Modify.SetShadePanels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
         public static List<Panel> SetShadePanels(this List<Panel> panels, PanelType shadeType = PanelType.Shade)
         {
             if (!shadeType.IsShade())
