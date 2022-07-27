@@ -59,7 +59,7 @@ namespace BH.Engine.Security
             intersectPoints.Add(conePoints[conePoints.Count - 2]);
 
             //simplify obstacles
-            List<Polyline> projObstacles = obstacles.Select(x => x.ProjectAndFix(cameraPlane)).ToList();
+            List<Polyline> projObstacles = obstacles.Select(x => x.FixAndProject(cameraPlane)).ToList();
             projObstacles = projObstacles.BooleanUnion(distanceTolerance);
 
             //points that intersect with obstacles
@@ -88,7 +88,7 @@ namespace BH.Engine.Security
                 rayLines.Add(rayLine);
             }
             rayLines = rayLines.CullDuplicateLines();
-            rayLines = rayLines.OrderBy(x => x.Angle(rayLines[0])).ToList();
+            rayLines = rayLines.OrderBy(x => x.SingedAngle(rayLines[0])).ToList();
 
             //split ray lines and find visible line
             List<Dictionary<Line, Polyline>> linesDict = new List<Dictionary<Line, Polyline>>();
@@ -110,47 +110,31 @@ namespace BH.Engine.Security
 
         /***************************************************/
 
-        [Description("Signed angle between two lines in XY plane.")]
-        [Input("line1", "First line to compute the angle for.")]
-        [Input("line2", "Second line to compute the angle for.")]
-        [Output("angle", "Singed angle between two lines.")]
-        
-        private static double Angle(this Line line1, Line line2)
-        {
-            Vector line1Dir = line1.Direction();
-            Vector line2Dir = line2.Direction();
-            double angle = line1Dir.SignedAngle(line2Dir, Vector.ZAxis);
-
-            return angle;
-        }
-
-        /***************************************************/
-
         [Description("Project obstacle on given plane and fix if possible.")]
         [Input("obstacle", "Obstacle to check and fix.")]
-        [Input("plane", "Plane to project the obstacle on.")]
+        [Input("cameraPlane", "Plane to project the obstacle on.")]
         [Output("newObstacle", "Obstacle after projecting and fixing.")]
 
-        private static Polyline ProjectAndFix(this Polyline obstacle, Plane plane)
+        private static Polyline FixAndProject(this Polyline obstacle, Plane cameraPlane)
         {
-            if (obstacle.IsInPlane(plane))
+            if (obstacle.IsInPlane(cameraPlane))
                 return obstacle;
 
             if (!obstacle.IsClosed() || !obstacle.IsPlanar())
             {
-                //warrning
-                List<Point> projPoints = obstacle.ControlPoints.Select(x => x.Project(plane)).ToList();
+                Base.Compute.RecordWarning("Obstacle polyline is open and not planar. It will be closed and projected to camera plane.");
+                List<Point> projPoints = obstacle.ControlPoints.Select(x => x.Project(cameraPlane)).ToList();
                 return BH.Engine.Geometry.Create.Polyline(projPoints);
             }
-            else if (obstacle.Normal().IsEqual(plane.Normal) || obstacle.Normal().IsEqual(-plane.Normal))
+            else if (obstacle.Normal().IsEqual(cameraPlane.Normal) || obstacle.Normal().IsEqual(-cameraPlane.Normal))
             {
-                //warrning
-                return obstacle.Project(plane);
+                Base.Compute.RecordWarning("Obstacle polyline is parallel, but not in camera plane. It will be projected to camera plane.");
+                return obstacle.Project(cameraPlane);
             }
             else
             {
-                //warrning
-                return obstacle.Project(plane);
+                Base.Compute.RecordWarning("Polyline is in different plane than camera plane. It will be projected to camera plane.");
+                return obstacle.Project(cameraPlane);
             }
         }
 
@@ -190,7 +174,7 @@ namespace BH.Engine.Security
                     if (obstLine.IsOnCurve(line.Start) && obstLine.IsOnCurve(line.End))
                         return false;
                 }
-                if (obstacle.IsContaining(line, true))
+                if (obstacle.IsContaining(new List<Point> { line.Centroid() }, true))
                 {
                     return true;
                 }

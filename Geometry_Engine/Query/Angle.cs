@@ -87,6 +87,22 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Signed angle between two lines in XY plane.")]
+        [Input("line1", "First line to compute the angle for.")]
+        [Input("line2", "Second line to compute the angle for.")]
+        [Output("angle", "Singed angle between two lines.")]
+
+        public static double SingedAngle(this Line line1, Line line2)
+        {
+            Vector line1Dir = line1.Direction();
+            Vector line2Dir = line2.Direction();
+            double angle = line1Dir.SignedAngle(line2Dir, Vector.ZAxis);
+
+            return angle;
+        }
+
+        /***************************************************/
+
         [Description("Gets the smallest angle between three points between 0 and pi radians. Angle is 0 if the three points form a straight line. The order of points is crucial to the calculation, as the points will imagine a line is connecting them in the order provided")]
         [Input("firstPt", "The first Point of the three to calculate the angle between")]
         [Input("secondPt", "The second point of the three to calculate the angle between")]
@@ -111,6 +127,9 @@ namespace BH.Engine.Geometry
             double angle = Math.Abs(Math.Acos(costr)); //This produces a result in radians            
             return Math.PI - angle; //Convert so that a flat line is 0 angle through the points
         }
+
+        /***************************************************/
+        
     }
 }
 
