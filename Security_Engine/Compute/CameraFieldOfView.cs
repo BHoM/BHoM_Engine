@@ -31,7 +31,7 @@ using System.Linq;
 
 namespace BH.Engine.Security
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /****              Public Methods               ****/
@@ -40,37 +40,36 @@ namespace BH.Engine.Security
         [Description("Returns the polycurve that represents security camera field of view.")]
         [Input("cameraDevice", "CameraDevice object to compute the field of view for.")]
         [Input("obstacles", "Polyline objects that represents obstacles for camera vision (walls, columns, stairs).")]
-        [Output("PolyCurve", "PolyCurve object that represents security camera field of view.")]
-        public static PolyCurve CameraFieldOfView(this CameraDevice cameraDevice, List<Polyline> obstacles = null)
+        [Output("fieldOfView", "PolyCurve object that represents security camera field of view.")]
+        public static PolyCurve CameraFieldOfView(this CameraDevice cameraDevice, List<Polyline> obstacles, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = 0.01)
         {
-            PolyCurve cameraCone = cameraDevice.CameraViewCone();
-            Polyline cameraConePolyline = cameraCone.CollapseToPolyline(0.01);
+            PolyCurve cameraCone = cameraDevice.ViewCone();
+            Polyline cameraConePolyline = cameraCone.CollapseToPolyline(angleTolerance);
             Point cameraLocation = cameraDevice.EyePosition;
             Point targetLocation = cameraDevice.TargetPosition;
             double radius = targetLocation.Distance(cameraLocation);
             Plane cameraPlane = BH.Engine.Geometry.Create.Plane(cameraLocation, Vector.ZAxis);
 
             //cone points
-            List<Point> conePoints = new List<Point>();
-            foreach (Line coneLine in cameraConePolyline.SubParts())
-            {
-                conePoints.AddRange(coneLine.ControlPoints());
-            }
+            List<Point> conePoints = cameraConePolyline.ControlPoints();
 
-            //cone boundary points
+            //add cone boundary points as intersectPoints
             List<Point> intersectPoints = new List<Point>();
             intersectPoints.Add(conePoints[1]);
             intersectPoints.Add(conePoints[conePoints.Count - 2]);
 
+            //simplify obstacles
+            List<Polyline> projObstacles = obstacles.Select(x => x.ProjectAndFix(cameraPlane)).ToList();
+            projObstacles = projObstacles.BooleanUnion(distanceTolerance);
+
             //points that intersect with obstacles
             List<Polyline> intersectObstacles = new List<Polyline>();
-            foreach (Polyline obstacle in obstacles)
+            foreach (Polyline obstacle in projObstacles)
             {
-                Polyline projObstacle = obstacle.Project(cameraPlane);
-                List<Polyline> intersection = projObstacle.BooleanIntersection(cameraConePolyline);
+                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline);
                 if (intersection.Count != 0)
                 {
-                    intersectObstacles.Add(projObstacle);
+                    intersectObstacles.Add(obstacle);
                     foreach (Polyline intersectPolyline in intersection)
                     {
                         List<Point> points = intersectPolyline.ControlPoints;
@@ -93,51 +92,20 @@ namespace BH.Engine.Security
 
             //split ray lines and find visible line
             List<Dictionary<Line, Polyline>> linesDict = new List<Dictionary<Line, Polyline>>();
-            List<Line> visibleLines = new List<Line>();
             foreach (Line rayLine in rayLines)
             {
                 Line visibleLine = rayLine.VisibleLine(intersectObstacles);
-                visibleLines.Add(visibleLine);
                 linesDict.Add(visibleLine.LineObstacleDictionary(intersectObstacles));
             }
 
             //create points chain
-            List<Point> pointsChain = linesDict.PointsChain(cameraLocation, radius);
+            List<Point> pointsChain = linesDict.PointsChain(cameraLocation, radius, distanceTolerance);
 
             //create cone
             Arc coneArc = cameraCone.Curves[1] as Arc;
-            PolyCurve cameraViewPolyCurve = pointsChain.CameraViewPolyCurve(cameraLocation, radius, coneArc);
+            PolyCurve cameraViewPolyCurve = pointsChain.CameraViewPolyCurve(cameraLocation, radius, coneArc, distanceTolerance);
 
             return cameraViewPolyCurve;
-        }
-
-        /***************************************************/
-
-        [Description("Returns the polycurve camera view cone.")]
-        [Input("cameraDevice", "The CameraDevice object to compute the camera view cone for.")]
-        [Output("conePolyCurve", "PolyCurve object that represents camera view cone.")]
-        public static PolyCurve CameraViewCone(this CameraDevice cameraDevice)
-        {
-            Point cameraLocation = cameraDevice.EyePosition;
-            Point targetLocation = cameraDevice.TargetPosition;
-            double radius = targetLocation.Distance(cameraLocation);
-            double horizontal = cameraDevice.HorizontalFieldOfView;
-            double angle = 2 * Math.Atan(horizontal / 2 / radius);
-
-            Vector direction = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
-            Vector startPointDir = direction.Rotate(-angle / 2, Vector.ZAxis);
-            Vector endPointDir = direction.Rotate(angle / 2, Vector.ZAxis);
-            Point startPoint = cameraLocation + startPointDir;
-            Point endPoint = cameraLocation + endPointDir;
-
-            Arc coneArc = BH.Engine.Geometry.Create.Arc(startPoint, targetLocation, endPoint);
-            Line startLine = BH.Engine.Geometry.Create.Line(cameraLocation, startPoint);
-            Line endLine = BH.Engine.Geometry.Create.Line(endPoint, cameraLocation);
-
-            PolyCurve conePolyCurve = new PolyCurve();
-            conePolyCurve.Curves = new List<ICurve>() { startLine, coneArc, endLine };
-
-            return conePolyCurve;
         }
 
         /***************************************************/
@@ -146,6 +114,7 @@ namespace BH.Engine.Security
         [Input("line1", "First line to compute the angle for.")]
         [Input("line2", "Second line to compute the angle for.")]
         [Output("angle", "Singed angle between two lines.")]
+        
         private static double Angle(this Line line1, Line line2)
         {
             Vector line1Dir = line1.Direction();
@@ -153,6 +122,36 @@ namespace BH.Engine.Security
             double angle = line1Dir.SignedAngle(line2Dir, Vector.ZAxis);
 
             return angle;
+        }
+
+        /***************************************************/
+
+        [Description("Project obstacle on given plane and fix if possible.")]
+        [Input("obstacle", "Obstacle to check and fix.")]
+        [Input("plane", "Plane to project the obstacle on.")]
+        [Output("newObstacle", "Obstacle after projecting and fixing.")]
+
+        private static Polyline ProjectAndFix(this Polyline obstacle, Plane plane)
+        {
+            if (obstacle.IsInPlane(plane))
+                return obstacle;
+
+            if (!obstacle.IsClosed() || !obstacle.IsPlanar())
+            {
+                //warrning
+                List<Point> projPoints = obstacle.ControlPoints.Select(x => x.Project(plane)).ToList();
+                return BH.Engine.Geometry.Create.Polyline(projPoints);
+            }
+            else if (obstacle.Normal().IsEqual(plane.Normal) || obstacle.Normal().IsEqual(-plane.Normal))
+            {
+                //warrning
+                return obstacle.Project(plane);
+            }
+            else
+            {
+                //warrning
+                return obstacle.Project(plane);
+            }
         }
 
         /***************************************************/
@@ -271,7 +270,7 @@ namespace BH.Engine.Security
         [Input("cameraLocation", "Location of the camera device.")]
         [Input("radius", "Radius of the camera view cone.")]
         [Output("pointsChain", "Points chain of the camera field of view.")]
-        private static List<Point> PointsChain(this List<Dictionary<Line, Polyline>> lineObstacledictionary, Point cameraLocation, double radius, double tolerance = 0.001)
+        private static List<Point> PointsChain(this List<Dictionary<Line, Polyline>> lineObstacledictionary, Point cameraLocation, double radius, double tolerance)
         {
             List<Point> pointsChain = new List<Point>();
             pointsChain.Add(cameraLocation);
@@ -326,7 +325,7 @@ namespace BH.Engine.Security
         [Input("cameraLocation", "Location of the camera device.")]
         [Input("radius", "Radius of the camera view cone.")]
         [Output("viewCone", "PolyCurve that represents camera field of view.")]
-        private static PolyCurve CameraViewPolyCurve(this List<Point> pointsChain, Point cameraLocation, double radius, Arc coneArc, double tolerance = 0.001)
+        private static PolyCurve CameraViewPolyCurve(this List<Point> pointsChain, Point cameraLocation, double radius, Arc coneArc, double tolerance)
         {
             List<ICurve> curves = new List<ICurve>();
             for (int i = 1; i < pointsChain.Count; i++)
