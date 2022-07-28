@@ -59,14 +59,19 @@ namespace BH.Engine.Security
             intersectPoints.Add(conePoints[conePoints.Count - 2]);
 
             //simplify obstacles
-            List<Polyline> projObstacles = obstacles.Select(x => x.FixAndProject(cameraPlane)).ToList();
+            List<Polyline> projObstacles = obstacles.Select(x => x.FixAndProject(cameraPlane, distanceTolerance)).ToList();
             projObstacles = projObstacles.BooleanUnion(distanceTolerance);
 
             //points that intersect with obstacles
             List<Polyline> intersectObstacles = new List<Polyline>();
             foreach (Polyline obstacle in projObstacles)
             {
-                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline);
+                if (obstacle.IsContaining(new List<Point> { cameraLocation }))
+                {
+                    Base.Compute.RecordWarning("Camera Device is inside obstacle. Null value will be returned.");
+                    return null;
+                }
+                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline, distanceTolerance, angleTolerance);
                 if (intersection.Count != 0)
                 {
                     intersectObstacles.Add(obstacle);
@@ -115,25 +120,25 @@ namespace BH.Engine.Security
         [Input("cameraPlane", "Plane to project the obstacle on.")]
         [Output("newObstacle", "Obstacle after projecting and fixing.")]
 
-        private static Polyline FixAndProject(this Polyline obstacle, Plane cameraPlane)
+        private static Polyline FixAndProject(this Polyline obstacle, Plane cameraPlane, double tolerance)
         {
-            if (obstacle.IsInPlane(cameraPlane))
+            if (obstacle.IsInPlane(cameraPlane, tolerance))
                 return obstacle;
 
-            if (!obstacle.IsClosed() || !obstacle.IsPlanar())
+            if (!obstacle.IsClosed(tolerance) || !obstacle.IsPlanar(tolerance))
             {
-                Base.Compute.RecordWarning("Obstacle polyline is open and not planar. It will be closed and projected to camera plane.");
+                Base.Compute.RecordWarning("Obstacle polyline is open and not planar. It will be closed and projected on camera plane.");
                 List<Point> projPoints = obstacle.ControlPoints.Select(x => x.Project(cameraPlane)).ToList();
                 return BH.Engine.Geometry.Create.Polyline(projPoints);
             }
-            else if (obstacle.Normal().IsEqual(cameraPlane.Normal) || obstacle.Normal().IsEqual(-cameraPlane.Normal))
+            else if (obstacle.Normal().IsEqual(cameraPlane.Normal, tolerance) || obstacle.Normal().IsEqual(-cameraPlane.Normal, tolerance))
             {
-                Base.Compute.RecordWarning("Obstacle polyline is parallel, but not in camera plane. It will be projected to camera plane.");
+                Base.Compute.RecordWarning("Obstacle polyline is parallel, but not in camera plane. It will be projected on camera plane.");
                 return obstacle.Project(cameraPlane);
             }
             else
             {
-                Base.Compute.RecordWarning("Polyline is in different plane than camera plane. It will be projected to camera plane.");
+                Base.Compute.RecordWarning("Polyline is in different plane than camera plane. It will be projected on camera plane.");
                 return obstacle.Project(cameraPlane);
             }
         }
