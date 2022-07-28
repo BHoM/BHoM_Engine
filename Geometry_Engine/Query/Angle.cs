@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Calculates the angle between two vectors")]
         public static double Angle(this Vector v1, Vector v2)
         {
             if (v1 == null || v2 == null)
@@ -66,7 +66,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
+        [Description("Calculates the angle of the arc")]
         public static double Angle(this Arc arc)
         {
             return arc.EndAngle - arc.StartAngle;
@@ -74,6 +74,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Signed angle between two vectors.")]
+        [Input("a", "First vector to compute the angle for.")]
+        [Input("b", "Second vector to compute the angle for.")]
+        [Input("normal", "Normal vector to define the sign of the angle.")]
+        [Output("angle", "Singed angle between two vectors.")]
         public static double SignedAngle(this Vector a, Vector b, Vector normal) // use normal vector to define the sign of the angle
         {
             double angle = Angle(a, b);
@@ -87,16 +92,17 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Signed angle between two lines in XY plane.")]
+        [Description("Signed angle between two lines in given normal.")]
         [Input("line1", "First line to compute the angle for.")]
         [Input("line2", "Second line to compute the angle for.")]
+        [Input("normal", "Normal vector to define the sign of the angle.")]
         [Output("angle", "Singed angle between two lines.")]
 
-        public static double SingedAngle(this Line line1, Line line2)
+        public static double SingedAngleInNormal(this Line line1, Line line2, Vector normal)
         {
             Vector line1Dir = line1.Direction();
             Vector line2Dir = line2.Direction();
-            double angle = line1Dir.SignedAngle(line2Dir, Vector.ZAxis);
+            double angle = line1Dir.SignedAngle(line2Dir, normal);
 
             return angle;
         }
