@@ -19,16 +19,13 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using BH.oM.Physical.Constructions;
 using BH.oM.Physical.Materials;
-
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
@@ -42,7 +39,6 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Creates physical wall based on given construction, bottom curve and height.")]
         [Input("construction", "Construction of the wall.")]
         [Input("bottomEdge", "Curve representing bottom edge of the wall.")]
@@ -61,23 +57,16 @@ namespace BH.Engine.Physical
                 Base.Compute.RecordError("Physical Wall could not be created because bottom edge cannot be closed curve.");
                 return null;
             }
-            
-            ICurve aICurve = bottomEdge.ITranslate(Geometry.Create.Vector(0, 0, height)).IFlip();
 
+            ICurve aICurve = bottomEdge.ITranslate(Geometry.Create.Vector(0, 0, height)).IFlip();
             Line aLine_1 = Geometry.Create.Line(bottomEdge.IEndPoint(), aICurve.IStartPoint());
             Line aLine_2 = Geometry.Create.Line(aICurve.IEndPoint(), bottomEdge.IStartPoint());
-
-            PolyCurve aPolyCurve = Geometry.Create.PolyCurve(new ICurve[] { bottomEdge, aLine_1, aICurve, aLine_2 });
-
+            PolyCurve aPolyCurve = Geometry.Create.PolyCurve(new ICurve[]{bottomEdge, aLine_1, aICurve, aLine_2});
             return new Wall()
-            {
-                Construction = construction,
-                Location = Geometry.Create.PlanarSurface(aPolyCurve)
-            };
+            {Construction = construction, Location = Geometry.Create.PlanarSurface(aPolyCurve)};
         }
 
         /***************************************************/
-
         [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel.")]
         [Input("line", "Base line of the wall.")]
         [Input("height", "Height of the wall.")]
@@ -87,33 +76,23 @@ namespace BH.Engine.Physical
         [Output("Wall", "The created physical Wall.")]
         public static Wall Wall(Line line, double height, IConstruction construction, Offset offset = Offset.Undefined, string name = "")
         {
-            if(line == null)
+            if (line == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot create a Physical.Wall from a null line.");
                 return null;
             }
 
             Polyline boundary = new Polyline();
-
             Vector move = Vector.ZAxis * height;
-
             boundary.ControlPoints.Add(line.Start);
             boundary.ControlPoints.Add(line.End);
             boundary.ControlPoints.Add(line.End + move);
             boundary.ControlPoints.Add(line.Start + move);
             boundary.ControlPoints.Add(line.Start);
-
-            return new Wall
-            {
-                Location = Geometry.Create.PlanarSurface(boundary),
-                Construction = construction,
-                Offset = offset,
-                Name = name
-            };
+            return new Wall{Location = Geometry.Create.PlanarSurface(boundary), Construction = construction, Offset = offset, Name = name};
         }
 
         /***************************************************/
-
         [Description("Creates physical wall object.")]
         [Input("construction", "Construction of the wall.")]
         [Input("edges", "External edges of the wall (Profile - planar closed curve).")]
@@ -130,7 +109,6 @@ namespace BH.Engine.Physical
             List<ICurve> aInternalCurveList = null;
             if (internalEdges != null && internalEdges.Count() > 0)
                 aInternalCurveList = internalEdges.ToList().ConvertAll(x => x as ICurve);
-
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
             if (aPlanarSurface == null)
             {
@@ -139,14 +117,10 @@ namespace BH.Engine.Physical
             }
 
             return new Wall()
-            {
-                Construction = construction,
-                Location = aPlanarSurface
-            };
+            {Construction = construction, Location = aPlanarSurface};
         }
 
         /***************************************************/
-
         [Description("Creates a physical Wall element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel.")]
         [Input("location", "Location surface which represents the outer geometry of the Wall. Should not contain any openings.")]
         [Input("construction", "Construction representing the thickness and materiality of the Wall.")]
@@ -157,19 +131,10 @@ namespace BH.Engine.Physical
         public static Wall Wall(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
             openings = openings ?? new List<IOpening>();
-
-            return new Wall
-            {
-                Location = location,
-                Construction = construction,
-                Openings = openings,
-                Offset = offset,
-                Name = name
-            };
+            return new Wall{Location = location, Construction = construction, Openings = openings, Offset = offset, Name = name};
         }
 
         /***************************************************/
-
         [Description("Creates physical wall object.")]
         [Input("construction", "Construction of the wall.")]
         [Input("edges", "External edges of the wall (Profile - planar closed curve).")]
@@ -178,10 +143,6 @@ namespace BH.Engine.Physical
         {
             return Wall(construction, edges, null);
         }
-
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-
-

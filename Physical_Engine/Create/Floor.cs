@@ -19,9 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System.ComponentModel;
-
 using BH.oM.Physical.Constructions;
 using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
@@ -36,7 +34,6 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Creates a physical floor element. For elements for structral analytical applications look at BH.oM.Structure.Elements.Panel. For elements for environmental analytical applications look at BH.oM.Environments.Elements.Panel.")]
         [Input("location", "Location surface which represents the outer geometry of the floor. Should not contain any openings.")]
         [Input("construction", "Construction representing the thickness and materiality of the floor.")]
@@ -47,15 +44,7 @@ namespace BH.Engine.Physical
         public static Floor Floor(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
             openings = openings ?? new List<IOpening>();
-
-            return new Floor
-            {
-                Location = location,
-                Construction = construction,
-                Openings = openings,
-                Offset = offset,
-                Name = name
-            };
+            return new Floor{Location = location, Construction = construction, Openings = openings, Offset = offset, Name = name};
         }
 
         [Description("Creates physical floor based on given construction and external edges.")]
@@ -68,7 +57,6 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
-
         [Description("Creates physical floor based on given construction, external and internal edges.")]
         [Input("construction", "Construction of the floor.")]
         [Input("edges", "External edges of the floor (Profile - planar closed curve).")]
@@ -85,7 +73,6 @@ namespace BH.Engine.Physical
             List<ICurve> aInternalCurveList = null;
             if (internalEdges != null && internalEdges.Count() > 0)
                 aInternalCurveList = internalEdges.ToList().ConvertAll(x => x as ICurve);
-
             PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
             if (aPlanarSurface == null)
             {
@@ -94,15 +81,8 @@ namespace BH.Engine.Physical
             }
 
             return new Floor()
-            {
-                Construction = construction,
-                Location = aPlanarSurface
-            };
+            {Construction = construction, Location = aPlanarSurface};
         }
-
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-
-

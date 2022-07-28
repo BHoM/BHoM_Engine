@@ -19,14 +19,12 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
-
 using BH.Engine.Base;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Geometry;
@@ -43,13 +41,12 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Description("Gets an IFramingElement's solid volume from the average area and length")]
-        [Input("framingElement", "the IFramingElement to get the volume from")]
+        [Description("Gets an IFramingElement's solid volume from the average area and length.")]
+        [Input("framingElement", "the IFramingElement to get the volume from.")]
         [Output("volume", "The IFramingElement's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IFramingElement framingElement)
         {
-            if(framingElement == null)
+            if (framingElement == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null framing element.");
                 return 0;
@@ -60,18 +57,17 @@ namespace BH.Engine.Physical
                 Engine.Base.Compute.RecordError("The IFramingElement Solid Volume could not be calculated as no property has been assigned. Returning zero volume.");
                 return 0;
             }
+
             return framingElement.Location.Length() * IAverageProfileArea(framingElement.Property);
         }
 
         /***************************************************/
-
-        [Description("Returns an ISurface's solid volume based on thickness and area." + 
-                     "ISurfaces with offsets other than Centre are not fully supported.")]
-        [Input("surface", "the ISurface to get the volume from")]
+        [Description("Returns an ISurface's solid volume based on thickness and area." + "ISurfaces with offsets other than Centre are not fully supported.")]
+        [Input("surface", "the ISurface to get the volume from.")]
         [Output("volume", "The ISurface's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this oM.Physical.Elements.ISurface surface)
         {
-            if(surface == null)
+            if (surface == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null surface.");
                 return 0;
@@ -85,15 +81,12 @@ namespace BH.Engine.Physical
 
             if (surface.Offset != Offset.Centre && !surface.Location.IIsPlanar())
                 Base.Compute.RecordWarning("The SolidVolume for non-Planar ISurfaces with offsets other than Centre is approxamite at best");
-
             double area = surface.Location.IArea();
             area -= surface.Openings.Sum(x => x.Location.IArea());
-            
             return area * surface.Construction.IVolumePerArea();
         }
 
         /***************************************************/
-
         [Description("Return the total volume of SolidBulk.")]
         [Input("solidBulk", "Solid geometric elements that have a MaterialComposition.")]
         [Output("volume", "The combined volume of SolidBulk.", typeof(Volume))]
@@ -106,7 +99,6 @@ namespace BH.Engine.Physical
             }
 
             double solidVolume = solidBulk.Geometry.Select(x => x.IVolume()).Sum();
-
             if (solidVolume <= 0)
             {
                 Engine.Base.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
@@ -117,7 +109,6 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
-
         [Description("Return the total volume of ExplicitBulk.")]
         [Input("explicitBulk", "Elements containing Volume and MaterialComposition properties.")]
         [Output("volume", "The combined volume of ExplicitBulk.", typeof(Volume))]
@@ -135,11 +126,12 @@ namespace BH.Engine.Physical
                 Engine.Base.Compute.RecordError("The queried volume has been nonpositive. Returning zero instead.");
                 return 0;
             }
+
             return solidVolume;
         }
 
         [Description("Returns an IOpening's solid volume based on thickness and area.")]
-        [Input("window", "the window to get the volume from")]
+        [Input("window", "the window to get the volume from.")]
         [Output("volume", "The window's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IOpening opening)
         {
@@ -150,15 +142,12 @@ namespace BH.Engine.Physical
             }
 
             double area = opening.IArea();
-
             double thickness = 0;
             if (opening is Window)
                 thickness = (opening as Window).Construction.IThickness();
             else if (opening is Door)
                 thickness = (opening as Door).Construction.IThickness();
-
             double solidVolume = area * thickness;
-
             if (solidVolume <= 0)
             {
                 Engine.Base.Compute.RecordError("Solid volume cannot be calculated for element of type :" + opening.GetType() + ". Returning zero volume.");
@@ -167,9 +156,6 @@ namespace BH.Engine.Physical
 
             return solidVolume;
         }
-
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-

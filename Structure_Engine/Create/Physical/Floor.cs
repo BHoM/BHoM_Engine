@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Structure.Elements;
@@ -42,7 +41,6 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Creates a physical Floor from a Panel. The Floor will be assigned a Construction based on the SurfaceProperty of the Panel.")]
         [Input("panel", "The Panel to use as the base for the framing element.")]
         [Output("floor", "The created physical Floor based on the Panel element provided.")]
@@ -50,25 +48,19 @@ namespace BH.Engine.Structure
         {
             if (panel.IsNull())
                 return null;
-
             //Get Construction
             ISurfaceProperty prop = panel.Property;
             BHPC.Construction construction = null;
-
             if (prop == null)
                 Base.Compute.RecordWarning("The panel does not contain a surfaceProperty. Can not extract profile or material");
             else
                 construction = panel.Property.IConstruction();
-
             //Get Location
             PolyCurve externalEdges = Geometry.Create.PolyCurve(panel.ExternalEdges.Select(x => x.Curve));
             List<PolyCurve> internalEdges = panel.Openings.Select(opening => Geometry.Create.PolyCurve(opening.Edges.Select(edge => edge.Curve))).ToList();
-
             BHPE.Floor surfaceElement = Physical.Create.Floor(construction, externalEdges, internalEdges);
-
             string name = panel.Name ?? "";
             surfaceElement.Name = name;
-
             if (panel.FindFragment<PanelRebarIntent>() != null || panel.Property.FindFragment<ReinforcementDensity>() != null)
             {
                 Base.Compute.RecordWarning("The panel has reinforcement, but this is not yet implemented.");
@@ -76,10 +68,6 @@ namespace BH.Engine.Structure
 
             return surfaceElement;
         }
-
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-
-

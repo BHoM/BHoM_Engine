@@ -19,13 +19,11 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using BH.oM.Physical.Constructions;
 using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
@@ -59,10 +57,8 @@ namespace BH.Engine.Physical
         {
             if (construction == null)
                 return 0;
-
             if (construction.Layers.Any(x => x.Material == null))
                 Base.Compute.RecordWarning("At least one Material in a Construction was null. VolumePerArea excludes this layer, assuming it is void space.");
-
             return construction.Layers.Where(x => x.Material != null).Sum(x => x.Thickness);
         }
 
@@ -72,5 +68,3 @@ namespace BH.Engine.Physical
         }
     }
 }
-
-
