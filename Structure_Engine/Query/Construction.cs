@@ -49,138 +49,10 @@ namespace BH.Engine.Structure
             return Construction(surfaceProperty as dynamic);
         }
 
-        /***************************************************/
-
-        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
-        [Input("surfaceProperty", "Structural surface property to convert.")]
-        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
-        public static Construction Construction(this ConstantThickness surfaceProperty)
-        {
-            if (surfaceProperty.IsNull())
-                return null;
-
-            //Set Material
-            oM.Physical.Materials.Material material = surfaceProperty.GetMaterial();
-
-            oM.Physical.Constructions.Layer physicalLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = surfaceProperty.Thickness, Name = surfaceProperty.Name };
-
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { physicalLayer });
-        }
+        //Write specific methods here if building a Construction from a SurfaceProperty via MaterialComposition is not valid
 
         /***************************************************/
-
-        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
-        [Input("surfaceProperty", "Structural surface property to convert.")]
-        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
-        public static Construction Construction(this CorrugatedDeck surfaceProperty)
-        {
-            if (surfaceProperty.IsNull())
-                return null;
-
-            //Set Material
-            oM.Physical.Materials.Material material = surfaceProperty.GetMaterial();
-
-            double thickness = surfaceProperty.Thickness * surfaceProperty.VolumeFactor;
-            double voidThickness = surfaceProperty.Height - thickness;
-
-            oM.Physical.Constructions.Layer physicalLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = thickness, Name = surfaceProperty.Name };
-            oM.Physical.Constructions.Layer voidLayer = new oM.Physical.Constructions.Layer() { Material = null, Thickness = voidThickness, Name = "void" };
-
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { physicalLayer, voidLayer });
-        }
-
-        /***************************************************/
-
-        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
-        [Input("surfaceProperty", "Structural surface property to convert.")]
-        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
-        public static Construction Construction(this Layered surfaceProperty)
-        {
-            if (surfaceProperty.IsNull())
-                return null;
-
-            //Set Material
-            oM.Physical.Materials.Material material = surfaceProperty.GetMaterial();
-
-            List<oM.Physical.Constructions.Layer> layers = surfaceProperty.Layers.Select(x => Physical.Create.Layer(x.Name, x.GetMaterial(), x.Thickness)).ToList();
-
-            return Physical.Create.Construction(surfaceProperty.Name, layers);
-        }
-
-        /***************************************************/
-
-        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
-        [Input("surfaceProperty", "Structural surface property to convert.")]
-        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
-        public static Construction Construction(this Ribbed surfaceProperty)
-        {
-            if (surfaceProperty.IsNull())
-                return null;
-
-            //Set Material
-            Material material = surfaceProperty.GetMaterial();
-
-            double physicalThickness = surfaceProperty.VolumePerArea();
-            double voidThickness = surfaceProperty.TotalThickness() - physicalThickness;
-
-            oM.Physical.Constructions.Layer physicalLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = physicalThickness, Name = "Slab" };
-            oM.Physical.Constructions.Layer voidLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = voidThickness, Name = "Void" };
-
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { physicalLayer, voidLayer });
-        }
-
-        /***************************************************/
-
-        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
-        [Input("surfaceProperty", "Structural surface property to convert.")]
-        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
-        public static Construction Construction(this SlabOnDeck surfaceProperty)
-        {
-            if (surfaceProperty.IsNull())
-                return null;
-
-            //Set Material
-            MaterialComposition matComp = surfaceProperty.MaterialComposition();
-
-            Material slabMaterial = matComp.Materials[0];
-            Material deckMaterial = matComp.Materials[1];
-            Material rebarMaterial = matComp.Materials[2];
-
-            double slabThickness = surfaceProperty.VolumePerArea() * matComp.Ratios[0];
-            double deckThickness = surfaceProperty.VolumePerArea() * matComp.Ratios[1];
-            double rebarThickness = surfaceProperty.VolumePerArea() * matComp.Ratios[2];
-            double voidThickness = surfaceProperty.TotalThickness() - (slabThickness + deckThickness + rebarThickness);
-
-            oM.Physical.Constructions.Layer slabLayer = new oM.Physical.Constructions.Layer() { Material = slabMaterial, Thickness = slabThickness, Name = "Slab" };
-            oM.Physical.Constructions.Layer deckLayer = new oM.Physical.Constructions.Layer() { Material = deckMaterial, Thickness = deckThickness, Name = "Deck" };
-            oM.Physical.Constructions.Layer rebarLayer = new oM.Physical.Constructions.Layer() { Material = rebarMaterial, Thickness = rebarThickness, Name = "Rebar" };
-            oM.Physical.Constructions.Layer voidLayer = new oM.Physical.Constructions.Layer() { Material = deckMaterial, Thickness = voidThickness, Name = "Void" };
-
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { slabLayer, rebarLayer, deckLayer, voidLayer });
-        }
-
-        /***************************************************/
-
-        [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
-        [Input("surfaceProperty", "Structural surface property to convert.")]
-        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
-        public static Construction Construction(this Waffle surfaceProperty)
-        {
-            if (surfaceProperty.IsNull())
-                return null;
-
-            //Set Material
-            Material material = surfaceProperty.GetMaterial();
-
-            double physicalThickness = surfaceProperty.VolumePerArea();
-            double voidThickness = surfaceProperty.TotalThickness() - physicalThickness;
-
-            oM.Physical.Constructions.Layer physicalLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = physicalThickness, Name = "Slab" };
-            oM.Physical.Constructions.Layer voidLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = voidThickness, Name = "Void" };
-
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { physicalLayer, voidLayer });
-        }
-
+        /**** Fallback Method                           ****/
         /***************************************************/
 
         [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
@@ -188,8 +60,22 @@ namespace BH.Engine.Structure
         [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
         public static Construction Construction(this ISurfaceProperty surfaceProperty)
         {
-            Base.Compute.RecordError($"Construction() not implemented for type {surfaceProperty.GetType()}.");
-            return null;
+            if (surfaceProperty.IsNull())
+                return null;
+
+            MaterialComposition comp = surfaceProperty.IMaterialComposition();
+            double volume = surfaceProperty.IVolumePerArea();
+            double thickness = surfaceProperty.ITotalThickness();
+
+            List<oM.Physical.Constructions.Layer> layers = new List<oM.Physical.Constructions.Layer>();
+
+            for (int i = 0; i < comp.Materials.Count(); i++)
+                layers.Add(new oM.Physical.Constructions.Layer() { Material = comp.Materials[i], Thickness = volume*comp.Ratios[i], Name = comp.Materials[i].Name });
+
+            if (volume < thickness)
+                layers.Add(new oM.Physical.Constructions.Layer() { Material = null, Thickness = thickness - volume, Name = "void" });
+
+            return Physical.Create.Construction(surfaceProperty.Name, layers);
         }
 
         /***************************************************/

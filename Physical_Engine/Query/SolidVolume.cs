@@ -89,7 +89,7 @@ namespace BH.Engine.Physical
             double area = surface.Location.IArea();
             area -= surface.Openings.Sum(x => x.Location.IArea());
             
-            return area * surface.Construction.IThickness();
+            return area * surface.Construction.IVolumePerArea();
         }
 
         /***************************************************/
