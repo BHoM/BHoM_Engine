@@ -92,13 +92,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Signed angle between two lines in given normal.")]
+        [Description("Signed angle between two lines.")]
         [Input("line1", "First line to compute the angle for.")]
         [Input("line2", "Second line to compute the angle for.")]
         [Input("normal", "Normal vector to define the sign of the angle.")]
         [Output("angle", "Singed angle between two lines.")]
 
-        public static double SingedAngleInNormal(this Line line1, Line line2, Vector normal)
+        public static double SingedAngle(this Line line1, Line line2, Vector normal)
         {
             Vector line1Dir = line1.Direction();
             Vector line2Dir = line2.Direction();
