@@ -30,7 +30,7 @@ using System;
 
 namespace BH.Engine.Security
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /****              Public Methods               ****/

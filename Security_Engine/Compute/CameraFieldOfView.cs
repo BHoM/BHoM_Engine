@@ -93,7 +93,7 @@ namespace BH.Engine.Security
                 rayLines.Add(rayLine);
             }
             rayLines = rayLines.CullDuplicateLines();
-            rayLines = rayLines.OrderBy(x => x.SingedAngle(rayLines[0])).ToList();
+            rayLines = rayLines.OrderBy(x => x.SingedAngleInNormal(rayLines[0], Vector.ZAxis)).ToList();
 
             //split ray lines and find visible line
             List<Dictionary<Line, Polyline>> linesDict = new List<Dictionary<Line, Polyline>>();
