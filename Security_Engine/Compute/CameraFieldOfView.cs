@@ -60,7 +60,6 @@ namespace BH.Engine.Security
 
             //simplify obstacles
             List<Polyline> projObstacles = obstacles.Select(x => x.FixAndProject(cameraPlane, distanceTolerance)).ToList();
-            projObstacles = projObstacles.BooleanUnion(distanceTolerance);
 
             //points that intersect with obstacles
             List<Polyline> intersectObstacles = new List<Polyline>();
@@ -71,7 +70,7 @@ namespace BH.Engine.Security
                     Base.Compute.RecordWarning("Camera Device is inside obstacle. Null value will be returned.");
                     return null;
                 }
-                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline, distanceTolerance, angleTolerance);
+                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline);
                 if (intersection.Count != 0)
                 {
                     intersectObstacles.Add(obstacle);
@@ -115,14 +114,14 @@ namespace BH.Engine.Security
 
         /***************************************************/
 
-        [Description("Project obstacle on given plane and fix if possible.")]
-        [Input("obstacle", "Obstacle to check and fix.")]
+        [Description("Project obstacle polyline on camera plane.")]
+        [Input("obstacle", "Obstacle to project.")]
         [Input("cameraPlane", "Plane to project the obstacle on.")]
-        [Output("newObstacle", "Obstacle after projecting and fixing.")]
+        [Output("newObstacle", "Obstacle polyline projected on camera plane.")]
 
         private static Polyline FixAndProject(this Polyline obstacle, Plane cameraPlane, double tolerance)
         {
-            if (obstacle.IsInPlane(cameraPlane, tolerance))
+            if (obstacle.IsInPlane(cameraPlane))
                 return obstacle;
 
             if (!obstacle.IsClosed(tolerance) || !obstacle.IsPlanar(tolerance))
@@ -278,7 +277,7 @@ namespace BH.Engine.Security
                     Point pt1 = line.Start;
                     Point pt2 = line.End;
 
-                    if (lastPoint.Distance(pt1) < lastPoint.Distance(pt2) && !((Math.Abs(lastPoint.Distance(cameraLocation) - radius) < tolerance) && (Math.Abs(pt2.Distance(cameraLocation) - radius) < tolerance)))
+                    if (lastPoint.Distance(pt1) < lastPoint.Distance(pt2) && !((Math.Abs(lastPoint.Distance(cameraLocation) - radius) < tolerance) && (Math.Abs(pt2.Distance(cameraLocation) - radius) < tolerance)) && i > 0)
                     {
                         Polyline obst = lineObstacledictionary[i].Values.First();
                         Polyline lastObst = lineObstacledictionary[i - 1].Values.First();
