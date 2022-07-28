@@ -49,6 +49,9 @@ namespace BH.Engine.Structure
         [Output("surfaceElement", "The created surface element based on the Panel element provided.")]
         public static BHPE.ISurface ISurface(Panel panel, StructuralUsage2D structuralUsage = StructuralUsage2D.Undefined)
         {
+            if (panel.IsNull())
+                return null;
+
             if (structuralUsage == StructuralUsage2D.Undefined)
             {
                 object result = panel.Property.PropertyValue("PanelType");
