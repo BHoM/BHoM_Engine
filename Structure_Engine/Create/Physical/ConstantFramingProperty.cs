@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -37,7 +36,6 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Creates a ConstantFramingProperty from a ISectionProperty and orientation angle. Extracts the SectionProfile (if existing) and Structural MaterialFragment and creates a physical material with the same name.")]
         [Input("sectionProperty", "Structural section property to extract profile and material from. For explicit sections lacking a profile only the material will get extracted.")]
         [Input("orientationAngle", "Defines the sections rotation around its own axis.", typeof(Angle))]
@@ -47,20 +45,16 @@ namespace BH.Engine.Structure
         {
             if (sectionProperty.IsNull())
                 return null;
-
             IProfile profile = null;
             if (sectionProperty is IGeometricalSection)
                 profile = (sectionProperty as IGeometricalSection).SectionProfile;
             else
                 Base.Compute.RecordWarning("Was not able to extract any section profile.");
-
-
             oM.Physical.Materials.Material material = null;
-
             if (sectionProperty.Material != null)
             {
                 string matName = sectionProperty.Material.Name ?? "";
-                material = Physical.Create.Material(matName, new List<oM.Physical.Materials.IMaterialProperties> { sectionProperty.Material });
+                material = Physical.Create.Material(matName, new List<oM.Physical.Materials.IMaterialProperties>{sectionProperty.Material});
             }
             else
             {
@@ -68,14 +62,8 @@ namespace BH.Engine.Structure
             }
 
             name = string.IsNullOrEmpty(name) ? sectionProperty.Name : name;
-
             return Physical.Create.ConstantFramingProperty(profile, material, orientationAngle, name);
-
         }
-
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-
-
