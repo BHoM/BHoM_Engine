@@ -160,6 +160,9 @@ namespace BH.Engine.Physical
         /******************************************************/
         /**** IConstruction Methods                        ****/
         /******************************************************/
+        [Description("Gets all the Materials a ExplicitBulk is composed of and in which ratios.")]
+        [Input("prop", "The ExplicitBulk to get the MaterialComposition from.")]
+        [Output("materialComposition", "The kind of matter the ExplicitBulk is composed of and in which ratios.", typeof(Ratio))]
         public static MaterialComposition IMaterialComposition(this IConstruction prop)
         {
             return MaterialComposition(prop as dynamic);
