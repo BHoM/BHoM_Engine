@@ -28,6 +28,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Physical.Constructions;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Quantities.Attributes;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.Structure
 {
@@ -80,10 +81,12 @@ namespace BH.Engine.Structure
             oM.Physical.Materials.Material material = surfaceProperty.GetMaterial();
 
             double thickness = surfaceProperty.Thickness * surfaceProperty.VolumeFactor;
+            double voidThickness = surfaceProperty.Height - thickness;
 
             oM.Physical.Constructions.Layer physicalLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = thickness, Name = surfaceProperty.Name };
+            oM.Physical.Constructions.Layer voidLayer = new oM.Physical.Constructions.Layer() { Material = null, Thickness = voidThickness, Name = "void" };
 
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { physicalLayer });
+            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { physicalLayer, voidLayer });
         }
 
         /***************************************************/
@@ -115,15 +118,15 @@ namespace BH.Engine.Structure
                 return null;
 
             //Set Material
-            oM.Physical.Materials.Material material = surfaceProperty.GetMaterial();
+            Material material = surfaceProperty.GetMaterial();
 
-            double topThickness = surfaceProperty.Thickness;
-            double bottomThickness = surfaceProperty.TotalDepth - topThickness;
+            double physicalThickness = surfaceProperty.VolumePerArea();
+            double voidThickness = surfaceProperty.TotalThickness() - physicalThickness;
 
-            oM.Physical.Constructions.Layer topLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = topThickness, Name = surfaceProperty.Name };
-            oM.Physical.Constructions.Layer bottomLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = bottomThickness, Name = surfaceProperty.Name };
+            oM.Physical.Constructions.Layer physicalLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = physicalThickness, Name = "Slab" };
+            oM.Physical.Constructions.Layer voidLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = voidThickness, Name = "Void" };
 
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { topLayer, bottomLayer });
+            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { physicalLayer, voidLayer });
         }
 
         /***************************************************/
@@ -137,18 +140,23 @@ namespace BH.Engine.Structure
                 return null;
 
             //Set Material
-            oM.Physical.Materials.Material slabMaterial = surfaceProperty.GetMaterial();
-            oM.Physical.Materials.Material deckMaterial = Physical.Create.Material(surfaceProperty.DeckMaterial.Name, new List<oM.Physical.Materials.IMaterialProperties>() { surfaceProperty.DeckMaterial });
+            MaterialComposition matComp = surfaceProperty.MaterialComposition();
 
-            double topThickness = surfaceProperty.SlabThickness;
-            double bottomThickness = surfaceProperty.DeckHeight;
-            double deckThickness = surfaceProperty.DeckThickness * surfaceProperty.DeckVolumeFactor;
+            Material slabMaterial = matComp.Materials[0];
+            Material deckMaterial = matComp.Materials[1];
+            Material rebarMaterial = matComp.Materials[2];
 
-            oM.Physical.Constructions.Layer topLayer = new oM.Physical.Constructions.Layer() { Material = slabMaterial, Thickness = topThickness, Name = surfaceProperty.Name };
-            oM.Physical.Constructions.Layer bottomLayer = new oM.Physical.Constructions.Layer() { Material = slabMaterial, Thickness = bottomThickness, Name = surfaceProperty.Name };
-            oM.Physical.Constructions.Layer deckLayer = new oM.Physical.Constructions.Layer() { Material = deckMaterial, Thickness = deckThickness, Name = surfaceProperty.Name };
+            double slabThickness = surfaceProperty.VolumePerArea() * matComp.Ratios[0];
+            double deckThickness = surfaceProperty.VolumePerArea() * matComp.Ratios[1];
+            double rebarThickness = surfaceProperty.VolumePerArea() * matComp.Ratios[2];
+            double voidThickness = surfaceProperty.TotalThickness() - (slabThickness + deckThickness + rebarThickness);
 
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { topLayer, bottomLayer, deckLayer});
+            oM.Physical.Constructions.Layer slabLayer = new oM.Physical.Constructions.Layer() { Material = slabMaterial, Thickness = slabThickness, Name = "Slab" };
+            oM.Physical.Constructions.Layer deckLayer = new oM.Physical.Constructions.Layer() { Material = deckMaterial, Thickness = deckThickness, Name = "Deck" };
+            oM.Physical.Constructions.Layer rebarLayer = new oM.Physical.Constructions.Layer() { Material = rebarMaterial, Thickness = rebarThickness, Name = "Rebar" };
+            oM.Physical.Constructions.Layer voidLayer = new oM.Physical.Constructions.Layer() { Material = deckMaterial, Thickness = voidThickness, Name = "Void" };
+
+            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { slabLayer, rebarLayer, deckLayer, voidLayer });
         }
 
         /***************************************************/
@@ -162,15 +170,15 @@ namespace BH.Engine.Structure
                 return null;
 
             //Set Material
-            oM.Physical.Materials.Material material = surfaceProperty.GetMaterial();
+            Material material = surfaceProperty.GetMaterial();
 
-            double topThickness = surfaceProperty.Thickness;
-            double bottomThickness = Math.Max(surfaceProperty.TotalDepthX, surfaceProperty.TotalDepthY);
+            double physicalThickness = surfaceProperty.VolumePerArea();
+            double voidThickness = surfaceProperty.TotalThickness() - physicalThickness;
 
-            oM.Physical.Constructions.Layer topLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = topThickness, Name = surfaceProperty.Name };
-            oM.Physical.Constructions.Layer bottomLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = bottomThickness, Name = surfaceProperty.Name };
+            oM.Physical.Constructions.Layer physicalLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = physicalThickness, Name = "Slab" };
+            oM.Physical.Constructions.Layer voidLayer = new oM.Physical.Constructions.Layer() { Material = material, Thickness = voidThickness, Name = "Void" };
 
-            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { topLayer, bottomLayer });
+            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer>() { physicalLayer, voidLayer });
         }
 
         /***************************************************/
