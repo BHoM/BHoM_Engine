@@ -195,10 +195,12 @@ namespace BH.Engine.Physical
         {
             if (prop.Layers.Any(x => x.Material == null))
             {
-                Engine.Base.Compute.RecordError("The Construction MaterialComposition could not be queried as no Material has been assigned.");
-                return null;
+                Engine.Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. MaterialConstruction excludes this layer, assuming it is void space.");
             }
-            return Matter.Create.MaterialComposition(prop.Layers.Select(x => x.Material), prop.Layers.Select(x => x.Thickness));
+
+            IEnumerable<Layer> layers = prop.Layers.Where(x => x.Material != null);
+
+            return Matter.Create.MaterialComposition(layers.Select(x => x.Material), layers.Select(x => x.Thickness));
         }
 
         /***************************************************/
