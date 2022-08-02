@@ -37,9 +37,11 @@ namespace BH.Engine.Security
         /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Returns the polycurve that represents security camera field of view.")]
+        [Description("Returns the PolyCurve that represents security camera field of view.")]
         [Input("cameraDevice", "CameraDevice object to compute the field of view for.")]
         [Input("obstacles", "Polyline objects that represents obstacles for camera vision (walls, columns, stairs).")]
+        [Input("distanceTolerance", "Distance tolerance for the method.")]
+        [Input("angleTolerance", "Angular tolerance for the method. Set to 0.01 by default.")]
         [Output("fieldOfView", "PolyCurve object that represents security camera field of view.")]
         public static PolyCurve CameraFieldOfView(this CameraDevice cameraDevice, List<Polyline> obstacles, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = 0.01)
         {
@@ -59,18 +61,18 @@ namespace BH.Engine.Security
             intersectPoints.Add(conePoints[conePoints.Count - 2]);
 
             //simplify obstacles
-            List<Polyline> projObstacles = obstacles.Select(x => x.FixAndProject(cameraPlane, distanceTolerance)).ToList();
+            List<Polyline> projObstacles = obstacles.Select(x => x.Project(cameraPlane, distanceTolerance)).ToList();
 
             //points that intersect with obstacles
             List<Polyline> intersectObstacles = new List<Polyline>();
             foreach (Polyline obstacle in projObstacles)
             {
-                if (obstacle.IsContaining(new List<Point> { cameraLocation }))
+                if (obstacle.IsContaining(new List<Point> { cameraLocation }, true, distanceTolerance))
                 {
                     Base.Compute.RecordWarning("Camera Device is inside obstacle. Null value will be returned.");
                     return null;
                 }
-                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline);
+                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline, distanceTolerance);
                 if (intersection.Count != 0)
                 {
                     intersectObstacles.Add(obstacle);
@@ -81,25 +83,35 @@ namespace BH.Engine.Security
                     }
                 }
             }
-            intersectPoints = intersectPoints.CullDuplicates();
+            intersectPoints = intersectPoints.CullDuplicates(distanceTolerance);
 
-            //create and sort extended ray lines passing through intersected points
-            List<Line> rayLines = new List<Line>();
+            //collect endpoints of extended ray lines
+            List<Point> endPoints = new List<Point>();
             foreach (Point point in intersectPoints)
             {
                 Line line = BH.Engine.Geometry.Create.Line(cameraLocation, point);
-                Line rayLine = line.Extend(0, radius - line.Length());
-                rayLines.Add(rayLine);
+                Line rayLine = line.Extend(0, radius - line.Length(), false, distanceTolerance);
+                endPoints.Add(rayLine.End);
             }
-            rayLines = rayLines.CullDuplicateLines();
+
+            //cull endpoints
+            endPoints = endPoints.CullDuplicates();
+
+            //create and sort extended lines
+            List<Line> rayLines = new List<Line>();
+            foreach (Point point in endPoints)
+            {
+                Line line = BH.Engine.Geometry.Create.Line(cameraLocation, point);
+                rayLines.Add(line);
+            }
             rayLines = rayLines.OrderBy(x => x.SingedAngle(rayLines[0], Vector.ZAxis)).ToList();
 
             //split ray lines and find visible line
-            List<Dictionary<Line, Polyline>> linesDict = new List<Dictionary<Line, Polyline>>();
+            List<Tuple<Line, Polyline>> linesDict = new List<Tuple<Line, Polyline>>();
             foreach (Line rayLine in rayLines)
             {
-                Line visibleLine = rayLine.VisibleLine(intersectObstacles);
-                linesDict.Add(visibleLine.LineObstacleDictionary(intersectObstacles));
+                Line visibleLine = rayLine.VisibleLine(intersectObstacles, distanceTolerance);
+                linesDict.Add(visibleLine.LineObstacleDictionary(intersectObstacles, distanceTolerance));
             }
 
             //create points chain
@@ -117,29 +129,28 @@ namespace BH.Engine.Security
         [Description("Project obstacle polyline on camera plane.")]
         [Input("obstacle", "Obstacle to project.")]
         [Input("cameraPlane", "Plane to project the obstacle on.")]
+        [Input("tolerance", "Distance tolerance for the method.")]
         [Output("newObstacle", "Obstacle polyline projected on camera plane.")]
-
-        private static Polyline FixAndProject(this Polyline obstacle, Plane cameraPlane, double tolerance)
+        private static Polyline Project(this Polyline obstacle, Plane cameraPlane, double tolerance)
         {
-            if (obstacle.IsInPlane(cameraPlane))
+            //close open polylines
+            if (!obstacle.IsClosed())
+                obstacle = obstacle.Close(tolerance);
+
+            if (obstacle.IsInPlane(cameraPlane, tolerance))
                 return obstacle;
 
-            if (!obstacle.IsClosed(tolerance) || !obstacle.IsPlanar(tolerance))
-            {
-                Base.Compute.RecordWarning("Obstacle polyline is open and not planar. It will be closed and projected on camera plane.");
-                List<Point> projPoints = obstacle.ControlPoints.Select(x => x.Project(cameraPlane)).ToList();
-                return BH.Engine.Geometry.Create.Polyline(projPoints);
-            }
-            else if (obstacle.Normal().IsEqual(cameraPlane.Normal, tolerance) || obstacle.Normal().IsEqual(-cameraPlane.Normal, tolerance))
-            {
+            Vector polylineNormal = obstacle.Normal();
+            Vector cameraPlaneNormal = cameraPlane.Normal;
+
+            if (!obstacle.IsPlanar(tolerance))
+                Base.Compute.RecordWarning("Obstacle polyline is not planar. It will be closed and projected on camera plane.");
+            else if (polylineNormal.IsEqual(cameraPlaneNormal, tolerance) || polylineNormal.IsEqual(-cameraPlaneNormal, tolerance))
                 Base.Compute.RecordWarning("Obstacle polyline is parallel, but not in camera plane. It will be projected on camera plane.");
-                return obstacle.Project(cameraPlane);
-            }
             else
-            {
                 Base.Compute.RecordWarning("Polyline is in different plane than camera plane. It will be projected on camera plane.");
-                return obstacle.Project(cameraPlane);
-            }
+
+            return obstacle.Project(cameraPlane);
         }
 
         /***************************************************/
@@ -147,20 +158,20 @@ namespace BH.Engine.Security
         [Description("Split line in given obstacles.")]
         [Input("rayLine", "Line to split.")]
         [Input("obstacles", "Polyline objects to split the line in.")]
+        [Input("tolerance", "Distance tolerance for the method.")]
         [Output("splitLines", "Lines splited by the obstacles.")]
-        private static List<Line> SplitLinesInObstacles(this Line line, List<Polyline> obstacles)
+        private static List<Line> SplitLinesInObstacles(this Line line, List<Polyline> obstacles, double tolerance)
         {
             List<Point> splitPoints = new List<Point>();
             foreach (Polyline obstacle in obstacles)
             {
                 foreach (Line obstLine in obstacle.SubParts())
                 {
-                    Point point = line.LineIntersection(obstLine);
-                    if (point != null)
-                        splitPoints.Add(point);
+                    splitPoints.AddRange(line.LineIntersections(obstLine, false, tolerance));
                 }
             }
-            return line.SplitAtPoints(splitPoints);
+
+            return line.SplitAtPoints(splitPoints, tolerance);
         }
 
         /***************************************************/
@@ -168,17 +179,18 @@ namespace BH.Engine.Security
         [Description("Check if line is inside obstacle.")]
         [Input("line", "Line to check if it's inside obstacle.")]
         [Input("obstacles", "Polyline objects to check if line is inside.")]
+        [Input("tolerance", "Distance tolerance for the method.")]
         [Output("bool", "Boolean result of the checking.")]
-        private static bool IsInsideObstacle(this Line line, List<Polyline> obstacles)
+        private static bool IsInsideObstacle(this Line line, List<Polyline> obstacles, double tolerance)
         {
             foreach (Polyline obstacle in obstacles)
             {
                 foreach (Line obstLine in obstacle.SubParts())
                 {
-                    if (obstLine.IsOnCurve(line.Start) && obstLine.IsOnCurve(line.End))
+                    if (obstLine.IsOnCurve(line.Start, tolerance) && obstLine.IsOnCurve(line.End, tolerance))
                         return false;
                 }
-                if (obstacle.IsContaining(new List<Point> { line.Centroid() }, true))
+                if (obstacle.IsContaining(new List<Point> { line.Centroid(tolerance) }, true, tolerance))
                 {
                     return true;
                 }
@@ -190,18 +202,19 @@ namespace BH.Engine.Security
 
         [Description("Create visible line from rayline passing through obstacles.")]
         [Input("obstacles", "Polyline objects that are needed to create visible line.")]
+        [Input("tolerance", "Distance tolerance for the method.")]
         [Output("visibleLine", "Line that is visible for the camera view.")]
-        private static Line VisibleLine(this Line rayLine, List<Polyline> obstacles)
+        private static Line VisibleLine(this Line rayLine, List<Polyline> obstacles, double tolerance)
         {
-            List<Line> splitLines = rayLine.SplitLinesInObstacles(obstacles);
+            List<Line> splitLines = rayLine.SplitLinesInObstacles(obstacles, tolerance);
             List<Line> outsideLines = new List<Line>();
             foreach (Line splitLine in splitLines)
             {
-                if (!splitLine.IsInsideObstacle(obstacles))
+                if (!splitLine.IsInsideObstacle(obstacles, tolerance))
                     outsideLines.Add(splitLine);
             }
             //create visible line
-            Line visibleLine = new Line();
+            Line visibleLine;
             if (outsideLines.Count == 1)
                 visibleLine = outsideLines[0];
             else
@@ -210,7 +223,7 @@ namespace BH.Engine.Security
                 Point endPoint = outsideLines[0].End;
                 for (int i = 1; i < outsideLines.Count; i++)
                 {
-                    if (endPoint.IsEqual(outsideLines[i].Start))
+                    if (endPoint.IsEqual(outsideLines[i].Start, tolerance))
                     {
                         startPoint = outsideLines[0].End;
                         endPoint = outsideLines[i].End;
@@ -227,26 +240,20 @@ namespace BH.Engine.Security
         [Description("Create dictionary from line and obstacle.")]
         [Input("line", "Line to create dictionary for.")]
         [Input("obstacles", "Polyline objects that represents obstacles for lines.")]
+        [Input("tolerance", "Distance tolerance for the method.")]
         [Output("dictionary", "Dictionary for lines and obstacles.")]
-        private static Dictionary<Line, Polyline> LineObstacleDictionary(this Line line, List<Polyline> obstacles)
+        private static Tuple<Line, Polyline> LineObstacleDictionary(this Line line, List<Polyline> obstacles, double tolerance)
         {
-            Dictionary<Line, Polyline> lineObstDict = new Dictionary<Line, Polyline>();
-            if (obstacles.Count == 0)
-            {
-                lineObstDict.Add(line, null);
-            }
-            for (int i = 0; i < obstacles.Count; i++)
-            {
-                if (obstacles[i].IsContaining(new List<Point> { line.End }))
+            Tuple<Line, Polyline> lineObstDict = new Tuple<Line, Polyline>(line, null);
+            if (obstacles.Count > 0)
+                for (int i = 0; i < obstacles.Count; i++)
                 {
-                    lineObstDict.Add(line, obstacles[i]);
-                    return lineObstDict;
+                    if (obstacles[i].IsContaining(new List<Point> { line.End }, true, tolerance))
+                    {
+                        lineObstDict = new Tuple<Line, Polyline>(line, obstacles[i]);
+                        return lineObstDict;
+                    }
                 }
-                else if (i == obstacles.Count - 1)
-                {
-                    lineObstDict.Add(line, null);
-                }
-            }
 
             return lineObstDict;
         }
@@ -257,16 +264,17 @@ namespace BH.Engine.Security
         [Input("lineObstacledictionary", "Dictionary of visible lines and obstacles.")]
         [Input("cameraLocation", "Location of the camera device.")]
         [Input("radius", "Radius of the camera view cone.")]
+        [Input("tolerance", "Distance tolerance for the method.")]
         [Output("pointsChain", "Points chain of the camera field of view.")]
-        private static List<Point> PointsChain(this List<Dictionary<Line, Polyline>> lineObstacledictionary, Point cameraLocation, double radius, double tolerance)
+        private static List<Point> PointsChain(this List<Tuple<Line, Polyline>> lineObstacleDictionary, Point cameraLocation, double radius, double tolerance)
         {
             List<Point> pointsChain = new List<Point>();
             pointsChain.Add(cameraLocation);
             Point lastPoint = cameraLocation;
-            for (int i = 0; i < lineObstacledictionary.Count; i++)
+            for (int i = 0; i < lineObstacleDictionary.Count; i++)
             {
-                Line line = lineObstacledictionary[i].Keys.First();
-                if (line.Start.IsEqual(cameraLocation))
+                Line line = lineObstacleDictionary[i].Item1;
+                if (line.Start.IsEqual(cameraLocation, tolerance))
                 {
                     Point point = line.End;
                     pointsChain.Add(point);
@@ -279,9 +287,9 @@ namespace BH.Engine.Security
 
                     if (lastPoint.Distance(pt1) < lastPoint.Distance(pt2) && !((Math.Abs(lastPoint.Distance(cameraLocation) - radius) < tolerance) && (Math.Abs(pt2.Distance(cameraLocation) - radius) < tolerance)) && i > 0)
                     {
-                        Polyline obst = lineObstacledictionary[i].Values.First();
-                        Polyline lastObst = lineObstacledictionary[i - 1].Values.First();
-                        if (!lastPoint.IsEqual(cameraLocation) && lastObst == obst)
+                        Polyline obst = lineObstacleDictionary[i].Item2;
+                        Polyline lastObst = lineObstacleDictionary[i - 1].Item2;
+                        if (!lastPoint.IsEqual(cameraLocation, tolerance) && lastObst == obst)
                         {
                             pointsChain.Add(pt2);
                             pointsChain.Add(pt1);
@@ -312,6 +320,7 @@ namespace BH.Engine.Security
         [Input("pointsChain", "Points chain of the camera view cone.")]
         [Input("cameraLocation", "Location of the camera device.")]
         [Input("radius", "Radius of the camera view cone.")]
+        [Input("tolerance", "Distance tolerance for the method.")]
         [Output("viewCone", "PolyCurve that represents camera field of view.")]
         private static PolyCurve CameraViewPolyCurve(this List<Point> pointsChain, Point cameraLocation, double radius, Arc coneArc, double tolerance)
         {
