@@ -32,7 +32,9 @@ using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.Reinforcement;
 using BH.oM.Structure.Fragments;
 using BH.Engine.Base;
+using BH.Engine.Geometry;
 using BH.oM.Quantities.Attributes;
+using System;
 
 namespace BH.Engine.Structure
 {
@@ -51,8 +53,8 @@ namespace BH.Engine.Structure
                 return null;
             if (structuralUsage == StructuralUsage2D.Undefined)
             {
-                object result = panel.Property.PropertyValue("PanelType");
-                if (result != null)
+                object result = panel.Property?.PropertyValue("PanelType");
+                if (result != null )
                 {
                     structuralUsage = (StructuralUsage2D)result;
                 }
@@ -65,11 +67,18 @@ namespace BH.Engine.Structure
                 case StructuralUsage2D.DropPanel:
                 case StructuralUsage2D.PileCap:
                 case StructuralUsage2D.Slab:
+                    return Floor(panel);
                 case StructuralUsage2D.Undefined:
                 default:
-                    return Floor(panel);
+                    {
+                        if (Math.Abs(panel.Normal().DotProduct(Vector.ZAxis)) == 1)
+                            return Floor(panel);
+                        else if (panel.Normal().DotProduct(Vector.ZAxis) == 0)
+                            return Wall(panel);
+                        else 
+                            return null;
+                    }
             }
         }
-    /***************************************************/
     }
 }

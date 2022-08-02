@@ -65,47 +65,15 @@ namespace BH.Engine.Structure
                 layers.Add(new oM.Physical.Constructions.Layer()
                 {Material = comp.Materials[i], Thickness = volume * comp.Ratios[i], Name = comp.Materials[i].Name});
             if (volume < thickness)
-                layers.Add(new oM.Physical.Constructions.Layer()
-                {Material = null, Thickness = thickness - volume, Name = "void"});
+            {
+                layers.Add(new oM.Physical.Constructions.Layer() {
+                    Material = null, 
+                    Thickness = thickness - volume, 
+                    Name = "void"
+                });
+                Base.Compute.RecordNote("Void space was found in the makeup of the SurfaceProperty; This is often the result of ribbed or waffle properties, or layered properties with null materials. A void layer has been added to the Construction to maintain the total thickness.");
+            }
             return Physical.Create.Construction(surfaceProperty.Name, layers);
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-        private static oM.Physical.Materials.Material GetMaterial(this ISurfaceProperty property)
-        {
-            //Set Material
-            oM.Physical.Materials.Material material = null;
-            if (property.Material != null)
-            {
-                string matName = property.Material.DescriptionOrName();
-                material = Physical.Create.Material(matName, new List<oM.Physical.Materials.IMaterialProperties>{property.Material});
-            }
-            else
-            {
-                Base.Compute.RecordWarning("Material from the SurfaceProperty is null.");
-            }
-
-            return material;
-        }
-
-        /***************************************************/
-        private static oM.Physical.Materials.Material GetMaterial(this oM.Structure.SurfaceProperties.Layer layer)
-        {
-            //Set Material
-            oM.Physical.Materials.Material material = null;
-            if (layer.Material != null)
-            {
-                string matName = layer.Material.DescriptionOrName();
-                material = Physical.Create.Material(matName, new List<oM.Physical.Materials.IMaterialProperties>{layer.Material});
-            }
-            else
-            {
-                Base.Compute.RecordWarning("Material from the Layer is null.");
-            }
-
-            return material;
         }
     }
 }
