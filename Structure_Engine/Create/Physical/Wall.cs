@@ -48,13 +48,16 @@ namespace BH.Engine.Structure
         {
             if (panel.IsNull())
                 return null;
+
             //Get Construction
             ISurfaceProperty prop = panel.Property;
             BHPC.Construction construction = null;
+
             if (prop == null)
                 Base.Compute.RecordWarning("The panel does not contain a surfaceProperty. Can not extract profile or material");
             else
                 construction = panel.Property.IConstruction();
+
             //Get Location
             PolyCurve externalEdges = Geometry.Create.PolyCurve(panel.ExternalEdges.Select(x => x.Curve));
             List<PolyCurve> internalEdges = panel.Openings.Select(opening => Geometry.Create.PolyCurve(opening.Edges.Select(edge => edge.Curve))).ToList();
@@ -63,7 +66,7 @@ namespace BH.Engine.Structure
             surfaceElement.Name = name;
             if (panel.FindFragment<PanelRebarIntent>() != null || panel.Property.FindFragment<ReinforcementDensity>() != null)
             {
-                Base.Compute.RecordWarning("The panel has reinforcement, but this is not yet implemented.");
+                Base.Compute.RecordWarning("The panel has reinforcement, but embedding this information in the physical element is not yet implemented.");
             }
 
             return surfaceElement;
