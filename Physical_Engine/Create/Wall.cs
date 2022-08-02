@@ -19,13 +19,9 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BH.oM.Physical.Constructions;
-using BH.oM.Physical.Materials;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Physical.Elements;
@@ -98,7 +94,7 @@ namespace BH.Engine.Physical
         [Input("edges", "External edges of the wall (Profile - planar closed curve).")]
         [Input("internalEdges", "Internal edges of wall (profile).")]
         [Output("wall", "A physical wall.")]
-        public static Wall Wall(IConstruction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
+        public static Wall Wall(IConstruction construction, ICurve edges, IEnumerable<ICurve> internalEdges = null)
         {
             if (construction == null || edges == null)
             {
@@ -106,18 +102,25 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            List<ICurve> aInternalCurveList = null;
-            if (internalEdges != null && internalEdges.Count() > 0)
-                aInternalCurveList = internalEdges.ToList().ConvertAll(x => x as ICurve);
-            PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
-            if (aPlanarSurface == null)
+            //Create the location for the wall
+            PlanarSurface location = Geometry.Create.PlanarSurface(edges);
+            if (location == null)
             {
                 Base.Compute.RecordError("Physical Wall could not be created because of invalid geometry of edges.");
                 return null;
             }
 
-            return new Wall()
-            {Construction = construction, Location = aPlanarSurface};
+            //Create the openings
+            List<IOpening> openings = new List<IOpening>();
+
+            if (internalEdges != null && internalEdges.Count() > 0)
+            {
+                foreach (ICurve openingCurve in internalEdges)
+                    if (openingCurve != null)
+                        openings.Add(new oM.Physical.Elements.Void() { Location = Geometry.Create.PlanarSurface(openingCurve) });
+            }
+
+            return Wall(location, construction, openings);
         }
 
         /***************************************************/

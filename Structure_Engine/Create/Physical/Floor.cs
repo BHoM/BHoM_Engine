@@ -63,7 +63,7 @@ namespace BH.Engine.Structure
             surfaceElement.Name = name;
             if (panel.FindFragment<PanelRebarIntent>() != null || panel.Property.FindFragment<ReinforcementDensity>() != null)
             {
-                Base.Compute.RecordWarning("The panel has reinforcement, but this is not yet implemented.");
+                Base.Compute.RecordWarning("The panel has reinforcement, but embedding this information in the physical element is not yet implemented.");
             }
 
             return surfaceElement;

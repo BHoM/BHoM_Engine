@@ -70,18 +70,25 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            List<ICurve> aInternalCurveList = null;
-            if (internalEdges != null && internalEdges.Count() > 0)
-                aInternalCurveList = internalEdges.ToList().ConvertAll(x => x as ICurve);
-            PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
-            if (aPlanarSurface == null)
+            //Create the location for the floor
+            PlanarSurface location = Geometry.Create.PlanarSurface(edges);
+            if (location == null)
             {
-                Base.Compute.RecordError("Physical Roof could not be created because of invalid geometry of edges.");
+                Base.Compute.RecordError("Physical Floor could not be created because of invalid geometry of edges.");
                 return null;
             }
 
-            return new Floor()
-            {Construction = construction, Location = aPlanarSurface};
+            //Create the openings
+            List<IOpening> openings = new List<IOpening>();
+
+            if (internalEdges != null && internalEdges.Count() > 0)
+            {
+                foreach (ICurve openingCurve in internalEdges)
+                    if (openingCurve != null)
+                        openings.Add(new Void() { Location = Geometry.Create.PlanarSurface(openingCurve) });
+            }
+
+            return Floor(location, construction, openings);
         }
     /***************************************************/
     }
