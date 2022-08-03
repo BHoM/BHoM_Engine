@@ -42,13 +42,12 @@ namespace BH.Engine.Geometry
         [Output("polyline", "Closed polyline.")]
         public static Polyline Close(this Polyline polyline, double tolerance = Tolerance.Distance)
         {
-            if (polyline.IsClosed(tolerance) || polyline == null || polyline.ControlPoints.Count == 0)
+            if (polyline == null || polyline.ControlPoints.Count == 0 || polyline.IsClosed(tolerance))
             {
                 return polyline;
             }
 
             List<Point> polylinePoints = polyline.ControlPoints;
-            polylinePoints.CullDuplicates(tolerance);
             polylinePoints.Add(polylinePoints[0]);
 
             return Create.Polyline(polylinePoints);
