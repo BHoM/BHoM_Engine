@@ -134,7 +134,7 @@ namespace BH.Engine.Security
         private static Polyline Project(this Polyline obstacle, Plane cameraPlane, double tolerance)
         {
             //close open polylines
-            if (!obstacle.IsClosed())
+            if (!obstacle.IsClosed(tolerance))
                 obstacle = obstacle.Close(tolerance);
 
             if (obstacle.IsInPlane(cameraPlane, tolerance))
