@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [Description("Gets an IFramingElement's solid volume from the average area and length.")]
         [Input("framingElement", "the IFramingElement to get the volume from.")]
         [Output("volume", "The IFramingElement's solid material volume.", typeof(Volume))]
@@ -62,6 +64,7 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+
         [Description("Returns an ISurface's solid volume based on thickness and area." + "ISurfaces with offsets other than Centre are not fully supported.")]
         [Input("surface", "the ISurface to get the volume from.")]
         [Output("volume", "The ISurface's solid material volume.", typeof(Volume))]
@@ -87,6 +90,7 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+
         [Description("Return the total volume of SolidBulk.")]
         [Input("solidBulk", "Solid geometric elements that have a MaterialComposition.")]
         [Output("volume", "The combined volume of SolidBulk.", typeof(Volume))]
@@ -109,6 +113,7 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+
         [Description("Return the total volume of ExplicitBulk.")]
         [Input("explicitBulk", "Elements containing Volume and MaterialComposition properties.")]
         [Output("volume", "The combined volume of ExplicitBulk.", typeof(Volume))]
@@ -143,11 +148,14 @@ namespace BH.Engine.Physical
 
             double area = opening.IArea();
             double thickness = 0;
+
             if (opening is Window)
                 thickness = (opening as Window).Construction.IThickness();
             else if (opening is Door)
                 thickness = (opening as Door).Construction.IThickness();
+
             double solidVolume = area * thickness;
+
             if (solidVolume <= 0)
             {
                 Engine.Base.Compute.RecordError("Solid volume cannot be calculated for element of type :" + opening.GetType() + ". Returning zero volume.");
@@ -156,6 +164,7 @@ namespace BH.Engine.Physical
 
             return solidVolume;
         }
-    /***************************************************/
+        
+        /***************************************************/
     }
 }

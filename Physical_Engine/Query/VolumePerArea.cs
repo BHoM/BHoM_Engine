@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace BH.Engine.Physical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("construction", "The property to evaluate the average thickness of.")]
         [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
@@ -59,18 +61,22 @@ namespace BH.Engine.Physical
         {
             if (construction == null)
                 return 0;
+
             if (construction.Layers.Any(x => x.Material == null))
                 Base.Compute.RecordWarning("At least one Material in a Construction was null. VolumePerArea excludes this layer, assuming it is void space.");
+
             return construction.Layers.Where(x => x.Material != null).Sum(x => x.Thickness);
         }
 
         /***************************************************/
-        /**** Private Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static double VolumePerArea(this object construction)
         {
             return 0; //Fallback method
         }
+
+        /***************************************************/
     }
 }

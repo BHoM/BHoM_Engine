@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -65,6 +66,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Fallback Method                           ****/
         /***************************************************/
+
         [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
         [Input("surfaceProperty", "Structural surface property to convert.")]
         [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
@@ -80,12 +82,16 @@ namespace BH.Engine.Structure
             List<oM.Physical.Constructions.Layer> layers = new List<oM.Physical.Constructions.Layer>();
 
             for (int i = 0; i < comp.Materials.Count(); i++)
-                layers.Add(new oM.Physical.Constructions.Layer()
-                {Material = comp.Materials[i], Thickness = volume * comp.Ratios[i], Name = comp.Materials[i].Name});
+                layers.Add(new oM.Physical.Constructions.Layer
+                {
+                    Material = comp.Materials[i],
+                    Thickness = volume * comp.Ratios[i],
+                    Name = comp.Materials[i].Name
+                });
 
             if (volume < thickness)
             {
-                layers.Add(new oM.Physical.Constructions.Layer() 
+                layers.Add(new oM.Physical.Constructions.Layer 
                 {
                     Material = null, 
                     Thickness = thickness - volume, 
@@ -97,5 +103,7 @@ namespace BH.Engine.Structure
 
             return Physical.Create.Construction(surfaceProperty.Name, layers);
         }
+
+        /***************************************************/
     }
 }
