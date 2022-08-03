@@ -44,7 +44,14 @@ namespace BH.Engine.Physical
         public static Floor Floor(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
             openings = openings ?? new List<IOpening>();
-            return new Floor{Location = location, Construction = construction, Openings = openings, Offset = offset, Name = name};
+            return new Floor
+            {
+                Location = location,
+                Construction = construction,
+                Openings = openings,
+                Offset = offset,
+                Name = name
+            };
         }
 
         [Description("Creates physical floor based on given construction and external edges.")]
@@ -62,7 +69,7 @@ namespace BH.Engine.Physical
         [Input("edges", "External edges of the floor (Profile - planar closed curve).")]
         [Input("internalEdges", "Internal edges of openings.")]
         [Output("floor", "A physical floor.")]
-        public static Floor Floor(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
+        public static Floor Floor(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges = null)
         {
             if (construction == null || edges == null)
             {
@@ -85,7 +92,7 @@ namespace BH.Engine.Physical
             {
                 foreach (ICurve openingCurve in internalEdges)
                     if (openingCurve != null)
-                        openings.Add(new Void() { Location = Geometry.Create.PlanarSurface(openingCurve) });
+                        openings.Add(new Void { Location = Geometry.Create.PlanarSurface(openingCurve) });
             }
 
             return Floor(location, construction, openings);

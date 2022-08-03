@@ -61,9 +61,13 @@ namespace BH.Engine.Structure
             //Get Location
             PolyCurve externalEdges = Geometry.Create.PolyCurve(panel.ExternalEdges.Select(x => x.Curve));
             List<PolyCurve> internalEdges = panel.Openings.Select(opening => Geometry.Create.PolyCurve(opening.Edges.Select(edge => edge.Curve))).ToList();
+
+            //Create the physical element
             BHPE.Wall surfaceElement = Physical.Create.Wall(construction, externalEdges, internalEdges);
+
             string name = panel.Name ?? "";
             surfaceElement.Name = name;
+
             if (panel.FindFragment<PanelRebarIntent>() != null || panel.Property.FindFragment<ReinforcementDensity>() != null)
             {
                 Base.Compute.RecordWarning("The panel has reinforcement, but embedding this information in the physical element is not yet implemented.");
