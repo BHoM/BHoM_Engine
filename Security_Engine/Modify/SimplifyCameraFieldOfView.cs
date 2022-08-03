@@ -47,15 +47,27 @@ namespace BH.Engine.Security
         [Output("simplifyPolyCurve", "Simplify PolyCurve object.")]
         public static PolyCurve SimplifyCameraFieldOfView(this PolyCurve cameraFieldOfView, double radius, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            Point cameraLocation = cameraFieldOfView.SubParts()[0].IStartPoint();
-            Polyline cameraPolyline = Geometry.Create.Polyline(cameraFieldOfView.ControlPoints());
+            List<Line> cameraLines = new List<Line>();
+            foreach (ICurve curve in cameraFieldOfView.SubParts())
+            {
+                if (curve is Line)
+                    cameraLines.Add(curve as Line);
+                else
+                {
+                    Line line = Geometry.Create.Line(curve.IStartPoint(), curve.IEndPoint());
+                    cameraLines.Add(line);
+                }
+            }
+            Polyline cameraPolyline = Geometry.Create.Polyline(cameraLines);
             cameraPolyline = cameraPolyline.Simplify(distanceTolerance, angleTolerance);
-            PolyCurve simplifyPolyCurve = new PolyCurve();
 
+            Point cameraLocation = cameraFieldOfView.SubParts()[0].IStartPoint();
+            PolyCurve simplifyPolyCurve = new PolyCurve();
             foreach (Line line in cameraPolyline.SubParts())
             {
                 Point startPoint = line.Start;
                 Point endPoint = line.End;
+
                 if ((Math.Abs(startPoint.Distance(cameraLocation) - radius) < distanceTolerance) && (Math.Abs(endPoint.Distance(cameraLocation) - radius) < distanceTolerance))
                 {
                     Arc newArc = Geometry.Create.ArcByCentre(cameraLocation, startPoint, endPoint, distanceTolerance);
