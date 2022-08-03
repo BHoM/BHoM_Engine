@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
             if (structuralUsage == StructuralUsage2D.Undefined)
             {
                 object result = panel.Property?.PropertyValue("PanelType");
-                if (result != null )
+                if (result is StructuralUsage2D )
                 {
                     structuralUsage = (StructuralUsage2D)result;
                 }
@@ -71,12 +71,15 @@ namespace BH.Engine.Structure
                 case StructuralUsage2D.Undefined:
                 default:
                     {
-                        if (Math.Abs(panel.Normal().DotProduct(Vector.ZAxis)) == 1)
+                        if (1 - Math.Abs(panel.Normal().DotProduct(Vector.ZAxis)) <= BH.oM.Geometry.Tolerance.Angle)
                             return Floor(panel);
-                        else if (panel.Normal().DotProduct(Vector.ZAxis) == 0)
+                        else if (panel.Normal().DotProduct(Vector.ZAxis) <= BH.oM.Geometry.Tolerance.Angle)
                             return Wall(panel);
-                        else 
+                        else
+                        {
+                            Base.Compute.RecordError("Could not identify whether the panel is a Floor or a Wall based on the structural property, input structuralUsage, or panel orientation. Please specify a StructuralUsage2D.");
                             return null;
+                        }
                     }
             }
         }

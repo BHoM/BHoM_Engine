@@ -50,6 +50,8 @@ namespace BH.Engine.Physical
             return VolumePerArea(construction as dynamic);
         }
 
+        /***************************************************/
+
         [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
         [Input("construction", "The property to evaluate the average thickness of.")]
         [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
@@ -61,6 +63,10 @@ namespace BH.Engine.Physical
                 Base.Compute.RecordWarning("At least one Material in a Construction was null. VolumePerArea excludes this layer, assuming it is void space.");
             return construction.Layers.Where(x => x.Material != null).Sum(x => x.Thickness);
         }
+
+        /***************************************************/
+        /**** Private Methods                            ****/
+        /***************************************************/
 
         private static double VolumePerArea(this object construction)
         {

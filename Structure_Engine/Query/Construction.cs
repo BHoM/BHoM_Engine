@@ -36,6 +36,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [Description("Creates a physical Construction from a structural ISurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
         [Input("surfaceProperty", "Structural surface property to convert.")]
         [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
@@ -46,7 +47,21 @@ namespace BH.Engine.Structure
             return Construction(surfaceProperty as dynamic);
         }
 
-        //Write specific methods here if building a Construction from a SurfaceProperty via MaterialComposition is not valid
+        /***************************************************/
+
+        [Description("Creates a physical Construction from a structural Layered SurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
+        public static Construction Construction(this Layered surfaceProperty)
+        {
+            if (surfaceProperty.IsNull())
+                return null;
+
+            List<oM.Physical.Constructions.Layer> layers = surfaceProperty.Layers.Select(x => Physical.Create.Layer(x.Name, Physical.Create.Material(x.Material) , x.Thickness)).ToList();
+
+            return Physical.Create.Construction(surfaceProperty.Name, layers);
+        }
+
         /***************************************************/
         /**** Fallback Method                           ****/
         /***************************************************/
@@ -57,22 +72,29 @@ namespace BH.Engine.Structure
         {
             if (surfaceProperty.IsNull())
                 return null;
+
             MaterialComposition comp = surfaceProperty.IMaterialComposition();
             double volume = surfaceProperty.IVolumePerArea();
             double thickness = surfaceProperty.ITotalThickness();
+
             List<oM.Physical.Constructions.Layer> layers = new List<oM.Physical.Constructions.Layer>();
+
             for (int i = 0; i < comp.Materials.Count(); i++)
                 layers.Add(new oM.Physical.Constructions.Layer()
                 {Material = comp.Materials[i], Thickness = volume * comp.Ratios[i], Name = comp.Materials[i].Name});
+
             if (volume < thickness)
             {
-                layers.Add(new oM.Physical.Constructions.Layer() {
+                layers.Add(new oM.Physical.Constructions.Layer() 
+                {
                     Material = null, 
                     Thickness = thickness - volume, 
                     Name = "void"
                 });
+
                 Base.Compute.RecordNote("Void space was found in the makeup of the SurfaceProperty; This is often the result of ribbed or waffle properties, or layered properties with null materials. A void layer has been added to the Construction to maintain the total thickness.");
             }
+
             return Physical.Create.Construction(surfaceProperty.Name, layers);
         }
     }
