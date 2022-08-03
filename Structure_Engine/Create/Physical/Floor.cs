@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Structure.Elements;
@@ -41,6 +42,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [Description("Creates a physical Floor from a Panel. The Floor will be assigned a Construction based on the SurfaceProperty of the Panel.")]
         [Input("panel", "The Panel to use as the base for the framing element.")]
         [Output("floor", "The created physical Floor based on the Panel element provided.")]
@@ -75,6 +77,7 @@ namespace BH.Engine.Structure
 
             return surfaceElement;
         }
-    /***************************************************/
+        
+        /***************************************************/
     }
 }

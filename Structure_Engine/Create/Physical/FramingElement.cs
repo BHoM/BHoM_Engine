@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System.Collections.Generic;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
@@ -37,6 +38,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
         [Description("Creates a physical IFramingElement from a Bar. The framing element will be assigned a ConstantFramingProperty based on the SectionProperty of the Bar and have a type based on the structural usage.")]
         [Input("bar", "The Bar to use as the base for the framing element.")]
         [Input("structuralUsage", "Used to determine which type of framing element that should be constructed.")]
@@ -45,15 +47,19 @@ namespace BH.Engine.Structure
         {
             if (bar.IsNull())
                 return null;
+
             ISectionProperty prop = bar.SectionProperty;
             BHPP.ConstantFramingProperty framingProp = null;
             if (prop == null)
                 Base.Compute.RecordWarning("The bar does not contain a sectionProperty. Can not extract profile or material");
             else
                 framingProp = Create.ConstantFramingProperty(bar.SectionProperty, bar.OrientationAngle);
+
             Line location = bar.Centreline();
             string name = bar.Name ?? "";
+
             BHPE.IFramingElement framingElement;
+
             switch (structuralUsage)
             {
                 case StructuralUsage1D.Column:
@@ -78,6 +84,7 @@ namespace BH.Engine.Structure
             if (bar.HasReinforcement())
             {
                 List<IReinforcingBar> reinforcement = bar.ReinforcingBars();
+
                 if (reinforcement.Count != 0)
                 {
                     framingElement.Fragments.Add(new ReinforcementFragment{ReinforcingBars = reinforcement});
@@ -86,6 +93,7 @@ namespace BH.Engine.Structure
 
             return framingElement;
         }
-    /***************************************************/
+        
+        /***************************************************/
     }
 }
