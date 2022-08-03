@@ -33,7 +33,10 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Calculates the angle between two vectors")]
+        [Description("Calculates the angle between two vectors.")]
+        [Input("v1", "First vector to compute the angle for.")]
+        [Input("v2", "Second vector to compute the angle for.")]
+        [Output("angle", "Angle between two vectors.")]
         public static double Angle(this Vector v1, Vector v2)
         {
             if (v1 == null || v2 == null)
@@ -50,7 +53,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Calculates the counterclockwise angle between two vectors in a plane")]
+        [Description("Calculates the counterclockwise angle between two vectors in a plane.")]
+        [Input("v1", "First vector to compute the angle for.")]
+        [Input("v2", "Second vector to compute the angle for.")]
+        [Input("p", "Plane to compute the angle in.")]
+        [Output("angle", "Angle between two vectors in given plane.")]
         public static double Angle(this Vector v1, Vector v2, Plane p)
         {
             v1 = v1.Project(p).Normalise();
@@ -66,7 +73,9 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        [Description("Calculates the angle of the arc")]
+        [Description("Calculates the angle of the arc.")]
+        [Input("arc", "Arc to compute the angle for.")]
+        [Output("angle", "Angle of the arc.")]
         public static double Angle(this Arc arc)
         {
             return arc.EndAngle - arc.StartAngle;
@@ -109,11 +118,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Gets the smallest angle between three points between 0 and pi radians. Angle is 0 if the three points form a straight line. The order of points is crucial to the calculation, as the points will imagine a line is connecting them in the order provided")]
-        [Input("firstPt", "The first Point of the three to calculate the angle between")]
-        [Input("secondPt", "The second point of the three to calculate the angle between")]
-        [Input("thirdPt", "The third point of the three to calculate the angle between")]
-        [Output("angle", "The smallest angle between the three points in radians")]
+        [Description("Gets the smallest angle between three points between 0 and pi radians. Angle is 0 if the three points form a straight line. The order of points is crucial to the calculation, as the points will imagine a line is connecting them in the order provided.")]
+        [Input("firstPt", "The first Point of the three to calculate the angle between.")]
+        [Input("secondPt", "The second point of the three to calculate the angle between.")]
+        [Input("thirdPt", "The third point of the three to calculate the angle between.")]
+        [Output("angle", "The smallest angle between the three points in radians.")]
         public static double Angle(this Point firstPt, Point secondPt, Point thirdPt)
         {
             double x1 = firstPt.X - secondPt.X; //Vector 1 - x
