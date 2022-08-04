@@ -29,6 +29,7 @@ using BH.oM.Physical.Constructions;
 using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Engine.Physical
 {
@@ -45,7 +46,7 @@ namespace BH.Engine.Physical
         {
             if (construction == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query the thickness of a null construction.");
+                Compute.RecordError("Cannot query the thickness of a null construction.");
                 return 0;
             }
 
@@ -60,10 +61,16 @@ namespace BH.Engine.Physical
         public static double VolumePerArea(this Construction construction)
         {
             if (construction == null)
+            {
+                Compute.RecordError("Could not evaluate the VolumePerArea of the Construction because it was null.");
+                return 0;
+            }
+
+            if (construction.Layers.IsNullOrEmpty()) // .IsNullOrEmpty() raises it's own error.
                 return 0;
 
             if (construction.Layers.Any(x => x.Material == null))
-                Base.Compute.RecordWarning("At least one Material in a Construction was null. VolumePerArea excludes this layer, assuming it is void space.");
+                Compute.RecordWarning("At least one Material in a Construction was null. VolumePerArea excludes this layer, assuming it is void space.");
 
             return construction.Layers.Where(x => x.Material != null).Sum(x => x.Thickness);
         }
@@ -74,6 +81,7 @@ namespace BH.Engine.Physical
 
         private static double VolumePerArea(this object construction)
         {
+            Compute.RecordError("Could not evaluate the VolumePerArea of the Construction because that type of Construction is not supported by the VolumePerArea method.");
             return 0; //Fallback method
         }
 

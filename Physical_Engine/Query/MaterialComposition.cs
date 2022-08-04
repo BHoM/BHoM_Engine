@@ -199,9 +199,18 @@ namespace BH.Engine.Physical
 
         private static MaterialComposition MaterialComposition(this Construction prop)
         {
+            if (prop == null)
+            {
+                Compute.RecordError("Cannot evaluate MaterialComposition because the Construction was null.");
+                return null;
+            }
+
+            if (prop.Layers.IsNullOrEmpty()) //.IsNullOrEmpty raises it's own error
+                return null;
+
             if (prop.Layers.Any(x => x.Material == null))
             {
-                Engine.Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. MaterialConstruction excludes this layer, assuming it is void space.");
+                Compute.RecordWarning("At least one Material in a Layered surface property was null. MaterialConstruction excludes this layer, assuming it is void space.");
             }
 
             IEnumerable<Layer> layers = prop.Layers.Where(x => x.Material != null);

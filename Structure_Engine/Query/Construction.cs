@@ -29,6 +29,7 @@ using BH.oM.Physical.Constructions;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Physical.Materials;
+using BH.oM.Structure.MaterialFragments;
 
 namespace BH.Engine.Structure
 {
@@ -50,6 +51,21 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Creates a physical Construction from a structural ConstantThickness SurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
+        [Input("surfaceProperty", "Structural surface property to convert.")]
+        [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
+        public static Construction Construction(this ConstantThickness surfaceProperty)
+        {
+            if (surfaceProperty.IsNull())
+                return null;
+
+            oM.Physical.Constructions.Layer layer = Physical.Create.Layer(surfaceProperty.Name, Physical.Create.Material(surfaceProperty.Material), surfaceProperty.Thickness);
+            
+            return Physical.Create.Construction(surfaceProperty.Name, new List<oM.Physical.Constructions.Layer> { layer } );
+        }
+
+        /***************************************************/
+
         [Description("Creates a physical Construction from a structural Layered SurfaceProperty. Extracts the Structural MaterialFragment and creates a physical material with the same name.")]
         [Input("surfaceProperty", "Structural surface property to convert.")]
         [Output("construction", "The physical Construction to be used with ISurface such as Walls and Floors.")]
@@ -58,7 +74,7 @@ namespace BH.Engine.Structure
             if (surfaceProperty.IsNull())
                 return null;
 
-            List<oM.Physical.Constructions.Layer> layers = surfaceProperty.Layers.Select(x => Physical.Create.Layer(x.Name, Physical.Create.Material(x.Material) , x.Thickness)).ToList();
+            List<oM.Physical.Constructions.Layer> layers = surfaceProperty.Layers.Select(x => Physical.Create.Layer(x.Name, Material(x.Material), x.Thickness)).ToList();
 
             return Physical.Create.Construction(surfaceProperty.Name, layers);
         }
@@ -98,12 +114,22 @@ namespace BH.Engine.Structure
                     Name = "void"
                 });
 
-                Base.Compute.RecordNote("Void space was found in the makeup of the SurfaceProperty; This is often the result of ribbed or waffle properties, or layered properties with null materials. A void layer has been added to the Construction to maintain the total thickness.");
+                Base.Compute.RecordNote("A void layer has been added to the Construction to maintain total thickness. Ribbed or Waffle properties, for example, are flattened, respecting volume, material composition, and total thickness. ");
             }
 
             return Physical.Create.Construction(surfaceProperty.Name, layers);
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static Material Material(IMaterialFragment material)
+        {
+            return material == null? null : Physical.Create.Material(material);
+        }
+
+        /***************************************************/
+
     }
 }
