@@ -74,6 +74,9 @@ namespace BH.Engine.Structure
             if (surfaceProperty.IsNull())
                 return null;
 
+            if (surfaceProperty.Layers.All(x => x.Material == null))
+                Base.Compute.RecordWarning("None of the layers in surfaceProperty have a valid material. A Construction has been created, but its materials will also be null.");
+
             List<oM.Physical.Constructions.Layer> layers = surfaceProperty.Layers.Select(x => Physical.Create.Layer(x.Name, Material(x.Material), x.Thickness)).ToList();
 
             return Physical.Create.Construction(surfaceProperty.Name, layers);
@@ -93,7 +96,12 @@ namespace BH.Engine.Structure
 
             MaterialComposition comp = surfaceProperty.IMaterialComposition();
             double volume = surfaceProperty.IVolumePerArea();
+            if (volume == 0)
+                Base.Compute.RecordWarning("the SurfaceProperty has zero volume - a Construction has been created, but will also have zero volume.");
+
             double thickness = surfaceProperty.ITotalThickness();
+            if (thickness == 0)
+                Base.Compute.RecordWarning("the SurfaceProperty has zero thickness - a Construction has been created, but will also have zero thickness.");
 
             List<oM.Physical.Constructions.Layer> layers = new List<oM.Physical.Constructions.Layer>();
 
