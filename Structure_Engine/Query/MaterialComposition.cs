@@ -76,14 +76,8 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The kind of matter the AreaElement is composed of.")]
         public static MaterialComposition MaterialComposition(this IAreaElement areaElement)
         {
-            if (areaElement.IIsNull())
+            if (areaElement.IIsNull() || areaElement.Property.IsNull())
                 return null;
-
-            if (areaElement.Property == null || areaElement.Property.Material == null)
-            {
-                Engine.Base.Compute.RecordError("The areaElements MaterialComposition could not be calculated as no Material has been assigned.");
-                return null;
-            }
 
             if (areaElement.FindFragment<PanelRebarIntent>() != null)
                 Engine.Base.Compute.RecordWarning("The areaElement has a PanelRebarIntent, which will not be included in the MaterialComposition. Please account for replacement of concrete volume with reinforcement externally.");
@@ -155,8 +149,14 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this Layered property, ReinforcementDensity reinforcementDensity = null)
         {
-            if (property.IsNull())
+            if (property.IsNull() || property.Layers.All(x => x.Material.IsNull()))
                 return null;
+
+            if (property.Layers.All(x => x.Material == null)) //cull any null layers, raise a warning.            
+            {
+                Base.Compute.RecordError("Cannote evaluate MaterialComposition because all of the materials are null.");
+                return null;
+            }
 
             if (reinforcementDensity != null)
                 Base.Compute.RecordWarning("the layered property has a ReinforcementDensity which will not be included in the MaterialComposition, because it is not known which layer to replace. Please account for this reinforcement externally.");
@@ -176,10 +176,13 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this CorrugatedDeck property, ReinforcementDensity reinforcementDensity = null)
         {
+            if (property.IsNull() || property.Material.IsNull())
+                return null;
+
             if (reinforcementDensity != null)
                 Base.Compute.RecordWarning("the CorrugatedDeck property has a ReinforcementDensity which will not be included in the MaterialComposition, because it is inconceivable.");
 
-            return property.IsNull() ? null : (MaterialComposition)Physical.Create.Material(property.Material);
+            return (MaterialComposition)Physical.Create.Material(property.Material);
         }
 
         /***************************************************/
@@ -246,7 +249,7 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition IMaterialComposition(this ISurfaceProperty property, ReinforcementDensity reinforcementDensity = null)
         {
-            if (property.IsNull())
+            if (property.IsNull()) //Specific MaterialComposition(SurfaceProp) methods must check for material null- some properties ignore the base material.
                 return null;
 
             return MaterialComposition(property as dynamic, reinforcementDensity);
@@ -273,10 +276,7 @@ namespace BH.Engine.Structure
         private static MaterialComposition MaterialComposition(this ISurfaceProperty property, ReinforcementDensity reinforcementDensity = null)
         {
             if (property.IsNull() || property.Material.IsNull())
-            {
-                Engine.Base.Compute.RecordError("The MaterialComposition could not be queried as a Material was not assigned.");
                 return null;
-            }
 
             if (reinforcementDensity == null)
                 return (MaterialComposition)Physical.Create.Material(property.Material);
@@ -318,11 +318,6 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-
-
-
-
-
 
     }
 }

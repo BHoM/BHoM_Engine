@@ -208,6 +208,12 @@ namespace BH.Engine.Physical
             if (prop.Layers.IsNullOrEmpty()) //.IsNullOrEmpty raises it's own error
                 return null;
 
+            if (prop.Layers.All(x => x.Material == null))
+            {
+                Compute.RecordError("Cannote evaluate MaterialComposition because all of the materials are null.");
+                return null;
+            }
+
             if (prop.Layers.Any(x => x.Material == null))
             {
                 Compute.RecordWarning("At least one Material in a Layered surface property was null. MaterialConstruction excludes this layer, assuming it is void space.");
