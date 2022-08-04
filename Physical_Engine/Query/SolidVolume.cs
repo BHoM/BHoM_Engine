@@ -150,9 +150,9 @@ namespace BH.Engine.Physical
             double thickness = 0;
 
             if (opening is Window)
-                thickness = (opening as Window).Construction.IThickness();
+                thickness = (opening as Window).Construction.IVolumePerArea();
             else if (opening is Door)
-                thickness = (opening as Door).Construction.IThickness();
+                thickness = (opening as Door).Construction.IVolumePerArea();
 
             double solidVolume = area * thickness;
 
