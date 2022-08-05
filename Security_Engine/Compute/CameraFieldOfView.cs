@@ -45,6 +45,9 @@ namespace BH.Engine.Security
         [Output("fieldOfView", "PolyCurve object that represents security camera field of view.")]
         public static PolyCurve CameraFieldOfView(this CameraDevice cameraDevice, List<Polyline> obstacles, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            if (cameraDevice == null || obstacles == null)
+                return null;
+
             PolyCurve cameraCone = cameraDevice.ViewCone();
             Polyline cameraConePolyline = cameraCone.CollapseToPolyline(angleTolerance);
             Point cameraLocation = cameraDevice.EyePosition;

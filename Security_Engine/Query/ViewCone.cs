@@ -41,6 +41,9 @@ namespace BH.Engine.Security
         [Output("conePolyCurve", "PolyCurve object that represents camera view cone.")]
         public static PolyCurve ViewCone(this CameraDevice cameraDevice)
         {
+            if (cameraDevice == null)
+                return null;
+
             Point cameraLocation = cameraDevice.EyePosition;
             Point targetLocation = cameraDevice.TargetPosition;
             double radius = targetLocation.Distance(cameraLocation);

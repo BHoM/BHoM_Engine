@@ -47,6 +47,9 @@ namespace BH.Engine.Security
         [Output("simplifiedPolyCurve", "Simplified PolyCurve object.")]
         public static PolyCurve SimplifyCameraFieldOfView(this PolyCurve cameraFieldOfView, CameraDevice cameraDevice, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            if (cameraFieldOfView == null || cameraFieldOfView == null)
+                return null;
+
             //convert to polyline and simplify
             List<Line> cameraLines = new List<Line>();
             foreach (ICurve curve in cameraFieldOfView.SubParts())
