@@ -83,7 +83,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Signed angle between two vectors.")]
+        [Description("Calculates signed angle between two vectors.")]
         [Input("a", "First vector to compute the angle for.")]
         [Input("b", "Second vector to compute the angle for.")]
         [Input("normal", "Normal vector to define the sign of the angle.")]
@@ -101,7 +101,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Signed angle between two lines.")]
+        [Description("Calculates signed angle between two lines.")]
         [Input("line1", "First line to compute the angle for.")]
         [Input("line2", "Second line to compute the angle for.")]
         [Input("normal", "Normal vector to define the sign of the angle.")]

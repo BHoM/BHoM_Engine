@@ -47,7 +47,7 @@ namespace BH.Engine.Geometry
                 return polyline;
             }
 
-            List<Point> polylinePoints = polyline.ControlPoints;
+            List<Point> polylinePoints = polyline.ControlPoints.ToList();
             polylinePoints.Add(polylinePoints[0]);
 
             return Create.Polyline(polylinePoints);
