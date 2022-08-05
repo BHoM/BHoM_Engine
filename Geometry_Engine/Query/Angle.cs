@@ -111,7 +111,7 @@ namespace BH.Engine.Geometry
         {
             if (line1 == null || line2 == null || normal == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute angle as one of the input is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute angle as at least one of the input is null.");
                 return 0;
             }
 
