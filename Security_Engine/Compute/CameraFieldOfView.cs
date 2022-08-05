@@ -41,15 +41,16 @@ namespace BH.Engine.Security
         [Input("cameraDevice", "CameraDevice object to compute the field of view for.")]
         [Input("obstacles", "Polyline objects that represents obstacles for camera vision (walls, columns, stairs).")]
         [Input("distanceTolerance", "Distance tolerance for the method.")]
-        [Input("angleTolerance", "Angular tolerance for the method. Set to 0.01 by default.")]
+        [Input("angleTolerance", "Angular tolerance for the method.")]
         [Output("fieldOfView", "PolyCurve object that represents security camera field of view.")]
-        public static PolyCurve CameraFieldOfView(this CameraDevice cameraDevice, List<Polyline> obstacles, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = 0.01)
+        public static PolyCurve CameraFieldOfView(this CameraDevice cameraDevice, List<Polyline> obstacles, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             PolyCurve cameraCone = cameraDevice.ViewCone();
             Polyline cameraConePolyline = cameraCone.CollapseToPolyline(angleTolerance);
             Point cameraLocation = cameraDevice.EyePosition;
             Point targetLocation = cameraDevice.TargetPosition;
             double radius = targetLocation.Distance(cameraLocation);
+            Arc coneArc = cameraCone.Curves[1] as Arc;
             Plane cameraPlane = BH.Engine.Geometry.Create.Plane(cameraLocation, Vector.ZAxis);
 
             //cone points
@@ -72,6 +73,13 @@ namespace BH.Engine.Security
                     Base.Compute.RecordWarning("Camera Device is inside obstacle. Null value will be returned.");
                     return null;
                 }
+
+                foreach (Line obstLine in obstacle.SubParts())
+                {
+                    List<Point> coneArcIntersection = coneArc.CurveIntersections(obstLine, distanceTolerance);
+                    intersectPoints.AddRange(coneArcIntersection);
+                }
+
                 List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline, distanceTolerance);
                 if (intersection.Count != 0)
                 {
@@ -83,6 +91,7 @@ namespace BH.Engine.Security
                     }
                 }
             }
+
             intersectPoints = intersectPoints.CullDuplicates(distanceTolerance);
 
             //collect endpoints of extended ray lines
@@ -95,7 +104,7 @@ namespace BH.Engine.Security
             }
 
             //cull endpoints
-            endPoints = endPoints.CullDuplicates();
+            endPoints = endPoints.CullDuplicates(distanceTolerance);
 
             //create and sort extended lines
             List<Line> rayLines = new List<Line>();
@@ -118,8 +127,7 @@ namespace BH.Engine.Security
             List<Point> pointsChain = linesDict.PointsChain(cameraLocation, radius, distanceTolerance);
 
             //create cone
-            Arc coneArc = cameraCone.Curves[1] as Arc;
-            PolyCurve cameraViewPolyCurve = pointsChain.CameraViewPolyCurve(cameraLocation, radius, coneArc, distanceTolerance);
+            PolyCurve cameraViewPolyCurve = pointsChain.CameraViewPolyCurve(coneArc, distanceTolerance);
 
             return cameraViewPolyCurve;
         }
@@ -187,7 +195,7 @@ namespace BH.Engine.Security
             {
                 foreach (Line obstLine in obstacle.SubParts())
                 {
-                    if (obstLine.IsOnCurve(line.Start, tolerance) && obstLine.IsOnCurve(line.End, tolerance))
+                    if (obstLine.IsOnCurve(line.Start, tolerance) && obstLine.IsOnCurve(line.End, tolerance) && (obstLine.Direction().IsEqual(line.Direction(), tolerance) || obstLine.Direction().IsEqual(-line.Direction(), tolerance)))
                         return false;
                 }
                 if (obstacle.IsContaining(new List<Point> { line.Centroid(tolerance) }, true, tolerance))
@@ -285,7 +293,7 @@ namespace BH.Engine.Security
                     Point pt1 = line.Start;
                     Point pt2 = line.End;
 
-                    if (lastPoint.Distance(pt1) < lastPoint.Distance(pt2) && !((Math.Abs(lastPoint.Distance(cameraLocation) - radius) < tolerance) && (Math.Abs(pt2.Distance(cameraLocation) - radius) < tolerance)) && i > 0)
+                    if ((lastPoint.Distance(pt1) - lastPoint.Distance(pt2)) < tolerance && !((Math.Abs(lastPoint.Distance(cameraLocation) - radius) < tolerance) && (Math.Abs(pt2.Distance(cameraLocation) - radius) < tolerance)) && i > 0)
                     {
                         Polyline obst = lineObstacleDictionary[i].Item2;
                         Polyline lastObst = lineObstacleDictionary[i - 1].Item2;
@@ -318,11 +326,10 @@ namespace BH.Engine.Security
 
         [Description("Create PolyCurve that represents camera field of view.")]
         [Input("pointsChain", "Points chain of the camera view cone.")]
-        [Input("cameraLocation", "Location of the camera device.")]
-        [Input("radius", "Radius of the camera view cone.")]
+        [Input("coneArc", "Camera cone arc.")]
         [Input("tolerance", "Distance tolerance for the method.")]
         [Output("viewCone", "PolyCurve that represents camera field of view.")]
-        private static PolyCurve CameraViewPolyCurve(this List<Point> pointsChain, Point cameraLocation, double radius, Arc coneArc, double tolerance)
+        private static PolyCurve CameraViewPolyCurve(this List<Point> pointsChain, Arc coneArc, double tolerance)
         {
             List<ICurve> curves = new List<ICurve>();
             for (int i = 1; i < pointsChain.Count; i++)
@@ -330,7 +337,7 @@ namespace BH.Engine.Security
                 Point pt1 = pointsChain[i - 1];
                 Point pt2 = pointsChain[i];
 
-                if ((Math.Abs(pt1.Distance(cameraLocation) - radius) < tolerance) && (Math.Abs(pt2.Distance(cameraLocation) - radius) < tolerance))
+                if ((pt1.Distance(coneArc) < tolerance) && (pt2.Distance(coneArc) < tolerance) && !(pt1.Distance(pt2) < tolerance))
                 {
                     double p1Param = coneArc.ParameterAtPoint(pt1, tolerance);
                     double p2Param = coneArc.ParameterAtPoint(pt2, tolerance);
@@ -353,6 +360,7 @@ namespace BH.Engine.Security
         }
 
         /***************************************************/
+
     }
 }
 

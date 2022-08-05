@@ -44,9 +44,10 @@ namespace BH.Engine.Security
         [Input("radius", "Radius of the camera cone.")]
         [Input("distanceTolerance", "Distance tolerance for the method.")]
         [Input("angleTolerance", "Angular tolerance for the method.")]
-        [Output("simplifyPolyCurve", "Simplify PolyCurve object.")]
-        public static PolyCurve SimplifyCameraFieldOfView(this PolyCurve cameraFieldOfView, double radius, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
+        [Output("simplifiedPolyCurve", "Simplified PolyCurve object.")]
+        public static PolyCurve SimplifyCameraFieldOfView(this PolyCurve cameraFieldOfView, CameraDevice camera, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
+            //convert to polyline and simplify
             List<Line> cameraLines = new List<Line>();
             foreach (ICurve curve in cameraFieldOfView.SubParts())
             {
@@ -61,25 +62,38 @@ namespace BH.Engine.Security
             Polyline cameraPolyline = Geometry.Create.Polyline(cameraLines);
             cameraPolyline = cameraPolyline.Simplify(distanceTolerance, angleTolerance);
 
-            Point cameraLocation = cameraFieldOfView.SubParts()[0].IStartPoint();
-            PolyCurve simplifyPolyCurve = new PolyCurve();
+            //camera cone arc
+            PolyCurve cameraCone = camera.ViewCone();
+            Arc coneArc = cameraCone.Curves[1] as Arc;
+
+            //create simplified polycurve
+            PolyCurve simplifiedPolyCurve = new PolyCurve();
             foreach (Line line in cameraPolyline.SubParts())
             {
                 Point startPoint = line.Start;
                 Point endPoint = line.End;
 
-                if ((Math.Abs(startPoint.Distance(cameraLocation) - radius) < distanceTolerance) && (Math.Abs(endPoint.Distance(cameraLocation) - radius) < distanceTolerance))
+                if ((startPoint.Distance(coneArc) < distanceTolerance) && (endPoint.Distance(coneArc) < distanceTolerance))
                 {
-                    Arc newArc = Geometry.Create.ArcByCentre(cameraLocation, startPoint, endPoint, distanceTolerance);
-                    simplifyPolyCurve.Curves.Add(newArc);
+                    double p1Param = coneArc.ParameterAtPoint(startPoint, distanceTolerance);
+                    double p2Param = coneArc.ParameterAtPoint(endPoint, distanceTolerance);
+                    double p3Param = (p1Param + p2Param) / 2;
+                    Point pt3 = coneArc.PointAtParameter(p3Param);
+                    if (!cameraFieldOfView.IsContaining(new List<Point>() { pt3 }, true, distanceTolerance))
+                    {
+                        simplifiedPolyCurve.Curves.Add(line);
+                        continue;
+                    }
+                    Arc newArc = BH.Engine.Geometry.Create.Arc(startPoint, pt3, endPoint, distanceTolerance);
+                    simplifiedPolyCurve.Curves.Add(newArc);
                 }
                 else
                 {
-                    simplifyPolyCurve.Curves.Add(line);
+                    simplifiedPolyCurve.Curves.Add(line);
                 }
             }
 
-            return simplifyPolyCurve;
+            return simplifiedPolyCurve;
         }
     }
 }
