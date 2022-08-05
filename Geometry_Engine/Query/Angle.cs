@@ -109,6 +109,12 @@ namespace BH.Engine.Geometry
 
         public static double SingedAngle(this Line line1, Line line2, Vector normal)
         {
+            if (line1 == null || line2 == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot compute angle as one or both lines are null.");
+                return 0;
+            }
+
             Vector line1Dir = line1.Direction();
             Vector line2Dir = line2.Direction();
             double angle = line1Dir.SignedAngle(line2Dir, normal);
