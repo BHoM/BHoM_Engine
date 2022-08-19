@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -34,53 +34,17 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Records an event in the BHoM event log.")]
-        [Input("message", "Message related to the event to be logged.")]
-        [Input("type", "Type of the event to be logged.")]
-        [Output("success", "True if the event is logged successfully.")]
-        public static bool RecordEvent(string message, EventType type = EventType.Unknown)
+        //[Description("Records an event in the BHoM event log.")]
+        //[Input("message", "Message related to the event to be logged.")]
+        //[Input("type", "Type of the event to be logged.")]
+        //[Output("success", "True if the event is logged successfully.")]
+        public static void SetCustomEventAction(Action<Event> action)
         {
-            return RecordEvent(new Event { Message = message, Type = type });
+            m_CustomEventAction = action;
         }
 
         /***************************************************/
 
-        [Description("Records an event in the BHoM event log.")]
-        [Input("newEvent", "Event to be logged.")]
-        [Output("success", "True if the event is logged successfully.")]
-        public static bool RecordEvent(Event newEvent)
-        {
-            if (newEvent == null)
-            {
-                Compute.RecordError("Cannot record a null event.");
-                return false;
-            }
-
-            string trace = System.Environment.StackTrace;
-            newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
-
-            lock (Global.DebugLogLock)
-            {
-                Log log = Query.DebugLog();
-                log.AllEvents.Add(newEvent);
-                log.CurrentEvents.Add(newEvent);
-            }
-
-            if (m_CustomEventAction != null)
-            {
-                try
-                {
-                    m_CustomEventAction.Invoke(newEvent);
-                }
-                catch (Exception ex)
-                {
-
-                }
-            }
-
-            return true;
-        }
-
-        /***************************************************/
+        private static Action<Event> m_CustomEventAction = null;
     }
 }
