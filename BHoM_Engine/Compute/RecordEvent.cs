@@ -64,18 +64,7 @@ namespace BH.Engine.Base
                 Log log = Query.DebugLog();
                 log.AllEvents.Add(newEvent);
                 log.CurrentEvents.Add(newEvent);
-            }
-
-            if (m_CustomEventAction != null)
-            {
-                try
-                {
-                    m_CustomEventAction.Invoke(newEvent);
-                }
-                catch (Exception ex)
-                {
-
-                }
+                OnEventRecorded(newEvent);
             }
 
             return true;

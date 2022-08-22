@@ -20,31 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base.Objects;
 using BH.oM.Base.Debugging;
-using BH.oM.Base.Attributes;
-using System.Linq;
-using System.ComponentModel;
 using System;
+using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
     public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Events                             ****/
         /***************************************************/
 
-        //[Description("Records an event in the BHoM event log.")]
-        //[Input("message", "Message related to the event to be logged.")]
-        //[Input("type", "Type of the event to be logged.")]
-        //[Output("success", "True if the event is logged successfully.")]
-        public static void SetCustomEventAction(Action<Event> action)
-        {
-            m_CustomEventAction = action;
+        [Description("Gets raised every time an event gets recorded in the debug log (see BH.Engine.Compute.RecordEvent method).")]
+        public static event EventHandler<EventRecordedEventArgs> EventRecorded;
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void OnEventRecorded(Event ev)
+        { 
+            if (ev != null)
+            {
+                EventRecorded?.Invoke(null, new EventRecordedEventArgs(ev));
+            }
         }
 
         /***************************************************/
-
-        private static Action<Event> m_CustomEventAction = null;
     }
 }
