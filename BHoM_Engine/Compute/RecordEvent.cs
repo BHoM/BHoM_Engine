@@ -77,7 +77,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Gets raised every time an event gets recorded in the debug log (see BH.Engine.Compute.RecordEvent method).")]
-        public static event EventHandler<EventRecordedEventArgs> EventRecorded;
+        public static event EventHandler<Event> EventRecorded;
 
 
         /***************************************************/
@@ -88,7 +88,7 @@ namespace BH.Engine.Base
         {
             if (ev != null)
             {
-                EventRecorded?.Invoke(null, new EventRecordedEventArgs(ev));
+                EventRecorded?.Invoke(null, ev);
             }
         }
 
