@@ -272,7 +272,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (Line ln in curve.SubParts())
             {
-                Point pt = ln.LineIntersection(l);
+                Point pt = ln.LineIntersection(l, tolerance : tolerance);
                 if (pt != null)
                     iPts.Add(pt);
             }
@@ -296,7 +296,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (ICurve c in curve.SubParts())
             {
-                iPts.AddRange(c.ILineIntersections(l));
+                iPts.AddRange(c.ILineIntersections(l, tolerance: tolerance));
             }
 
             return iPts.CullDuplicates(tolerance);
