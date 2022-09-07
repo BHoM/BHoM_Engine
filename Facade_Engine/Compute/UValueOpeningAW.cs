@@ -81,20 +81,16 @@ namespace BH.Engine.Facade
             }
             double glassEdgeUValue = (glassEdgeUValues[0] as UValueGlassEdge).UValue;
 
-
+            double contUValue = 0;
             List<IFragment> contUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueContinuous));
-            if (contUValues.Count <= 0)
+            if (contUValues.Count == 1)
             {
-                double contUValue = 0;
+                contUValue = (contUValues[0] as UValueContinuous).UValue;
             }
             if (contUValues.Count > 1)
             {
                 Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one continuous U-value assigned.");
                 return null;
-            }
-            else
-            {
-                double contUValue = (contUValues[0] as UValueContinuous).UValue;
             }
 
             List<FrameEdge> frameEdges = opening.Edges;
@@ -171,13 +167,14 @@ namespace BH.Engine.Facade
             }
             
             double baseUValue = (((glassArea * glassUValue) + EdgeUValProduct + FrameUValProduct) / totArea);
+            double effectiveUValue = 0;
             if (contUValue == 0)
             {
-                double effectiveUValue = baseUValue
+                effectiveUValue = baseUValue;
             }
             else
             {
-                double effectiveUValue = 1 / (1 / baseUValue + 1 / contUValue);
+                effectiveUValue = 1 / (1 / baseUValue + 1 / contUValue);
             }
             
             OverallUValue result = new OverallUValue (effectiveUValue, new List<IComparable> { opening.BHoM_Guid });

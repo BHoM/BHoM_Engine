@@ -100,13 +100,10 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has a calculated area of 0. Ensure the panel is valid with associated edges defining its geometry and try again.");
             }
             double panelUValue = contUValue;
+            double effectiveUValue = panelUValue;
 
             List<Opening> panelOpenings = panel.Openings;
-            if (panelOpenings.Count == 0)
-            {
-                double effectiveUValue = panelUValue;
-            }
-            else
+            if (panelOpenings.Count > 0)
             {
                 double uValueProduct = panelUValue;
                 double totalArea = panelArea;
@@ -121,7 +118,7 @@ namespace BH.Engine.Facade
                     Base.Compute.RecordError("Openings have a total calculated area of 0. Ensure Openings are valid with associated edges defining their geometry and try again.");
                     return null;
                 }
-                double effectiveUValue = uValueProduct / totalArea;
+                effectiveUValue = uValueProduct / totalArea;
             }
             OverallUValue result = new OverallUValue(effectiveUValue, new List<IComparable> { panel.BHoM_Guid });
             return result;
