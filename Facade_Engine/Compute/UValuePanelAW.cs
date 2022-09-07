@@ -89,7 +89,7 @@ namespace BH.Engine.Facade
                 List<IFragment> f_uValues = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(UValueFrame));
                 if (f_uValues.Count > 0)
                 {
-                    BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has Frame U-value assigned. Frame U-values are not included in calculation.");
+                    Engine.Base.Compute.RecordWarning($"Panel {panel.BHoM_Guid} has Frame U-value assigned. Frame U-values are not included in calculation.");
                     continue;
                 }
             }
