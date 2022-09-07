@@ -105,7 +105,7 @@ namespace BH.Engine.Facade
             List<Opening> panelOpenings = panel.Openings;
             if (panelOpenings.Count > 0)
             {
-                double uValueProduct = panelUValue;
+                double uValueProduct = panelUValue * panelArea;
                 double totalArea = panelArea;
                 foreach (Opening opening in panelOpenings)
                 {
