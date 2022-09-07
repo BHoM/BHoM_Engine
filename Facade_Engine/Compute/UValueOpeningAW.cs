@@ -56,7 +56,6 @@ namespace BH.Engine.Facade
             }
 
             List<IFragment> glassUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassCentre));
-
             if (glassUValues.Count <= 0)
             {
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-value assigned.");
@@ -81,6 +80,22 @@ namespace BH.Engine.Facade
                 return null;
             }
             double glassEdgeUValue = (glassEdgeUValues[0] as UValueGlassEdge).UValue;
+
+
+            List<IFragment> contUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueContinuous));
+            if (contUValues.Count <= 0)
+            {
+                double contUValue = 0;
+            }
+            if (contUValues.Count > 1)
+            {
+                Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one continuous U-value assigned.");
+                return null;
+            }
+            else
+            {
+                double contUValue = (contUValues[0] as UValueContinuous).UValue;
+            }
 
             List<FrameEdge> frameEdges = opening.Edges;
             List<double> frameAreas = new List<double>();
@@ -154,7 +169,17 @@ namespace BH.Engine.Facade
             {
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has a calculated area of 0. Ensure the opening is valid with associated edges defining its geometry and try again.");
             }
-            double effectiveUValue = (((glassArea * glassUValue) + EdgeUValProduct + FrameUValProduct) / totArea);
+            
+            double baseUValue = (((glassArea * glassUValue) + EdgeUValProduct + FrameUValProduct) / totArea);
+            if (contUValue == 0)
+            {
+                double effectiveUValue = baseUValue
+            }
+            else
+            {
+                double effectiveUValue = 1 / (1 / baseUValue + 1 / contUValue);
+            }
+            
             OverallUValue result = new OverallUValue (effectiveUValue, new List<IComparable> { opening.BHoM_Guid });
             return result;
         }
