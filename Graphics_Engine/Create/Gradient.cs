@@ -45,7 +45,7 @@ namespace BH.Engine.Graphics
         [PreviousInputNames("colours", "colors")]
         public static Gradient Gradient(IEnumerable<Color> colours, IEnumerable<decimal> positions)
         {
-            if (colors.Count() != positions.Count())
+            if (colours.Count() != positions.Count())
             {
                 Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
             }
@@ -56,7 +56,7 @@ namespace BH.Engine.Graphics
             return new Gradient()
             {
                 Markers = new SortedDictionary<decimal, Color>(
-                    colors.Zip(positions, (c, p) => new { c, p })
+                    colours.Zip(positions, (c, p) => new { c, p })
                     .ToDictionary(x => x.p, x => x.c)
                     )
             };
