@@ -72,10 +72,9 @@ namespace BH.Engine.Graphics
             double inc = 1.0 / m_DefaultOrdinal.Length;
             for(int i = 0;i< m_DefaultOrdinal.Length; i++)
             {
-                colors.Add(System.Drawing.ColorTranslator.FromHtml(m_DefaultOrdinal[i]));
+                colors.Add(m_DefaultOrdinal[i]);
                 positions.Add(System.Convert.ToDecimal(inc * i));
             }
-
             return Gradient(colors, positions);
 
         }
@@ -84,7 +83,7 @@ namespace BH.Engine.Graphics
         /****           Private Fields                  ****/
         /***************************************************/
         //data viz hex colour sets
-        private static string[] m_DefaultOrdinal = new string[] { "#E6484D", "#8db9ca", "#EE7837", "#FCD16D", "#AFC1A2", "#b62b77", "#8f72b0", "#5d822d", "#585253", "#24135f", "#6d104e", "#006da8", "#f0ac1b", "#1c3660", "#bc204b", "#d06a13" };
+        private static Color[] m_DefaultOrdinal = new Color[] { Color.FromArgb(230,72,77), Color.FromArgb(141,185,202), Color.FromArgb(238,120,55), Color.FromArgb(252,209,109), Color.FromArgb(175,193,162), Color.FromArgb(182,43,119), Color.FromArgb(143,114,176), Color.FromArgb(93,130,45), Color.FromArgb(88,82,83), Color.FromArgb(36,19,95), Color.FromArgb(109,16,78), Color.FromArgb(0,109,168), Color.FromArgb(240,172,27), Color.FromArgb(28,54,96), Color.FromArgb(188,32,75), Color.FromArgb(208,106,19) };
       
     }
 }
