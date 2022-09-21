@@ -43,17 +43,50 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Merges a list of panels if they are co-planar, continuous, and all non-geometrical properties match.")]
+        [Input("panels", "Panels to merge.")]
+        [Output("panels", "The created Panel.")]
+        public static List<Panel> MergePanels(List<Panel> panels, double tolerance = Tolerance.Distance)
+        {
+            List<Panel> outPanels = new List<Panel>();
+
+            while (panels.Count > 1)
+            {
+                Panel panel = panels.First().ShallowClone();
+                panels.RemoveAt(0);
+                List<Panel> mergeablePanels = new List<Panel>() { panel };
+
+                for (int j = 0; j < panels.Count; )
+                {
+                    Panel otherPanel = panels[j].ShallowClone();
+
+                    if (panel.HasMergeablePropertiesWith(otherPanel))
+                    {
+                        mergeablePanels.Add(otherPanel);
+                        panels.RemoveAt(j);
+                    }
+                    else
+                        j++;
+                }
+
+                outPanels.AddRange(MergeAndSetPanels(mergeablePanels, panel, tolerance));
+            }
+
+            return outPanels;
+        }
+
         [Description("Merges a list of panels as the boolean union of all coplanar external outlines, with openings cut in after the fact. Properties are assigned per the guide panel")]
         [Input("panels", "Panels to merge.")]
         [Input("propertyNames", "Properties to group by - properties not mentioned will be ignored.")]
         [Output("panels", "The created Panel.")]
-        public static List<Panel> MergePanels(List<Panel> panels, List<String> propertyNames, double tolerance = Tolerance.Distance)
+        public static List<Panel> MergePanels(List<Panel> panels, List<string> propertyNames, double tolerance = Tolerance.Distance)
         {
-            HashSet<String> availableProperties = panels.First().GetAllPropertyFullNames();
-            List<String> availablePropNames = availableProperties.Select(x => x.ToString().Split('.').Last()).ToList();
+            HashSet<string> availableProperties = panels.First().GetAllPropertyFullNames();
+            List<string> availablePropNames = availableProperties.Select(x => x.ToString().Split('.').Last()).ToList();
             propertyNames = propertyNames.Where(x => availablePropNames.Contains(x)).ToList();
 
-            IEnumerable<IGrouping<string, Panel>> panelGroups = panels.GroupBy(x => x.HashProperties(propertyNames));
+            ComparisonConfig config = new ComparisonConfig() { PropertiesToConsider = propertyNames };
+            IEnumerable<IGrouping<string, Panel>> panelGroups = panels.GroupBy(x => x.Hash(config));
 
             List<Panel> outPanels = new List<Panel>();
 
@@ -64,30 +97,19 @@ namespace BH.Engine.Structure
                 {
                     guide.SetPropertyValue(propName, group.First().PropertyValue(propName));
                 }
-                outPanels.AddRange(MergePanels(group.ToList(), guide, tolerance));
+                outPanels.AddRange(MergeAndSetPanels(group.ToList(), guide, tolerance));
             }
 
             return outPanels;
-        }
-
-        public static string HashProperties(this BHoMObject obj, IEnumerable<string> propertyNames)
-        {
-            String hash = "";
-            foreach(string propertyName in propertyNames)
-            {
-                hash += obj.PropertyValue(propertyName).GetHashCode().ToString();
-            }
-
-            return hash;
         }
 
         [Description("Merges a list of panels as the boolean union of all coplanar external outlines, with openings cut in after the fact. Properties are assigned per the guide panel")]
         [Input("panels", "Panels to merge.")]
         [Input("guide", "Panel with properties to apply to all panels the geometry of this panel is ignored.")]
         [Output("panels", "The created Panel.")]
-        public static List<Panel> MergePanels(List<Panel> panels, Panel guide, double tolerance = Tolerance.Distance)
+        public static List<Panel> MergeAndSetPanels(List<Panel> panels, Panel guide, double tolerance = Tolerance.Distance)
         {
-            List<Panel> emptyPanels = MergePanels(panels, tolerance);
+            List<Panel> emptyPanels = MergeEveryPanel(panels, tolerance);
 
             List<Panel> fullPanels = new List<Panel>();
 
@@ -106,14 +128,16 @@ namespace BH.Engine.Structure
         [Description("Merges a list of panels as the boolean union of all coplanar external outlines, with openings cut in after the fact. The resulting panel has no properties")]
         [Input("panels", "Panels to merge.")]
         [Output("panels", "The created Panel.")]
-        public static List<Panel> MergePanels(List<Panel> panels, double tolerance = Tolerance.Distance)
+        public static List<Panel> MergeEveryPanel(List<Panel> panels, double tolerance = Tolerance.Distance)
         {
             //Boolean the external edges together into some number of outlines
             IEnumerable<PolyCurve> outlines = panels.Select(x => x.ExternalPolyCurve());
             List<PolyCurve> newOutlines = outlines.BooleanUnion(tolerance);
 
-            //Combine all openings into one big list of opening curves
             List<Opening> openings = new List<Opening>();
+            newOutlines = newOutlines.GetOutOpenings(tolerance, ref openings);
+
+            //Combine all openings into one big list of opening curves
             foreach (Panel panel in panels)
             {
                 openings.AddRange(panel.Openings);
@@ -128,6 +152,25 @@ namespace BH.Engine.Structure
             }
 
             return newPanels;
+        }
+
+        private static List<PolyCurve> GetOutOpenings(this List<PolyCurve> outlines, double tolerance, ref List<Opening> openings)
+        {
+            List<PolyCurve> toRemove = new List<PolyCurve>();
+
+            foreach (PolyCurve innerOutline in outlines)
+            {
+               foreach (PolyCurve outerOutline in outlines)
+                {
+                    if (outerOutline.IIsContaining(innerOutline, true, tolerance) && innerOutline != outerOutline)
+                    {
+                        openings.Add(Create.Opening(innerOutline));
+                        toRemove.Add(innerOutline);
+                    }
+                }
+            }
+
+            return outlines.Where(x => !toRemove.Contains(x)).ToList();
         }
     }
 }

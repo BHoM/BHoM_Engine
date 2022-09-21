@@ -26,8 +26,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BH.oM.Base;
+using BH.Engine.Base;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
+using BH.oM.Geometry;
 
 using BH.oM.Structure.Elements;
 
@@ -48,6 +51,29 @@ namespace BH.Engine.Structure
             return element.IsNull() && other.IsNull() ? false :
                 new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
                    new Constraint6DOFComparer().Equals(element.Support, other.Support);
+        }
+
+        /***************************************************/
+
+        [Description("Evaluates if the two panel's Property and Orientation are equal with the panel property comparers.")]
+        [Input("element", "The Structure Panel to compare the properties of with an other Structure Edge.")]
+        [Input("other", "The Structure Panel to compare with the other Structure Edge.")]
+        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
+        public static bool HasMergeablePropertiesWith(this Panel element, Panel other)
+        {
+            ComparisonConfig cc = new ComparisonConfig()
+            {
+                PropertyExceptions = new List<string>
+                    {
+                    "ExternalEdges",
+                    "Openings",
+                    "BHoM_Guid",
+                    "Name"
+                    },
+                NumericTolerance = Tolerance.Distance
+            };
+
+            return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
         }
 
         /***************************************************/
