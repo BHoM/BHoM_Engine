@@ -82,7 +82,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Centroid(BH.oM.Geometry.Polyline, System.Double)")]
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.Centroid(BH.oM.Geometry.Polyline, System.Double)")]
         [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting Polyline.")]
         [Input("curve", "The Polyline to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
@@ -155,7 +155,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Centroid(BH.oM.Geometry.PolyCurve, System.Double)")]
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.Centroid(BH.oM.Geometry.PolyCurve, System.Double)")]
         [Description("Queries the centre of area enclosed by a closed, planar, non-self-intersecting PolyCurve.")]
         [Input("curve", "The PolyCurve to get the centre of area of.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]

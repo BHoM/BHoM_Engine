@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.IsClockwise(BH.oM.Geometry.Polyline, BH.oM.Geometry.Vector, System.Double)")]
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.IsClockwise(BH.oM.Geometry.Polyline, BH.oM.Geometry.Vector, System.Double)")]
         [Description("Checks if the segments of the IPolyline are defined in a clockwise order around the provided normal vector. Curve needs to be closed for the method to function.")]
         [Input("polyline", "The closed IPolyline to check if it is defined in a clockwise manner in relation to the Vector.")]
         [Input("normal", "The normal vector to check against.")]
@@ -84,7 +84,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.IsClockwise(BH.oM.Geometry.PolyCurve, BH.oM.Geometry.Vector, System.Double)")]
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.IsClockwise(BH.oM.Geometry.PolyCurve, BH.oM.Geometry.Vector, System.Double)")]
         [Description("Checks if the segments of the IPolyCurve are defined in a clockwise order around the provided normal vector. Curve needs to be closed for the method to function.")]
         [Input("curve", "The closed IPolyCurve to check if it is defined in a clockwise manner in relation to the Vector.")]
         [Input("normal", "The normal vector to check against.")]
