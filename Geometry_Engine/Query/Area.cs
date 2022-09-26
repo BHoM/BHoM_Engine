@@ -127,7 +127,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.PolyCurve, System.Double)")]
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.PolyCurve, System.Double)")]
         [Description("Calculates the area of the provided geometry.")]
         [Input("curve", "The PolyCurve to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
@@ -188,7 +188,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Polyline, System.Double)")]
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Polyline, System.Double)")]
         [Description("Calculates the area of the provided geometry.")]
         [Input("curve", "The Polyline to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
@@ -238,7 +238,6 @@ namespace BH.Engine.Geometry
         [Input("mesh", "The mesh to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-        
         public static double Area(this Mesh mesh, double tolerance = Tolerance.Distance)
         {
             if (mesh == null)
@@ -271,7 +270,6 @@ namespace BH.Engine.Geometry
         [Input("pSurf", "The PolySurface to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-        
         public static double Area(this PolySurface pSurf, double tolerance = Tolerance.Distance)
         {
             if (pSurf == null)
@@ -289,7 +287,6 @@ namespace BH.Engine.Geometry
         [Input("pSurf", "The PlanarSurface to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-        
         public static double Area(this PlanarSurface pSurf, double tolerance = Tolerance.Distance)
         {
             if (pSurf == null)
@@ -318,7 +315,6 @@ namespace BH.Engine.Geometry
         [Input("v2", "Second vector to use for vector-based area calculation.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
         [Output("area", "The area of the geometry.", typeof(Area))]
-        
         public static double Area(this Vector v1, Vector v2, double tolerance = Tolerance.Distance)
         {
             if (v2 == null || v2 == null)

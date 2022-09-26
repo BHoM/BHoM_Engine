@@ -107,7 +107,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Normal(BH.oM.Geometry.Polyline, System.Double)")]
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.Normal(BH.oM.Geometry.Polyline, System.Double)")]
         [Description("Returns a vector normal to the plane of a given curve, oriented according to the right hand rule. Works only for closed, planar curves.")]
         [Input("curve", "The Polyline to get the normal to.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
@@ -159,7 +159,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("5.2", "BH.Engine.Geometry.Query.Normal(BH.oM.Geometry.PolyCurve, System.Double)")]
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.Normal(BH.oM.Geometry.PolyCurve, System.Double)")]
         [Description("Returns a vector normal to the plane of a given curve, oriented according to the right hand rule. Works only for closed and planar curves.")]
         [Input("curve", "The PolyCurve to get the normal to.")]
         [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.")]
