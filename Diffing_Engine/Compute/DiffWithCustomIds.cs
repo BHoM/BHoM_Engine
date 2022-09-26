@@ -97,13 +97,13 @@ namespace BH.Engine.Diffing
 
                 if (pastObjsIdsDistinct.Count() != pastObjectsIds.Count())
                 {
-                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {pastObjectsIds} were duplicate.");
+                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {nameof(pastObjectsIds)} were duplicate.");
                     duplicateIdsFound = true;
                 }
 
                 if (follObjsIdsDistinct.Count() != followingObjectsIds.Count())
                 {
-                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {followingObjectsIds} were duplicate.");
+                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {nameof(followingObjectsIds)} were duplicate.");
                     duplicateIdsFound = true;
                 }
 

@@ -202,7 +202,7 @@ namespace BH.Engine.Diffing
         private static void AddPropertyDifference(this ObjectDifferences objectDifferences, string propertyDiffDisplayName, object pastValue, object follValue, string fullName, string description = null)
         {
             description = string.IsNullOrWhiteSpace(description) ?
-                PropertyDifferenceDescription(objectDifferences.PastObject, propertyDiffDisplayName, pastValue, follValue)
+                PropertyDifferenceDescription(objectDifferences, propertyDiffDisplayName, pastValue, follValue)
                 : description;
 
             objectDifferences.Differences.Add(new PropertyDifference()
@@ -215,25 +215,69 @@ namespace BH.Engine.Diffing
             }); ;
         }
 
-        private static string PropertyDifferenceDescription(object pastObj, string propertyDiffDisplayName, object pastValue, object follValue)
+        private static string PropertyDifferenceDescription(ObjectDifferences objectDifferences, string propertyDiffDisplayName, object pastValue, object follValue, bool includeObjName = true, bool includeObjType = false, bool includeObjGuid = false)
         {
             if (pastValue is IEnumerable && follValue is IEnumerable)
-                return $"The collection stored in the property `{propertyDiffDisplayName}` of the `{pastObj.GetType().FullName}` was modified.";
+                return $"The collection stored in the property `{propertyDiffDisplayName}` of the `{objectDifferences.PastObject.GetType().FullName}` was modified.";
 
             Type t = pastValue?.GetType() ?? follValue?.GetType() ?? typeof(object);
+
+            // If required, start the description with the Name of the modified object, if present, and if it was not modified.
+            string objectDescription = "";
+            if (includeObjName || includeObjType)
+            {
+                bool addedObjectDescription = false;
+
+                objectDescription = objectDifferences.PastObject is CustomObject ? "CustomObject " : "Object ";
+
+                if (includeObjName)
+                {
+                    string pastObjName = (objectDifferences.PastObject as IBHoMObject)?.Name;
+                    string follObjName = (objectDifferences.FollowingObject as IBHoMObject)?.Name;
+
+                    if (!string.IsNullOrWhiteSpace(pastObjName) && pastObjName == follObjName)
+                    {
+                        objectDescription += $"with {nameof(IBHoMObject.Name)} `{pastObjName}` ";
+                        addedObjectDescription = true;
+                    }
+                }
+
+                if (includeObjType && !(objectDifferences.PastObject is CustomObject))
+                {
+                    objectDescription += $"of type `{objectDifferences.PastObject.GetType().FullName}` ";
+                    addedObjectDescription = true;
+                }
+
+                if (includeObjGuid)
+                {
+                    Guid? pastObjGuid = (objectDifferences.PastObject as IBHoMObject)?.BHoM_Guid;
+                    Guid? follObjGuid = (objectDifferences.FollowingObject as IBHoMObject)?.BHoM_Guid;
+
+                    if (pastObjGuid != null && pastObjGuid == follObjGuid)
+                    {
+                        objectDescription += $"with {nameof(IBHoMObject.BHoM_Guid)} `{pastObjGuid}` ";
+                        addedObjectDescription = true;
+                    }
+                }
+
+                objectDescription += "was modified. ";
+
+                if (!addedObjectDescription)
+                    objectDescription = "";
+            }
 
             if (t.IsPrimitive || (t == typeof(string)) || t.IsValueType)
             {
                 if (pastValue != null && follValue == null)
-                    return $"The value assigned to the property `{propertyDiffDisplayName}` of the `{t.FullName}` was removed (made null). The property previously contained: {pastValue}.";
+                    return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}` was removed (made null); it previously contained `{pastValue}`.";
 
                 if (pastValue == null && follValue != null)
-                    return $"Some value was assigned to the property `{propertyDiffDisplayName}` of the `{t.FullName}` that was previously not populated (null). The property now contains: {follValue}.";
+                    return $"{objectDescription}Some value was assigned to the property `{propertyDiffDisplayName}` that was previously not populated (null). The property now contains: {follValue}.";
 
-                return $"The value assigned to the property `{propertyDiffDisplayName}` of the `{t.FullName}` was modified from {pastValue} to {follValue}.";
+                return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}` was modified from `{pastValue}` to `{follValue}`.";
             }
 
-            return $"The value assigned to the property `{propertyDiffDisplayName}` of the `{t.FullName}` was modified.";
+            return $"{objectDescription}The value assigned to the property `{propertyDiffDisplayName}` was modified.";
         }
 
         /***************************************************/

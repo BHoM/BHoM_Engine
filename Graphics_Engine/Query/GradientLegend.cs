@@ -297,7 +297,7 @@ namespace BH.Engine.Graphics
                 }
             }
 
-            BoundingBox bounds = boxes.Bounds();
+            BoundingBox bounds = BH.Engine.Geometry.Query.Bounds(boxes);
             if (bounds == null)
             {
                 Base.Compute.RecordWarning("Not able to compute the total bounding box of the provided items.");

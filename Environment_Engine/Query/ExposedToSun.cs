@@ -52,7 +52,7 @@ namespace BH.Engine.Environment
                 return false;
             }
 
-            return (panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal || panel.Type == PanelType.FloorExposed || panel.Type == PanelType.Shade);
+            return (panel.Type == PanelType.Roof || panel.Type == PanelType.WallExternal || panel.Type == PanelType.FloorExposed || panel.IsShade());
         }
     }
 }

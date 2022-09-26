@@ -24,6 +24,8 @@ using BH.oM.Base.Debugging;
 using BH.oM.Base.Attributes;
 using System.Linq;
 using System.ComponentModel;
+using System;
+using BH.Engine.Base.Objects;
 
 namespace BH.Engine.Base
 {
@@ -63,7 +65,30 @@ namespace BH.Engine.Base
                 Log log = Query.DebugLog();
                 log.AllEvents.Add(newEvent);
                 log.CurrentEvents.Add(newEvent);
-                return true;
+                OnEventRecorded(newEvent);
+            }
+
+            return true;
+        }
+
+
+        /***************************************************/
+        /**** Public Events                             ****/
+        /***************************************************/
+
+        [Description("Gets raised every time an event gets recorded in the debug log (see BH.Engine.Compute.RecordEvent method).")]
+        public static event EventHandler<Event> EventRecorded;
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void OnEventRecorded(Event ev)
+        {
+            if (ev != null)
+            {
+                EventRecorded?.Invoke(null, ev);
             }
         }
 

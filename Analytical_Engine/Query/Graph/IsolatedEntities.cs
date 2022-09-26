@@ -49,14 +49,19 @@ namespace BH.Engine.Analytical
                 return new List<Guid>();
             }
 
-            List<Guid> unused = new List<Guid>();
-            foreach(Guid n in graph.Entities.Keys.ToList())
+            HashSet<Guid> relationGuids = new HashSet<Guid>();
+
+            foreach (Relation relation in graph.Relations)
             {
-                if (graph.Incoming(n).Count == 0 && !graph.NotSinks().Contains(n))
-                    unused.Add(n);
+                relationGuids.Add(relation.Source);
+                relationGuids.Add(relation.Target);
             }
-            return unused;
+
+            return graph.Entities.Keys.Where(x => !relationGuids.Contains(x)).ToList();
+
         }
+
+        /***************************************************/
     }
 
 }

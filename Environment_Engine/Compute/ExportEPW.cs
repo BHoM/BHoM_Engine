@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.IO;
 
 using BH.oM.Base.Attributes;
 
@@ -43,6 +44,14 @@ namespace BH.Engine.Environment
         {
             if (weatherfile == null)
                 return "";
+
+            string directoryName = Path.GetDirectoryName(outputPath);
+
+            if (!Directory.Exists(directoryName))
+            {
+                Base.Compute.RecordError($"The following path does not appear to exist: {directoryName}. Please ensure that this path exists, and try again.");
+                return null;
+            }
 
             List<string> outputStrings = new List<string>();
 

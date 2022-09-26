@@ -2,13 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <Version>5.0.0</Version>
     <Authors>BHoM</Authors>
     <Company>BHoM</Company>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Base</RootNamespace>
-    <FileVersion>5.2.0.0</FileVersion>
+    <FileVersion>5.3.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

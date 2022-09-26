@@ -56,7 +56,7 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
-            return property.Material.IsNull() ? 0 : property.AverageThickness() * property.Material.Density;
+            return property.Material.IsNull() ? 0 : property.VolumePerArea() * property.Material.Density;
         }
 
         /***************************************************/
@@ -69,7 +69,7 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
-            return property.Material.IsNull() ? 0 : property.AverageThickness() * property.Material.Density;
+            return property.Material.IsNull() ? 0 : property.VolumePerArea() * property.Material.Density;
         }
 
         /***************************************************/
@@ -96,6 +96,38 @@ namespace BH.Engine.Structure
                 Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. Mass has been reported assuming this is a void.");
 
             return density;
+        }
+
+        /***************************************************/
+
+        [Description("Calculates the mass per area for the property as the sum of the masses of the slab and the deck.")]
+        [Input("property", "The Layered property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this SlabOnDeck property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            double deckThickness = property.DeckThickness * property.DeckVolumeFactor;
+            double slabThickness = property.VolumePerArea() - deckThickness;
+
+            double deckDensity = property.DeckMaterial.IsNull() ? 0 : deckThickness * property.DeckMaterial.Density;
+            double slabDensity = property.Material.IsNull() ? 0 : slabThickness * property.Material.Density;
+
+            return slabDensity + deckDensity;
+        }
+
+        /***************************************************/
+
+        [Description("Calculates the mass per area for the property as the sum of the masses of the slab and the deck.")]
+        [Input("property", "The Layered property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this CorrugatedDeck property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.Material.IsNull() ? 0 : property.Thickness * property.VolumeFactor * property.Material.Density;
         }
 
         /***************************************************/

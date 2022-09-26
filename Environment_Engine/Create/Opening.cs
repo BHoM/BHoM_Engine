@@ -43,7 +43,6 @@ namespace BH.Engine.Environment
         [Input("configurationOption", "The Configuration Options the Opening should be generated against that define the height, width, and sill height of the Opening.")]
         [Input("panels", "A collection of Environment Panels which will be used to identify the host panel for the opening from the provided location point.")]
         [Output("opening", "An Opening generated with the provided Configuration Options.")]
-        [PreviousVersion("5.2", "BH.Engine.Environment.Create.Opening(BH.oM.Geometry.Point, BH.oM.Environment.Configuration.OpeningOption, System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
         public static Opening Opening(Point location, OpeningOption configurationOption, List<Panel> panels, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if(location == null)

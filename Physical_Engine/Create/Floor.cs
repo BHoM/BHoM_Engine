@@ -21,7 +21,6 @@
  */
 
 using System.ComponentModel;
-
 using BH.oM.Physical.Constructions;
 using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
@@ -47,7 +46,6 @@ namespace BH.Engine.Physical
         public static Floor Floor(oM.Geometry.ISurface location, IConstruction construction, List<IOpening> openings = null, Offset offset = Offset.Undefined, string name = "")
         {
             openings = openings ?? new List<IOpening>();
-
             return new Floor
             {
                 Location = location,
@@ -57,6 +55,8 @@ namespace BH.Engine.Physical
                 Name = name
             };
         }
+
+        /***************************************************/
 
         [Description("Creates physical floor based on given construction and external edges.")]
         [Input("construction", "Construction of the floor.")]
@@ -74,35 +74,35 @@ namespace BH.Engine.Physical
         [Input("edges", "External edges of the floor (Profile - planar closed curve).")]
         [Input("internalEdges", "Internal edges of openings.")]
         [Output("floor", "A physical floor.")]
-        public static Floor Floor(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges)
+        public static Floor Floor(Construction construction, ICurve edges, IEnumerable<ICurve> internalEdges = null)
         {
             if (construction == null || edges == null)
             {
-                Base.Compute.RecordError("Physical Roof could not be created because some input data are null.");
+                Base.Compute.RecordError("Physical Floor could not be created because some input data are null.");
                 return null;
             }
 
-            List<ICurve> aInternalCurveList = null;
+            //Create the location for the floor
+            PlanarSurface location = Geometry.Create.PlanarSurface(edges);
+            if (location == null)
+            {
+                Base.Compute.RecordError("Physical Floor could not be created because of invalid geometry of edges.");
+                return null;
+            }
+
+            //Create the openings
+            List<IOpening> openings = new List<IOpening>();
+
             if (internalEdges != null && internalEdges.Count() > 0)
-                aInternalCurveList = internalEdges.ToList().ConvertAll(x => x as ICurve);
-
-            PlanarSurface aPlanarSurface = Geometry.Create.PlanarSurface(edges, aInternalCurveList);
-            if (aPlanarSurface == null)
             {
-                Base.Compute.RecordError("Physical Roof could not be created because invalid geometry of edges.");
-                return null;
+                foreach (ICurve openingCurve in internalEdges)
+                    if (openingCurve != null)
+                        openings.Add(new Void { Location = Geometry.Create.PlanarSurface(openingCurve) });
             }
 
-            return new Floor()
-            {
-                Construction = construction,
-                Location = aPlanarSurface
-            };
+            return Floor(location, construction, openings);
         }
-
+        
         /***************************************************/
     }
 }
-
-
-

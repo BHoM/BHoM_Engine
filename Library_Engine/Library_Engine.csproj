@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <Version>5.0.0</Version>
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Library</RootNamespace>
-    <FileVersion>5.2.0.0</FileVersion>
+    <FileVersion>5.3.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,6 +23,7 @@
     <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
     <ProjectReference Include="..\Serialiser_Engine\Serialiser_Engine.csproj" />
+    <ProjectReference Include="..\Versioning_Engine\Versioning_Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +36,11 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Versioning_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Versioning_oM.dll</HintPath>
+	  <Private>false</Private>
+	  <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
 

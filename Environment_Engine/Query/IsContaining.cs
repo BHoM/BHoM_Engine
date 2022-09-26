@@ -73,7 +73,6 @@ namespace BH.Engine.Environment
         [Input("pt", "The point being checked to see if it is contained within the bounds of the panel")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
         [Output("isContaining", "True if the point is contained within the panel, false if it is not")]
-        [PreviousVersion("5.2", "BH.Engine.Environment.Query.IsContaining(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.Point, System.Boolean)")]
         public static bool IsContaining(this Panel panel, Point pt, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panel == null || pt == null)
@@ -87,7 +86,6 @@ namespace BH.Engine.Environment
         [Input("point", "The point being checked to see if it is contained within the bounds of the panels")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false")]
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not")]
-        [PreviousVersion("5.2", "BH.Engine.Environment.Query.IsContaining(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Geometry.Point, System.Boolean)")]
         public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if(panels == null)
@@ -109,7 +107,7 @@ namespace BH.Engine.Environment
             List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, acceptOnEdges, tolerance))
+            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, true, tolerance))
                 return false;
 
             //We need to check one line that starts in the point and end outside the bounding box

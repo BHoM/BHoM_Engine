@@ -184,7 +184,22 @@ namespace BH.Engine.Base
                     {
                         string customDataKey = entry.Key.ToString();
 
-                        // Skip this custom data if the key belongs to the exceptions.
+                        bool isCustomObject = currentPropertyFullName.StartsWith("BH.oM.Base.CustomObject");
+
+                        if (isCustomObject)
+                        {
+                            // If the owner of this CustomData Dictionary is a CustomObject,
+                            // we want to consider its keys as if they were object properties for UX/UI consistency.
+                            cc.CustomdataKeysExceptions.AddRange(cc.PropertyExceptions);
+                            cc.CustomdataKeysToConsider.AddRange(cc.PropertiesToConsider);
+
+                            cc.CustomdataKeysExceptions = cc.CustomdataKeysExceptions.Distinct().ToList();
+                            cc.CustomdataKeysToConsider = cc.CustomdataKeysToConsider.Distinct().ToList();
+                        }
+
+                        // Get the custom data Key, so we can check if it belongs to the exceptions.
+
+                        // Skip this custom data if the key belongs to the CustomdataKeysExceptions.
                         if (cc.CustomdataKeysExceptions?.Any(cdKeyExcept => cdKeyExcept == customDataKey || customDataKey.WildcardMatch(cdKeyExcept)) ?? false)
                             continue;
 
@@ -232,18 +247,6 @@ namespace BH.Engine.Base
                     // Skip if the property is a BHoM_Guid.
                     if (propName == "BHoM_Guid")
                         continue;
-
-                    if (type == typeof(CustomObject))
-                    {
-                        // Get the custom data Key, so we can check if it belongs to the exceptions.
-                        int keyStart = propFullName.IndexOf('[') + 1;
-                        int keyEnd = propFullName.IndexOf(']');
-                        string customDataKey = propFullName.Substring(keyStart, keyEnd - keyStart);
-
-                        // Replace the property name as if this CustomData difference was actually a Property Difference.
-                        propName = customDataKey;
-                        propFullName = $"{currentPropertyFullName}.CustomData[{customDataKey}]";
-                    }
 
                     // Check the propertyExceptions/propertiesToConsider in the ComparisonConfig.
 
