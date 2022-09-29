@@ -106,7 +106,7 @@ namespace BH.Engine.Structure
         [Input("localLoadDirection", "The local direction of the temperature variation relative to the profile. Typically limited to local y or z.")]
         [Input("objects", "The collection of elements the load should be applied to.")]
         [Input("name", "The name of the created load.")]
-        [Output("areaDiffTempLoad", "The created AreaUniformTempratureLoad.")]
+        [Output("barDiffTempLoad", "The created BarDifferentialTemperatureLoad.")]
         public static BarDifferentialTemperatureLoad BarDifferentialTemperatureLoad(Loadcase loadcase, double topTemperature, double bottomTemperature, DifferentialTemperatureLoadDirection localLoadDirection, IEnumerable<Bar> objects, string name = "")
         {
             return BarDifferentialTemperatureLoad(loadcase, new List<double>() { 0, 1 }, new List<double>() { topTemperature, bottomTemperature }, localLoadDirection, objects, name);

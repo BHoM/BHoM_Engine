@@ -144,7 +144,7 @@ namespace BH.Engine.Geometry
                 for (int j = i + 1; j < lines.Count; j++)
                 {
                     Point result;
-                    if (useInfiniteLine || Query.IsInRange(boxes[i], boxes[j]))
+                    if (useInfiniteLine || Query.IsInRange(boxes[i], boxes[j], tolerance))
                     {
                         result = LineIntersection(lines[i], lines[j], useInfiniteLine, tolerance);
                         if (result != null)
@@ -178,7 +178,7 @@ namespace BH.Engine.Geometry
             if (Math.Abs(arc.CoordinateSystem.Z.DotProduct(l.Direction())) > Tolerance.Angle)
             {
                 //Curves not coplanar
-                Point pt = l.PlaneIntersection((Plane)arc.CoordinateSystem);
+                Point pt = l.PlaneIntersection((Plane)arc.CoordinateSystem, tolerance : tolerance);
                 if (pt != null && Math.Abs(pt.Distance(center) - arc.Radius) <= tolerance)
                     iPts.Add(pt);
             }
@@ -186,7 +186,7 @@ namespace BH.Engine.Geometry
             {
                 //Curves coplanar
                 Circle c = new Circle { Centre = center, Normal = arc.CoordinateSystem.Z, Radius = arc.Radius };
-                iPts = c.LineIntersections(l);
+                iPts = c.LineIntersections(l, tolerance: tolerance);
             }
 
             List<Point> output = new List<Point>();
@@ -223,7 +223,7 @@ namespace BH.Engine.Geometry
             Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
             if (Math.Abs(circle.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {   // Not Coplanar
-                Point pt = l.PlaneIntersection(p);
+                Point pt = l.PlaneIntersection(p, tolerance: tolerance);
                 if (pt!=null && Math.Abs(pt.Distance(circle.Centre) - circle.Radius) <= tolerance)    // On Curve
                     iPts.Add(pt);
             }
@@ -272,7 +272,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (Line ln in curve.SubParts())
             {
-                Point pt = ln.LineIntersection(l);
+                Point pt = ln.LineIntersection(l, tolerance : tolerance);
                 if (pt != null)
                     iPts.Add(pt);
             }
@@ -296,7 +296,7 @@ namespace BH.Engine.Geometry
             List<Point> iPts = new List<Point>();
             foreach (ICurve c in curve.SubParts())
             {
-                iPts.AddRange(c.ILineIntersections(l));
+                iPts.AddRange(c.ILineIntersections(l, tolerance: tolerance));
             }
 
             return iPts.CullDuplicates(tolerance);

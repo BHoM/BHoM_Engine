@@ -40,7 +40,6 @@ namespace BH.Engine.Analytical
         [Input("angleTolerance", "The tolerance to be used for calculating angles when collapsing the perimeter to a polyline, and when cleaning the polyline as the tolerance defining a straight line. Default is set to BH.oM.Geometry.Tolerance.Angle.")]
         [Input("minimumSegmentLength", "The tolerance of how long a segment should be when cleaning the polyline of the region. Default is set to BH.oM.Geometry.Tolerance.Distance.")]
         [Output("region", "A region with a cleaned perimeter.")]
-        [PreviousVersion("5.3", "BH.Engine.Architecture.Modify.CleanRoom(BH.oM.Architecture.Elements.Room, System.Double, System.Double)")]
         public static void CleanRegion(this IRegion region, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double minimumSegmentLength = BH.oM.Geometry.Tolerance.Distance)
         {
             if (region == null)

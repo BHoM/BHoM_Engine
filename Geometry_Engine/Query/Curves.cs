@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -20,50 +20,55 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
-using System.Collections.Generic;
-using BH.oM.Environment.Elements;
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-using BH.oM.Environment.Fragments;
-using System;
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using BH.oM.Geometry;
 
-using BH.Engine.Base;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the shade panels represented by Environment Panels with no adj spaces and fixes PanelType.")]
-        [Input("panels", "A collection of Environment Panels.")]
-        [Input("shadeType", "The type of shade to assign to the shade panels.")]
-        [Output("shadePanels", "BHoM Environment panel representing the shade.")]
-        public static List<Panel> SetShadePanels(this List<Panel> panels, PanelType shadeType = PanelType.Shade)
+        [Description("Returns the inner curves of the PolyCurve.")]
+        [Input("curve", "The PolyCurve to extract the inner curves from.")]
+        [Output("curves", "The inner curves fo the PolyCurve.")]
+        public static List<ICurve> Curves(this PolyCurve curve)
         {
-            if (!shadeType.IsShade())
-            {
-                Base.Compute.RecordError("Provided panel type is not a valid shade type. Please provide a valid shade type to set.");
-                return null;
-            }
-
-            //Find the panel(s) without connected spaces and set as shade
-            List<Panel> shadePanels = new List<Panel>(panels.Select(x => x.DeepClone<Panel>()).ToList());
-            foreach (Panel panel in shadePanels)
-            {
-                if (panel.ConnectedSpaces.Where(x => x != "-1").ToList().Count == 0)
-                    panel.Type = shadeType;
-            }
-
-            return shadePanels;
+            return curve?.Curves;
         }
+
+        /***************************************************/
+
+        [Description("Returns the inner curves of the BoundaryCurve.")]
+        [Input("curve", "The BoundaryCurve to extract the inner curves from.")]
+        [Output("curves", "The inner curves fo the BoundaryCurve.")]
+        public static List<ICurve> Curves(this BoundaryCurve curve)
+        {
+            return curve?.Curves?.ToList();
+        }
+
+        /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        [Description("Returns the inner curves of the IPolyCurve.")]
+        [Input("curve", "The IPolyCurve to extract the inner curves from.")]
+        [Output("curves", "The inner curves fo the IPolyCurve.")]
+        public static List<ICurve> ICurves(this IPolyCurve curve)
+        {
+            if (curve == null)
+                return null;
+
+            return Curves(curve as dynamic);
+        }
+
+        /***************************************************/
     }
 }
-
-
-
