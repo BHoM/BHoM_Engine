@@ -38,33 +38,33 @@ namespace BH.Engine.Matter
         /***************************************************/
 
         [Description("Gets the unique Materials along with their volumes defining an object's make-up.")]
-        [Input("elementM", "The element to get the MaterialTakeoff from.")]
-        [Output("materialTakeoff", "The kind of matter the element is composed of and in which volumes.")]
-        public static MaterialTakeoff IMaterialTakeoff(this IElementM elementM)
+        [Input("elementM", "The element to get the VolumetricMaterialTakeoff from.")]
+        [Output("volumetricMaterialTakeoff", "The kind of matter the element is composed of and in which volumes.")]
+        public static VolumetricMaterialTakeoff IVolumetricMaterialTakeoff(this IElementM elementM)
         {
             if (elementM == null)
             {
-                Base.Compute.RecordError("Cannot query the MaterialTakeoff from a null element.");
+                Base.Compute.RecordError("Cannot query the VolumetricMaterialTakeoff from a null element.");
                 return null;
             }
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
-            // -MaterialTakeoff
-            //This method first checks if the MaterialTakeoff method can be found and run, and if so uses it.
-            //If not, it falls back to running the MaterialComposition and SolidVolume methods and gets the MaterialTakeoff from them.
+            // -VolumetricMaterialTakeoff
+            //This method first checks if the VolumetricMaterialTakeoff method can be found and run, and if so uses it.
+            //If not, it falls back to running the MaterialComposition and SolidVolume methods and gets the VolumetricMaterialTakeoff from them.
 
-            MaterialTakeoff matTakeoff;
-            if (TryGetMaterialTakeoff(elementM, out matTakeoff))
+            VolumetricMaterialTakeoff matTakeoff;
+            if (TryGetVolumetricMaterialTakeoff(elementM, out matTakeoff))
                 return matTakeoff;
             else
             {
                 MaterialComposition matComp;
                 double volume;
                 if (TryGetMaterialComposition(elementM, out matComp) && TryGetSolidVolume(elementM, out volume))
-                    return Create.MaterialTakeoff(matComp, volume);
+                    return Create.VolumetricMaterialTakeoff(matComp, volume);
                 else
                 {
-                    Base.Compute.RecordError($"The provided element of type {elementM.GetType()} does not implement MaterialTakeoff or MaterialComposition and SolidVolume methods. The MaterialTakeoff could not be extracted.");
+                    Base.Compute.RecordError($"The provided element of type {elementM.GetType()} does not implement VolumetricMaterialTakeoff or MaterialComposition and SolidVolume methods. The VolumetricMaterialTakeoff could not be extracted.");
                     return null;
                 }
             }
@@ -74,12 +74,12 @@ namespace BH.Engine.Matter
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Tries running the MaterialTakeoff method on the IElementM. Returns true if the method successfully can be found.")]
-        private static bool TryGetMaterialTakeoff(this IElementM elementM, out MaterialTakeoff materialTakeoff)
+        [Description("Tries running the VolumetricMaterialTakeoff method on the IElementM. Returns true if the method successfully can be found.")]
+        private static bool TryGetVolumetricMaterialTakeoff(this IElementM elementM, out VolumetricMaterialTakeoff volumetricMaterialTakeoff)
         {
             object result;
-            bool success = Base.Compute.TryRunExtensionMethod(elementM, "MaterialTakeoff", out result);
-            materialTakeoff = result as MaterialTakeoff;
+            bool success = Base.Compute.TryRunExtensionMethod(elementM, "VolumetricMaterialTakeoff", out result);
+            volumetricMaterialTakeoff = result as VolumetricMaterialTakeoff;
             return success;
         }
 

@@ -49,21 +49,21 @@ namespace BH.Engine.Matter
             }
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
-            // -MaterialTakeoff
+            // -VolumetricMaterialTakeoff
             //This method first checks if the MaterialComposition method can be found and run, and if so uses it.
-            //If not, it falls back to running the MaterialTakeoff method and gets the MaterialComposition from it.
+            //If not, it falls back to running the VolumetricMaterialTakeoff method and gets the MaterialComposition from it.
 
             MaterialComposition matComp;
             if (TryGetMaterialComposition(elementM, out matComp))
                 return matComp;
             else
             {
-                MaterialTakeoff takeoff;
-                if (TryGetMaterialTakeoff(elementM, out takeoff))
+                VolumetricMaterialTakeoff takeoff;
+                if (TryGetVolumetricMaterialTakeoff(elementM, out takeoff))
                     return Create.MaterialComposition(takeoff);
                 else
                 {
-                    Base.Compute.RecordError($"The provided element of type {elementM.GetType()} does not implement MaterialComposition or MaterialTakeoff methods. The MaterialComposition could not be extracted.");
+                    Base.Compute.RecordError($"The provided element of type {elementM.GetType()} does not implement MaterialComposition or VolumetricMaterialTakeoff methods. The MaterialComposition could not be extracted.");
                     return null;
                 }
             }
@@ -74,11 +74,11 @@ namespace BH.Engine.Matter
         /***************************************************/
 
         [Description("Tries running the MaterialComposition method on the IElementM. Returns true if the method successfully can be found.")]
-        private static bool TryGetMaterialComposition(this IElementM elementM, out MaterialComposition materialTakeoff)
+        private static bool TryGetMaterialComposition(this IElementM elementM, out MaterialComposition materialComposition)
         {
             object result;
             bool success = Base.Compute.TryRunExtensionMethod(elementM, "MaterialComposition", out result);
-            materialTakeoff = result as MaterialComposition;
+            materialComposition = result as MaterialComposition;
             return success;
         }
 
