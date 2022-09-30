@@ -49,20 +49,20 @@ namespace BH.Engine.Matter
 
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
-            // -MaterialTakeoff
+            // -VolumetricMaterialTakeoff
             //This method first checks if the SolidVolume method can be found and run, and if so uses it.
-            //If not, it falls back to running the MaterialTakeoff method and gets the SolidVolume from it.
+            //If not, it falls back to running the VolumetricMaterialTakeoff method and gets the SolidVolume from it.
             double volume;
             if (TryGetSolidVolume(elementM, out volume))
                 return volume;
             else
             {
-                MaterialTakeoff takeoff;
-                if (TryGetMaterialTakeoff(elementM, out takeoff))
+                VolumetricMaterialTakeoff takeoff;
+                if (TryGetVolumetricMaterialTakeoff(elementM, out takeoff))
                     return takeoff.SolidVolume();
                 else
                 {
-                    Base.Compute.RecordError($"The provided element of type {elementM.GetType()} does not implement SolidVolume or MaterialTakeoff methods. The volume could not be extracted.");
+                    Base.Compute.RecordError($"The provided element of type {elementM.GetType()} does not implement SolidVolume or VolumetricMaterialTakeoff methods. The volume could not be extracted.");
                     return double.NaN;
                 }
             }
@@ -70,18 +70,18 @@ namespace BH.Engine.Matter
 
         /******************************************/
 
-        [Description("Returns the total solid volume of the provided MaterialTakeoff.")]
-        [Input("materialTakeoff", "The MaterialTakeoff to get the total SolidVolume from.")]
-        [Output("volume", "The total volumetric amount of matter in the MaterialTakeoff", typeof(Volume))]
-        public static double SolidVolume(this MaterialTakeoff materialTakeoff)
+        [Description("Returns the total solid volume of the provided VolumetricMaterialTakeoff.")]
+        [Input("VolumetricMaterialTakeoff", "The VolumetricMaterialTakeoff to get the total SolidVolume from.")]
+        [Output("volume", "The total volumetric amount of matter in the VolumetricMaterialTakeoff", typeof(Volume))]
+        public static double SolidVolume(this VolumetricMaterialTakeoff volumetricMaterialTakeoff)
         {
-            if (materialTakeoff == null)
+            if (volumetricMaterialTakeoff == null)
             {
-                Base.Compute.RecordError("Connat query the solid volume from a null MaterialTakeoff.");
+                Base.Compute.RecordError("Connat query the solid volume from a null VolumetricMaterialTakeoff.");
                 return double.NaN;
             }
 
-            return materialTakeoff.Volumes.Sum();
+            return volumetricMaterialTakeoff.Volumes.Sum();
         }
 
         /***************************************************/

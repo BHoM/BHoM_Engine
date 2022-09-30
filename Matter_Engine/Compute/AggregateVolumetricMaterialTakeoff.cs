@@ -49,22 +49,22 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates an aggregate MaterialTakeoff from a collection of elements.")]
-        [Input("elements", "The elements to iterate over in generation of the MaterialTakeoff.")]
-        [Output("materialTakeoff", "A MaterialTakeoff containing the unique materials across all elements.")]
-        public static MaterialTakeoff AggregateMaterialTakeoff(IEnumerable<IElementM> elements)
+        [Description("Calculates an aggregate VolumetricMaterialTakeoff from a collection of elements.")]
+        [Input("elements", "The elements to iterate over in generation of the VolumetricMaterialTakeoff.")]
+        [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff containing the unique materials across all elements.")]
+        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<IElementM> elements)
         {
-            return AggregateMaterialTakeoff(elements.Select(x => x.IMaterialTakeoff()));
+            return AggregateVolumetricMaterialTakeoff(elements.Select(x => x.IVolumetricMaterialTakeoff()));
         }
 
         /***************************************************/
 
-        [Description("Calculates an aggregate MaterialTakeoff from a collection individual MaterialTakeoffs.")]
-        [Input("materialTakeoffs", "The individual MaterialTakeoffs to aggregate together.")]
-        [Output("materialTakeoff", "A MaterialTakeoff incorporating the provided materials and volumes from each individual MaterialTakeoff.")]
-        public static MaterialTakeoff AggregateMaterialTakeoff(IEnumerable<MaterialTakeoff> materialTakeoffs)
+        [Description("Calculates an aggregate VolumetricMaterialTakeoff from a collection individual VolumetricMaterialTakeoffs.")]
+        [Input("volumetricMaterialTakeoffs", "The individual VolumetricMaterialTakeoffs to aggregate together.")]
+        [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff incorporating the provided materials and volumes from each individual VolumetricMaterialTakeoff.")]
+        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<VolumetricMaterialTakeoff> VolumetricMaterialTakeoffs)
         {
-            List<MaterialTakeoff> localMatTakeoffs = materialTakeoffs.ToList();
+            List<VolumetricMaterialTakeoff> localMatTakeoffs = VolumetricMaterialTakeoffs.ToList();
 
             Dictionary<string, Tuple<Material, double>> hashedMaterialVolumeTuples = new Dictionary<string, Tuple<Material, double>>();
 
@@ -86,7 +86,7 @@ namespace BH.Engine.Matter
             }
 
 
-            return new MaterialTakeoff(hashedMaterialVolumeTuples.Values.Select(x => x.Item1), hashedMaterialVolumeTuples.Values.Select(x => x.Item2));
+            return new VolumetricMaterialTakeoff(hashedMaterialVolumeTuples.Values.Select(x => x.Item1), hashedMaterialVolumeTuples.Values.Select(x => x.Item2));
         }
 
         /***************************************************/
