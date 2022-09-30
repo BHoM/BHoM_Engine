@@ -51,17 +51,10 @@ namespace BH.Engine.Matter
                 return null;
             }
 
-            //If bool is true, check for attached fragment
-            if (checkForTakeoffFragment)
-            {
-                IBHoMObject bhomObj = elementM as IBHoMObject;
-                if (bhomObj != null)    //Is IBHoMObject
-                {
-                    VolumetricMaterialTakeoff takeoffFragment = bhomObj.FindFragment<VolumetricMaterialTakeoff>();
-                    if (takeoffFragment != null)    //If fragment is not null, return it. If null, compute the takeoff based on element specific methods.
-                        return takeoffFragment;
-                }
-            }
+            //If asked to look for fragment, and if fragment exists, return it
+            VolumetricMaterialTakeoff matTakeoff;
+            if (TryGetVolumetricMaterialTakeoffFragment(elementM, checkForTakeoffFragment, out matTakeoff))
+                return matTakeoff;
 
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
@@ -69,7 +62,7 @@ namespace BH.Engine.Matter
             //This method first checks if the VolumetricMaterialTakeoff method can be found and run, and if so uses it.
             //If not, it falls back to running the MaterialComposition and SolidVolume methods and gets the VolumetricMaterialTakeoff from them.
 
-            VolumetricMaterialTakeoff matTakeoff;
+
             if (TryGetVolumetricMaterialTakeoff(elementM, out matTakeoff))
                 return matTakeoff;
             else
@@ -97,6 +90,29 @@ namespace BH.Engine.Matter
             bool success = Base.Compute.TryRunExtensionMethod(elementM, "VolumetricMaterialTakeoff", out result);
             volumetricMaterialTakeoff = result as VolumetricMaterialTakeoff;
             return success;
+        }
+
+        /***************************************************/
+
+        [Description("Tries to find a VolumetricMaterialTakeoff attached as a fragment to the elementM. If found, returns true.")]
+        private static bool TryGetVolumetricMaterialTakeoffFragment(this IElementM elementM, bool checkForFragment, out VolumetricMaterialTakeoff takeoffFragment)
+        {
+            takeoffFragment = null;
+
+            //If bool is false, simply return false
+            if (!checkForFragment)
+                return false;
+
+            //If bool is true, check for attached fragment
+            IBHoMObject bhomObj = elementM as IBHoMObject;
+            if (bhomObj != null)    //Is IBHoMObject
+            {
+                takeoffFragment = bhomObj.FindFragment<VolumetricMaterialTakeoff>();
+                if (takeoffFragment != null)    //If fragment is not null (found) return true, if not, return false
+                    return true;
+            }
+
+            return false;
         }
 
         /***************************************************/
