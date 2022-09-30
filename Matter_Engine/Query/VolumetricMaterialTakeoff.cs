@@ -58,7 +58,7 @@ namespace BH.Engine.Matter
                 if (bhomObj != null)    //Is IBHoMObject
                 {
                     VolumetricMaterialTakeoff takeoffFragment = bhomObj.FindFragment<VolumetricMaterialTakeoff>();
-                    if (takeoffFragment != null)    //If fragment is not null, return it. If null, run method as usual.
+                    if (takeoffFragment != null)    //If fragment is not null, return it. If null, compute the takeoff based on element specific methods.
                         return takeoffFragment;
                 }
             }
