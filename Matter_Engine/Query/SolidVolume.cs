@@ -38,14 +38,20 @@ namespace BH.Engine.Matter
 
         [Description("Returns an element's solid volume")]
         [Input("elementM", "The element to get the volume from")]
+        [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that total volume corresponding to this fragment. If false, the SolidVolume returned will be calculated, independant of fragment attached.")]
         [Output("volume", "The element's solid material volume.", typeof(Volume))]
-        public static double ISolidVolume(this IElementM elementM)
+        public static double ISolidVolume(this IElementM elementM, bool checkForTakeoffFragment = false)
         {
             if(elementM == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null element.");
                 return double.NaN;
             }
+
+            //If asked to look for fragment, and if fragment exists, return it
+            VolumetricMaterialTakeoff matTakeoff;
+            if (TryGetVolumetricMaterialTakeoffFragment(elementM, checkForTakeoffFragment, out matTakeoff))
+                return matTakeoff.SolidVolume();
 
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
