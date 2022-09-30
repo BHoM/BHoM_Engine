@@ -87,24 +87,48 @@ namespace BH.Engine.Base
                         value = Activator.CreateInstance(propType);
                 }
 
-                if (propType.IsEnum && value is string)
+                if (value is string)
                 {
-                    string enumName = (value as string).Split('.').Last();
-                    try
+                    if (propType.IsEnum)
                     {
-                        object enumValue = Compute.ParseEnum(propType, enumName);
-                        if (enumValue != null)
-                            value = enumValue;
+                        string enumName = (value as string).Split('.').Last();
+                        try
+                        {
+                            object enumValue = Compute.ParseEnum(propType, enumName);
+                            if (enumValue != null)
+                                value = enumValue;
+                        }
+                        catch
+                        {
+                            Compute.RecordError($"An enum of type {propType.ToText(true)} does not have a value of {enumName}");
+                        }
                     }
-                    catch
-                    {
-                        Compute.RecordError($"An enum of type {propType.ToText(true)} does not have a value of {enumName}");
-                    }   
-                }
 
-                if (value is string && typeof(IEnum).IsAssignableFrom(propType))
-                {
-                    value = CreateEnumeration(propType, value as string);
+                    if (typeof(IEnum).IsAssignableFrom(propType))
+                    {
+                        value = CreateEnumeration(propType, value as string);
+                    }
+
+                    if (propType == typeof(Type))
+                        value = Create.Type(value as string);
+                    else if (propType == typeof(double))
+                    {
+                        double result = 0;
+                        double.TryParse(value as string, out result);
+                        value = result;
+                    }
+                    else if (propType == typeof(int))
+                    {
+                        int result = 0;
+                        int.TryParse(value as string, out result);
+                        value = result;
+                    }
+                    else if (propType == typeof(bool))
+                    {
+                        bool result = false;
+                        bool.TryParse(value as string, out result);
+                        value = result;
+                    }
                 }
 
                 if (propType == typeof(DateTime))
@@ -123,9 +147,6 @@ namespace BH.Engine.Base
                     else if (value is double)
                         value = DateTime.FromOADate((double)value);
                 }
-
-                if (propType == typeof(Type) && value is string)
-                    value = Create.Type(value as string);
 
                 if (propType == typeof(FragmentSet))
                 {
