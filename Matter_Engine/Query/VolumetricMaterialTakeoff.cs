@@ -20,11 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Physical.Materials;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Base.Attributes;
+using BH.Engine.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,14 +41,28 @@ namespace BH.Engine.Matter
 
         [Description("Gets the unique Materials along with their volumes defining an object's make-up.")]
         [Input("elementM", "The element to get the VolumetricMaterialTakeoff from.")]
+        [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns it. If false, the VolumetricMaterialTakeoff returned will be calculated, independant of fragment attached.")]
         [Output("volumetricMaterialTakeoff", "The kind of matter the element is composed of and in which volumes.")]
-        public static VolumetricMaterialTakeoff IVolumetricMaterialTakeoff(this IElementM elementM)
+        public static VolumetricMaterialTakeoff IVolumetricMaterialTakeoff(this IElementM elementM, bool checkForTakeoffFragment = false)
         {
             if (elementM == null)
             {
                 Base.Compute.RecordError("Cannot query the VolumetricMaterialTakeoff from a null element.");
                 return null;
             }
+
+            //If bool is true, check for attached fragment
+            if (checkForTakeoffFragment)
+            {
+                IBHoMObject bhomObj = elementM as IBHoMObject;
+                if (bhomObj != null)    //Is IBHoMObject
+                {
+                    VolumetricMaterialTakeoff takeoffFragment = bhomObj.FindFragment<VolumetricMaterialTakeoff>();
+                    if (takeoffFragment != null)    //If fragment is not null, return it. If null, run method as usual.
+                        return takeoffFragment;
+                }
+            }
+
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
             // -VolumetricMaterialTakeoff
