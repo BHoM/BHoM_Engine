@@ -43,6 +43,9 @@ namespace BH.Engine.Reflection
             if (m_CoreAssemblyPaths == null)
                 ExtractCoreAssemblyPaths();
 
+            if (item is Type)
+                return BH.Engine.Base.Query.BHoMTypeList().Contains(item as Type) && m_CoreAssemblyPaths.Count > 0 && !m_CoreAssemblyPaths.Contains(System.IO.Path.GetFileName(item.IAssemblyPath()));
+
             return m_CoreAssemblyPaths.Count > 0 && !m_CoreAssemblyPaths.Contains(System.IO.Path.GetFileName(item.IAssemblyPath()));
         }
 
