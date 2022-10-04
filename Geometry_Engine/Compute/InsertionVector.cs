@@ -71,7 +71,7 @@ namespace BH.Engine.Geometry
                 new Vector(){ X =0, Y = 0, Z = (insertionEndPoint - insertionStartPoint).Z}
             };
 
-            return vectorList.OrderBy(v => Math.Abs(v.Length())).Last() / (elementsCount == 1 ? 1 : elementsCount - 1);
+            return vectorList.OrderBy(v =>v.Length()).Last() / (elementsCount == 1 ? 1 : elementsCount - 1);
         }
 
         /***************************************************/
