@@ -53,9 +53,9 @@ namespace BH.Engine.Geometry
             
             List<Vector> vectorList = new List<Vector>()
             {
-                new Vector(){X = (endPoint - startPoint).X, Y = 0, Z = 0},
-                new Vector(){X =0, Y = (endPoint - startPoint).Y, Z = 0},
-                new Vector(){X =0, Y = 0, Z = (endPoint - startPoint).Z}
+                new Vector() {X = (endPoint - startPoint).X, Y = 0, Z = 0},
+                new Vector() {X =0, Y = (endPoint - startPoint).Y, Z = 0},
+                new Vector() {X =0, Y = 0, Z = (endPoint - startPoint).Z}
             };
 
             return vectorList.OrderBy(v => v.Length()).Last();
