@@ -36,26 +36,40 @@ namespace BH.Engine.Geometry
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns the insertion vector for element placement, dependent upon the number of elements and the start and end points.")]
-        [Input("elementCount", "Number of elements to place between the two points.")]
-        [Input("insertionStartPoint", "The start point of the insertion vector to create the Symbols.")]
-        [Input("insertionEndPoint", "The end point of the insertion vector to create the Symbols.")]
-        [Output("insertionVector", "The insertion vector with the correct length to create the Symbols.")]
-        public static Vector InsertionVector(Point insertionStartPoint, Point insertionEndPoint, int elementsCount = 1)
+        [Description("Returns the largest component as determined by two provided points, dependent upon which axis is more represented by the difference between the two points.")]
+        [Input("startPoint", "The start point of vector.")]
+        [Input("endPoint", "The end point of the vector.")]
+        [Output("largestComponentVector", "The largest component vector as determined by two provided points.")]
+        public static Vector LargestComponentVector(Point startPoint, Point endPoint)
         {
-            return (insertionStartPoint - insertionEndPoint) / (elementsCount == 1 ? 1 : elementsCount - 1);
+            //If points are equal, no largest component
+            if (startPoint == endPoint)
+                return new Vector()
+                {
+                    X = 0,
+                    Y = 0,
+                    Z = 0
+                };
+            
+            List<Vector> vectorList = new List<Vector>()
+            {
+                new Vector(){X = (endPoint - startPoint).X, Y = 0, Z = 0},
+                new Vector(){X =0, Y = (endPoint - startPoint).Y, Z = 0},
+                new Vector(){X =0, Y = 0, Z = (endPoint - startPoint).Z}
+            };
+
+            return vectorList.OrderBy(v => v.Length()).Last();
         }
 
         /***************************************************/
 
-        [Description("Returns the orthogonal insertion vector as determined by two provided points, dependent upon which axis is more represented by the difference between the two points.")]
-        [Input("insertionStartPoint", "The start point of the insertion vector.")]
-        [Input("insertionEndPoint", "The end point of the insertion vector.")]
-        [Output("orthogonalInsertionVector", "The orthogonal insertion vector as determined by two provided points.")]
-        public static Vector OrthogonalInsertionVector(Point insertionStartPoint, Point insertionEndPoint, int elementsCount = 1)
+        [Description("Returns the largest component as determined by one vector, dependent upon which axis is more represented vector.")]
+        [Input("vector", "The vector to determine the largest component of.")]
+        [Output("largestComponentVector", "The largest component vector as determined by the provided vector.")]
+        public static Vector LargestComponentVector(Vector vector)
         {
-            //If points equal, place in the same exact location
-            if (insertionStartPoint == insertionEndPoint)
+            //If points are equal, no largest component
+            if (vector.Length() == 0)
                 return new Vector()
                 {
                     X = 0,
@@ -63,15 +77,14 @@ namespace BH.Engine.Geometry
                     Z = 0
                 };
 
-            //Largest component vector is preferred direction and length
             List<Vector> vectorList = new List<Vector>()
             {
-                new Vector(){X = (insertionEndPoint - insertionStartPoint).X, Y = 0, Z = 0},
-                new Vector(){X =0, Y = (insertionEndPoint - insertionStartPoint).Y, Z = 0},
-                new Vector(){X =0, Y = 0, Z = (insertionEndPoint - insertionStartPoint).Z}
+                new Vector(){X = vector.X, Y = 0, Z = 0},
+                new Vector(){X =0, Y = vector.Y, Z = 0},
+                new Vector(){X =0, Y = 0, Z = vector.Z}
             };
 
-            return vectorList.OrderBy(v => v.Length()).Last() / (elementsCount == 1 ? 1 : elementsCount - 1);
+            return vectorList.OrderBy(v => v.Length()).Last();
         }
 
         /***************************************************/
