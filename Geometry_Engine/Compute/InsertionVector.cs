@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
         [Description("Returns the orthogonal insertion vector as determined by two provided points, dependent upon which axis is more represented by the difference between the two points.")]
         [Input("insertionStartPoint", "The start point of the insertion vector.")]
         [Input("insertionEndPoint", "The end point of the insertion vector.")]
-        [Output("orthogonalVector", "The orthogonal insertion vector as determined by two provided points.")]
+        [Output("orthogonalInsertionVector", "The orthogonal insertion vector as determined by two provided points.")]
         public static Vector OrthogonalInsertionVector(Point insertionStartPoint, Point insertionEndPoint, int elementsCount = 1)
         {
             //If points equal, place in the same exact location
