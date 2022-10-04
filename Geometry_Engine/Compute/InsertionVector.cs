@@ -66,12 +66,12 @@ namespace BH.Engine.Geometry
             //Largest component vector is preferred direction and length
             List<Vector> vectorList = new List<Vector>()
             {
-                new Vector(){ X = (insertionEndPoint - insertionStartPoint).X, Y = 0, Z = 0 },
-                new Vector(){X =0, Y =(insertionEndPoint - insertionStartPoint).Y, Z =0},
-                new Vector(){ X =0, Y = 0, Z = (insertionEndPoint - insertionStartPoint).Z}
+                new Vector(){X = (insertionEndPoint - insertionStartPoint).X, Y = 0, Z = 0},
+                new Vector(){X =0, Y = (insertionEndPoint - insertionStartPoint).Y, Z = 0},
+                new Vector(){X =0, Y = 0, Z = (insertionEndPoint - insertionStartPoint).Z}
             };
 
-            return vectorList.OrderBy(v =>v.Length()).Last() / (elementsCount == 1 ? 1 : elementsCount - 1);
+            return vectorList.OrderBy(v => v.Length()).Last() / (elementsCount == 1 ? 1 : elementsCount - 1);
         }
 
         /***************************************************/
