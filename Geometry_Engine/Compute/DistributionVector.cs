@@ -38,7 +38,7 @@ namespace BH.Engine.Geometry
 
         [Description("Returns the distribution vector (equal length vector between a number points in a straight line), dependent upon the number of points and the provided vector.")]
         [Input("vector", "The distribution vector to segment.")]
-        [Input("pointCount", "Number of points along the vector. If pointCount is equal to 1, the full length vector is returned.")]
+        [Input("pointCount", "Number of points to place between the start and the end of the vector, inclusive. If pointCount is equal to 1, the full length vector is returned.")]
         [Output("distributionVector", "The distribution vector modified to fit the number of points.")]
         public static Vector DistributionVector(Vector vector, int pointCount = 1)
         {
