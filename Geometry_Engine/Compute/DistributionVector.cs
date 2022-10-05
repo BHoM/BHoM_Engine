@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Returns the distribution vector for element placement, dependent upon the number of elements and the start and end points.")]
-        [Input("elementCount", "Number of elements to place between the two points.")]
+        [Input("elementCount", "Number of elements to place between start and end of the vector.")]
         [Input("startPoint", "The start point of the distribution vector to create the Symbols.")]
         [Input("endPoint", "The end point of the distribution vector to create the Symbols.")]
         [Output("distributionVector", "The distribution vector with the correct length to create the Symbols.")]
