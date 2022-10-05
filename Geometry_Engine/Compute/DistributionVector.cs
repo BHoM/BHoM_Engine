@@ -36,14 +36,13 @@ namespace BH.Engine.Geometry
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns the distribution vector for element placement, dependent upon the number of elements and the start and end points.")]
-        [Input("elementCount", "Number of elements to place between start and end of the vector.")]
-        [Input("startPoint", "The start point of the distribution vector to create the Symbols.")]
-        [Input("endPoint", "The end point of the distribution vector to create the Symbols.")]
-        [Output("distributionVector", "The distribution vector with the correct length to create the Symbols.")]
-        public static Vector DistributionVector(Vector vector, int elementsCount = 1)
+        [Description("Returns the distribution vector (equal length vector between a number points in a straight line), dependent upon the number of points and the provided vector.")]
+        [Input("vector", "The distribution vector to segment.")]
+        [Input("pointCount", "Number of points along the vector. If pointCount is equal to 1, the full length vector is returned.")]
+        [Output("distributionVector", "The distribution vector modified to fit the number of points.")]
+        public static Vector DistributionVector(Vector vector, int pointCount = 1)
         {
-            return (vector) / (elementsCount == 1 ? 1 : elementsCount - 1);
+            return (vector) / (pointCount == 1 ? 1 : pointCount - 1);
         }
         
         /***************************************************/

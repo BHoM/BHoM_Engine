@@ -39,49 +39,19 @@ namespace BH.Engine.Geometry
         [Description("Returns the largest component as determined by two provided points, dependent upon which axis is more represented by the difference between the two points.")]
         [Input("startPoint", "The start point of vector.")]
         [Input("endPoint", "The end point of the vector.")]
-        [Output("largestComponentVector", "The largest component vector as determined by two provided points.")]
-        public static Vector LargestComponentVector(Point startPoint, Point endPoint)
+        [Output("largestComponent", "The largest component vector as determined by two provided points.")]
+        public static Vector LargestComponent(Point startPoint, Point endPoint)
         {
-            //If points are equal, no largest component
-            if (startPoint == endPoint)
-            {
-                return new Vector()
-                {
-                    X = 0,
-                    Y = 0,
-                    Z = 0
-                };
-            }
-
-
-            List<Vector> vectorList = new List<Vector>()
-            {
-                new Vector(){ X = (endPoint - startPoint).X, Y = 0, Z = 0},
-                new Vector(){ X =0, Y = (endPoint - startPoint).Y, Z = 0},
-                new Vector(){ X =0, Y = 0, Z = (endPoint - startPoint).Z}
-            };
-
-            return vectorList.OrderBy(v => v.Length()).Last();
+            return LargestComponent(endPoint - startPoint);
         }
 
         /***************************************************/
 
         [Description("Returns the largest component as determined by one vector, dependent upon which axis is more represented vector.")]
         [Input("vector", "The vector to determine the largest component of.")]
-        [Output("largestComponentVector", "The largest component vector as determined by the provided vector.")]
-        public static Vector LargestComponentVector(Vector vector)
+        [Output("largestComponent", "The largest component vector as determined by the provided vector.")]
+        public static Vector LargestComponent(Vector vector)
         {
-            //If points are equal, no largest component
-            if (vector.Length() == 0)
-            {
-                return new Vector()
-                {
-                    X = 0,
-                    Y = 0,
-                    Z = 0
-                };
-            }
-
             List<Vector> vectorList = new List<Vector>()
             {
                 new Vector(){ X = vector.X, Y = 0, Z = 0},
@@ -89,7 +59,7 @@ namespace BH.Engine.Geometry
                 new Vector(){ X =0, Y = 0, Z = vector.Z}
             };
 
-            return vectorList.OrderBy(v => v.Length()).Last();
+            return vectorList.OrderByDescending(v => v.SquareLength()).First();
         }
 
         /***************************************************/
