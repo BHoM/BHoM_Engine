@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
         [Output("largestComponent", "The largest component vector as determined by two provided points.")]
         public static Vector LargestComponent(this Point startPoint, Point endPoint)
         {
-            if(startPoint == null|| endPoint == null)
+            if(startPoint == null || endPoint == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the largest component of a null point.");
                 return null;
