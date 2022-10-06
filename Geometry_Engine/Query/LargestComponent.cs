@@ -68,8 +68,8 @@ namespace BH.Engine.Geometry
             List<Vector> vectorList = new List<Vector>()
             {
                 new Vector(){ X = vector.X, Y = 0, Z = 0},
-                new Vector(){ X =0, Y = vector.Y, Z = 0},
-                new Vector(){ X =0, Y = 0, Z = vector.Z}
+                new Vector(){ X = 0, Y = vector.Y, Z = 0},
+                new Vector(){ X = 0, Y = 0, Z = vector.Z}
             };
 
             return vectorList.OrderByDescending(v => v.SquareLength()).First();
