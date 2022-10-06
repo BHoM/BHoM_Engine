@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using System.Net;
 
 namespace BH.Engine.Geometry
 {
@@ -40,8 +41,14 @@ namespace BH.Engine.Geometry
         [Input("startPoint", "The start point of vector.")]
         [Input("endPoint", "The end point of the vector.")]
         [Output("largestComponent", "The largest component vector as determined by two provided points.")]
-        public static Vector LargestComponent(Point startPoint, Point endPoint)
+        public static Vector LargestComponent(this Point startPoint, Point endPoint)
         {
+            if(startPoint == null|| endPoint == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query the largest component of a null point.");
+                return null;
+            }
+            
             return LargestComponent(endPoint - startPoint);
         }
 
@@ -50,8 +57,14 @@ namespace BH.Engine.Geometry
         [Description("Returns the largest component as determined by one vector, dependent upon which axis is more represented vector.")]
         [Input("vector", "The vector to determine the largest component of.")]
         [Output("largestComponent", "The largest component vector as determined by the provided vector.")]
-        public static Vector LargestComponent(Vector vector)
+        public static Vector LargestComponent(this Vector vector)
         {
+            if (vector == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query the largest component of a null vector.");
+                return null;
+            }
+
             List<Vector> vectorList = new List<Vector>()
             {
                 new Vector(){ X = vector.X, Y = 0, Z = 0},
