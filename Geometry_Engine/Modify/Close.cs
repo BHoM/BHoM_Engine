@@ -52,6 +52,27 @@ namespace BH.Engine.Geometry
 
             return Create.Polyline(polylinePoints);
         }
+
+        /***************************************************/
+
+        [Description("Close open polyline by adding first point to the end of control points.")]
+        [Input("polyline", "Polyline to close.")]
+        [Input("tolerance", "Tolerance used in the method.")]
+        [Output("polyline", "Closed polyline.")]
+        public static PolyCurve Close(this PolyCurve polyCurve, double tolerance = Tolerance.Distance)
+        {
+            if (polyCurve == null || polyCurve.Curves.Count == 0 || polyCurve.IsClosed(tolerance))
+            {
+                return polyCurve;
+            }
+
+            List<ICurve> curves = polyCurve.Curves.ToList();
+            curves.Add(new Line { Start = polyCurve.EndPoint(), End = polyCurve.StartPoint()});
+
+            return new PolyCurve { Curves = curves };
+        }
+
+        /***************************************************/
     }
 }
 
