@@ -41,10 +41,10 @@ namespace BH.Engine.Spatial
 
         [Description("Orients the element from one coordinate system to another.")]
         [Input("element", "The element to orient.")]
-        [Input("from", "The cartesian coordinate system to orient from.")]
-        [Input("to", "The cartesian coordinate system to orient to.")]
+        [Input("from", "The cartesian coordinate system to orient from. Deaults to global XY if nothing is provided.")]
+        [Input("to", "The cartesian coordinate system to orient to. Deaults to global XY if nothing is provided.")]
         [Output("element", "The reoriented element.")]
-        public static IElement Orient(this IElement element, Cartesian from, Cartesian to)
+        public static IElement Orient(this IElement element, Cartesian from = null, Cartesian to = null)
         {
             if (element == null)
             {
@@ -52,17 +52,22 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
+            if (from == null && to == null)
+            {
+                Engine.Base.Compute.RecordWarning($"No {nameof(from)} or {nameof(to)} coordinate systems provided. Unchanged element returned.");
+                return element;
+            }
+
             if (from == null)
             {
-                Base.Compute.RecordError($"The {nameof(from)} coordinate system is null. Unable to orient the element.");
-                return null;
+                Base.Compute.RecordNote($"The {nameof(from)} coordinate system is null. Global XY will be used.");
+                from = new Cartesian();
             }
 
             if (to == null)
             {
-                Base.Compute.RecordError($"The {nameof(to)} coordinate system is null. Unable to orient the element.");
-                return null;
-
+                Base.Compute.RecordNote($"The {nameof(to)} coordinate system is null. Global XY will be used.");
+                to = new Cartesian();
             }
 
             TransformMatrix transformMatrix = Geometry.Create.OrientationMatrix(from, to);
