@@ -222,7 +222,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<Polyline> result = Join(tmpResult, tolerance);
+            List<Polyline> result = Join(tmpResult, tolerance).Select(x => x.Close()).ToList();
 
             int res = 0;
             while (res < result.Count)
@@ -355,7 +355,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<PolyCurve> result = IJoin(tmpResult, tolerance).ToList();
+            List<PolyCurve> result = IJoin(tmpResult, tolerance).Select(x => x.Close()).ToList();
 
             int res = 0;
             while (res < result.Count)
