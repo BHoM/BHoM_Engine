@@ -21,12 +21,7 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
-using System;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.MEP.Electrical
 {
@@ -44,13 +39,13 @@ namespace BH.Engine.MEP.Electrical
         {
             if(brakeHorsepower == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null brake horsepower value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null brake horsepower value");
                 return -1;
             }
 
             if (motor_driveEfficiency == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null motor-drive efficiency value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null motor-drive efficiency value");
                 return -1;
             }
 

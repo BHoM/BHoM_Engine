@@ -21,13 +21,10 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
+using BH.oM.Base.Attributes;
+using System;
 
-namespace BH.Engine.MEP.HVAC.RulesOfThumb.WaterSide
+namespace BH.Engine.MEP.Mechanical.ASHRAE_15
 {
     public static partial class Compute
     {
@@ -35,35 +32,22 @@ namespace BH.Engine.MEP.HVAC.RulesOfThumb.WaterSide
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the total heat contained within water given flow rate and two temperature points. Rule of Thumb calc uses coefficient at standard water conditions.")]
-        [Input("flowRate", "water flow rate [GPM]")]
-        [Input("temperatureIn", "in temperature value [F]")]
-        [Input("temperatureOut", "out temperature value [F]")]
-        [Output("totalHeat", "total heat value [Btu/h]")]
-        public static double TotalHeat(double flowRate, double temperatureIn, double temperatureOut)
+        [Description("Calculates the ventilation free opening area [sqft] required for ventilation of partially enclosed mechanical rooms with refrigeration equipment per ASHRAE 15, Part 8.")]
+        [Input("massOfRefrigerant", "mass of refrigerant of largest sysem [lbs]")]
+        [Output("ventilationFreeArea", "ventilation free opening area required [sqft]")]
+        public static double PartiallyEnclosed(double massOfRefrigerant)
         {
-            if(flowRate == double.NaN)
+            if(massOfRefrigerant == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null flowRate value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null mass of refrigerant value");
                 return -1;
             }
 
-            if(temperatureIn == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null temperatureIn value");
-                return -1;
-            }
 
-            if (temperatureOut == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null temperatureOut value");
-                return -1;
-            }
-
-            double totalHeat = 500 * flowRate * (temperatureIn-temperatureOut);
+            double ventilationFreeArea = Math.Pow(massOfRefrigerant, 0.5);
 
 
-            return totalHeat;
+            return ventilationFreeArea;
         }
 
         /***************************************************/

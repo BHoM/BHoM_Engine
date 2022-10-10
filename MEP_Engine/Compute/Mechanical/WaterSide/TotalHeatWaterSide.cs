@@ -21,13 +21,9 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
+namespace BH.Engine.MEP.Compute.HVAC.WaterSide
 {
     public static partial class Compute
     {
@@ -35,35 +31,35 @@ namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the latent heat contained within air given CFM and two humidityRatio points. Rule of Thumb calc uses coefficient at STP of air.")]
-        [Input("airflow", "Airflow [CFM]")]
-        [Input("humidityRatioIn", "in humidityRatio value [Lbs water/Lbs dry air]")]
-        [Input("humidityRatioOut", "out humidityRatio value [Lbs water/Lbs dry air]")]
-        [Output("latentHeat", "latent heat value [Btu/h]")]
-        public static double LatentHeat(double airflow, double humidityRatioIn, double humidityRatioOut)
+        [Description("Calculates the total heat energy contained within water given flow rate and two temperature points. Rule of Thumb calculation uses coefficient at standard water conditions.")]
+        [Input("flowRate", "water flow rate [GPM]")]
+        [Input("temperatureIn", "in temperature value [F]")]
+        [Input("temperatureOut", "out temperature value [F]")]
+        [Output("totalHeat", "total heat value [Btu/h]")]
+        public static double TotalHeat(double flowRate, double temperatureIn, double temperatureOut)
         {
-            if(airflow == double.NaN)
+            if (flowRate == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the latent heat from a null airflow value");
+                Base.Compute.RecordError("Cannot compute the total heat from a null flowRate value");
                 return -1;
             }
 
-            if(humidityRatioIn == double.NaN)
+            if (temperatureIn == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the latent heat from a null humidityRatioIn value");
+                Base.Compute.RecordError("Cannot compute the total heat from a null temperatureIn value");
                 return -1;
             }
 
-            if (humidityRatioOut == double.NaN)
+            if (temperatureOut == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the latent heat from a null humidityRatioOut value");
+                Base.Compute.RecordError("Cannot compute the total heat from a null temperatureOut value");
                 return -1;
             }
 
-            double latentHeat = 4840 * airflow * (humidityRatioIn-humidityRatioOut);
+            double totalHeat = 500 * flowRate * (temperatureIn - temperatureOut);
 
 
-            return latentHeat;
+            return totalHeat;
         }
 
         /***************************************************/

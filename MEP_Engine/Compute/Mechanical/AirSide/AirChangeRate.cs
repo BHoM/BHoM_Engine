@@ -21,13 +21,9 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
+namespace BH.Engine.MEP.Mechanical
 {
     public static partial class Compute
     {
@@ -35,35 +31,29 @@ namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the total heat contained within air given CFM and two enthalpy points. Rule of Thumb calc uses coefficient at STP of air.")]
-        [Input("airflow", "Airflow [CFM]")]
-        [Input("enthalpyIn", "in enthalpy value [Btu/Lb dry air]")]
-        [Input("enthalpyOut", "out enthalpy value [Btu/Lb dry air]")]
-        [Output("totalHeat", "total heat value [Btu/h]")]
-        public static double TotalHeat(double airflow, double enthalpyIn, double enthalpyOut)
+        [Description("Calculates the air change rate (ACH) given airflow and volume of space")]
+        [Input("airflow", "airflow [CFM]")]
+        [Input("volume", "space volume [ft3]")]
+        [Output("ACH", "[Air changes/hour]")]
+        public static double AirChangeRate(double airflow, double volume)
         {
             if(airflow == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null airflow value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null airflow value");
                 return -1;
             }
 
-            if(enthalpyIn == double.NaN)
+            if(volume == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null enthalpyIn value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null volume value");
                 return -1;
             }
 
-            if (enthalpyOut == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the total heat from a null enthalpyOut value");
-                return -1;
-            }
 
-            double totalHeat = 4.5 * airflow * (enthalpyIn-enthalpyOut);
+            double ACH = (airflow * 60)/volume;
 
 
-            return totalHeat;
+            return ACH;
         }
 
         /***************************************************/

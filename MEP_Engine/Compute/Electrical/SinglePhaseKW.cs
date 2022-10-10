@@ -21,12 +21,7 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
-using System;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.MEP.Electrical
 {
@@ -45,19 +40,19 @@ namespace BH.Engine.MEP.Electrical
         {
             if(voltage == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null voltage value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null voltage value");
                 return -1;
             }
 
             if (amperage == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null amperage value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null amperage value");
                 return -1;
             }
 
             if (powerFactor == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null powerFactor value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null powerFactor value");
                 return -1;
             }
 

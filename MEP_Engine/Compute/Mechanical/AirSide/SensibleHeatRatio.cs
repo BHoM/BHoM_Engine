@@ -21,14 +21,9 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
-using System;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.MEP.HVAC.ASHRAE_15
+namespace BH.Engine.MEP.Mechanical.RulesOfThumb.AirSide
 {
     public static partial class Compute
     {
@@ -36,22 +31,29 @@ namespace BH.Engine.MEP.HVAC.ASHRAE_15
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the ventilation free opening area [sqft] required for ventilation of partially enclosed mechanical rooms with refrigeration equipment per ASHRAE 15, Part 8.")]
-        [Input("massOfRefrigerant", "mass of refrigerant of largest sysem [lbs]")]
-        [Output("ventilationFreeArea", "ventilation free opening area required [sqft]")]
-        public static double PartiallyEnclosed(double massOfRefrigerant)
+        [Description("Calculates the sensible heat ratio (SHR) given sensible heat and total heat (total heat = sensible heat + latent heat).")]
+        [Input("sensibleHeat", "sensible heat value [Btu/h]")]
+        [Input("totalHeat", "total heat value [Btu/h]")]
+        [Output("sensibleHeatRatio", "[Btu/h]")]
+        public static double SensibleHeatRatio(double sensibleHeat, double totalHeat)
         {
-            if(massOfRefrigerant == double.NaN)
+            if(sensibleHeat == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null mass of refrigerant value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the SHR from a null sensible heat value");
+                return -1;
+            }
+
+            if(totalHeat == double.NaN)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot compute the SHR from a null total heat value");
                 return -1;
             }
 
 
-            double ventilationFreeArea = Math.Pow(massOfRefrigerant, 0.5);
+            double sensibleHeatRatio = sensibleHeat/totalHeat;
 
 
-            return ventilationFreeArea;
+            return sensibleHeatRatio;
         }
 
         /***************************************************/

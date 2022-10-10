@@ -22,13 +22,9 @@
 
 using System.ComponentModel;
 using System;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.MEP.HVAC
+namespace BH.Engine.MEP.Mechanical
 {
     public static partial class Compute
     {
@@ -48,28 +44,28 @@ namespace BH.Engine.MEP.HVAC
         {
             if (heatExchangerType != 0 || heatExchangerType!= 1)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null type value. Ensure value is either [0] for counterfCold or [1] for parallel");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the LMTD from a null type value. Ensure value is either [0] for counterfCold or [1] for parallel");
                 return -1;
             }
 
             //if (temperatureHotIn == double.NaN)
             //{
-            //    BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null temperatureHotIn value");
+            //    BH.Engine.Base.Compute.RecordError("Cannot compute the LMTD from a null temperatureHotIn value");
             //    return -1;
             //}
             //if (temperatureHotOut == double.NaN)
             //{
-            //    BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null temperatureHotOut value");
+            //    BH.Engine.Base.Compute.RecordError("Cannot compute the LMTD from a null temperatureHotOut value");
             //    return -1;
             //}
             //if (temperatureColdIn == double.NaN)
             //{
-            //    BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null temperatureColdIn value");
+            //    BH.Engine.Base.Compute.RecordError("Cannot compute the LMTD from a null temperatureColdIn value");
             //    return -1;
             //}
             //if (temperatureColdOut == double.NaN)
             //{
-            //    BH.Engine.Reflection.Compute.RecordError("Cannot compute the LMTD from a null temperatureColdOut value");
+            //    BH.Engine.Base.Compute.RecordError("Cannot compute the LMTD from a null temperatureColdOut value");
             //    return -1;
             //}
 

@@ -21,13 +21,9 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
+namespace BH.Engine.MEP.Mechanical.RulesOfThumb.AirSide
 {
     public static partial class Compute
     {
@@ -35,29 +31,35 @@ namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the sensible heat ratio (SHR) given sensible heat and total heat (total heat = sensible heat + latent heat).")]
-        [Input("sensibleHeat", "sensible heat value [Btu/h]")]
-        [Input("totalHeat", "total heat value [Btu/h]")]
-        [Output("sensibleHeatRatio", "[Btu/h]")]
-        public static double SensibleHeatRatio(double sensibleHeat, double totalHeat)
+        [Description("Calculates the latent heat contained within air given CFM and two humidityRatio points. Rule of Thumb calc uses coefficient at STP of air.")]
+        [Input("airflow", "Airflow [CFM]")]
+        [Input("humidityRatioIn", "in humidityRatio value [Lbs water/Lbs dry air]")]
+        [Input("humidityRatioOut", "out humidityRatio value [Lbs water/Lbs dry air]")]
+        [Output("latentHeat", "latent heat value [Btu/h]")]
+        public static double LatentHeat(double airflow, double humidityRatioIn, double humidityRatioOut)
         {
-            if(sensibleHeat == double.NaN)
+            if(airflow == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the SHR from a null sensible heat value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the latent heat from a null airflow value");
                 return -1;
             }
 
-            if(totalHeat == double.NaN)
+            if(humidityRatioIn == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the SHR from a null total heat value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the latent heat from a null humidityRatioIn value");
                 return -1;
             }
 
+            if (humidityRatioOut == double.NaN)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot compute the latent heat from a null humidityRatioOut value");
+                return -1;
+            }
 
-            double sensibleHeatRatio = sensibleHeat/totalHeat;
+            double latentHeat = 4840 * airflow * (humidityRatioIn-humidityRatioOut);
 
 
-            return sensibleHeatRatio;
+            return latentHeat;
         }
 
         /***************************************************/

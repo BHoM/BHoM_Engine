@@ -21,13 +21,10 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
+using BH.oM.Base.Attributes;
+using System;
 
-namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
+namespace BH.Engine.MEP.Mechanical.ASHRAE_15
 {
     public static partial class Compute
     {
@@ -35,35 +32,22 @@ namespace BH.Engine.MEP.HVAC.RulesOfThumb.AirSide
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the sensible heat contained within air given CFM and two temperature points. Rule of Thumb calc uses coefficient at STP of air.")]
-        [Input("airflow", "Airflow [CFM]")]
-        [Input("tempIn", "in temperature value [F]")]
-        [Input("tempOut", "out temperature value [F]")]
-        [Output("sensibleHeat", "sensible heat value [Btu/h]")]
-        public static double SensibleHeat(double airflow, double tempIn, double tempOut)
+        [Description("Calculates the airflow required for ventilation of completely enclosed mechanical rooms with refrigeration equipment per ASHRAE 15, Part 8.")]
+        [Input("massOfRefrigerant", "mass of refrigerant of largest sysem [lbs]")]
+        [Output("ventilationAirFlow", "exhaust air flow rate required [CFM]")]
+        public static double CompletelyEnclosed(double massOfRefrigerant)
         {
-            if(airflow == double.NaN)
+            if(massOfRefrigerant == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the sensible heat from a null airflow value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null mass of refrigerant value");
                 return -1;
             }
 
-            if(tempIn == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the sensible heat from a null tempIn value");
-                return -1;
-            }
 
-            if (tempOut == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the sensible heat from a null tempOut value");
-                return -1;
-            }
-
-            double sensibleHeat = 1.08 * airflow * (tempIn-tempOut);
+            double ventilationAirFlow = 100 * Math.Pow(massOfRefrigerant, 0.5);
 
 
-            return sensibleHeat;
+            return ventilationAirFlow;
         }
 
         /***************************************************/

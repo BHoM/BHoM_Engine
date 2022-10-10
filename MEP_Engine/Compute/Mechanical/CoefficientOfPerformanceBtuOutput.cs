@@ -21,13 +21,9 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.MEP.HVAC
+namespace BH.Engine.MEP.Mechanical
 {
     public static partial class Compute
     {
@@ -35,29 +31,28 @@ namespace BH.Engine.MEP.HVAC
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the air change rate (ACH) given airflow and volume of space")]
-        [Input("airflow", "airflow [CFM]")]
-        [Input("volume", "space volume [ft3]")]
-        [Output("ACH", "[Air changes/hour]")]
-        public static double AirChangeRate(double airflow, double volume)
+        [Description("Calculates the coefficient of performance given the BTU output and input.")]
+        [Input("btuOutput", "Equipment btu Output value")]
+        [Input("btuInput", "Equipment btu Input value")]
+        [Output("coefficientOfPerformanceBtuOutput", "The coefficient of performance (COP)")]
+        public static double CoefficientOfPerformanceBtuOutput(double btuOutput, double btuInput)
         {
-            if(airflow == double.NaN)
+            if(btuOutput == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null airflow value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the COP from a null btuOutput value");
                 return -1;
             }
 
-            if(volume == double.NaN)
+            if(btuInput == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null volume value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the COP from a null btuInput value");
                 return -1;
             }
 
+            double coefficientOfPerformanceBtuOutput = btuOutput/btuInput;
 
-            double ACH = (airflow * 60)/volume;
 
-
-            return ACH;
+            return coefficientOfPerformanceBtuOutput;
         }
 
         /***************************************************/

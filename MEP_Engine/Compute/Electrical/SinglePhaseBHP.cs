@@ -21,12 +21,8 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.MEP.Fixtures;
-using BH.oM.Architecture.Elements;
-using BH.Engine.Reflection;
-using System;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.MEP.Electrical
 {
@@ -36,43 +32,42 @@ namespace BH.Engine.MEP.Electrical
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates BHP (Brake Horsepower) for single phase equipment from volts, amps, power factor, and device efficiency")]
-        [Input("voltage", " [V]")]
-        [Input("amperage", " [A]")]
-        [Input("powerFactor", "power factor")]
-        [Input("deviceEfficiency", "device efficiency in decimal form (ex. 0.8)")]
-        [Output("BHP", "[hp]")]
-        public static double SinglePhaseBHP(double voltage, double amperage, double powerFactor, double deviceEfficiency)
+        [Description("Calculates BHP (Brake Horsepower) for single phase equipment from volts, amps, power factor, and device efficiency.")]
+        [Input("voltage", "The voltage of the electrical equipment.")]
+        [Input("amperage", "The electric current of the electrical equipment.", typeof(ElectricCurrent))]
+        [Input("powerFactor", "The power factor of the electrical equipment.")]
+        [Input("deviceEfficiency", "Device efficiency in decimal form (ex. 0.8)")]
+        [Output("BHP", "The brake horsepower of the electrical equipment.")]
+        public static double SinglePhaseBrakeHorsePower(double voltage, double amperage, double powerFactor, double deviceEfficiency)
         {
             if(voltage == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null voltage value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null voltage value.");
                 return -1;
             }
 
             if (amperage == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null amperage value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null amperage value.");
                 return -1;
             }
 
             if (powerFactor == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null powerFactor value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null powerFactor value.");
                 return -1;
             }
 
             if (deviceEfficiency == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("Cannot compute the ACH from a null device efficiency value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null device efficiency value.");
                 return -1;
             }
 
-            //TODO: no acronymns, spell out BHP spell out ACH
-            double BHP = (voltage * amperage * powerFactor * deviceEfficiency)/746;
+            double brakeHorsePower = (voltage * amperage * powerFactor * deviceEfficiency)/746;
 
 
-            return BHP;
+            return brakeHorsePower;
         }
 
         /***************************************************/
