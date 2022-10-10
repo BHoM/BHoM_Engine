@@ -52,12 +52,6 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (from == null && to == null)
-            {
-                Engine.Base.Compute.RecordWarning($"No {nameof(from)} or {nameof(to)} coordinate systems provided. Unchanged element returned.");
-                return element;
-            }
-
             if (from == null)
             {
                 Base.Compute.RecordError($"The {nameof(from)} coordinate system is null. Unable to orient the element. Null returned.");
