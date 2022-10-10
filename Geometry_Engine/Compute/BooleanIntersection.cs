@@ -355,7 +355,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<PolyCurve> result = IJoin(tmpResult, tolerance).Select(x => x.Close()).ToList();
+            List<PolyCurve> result = IJoin(tmpResult, tolerance).Select(x => x.Close(tolerance)).ToList();
 
             int res = 0;
             while (res < result.Count)
