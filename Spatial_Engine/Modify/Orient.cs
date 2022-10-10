@@ -44,11 +44,11 @@ namespace BH.Engine.Spatial
         [Input("from", "The cartesian coordinate system to orient from. Deaults to global XY if nothing is provided.")]
         [Input("to", "The cartesian coordinate system to orient to. Deaults to global XY if nothing is provided.")]
         [Output("element", "The reoriented element.")]
-        public static IElement Orient(this IElement element, Cartesian from = null, Cartesian to = null)
+        public static IElement Orient(this IElement element, Cartesian from, Cartesian to)
         {
             if (element == null)
             {
-                Base.Compute.RecordError("Cannot Orient a null element");
+                Base.Compute.RecordError("Cannot Orient a null element.");
                 return null;
             }
 
@@ -60,14 +60,14 @@ namespace BH.Engine.Spatial
 
             if (from == null)
             {
-                Base.Compute.RecordNote($"The {nameof(from)} coordinate system is null. Global XY will be used.");
-                from = new Cartesian();
+                Base.Compute.RecordError($"The {nameof(from)} coordinate system is null. Unable to orient the element. Null returned.");
+                return null;
             }
 
             if (to == null)
             {
-                Base.Compute.RecordNote($"The {nameof(to)} coordinate system is null. Global XY will be used.");
-                to = new Cartesian();
+                Base.Compute.RecordError($"The {nameof(to)} coordinate system is null. Unable to orient the element. Null returned.");
+                return null;
             }
 
             TransformMatrix transformMatrix = Geometry.Create.OrientationMatrix(from, to);
