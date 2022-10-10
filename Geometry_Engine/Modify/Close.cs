@@ -66,8 +66,18 @@ namespace BH.Engine.Geometry
                 return polyCurve;
             }
 
-            List<ICurve> curves = polyCurve.Curves.ToList();
-            curves.Add(new Line { Start = polyCurve.EndPoint(), End = polyCurve.StartPoint()});
+            List<ICurve> curves = new List<ICurve>();
+
+            double sqTol = tolerance * tolerance;
+            for (int i = 0; i < polyCurve.Curves.Count; i++)
+            {
+                curves.Add(polyCurve.Curves[i]);
+
+                Point stPt = polyCurve.Curves[i].IEndPoint();
+                Point enPt = polyCurve.Curves[(i + 1) % polyCurve.Curves.Count].IStartPoint();
+                if (stPt.SquareDistance(enPt) > sqTol)
+                    curves.Add(new Line { Start = stPt, End = enPt });
+            }
 
             return new PolyCurve { Curves = curves };
         }
