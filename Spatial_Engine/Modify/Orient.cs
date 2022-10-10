@@ -41,8 +41,8 @@ namespace BH.Engine.Spatial
 
         [Description("Orients the element from one coordinate system to another.")]
         [Input("element", "The element to orient.")]
-        [Input("from", "The cartesian coordinate system to orient from. Deaults to global XY if nothing is provided.")]
-        [Input("to", "The cartesian coordinate system to orient to. Deaults to global XY if nothing is provided.")]
+        [Input("from", "The cartesian coordinate system to orient from.")]
+        [Input("to", "The cartesian coordinate system to orient to.")]
         [Output("element", "The reoriented element.")]
         public static IElement Orient(this IElement element, Cartesian from, Cartesian to)
         {
