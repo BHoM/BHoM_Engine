@@ -15,7 +15,7 @@ namespace BH.Engine.MEP
 
         [Description("Calculates the circular flow area velocity given a volumetric flow rate and circular diameter.")]
         [Input("volumetricFlowRate", "Volumetric flow rate of fluid through fluid flow area.", typeof(VolumetricFlowRate))]
-        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area.", typeof(Length))]
+        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-circular flow area.", typeof(Length))]
         [Output("circularFlowAreaVelocity", "The velocity of the fluid through the flow area.", typeof(Velocity))]
         public static double CircularFlowAreaVelocity(double volumetricFlowRate, double circularDiameter)
         {

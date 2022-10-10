@@ -41,7 +41,7 @@ namespace BH.Engine.MEP
 
             if (fluidKinematicViscosity == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the friction losses from a null fluid kinemetatic viscosity.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the friction losses from a null fluid kinematic viscosity.");
                 return -1;
             }
 
@@ -49,18 +49,18 @@ namespace BH.Engine.MEP
             double volumetricFlowRate = duct.FlowRate;
             double ductLength = BH.Engine.MEP.Query.Length(duct);
 
-            double pressureLoss = _PressureLossCalculations(surfaceRoughness, fluidDensity, fluidKinematicViscosity, circularDiameter, volumetricFlowRate, ductLength);
+            double pressureLoss = PressureLossCalculations(surfaceRoughness, fluidDensity, fluidKinematicViscosity, circularDiameter, volumetricFlowRate, ductLength);
 
             return pressureLoss;
         }
 
         [Description("Calculates the  friction losses for a duct given duct length, circular diameter, volumetric flow rate, surface roughness, fluid density, and fluid kinematic viscosity.")]
         [Input("ductLength", "Length of duct.", typeof(Length))]
-        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area.", typeof(Length))]
+        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-circular flow area.", typeof(Length))]
         [Input("volumetricFlowRate", "Volumetric flow rate of fluid through fluid flow area.", typeof(VolumetricFlowRate))]
         [Input("surfaceRoughness", "Surface roughness.", typeof(Length))]
         [Input("fluidDensity", "Fluid density.", typeof(Density))]
-        [Input("fluidKinematicViscosity", "Fluid kinematice viscosity [m2/s]")]
+        [Input("fluidKinematicViscosity", "Fluid kinematic viscosity [m2/s]")]
         [Output("pressureLoss", "The static pressure loss due to fluid flow through the flow area.", typeof(Pressure))]
         public static double DuctPressureLoss(double ductLength, double circularDiameter, double volumetricFlowRate, double surfaceRoughness, double fluidDensity, double fluidKinematicViscosity)
         {
@@ -96,11 +96,11 @@ namespace BH.Engine.MEP
 
             if (fluidKinematicViscosity == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the friction losses from a null fluid kinemetatic viscosity.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the friction losses from a null fluid kinematic viscosity.");
                 return -1;
             }
 
-            double pressureLoss = _PressureLossCalculations(surfaceRoughness, fluidDensity, fluidKinematicViscosity, circularDiameter, volumetricFlowRate, ductLength);
+            double pressureLoss = PressureLossCalculations(surfaceRoughness, fluidDensity, fluidKinematicViscosity, circularDiameter, volumetricFlowRate, ductLength);
 
             return pressureLoss;
         }
@@ -113,7 +113,7 @@ namespace BH.Engine.MEP
         [Input("volumetricFlowRate", "Volumetric flow rate of fluid through fluid flow area.", typeof(VolumetricFlowRate))]
         [Input("surfaceRoughness", "Surface roughness.", typeof(Length))]
         [Input("fluidDensity", "Fluid density.", typeof(Density))]
-        [Input("fluidKinematicViscosity", "Fluid kinematice viscosity [m2/s]")]
+        [Input("fluidKinematicViscosity", "Fluid kinematic viscosity [m2/s]")]
         [Output("pressureLoss", "The static pressure loss due to fluid flow through the flow area.", typeof(Pressure))]
         public static double DuctPressureLoss(double ductLength, double ductHeight, double ductWidth, DuctProfile ductProfile,double volumetricFlowRate, double surfaceRoughness, double fluidDensity, double fluidKinematicViscosity)
         {
@@ -155,12 +155,12 @@ namespace BH.Engine.MEP
 
             if (fluidKinematicViscosity == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the friction losses from a null fluid kinemetatic viscosity.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the friction losses from a null fluid kinematic viscosity.");
                 return -1;
             }
 
             double circularDiameter = CircularEquivalentDiameter(ductHeight, ductWidth, ductProfile);
-            double pressureLoss = _PressureLossCalculations(surfaceRoughness, fluidDensity, fluidKinematicViscosity, circularDiameter, volumetricFlowRate, ductLength);
+            double pressureLoss = PressureLossCalculations(surfaceRoughness, fluidDensity, fluidKinematicViscosity, circularDiameter, volumetricFlowRate, ductLength);
 
             return pressureLoss;
         }
@@ -171,7 +171,7 @@ namespace BH.Engine.MEP
         /****   Private Methods                          ****/
         /***************************************************/
 
-        private static double _PressureLossCalculations(double surfaceRoughness, double fluidDensity, double fluidKinematicViscosity, double circularDiameter, double volumetricFlowRate, double ductLength)
+        private static double PressureLossCalculations(double surfaceRoughness, double fluidDensity, double fluidKinematicViscosity, double circularDiameter, double volumetricFlowRate, double ductLength)
         {
             double circularFlowAreaVelocity = CircularFlowAreaVelocity(volumetricFlowRate, circularDiameter);
             double reynoldsNumber = ReynoldsNumber(circularFlowAreaVelocity, circularDiameter, fluidKinematicViscosity);

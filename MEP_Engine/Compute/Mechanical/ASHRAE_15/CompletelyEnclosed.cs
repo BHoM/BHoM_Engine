@@ -23,6 +23,7 @@
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using System;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.MEP.Mechanical.ASHRAE_15
 {
@@ -32,19 +33,19 @@ namespace BH.Engine.MEP.Mechanical.ASHRAE_15
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the airflow required for ventilation of completely enclosed mechanical rooms with refrigeration equipment per ASHRAE 15, Part 8.")]
-        [Input("massOfRefrigerant", "mass of refrigerant of largest sysem [lbs]")]
-        [Output("ventilationAirFlow", "exhaust air flow rate required [CFM]")]
+        [Description("Calculates the airflow required for ventilation of completely enclosed mechanical rooms with refrigeration equipment per ASHRAE 15 - 2016, Part 8.")]
+        [Input("massOfRefrigerant", "Mass of refrigerant of largest system.", typeof(Mass))]
+        [Output("ventilationAirFlow", "Exhaust air flow rate required.", typeof(VolumetricFlowRate))]
         public static double CompletelyEnclosed(double massOfRefrigerant)
         {
             if(massOfRefrigerant == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null mass of refrigerant value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the exhaust airflow from a null mass of refrigerant value.");
                 return -1;
             }
 
 
-            double ventilationAirFlow = 100 * Math.Pow(massOfRefrigerant, 0.5);
+            double ventilationAirFlow = 70 * Math.Pow(massOfRefrigerant, 0.5);
 
 
             return ventilationAirFlow;

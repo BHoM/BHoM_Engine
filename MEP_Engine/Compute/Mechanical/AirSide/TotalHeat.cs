@@ -23,7 +23,7 @@
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 
-namespace BH.Engine.MEP.Mechanical.RulesOfThumb.AirSide
+namespace BH.Engine.MEP.Mechanical.AirSide
 {
     public static partial class Compute
     {

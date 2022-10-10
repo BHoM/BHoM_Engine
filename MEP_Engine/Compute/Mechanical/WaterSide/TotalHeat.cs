@@ -22,6 +22,7 @@
 
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.MEP.Compute.HVAC.WaterSide
 {
@@ -31,12 +32,14 @@ namespace BH.Engine.MEP.Compute.HVAC.WaterSide
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the total heat energy contained within water given flow rate and two temperature points. Rule of Thumb calculation uses coefficient at standard water conditions.")]
-        [Input("flowRate", "water flow rate [GPM]")]
-        [Input("temperatureIn", "in temperature value [F]")]
-        [Input("temperatureOut", "out temperature value [F]")]
-        [Output("totalHeat", "total heat value [Btu/h]")]
-        public static double TotalHeat(double flowRate, double temperatureIn, double temperatureOut)
+        [Description("Calculates the total heat energy contained within water given flow rate and two temperature points." +
+            "Default values are at standard water conditions." +
+            "Per ASHRAE Handbook HVAC Systems and Equipment 2020 (SI Edition) Chapter 13 Hydronic Heating and Cooling.")]
+        [Input("flowRate",  "Fluid flow rate.", typeof(VolumetricFlowRate))]
+        [Input("temperatureIn", "In temperature value.", typeof(Temperature))]
+        [Input("temperatureOut", "Out temperature value.", typeof(Temperature))]
+        [Output("totalHeat", "Total heat value.", typeof(Energy))]
+        public static double TotalHeat(double flowRate, double temperatureIn, double temperatureOut, double fluidSpecificHeat = double.MinValue, double fluiddensity = double.MinValue )
         {
             if (flowRate == double.NaN)
             {
@@ -56,7 +59,14 @@ namespace BH.Engine.MEP.Compute.HVAC.WaterSide
                 return -1;
             }
 
-            double totalHeat = 500 * flowRate * (temperatureIn - temperatureOut);
+            if (fluidSpecificHeat == double.MinValue || fluiddensity == double.MinValue)
+            {
+                Base.Compute.RecordNote("No values were given for either fluidSpecificHeat or fluidDensity. Default values will be used.");
+                fluiddensity = 4.18;
+                fluidSpecificHeat = 1000;
+            }
+
+            double totalHeat = fluidSpecificHeat * fluiddensity *  flowRate * (temperatureIn - temperatureOut);
 
 
             return totalHeat;

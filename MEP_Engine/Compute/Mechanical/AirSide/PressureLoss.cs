@@ -12,9 +12,9 @@ namespace BH.Engine.MEP
         /***************************************************/
 
         [Description("Calculates the static pressure losses for a duct given friction factor, duct length, circular diameter, fluid density, and fluid velocity. From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 18 -- Darcy Equation.")]
-        [Input("frictionFactor", "Friction factor, [unitless]")]
+        [Input("frictionFactor", "Friction factor, [unit-less]")]
         [Input("ductLength", "Length of duct", typeof(Length))]
-        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area.", typeof(Length))]
+        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-circular flow area.", typeof(Length))]
         [Input("velocityPressure", "The velocity pressure due to fluid flow through the flow area.", typeof(Pressure))]
         [Output("pressureLoss", "The static pressure losses due to fluid flow through the flow area.", typeof(Pressure))]
         public static double PressureLoss(double frictionFactor, double ductLength, double circularDiameter, double velocityPressure)

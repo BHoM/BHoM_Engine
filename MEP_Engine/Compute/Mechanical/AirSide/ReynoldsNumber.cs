@@ -12,11 +12,11 @@ namespace BH.Engine.MEP
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the reynolds number for a duct given fluid velocity, duct circular diameter, and fluid kinematic viscosity.From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 20 and 21.")]
+        [Description("Calculates the Reynolds number for a duct given fluid velocity, duct circular diameter, and fluid kinematic viscosity.From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 20 and 21.")]
         [Input("fluidVelocity", "Fluid flow velocity.", typeof(Velocity))]
-        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area.",typeof(Length))]
-        [Input("fluidKinematicViscosity", "Fluid kinematice viscosity: If fluid kinematic viscosity is ommited, default values apply. [m2/s] ")]
-        [Output("reynoldsNumber", "The reynolds number for fluid flow through the flow area.[unitless]")]
+        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-circular flow area.",typeof(Length))]
+        [Input("fluidKinematicViscosity", "Fluid kinematic viscosity: If fluid kinematic viscosity is omitted, default values apply. [m2/s] ")]
+        [Output("reynoldsNumber", "The Reynolds number for fluid flow through the flow area.[unit-less]")]
         public static double ReynoldsNumber(double fluidVelocity, double circularDiameter, double fluidKinematicViscosity = double.NaN)
         {
             
@@ -35,7 +35,7 @@ namespace BH.Engine.MEP
             if (fluidKinematicViscosity == double.NaN)
             {
                 //For standard air and temperature between 4C and 38C, it is acceptable to use the equation below.
-                //The coefficienct of "66.4" comes from a simplified equation as shown in ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 21. 
+                //The coefficient of "66.4" comes from a simplified equation as shown in ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 21. 
                 BH.Engine.Base.Compute.RecordNote("Reynolds number computed from a simplified equation as shown in ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 21.");
                 return 66.4 * circularDiameter * 1000 * fluidVelocity;
                 
@@ -45,10 +45,10 @@ namespace BH.Engine.MEP
 
         }
 
-        [Description("Calculates the reynolds number for a duct object and fluid kinematic viscosity. From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 20 and 21. Only for use with ducts pulled from Revit.")]
+        [Description("Calculates the Reynolds number for a duct object and fluid kinematic viscosity. From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 20 and 21. Only for use with ducts pulled from Revit.")]
         [Input("duct", "Duct Object", typeof(Duct))]
-        [Input("fluidKinematicViscosity", "Fluid kinematic viscosity. If fluid kinematic viscosity is ommited, default values apply. [m2/s] ")]
-        [Output("reynoldsNumber", "The reynolds number for fluid flow through the flow area.[unitless]")]
+        [Input("fluidKinematicViscosity", "Fluid kinematic viscosity. If fluid kinematic viscosity is omitted, default values apply. [m2/s] ")]
+        [Output("reynoldsNumber", "The Reynolds number for fluid flow through the flow area.[unit-less]")]
         public static double ReynoldsNumber(this Duct duct, double fluidKinematicViscosity = double.NaN)
         {
             
@@ -64,7 +64,7 @@ namespace BH.Engine.MEP
             if (fluidKinematicViscosity == double.NaN)
             {
                 //For standard air and temperature between 4C and 38C, it is acceptable to use the equation below.
-                //The coefficienct of "66.4" comes from a simplified equation as shown in ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 21. 
+                //The coefficient of "66.4" comes from a simplified equation as shown in ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 21. 
                 BH.Engine.Base.Compute.RecordNote("Reynolds number computed from a simplified equation as shown in ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 21.");
                 return 66.4 * circularDiameter * 1000 * fluidVelocity;
             }

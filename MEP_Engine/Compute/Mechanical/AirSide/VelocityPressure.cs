@@ -13,7 +13,7 @@ namespace BH.Engine.MEP
         /***************************************************/
         [Description("Calculates the velocity pressure for a duct or fitting given fluid velocity and fluid density. From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 8 and 9.")]
         [Input("fluidVelocity", "Fluid flow velocity. For fitting pressure drops, ensure to use the velocity of the actual duct, not the circular equivalent velocity.", typeof(Velocity))]
-        [Input("fluidDensity", " If fluid density is ommited, default values apply.", typeof(Density))]
+        [Input("fluidDensity", " If fluid density is omitted, default values apply.", typeof(Density))]
         [Output("velocityPressure", "The velocity pressure due to fluid flow through the flow area.", typeof(Pressure))]
         public static double VelocityPressure(double fluidVelocity, double fluidDensity = double.NaN)
         {
@@ -37,7 +37,7 @@ namespace BH.Engine.MEP
 
         [Description("Calculates the velocity pressure for a duct object given a duct object and fluid density. Only for use with ducts pulled from Revit. From ASHRAE 2021 Fundamentals (SI) Chapter 21 Duct Design, Equation 8 and 9.")]
         [Input("duct", "Duct Object", typeof(Duct))]
-        [Input("fluidDensity", "If fluid density is ommited, default values apply.", typeof(Density))]
+        [Input("fluidDensity", "If fluid density is omitted, default values apply.", typeof(Density))]
         [Output("velocityPressure", "The velocity pressure due to fluid flow through the flow area.", typeof(Pressure))]
         public static double VelocityPressure(this Duct duct, double fluidDensity = double.NaN)
         {

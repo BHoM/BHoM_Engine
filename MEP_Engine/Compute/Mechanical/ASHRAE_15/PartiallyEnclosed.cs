@@ -23,6 +23,7 @@
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using System;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.MEP.Mechanical.ASHRAE_15
 {
@@ -32,19 +33,19 @@ namespace BH.Engine.MEP.Mechanical.ASHRAE_15
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the ventilation free opening area [sqft] required for ventilation of partially enclosed mechanical rooms with refrigeration equipment per ASHRAE 15, Part 8.")]
-        [Input("massOfRefrigerant", "mass of refrigerant of largest sysem [lbs]")]
-        [Output("ventilationFreeArea", "ventilation free opening area required [sqft]")]
+        [Description("Calculates the ventilation free opening area required for ventilation of partially enclosed mechanical rooms with refrigeration equipment per ASHRAE 15-2016, Part 8.")]
+        [Input("massOfRefrigerant", "Mass of refrigerant of largest system.", typeof(Mass))]
+        [Output("ventilationFreeArea", "Ventilation free opening area required.", typeof(Area))]
         public static double PartiallyEnclosed(double massOfRefrigerant)
         {
             if(massOfRefrigerant == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the ACH from a null mass of refrigerant value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the ventilation free area from a null mass of refrigerant value.");
                 return -1;
             }
 
 
-            double ventilationFreeArea = Math.Pow(massOfRefrigerant, 0.5);
+            double ventilationFreeArea = 0.138 * Math.Pow(massOfRefrigerant, 0.5);
 
 
             return ventilationFreeArea;

@@ -12,16 +12,16 @@ namespace BH.Engine.MEP
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the  friction factor for a duct given reynolds number, circular diameter, and surface roughness. Typically used in pressure drop calculations")]
-        [Input("reynoldsNumber", "Reynolds number, [unitless]")]
-        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-ciruclar flow area.", typeof(Length))]
+        [Description("Calculates the  friction factor for a duct given Reynolds number, circular diameter, and surface roughness. Typically used in pressure drop calculations")]
+        [Input("reynoldsNumber", "Reynolds number, [unit-less]")]
+        [Input("circularDiameter", "Circular diameter of a fluid flow area, typically referred to as equivalent circular diameter given any non-circular flow area.", typeof(Length))]
         [Input("surfaceRoughness", "Surface roughness.", typeof(Length))]
-        [Output("frictionFactor", "The friction factor, unitless.")]
+        [Output("frictionFactor", "The friction factor, unit-less.")]
         public static double FrictionFactor(double reynoldsNumber, double circularDiameter, double surfaceRoughness)
         {
             if(reynoldsNumber == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the friction factor from a null reynolds number.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the friction factor from a null Reynolds number.");
                 return -1;
             }
 
@@ -37,13 +37,13 @@ namespace BH.Engine.MEP
                 return -1;
             }
 
-            return _FrictionFactor(surfaceRoughness, reynoldsNumber, circularDiameter);
+            return CalculateFrictionFactor(surfaceRoughness, reynoldsNumber, circularDiameter);
         }
 
         [Description("Calculates the friction factor for a duct given duct object and surface roughness. Only for use with ducts pulled from Revit.")]
         [Input("duct", "Duct Object.", typeof(Duct))]
         [Input("surfaceRoughness", "Surface Roughness", typeof(Length))]
-        [Output("frictionFactor", "The friction factor, unitless.")]
+        [Output("frictionFactor", "The friction factor, unit-less.")]
         public static double FrictionFactor(this Duct duct, double surfaceRoughness)
         {
             if (duct == null)
@@ -62,10 +62,10 @@ namespace BH.Engine.MEP
             double reynoldsNumber = ReynoldsNumber(duct);
             double circularDiameter = duct.SectionProperty.CircularEquivalentDiameter;
 
-            return _FrictionFactor(surfaceRoughness, reynoldsNumber, circularDiameter);
+            return CalculateFrictionFactor(surfaceRoughness, reynoldsNumber, circularDiameter);
         }
 
-        private static double _FrictionFactor(double surfaceRoughness, double reynoldsNumber, double circularDiameter)
+        private static double CalculateFrictionFactor(double surfaceRoughness, double reynoldsNumber, double circularDiameter)
         {
             double componentA = Math.Pow(2.457 * Math.Log(1.0 / (Math.Pow(7.0 / reynoldsNumber, 0.9) + (0.27 * surfaceRoughness / circularDiameter))), 16);
             double componentB = Math.Pow((37530.0 / reynoldsNumber), 16);

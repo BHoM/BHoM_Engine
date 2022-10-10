@@ -32,27 +32,7 @@ namespace BH.Engine.MEP
                     return -1;
             }
         }
-
-        ////assuming new physical representation of ducts 
-        //[Description("Returns the Circular Equivalent Diameter for elements that are non-circular, equivalent in length, fluid resistance and airflow.")]
-        //[Input("duct", "Duct object", typeof(Duct))]
-        //[Input("ductProfile", "Duct opening profile shape", typeof(DuctProfile))]
-        //[Output("circularEquivalentDiameter", "Circular Equivalent Diameter for element section profiles that are non-circular, equivalent in length, fluid resistance and airflow.", typeof(Length))]
-        //public static double CircularEquivalentDiameter(this Duct duct, DuctProfile ductProfile)
-        //{
-        //    switch (ductProfile)
-        //    {
-        //        case DuctProfile.Oval:
-        //            return OvalCircularEquivalentDiameter(duct.Height, duct.Width);
-        //        default:
-        //        case DuctProfile.Rectangular:
-        //            return RectangularCircularEquivalentDiameter(duct.Height, duct.Width);
-        //        case DuctProfile.Circular:
-        //            BH.Engine.Base.Compute.RecordError("Cannot compute the circular equivalent diameter for a circular duct.");
-        //            return -1;
-        //    }
-        //}
-
+        
         /***************************************************/
         /****   Private Methods                          ****/
         /***************************************************/
