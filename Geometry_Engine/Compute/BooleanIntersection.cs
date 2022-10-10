@@ -222,7 +222,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<Polyline> result = Join(tmpResult, tolerance).Select(x => x.Close()).ToList();
+            List<Polyline> result = Join(tmpResult, tolerance).Select(x => x.Close(tolerance)).ToList();
 
             int res = 0;
             while (res < result.Count)
