@@ -213,22 +213,30 @@ namespace BH.Engine.Geometry
 
             List<PolyCurve> result = new List<PolyCurve>();
             List<Point> onCurvePoints = new List<Point>();
+            List<ICurve> subParts = curve.ISubParts().ToList(); //Subparts of PolyCurve
+            if (subParts.Count == 1)    //Single SubPart
+            {
+                foreach (ICurve splitSegment in SplitAtPoints(subParts[0] as dynamic, points, tolerance))   //Simply call the appropriate split at method
+                {
+                    result.Add(new PolyCurve { Curves = new List<ICurve> { splitSegment } });   //And wrap split segments into polycurves
+                }
+                return result;  
+            }
 
-            foreach (Point p in points)
+            foreach (Point p in points) //Get points on the curve
             {
                 if (p.IsOnCurve(curve, tolerance))
                     onCurvePoints.Add(p);
             }
 
-            onCurvePoints = onCurvePoints.CullDuplicates(tolerance);
+            onCurvePoints = onCurvePoints.CullDuplicates(tolerance);    //Cull out any duplicates to avoid splitting at the same place twice
 
             if (onCurvePoints.Count == 0)
                 return new List<PolyCurve> { curve.DeepClone() };
 
-            onCurvePoints = onCurvePoints.SortAlongCurve(curve);
+            onCurvePoints = onCurvePoints.SortAlongCurve(curve);    //Important to make this sort to be able to check for start/end splits in the loop below.
 
             PolyCurve prev = null;  //Polycurve to collect parts across segments
-            List<ICurve> subParts = curve.ISubParts().ToList();
             double sqTol = tolerance * tolerance;
             for (int k = 0; k < subParts.Count; k++)
             {
