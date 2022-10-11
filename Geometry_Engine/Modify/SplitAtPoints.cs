@@ -212,8 +212,6 @@ namespace BH.Engine.Geometry
                 return new List<PolyCurve> { curve.DeepClone() };
 
             List<PolyCurve> result = new List<PolyCurve>();
-            List<ICurve> tmpResult = new List<ICurve>();
-            List<Point> subPoints = new List<Point>();
             List<Point> onCurvePoints = new List<Point>();
 
             foreach (Point p in points)
@@ -229,94 +227,68 @@ namespace BH.Engine.Geometry
 
             onCurvePoints = onCurvePoints.SortAlongCurve(curve);
 
-            foreach (ICurve crv in curve.SubParts())
+            PolyCurve prev = null;  //Polycurve to collect parts across segments
+            List<ICurve> subParts = curve.ISubParts().ToList();
+            double sqTol = tolerance * tolerance;
+            for (int k = 0; k < subParts.Count; k++)
             {
-                if (crv is Arc)
+                ICurve crv = subParts[k];
+                List<Point> ptsOnSegment = onCurvePoints.Where(x => x.IIsOnCurve(crv, tolerance)).ToList(); //Get points on the segment
+
+                if (ptsOnSegment.Any()) //If any points on the current segment
                 {
-                    foreach (Point point in onCurvePoints)
+                    List<ICurve> split = new List<ICurve>();
+                    split.AddRange(SplitAtPoints(crv as dynamic, ptsOnSegment, tolerance)); //Split the segment. Assuming curves returned are ordered
+                    if (prev != null)   //Prev contains parts from previous segment, unless split at endpoint
                     {
-                        if (point.IIsOnCurve(crv, tolerance))
-                            subPoints.Add(point);
-                    }
-                    tmpResult.AddRange((crv as Arc).SplitAtPoints(subPoints));
-                    subPoints.Clear();
-                }
-                else if (crv is Line)
-                {
-                    foreach (Point point in onCurvePoints)
-                    {
-                        if (point.IIsOnCurve(crv, tolerance))
-                            subPoints.Add(point);
-                    }
-                    tmpResult.AddRange((crv as Line).SplitAtPoints(subPoints));
-                    subPoints.Clear();
-                }
-                else if (crv is Circle)
-                {
-                    List<PolyCurve> tResult = new List<PolyCurve>();
-                    foreach (Arc arc in (crv as Circle).SplitAtPoints(onCurvePoints, tolerance))
-                        tResult.Add(new PolyCurve { Curves = new List<ICurve> { arc } });
-                    result.AddRange(tResult);
-                }
-                else
-                {
-                    Base.Compute.RecordError($"SplitAtPoints is not implemented for PolyCurves consisting of ICurves of type: {crv.GetType().Name}.");
-                    return null;
-                }
-            }
-
-            int i = 0;
-            int j = 0;
-
-            if (curve.IStartPoint().IsEqual(onCurvePoints[0]))
-            {
-                onCurvePoints.Add(onCurvePoints[0]);
-                onCurvePoints.RemoveAt(0);
-            }
-
-            bool isClosedAndAntiClockwise = curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.Normal(), tolerance);
-
-            while (i <= onCurvePoints.Count)
-            {
-                List<ICurve> subResultList = new List<ICurve>();
-
-                while (j < tmpResult.Count)
-                {
-                    subResultList.Add(tmpResult[j]);
-                    if (i < onCurvePoints.Count)
-                    {
-                        if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]) || (isClosedAndAntiClockwise && tmpResult[j].IStartPoint().IsEqual(onCurvePoints[i])))
+                        if (ptsOnSegment[0].SquareDistance(crv.IStartPoint()) < sqTol)  //If split at startpoint
                         {
-                            j++;
-                            break;
+                            result.Add(prev);   //Add prev to return list
+                            result.Add(new PolyCurve { Curves = new List<ICurve> { split[0] } });   //Add first splitcurve to return list
                         }
-                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()) || (isClosedAndAntiClockwise && tmpResult[j].IEndPoint().IsEqual(curve.StartPoint())))
+                        else    //Not split at start of segment
                         {
-                            j++;
-                            break;
+                            prev.Curves.Add(split[0]);  //Add first split segment to prev
+                            result.Add(prev);   //Add prev to return list
                         }
                     }
-                    j++;
+                    else  //Prev null, means either this is first segment of curve or previous segment was split at endpoint -> nothing to bring over
+                        result.Add(new PolyCurve { Curves = new List<ICurve> { split[0] } });  //Simply add first split segment to return list
+
+                    for (int s = 1; s < split.Count - 1; s++)   //Loop though and all segments but the first and last
+                    {
+                        result.Add(new PolyCurve { Curves = new List<ICurve> { split[s] } });
+                    }
+
+                    if (ptsOnSegment.Last().SquareDistance(crv.IEndPoint()) < sqTol) //If split at endpoint of current segment
+                    {
+                        result.Add(new PolyCurve { Curves = new List<ICurve> { split.Last() } });   //Add last segment to return list
+                        prev = null;    //Set prev to null
+                    }
+                    else    //If not split at end point of segment
+                    {
+                        prev = new PolyCurve { Curves = new List<ICurve> { split.Last() } };    //Set prev to contain the last split segment
+                    }
                 }
-
-                if (subResultList.Count > 0)
-                    result.Add(new PolyCurve { Curves = subResultList.ToList() });
-
-                i++;
-            }
-
-            if (curve.IsClosed(tolerance) && !(curve.SubParts()[0] is Circle))
-                if (!curve.StartPoint().IsEqual(onCurvePoints[onCurvePoints.Count - 1]))
+                else    //If no splitpoints available
                 {
-                    List<ICurve> subResultList = new List<ICurve>();
-                    foreach (ICurve subCrv in result[result.Count - 1].ISubParts())
-                        subResultList.Add(subCrv);
-                    foreach (ICurve subCrv in result[0].ISubParts())
-                        subResultList.Add(subCrv);
-                    result.RemoveAt(0);
-                    result.RemoveAt(result.Count - 1);
-                    result.Add(new PolyCurve { Curves = subResultList.ToList() });
+                    if (prev != null)   //If prev is set
+                        prev.Curves.Add(crv);   //Add full segment to prev
+                    else
+                        prev = new PolyCurve { Curves = new List<ICurve> { crv } }; //If prev is set, add full segment to prev
                 }
+
+                if (k == subParts.Count - 1)    //Last segment
+                {
+                    if (prev != null)   //If prev is set
+                    {
+                        if (curve.IsClosed(tolerance) && result.Count != 0) //If curve is closed
+                            result[0].Curves.InsertRange(0, prev.Curves);   //Insert the curves in prev to the start of the first curve, ensuring a segment looping around the start/end is added
+                        else
+                            result.Add(prev);   //If not, simply add the prev to the return list
+                    }
+                }
+            }
 
             return result;
         }
