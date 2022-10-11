@@ -212,7 +212,7 @@ namespace BH.Engine.Geometry
                 return new List<PolyCurve> { curve.DeepClone() };
 
             List<PolyCurve> result = new List<PolyCurve>();
-            List<Point> onCurvePoints = new List<Point>();
+
             List<ICurve> subParts = curve.ISubParts().ToList(); //Subparts of PolyCurve
             if (subParts.Count == 1)    //Single SubPart
             {
@@ -223,39 +223,31 @@ namespace BH.Engine.Geometry
                 return result;  
             }
 
-            foreach (Point p in points) //Get points on the curve
-            {
-                if (p.IsOnCurve(curve, tolerance))
-                    onCurvePoints.Add(p);
-            }
-
-            onCurvePoints = onCurvePoints.CullDuplicates(tolerance);    //Cull out any duplicates to avoid splitting at the same place twice
-
-            if (onCurvePoints.Count == 0)
-                return new List<PolyCurve> { curve.DeepClone() };
-
-            onCurvePoints = onCurvePoints.SortAlongCurve(curve);    //Important to make this sort to be able to check for start/end splits in the loop below.
-
+            List<Point> nonDuplicatePoints = points.CullDuplicates(tolerance);
             PolyCurve prev = null;  //Polycurve to collect parts across segments
             double sqTol = tolerance * tolerance;
             for (int k = 0; k < subParts.Count; k++)
             {
                 ICurve crv = subParts[k];
-                List<Point> ptsOnSegment = onCurvePoints.Where(x => x.IIsOnCurve(crv, tolerance)).ToList(); //Get points on the segment
+                List<Point> ptsOnSegment = nonDuplicatePoints.Where(x => x.IIsOnCurve(crv, tolerance)).ToList(); //Get points on the segment
 
                 if (ptsOnSegment.Any()) //If any points on the current segment
                 {
                     List<ICurve> split = new List<ICurve>();
                     split.AddRange(SplitAtPoints(crv as dynamic, ptsOnSegment, tolerance)); //Split the segment. Assuming curves returned are ordered
 
-                    if (split.Count == 0)
+                    if (split.Count == 0)   //Should never happen
+                    {
+                        Base.Compute.RecordWarning($"Unable to split a segment of type {crv.GetType()} in a Polycurve. Segment ignored in returned split curve.");
                         continue;
+                    }
                     else if (split.Count == 1)  //Curve not split -> split point either start or end
                     {
                         if (ptsOnSegment.Any(x => x.SquareDistance(crv.IStartPoint()) < sqTol))  //Split at start
                         {
                             if (prev != null)
                                 result.Add(prev);   //Add prev to return list
+
                             prev = new PolyCurve { Curves = new List<ICurve> { split[0] } };    //Set prev to current segment
                         }
                         else    //Split at end
@@ -276,7 +268,8 @@ namespace BH.Engine.Geometry
                     {
                         if (prev != null)   //Prev contains parts from previous segment, unless split at endpoint
                         {
-                            if (ptsOnSegment[0].SquareDistance(crv.IStartPoint()) < sqTol)  //If split at startpoint
+                            Point stPt = crv.IStartPoint();
+                            if (ptsOnSegment.Any(x => x.SquareDistance(stPt) < sqTol))  //If split at startpoint
                             {
                                 result.Add(prev);   //Add prev to return list
                                 result.Add(new PolyCurve { Curves = new List<ICurve> { split[0] } });   //Add first splitcurve to return list
@@ -295,7 +288,8 @@ namespace BH.Engine.Geometry
                             result.Add(new PolyCurve { Curves = new List<ICurve> { split[s] } });
                         }
 
-                        if (ptsOnSegment.Last().SquareDistance(crv.IEndPoint()) < sqTol) //If split at endpoint of current segment
+                        Point ePt = crv.IEndPoint();
+                        if (ptsOnSegment.Any(x => x.SquareDistance(ePt) < sqTol)) //If split at endpoint of current segment
                         {
                             result.Add(new PolyCurve { Curves = new List<ICurve> { split.Last() } });   //Add last segment to return list
                             prev = null;    //Set prev to null
