@@ -11,7 +11,8 @@ namespace BH.Engine.Environment
     {
         public static void GroupByLevel (List<Panel>panels, double minLevel, double maxLevel, double tolerance)
         {
-            var = lowerPanels = panels.Where(x => x.Bottom().IControlPoints().Select(y => y.Z).Min() > minLevel).ToList();
+            var lowerPanels = panels.Where(x => x.Bottom().IControlPoints().Select(y => y.Z).Min() > minLevel).ToList();
+            var higherPanels = panels.Where(x => x.Top().IControlPoints().Select(y => y.Z).Max() < maxLevel).ToList();
         }
     }
 }
