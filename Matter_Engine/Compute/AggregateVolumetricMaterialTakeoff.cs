@@ -51,10 +51,11 @@ namespace BH.Engine.Matter
 
         [Description("Calculates an aggregate VolumetricMaterialTakeoff from a collection of elements.")]
         [Input("elements", "The elements to iterate over in generation of the VolumetricMaterialTakeoff.")]
+        [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns it. If false, the VolumetricMaterialTakeoff returned will be calculated, independant of fragment attached.")]
         [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff containing the unique materials across all elements.")]
-        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<IElementM> elements)
+        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<IElementM> elements, bool checkForTakeoffFragment = false)
         {
-            return AggregateVolumetricMaterialTakeoff(elements.Select(x => x.IVolumetricMaterialTakeoff()));
+            return AggregateVolumetricMaterialTakeoff(elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)));
         }
 
         /***************************************************/
