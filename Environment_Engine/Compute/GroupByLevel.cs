@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BH.Engine.Base.Compute
 {
-    internal class Class1
+    internal class GroupByLevel
     {
     }
 }
