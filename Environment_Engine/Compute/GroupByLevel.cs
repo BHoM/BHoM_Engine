@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BH.Engine.Base.Compute
+namespace BH.Engine.Environment
 {
-    internal class GroupByLevel
+    public static partial class Compute
     {
     }
 }
