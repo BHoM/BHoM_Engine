@@ -23,9 +23,11 @@
 using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -35,6 +37,11 @@ namespace BH.Engine.Geometry
         /****          public Methods - Lines           ****/
         /***************************************************/
 
+        [Description("Returns the parts of the first line that are _not_ overlapping with the reference line, i.e. removes that parts of the first line that _is_ overlapping with the reference line. If the lines are not colinear or within tolerance distance of each other the full first line is returned.")]
+        [Input("line", "The line to remove overlaps from.")]
+        [Input("refLine", "The reference line. Any parts of this line that are overlapping with the first line are removed from the first line.")]
+        [Input("tolerance", "Tolerance used for checking colinearity and proximity of the two lines.", typeof(Length))]
+        [Output("line", "The parts of the first line _not_ overlapping with the reference line.")]
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
             if (refLine.Length() <= tolerance)
@@ -74,6 +81,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns the parts of the first lines that are _not_ overlapping with any of the reference lines, i.e. removes that parts of the first lines that _is_ overlapping with any of the reference lines. If a line and a reference line are not colinear or within distance tolerance of each other, no action will be taken for that particular pair of lines.")]
+        [Input("lines", "The lines to remove overlaps from.")]
+        [Input("refLines", "The reference lines. Any parts of these lines that are overlapping with the first lines are removed from the first lines.")]
+        [Input("tolerance", "Tolerance used for checking colinearity and proximity between two lines.", typeof(Length))]
+        [Output("lines", "The parts of the first lines _not_ overlapping with the reference lines.")]
         public static List<Line> BooleanDifference(this List<Line> lines, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
             List<Line> result = new List<Line>();
@@ -124,7 +136,12 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /****         public Methods - Regions          ****/
         /***************************************************/
-        
+
+        [Description("Returns the areas of the closed Polyline region that are _not_ overlapping with the closed Polyline reference regions, i.e. removes that areas of the first region that _is_ overlapping with any of the reference regions. Requires the region and all reference regions to be closed. The method only considers reference regions that are co-planar with the region being evaluated.")]
+        [Input("region", "The line to remove overlaps from. Should be a closed planar curve.")]
+        [Input("refRegions", "The reference regions. Any parts of these regions that are overlapping with the first region are removed from the first region. All regions required to be closed. Reference regions not coplanar with the region are not considered.")]
+        [Input("tolerance", "Tolerance used for checking co-planarity and proximity of the regions.", typeof(Length))]
+        [Output("regions", "The region parts of the first region _not_ overlapping with any of the reference regions.")]
         public static List<Polyline> BooleanDifference(this Polyline region, List<Polyline> refRegions, double tolerance = Tolerance.Distance)
         {
             if (!region.IsClosed(tolerance) || refRegions.Any(x => !x.IsClosed()))
@@ -272,9 +289,14 @@ namespace BH.Engine.Geometry
 
             return result;
         }
-        
+
         /***************************************************/
 
+        [Description("Returns the areas of the closed ICurve region that are _not_ overlapping with the closed ICurve reference regions, i.e. removes that areas of the first region that _is_ overlapping with any of the reference regions. Requires the region and all reference regions to be closed. The method only considers reference regions that are co-planar with the region being evaluated.")]
+        [Input("region", "The line to remove overlaps from. Should be a closed planar curve.")]
+        [Input("refRegions", "The reference regions. Any parts of these regions that are overlapping with the first region are removed from the first region. All regions required to be closed. Reference regions not coplanar with the region are not considered.")]
+        [Input("tolerance", "Tolerance used for checking co-planarity and proximity of the regions.", typeof(Length))]
+        [Output("regions", "The region parts of the first region _not_ overlapping with any of the reference regions.")]
         public static List<PolyCurve> BooleanDifference(this ICurve region, IEnumerable<ICurve> refRegions, double tolerance = Tolerance.Distance)
         {
             List<ICurve> refRegionsList = refRegions.ToList();
