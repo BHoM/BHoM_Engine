@@ -55,10 +55,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Close open polyline by adding first point to the end of control points.")]
-        [Input("polyline", "Polyline to close.")]
+        [Description("Close open PolyCurve by adding Line segments between adjecent inner curves not within tolerance. Does not affect Closed curves. Inner Curves of polycurve are assumed to be Ordered such that the end point of inner Curve n should be the start point of Curve n+1 for the curve to be closed.")]
+        [Input("polyCurve", "PolyCurve to close.")]
         [Input("tolerance", "Tolerance used in the method.")]
-        [Output("polyline", "Closed polyline.")]
+        [Output("polyCurve", "Closed polycurve.")]
         public static PolyCurve Close(this PolyCurve polyCurve, double tolerance = Tolerance.Distance)
         {
             if (polyCurve == null || polyCurve.Curves.Count == 0 || polyCurve.IsClosed(tolerance))
