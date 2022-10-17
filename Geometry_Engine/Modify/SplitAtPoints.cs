@@ -229,90 +229,58 @@ namespace BH.Engine.Geometry
             for (int k = 0; k < subParts.Count; k++)
             {
                 ICurve crv = subParts[k];
-                List<Point> ptsOnSegment = nonDuplicatePoints.Where(x => x.IIsOnCurve(crv, tolerance)).ToList(); //Get points on the segment
 
-                if (ptsOnSegment.Any()) //If any points on the current segment
+                List<ICurve> split = crv.ISplitAtPoints(nonDuplicatePoints, tolerance);
+
+                if (split.Count == 0)   //Should never happen
                 {
-                    List<ICurve> split = new List<ICurve>();
-                    split.AddRange(SplitAtPoints(crv as dynamic, ptsOnSegment, tolerance)); //Split the segment. Assuming curves returned are ordered
-
-                    if (split.Count == 0)   //Should never happen
-                    {
-                        Base.Compute.RecordWarning($"Unable to split a segment of type {crv.GetType()} in a Polycurve. Segment ignored in returned split curve.");
-                        continue;
-                    }
-                    else if (split.Count == 1)  //Curve not split -> split point either start or end
-                    {
-                        if (ptsOnSegment.Any(x => x.SquareDistance(crv.IStartPoint()) < sqTol))  //Split at start
-                        {
-                            if (prev != null)
-                                result.Add(prev);   //Add prev to return list
-
-                            prev = new PolyCurve { Curves = new List<ICurve> { split[0] } };    //Set prev to current segment
-                        }
-                        else    //Split at end
-                        {
-                            if (prev != null)   //Prev set
-                            {
-                                prev.Curves.Add(split[0]);  //Add full split segment to prev
-                                result.Add(prev);   //Add prev to output list
-                            }
-                            else    //Prev not set
-                            {
-                                result.Add(new PolyCurve { Curves = new List<ICurve> { split[0] } });   //Add full split segment to output list
-                            }
-                            prev = null;    //Split at end -> set prev to null as nothing to bring over to next segment
-                        }
-                    }
-                    else    //More than one split segment
-                    {
-                        if (prev != null)   //Prev contains parts from previous segment, unless split at endpoint
-                        {
-                            Point stPt = crv.IStartPoint();
-                            if (ptsOnSegment.Any(x => x.SquareDistance(stPt) < sqTol))  //If split at startpoint
-                            {
-                                result.Add(prev);   //Add prev to return list
-                                result.Add(new PolyCurve { Curves = new List<ICurve> { split[0] } });   //Add first splitcurve to return list
-                            }
-                            else    //Not split at start of segment
-                            {
-                                prev.Curves.Add(split[0]);  //Add first split segment to prev
-                                result.Add(prev);   //Add prev to return list
-                            }
-                        }
-                        else  //Prev null, means either this is first segment of curve or previous segment was split at endpoint -> nothing to bring over
-                            result.Add(new PolyCurve { Curves = new List<ICurve> { split[0] } });  //Simply add first split segment to return list
-
-                        for (int s = 1; s < split.Count - 1; s++)   //Loop through all segments but the first and last
-                        {
-                            result.Add(new PolyCurve { Curves = new List<ICurve> { split[s] } });
-                        }
-
-                        Point ePt = crv.IEndPoint();
-                        if (ptsOnSegment.Any(x => x.SquareDistance(ePt) < sqTol)) //If split at endpoint of current segment
-                        {
-                            result.Add(new PolyCurve { Curves = new List<ICurve> { split.Last() } });   //Add last segment to return list
-                            prev = null;    //Set prev to null
-                        }
-                        else    //If not split at end point of segment
-                        {
-                            prev = new PolyCurve { Curves = new List<ICurve> { split.Last() } };    //Set prev to contain the last split segment
-                        }
-                    }
+                    Base.Compute.RecordWarning($"Unable to split a segment of type {crv.GetType()} in a Polycurve. Segment ignored in returned split curve.");
+                    continue;
                 }
-                else    //If no splitpoints available
+
+                //Check if split at start or end of current segment by checking if the start and/or end point of the curve is within tolerance of the split points.
+                Point stPt = split.First().IStartPoint();
+                Point enPt = split.Last().IEndPoint();
+                bool splitAtStart = nonDuplicatePoints.Any(x => x.SquareDistance(stPt) < sqTol);
+                bool splitAtEnd = nonDuplicatePoints.Any(x => x.SquareDistance(enPt) < sqTol);
+
+                for (int i = 0; i < split.Count; i++)
                 {
-                    if (prev != null)   //If prev is set
-                        prev.Curves.Add(crv);   //Add full segment to prev
-                    else
-                        prev = new PolyCurve { Curves = new List<ICurve> { crv } }; //If prev is not set, set it with full segment added
+                    if (i == 0 && splitAtStart) //If first split segment and split at start
+                    {
+                        if (prev != null)   //Check if previous exist and if so, add it
+                            result.Add(prev);   //Add prev to return list
+
+                        prev = null;    //Prev handled -> set to null
+                    }
+
+                    if (i != split.Count - 1 || splitAtEnd)   //If not last split or if split at end. Only need special case for last segment if _not_ splitting at endpoint
+                    {
+                        if (prev != null)   //Prev set - only true if this is the first split and not splitting at start
+                        {
+                            prev.Curves.Add(split[i]);  //Add full split segment to prev
+                            result.Add(prev);   //Add prev to output list
+                            prev = null;    //Prev handled, set to null. If splitting at end, nothing to bring over
+                        }
+                        else    //Prev not set
+                        {
+                            result.Add(new PolyCurve { Curves = new List<ICurve> { split[i] } });   //Add full split segment to output list
+                        }
+                    }
+                    else    //Last split and not splitting at end
+                    {
+                        if (prev != null)   //If prev is set - should only be true for single split segment not split at start
+                            prev.Curves.Add(split[i]);   //Add current split segment to prev
+                        else
+                            prev = new PolyCurve { Curves = new List<ICurve> { split[i] } }; //If prev is not set, set it with current split segment added
+                    }
                 }
 
                 if (k == subParts.Count - 1)    //Last segment
                 {
                     if (prev != null)   //If prev is set
                     {
-                        if (curve.IsClosed(tolerance) && result.Count != 0) //If curve is closed
+                        if (curve.StartPoint().SquareDistance(curve.EndPoint()) < sqTol && result.Count != 0) //If curve is closed
                             result[0].Curves.InsertRange(0, prev.Curves);   //Insert the curves in prev to the start of the first curve, ensuring a segment looping around the start/end is added
                         else
                             result.Add(prev);   //If not, simply add the prev to the return list
