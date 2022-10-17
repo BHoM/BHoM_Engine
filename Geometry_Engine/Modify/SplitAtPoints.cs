@@ -214,23 +214,15 @@ namespace BH.Engine.Geometry
             List<PolyCurve> result = new List<PolyCurve>();
 
             List<ICurve> subParts = curve.ISubParts().ToList(); //Subparts of PolyCurve
-            if (subParts.Count == 1)    //Single SubPart
-            {
-                foreach (ICurve splitSegment in SplitAtPoints(subParts[0] as dynamic, points, tolerance))   //Simply call the appropriate split at method
-                {
-                    result.Add(new PolyCurve { Curves = new List<ICurve> { splitSegment } });   //And wrap split segments into polycurves
-                }
-                return result;  
-            }
-
             List<Point> nonDuplicatePoints = points.CullDuplicates(tolerance);
+
             PolyCurve prev = null;  //Polycurve to collect parts across segments
             double sqTol = tolerance * tolerance;
             for (int k = 0; k < subParts.Count; k++)
             {
                 ICurve crv = subParts[k];
 
-                List<ICurve> split = crv.ISplitAtPoints(nonDuplicatePoints, tolerance);
+                List<ICurve> split = crv.ISplitAtPoints(nonDuplicatePoints, tolerance); //Split with all point. Methods called filters out points on the particular curve
 
                 if (split.Count == 0)   //Should never happen
                 {
@@ -276,16 +268,14 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                if (k == subParts.Count - 1)    //Last segment
-                {
-                    if (prev != null)   //If prev is set
-                    {
-                        if (curve.StartPoint().SquareDistance(curve.EndPoint()) < sqTol && result.Count != 0) //If curve is closed
-                            result[0].Curves.InsertRange(0, prev.Curves);   //Insert the curves in prev to the start of the first curve, ensuring a segment looping around the start/end is added
-                        else
-                            result.Add(prev);   //If not, simply add the prev to the return list
-                    }
-                }
+            }
+
+            if (prev != null)   //If prev is set
+            {
+                if (curve.StartPoint().SquareDistance(curve.EndPoint()) < sqTol && result.Count != 0) //If curve is closed
+                    result[0].Curves.InsertRange(0, prev.Curves);   //Insert the curves in prev to the start of the first curve, ensuring a segment looping around the start/end is added
+                else
+                    result.Add(prev);   //If not, simply add the prev to the return list
             }
 
             return result;
