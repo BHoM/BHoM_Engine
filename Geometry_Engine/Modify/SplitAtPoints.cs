@@ -283,7 +283,7 @@ namespace BH.Engine.Geometry
                         else  //Prev null, means either this is first segment of curve or previous segment was split at endpoint -> nothing to bring over
                             result.Add(new PolyCurve { Curves = new List<ICurve> { split[0] } });  //Simply add first split segment to return list
 
-                        for (int s = 1; s < split.Count - 1; s++)   //Loop though and all segments but the first and last
+                        for (int s = 1; s < split.Count - 1; s++)   //Loop through all segments but the first and last
                         {
                             result.Add(new PolyCurve { Curves = new List<ICurve> { split[s] } });
                         }
