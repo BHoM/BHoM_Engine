@@ -55,7 +55,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Close open PolyCurve by adding Line segments between adjecent inner curves not within tolerance. Does not affect Closed curves. Inner Curves of polycurve are assumed to be Ordered such that the end point of inner Curve n should be the start point of Curve n+1 for the curve to be closed.")]
+        [Description("Close open PolyCurve by adding Line segments between each pair of subsequent segment curves if the end point of the first does not lie within tolerance from start point of the second. Does not affect Closed curves.")]
         [Input("polyCurve", "PolyCurve to close.")]
         [Input("tolerance", "Distance tolerance used in the method.")]
         [Output("polyCurve", "Closed polycurve.")]
