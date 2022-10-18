@@ -206,12 +206,15 @@ namespace BH.Engine.Geometry
         [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
         [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
-        public static List<PolyCurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
+        public static List<ICurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (points.Count == 0)
-                return new List<PolyCurve> { curve.DeepClone() };
+            if (curve == null)
+                return null;
 
-            List<PolyCurve> result = new List<PolyCurve>();
+            if (points.Count == 0)
+                return new List<ICurve> { curve.DeepClone() };
+
+            List<ICurve> result = new List<ICurve>();
 
             List<ICurve> subParts = curve.ISubParts().ToList(); //Subparts of PolyCurve
             List<Point> nonDuplicatePoints = points.CullDuplicates(tolerance);
@@ -241,7 +244,12 @@ namespace BH.Engine.Geometry
                     if (i == 0 && splitAtStart) //If first split segment and split at start
                     {
                         if (prev != null)   //Check if previous exist and if so, add it
-                            result.Add(prev);   //Add prev to return list
+                        {
+                            if (prev.Curves.Count == 1)     //If prev is single segment curve
+                                result.Add(prev.Curves[0]); //Only add the segment rather than the wrapping PolyCurve
+                            else                            //Prev more than single segment
+                                result.Add(prev);           //Add prev to return list
+                        }
 
                         prev = null;    //Prev handled -> set to null
                     }
@@ -256,7 +264,7 @@ namespace BH.Engine.Geometry
                         }
                         else    //Prev not set
                         {
-                            result.Add(new PolyCurve { Curves = new List<ICurve> { split[i] } });   //Add full split segment to output list
+                            result.Add(split[i]);   //Add full split segment to output list
                         }
                     }
                     else    //Last split and not splitting at end
@@ -272,10 +280,18 @@ namespace BH.Engine.Geometry
 
             if (prev != null)   //If prev is set
             {
-                if (curve.StartPoint().SquareDistance(curve.EndPoint()) < sqTol && result.Count != 0) //If curve is closed
-                    result[0].Curves.InsertRange(0, prev.Curves);   //Insert the curves in prev to the start of the first curve, ensuring a segment looping around the start/end is added
-                else
-                    result.Add(prev);   //If not, simply add the prev to the return list
+                if (curve.StartPoint().SquareDistance(curve.EndPoint()) < sqTol && result.Count != 0) //If curve is closed (Not using curve.IsClosed() here due to it checking if closed and not disjointed. Here we only want to check if endpoints match for the full curve. This way disjointed curves will work as well)
+                {
+                    prev.Curves.AddRange(result[0].ISubParts());    //Apply all of the parts of the first return to prev
+                    result[0] = prev;                               //Replace first part with prev
+                }
+                else //If not, simply add the prev to the return list
+                {
+                    if (prev.Curves.Count == 1)     //If prev is single segment curve
+                        result.Add(prev.Curves[0]); //Only add the segment rather than the wrapping PolyCurve
+                    else                            //Prev more than single segment
+                        result.Add(prev);           //Add prev to return list
+                }
             }
 
             return result;
