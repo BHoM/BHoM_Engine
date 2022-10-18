@@ -234,10 +234,22 @@ namespace BH.Engine.Geometry
                 }
 
                 //Check if split at start or end of current segment by checking if the start and/or end point of the curve is within tolerance of the split points.
-                Point stPt = split.First().IStartPoint();
-                Point enPt = split.Last().IEndPoint();
+                //This is for tolerance reasons checked first for the main curve and and secondly for the segments (if false)
+                Point stPt = crv.IStartPoint();
+                Point enPt = crv.IEndPoint();
                 bool splitAtStart = nonDuplicatePoints.Any(x => x.SquareDistance(stPt) < sqTol);
                 bool splitAtEnd = nonDuplicatePoints.Any(x => x.SquareDistance(enPt) < sqTol);
+
+                if (!splitAtStart)  //If start point of segment being split not matching any point, check if the st point of the first split is matching
+                {
+                    stPt = split.First().IStartPoint();
+                    splitAtStart = nonDuplicatePoints.Any(x => x.SquareDistance(stPt) < sqTol);
+                }
+                if (!splitAtEnd)   //If end point of segment being split not matching any point, check if the end point of the last split is matching
+                {
+                    enPt = split.Last().IEndPoint();
+                    splitAtEnd = nonDuplicatePoints.Any(x => x.SquareDistance(enPt) < sqTol);
+                }
 
                 for (int i = 0; i < split.Count; i++)
                 {
