@@ -62,6 +62,7 @@ namespace BH.Engine.Facade
                     Line lineBefore = (Line)edge.Curve;
                     Line lineAfter = (Line)result.Curve;
 
+                    result.FrameEdgeProperty = edge.FrameEdgeProperty.ShallowClone();
                     List<ConstantFramingProperty> newProperties = new List<ConstantFramingProperty>();
                     foreach (ConstantFramingProperty property in edge.FrameEdgeProperty.SectionProperties)
                     {
@@ -72,7 +73,7 @@ namespace BH.Engine.Facade
                         newProperties.Add(newProperty);
                     }
 
-                    edge.FrameEdgeProperty.SectionProperties = newProperties;
+                    result.FrameEdgeProperty.SectionProperties = newProperties;
                 }
                 else if (!edge.Curve.IIsPlanar(tolerance))
                     BH.Engine.Base.Compute.RecordWarning($"The element's location is a nonlinear, nonplanar curve. Correctness of orientation angle after transform could not be ensured in 100%. BHoM_Guid: {edge.BHoM_Guid}");
