@@ -45,34 +45,70 @@ namespace BH.Engine.Geometry
         /****              Private Methods              ****/
         /***************************************************/
 
+        /***************************************************/
+        /****  Curves                                   ****/
+        /***************************************************/
+
         private static double[] GeometryHash(this ICurve curve)
         {
-            Polyline polyLine = curve.IRationalise();
+            IEnumerable<ICurve> subParts = curve.ISubParts();
 
-            return polyLine.ControlPoints.SelectMany(p => p.GeometryHash()).ToArray();
+            return subParts.GeometryHash();
         }
 
         /***************************************************/
 
         private static double[] GeometryHash(this IEnumerable<ICurve> curves)
         {
-            return curves.SelectMany(c => c.GeometryHash()).ToArray();
+            return curves.SelectMany(c => (double[])GeometryHash(c as dynamic)).ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Point obj, double typeTranslationFactor = 0)
+        private static double[] GeometryHash(this Arc curve, double typeTranslationFactor = 1)
         {
-            return obj.ToDoubleArray(typeTranslationFactor);
+            return curve.StartPoint().ToDoubleArray(typeTranslationFactor)
+                .Concat(curve.EndPoint().ToDoubleArray(typeTranslationFactor))
+                .Concat(curve.PointAtParameter(0.5).ToDoubleArray(typeTranslationFactor))
+                .ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Plane obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this Circle curve, double typeTranslationFactor = 1)
         {
-            return obj.Origin.ToDoubleArray(typeTranslationFactor);
+            return curve.Centre.ToDoubleArray(typeTranslationFactor + curve.Radius);
         }
 
+        /***************************************************/
+
+        private static double[] GeometryHash(this Ellipse curve, double typeTranslationFactor = 1)
+        {
+            return curve.StartPoint().ToDoubleArray(typeTranslationFactor)
+               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(typeTranslationFactor))
+               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(typeTranslationFactor))
+               .ToArray();
+        }
+
+        /***************************************************/
+
+        private static double[] GeometryHash(this Line curve, double typeTranslationFactor = 1)
+        {
+            return curve.StartPoint().ToDoubleArray(typeTranslationFactor)
+               .Concat(curve.EndPoint().ToDoubleArray(typeTranslationFactor))
+               .ToArray();
+        }
+
+        /***************************************************/
+
+        private static double[] GeometryHash(this NurbsCurve curve, double typeTranslationFactor = 1)
+        {
+            double[] translationArray = curve.Weights.Zip(curve.Knots, (w, n) => w * n).ToArray();
+            return curve.ControlPoints.ToDoubleArray(typeTranslationFactor, translationArray);
+        }
+
+        /***************************************************/
+        /****  Surfaces                                 ****/
         /***************************************************/
 
         private static double[] GeometryHash(this ISurface obj, double typeTranslationFactor = 3)
@@ -112,7 +148,7 @@ namespace BH.Engine.Geometry
 
         private static double[] GeometryHash(this Pipe obj, double typeTranslationFactor = 3)
         {
-            return obj.Centreline.GeometryHash();
+            return obj.Centreline.GeometryHash(); // radius
         }
 
         /***************************************************/
@@ -129,6 +165,43 @@ namespace BH.Engine.Geometry
             return obj.Curve3d.GeometryHash().Concat(obj.Curve2d.GeometryHash()).ToArray();
         }
 
+
+        /***************************************************/
+        /****  Mesh                                     ****/
+        /***************************************************/
+
+        private static double[] GeometryHash(this Mesh obj, double typeTranslationFactor = 3)
+        {
+            // TODO faces?
+            return obj.Vertices.SelectMany(v => v.ToDoubleArray(typeTranslationFactor)).ToArray();
+        }
+
+        /***************************************************/
+
+        private static double[] GeometryHash(this Mesh3D obj, double typeTranslationFactor = 3)
+        {
+            // TODO faces?
+            return obj.Vertices.SelectMany(v => v.ToDoubleArray(typeTranslationFactor)).ToArray();
+        }
+
+        /***************************************************/
+        /****  Vector                                   ****/
+        /***************************************************/
+
+        private static double[] GeometryHash(this Point obj, double typeTranslationFactor = 0)
+        {
+            return obj.ToDoubleArray(typeTranslationFactor);
+        }
+
+        /***************************************************/
+
+        private static double[] GeometryHash(this Plane obj, double typeTranslationFactor = 3)
+        {
+            return obj.Origin.ToDoubleArray(typeTranslationFactor);
+        }
+
+        /***************************************************/
+        /****  Other methods                            ****/
         /***************************************************/
 
         private static double[] GeometryHash(this object obj)
@@ -139,16 +212,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double[] ToDoubleArray(this Point p, double typeTranslationFactor)
+        private static double[] ToDoubleArray(this Point p, double typeTranslationFactor, double[] translationArray = null)
         {
-            return new double[] { p.X + typeTranslationFactor, p.Y + typeTranslationFactor, p.Z + typeTranslationFactor };
+            return new double[] 
+            { 
+                p.X + typeTranslationFactor + translationArray?.ElementAtOrDefault(0) ?? 0, 
+                p.Y + typeTranslationFactor + translationArray?.ElementAtOrDefault(1) ?? 0, 
+                p.Z + typeTranslationFactor + translationArray?.ElementAtOrDefault(2) ?? 0
+            };
         }
 
         /***************************************************/
 
-        private static double[] ToDoubleArray(this IEnumerable<Point> points, double typeTranslationFactor)
+        private static double[] ToDoubleArray(this IEnumerable<Point> points, double typeTranslationFactor, double[] translationArray = null)
         {
-            return points.SelectMany(p => p.ToDoubleArray(typeTranslationFactor)).ToArray();
+            return points.SelectMany(p => p.ToDoubleArray(typeTranslationFactor, translationArray)).ToArray();
         }
     }
 }
