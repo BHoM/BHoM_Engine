@@ -63,9 +63,9 @@ namespace BH.Engine.Matter
         [Description("Calculates an aggregate VolumetricMaterialTakeoff from a collection individual VolumetricMaterialTakeoffs.")]
         [Input("volumetricMaterialTakeoffs", "The individual VolumetricMaterialTakeoffs to aggregate together.")]
         [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff incorporating the provided materials and volumes from each individual VolumetricMaterialTakeoff.")]
-        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<VolumetricMaterialTakeoff> VolumetricMaterialTakeoffs)
+        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<VolumetricMaterialTakeoff> volumetricMaterialTakeoffs)
         {
-            List<VolumetricMaterialTakeoff> localMatTakeoffs = VolumetricMaterialTakeoffs.ToList();
+            List<VolumetricMaterialTakeoff> localMatTakeoffs = volumetricMaterialTakeoffs.ToList();
 
             Dictionary<string, Tuple<Material, double>> hashedMaterialVolumeTuples = new Dictionary<string, Tuple<Material, double>>();
 
