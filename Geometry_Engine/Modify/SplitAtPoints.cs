@@ -240,6 +240,9 @@ namespace BH.Engine.Geometry
                 bool splitAtStart = nonDuplicatePoints.Any(x => x.SquareDistance(stPt) < sqTol);
                 bool splitAtEnd = nonDuplicatePoints.Any(x => x.SquareDistance(enPt) < sqTol);
 
+                //For cases where the crv is a single part closed curve, as a circle, checking the start and end point of the original curve is not enough
+                //Hence blanket covering by checking the start and end of the split segments as well.
+                //The checks below should be enough, but due to variour tolerance issues the above check is required as well.
                 if (!splitAtStart)  //If start point of segment being split not matching any point, check if the st point of the first split is matching
                 {
                     stPt = split.First().IStartPoint();
