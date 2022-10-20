@@ -36,8 +36,8 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an element's solid volume")]
-        [Input("elementM", "The element to get the volume from")]
+        [Description("Returns an element's solid volume, i.e. the the volume of the element that had any materiality, excluding cavities, openings and voids.")]
+        [Input("elementM", "The element to get the volume from.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that total volume corresponding to this fragment. If false, the SolidVolume returned will be calculated, independant of fragment attached.")]
         [Output("volume", "The element's solid material volume.", typeof(Volume))]
         public static double ISolidVolume(this IElementM elementM, bool checkForTakeoffFragment = false)
@@ -77,8 +77,8 @@ namespace BH.Engine.Matter
         /******************************************/
 
         [Description("Returns the total solid volume of the provided VolumetricMaterialTakeoff.")]
-        [Input("VolumetricMaterialTakeoff", "The VolumetricMaterialTakeoff to get the total SolidVolume from.")]
-        [Output("volume", "The total volumetric amount of matter in the VolumetricMaterialTakeoff", typeof(Volume))]
+        [Input("volumetricMaterialTakeoff", "The VolumetricMaterialTakeoff to get the total SolidVolume from.")]
+        [Output("volume", "The total volumetric amount of matter in the VolumetricMaterialTakeoff.", typeof(Volume))]
         public static double SolidVolume(this VolumetricMaterialTakeoff volumetricMaterialTakeoff)
         {
             if (volumetricMaterialTakeoff == null)
