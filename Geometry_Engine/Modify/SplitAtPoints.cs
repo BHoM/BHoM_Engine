@@ -50,27 +50,43 @@ namespace BH.Engine.Geometry
 
             List<Arc> result = new List<Arc>();
             List<Point> cPts = new List<Point>();
-            Vector normal = arc.Normal();
-            Point stPt = arc.StartPoint();
-            Point enPt = arc.EndPoint();
+
             double sqTol = tolerance * tolerance;
+            Plane arcPlane = arc.FitPlane();
+            //Collect all points on the circle of the arc (points not on arc filtered out lower down)
             foreach (Point point in points)
             {
-                //Collect point on curve within tolerance, but not within tolerance of start or end point
-                if (point.SquareDistance(stPt) > sqTol && point.SquareDistance(enPt) > sqTol && point.IsOnCurve(arc, tolerance))
-                    cPts.Add(point);
+                Point projPt = point.Project(arcPlane);
+                double projSqDist = projPt.SquareDistance(point);
+                if (projSqDist > sqTol)
+                    continue;   //Not in plane
+
+                double inPlaneDist = Math.Abs(projPt.Distance(arcPlane.Origin) - arc.Radius);
+                if (inPlaneDist > tolerance)
+                    continue;   //Not within tolerance distance in plane
+
+                if (projSqDist + inPlaneDist * inPlaneDist > sqTol) //Distance to the circle of the full arc (c^2=a^2+b^2 where a is out of plane distance and b is in plane distance) 
+                    continue;   //Not on circle
+
+                cPts.Add(projPt);   //Store projected point for more accurate angle calculation
             }
 
             //If any points on curve not within distance of start and/or end point
             if (cPts.Count > 0)
             {
-                cPts = cPts.CullDuplicates(tolerance);  //Get rid of all duplicates
+                double angleTolerance = tolerance / arc.Radius; //Allowable difference in angle for the points on the arc to be tolerance distance away from each other
 
-                //Arc currently only really valid if this holds true.
+                if (Math.Abs(arc.Angle()) > Math.PI * 2 + angleTolerance)
+                {
+                    //Record warning for invalid overlapping arcs. The method could still provide some potentially usefull outputs, so can still let it run, but with warning given.
+                    Base.Compute.RecordWarning("Arc is overlapping itself (angle > PI*2). Points on the overlap will only split the arc once at points of overlap.");
+                }
+
+                //Arc currently only really valid if this start is smaller than end
                 //An arc with a StartAngle larger than EndAngle gives negative lengths and have issues in other methods.
                 //Handling currently invalid case in this method to atempt to future proof
-                bool startSmaller = arc.StartAngle < arc.EndAngle;  
-                
+                bool startSmaller = arc.StartAngle < arc.EndAngle;
+
                 //Setup angle domain parameters
                 double minAngle, maxAngle;
                 if (startSmaller)
@@ -87,7 +103,7 @@ namespace BH.Engine.Geometry
                 List<double> angles = new List<double>();
                 foreach (Point p in cPts)
                 {
-                    //Calculate angles in relation to the coordinate system for the point
+                    //Calculate angles in relation to the coordinate system X axis for the point (this is the meassure used by the Angle class)
                     double angle = arc.CoordinateSystem.X.SignedAngle((p - arc.CoordinateSystem.Origin), arc.CoordinateSystem.Z);
 
                     //Ensure angle is in the domain of the arc
@@ -95,37 +111,67 @@ namespace BH.Engine.Geometry
                     {
                         do
                         {
+                            if (minAngle - angle < angleTolerance)  //Within tolerance of start point. Check inside the while loop to ensure 
+                            {
+                                angle = double.MaxValue;    //Set to max value to be caught by check in relation to max angle
+                                break;  //Break out the while loop
+                            }
+
                             angle += 2 * Math.PI;   //As long as angle is smaller than the minimum (StartAngle) increase by full lap
                         } while (angle < minAngle);
 
-                        if (angle > maxAngle)
+                        if (angle < maxAngle && maxAngle - angle > angleTolerance)   //Inside the domain and not to close to end point
                         {
-                            //Should never happen (and for tested cases does not).
-                            //Potential to change the IsOnCurve check to only check if on the full circle and use this to cull out items on circle but not on the arc. (If done, the warning below should be removed)
-                            Base.Compute.RecordWarning("Point split point deemed on curve but outside the arc domain ignored. Please check the validity of the inputs.");   //Warning just in case. Should never happen as points should all be on the curve
-                            continue;
+                            angles.Add(angle);  //Store angle
                         }
                     }
                     else if (angle > maxAngle)
                     {
                         do
                         {
+                            if (angle - maxAngle < angleTolerance)  //Within tolerance of end point
+                            {
+                                angle = double.MinValue;    //Set to min value to be caught by check in relation to min angle
+                                break;  //Break out the while loop
+                            }
                             angle -= 2 * Math.PI;   //As long as angle is larger than the maximum (EndAngle) decrease by full lap
                         } while (angle > maxAngle);
 
-                        if (angle < minAngle)
+                        if (angle > minAngle && angle - minAngle > angleTolerance)   //Inside the domain and not close to startpoint
                         {
-                            //Should never happen (and for tested cases does not).
-                            //Potential to change the IsOnCurve check to only check if on the full circle and use this to cull out items on circle but not on the arc.
-                            Base.Compute.RecordWarning("Point split point deemed on curve but outside the arc domain ignored. Please check the validity of the inputs.");   //Warning just in case. Should never happen as points should all be on the curve
-                            continue;
+                            angles.Add(angle);  //Store angle
                         }
                     }
-
-                    angles.Add(angle);  //Store angle
+                    else if (angle - minAngle > angleTolerance && maxAngle - angle > angleTolerance)    //In the domain - check not to close to start/end points
+                    {
+                        angles.Add(angle);  //Store angle
+                    }
                 }
 
+                if (angles.Count == 0)  //No angles in range
+                    return new List<Arc> { arc.DeepClone() };
+
                 angles.Sort();  //Equal to sort along curve
+
+                //Remove duplicates within tolerance
+                //Both more efficient and accurate to handles this with the angles compared to removing duplicate input points
+                //Doing it this way ensures points on the curve are not within tolerance, rather than the input points, that could be
+                //Outside tolerance in relation to each other, but ending up on the same point on the angle
+                //The below does the equivalent of a DBScan (which is what the CullDuplicates for points relies on)
+                List<List<double>> angleGroups = new List<List<double>>() { new List<double> { angles[0] } };
+                int groupIndex = 0;
+                for (int i = 1; i < angles.Count; i++)
+                {
+                    if (angles[i] - angleGroups[groupIndex].Last() < angleTolerance)    //Angles are sorted, so only need to compare to the one last added
+                        angleGroups[groupIndex].Add(angles[i]);
+                    else
+                    {
+                        angleGroups.Add(new List<double>() { angles[i] });
+                        groupIndex++;
+                    }
+                }
+                angles = angleGroups.Select(x => x.Average()).ToList();
+
                 angles.Insert(0, minAngle);  //Insert minAngle (StartAngle) as first step
                 angles.Add(maxAngle);  //Add maxAngle (EndAngle) to the end
 
