@@ -54,6 +54,8 @@ namespace BH.Engine.Geometry
             double sqTol = tolerance * tolerance;
             Plane arcPlane = arc.FitPlane();
             //Collect all points on the circle of the arc (points not on arc filtered out lower down)
+            //Doing this half manually (Not calling IsOnCurve) due to wanting the projected points anyway, and this is more efficient.
+            //Angles checked to be in domain while looping through the points further down the algorithm
             foreach (Point point in points)
             {
                 Point projPt = point.Project(arcPlane);
@@ -68,10 +70,10 @@ namespace BH.Engine.Geometry
                 if (projSqDist + inPlaneDist * inPlaneDist > sqTol) //Distance to the circle of the full arc (c^2=a^2+b^2 where a is out of plane distance and b is in plane distance) 
                     continue;   //Not on circle
 
-                cPts.Add(projPt);   //Store projected point for more accurate angle calculation
+                cPts.Add(projPt);   //Store projected point rather than original for more accurate angle calculation
             }
 
-            //If any points on curve not within distance of start and/or end point
+            //If any points on the full circle corresponding to the arc
             if (cPts.Count > 0)
             {
                 double angleTolerance = tolerance / arc.Radius; //Allowable difference in angle for the points on the arc to be tolerance distance away from each other
@@ -111,7 +113,7 @@ namespace BH.Engine.Geometry
                     {
                         do
                         {
-                            if (minAngle - angle < angleTolerance)  //Within tolerance of start point. Check inside the while loop to ensure 
+                            if (minAngle - angle < angleTolerance)  //Within tolerance of start point.
                             {
                                 angle = double.MaxValue;    //Set to max value to be caught by check in relation to max angle
                                 break;  //Break out the while loop
