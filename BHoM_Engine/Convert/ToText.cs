@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -158,7 +159,29 @@ namespace BH.Engine.Base
             }
         }
 
+        /***************************************************/
 
+        public static string ToText(Enum item, bool includePath = false)
+        {
+            if (item == null)
+                return "null";
+
+            if (includePath)
+            {
+                Type type = item.GetType();
+                return type.Path() + "." + type.Name + "." + item.ToString();
+            }
+            else
+            {
+                FieldInfo fi = item.GetType().GetField(item.ToString());
+                DisplayTextAttribute[] attributes = fi.GetCustomAttributes(typeof(DisplayTextAttribute), false) as DisplayTextAttribute[];
+
+                if (attributes != null && attributes.Count() > 0)
+                    return attributes.First().Text;
+                else
+                    return item.ToString();
+            }
+        }
 
         /***************************************************/
         /**** Fallback Methods                          ****/
@@ -168,7 +191,7 @@ namespace BH.Engine.Base
         {
             if (item == null)
                 return "null";
-            else if (item is string || item.GetType().IsEnum)
+            else if (item is string)
                 return item.ToString();
             else
                 return item.GetType().ToString();
