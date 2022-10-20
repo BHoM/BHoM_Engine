@@ -161,7 +161,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        public static string ToText(Enum item, bool includePath = false)
+        public static string ToText(this Enum item, bool includePath = false)
         {
             if (item == null)
                 return "null";
