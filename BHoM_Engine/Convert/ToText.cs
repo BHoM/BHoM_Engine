@@ -37,6 +37,10 @@ namespace BH.Engine.Base
         /**** Interface Methods                         ****/
         /***************************************************/
 
+        [Description("Provides a human-friendly text representation of the provided object.")]
+        [Input("member", "object to convert to text.")]
+        [Input("includePath", "If true, the path/namespace will be provided.")]
+        [Output("Text representation.")]
         public static string IToText(this object member, bool includePath = false)
         {
             if (member == null)
@@ -50,6 +54,10 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Provides a human-friendly text representation of a member of a class.")]
+        [Input("member", "member to convert to text.")]
+        [Input("includePath", "If true, the path/namespace will be provided.")]
+        [Output("Text representation.")]
         public static string ToText(this MemberInfo member, bool includePath = false)
         {
             if (member == null)
@@ -65,6 +73,18 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Provides a human-friendly text representation of a method.")]
+        [Input("method", "method to convert to text.")]
+        [Input("includePath", "If true, the path/namespace will be provided.")]
+        [Input("paramStart", "Start symbol used for the beginning of the method parameters. Usually, '('.")]
+        [Input("paramSeparator", "Symbol used to separate the parameters. Usually, ','.")]
+        [Input("paramEnd", "Start symbol used for the end of the method parameters. Usually, ')'.")]
+        [Input("removeIForInterface", "If true, the 'I' in front of the interface method will not show.")]
+        [Input("includeParamNames", "If true, the name of the parameters will be written. Otherwise, only their types will show.")]
+        [Input("maxParams", "Maximum number of parameter to write. Any remaining will be represented with '...'.")]
+        [Input("maxChars", "Maximum number of characters to use. Any remaining will be represented with '...'.")]
+        [Input("includeParamPaths", "If true, the path/namespace will be provided.")]
+        [Output("Text representation.")]
         public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false)
         {
             if (method == null)
@@ -124,6 +144,13 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Provides a human-friendly text representation of a type.")]
+        [Input("type", "type to convert to text.")]
+        [Input("includePath", "If true, the path/namespace will be provided.")]
+        [Input("genericStart", "Start symbol used for the beginning of the generic parameters, if any. Usually, '<'.")]
+        [Input("genericSeparator", "Symbol used to separate the generic parameters. Usually, ','.")]
+        [Input("genericEnd", "Start symbol used for the end of the generic parameters, if any. Usually, '>'.")]
+        [Output("Text representation.")]
         public static string ToText(this Type type, bool includePath = false, bool replaceGeneric = false, string genericStart = "<", string genericSeparator = ", ", string genericEnd = ">")
         {
             if (type == null)
@@ -161,6 +188,10 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Provides a human-friendly text representation of an enum.")]
+        [Input("item", "enum to convert to text.")]
+        [Input("includePath", "If true, the path/namespace will be provided.")]
+        [Output("Text representation.")]
         public static string ToText(this Enum item, bool includePath = false)
         {
             if (item == null)
