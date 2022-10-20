@@ -51,40 +51,97 @@ namespace BH.Engine.Geometry
             List<Arc> result = new List<Arc>();
             List<Point> cPts = new List<Point>();
             Vector normal = arc.Normal();
-
+            Point stPt = arc.StartPoint();
+            Point enPt = arc.EndPoint();
+            double sqTol = tolerance * tolerance;
             foreach (Point point in points)
             {
-                if (point.IsOnCurve(arc, tolerance))
+                //Collect point on curve within tolerance, but not within tolerance of start or end point
+                if (point.SquareDistance(stPt) > sqTol && point.SquareDistance(enPt) > sqTol && point.IsOnCurve(arc, tolerance))
                     cPts.Add(point);
             }
 
-            cPts.Add(arc.StartPoint());
-            cPts.Add(arc.EndPoint());
-            cPts = cPts.CullDuplicates(tolerance);
-            cPts = cPts.SortAlongCurve(arc, tolerance);
-
-            if (arc.EndAngle - 2 * Math.PI < tolerance && arc.EndAngle - 2 * Math.PI > -tolerance)
-                cPts.Add(arc.EndPoint());
-
-            if (cPts.Count > 2)
+            //If any points on curve not within distance of start and/or end point
+            if (cPts.Count > 0)
             {
-                Double startAng = arc.StartAngle;
-                Double endAng = arc.EndAngle;
-                Double tmpAng = 0;
-                Arc tmpArc;
+                cPts = cPts.CullDuplicates(tolerance);  //Get rid of all duplicates
 
-                for (int i = 1; i < cPts.Count; i++)
+                //Arc currently only really valid if this holds true.
+                //An arc with a StartAngle larger than EndAngle gives negative lengths and have issues in other methods.
+                //Handling currently invalid case in this method to atempt to future proof
+                bool startSmaller = arc.StartAngle < arc.EndAngle;  
+                
+                //Setup angle domain parameters
+                double minAngle, maxAngle;
+                if (startSmaller)
                 {
-                    tmpArc = arc.DeepClone();
-
-                    tmpArc.StartAngle = startAng;
-                    tmpAng = (2 * Math.PI + (cPts[i - 1] - arc.Centre()).SignedAngle(cPts[i] - arc.Centre(), normal)) % (2 * Math.PI);
-                    endAng = startAng + tmpAng;
-                    tmpArc.EndAngle = endAng;
-                    result.Add(tmpArc);
-                    startAng = endAng;
+                    minAngle = arc.StartAngle;
+                    maxAngle = arc.EndAngle;
+                }
+                else
+                {
+                    minAngle = arc.EndAngle;
+                    maxAngle = arc.StartAngle;
                 }
 
+                List<double> angles = new List<double>();
+                foreach (Point p in cPts)
+                {
+                    //Calculate angles in relation to the coordinate system for the point
+                    double angle = arc.CoordinateSystem.X.SignedAngle((p - arc.CoordinateSystem.Origin), arc.CoordinateSystem.Z);
+
+                    //Ensure angle is in the domain of the arc
+                    if (angle < minAngle)
+                    {
+                        do
+                        {
+                            angle += 2 * Math.PI;   //As long as angle is smaller than the minimum (StartAngle) increase by full lap
+                        } while (angle < minAngle);
+
+                        if (angle > maxAngle)
+                        {
+                            //Should never happen (and for tested cases does not).
+                            //Potential to change the IsOnCurve check to only check if on the full circle and use this to cull out items on circle but not on the arc. (If done, the warning below should be removed)
+                            Base.Compute.RecordWarning("Point split point deemed on curve but outside the arc domain ignored. Please check the validity of the inputs.");   //Warning just in case. Should never happen as points should all be on the curve
+                            continue;
+                        }
+                    }
+                    else if (angle > maxAngle)
+                    {
+                        do
+                        {
+                            angle -= 2 * Math.PI;   //As long as angle is larger than the maximum (EndAngle) decrease by full lap
+                        } while (angle > maxAngle);
+
+                        if (angle < minAngle)
+                        {
+                            //Should never happen (and for tested cases does not).
+                            //Potential to change the IsOnCurve check to only check if on the full circle and use this to cull out items on circle but not on the arc.
+                            Base.Compute.RecordWarning("Point split point deemed on curve but outside the arc domain ignored. Please check the validity of the inputs.");   //Warning just in case. Should never happen as points should all be on the curve
+                            continue;
+                        }
+                    }
+
+                    angles.Add(angle);  //Store angle
+                }
+
+                angles.Sort();  //Equal to sort along curve
+                angles.Insert(0, minAngle);  //Insert minAngle (StartAngle) as first step
+                angles.Add(maxAngle);  //Add maxAngle (EndAngle) to the end
+
+                if (!startSmaller)  //As mentioned above, Arcs currently invalid if false, but handling here for completeness
+                    angles.Reverse();
+
+                for (int i = 1; i < angles.Count; i++)
+                {
+                    result.Add(new Arc
+                    {
+                        CoordinateSystem = arc.CoordinateSystem,
+                        Radius = arc.Radius,
+                        StartAngle = angles[i - 1],
+                        EndAngle = angles[i]
+                    });
+                }
             }
             else
                 result.Add(arc.DeepClone());
