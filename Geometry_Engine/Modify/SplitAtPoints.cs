@@ -313,7 +313,7 @@ namespace BH.Engine.Geometry
         [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<ICurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (curve == null)
+            if (curve == null || points == null)
                 return null;
 
             if (points.Count == 0)
