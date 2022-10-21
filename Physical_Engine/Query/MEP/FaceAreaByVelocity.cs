@@ -20,41 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
-using BH.oM.Geometry;
+using System;
+using BH.oM.MEP.Equipment;
 using BH.oM.Base.Attributes;
-using BH.oM.Physical.ConduitProperties;
+using System.ComponentModel;
 
 namespace BH.Engine.MEP
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Creates a Pipe object. Material that flows through this Pipe can be established at the system level.")]
-        [Input("polyline", "A polyline that determines the Pipe's length and direction.")]
-        [Input("flowRate", "The volume of fluid being conveyed by the Pipe per second (m3/s).")]
-        [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Pipe section for accurate capacity and spatial quality.")]
-        [Input("orientationAngle", "This is the pipe's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
-        [Output("pipe", "A pipe object is a passageway which conveys material (water, waste, glycol).")]
 
-        public static BH.oM.Physical.Elements.Pipe Pipe(Polyline polyline, double flowRate = 0, PipeSectionProperty sectionProperty = null, double orientationAngle = 0)
+        [Description("Returns the height and width of the equipment based on the inputs of AirVelocityAcrossCoil and TotalAirFlow.")]
+        [Input("mepEquipmentObject", "MEP object that contains properties for AirVelocityAcrossCoil and TotalAirFlow.")]
+        [Output("widthlength", "This is the width OR the length (they are the same value), since the method is taking the square root of the airflow divided by the velocity.")]
+        public static double FaceAreaByVelocity(this AirHandlingUnit mepEquipmentObject)
         {
-            if (polyline == null)
+            if(mepEquipmentObject == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot create a pipe from an empty line.");
-                return null;
+                BH.Engine.Base.Compute.RecordError("Cannot query the face area by velocity of a null air handling unit object.");
+                return -1;
             }
 
-            return new BH.oM.Physical.Elements.Pipe
-            {
-                Location = polyline,
-                SectionProperty = sectionProperty,
-                OrientationAngle = orientationAngle,
-            };
+            return Math.Sqrt(mepEquipmentObject.TotalAirFlow / mepEquipmentObject.AirVelocityAcrossCoil);
         }
-        /***************************************************/
     }
 }
 

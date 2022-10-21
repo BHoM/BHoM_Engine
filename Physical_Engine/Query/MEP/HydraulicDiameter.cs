@@ -20,39 +20,41 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Geometry;
+using System.Linq;
+using BH.oM.Spatial.ShapeProfiles;
+using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
-using BH.oM.Physical.ConduitProperties;
+using BH.oM.Geometry;
 
-namespace BH.Engine.MEP
+namespace BH.Engine.Physical.MEP
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Creates a Pipe object. Material that flows through this Pipe can be established at the system level.")]
-        [Input("polyline", "A polyline that determines the Pipe's length and direction.")]
-        [Input("flowRate", "The volume of fluid being conveyed by the Pipe per second (m3/s).")]
-        [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Pipe section for accurate capacity and spatial quality.")]
-        [Input("orientationAngle", "This is the pipe's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
-        [Output("pipe", "A pipe object is a passageway which conveys material (water, waste, glycol).")]
-
-        public static BH.oM.Physical.Elements.Pipe Pipe(Polyline polyline, double flowRate = 0, PipeSectionProperty sectionProperty = null, double orientationAngle = 0)
+        [Description("Returns the Hydraulic Diameter for any IProfile that are non-circular (ie the equivalent diameter for flow based equations if the duct were to be circular).")]
+        [Input("profile", "IProfile used to define the element's cross section shape.")]
+        [Input("area", "Area of the IProfile used to define the section of the element.")]
+        [Output("hydraulicDiameter", "Hydraulic Diameter allows you to calculate the round equivalent hydraulic diameter for a non-round duct (rectangular/square).")]
+        public static double HydraulicDiameter(this IProfile profile, double area)
         {
-            if (polyline == null)
+            if(profile == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot create a pipe from an empty line.");
-                return null;
+                BH.Engine.Base.Compute.RecordError("Cannot query the hydraulic diameter of a null profile.");
+                return -1;
             }
 
-            return new BH.oM.Physical.Elements.Pipe
+            List<List<ICurve>> distCurves = Engine.Geometry.Compute.DistributeOutlines(Engine.Geometry.Compute.IJoin(profile.Edges.ToList()).Cast<ICurve>().ToList());
+            List<ICurve> innerProfileEdges = new List<ICurve>();
+
+            foreach (List<ICurve> curves in distCurves)
             {
-                Location = polyline,
-                SectionProperty = sectionProperty,
-                OrientationAngle = orientationAngle,
-            };
+                innerProfileEdges.AddRange(curves.Skip(1));
+            }
+            return 4 * area / innerProfileEdges.Sum(x => x.ILength());
         }
         /***************************************************/
     }

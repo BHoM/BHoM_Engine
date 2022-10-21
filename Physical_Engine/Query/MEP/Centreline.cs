@@ -21,41 +21,35 @@
  */
 
 using System.ComponentModel;
+
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using BH.oM.Physical.ConduitProperties;
+using BH.oM.Physical.Elements;
 
 namespace BH.Engine.MEP
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****              Public Methods               ****/
         /***************************************************/
-        [Description("Creates a Pipe object. Material that flows through this Pipe can be established at the system level.")]
-        [Input("polyline", "A polyline that determines the Pipe's length and direction.")]
-        [Input("flowRate", "The volume of fluid being conveyed by the Pipe per second (m3/s).")]
-        [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Pipe section for accurate capacity and spatial quality.")]
-        [Input("orientationAngle", "This is the pipe's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
-        [Output("pipe", "A pipe object is a passageway which conveys material (water, waste, glycol).")]
-
-        public static BH.oM.Physical.Elements.Pipe Pipe(Polyline polyline, double flowRate = 0, PipeSectionProperty sectionProperty = null, double orientationAngle = 0)
+        [Description("Returns the centreline of any IFlow object as the line between the StartPoint and EndPoint. No offsets or similar is accounted for.")]
+        [Input("flowObj", "The IFlow object to get the centreline from.")]
+        [Output("centreline", "The centreline of the IFlow object.")]
+        public static Line Centreline(this IConduitSegment conduitSegment)
         {
-            if (polyline == null)
+            if(conduitSegment == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot create a pipe from an empty line.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the centreline of a null flow object.");
                 return null;
             }
 
-            return new BH.oM.Physical.Elements.Pipe
-            {
-                Location = polyline,
-                SectionProperty = sectionProperty,
-                OrientationAngle = orientationAngle,
-            };
+            return conduitSegment.Location as Line;
         }
+
         /***************************************************/
     }
 }
+
 
 

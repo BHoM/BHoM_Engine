@@ -21,41 +21,58 @@
  */
 
 using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using BH.oM.Physical.ConduitProperties;
+using BH.Engine.Geometry;
+using BH.oM.Physical.Elements;
 
-namespace BH.Engine.MEP
+namespace BH.Engine.Physical.MEP
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****             Public Methods                ****/
         /***************************************************/
-        [Description("Creates a Pipe object. Material that flows through this Pipe can be established at the system level.")]
-        [Input("polyline", "A polyline that determines the Pipe's length and direction.")]
-        [Input("flowRate", "The volume of fluid being conveyed by the Pipe per second (m3/s).")]
-        [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Pipe section for accurate capacity and spatial quality.")]
-        [Input("orientationAngle", "This is the pipe's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
-        [Output("pipe", "A pipe object is a passageway which conveys material (water, waste, glycol).")]
-
-        public static BH.oM.Physical.Elements.Pipe Pipe(Polyline polyline, double flowRate = 0, PipeSectionProperty sectionProperty = null, double orientationAngle = 0)
+        
+        [Description("Queries an IFlow object for its geometry.")]
+        [Input("conduitSegment", "The object to query geometry from.")]
+        [Output("geometry", "The geometry queried from the object.")]
+        public static IGeometry Geometry(this IConduitSegment conduitSegment)
         {
-            if (polyline == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot create a pipe from an empty line.");
+            if (conduitSegment == null)
                 return null;
+            else
+                return conduitSegment.Location as Line;
+        }
+
+        /***************************************************/
+
+        [Description("Queries a Fitting object for its geometry.")]
+        [Input("fitting", "The object to query geometry from.")]
+        [Output("geometry", "The geometry queried from the object.")]
+        public static List<Line> Geometry(this Fitting fitting)
+        {
+            if (fitting == null)
+                return null;
+            
+            List<Line> result = new List<Line>();
+            if (fitting.ConnectionsLocation.Count == 2)
+                result.Add(BH.Engine.Geometry.Create.Line(fitting.ConnectionsLocation[0], fitting.ConnectionsLocation[1]));
+            
+            else
+            {
+                foreach (Point point in fitting.ConnectionsLocation)
+                {
+                    result.Add(BH.Engine.Geometry.Create.Line(fitting.Location, point));
+                }
             }
 
-            return new BH.oM.Physical.Elements.Pipe
-            {
-                Location = polyline,
-                SectionProperty = sectionProperty,
-                OrientationAngle = orientationAngle,
-            };
+            return result;
         }
+        
         /***************************************************/
     }
 }
-
 

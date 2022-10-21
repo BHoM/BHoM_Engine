@@ -37,8 +37,9 @@ namespace BH.Engine.Physical.MEP
         [Input("polyline", "A polyline that determines the Wire's length and direction.")]
         [Input("flowRate", "The current carried by the Wire.")]
         [Input("sectionProperty", "Provide a wireSectionProperty to prepare a composite Wire section for accurate capacity and spatial quality.")]
+        [Input("orientationAngle", "This is the wire's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
         [Output("wireSegment", "Wire object to work within an MEP systems.")]
-        public static WireSegment WireSegment(Polyline polyline, double flowRate = 0, WireSectionProperty sectionProperty = null)
+        public static WireSegment WireSegment(Polyline polyline, double flowRate = 0, WireSectionProperty sectionProperty = null, double orientationAngle = 0)
         {
             if (polyline == null)
             {
@@ -50,6 +51,7 @@ namespace BH.Engine.Physical.MEP
             {
                 Location = polyline,
                 SectionProperty = sectionProperty,
+                OrientationAngle = orientationAngle,
             };
         }
         /***************************************************/

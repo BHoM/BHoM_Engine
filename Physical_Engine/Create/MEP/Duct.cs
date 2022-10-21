@@ -21,10 +21,10 @@
  */
 
 using System.ComponentModel;
-using BH.oM.MEP.System;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using BH.oM.MEP.System.SectionProperties;
+using BH.oM.Physical.Elements;
+using BH.oM.Physical.ConduitProperties;
 
 namespace BH.Engine.MEP
 {
@@ -34,14 +34,14 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
         [Description("Creates a Duct object. Material that flows through this Duct can be established at the system level.")]
-        [Input("line", "A line that determines the Duct's length and direction.")]
+        [Input("polyLine", "A polyLine that determines the Duct's length and direction.")]
         [Input("flowRate", "The volume of fluid being conveyed by the Duct per second (m3/s).")]
         [Input("sectionProperty", "Provide a ductSectionProperty to prepare a composite Duct section for accurate capacity and spatial quality.")]
         [Input("orientationAngle", "This is the Duct's planometric orientation angle (the rotation around its central axis created about the profile centroid).")]
         [Output("duct", "A duct object is a passageway which conveys material (typically air).")]
-        public static Duct Duct(Line line, double flowRate = 0, DuctSectionProperty sectionProperty = null, double orientationAngle = 0)
+        public static Duct Duct(Polyline polyLine, double flowRate = 0, DuctSectionProperty sectionProperty = null, double orientationAngle = 0)
         {
-            if(line == null)
+            if(polyLine == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot create a duct from an empty line.");
                 return null;
@@ -49,8 +49,7 @@ namespace BH.Engine.MEP
             
             return new Duct
             {
-                StartPoint = line.Start,
-                EndPoint = line.End,
+               Location = polyLine,
                 SectionProperty = sectionProperty,
                 OrientationAngle = orientationAngle,
             };

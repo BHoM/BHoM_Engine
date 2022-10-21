@@ -21,15 +21,15 @@
  */
 
 using System.ComponentModel;
-using BH.oM.MEP.System.MaterialFragments;
-using BH.oM.MEP.System.SectionProperties;
 using BH.Engine.Spatial;
 using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Physical.Materials;
 using System.Collections.Generic;
+using BH.oM.Physical.ConduitProperties;
+using BH.Engine.Physical.MEP;
 
-namespace BH.Engine.MEP
+namespace BH.Engine.Physical
 {
     public static partial class Create
     {
