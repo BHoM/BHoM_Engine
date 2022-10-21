@@ -75,7 +75,9 @@ namespace BH.Engine.Base
             // ----- HASH -----
 
             // Compute the defining string.
-            string hashString = HashString(iObj, cc, 0);
+            StringBuilder sb = new StringBuilder();
+            HashString(sb, iObj, cc, 0);
+            string hashString = sb.ToString();
 
             if (string.IsNullOrWhiteSpace(hashString))
             {
@@ -116,10 +118,8 @@ namespace BH.Engine.Base
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
         [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
-        private static string HashString(object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
+        private static void HashString(StringBuilder stringBuilder, object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
         {
-            string definingString = "";
-
             // Get the considered object type.
             Type type = obj?.GetType();
 
@@ -139,38 +139,53 @@ namespace BH.Engine.Base
                 || (cc.NamespaceExceptions != null && cc.NamespaceExceptions.Where(ex => type.Namespace.Contains(ex)).Any())
                 || nestingLevel >= cc.MaxNesting)
             {
-                return "";
+                return;
             }
             else if (type.IsNumeric() && type.BaseType != typeof(System.Enum))
             {
                 // If we didn't specify any custom tolerance/significant figures, just return the input.
                 if (cc.NumericTolerance == double.MinValue && cc.SignificantFigures == int.MaxValue
                     && (!cc.PropertyNumericTolerances?.Any() ?? true) && (!cc.PropertySignificantFigures?.Any() ?? true))
-                    return $"\n{tabs}" + obj.ToString();
+                {
+                    stringBuilder.Append($"\n{tabs}" + obj.ToString());
+                    return;
+                }
 
                 if (type == typeof(double))
-                    return $"\n{tabs}" + NumericalApproximation((double)obj, currentPropertyFullName, cc).ToString();
+                {
+                    stringBuilder.Append($"\n{tabs}" + NumericalApproximation((double)obj, currentPropertyFullName, cc).ToString());
+                    return;
+                }
 
                 if (type == typeof(int))
-                    return $"\n{tabs}" + NumericalApproximation((int)obj, currentPropertyFullName, cc).ToString();
+                {
+                    stringBuilder.Append($"\n{tabs}" + NumericalApproximation((int)obj, currentPropertyFullName, cc).ToString());
+                    return;
+                }
 
                 // Fallback for any other floating-point numeric type.
                 if (type.IsNumericFloatingPointType())
-                    return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString();
+                {
+                    stringBuilder.Append($"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString());
+                    return;
+                }
 
                 // Fallback for any other integral numeric type.
                 if (type.IsNumericIntegralType())
-                    return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString();
+                {
+                    stringBuilder.Append($"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString());
+                    return;
+                }
 
             }
             else if (type.IsPrimitive || type == typeof(String))
             {
-                definingString += $"\n{tabs}" + obj?.ToString() ?? "";
+                stringBuilder.Append($"\n{tabs}" + obj?.ToString() ?? "");
             }
             else if (type.IsArray)
             {
                 foreach (var element in (obj as dynamic))
-                    definingString += $"\n{tabs}" + HashString(element, cc, nestingLevel + 1, currentPropertyFullName);
+                    stringBuilder.Append($"\n{tabs}" + HashString(stringBuilder, element, cc, nestingLevel + 1, currentPropertyFullName));
             }
             else if (typeof(IDictionary).IsAssignableFrom(type))
             {
@@ -208,22 +223,25 @@ namespace BH.Engine.Base
                             continue;
                     }
 
-                    definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { HashString(entry.Value, cc, nestingLevel + 1, currentPropertyFullName)}";
+                    stringBuilder.Append($"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n");
+                    HashString(stringBuilder, entry.Value, cc, nestingLevel + 1, currentPropertyFullName);
                 }
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 foreach (var element in (obj as dynamic))
-                    definingString += $"\n{tabs}" + HashString(element, cc, nestingLevel + 1, currentPropertyFullName);
+                    HashString(stringBuilder, element, cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (type.FullName.Contains("System.Collections.Generic.ObjectEqualityComparer`1"))
             {
-                definingString = "";
+                // Do nothing here.
             }
             else if (type == typeof(System.Data.DataTable))
             {
                 DataTable dt = obj as DataTable;
-                return definingString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + HashString(dt.AsEnumerable(), cc, nestingLevel + 1, currentPropertyFullName);
+                stringBuilder.Append($"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}");
+                HashString(stringBuilder, dt.AsEnumerable(), cc, nestingLevel + 1, currentPropertyFullName);
+                return; 
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
@@ -231,7 +249,10 @@ namespace BH.Engine.Base
                 object hashStringFromExtensionMethod = null;
                 object[] parameters = new object[] { currentPropertyFullName, cc };
                 if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
-                    return (string)hashStringFromExtensionMethod;
+                {
+                    stringBuilder.Append(hashStringFromExtensionMethod);
+                    return;
+                }
 
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
@@ -265,21 +286,20 @@ namespace BH.Engine.Base
                     if (propertyValue != null)
                     {
                         // Recurse for this property.
-                        propHashString = HashString(propertyValue, cc, nestingLevel + 1, propFullName) ?? "";
                         if (!string.IsNullOrWhiteSpace(propHashString))
-                            definingString += $"\n{tabs}" + $"{type.FullName}.{propName}:\n{tabs}{propHashString} ";
+                            stringBuilder.Append($"{type.FullName}.{propName}:\n){tabs}");
+
+                        HashString(stringBuilder, propertyValue, cc, nestingLevel + 1, propFullName);
                     }
                 }
             }
             else
             {
-                definingString = $"\n{tabs}" + obj?.ToString() ?? "";
+                stringBuilder.Append($"\n{tabs}" + obj?.ToString() ?? "");
             }
 
-            if (!string.IsNullOrWhiteSpace(definingString))
-                definingString = (nestingLevel > 0 ? "\t" : "") + $"[{type.FullName}]" + definingString;
-
-            return definingString;
+            //if (!string.IsNullOrWhiteSpace(definingString))
+            //    definingString = (nestingLevel > 0 ? "\t" : "") + $"[{type.FullName}]" + definingString;
         }
 
         /***************************************************/
