@@ -76,7 +76,14 @@ namespace BH.Engine.Geometry
             //If any points on the full circle corresponding to the arc
             if (cPts.Count > 0)
             {
-                double angleTolerance = tolerance / arc.Radius; //Allowable difference in angle for the points on the arc to be tolerance distance away from each other
+                if (arc.Radius * 2 < tolerance) //Angle tolerance calculation below fails if this is true, as it means computing ASin of a value larger than 1. Good check to make anyway, as a arc this small is a singularity within the tolerance.
+                {
+                    Base.Compute.RecordError("Arc has a radius smaller than half of the tolerance provided. All points on the arc deemed the same within tolerance. Unable to split arc at points.");
+                    return null;
+                }
+
+                //Allowable difference in angle for the points on the arc to be tolerance distance away from each other
+                double angleTolerance = 2 * Math.Asin(tolerance / 2 / arc.Radius); //This is the equivalent of straight line distance between two points rather than distance along the arc
 
                 if (Math.Abs(arc.Angle()) > Math.PI * 2 + angleTolerance)
                 {
