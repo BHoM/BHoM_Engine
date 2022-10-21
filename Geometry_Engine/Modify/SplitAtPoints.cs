@@ -160,26 +160,12 @@ namespace BH.Engine.Geometry
                 if (angles.Count == 0)  //No angles in range
                     return new List<Arc> { arc.DeepClone() };
 
-                angles.Sort();  //Equal to sort along curve
-
-                //Remove duplicates within tolerance
+                //Sorts the angle and remove duplicates within tolerance
                 //Both more efficient and accurate to handles this with the angles compared to removing duplicate input points
                 //Doing it this way ensures points on the curve are not within tolerance, rather than the input points, that could be
-                //Outside tolerance in relation to each other, but ending up on the same point on the angle
+                //Outside tolerance in relation to each other, but ending up on the same point on the arc
                 //The below does the equivalent of a DBScan (which is what the CullDuplicates for points relies on)
-                List<List<double>> angleGroups = new List<List<double>>() { new List<double> { angles[0] } };
-                int groupIndex = 0;
-                for (int i = 1; i < angles.Count; i++)
-                {
-                    if (angles[i] - angleGroups[groupIndex].Last() < angleTolerance)    //Angles are sorted, so only need to compare to the one last added
-                        angleGroups[groupIndex].Add(angles[i]);
-                    else
-                    {
-                        angleGroups.Add(new List<double>() { angles[i] });
-                        groupIndex++;
-                    }
-                }
-                angles = angleGroups.Select(x => x.Average()).ToList();
+                angles = angles.OrderedNonDuplicates(angleTolerance);
 
                 angles.Insert(0, minAngle);  //Insert minAngle (StartAngle) as first step
                 angles.Add(maxAngle);  //Add maxAngle (EndAngle) to the end
@@ -507,6 +493,33 @@ namespace BH.Engine.Geometry
         {
             Base.Compute.RecordError($"SplitAtPoints is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Orders the incoming values and and removes duplicates by clustering similar to a DBScan clustering and then returning the average of each group.")]
+        [Input("values", "Values to order and cull duplicates from.")]
+        [Input("tolerance", "Allowable tolerance between two values for them to be deemed the same.")]
+        [Output("values", "A set of ordered, non-duplicate values corresponding to the input values.")]
+        private static List<double> OrderedNonDuplicates(this List<double> values, double tolerance)
+        {
+            values = values.OrderBy(x => x).ToList(); //Sort the values
+
+            List<List<double>> groups = new List<List<double>>() { new List<double> { values[0] } };    //Populate group list, and add first (smallest) value
+            int groupIndex = 0;
+            for (int i = 1; i < values.Count; i++)  //Loop through all values and check if within tolerance from the last added.
+            {
+                if (values[i] - groups[groupIndex].Last() < tolerance)    //Angles are sorted, so only need to compare to the one last added
+                    groups[groupIndex].Add(values[i]);  //Within tolerance -> add to group
+                else
+                {
+                    groups.Add(new List<double>() { values[i] });   //Outside tolerance -> new group
+                    groupIndex++;
+                }
+            }
+            return groups.Select(x => x.Average()).ToList();    //Compute and return the average of each group
         }
 
         /***************************************************/
