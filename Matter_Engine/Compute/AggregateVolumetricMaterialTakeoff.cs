@@ -56,6 +56,24 @@ namespace BH.Engine.Matter
         [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff containing the unique materials across all elements.")]
         public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<IElementM> elements, bool checkForTakeoffFragment = false, BaseComparisonConfig comparisonConfig = null)
         {
+            if (elements == null)
+            {
+                Base.Compute.RecordError($"Provided List of {nameof(IElementM)}s is null, cannot compute aggregate takeoff.");
+                return null;
+            }
+
+            if (elements.Any(x => x == null))
+            {
+                Base.Compute.RecordWarning($"At least one of the provided {nameof(IElementM)}s is null and will be filtered out when computing the {nameof(AggregateVolumetricMaterialTakeoff)}.");
+                elements = elements.Where(x => x != null);
+            }
+
+            if (!elements.Any())
+            {
+                Base.Compute.RecordWarning($"No non-null {nameof(IElementM)}s provided. Empty {nameof(VolumetricMaterialTakeoff)} returned.");
+                return new VolumetricMaterialTakeoff(new List<Material>(), new List<double>());
+            }
+
             return AggregateVolumetricMaterialTakeoff(elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)), comparisonConfig);
         }
 
@@ -67,6 +85,24 @@ namespace BH.Engine.Matter
         [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff incorporating the provided materials and volumes from each individual VolumetricMaterialTakeoff.")]
         public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<VolumetricMaterialTakeoff> volumetricMaterialTakeoffs, BaseComparisonConfig comparisonConfig = null)
         {
+            if (volumetricMaterialTakeoffs == null)
+            {
+                Base.Compute.RecordError($"Provided List of {nameof(VolumetricMaterialTakeoff)}s is null, cannot compute aggregate takeoff.");
+                return null;
+            }
+
+            if (volumetricMaterialTakeoffs.Any(x => x == null))
+            {
+                Base.Compute.RecordWarning($"At least one of the provided  {nameof(VolumetricMaterialTakeoff)}s is null and will be filtered out when computing the {nameof(AggregateVolumetricMaterialTakeoff)}.");
+                volumetricMaterialTakeoffs = volumetricMaterialTakeoffs.Where(x => x != null);
+            }
+
+            if (!volumetricMaterialTakeoffs.Any())
+            {
+                Base.Compute.RecordWarning($"No non-null {nameof(VolumetricMaterialTakeoff)}s provided. Empty {nameof(VolumetricMaterialTakeoff)} returned.");
+                return new VolumetricMaterialTakeoff(new List<Material>(), new List<double>());
+            }
+
             List<VolumetricMaterialTakeoff> localMatTakeoffs = volumetricMaterialTakeoffs.ToList();
 
             Dictionary<string, Tuple<Material, double>> hashedMaterialVolumeTuples = new Dictionary<string, Tuple<Material, double>>();

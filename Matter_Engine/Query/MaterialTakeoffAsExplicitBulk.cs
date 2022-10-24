@@ -44,6 +44,12 @@ namespace BH.Engine.Matter
         [Output("takeOff", "Material take off information in a form of an ExplicitBulk.")]
         public static ExplicitBulk MaterialTakeoffAsExplicitBulk(this IBHoMObject bHoMObject)
         {
+            if (bHoMObject == null)
+            {
+                Base.Compute.RecordError($"Cannot extract {nameof(VolumetricMaterialTakeoff)} from a null object.");
+                return null;
+            }
+
             VolumetricMaterialTakeoff takeOff = bHoMObject.FindFragment<VolumetricMaterialTakeoff>();
             if (takeOff == null)
                 return null;
