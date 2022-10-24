@@ -53,9 +53,11 @@ namespace BH.Engine.Matter
 
             //If asked to look for fragment, and if fragment exists, return it
             VolumetricMaterialTakeoff matTakeoff;
-            if (TryGetVolumetricMaterialTakeoffFragment(elementM, checkForTakeoffFragment, out matTakeoff))
-                return matTakeoff;
-
+            if (checkForTakeoffFragment)
+            {
+                if (TryGetVolumetricMaterialTakeoffFragment(elementM, out matTakeoff))
+                    return matTakeoff;
+            }
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
             // -VolumetricMaterialTakeoff
@@ -95,13 +97,9 @@ namespace BH.Engine.Matter
         /***************************************************/
 
         [Description("Tries to find a VolumetricMaterialTakeoff attached as a fragment to the elementM. If found, returns true.")]
-        private static bool TryGetVolumetricMaterialTakeoffFragment(this IElementM elementM, bool checkForFragment, out VolumetricMaterialTakeoff takeoffFragment)
+        private static bool TryGetVolumetricMaterialTakeoffFragment(this IElementM elementM, out VolumetricMaterialTakeoff takeoffFragment)
         {
             takeoffFragment = null;
-
-            //If bool is false, simply return false
-            if (!checkForFragment)
-                return false;
 
             //If bool is true, check for attached fragment
             IBHoMObject bhomObj = elementM as IBHoMObject;
