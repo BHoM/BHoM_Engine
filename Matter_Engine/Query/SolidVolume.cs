@@ -49,9 +49,12 @@ namespace BH.Engine.Matter
             }
 
             //If asked to look for fragment, and if fragment exists, return it
-            VolumetricMaterialTakeoff matTakeoff;
-            if (TryGetVolumetricMaterialTakeoffFragment(elementM, checkForTakeoffFragment, out matTakeoff))
-                return matTakeoff.SolidVolume();
+            if (checkForTakeoffFragment)
+            {
+                VolumetricMaterialTakeoff matTakeoff;
+                if (TryGetVolumetricMaterialTakeoffFragment(elementM, out matTakeoff))
+                    return matTakeoff.SolidVolume();
+            }
 
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
