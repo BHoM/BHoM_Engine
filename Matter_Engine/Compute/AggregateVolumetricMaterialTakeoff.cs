@@ -52,18 +52,20 @@ namespace BH.Engine.Matter
         [Description("Calculates an aggregate VolumetricMaterialTakeoff from a collection of elements.")]
         [Input("elements", "The elements to iterate over in generation of the VolumetricMaterialTakeoff.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns it. If false, the VolumetricMaterialTakeoff returned will be calculated, independant of fragment attached.")]
+        [Input("comparisonConfig", "Optional comparison config to be used for check equality of two Materials. Defaults to checking the full Material object.")]
         [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff containing the unique materials across all elements.")]
-        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<IElementM> elements, bool checkForTakeoffFragment = false)
+        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<IElementM> elements, bool checkForTakeoffFragment = false, BaseComparisonConfig comparisonConfig = null)
         {
-            return AggregateVolumetricMaterialTakeoff(elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)));
+            return AggregateVolumetricMaterialTakeoff(elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)), comparisonConfig);
         }
 
         /***************************************************/
 
         [Description("Calculates an aggregate VolumetricMaterialTakeoff from a collection individual VolumetricMaterialTakeoffs.")]
         [Input("volumetricMaterialTakeoffs", "The individual VolumetricMaterialTakeoffs to aggregate together.")]
+        [Input("comparisonConfig", "Optional comparison config to be used for check equality of two Materials. Defaults to checking the full Material object.")]
         [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff incorporating the provided materials and volumes from each individual VolumetricMaterialTakeoff.")]
-        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<VolumetricMaterialTakeoff> volumetricMaterialTakeoffs)
+        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<VolumetricMaterialTakeoff> volumetricMaterialTakeoffs, BaseComparisonConfig comparisonConfig = null)
         {
             List<VolumetricMaterialTakeoff> localMatTakeoffs = volumetricMaterialTakeoffs.ToList();
 
@@ -75,7 +77,7 @@ namespace BH.Engine.Matter
                 {
                     Material mat = localMatTakeoffs[j].Materials[i];
                     double volume = localMatTakeoffs[j].Volumes[i];
-                    string hash = mat.Hash();
+                    string hash = mat.Hash(comparisonConfig);
                     Tuple<Material, double> matVolumePair;
                     if (hashedMaterialVolumeTuples.TryGetValue(hash, out matVolumePair))
                         matVolumePair = new Tuple<Material, double>(matVolumePair.Item1, matVolumePair.Item2 + volume);
