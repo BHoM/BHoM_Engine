@@ -189,6 +189,7 @@ namespace BH.Engine.Matter
         /**** Private Methods                           ****/
         /***************************************************/
 
+        [Description("Method preforming the mapping work. Matches the Material first by name, secondly by name of properties using the provided lookup and dictionary.")]
         private static Material MapMaterial(this Material material, ILookup<string, Material> nameLookup, Dictionary<Tuple<Type, string>, List<Material>> propertyMaps)
         {
             List<Material> matches = nameLookup[material.Name].ToList();    //Try match by name
