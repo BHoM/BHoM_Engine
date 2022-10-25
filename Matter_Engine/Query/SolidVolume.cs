@@ -40,7 +40,7 @@ namespace BH.Engine.Matter
         [Input("elementM", "The element to get the volume from.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that total volume corresponding to this fragment. If false, the SolidVolume returned will be calculated, independant of fragment attached.")]
         [Output("volume", "The element's solid material volume.", typeof(Volume))]
-        public static double ISolidVolume(this IElementM elementM, bool checkForTakeoffFragment = false)
+        public static double ISolidVolume(this IElementM elementM, bool checkForTakeoffFragment = true)
         {
             if(elementM == null)
             {

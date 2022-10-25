@@ -41,7 +41,7 @@ namespace BH.Engine.Matter
         [Input("elementM", "The element to get the MaterialComposition from.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that Material composition corresponding to this fragment. If false, the MaterialComposition returned will be calculated, independant of fragment attached.")]
         [Output("materialComposition", "The kind of matter the element is composed of and in which ratios.")]
-        public static MaterialComposition IMaterialComposition(this IElementM elementM, bool checkForTakeoffFragment = false)
+        public static MaterialComposition IMaterialComposition(this IElementM elementM, bool checkForTakeoffFragment = true)
         {
             if (elementM == null)
             {

@@ -54,7 +54,7 @@ namespace BH.Engine.Matter
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns it. If false, the VolumetricMaterialTakeoff returned will be calculated, independant of fragment attached.")]
         [Input("comparisonConfig", "Optional comparison config to be used for check equality of two Materials. Defaults to checking the full Material object.")]
         [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff containing the unique materials across all elements.")]
-        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<IElementM> elements, bool checkForTakeoffFragment = false, BaseComparisonConfig comparisonConfig = null)
+        public static VolumetricMaterialTakeoff AggregateVolumetricMaterialTakeoff(IEnumerable<IElementM> elements, bool checkForTakeoffFragment = true, BaseComparisonConfig comparisonConfig = null)
         {
             if (elements == null)
             {
