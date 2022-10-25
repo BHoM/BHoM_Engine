@@ -102,6 +102,15 @@ namespace BH.Engine.Matter
         [Output("materials", "Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
         public static IEnumerable<Material> MapMaterial(this IEnumerable<Material> materials, IEnumerable<Material> materialMaps)
         {
+            if (materials.IsNullOrEmpty())
+                return null;
+
+            if (materialMaps == null || !materialMaps.Any())
+            {
+                Base.Compute.RecordWarning($"No {nameof(materialMaps)} provied. Unmapped {nameof(Material)}s returned.");
+                return materials;
+            }
+
             ILookup<string, Material> nameLookup = materialMaps.ToLookup(x => x.Name);
 
             Dictionary<Tuple<Type, string>, List<Material>> propertyMaps = new Dictionary<Tuple<Type, string>, List<Material>>();
@@ -138,6 +147,14 @@ namespace BH.Engine.Matter
         [Output("materialCompositions", "MaterialComposition with Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
         public static IEnumerable<MaterialComposition> MapMaterial(this IEnumerable<MaterialComposition> materialCompositions, IEnumerable<Material> materialMaps)
         {
+            if (materialCompositions.IsNullOrEmpty())
+                return null;
+
+            if (materialMaps == null || !materialMaps.Any())
+            {
+                Base.Compute.RecordWarning($"No {nameof(materialMaps)} provied. Unmapped {nameof(MaterialComposition)}s returned.");
+                return materialCompositions;
+            }
             IEnumerable<Material> allMaterials = materialCompositions.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
             Dictionary<Guid, Material> mappedMaterials = allMaterials.MapMaterial(materialMaps).ToDictionary(x => x.BHoM_Guid);
             return materialCompositions.Select(x => new MaterialComposition(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Ratios)).ToList();
@@ -152,11 +169,20 @@ namespace BH.Engine.Matter
         [Input("volumetricMaterialTakeoffs", "The VolumetricMaterialTakeoff to Modify. Materials int he VolumetricMaterialTakeoff will be evaluated based on the name and properties.")]
         [Input("materialMaps", "The Material maps to match to. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
         [Output("volumetricMaterialTakeoffs", "MaterialComposition with Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
-        public static IEnumerable<VolumetricMaterialTakeoff> MapMaterial(this IEnumerable<VolumetricMaterialTakeoff> materialCompositions, IEnumerable<Material> materialMaps)
+        public static IEnumerable<VolumetricMaterialTakeoff> MapMaterial(this IEnumerable<VolumetricMaterialTakeoff> volumetricMaterialTakeoffs, IEnumerable<Material> materialMaps)
         {
-            IEnumerable<Material> allMaterials = materialCompositions.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
+            if (volumetricMaterialTakeoffs.IsNullOrEmpty())
+                return null;
+
+            if (materialMaps == null || !materialMaps.Any())
+            {
+                Base.Compute.RecordWarning($"No {nameof(materialMaps)} provied. Unmapped {nameof(VolumetricMaterialTakeoff)}s returned.");
+                return volumetricMaterialTakeoffs;
+            }
+
+            IEnumerable<Material> allMaterials = volumetricMaterialTakeoffs.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
             Dictionary<Guid, Material> mappedMaterials = allMaterials.MapMaterial(materialMaps).ToDictionary(x => x.BHoM_Guid);
-            return materialCompositions.Select(x => new VolumetricMaterialTakeoff(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Volumes)).ToList();
+            return volumetricMaterialTakeoffs.Select(x => new VolumetricMaterialTakeoff(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Volumes)).ToList();
         }
 
         /***************************************************/

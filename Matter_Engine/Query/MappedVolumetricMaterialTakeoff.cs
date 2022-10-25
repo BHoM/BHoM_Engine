@@ -48,6 +48,9 @@ namespace BH.Engine.Matter
         [Output("materialComposition", "The material compositions for each element with materials mapped to the provided transdiciplinary materials.")]
         public static List<VolumetricMaterialTakeoff> MappedVolumetricMaterialTakeoff(this IEnumerable<IElementM> elements, IEnumerable<Material> materialMaps, bool checkForTakeoffFragment = true)
         {
+            if (elements == null || !elements.Any())
+                return new List<VolumetricMaterialTakeoff>();
+
             return elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)).MapMaterial(materialMaps).ToList();
         }
 
