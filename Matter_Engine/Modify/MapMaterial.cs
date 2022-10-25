@@ -128,6 +128,38 @@ namespace BH.Engine.Matter
         }
 
         /***************************************************/
+
+        [Description("Maps a set of materials in the MaterialCompositions to a set of provided transdiciplinary materials.\n" +
+                     "First atempts to match the name of the provided materials to the transdiciplinary material maps.\n" +
+                     "If no name match is found, atempts to instead find a material with as many matching MaterialProperties (based on type and name) as possible.\n" +
+                     "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
+        [Input("materialCompositions", "The MaterialCompositions to Modify. Materials int he MaterialCompositions will be evaluated based on the name and properties.")]
+        [Input("materialMaps", "The Material maps to match to. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
+        [Output("materialCompositions", "MaterialComposition with Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
+        public static IEnumerable<MaterialComposition> MapMaterial(this IEnumerable<MaterialComposition> materialCompositions, IEnumerable<Material> materialMaps)
+        {
+            IEnumerable<Material> allMaterials = materialCompositions.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
+            Dictionary<Guid, Material> mappedMaterials = allMaterials.MapMaterial(materialMaps).ToDictionary(x => x.BHoM_Guid);
+            return materialCompositions.Select(x => new MaterialComposition(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Ratios)).ToList();
+        }
+
+        /***************************************************/
+
+        [Description("Maps a set of materials in the MaterialCompositions to a set of provided transdiciplinary materials.\n" +
+                     "First atempts to match the name of the provided materials to the transdiciplinary material maps.\n" +
+                     "If no name match is found, atempts to instead find a material with as many matching MaterialProperties (based on type and name) as possible.\n" +
+                     "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
+        [Input("volumetricMaterialTakeoffs", "The VolumetricMaterialTakeoff to Modify. Materials int he VolumetricMaterialTakeoff will be evaluated based on the name and properties.")]
+        [Input("materialMaps", "The Material maps to match to. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
+        [Output("volumetricMaterialTakeoffs", "MaterialComposition with Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
+        public static IEnumerable<VolumetricMaterialTakeoff> MapMaterial(this IEnumerable<VolumetricMaterialTakeoff> materialCompositions, IEnumerable<Material> materialMaps)
+        {
+            IEnumerable<Material> allMaterials = materialCompositions.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
+            Dictionary<Guid, Material> mappedMaterials = allMaterials.MapMaterial(materialMaps).ToDictionary(x => x.BHoM_Guid);
+            return materialCompositions.Select(x => new VolumetricMaterialTakeoff(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Volumes)).ToList();
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
