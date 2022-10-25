@@ -216,7 +216,7 @@ namespace BH.Engine.Geometry
 
         private static double[] GeometryHash(this Plane obj, double typeTranslationFactor = 3)
         {
-            return obj.Origin.ToDoubleArray(typeTranslationFactor);
+            return obj.Origin.Translate(obj.Normal).ToDoubleArray(typeTranslationFactor);
         }
 
         /***************************************************/
