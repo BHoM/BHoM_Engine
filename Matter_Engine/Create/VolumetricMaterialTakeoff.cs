@@ -78,6 +78,11 @@ namespace BH.Engine.Matter
                 Base.Compute.RecordError($"Cannot create a {nameof(VolumetricMaterialTakeoff)} from a null {nameof(MaterialComposition)}.");
                 return null;
             }
+            if (materialComposition.Ratios == null || materialComposition.Materials == null)
+            {
+                Base.Compute.RecordError($"Cannot create a {nameof(VolumetricMaterialTakeoff)} from a {nameof(MaterialComposition)} with null {nameof(materialComposition.Ratios)} or {nameof(materialComposition.Materials)}.");
+                return null;
+            }
 
             return new VolumetricMaterialTakeoff(materialComposition.Materials, materialComposition.Ratios.Select(x => x*totalVolume));
         }
