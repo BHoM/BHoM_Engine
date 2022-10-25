@@ -77,7 +77,10 @@ namespace BH.Engine.Geometry
 
         private static double[] GeometryHash(this Circle curve, double typeTranslationFactor = 1)
         {
-            return curve.Centre.ToDoubleArray(typeTranslationFactor + curve.Radius);
+            return curve.StartPoint().ToDoubleArray(typeTranslationFactor)
+               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(typeTranslationFactor))
+               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(typeTranslationFactor))
+               .ToArray();
         }
 
         /***************************************************/
@@ -104,7 +107,23 @@ namespace BH.Engine.Geometry
         private static double[] GeometryHash(this NurbsCurve curve, double typeTranslationFactor = 1)
         {
             double[] translationArray = curve.Weights.Zip(curve.Knots, (w, n) => w * n).ToArray();
-            return curve.ControlPoints.ToDoubleArray(typeTranslationFactor, translationArray);
+            int curveDegree = curve.Degree();
+
+            List<Point> pointWeights = curve.ControlPoints.Zip(curve.Weights, (p, w) => p * w).ToList();
+            List<double> concatenated = new List<double>();
+            for (int i = 0; i < pointWeights.Count(); i++)
+            {
+                double avg = curve.Knots.GetRange(i, curveDegree).Average();
+                double[] doubles = pointWeights[i].GeometryHash(avg + typeTranslationFactor);
+                concatenated.AddRange(doubles);
+            }
+
+            return concatenated.ToArray();
+
+            // Simpler:
+            //return curve.Knots.Take(pointWeights.Count())
+            //    .Zip(curve.ControlPoints, (k, p) => new double[]{ p.X + k, p.Y + k, p.Z + k })
+            //    .SelectMany(arr => arr).ToArray();
         }
 
         /***************************************************/
@@ -127,7 +146,7 @@ namespace BH.Engine.Geometry
 
         private static double[] GeometryHash(this Extrusion obj, double typeTranslationFactor = 3)
         {
-            return obj.Curve.GeometryHash();
+            return obj.Curve.ITranslate(obj.Direction).GeometryHash().Concat(obj.Curve.GeometryHash()).ToArray();
         }
 
         /***************************************************/
