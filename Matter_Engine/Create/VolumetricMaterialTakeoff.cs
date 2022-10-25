@@ -49,7 +49,7 @@ namespace BH.Engine.Matter
         [Description("Creates a VolumetricMaterialTakeoff for a collection of Materials given their volumes.")]
         [Input("materials", "The discrete Materials the VolumetricMaterialTakeoff is comprised of.")]
         [Input("volumes", "The ratios of each material based on their relative volumes. The number of ratios must match the number of materials.", typeof(Volume))]
-        [Output("VolumetricMaterialTakeoff", "A VolumetricMaterialTakeoff composed of the provided materials and volumes.")]
+        [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff composed of the provided materials and volumes.")]
         public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(IEnumerable<Material> materials, IEnumerable<double> volumes)
         {
             if (materials.IsNullOrEmpty() || volumes.IsNullOrEmpty())
@@ -57,7 +57,7 @@ namespace BH.Engine.Matter
 
             if (materials.Count() != volumes.Count())
             {
-                Base.Compute.RecordError("Requires the same number of materials as ratios to create a MaterialComposition.");
+                Base.Compute.RecordError($"Requires the same number of materials as volumes to create a {nameof(VolumetricMaterialTakeoff)}.");
                 return null;
             }
 
@@ -70,12 +70,12 @@ namespace BH.Engine.Matter
         [Description("Creates a VolumetricMaterialTakeoff based on the materials in the provided MaterialComposition and ratios scaloed with the provided total volume.")]
         [Input("materialComposition", "The MaterialComposition to be used to create the VolumetricMaterialTakeoff. Materials of the MaterialComposition will be assigned to the takeoff and rations scaled with the provided totalVolume to give the volumes for each material.")]
         [Input("totalVolume", "Total volume of the VolumetricMaterialTakeoff. Ratios of the MaterialComposition are scaled with this value to give the volume for each material part.", typeof(Volume))]
-        [Output("VolumetricMaterialTakeoff", "A VolumetricMaterialTakeoff composed of the Materials in the provided MaterialComposition and volumes as its ratios scaled with the provided totalVolume.")]
+        [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff composed of the Materials in the provided MaterialComposition and volumes as its ratios scaled with the provided totalVolume.")]
         public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(MaterialComposition materialComposition, double totalVolume)
         {
             if (materialComposition == null)
             {
-                Base.Compute.RecordError("Cannot create a VolumetricMaterialTakeoff from a null MaterialComposition.");
+                Base.Compute.RecordError($"Cannot create a {nameof(VolumetricMaterialTakeoff)} from a null {nameof(MaterialComposition)}.");
                 return null;
             }
 
