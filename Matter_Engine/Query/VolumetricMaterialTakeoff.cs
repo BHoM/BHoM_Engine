@@ -43,7 +43,7 @@ namespace BH.Engine.Matter
         [Input("elementM", "The element to get the VolumetricMaterialTakeoff from.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns it. If false, the VolumetricMaterialTakeoff returned will be calculated, independant of fragment attached.")]
         [Output("volumetricMaterialTakeoff", "The kind of matter the element is composed of and in which volumes.")]
-        public static VolumetricMaterialTakeoff IVolumetricMaterialTakeoff(this IElementM elementM, bool checkForTakeoffFragment = false)
+        public static VolumetricMaterialTakeoff IVolumetricMaterialTakeoff(this IElementM elementM, bool checkForTakeoffFragment = true)
         {
             if (elementM == null)
             {
@@ -107,7 +107,10 @@ namespace BH.Engine.Matter
             {
                 takeoffFragment = bhomObj.FindFragment<VolumetricMaterialTakeoff>();
                 if (takeoffFragment != null)    //If fragment is not null (found) return true, if not, return false
+                {
+                    Base.Compute.RecordNote("Material takeoff used was extracted from Fragment. If any properties of the element has changed since the fragment was attached they will not be reflected in the takeoff. To use the computed takeoff set checkForTakeoffFragment to false.");
                     return true;
+                }
             }
 
             return false;
