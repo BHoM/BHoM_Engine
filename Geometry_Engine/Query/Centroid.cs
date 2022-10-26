@@ -34,15 +34,6 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
-        [Description("Queries the centroid for the given IGeometry.")]
-        [Input("surface", "The PlanarSurface to get the centre of area of.")]
-        [Input("tolerance", "Distance tolerance used in geometry processing, default set to BH.oM.Geometry.Tolerance.Distance.", typeof(Length))]
-        [Output("centroid", "The Point at the centre of given PlanarSurface.")]
-        public static Point ICentroid(this IGeometry igeom, double tolerance = Tolerance.Distance)
-        {
-            return Centroid(igeom as dynamic, tolerance);
-        }
-
         /***************************************************/
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
@@ -402,13 +393,6 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        // Fallback
-        private static Point Centroid(this object obj, double tolerance = Tolerance.Distance)
-        {
-            BH.Engine.Base.Compute.RecordWarning($"Could not compute Centroid for {obj.GetType().Name}.");
-            return null;
-        }
     }
 }
 
