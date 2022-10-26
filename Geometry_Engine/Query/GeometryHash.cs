@@ -192,31 +192,45 @@ namespace BH.Engine.Geometry
 
         private static double[] GeometryHash(this Mesh obj, double typeTranslationFactor = 3)
         {
-            // TODO faces?
-            Dictionary<int, int> asd = obj.Faces.SelectMany(f => new List<int> { f.A, f.B, f.C, f.D })
+            Dictionary<int, int> facesPerPointCount = obj.Faces.SelectMany(f => new List<int> { f.A, f.B, f.C, f.D })
                 .GroupBy(i => i)
                 .ToDictionary(g => g.Key, g => g.Count());
 
-            List<double> all = new List<double>();
+            List<double> result = new List<double>();
 
             for (int i = 0; i < obj.Vertices.Count; i++)
             {
                 int pointTranslationFactor;
-                if (!asd.TryGetValue(i, out pointTranslationFactor))
+                if (!facesPerPointCount.TryGetValue(i, out pointTranslationFactor))
                     pointTranslationFactor = 0;
 
-                all.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + typeTranslationFactor));
+                result.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + typeTranslationFactor));
             }
 
-            return all.ToArray();
+            return result.ToArray();
         }
 
         /***************************************************/
 
         private static double[] GeometryHash(this Mesh3D obj, double typeTranslationFactor = 3)
         {
-            // TODO faces?
-            return obj.Vertices.SelectMany(v => v.ToDoubleArray(typeTranslationFactor)).ToArray();
+            // TODO: CellRelation?
+            Dictionary<int, int> facesPerPointCount = obj.Faces.SelectMany(f => new List<int> { f.A, f.B, f.C, f.D })
+                .GroupBy(i => i)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            List<double> result = new List<double>();
+
+            for (int i = 0; i < obj.Vertices.Count; i++)
+            {
+                int pointTranslationFactor;
+                if (!facesPerPointCount.TryGetValue(i, out pointTranslationFactor))
+                    pointTranslationFactor = 0;
+
+                result.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + typeTranslationFactor));
+            }
+
+            return result.ToArray();
         }
 
         /***************************************************/
