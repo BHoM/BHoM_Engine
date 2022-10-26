@@ -25,6 +25,7 @@ using BH.oM.Base;
 using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 
 namespace BH.Engine.Geometry
 {
@@ -192,7 +193,22 @@ namespace BH.Engine.Geometry
         private static double[] GeometryHash(this Mesh obj, double typeTranslationFactor = 3)
         {
             // TODO faces?
-            return obj.Vertices.SelectMany(v => v.ToDoubleArray(typeTranslationFactor)).ToArray();
+            Dictionary<int, int> asd = obj.Faces.SelectMany(f => new List<int> { f.A, f.B, f.C, f.D })
+                .GroupBy(i => i)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            List<double> all = new List<double>();
+
+            for (int i = 0; i < obj.Vertices.Count; i++)
+            {
+                int pointTranslationFactor;
+                if (!asd.TryGetValue(i, out pointTranslationFactor))
+                    pointTranslationFactor = 0;
+
+                all.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + typeTranslationFactor));
+            }
+
+            return all.ToArray();
         }
 
         /***************************************************/
@@ -233,10 +249,10 @@ namespace BH.Engine.Geometry
 
         private static double[] ToDoubleArray(this Point p, double typeTranslationFactor, double[] translationArray = null)
         {
-            return new double[] 
-            { 
-                p.X + typeTranslationFactor + translationArray?.ElementAtOrDefault(0) ?? 0, 
-                p.Y + typeTranslationFactor + translationArray?.ElementAtOrDefault(1) ?? 0, 
+            return new double[]
+            {
+                p.X + typeTranslationFactor + translationArray?.ElementAtOrDefault(0) ?? 0,
+                p.Y + typeTranslationFactor + translationArray?.ElementAtOrDefault(1) ?? 0,
                 p.Z + typeTranslationFactor + translationArray?.ElementAtOrDefault(2) ?? 0
             };
         }
