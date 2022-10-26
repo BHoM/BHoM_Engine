@@ -24,6 +24,7 @@ using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Geometry;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography.Xml;
 
@@ -35,11 +36,12 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
+        [Description("All geometry hash methods are implemented to be translational.")]
         public static double[] IGeometryHash(this IBHoMObject bhomObj)
         {
             IGeometry igeom = bhomObj.IGeometry();
 
-            return GeometryHash(igeom as dynamic);
+            return GeometryHash(igeom as dynamic, 0);
         }
 
         /***************************************************/
@@ -50,79 +52,93 @@ namespace BH.Engine.Geometry
         /****  Curves                                   ****/
         /***************************************************/
 
-        private static double[] GeometryHash(this ICurve curve)
+        private static double[] GeometryHash(this ICurve curve, double translationFactor)
         {
             IEnumerable<ICurve> subParts = curve.ISubParts();
 
-            return subParts.GeometryHash();
+            return subParts.GeometryHash(translationFactor);
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this IEnumerable<ICurve> curves)
+        private static double[] GeometryHash(this IEnumerable<ICurve> curves, double translationFactor)
         {
-            return curves.SelectMany(c => (double[])GeometryHash(c as dynamic)).ToArray();
+            translationFactor += 1;
+
+            return curves.SelectMany(c => (double[])GeometryHash(c as dynamic, translationFactor)).ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Arc curve, double typeTranslationFactor = 1)
+        private static double[] GeometryHash(this Arc curve, double translationFactor)
         {
-            return curve.StartPoint().ToDoubleArray(typeTranslationFactor)
-                .Concat(curve.EndPoint().ToDoubleArray(typeTranslationFactor))
-                .Concat(curve.PointAtParameter(0.5).ToDoubleArray(typeTranslationFactor))
+            translationFactor += 1;
+
+            return curve.StartPoint().ToDoubleArray(translationFactor)
+                .Concat(curve.EndPoint().ToDoubleArray(translationFactor))
+                .Concat(curve.PointAtParameter(0.5).ToDoubleArray(translationFactor))
                 .ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Circle curve, double typeTranslationFactor = 1)
+        private static double[] GeometryHash(this Circle curve, double translationFactor)
         {
-            return curve.StartPoint().ToDoubleArray(typeTranslationFactor)
-               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(typeTranslationFactor))
-               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(typeTranslationFactor))
+            translationFactor += 1;
+
+            return curve.StartPoint().ToDoubleArray(translationFactor)
+               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor))
+               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor))
                .ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Ellipse curve, double typeTranslationFactor = 1)
+        private static double[] GeometryHash(this Ellipse curve, double translationFactor)
         {
-            return curve.StartPoint().ToDoubleArray(typeTranslationFactor)
-               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(typeTranslationFactor))
-               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(typeTranslationFactor))
+            translationFactor += 1;
+
+            return curve.StartPoint().ToDoubleArray(translationFactor)
+               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor))
+               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor))
                .ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Line curve, double typeTranslationFactor = 1)
+        [Description("")]
+        private static double[] GeometryHash(this Line curve, double translationFactor)
         {
-            return curve.StartPoint().ToDoubleArray(typeTranslationFactor)
-               .Concat(curve.EndPoint().ToDoubleArray(typeTranslationFactor))
+            translationFactor += 1;
+
+            return curve.StartPoint().ToDoubleArray(translationFactor)
+               .Concat(curve.EndPoint().ToDoubleArray(translationFactor))
                .ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this NurbsCurve curve, double typeTranslationFactor = 1)
+        [Description("Moving control points by a translation factor composed by the weights " +
+            "and a subarray of the knot vector. " +
+            "The subarray is made by picking as many elements from the knot vector as the curve degree value.")]
+        private static double[] GeometryHash(this NurbsCurve curve, double translationFactor)
         {
-            double[] translationArray = curve.Weights.Zip(curve.Knots, (w, n) => w * n).ToArray();
+            translationFactor += 1;
+
             int curveDegree = curve.Degree();
 
-            List<Point> pointWeights = curve.ControlPoints.Zip(curve.Weights, (p, w) => p * w).ToList();
             List<double> concatenated = new List<double>();
-            for (int i = 0; i < pointWeights.Count(); i++)
+            for (int i = 0; i < curve.ControlPoints.Count(); i++)
             {
-                double avg = curve.Knots.GetRange(i, curveDegree).Average();
-                double[] doubles = pointWeights[i].GeometryHash(avg + typeTranslationFactor);
+                double sum = curve.Knots.GetRange(i, curveDegree).Sum();
+                double[] doubles = curve.ControlPoints[i].GeometryHash(sum + curve.Weights[i] + translationFactor);
                 concatenated.AddRange(doubles);
             }
 
             return concatenated.ToArray();
 
-            // Simpler:
-            //return curve.Knots.Take(pointWeights.Count())
+            // Simpler & faster but potentially less reliable:
+            // return curve.Knots.Take(pointWeights.Count())
             //    .Zip(curve.ControlPoints, (k, p) => new double[]{ p.X + k, p.Y + k, p.Z + k })
             //    .SelectMany(arr => arr).ToArray();
         }
@@ -131,58 +147,95 @@ namespace BH.Engine.Geometry
         /****  Surfaces                                 ****/
         /***************************************************/
 
-        private static double[] GeometryHash(this ISurface obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this ISurface obj, double translationFactor)
         {
-            return GeometryHash(obj as dynamic, typeTranslationFactor);
+            translationFactor += 1;
+
+            return GeometryHash(obj as dynamic, translationFactor);
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this PlanarSurface obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this PlanarSurface obj, double translationFactor)
         {
-            return obj.ExternalBoundary.GeometryHash().Concat(obj.InternalBoundaries.SelectMany(ib => ib.GeometryHash())).ToArray();
+            translationFactor += 1;
+
+            return obj.ExternalBoundary.GeometryHash(translationFactor)
+                .Concat(obj.InternalBoundaries.SelectMany(ib => ib.GeometryHash(translationFactor))).ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Extrusion obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this Extrusion obj, double translationFactor)
         {
-            return obj.Curve.ITranslate(obj.Direction).GeometryHash().Concat(obj.Curve.GeometryHash()).ToArray();
+            translationFactor += 1;
+
+            return obj.Curve.ITranslate(obj.Direction).GeometryHash(translationFactor)
+                .Concat(obj.Curve.GeometryHash(translationFactor)).ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Loft obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this Loft obj, double translationFactor)
         {
-            return obj.Curves.GeometryHash();
+            translationFactor += 1;
+
+            return obj.Curves.GeometryHash(translationFactor);
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this NurbsSurface obj, double typeTranslationFactor = 3)
+        [Description("Moving control points by a translation factor composed by the weights " +
+          "and a subarray of the knot vector. " +
+          "The subarray is made by picking as many elements from the knot vector as the curve degree value.")]
+        private static double[] GeometryHash(this NurbsSurface obj, double translationFactor)
         {
-            return obj.ControlPoints.ToDoubleArray(typeTranslationFactor);
+            translationFactor += 1;
+
+            List<double> concatenated = new List<double>();
+            for (int i = 0; i < obj.ControlPoints.Count(); i++)
+            {
+                double UKnotsSum = obj.UKnots.en.GetRange(i, obj.UDegree).Sum();
+                double VKnotsSum = obj.VKnots.ToList().GetRange(i, obj.VDegree).Sum();
+
+                double[] doubles = obj.ControlPoints[i].GeometryHash(UKnotsSum + VKnotsSum + obj.Weights[i] + translationFactor);
+                concatenated.AddRange(doubles);
+            }
+
+            return obj.ControlPoints.ToDoubleArray(translationFactor);
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Pipe obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this Pipe obj, double translationFactor)
         {
-            return obj.Centreline.GeometryHash(); // radius
+            translationFactor += 1;
+
+            double[] result = obj.Centreline.GeometryHash(translationFactor + obj.Radius);
+
+            if (obj.Capped)
+                result.Concat(obj.Centreline.StartPoint().GeometryHash(translationFactor + obj.Radius));
+
+            return result;
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this PolySurface obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this PolySurface obj, double translationFactor)
         {
-            return obj.Surfaces.SelectMany(s => s.GeometryHash()).ToArray();
+            translationFactor += 1;
+
+            return obj.Surfaces.SelectMany(s => s.GeometryHash(translationFactor)).ToArray();
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this SurfaceTrim obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this SurfaceTrim obj, double translationFactor)
         {
-            return obj.Curve3d.GeometryHash().Concat(obj.Curve2d.GeometryHash()).ToArray();
+            translationFactor += 1;
+
+            return obj.Curve3d.GeometryHash(translationFactor)
+                .Concat(obj.Curve2d.GeometryHash(translationFactor)).ToArray();
         }
 
 
@@ -190,21 +243,34 @@ namespace BH.Engine.Geometry
         /****  Mesh                                     ****/
         /***************************************************/
 
-        private static double[] GeometryHash(this Mesh obj, double typeTranslationFactor = 3)
+        [Description("Get the number of faces that are attached to each control point, " +
+            "and use that count as a translation factor for control points.")]
+        private static double[] GeometryHash(this Mesh obj, double translationFactor)
         {
-            Dictionary<int, int> facesPerPointCount = obj.Faces.SelectMany(f => new List<int> { f.A, f.B, f.C, f.D })
-                .GroupBy(i => i)
-                .ToDictionary(g => g.Key, g => g.Count());
+            translationFactor += 1;
+
+            var dic = new Dictionary<int, int>();
+
+            for (int i = 0; i < obj.Faces.Count; i++)
+            {
+                foreach (var faceIndex in obj.Faces[i].FaceIndices())
+                {
+                    if (dic.ContainsKey(faceIndex))
+                        dic[faceIndex] += i;
+                    else
+                        dic[faceIndex] = i;
+                }
+            }
 
             List<double> result = new List<double>();
 
             for (int i = 0; i < obj.Vertices.Count; i++)
             {
                 int pointTranslationFactor;
-                if (!facesPerPointCount.TryGetValue(i, out pointTranslationFactor))
+                if (!dic.TryGetValue(i, out pointTranslationFactor))
                     pointTranslationFactor = 0;
 
-                result.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + typeTranslationFactor));
+                result.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + translationFactor));
             }
 
             return result.ToArray();
@@ -212,8 +278,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Mesh3D obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this Mesh3D obj, double translationFactor)
         {
+            translationFactor += 1;
+
             // TODO: CellRelation?
             Dictionary<int, int> facesPerPointCount = obj.Faces.SelectMany(f => new List<int> { f.A, f.B, f.C, f.D })
                 .GroupBy(i => i)
@@ -227,7 +295,7 @@ namespace BH.Engine.Geometry
                 if (!facesPerPointCount.TryGetValue(i, out pointTranslationFactor))
                     pointTranslationFactor = 0;
 
-                result.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + typeTranslationFactor));
+                result.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + translationFactor));
             }
 
             return result.ToArray();
@@ -237,23 +305,23 @@ namespace BH.Engine.Geometry
         /****  Vector                                   ****/
         /***************************************************/
 
-        private static double[] GeometryHash(this Point obj, double typeTranslationFactor = 0)
+        private static double[] GeometryHash(this Point obj, double translationFactor)
         {
-            return obj.ToDoubleArray(typeTranslationFactor);
+            return obj.ToDoubleArray(translationFactor);
         }
 
         /***************************************************/
 
-        private static double[] GeometryHash(this Plane obj, double typeTranslationFactor = 3)
+        private static double[] GeometryHash(this Plane obj, double translationFactor)
         {
-            return obj.Origin.Translate(obj.Normal).ToDoubleArray(typeTranslationFactor);
+            return obj.Origin.Translate(obj.Normal).ToDoubleArray(translationFactor);
         }
 
         /***************************************************/
         /****  Other methods                            ****/
         /***************************************************/
 
-        private static double[] GeometryHash(this object obj)
+        private static double[] GeometryHash(this object obj, double translationFactor)
         {
             BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(GeometryHash)} method for type {obj.GetType().FullName}.");
             return new double[] { };
