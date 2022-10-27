@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the list of face indeces for an input face. The last face index (D) is not added if it's equal to -1.")]
+        [Description("Return the list of face indices for an input face. The last face index (D) is not added if it's equal to -1.")]
         [Input("meshFace", "Mesh face to query the indices for.")]
         [Output("indices", "List of indices.")]
         public static List<int> FaceIndices(this Face meshFace)
