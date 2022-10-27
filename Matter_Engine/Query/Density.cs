@@ -30,6 +30,7 @@ using BH.oM.Physical.Elements;
 using BH.Engine.Base;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Materials;
+using BH.oM.Physical.Materials.Options;
  
 using BH.oM.Quantities.Attributes;
 
@@ -41,21 +42,23 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("6.0", "BH.Engine.Matter.Query.Density(BH.oM.Physical.Materials.Material, System.Type, System.Double)")]
         [Description("Returns the density of a Material though querying each of the individual IMaterialProperties that implement IDensityProvider." +
                      "\nIf inconsistent density values are found on multiple different IMaterialProperties, no result will be returned.")]
         [Input("material", "The material to query density from.")]
-        [Input("type", "A specific type of IDensityProvider to limit the search to. Set a preferred type here if multiple IMaterialProperties are implementing IDensityProvider.")]
-        [Input("tolerance", "The ratio tolerance for considering the value of the densities as equal." +
-                            "\nCompares to the differance between min and max over their mean.", typeof(Ratio))]
+        [Input("options", "Options controling how the density should be extracted from the Material.")]
         [Output("density", "The density of the material. Additional info on how the value has been acquired is recorded in the warning", typeof(Density))]
-        public static double Density(this Material material, Type type = null, double tolerance = 0.001)
+        public static double Density(this Material material, DensityExtractionOptions options = null)
         {
             if(material == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query the density of a null material.");
+                Base.Compute.RecordError("Cannot query the density of a null material.");
                 return 0;
             }
 
+            options = options ?? new DensityExtractionOptions();
+
+            Type type = options.Type;
             if (type == null)
                 type = typeof(IDensityProvider);
             else if (!typeof(IDensityProvider).IsAssignableFrom(type))
@@ -64,31 +67,51 @@ namespace BH.Engine.Matter
                 return double.NaN;
             }
 
-            List<double> densities = new List<double>();
-            List<string> notes = new List<string>() { "Density report for the Material " + material.Name + ":" };
-
-            foreach (IDensityProvider mat in material.Properties.Where(x => type.IsAssignableFrom(x.GetType())).Cast<IDensityProvider>())
-            {
-                densities.Add(mat.Density);
-                notes.Add("The value of the density for the MaterialFragment: " + mat.Name + " was acquired through its properties");
-            }
+            //Get all density values
+            List<double> densities = material.Properties.Where(x => type.IsAssignableFrom(x.GetType())).Cast<IDensityProvider>().Select(x => x.Density).ToList();
 
             if (densities.Count == 0)
             {
-                Base.Compute.RecordWarning("no density on any of the fragments of " + material.Name + " by type " + type.Name);
+                Base.Compute.RecordWarning("No density on any of the properties of " + material.Name + " of type " + type.Name);
                 return 0;
             }
-            if (densities.Count > 1 && !CheckRange(densities, tolerance))
+
+            if (options.IgnoreZeroValues)
             {
-                Base.Compute.RecordWarning("Multiple unique values for density found across multiple IMaterialProperties for " + material.Name + ". Please either ensure consistency of values or provide a specific material property type to define a valid density.");
-                return double.NaN;
+                if (densities.All(x => x <= options.ZeroTolerance)) //If all densities are below the 0 threshold, do not filter, as that means removing all
+                {
+                    Base.Compute.RecordWarning($"All density values are below the {nameof(options.ZeroTolerance)} threshold. No Densities filtered out.");
+                }
+                else
+                {
+                    densities = densities.Where(x => x > options.ZeroTolerance).ToList();
+                }
             }
-            if (densities.Count > 1)
-                notes.Add("");
 
-            Base.Compute.RecordNote(string.Join(System.Environment.NewLine, notes.ToArray()));
+            if (densities.Count == 1)   //Single value - simply return
+                return densities[0];
 
-            return densities.First();
+            switch (options.ExtractionType)
+            {
+                case DensityExtractionType.Average:
+                    return densities.Average();
+                case DensityExtractionType.Maximum:
+                    return densities.Max();
+                case DensityExtractionType.Minimum:
+                    return densities.Min();
+                default:
+                case DensityExtractionType.AllMatching:
+                    if (CheckRange(densities, options.EqualTolerance, options.ZeroTolerance))
+                    {
+                        return densities.Average();
+                    }
+                    else
+                    {
+                        Base.Compute.RecordWarning($"Multiple unique values for density found across multiple IMaterialProperties for {material.Name}. Please either ensure consistency of values or provide a specific material property type to define a valid density or change the {nameof(DensityExtractionType)}.");
+                        return double.NaN;
+                    }
+                        
+            }
         }
 
         /***************************************************/
