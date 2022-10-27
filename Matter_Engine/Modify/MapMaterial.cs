@@ -99,8 +99,11 @@ namespace BH.Engine.Matter
                      "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
         [Input("materials", "The Materials to Modify, will be evaluated based on their name and properties.")]
         [Input("materialMaps", "The Material maps to match to. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
+        [Input("prioritiseMap", "If true, proprties of same type/namespace on the materialMaps will be prioritised over the counterpart on the materials to modify. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the material and found matching material map, the one of the material map will be used on the returned material.\n" +
+                                   "If false, proeprties on the materials will be prioritised over the maps. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the material and found matching material map, the one of the main material will be used on the returned material.")]
+        [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials and found matching material map based on namespace. If false, this check is instead done on exact type.")]
         [Output("materials", "Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
-        public static IEnumerable<Material> MapMaterial(this IEnumerable<Material> materials, IEnumerable<Material> materialMaps)
+        public static IEnumerable<Material> MapMaterial(this IEnumerable<Material> materials, IEnumerable<Material> materialMaps, bool prioritiseMap = true, bool uniquePerNamespace = true)
         {
             if (materials.IsNullOrEmpty())
                 return null;
@@ -131,7 +134,7 @@ namespace BH.Engine.Matter
 
             foreach (Material material in materials)
             {
-                mappedMaterials.Add(material.MapMaterial(nameLookup, propertyMaps));
+                mappedMaterials.Add(material.MapMaterial(nameLookup, propertyMaps, prioritiseMap, uniquePerNamespace));
             }
             return mappedMaterials;
         }
@@ -144,8 +147,11 @@ namespace BH.Engine.Matter
                      "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
         [Input("materialCompositions", "The MaterialCompositions to Modify. Materials int he MaterialCompositions will be evaluated based on the name and properties.")]
         [Input("materialMaps", "The Material maps to match to. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
+        [Input("prioritiseMap", "If true, proprties of same type/namespace on the materialMaps will be prioritised over the counterpart on the materials to modify. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the material and found matching material map, the one of the material map will be used on the returned material.\n" +
+                                   "If false, proeprties on the materials will be prioritised over the maps. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the material and found matching material map, the one of the main material will be used on the returned material.")]
+        [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials and found matching material map based on namespace. If false, this check is instead done on exact type.")]
         [Output("materialCompositions", "MaterialComposition with Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
-        public static IEnumerable<MaterialComposition> MapMaterial(this IEnumerable<MaterialComposition> materialCompositions, IEnumerable<Material> materialMaps)
+        public static IEnumerable<MaterialComposition> MapMaterial(this IEnumerable<MaterialComposition> materialCompositions, IEnumerable<Material> materialMaps, bool prioritiseMap = true, bool uniquePerNamespace = true)
         {
             if (materialCompositions.IsNullOrEmpty())
                 return null;
@@ -156,7 +162,7 @@ namespace BH.Engine.Matter
                 return materialCompositions;
             }
             IEnumerable<Material> allMaterials = materialCompositions.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
-            Dictionary<Guid, Material> mappedMaterials = allMaterials.MapMaterial(materialMaps).ToDictionary(x => x.BHoM_Guid);
+            Dictionary<Guid, Material> mappedMaterials = allMaterials.MapMaterial(materialMaps, prioritiseMap, uniquePerNamespace).ToDictionary(x => x.BHoM_Guid);
             return materialCompositions.Select(x => new MaterialComposition(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Ratios)).ToList();
         }
 
@@ -168,8 +174,11 @@ namespace BH.Engine.Matter
                      "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
         [Input("volumetricMaterialTakeoffs", "The VolumetricMaterialTakeoff to Modify. Materials int he VolumetricMaterialTakeoff will be evaluated based on the name and properties.")]
         [Input("materialMaps", "The Material maps to match to. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
+        [Input("prioritiseMap", "If true, proprties of same type/namespace on the materialMaps will be prioritised over the counterpart on the materials to modify. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the material and found matching material map, the one of the material map will be used on the returned material.\n" +
+                                   "If false, proeprties on the materials will be prioritised over the maps. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the material and found matching material map, the one of the main material will be used on the returned material.")]
+        [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials and found matching material map based on namespace. If false, this check is instead done on exact type.")]
         [Output("volumetricMaterialTakeoffs", "MaterialComposition with Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
-        public static IEnumerable<VolumetricMaterialTakeoff> MapMaterial(this IEnumerable<VolumetricMaterialTakeoff> volumetricMaterialTakeoffs, IEnumerable<Material> materialMaps)
+        public static IEnumerable<VolumetricMaterialTakeoff> MapMaterial(this IEnumerable<VolumetricMaterialTakeoff> volumetricMaterialTakeoffs, IEnumerable<Material> materialMaps, bool prioritiseMap = true, bool uniquePerNamespace = true)
         {
             if (volumetricMaterialTakeoffs.IsNullOrEmpty())
                 return null;
@@ -181,7 +190,7 @@ namespace BH.Engine.Matter
             }
 
             IEnumerable<Material> allMaterials = volumetricMaterialTakeoffs.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
-            Dictionary<Guid, Material> mappedMaterials = allMaterials.MapMaterial(materialMaps).ToDictionary(x => x.BHoM_Guid);
+            Dictionary<Guid, Material> mappedMaterials = allMaterials.MapMaterial(materialMaps, prioritiseMap, uniquePerNamespace).ToDictionary(x => x.BHoM_Guid);
             return volumetricMaterialTakeoffs.Select(x => new VolumetricMaterialTakeoff(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Volumes)).ToList();
         }
 
@@ -190,7 +199,7 @@ namespace BH.Engine.Matter
         /***************************************************/
 
         [Description("Method preforming the mapping work. Matches the Material first by name, secondly by name of properties using the provided lookup and dictionary.")]
-        private static Material MapMaterial(this Material material, ILookup<string, Material> nameLookup, Dictionary<Tuple<Type, string>, List<Material>> propertyMaps)
+        private static Material MapMaterial(this Material material, ILookup<string, Material> nameLookup, Dictionary<Tuple<Type, string>, List<Material>> propertyMaps, bool prioritiseMap, bool uniquePerNamespace)
         {
             List<Material> matches = nameLookup[material.Name].ToList();    //Try match by name
 
@@ -214,7 +223,7 @@ namespace BH.Engine.Matter
 
             if (matches.Count == 1) //Exactly one best match. Success!
             {
-                return material.MergeProperties(matches[0]);
+                return material.MergeProperties(matches[0], prioritiseMap, uniquePerNamespace);
             }
             else if (matches.Count == 0)    //No matches, record warning
             {
@@ -230,24 +239,6 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
-        [Description("Merges the Properties of the target and source by adding all properties on the source to the target. For duplicate types the Property on the Source is prioritised.")]
-        private static Material MergeProperties(this Material target, Material source)
-        {
-            Material targetClone = target.ShallowClone();
-            targetClone.Properties = new List<IMaterialProperties>(target.Properties);
-            List<Type> targetTypes = target.Properties.Select(x => x.GetType()).ToList();
-            foreach (IMaterialProperties property in source.Properties)
-            {
-                if (targetTypes.Contains(property.GetType()))
-                {
-                    targetClone.Properties.RemoveAll(x => x.GetType() == property.GetType());
-                }
-                targetClone.Properties.Add(property);
-            }
-            return targetClone;
-        }
-
-        /***************************************************/
 
         [Description("Matches two materials based on how well the properties align based on name. For each aligning property the score is increased by 1. If a single misaligned property is found a score of -1 is returned.")]
         private static int MatchScore(this Material mat1, Material mat2)

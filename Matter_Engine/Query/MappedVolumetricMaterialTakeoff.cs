@@ -45,13 +45,16 @@ namespace BH.Engine.Matter
         [Input("elements", "The elements to fetch VolumetricMaterialTakeoff from.")]
         [Input("materialMaps", "The Material maps to match to. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that Material composition corresponding to this fragment. If false, the MaterialComposition returned will be calculated, independant of fragment attached.")]
-        [Output("materialComposition", "The material compositions for each element with materials mapped to the provided transdiciplinary materials.")]
-        public static List<VolumetricMaterialTakeoff> MappedVolumetricMaterialTakeoff(this IEnumerable<IElementM> elements, IEnumerable<Material> materialMaps, bool checkForTakeoffFragment = true)
+        [Input("prioritiseMap", "If true, proprties of same type/namespace on the materialMaps will be prioritised over the counterpart on the materials on the elements. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the material of the element and found matching material map, the one of the material map will be used on the returned material.\n" +
+                                   "If false, proeprties on the materials of the element will be prioritised over the maps. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the material of the element and found matching material map, the one of the material of the element will be used on the returned material.")]
+        [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials of the element and found matching material map based on namespace. If false, this check is instead done on exact type.")]
+        [Output("volumetricMaterialTakeoff", "The VolumetricMaterialTakeoff for each element with materials mapped to the provided transdiciplinary materials.")]
+        public static List<VolumetricMaterialTakeoff> MappedVolumetricMaterialTakeoff(this IEnumerable<IElementM> elements, IEnumerable<Material> materialMaps, bool checkForTakeoffFragment = true, bool prioritiseMap = true, bool uniquePerNamespace = true)
         {
             if (elements == null || !elements.Any())
                 return new List<VolumetricMaterialTakeoff>();
 
-            return elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)).MapMaterial(materialMaps).ToList();
+            return elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)).MapMaterial(materialMaps, prioritiseMap, uniquePerNamespace).ToList();
         }
 
         /***************************************************/
