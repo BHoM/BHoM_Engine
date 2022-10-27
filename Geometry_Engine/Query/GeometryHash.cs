@@ -368,21 +368,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double[] ToDoubleArray(this Point p, double typeTranslationFactor, double[] translationArray = null)
+        private static double[] ToDoubleArray(this Point p, double typeTranslationFactor)
         {
             return new double[]
             {
-                p.X + typeTranslationFactor + translationArray?.ElementAtOrDefault(0) ?? 0,
-                p.Y + typeTranslationFactor + translationArray?.ElementAtOrDefault(1) ?? 0,
-                p.Z + typeTranslationFactor + translationArray?.ElementAtOrDefault(2) ?? 0
+                p.X + typeTranslationFactor,
+                p.Y + typeTranslationFactor,
+                p.Z + typeTranslationFactor
             };
         }
 
         /***************************************************/
 
-        private static double[] ToDoubleArray(this IEnumerable<Point> points, double typeTranslationFactor, double[] translationArray = null)
+        private static double[] ToDoubleArray(this IEnumerable<Point> points, double typeTranslationFactor)
         {
-            return points.SelectMany(p => p.ToDoubleArray(typeTranslationFactor, translationArray)).ToArray();
+            return points.SelectMany(p => p.ToDoubleArray(typeTranslationFactor)).ToArray();
         }
 
 
