@@ -165,7 +165,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("The GeometryHash for a Line is calculated as the GeometryHash of the External and Internal boundary curves, then concatenated.")]
+        [Description("The GeometryHash for a PlanarSurface is calculated as the GeometryHash of the External and Internal boundary curves, then concatenated.")]
         private static double[] GeometryHash(this PlanarSurface obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.PlanarSurface;
