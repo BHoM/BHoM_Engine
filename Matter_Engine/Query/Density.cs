@@ -41,11 +41,10 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the density of a Material though querying each of the individual IMaterialProperties." +
-                     "\nThe density is based on properties with an exact matching name." +
+        [Description("Returns the density of a Material though querying each of the individual IMaterialProperties that implement IDensityProvider." +
                      "\nIf inconsistent density values are found on multiple different IMaterialProperties, no result will be returned.")]
         [Input("material", "The material to query density from.")]
-        [Input("type", "A specific type of IMaterialProperties to limit the search to. Set a preferred type here if multiple IMaterialProperties have densities.")]
+        [Input("type", "A specific type of IDensityProvider to limit the search to. Set a preferred type here if multiple IMaterialProperties are implementing IDensityProvider.")]
         [Input("tolerance", "The ratio tolerance for considering the value of the densities as equal." +
                             "\nCompares to the differance between min and max over their mean.", typeof(Ratio))]
         [Output("density", "The density of the material. Additional info on how the value has been acquired is recorded in the warning", typeof(Density))]
@@ -58,19 +57,20 @@ namespace BH.Engine.Matter
             }
 
             if (type == null)
-                type = typeof(IMaterialProperties);
+                type = typeof(IDensityProvider);
+            else if (!typeof(IDensityProvider).IsAssignableFrom(type))
+            {
+                Base.Compute.RecordError($"Type provided for density extraction need to be a type implementing {nameof(IDensityProvider)}. Please provide a valid type or null to allow all types.");
+                return double.NaN;
+            }
 
             List<double> densities = new List<double>();
             List<string> notes = new List<string>() { "Density report for the Material " + material.Name + ":" };
 
-            foreach (IMaterialProperties mat in material.Properties.Where(x => type.IsAssignableFrom(x.GetType())))
+            foreach (IDensityProvider mat in material.Properties.Where(x => type.IsAssignableFrom(x.GetType())).Cast<IDensityProvider>())
             {
-                object density = Base.Query.PropertyValue(mat, "Density");
-                if (density != null)
-                {
-                    densities.Add((double)density);
-                    notes.Add("The value of the density for the MaterialFragment: " + mat.Name + " was acquired through its properties");
-                }
+                densities.Add(mat.Density);
+                notes.Add("The value of the density for the MaterialFragment: " + mat.Name + " was acquired through its properties");
             }
 
             if (densities.Count == 0)
