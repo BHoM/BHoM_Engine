@@ -36,7 +36,9 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("All geometry hash methods are implemented to be translational.")]
+        [Description("Returns the geometrical identity of any geometry primitive, useful for comparisons and diffing. " + 
+        "Any transformations of underlying geometry performed in methods as part of the calculation of the Geometry Hash " +
+        "are implemented to be translational only to ensure validity of any geometrical tolerance checking between two hashes downstream.")]
         public static double[] IGeometryHash(this IBHoMObject bhomObj)
         {
             IGeometry igeom = bhomObj.IGeometry();
