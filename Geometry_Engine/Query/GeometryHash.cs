@@ -358,6 +358,10 @@ namespace BH.Engine.Geometry
         // Fallback
         private static double[] GeometryHash(this object obj, double translationFactor)
         {
+            object extensionMethodResult = null;
+            if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "GeometryHash", out extensionMethodResult))
+                return (double[])extensionMethodResult;
+
             BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(GeometryHash)} method for type {obj.GetType().FullName}.");
             return new double[] { };
         }
