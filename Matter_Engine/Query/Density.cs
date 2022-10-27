@@ -56,6 +56,15 @@ namespace BH.Engine.Matter
                 return 0;
             }
 
+            //Gets all properties on the material able to store density
+            List<IDensityProvider> allDensityProviders = material.Properties.OfType<IDensityProvider>().ToList();
+
+            if (allDensityProviders.Count == 0)
+            {
+                Base.Compute.RecordWarning($"Material {material.Name} does not contain any properties able to store density. 0 density returned.");
+                return 0;
+            }    
+
             options = options ?? new DensityExtractionOptions();
 
             Type type = options.Type;
@@ -67,14 +76,25 @@ namespace BH.Engine.Matter
                 return double.NaN;
             }
 
-            //Get all density values
-            List<double> densities = material.Properties.Where(x => type.IsAssignableFrom(x.GetType())).Cast<IDensityProvider>().Select(x => x.Density).ToList();
+            //Filter by the provided type
+            List<IDensityProvider> densityProviders = allDensityProviders.Where(x => type.IsAssignableFrom(x.GetType())).ToList();
 
-            if (densities.Count == 0)
+            if (densityProviders.Count == 0)
             {
-                Base.Compute.RecordWarning("No density on any of the properties of " + material.Name + " of type " + type.Name);
-                return 0;
+                if (options.AllowFallbackIfNoType)
+                {
+                    Base.Compute.RecordWarning($"No MaterialProperty of type {type.Name}. Falling back to extracting density from other properties with density.");
+                    densityProviders = allDensityProviders;
+                }
+                else
+                {
+                    Base.Compute.RecordWarning($"No density on any of the properties of {material.Name} of type {type.Name}. To allow falling back to other avilable properties set {nameof(options.AllowFallbackIfNoType)} to true.");
+                    return 0;
+                }
             }
+
+            //Get all density values
+            List<double> densities = densityProviders.Select(x => x.Density).ToList();
 
             if (options.IgnoreZeroValues)
             {
@@ -107,7 +127,7 @@ namespace BH.Engine.Matter
                     }
                     else
                     {
-                        Base.Compute.RecordWarning($"Multiple unique values for density found across multiple IMaterialProperties for {material.Name}. Please either ensure consistency of values or provide a specific material property type to define a valid density or change the {nameof(DensityExtractionType)}.");
+                        Base.Compute.RecordWarning($"Multiple unique values for density found across multiple IMaterialProperties for {material.Name} outside the allowable range set by {nameof(options.EqualTolerance)}. Please either ensure consistency of values or provide a specific material property type to define a valid density or change the {nameof(DensityExtractionType)}.");
                         return double.NaN;
                     }
                         
