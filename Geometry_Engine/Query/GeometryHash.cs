@@ -216,7 +216,9 @@ namespace BH.Engine.Geometry
                 concatenated.AddRange(doubles);
             }
 
-            return obj.ControlPoints.ToDoubleArray(translationFactor);
+            return obj.ControlPoints.ToDoubleArray(translationFactor)
+                .Concat(obj.InnerTrims.SelectMany(it => it.GeometryHash(translationFactor)))
+                .Concat(obj.OuterTrims.SelectMany(it => it.GeometryHash(translationFactor))).ToArray();
         }
 
         /***************************************************/
