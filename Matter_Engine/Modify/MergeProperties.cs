@@ -49,7 +49,7 @@ namespace BH.Engine.Matter
         {
             if (target == null)
             {
-                Base.Compute.RecordError($"{nameof(target)} {nameof(Material)} is null. Unable to merge proeprties of source onto target. Null returned.");
+                Base.Compute.RecordError($"{nameof(target)} {nameof(Material)} is null. Unable to merge properties of source onto target. Null returned.");
                 return null;
             }
 
