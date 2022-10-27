@@ -242,8 +242,6 @@ namespace BH.Engine.Geometry
 
         private static double[] GeometryHash(this PolySurface obj, double translationFactor)
         {
-            translationFactor += (int)TypeTranslationFactor.PolySurface;
-
             return obj.Surfaces.SelectMany(s => s.GeometryHash(translationFactor)).ToArray();
         }
 
