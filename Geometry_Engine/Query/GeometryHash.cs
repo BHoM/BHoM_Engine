@@ -44,29 +44,11 @@ namespace BH.Engine.Geometry
             return GeometryHash(igeom as dynamic, 0);
         }
 
-        private enum TypeTranslationFactor
-        {
-            Point = 0,
-            Arc,
-            Circle,
-            Ellipse,
-            Line,
-            NurbsCurve,
-            PlanarSurface,
-            Extrusion,
-            Loft,
-            Pipe,
-            PolySurface,
-            NurbsSurface,
-            SurfaceTrim,
-            Mesh,
-            Mesh3D,
-            Plane
-        }
 
         /***************************************************/
         /****              Private Methods              ****/
         /***************************************************/
+
 
         /***************************************************/
         /****  Curves                                   ****/
@@ -163,6 +145,7 @@ namespace BH.Engine.Geometry
             //    .Zip(curve.ControlPoints, (k, p) => new double[]{ p.X + k, p.Y + k, p.Z + k })
             //    .SelectMany(arr => arr).ToArray();
         }
+
 
         /***************************************************/
         /****  Surfaces                                 ****/
@@ -326,6 +309,7 @@ namespace BH.Engine.Geometry
             return result.ToArray();
         }
 
+
         /***************************************************/
         /****  Vector                                   ****/
         /***************************************************/
@@ -343,6 +327,7 @@ namespace BH.Engine.Geometry
 
             return obj.Origin.Translate(obj.Normal).ToDoubleArray(translationFactor);
         }
+
 
         /***************************************************/
         /****  Other methods                            ****/
@@ -371,6 +356,30 @@ namespace BH.Engine.Geometry
         private static double[] ToDoubleArray(this IEnumerable<Point> points, double typeTranslationFactor, double[] translationArray = null)
         {
             return points.SelectMany(p => p.ToDoubleArray(typeTranslationFactor, translationArray)).ToArray();
+        }
+
+
+        /***************************************************/
+        /****  Private enum                             ****/
+        /***************************************************/
+
+        private enum TypeTranslationFactor
+        {
+            Point = 0,
+            Plane,
+            Line,
+            Arc,
+            Circle,
+            Ellipse,
+            NurbsCurve,
+            PlanarSurface,
+            Pipe,
+            Extrusion,
+            Loft,
+            NurbsSurface,
+            SurfaceTrim,
+            Mesh,
+            Mesh3D
         }
     }
 }
