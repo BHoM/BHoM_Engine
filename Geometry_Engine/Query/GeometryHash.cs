@@ -54,6 +54,9 @@ namespace BH.Engine.Geometry
         /****  Curves                                   ****/
         /***************************************************/
 
+        [Description("The geometry hash of a Curve is obtained by first retrieving any Sub-part of the curve, if present." +
+            "The ISubParts() methods is able to return the 'primitive' curves that a curve is composed of. " +
+            "The GeometryHashes are then calculated for the individual parts and concatenated.")]
         private static double[] GeometryHash(this ICurve curve, double translationFactor)
         {
             IEnumerable<ICurve> subParts = curve.ISubParts();
@@ -63,6 +66,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHashes are calculated for all of the input curves and then concatenated.")]
         private static double[] GeometryHash(this IEnumerable<ICurve> curves, double translationFactor)
         {
             return curves.SelectMany(c => (double[])GeometryHash(c as dynamic, translationFactor)).ToArray();
@@ -70,6 +74,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for an Arc is calculated as the GeometryHash of the start, end and middle point of the Arc.")]
         private static double[] GeometryHash(this Arc curve, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Arc;
@@ -82,6 +87,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for an Circle is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Circle.")]
         private static double[] GeometryHash(this Circle curve, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Circle;
@@ -94,6 +100,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for an Ellipse is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Ellipse.")]
         private static double[] GeometryHash(this Ellipse curve, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Ellipse;
@@ -106,7 +113,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("")]
+        [Description("The GeometryHash for a Line is calculated as the GeometryHash of the start and end point of the Line.")]
         private static double[] GeometryHash(this Line curve, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Line;
@@ -158,6 +165,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for a Line is calculated as the GeometryHash of the External and Internal boundary curves, then concatenated.")]
         private static double[] GeometryHash(this PlanarSurface obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.PlanarSurface;
@@ -168,6 +176,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for an Extrusion is calculated by translating the extrusion curve with the extrusion direction vector." +
+            "A first GeometryHash is calculated for this translated curve. " +
+            "Then, the GeometryHash of the (non-translated) extrusion curve is concatenated to the first hash to make it more reliable.")]
         private static double[] GeometryHash(this Extrusion obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Extrusion;
@@ -178,6 +189,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for a Loft is calculated as the GeometryHash of its curves.")]
         private static double[] GeometryHash(this Loft obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Loft;
@@ -209,6 +221,8 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for a Pipe is calculated as the GeometryHash of its centreline translated by its radius," +
+            "then concatenated with the GeometryHash of its centreline's StartPoint for extra reliability.")]
         private static double[] GeometryHash(this Pipe obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Pipe;
@@ -223,6 +237,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for a PolySurface is calculated as the GeometryHash of the individual surfaces.")]
         private static double[] GeometryHash(this PolySurface obj, double translationFactor)
         {
             return obj.Surfaces.SelectMany(s => s.GeometryHash(translationFactor)).ToArray();
@@ -230,6 +245,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for a PolySurface is calculated as the GeometryHash of its Curve3d and Curve2d, concatenated.")]
         private static double[] GeometryHash(this SurfaceTrim obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.SurfaceTrim;
@@ -278,6 +294,8 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Get the number of faces that are attached to each control point, " +
+            "and use that count as a translation factor for control points.")]
         private static double[] GeometryHash(this Mesh3D obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Mesh3D;
@@ -314,6 +332,7 @@ namespace BH.Engine.Geometry
         /****  Vector                                   ****/
         /***************************************************/
 
+        [Description("The GeometryHash for a Point is simply an array of 3 numbers composed by the Point X, Y and Z coordinates.")]
         private static double[] GeometryHash(this Point obj, double translationFactor)
         {
             return obj.ToDoubleArray(translationFactor);
@@ -321,6 +340,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("The GeometryHash for a Plane is the GeometryHash of its Origin point translated by its Normal vector.")]
         private static double[] GeometryHash(this Plane obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Plane;
@@ -333,6 +353,7 @@ namespace BH.Engine.Geometry
         /****  Other methods                            ****/
         /***************************************************/
 
+        // Fallback
         private static double[] GeometryHash(this object obj, double translationFactor)
         {
             BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(GeometryHash)} method for type {obj.GetType().FullName}.");
