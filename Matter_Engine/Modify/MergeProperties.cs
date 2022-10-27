@@ -47,6 +47,18 @@ namespace BH.Engine.Matter
         [Output("material", "Target material with Properties from the Source merged onto it.")]
         public static Material MergeProperties(this Material target, Material source, bool prioritiseSource, bool uniquePerNamespace)
         {
+            if (target == null)
+            {
+                Base.Compute.RecordError($"{nameof(target)} {nameof(Material)} is null. Unable to merge proeprties of source onto target. Null returned.");
+                return null;
+            }
+
+            if (source == null)
+            {
+                Base.Compute.RecordWarning($"{nameof(source)} {nameof(Material)} is null. Unmodified target material returned.");
+                return target;
+            }
+
             Material targetClone = target.ShallowClone();   //Clone the target to be returned
             targetClone.Properties = new List<IMaterialProperties>(target.Properties);  //Clone the target list
 
