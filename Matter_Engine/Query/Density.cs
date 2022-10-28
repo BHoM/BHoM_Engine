@@ -48,6 +48,7 @@ namespace BH.Engine.Matter
         [Input("material", "The material to query density from.")]
         [Input("options", "Options controling how the density should be extracted from the Material.")]
         [Output("density", "The density of the material.", typeof(Density))]
+        [PreviousInputNames("options", "type")]
         public static double Density(this Material material, DensityExtractionOptions options = null)
         {
             if(material == null)
