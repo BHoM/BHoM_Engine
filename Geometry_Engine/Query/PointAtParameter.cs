@@ -157,17 +157,18 @@ namespace BH.Engine.Geometry
         [Input("curve", "The PolyCurve to evaluate.")]
         [Input("t", "The parameter to evaluate.")]
         [Output("pt", "The point at the provided parameter.")]
-        public static Point PointAtParameter(this PolyCurve curve, double parameter)
+        [PreviousInputNames("t", "parameter")]
+        public static Point PointAtParameter(this PolyCurve curve, double t)
         {
             if (curve.IsNull())
                 return null;
 
-            if (parameter == 0)
+            if (t == 0)
                 return curve.StartPoint();
-            else if (parameter == 1)
+            else if (t == 1)
                 return curve.EndPoint();
 
-            double cLength = parameter * curve.Length();
+            double cLength = t * curve.Length();
             foreach (ICurve c in curve.SubParts())
             {
                 double l = c.ILength();
@@ -186,17 +187,18 @@ namespace BH.Engine.Geometry
         [Input("curve", "The Polyline to evaluate.")]
         [Input("t", "The parameter to evaluate.")]
         [Output("pt", "The point at the provided parameter.")]
-        public static Point PointAtParameter(this Polyline curve, double parameter)
+        [PreviousInputNames("t", "parameter")]
+        public static Point PointAtParameter(this Polyline curve, double t)
         {
             if (curve.IsNull())
                 return null;
 
-            if (parameter == 0)
+            if (t == 0)
                 return curve.StartPoint();
-            else if (parameter == 1)
+            else if (t == 1)
                 return curve.EndPoint();
 
-            double cLength = parameter * curve.Length();
+            double cLength = t * curve.Length();
             foreach (Line line in curve.SubParts())
             {
                 double l = line.Length();
