@@ -25,6 +25,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -34,8 +35,16 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Gets out the Point at the normalised angle parameter t on the curve. t should be between 0 and 1 where 0 corresponds to StartAngle and 1 corresponds to EndAngle.\n" + 
+                     "For a circular Arc this is equivalent to the point at the normalised length paramter where 0 is the StartPoint and 1 is EndPoint.")]
+        [Input("curve", "The Arc to evaluate.")]
+        [Input("t", "The normalised length/angle parameter to evaluate. Should be a value between 0 and 1.")]
+        [Output("pt", "The point at the provided parameter.")]
         public static Point PointAtParameter(this Arc curve, double t)
         {
+            if (curve.IsNull())
+                return null;
+
             if (t < 0)
                 t = 0;
             if (t > 1)
@@ -48,8 +57,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets out the Point at the normalised angle parameter t on the curve. t should be between 0 and 1 where 0 corresponds to 0 angle and 1 corresponds to a full lap of 2*PI radians.\n" +
+                     "For a Circle this is equivalent to the point at the normalised length paramter.")]
+        [Input("curve", "The Arc to evaluate.")]
+        [Input("t", "The normalised length/angle parameter to evaluate. Should be a value between 0 and 1.")]
+        [Output("pt", "The point at the provided parameter.")]
         public static Point PointAtParameter(this Circle curve, double t)
         {
+            if (curve.IsNull())
+                return null;
+
             if (t < 0)
                 t = 0;
             if (t > 1)
@@ -60,8 +77,39 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets out the Point at the normalised angle parameter t on the curve. t should be between 0 and 1 where 0 corresponds to 0 angle and 1 corresponds to a full lap of 2*PI radians.\n" + 
+                     "Note that for a general case this does not correspond to a normalised length parameter along the curve, i.e. t value 1/3 does not (for the general case) give the point at 1/3 length around the perimiter but rather the point at the angle parameter corresponding to 1/3 of a full lap.")]
+        [Input("curve", "The Ellipse to evaluate.")]
+        [Input("t", "The normalised angle parameter to evaluate. Should be a value between 0 and 1.")]
+        [Output("pt", "The point at the provided parameter.")]
+        public static Point PointAtParameter(this Ellipse curve, double t)
+        {
+            if (curve.IsNull())
+                return null;
+
+            if (t < 0)
+                t = 0;
+            if (t > 1)
+                t = 1;
+
+            double angleParameter = t * 2 * Math.PI;
+            double axis1Factor = curve.Radius1 * Math.Cos(angleParameter);
+            double axis2Factor = curve.Radius2 * Math.Sin(angleParameter);
+
+            return curve.Centre + curve.Axis1 * axis1Factor + curve.Axis2 * axis2Factor;
+        }
+
+        /***************************************************/
+
+        [Description("Gets out the Point at the normalised length parameter t on the curve. t should be between 0 and 1, where  0 is the StartPoint and 1 is EndPoint.")]
+        [Input("curve", "The Line to evaluate.")]
+        [Input("t", "The normalised length parameter to evaluate. Should be a value between 0 and 1.")]
+        [Output("pt", "The point at the provided parameter.")]
         public static Point PointAtParameter(this Line curve, double t)
         {
+            if (curve.IsNull())
+                return null;
+
             if (t < 0)
                 t = 0;
             if (t > 1)
@@ -72,9 +120,17 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        
+
+        [Description("Gets out the Point at the parameter t on the curve.\n" +
+                     "Note that for a general case this does not correspond to a normalised length parameter along the curve.")]
+        [Input("curve", "The NurbsCurve to evaluate.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Output("pt", "The point at the provided parameter.")]
         public static Point PointAtParameter(this NurbsCurve curve, double t)
         {
+            if (curve.IsNull())
+                return null;
+
             int n = curve.Degree();
             double a = 0;
             Point result = new Point();
@@ -96,8 +152,16 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets out the Point at the parameter t on the curve, where t generally is the normalised length parameter t on the curve. t should be between 0 and 1, where  0 is the StartPoint and 1 is EndPoint." +
+                     "Note that for PolyCurve consisting of a single ellipse the parameter will correspond to the normalised length parameter rather than the normalised length parameter..")]
+        [Input("curve", "The PolyCurve to evaluate.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Output("pt", "The point at the provided parameter.")]
         public static Point PointAtParameter(this PolyCurve curve, double parameter)
         {
+            if (curve.IsNull())
+                return null;
+
             if (parameter == 0)
                 return curve.StartPoint();
             else if (parameter == 1)
@@ -118,8 +182,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets out the Point at the parameter t on the curve, where t is the normalised length parameter t on the curve. t should be between 0 and 1, where 0 is the StartPoint and 1 is EndPoint.")]
+        [Input("curve", "The Polyline to evaluate.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Output("pt", "The point at the provided parameter.")]
         public static Point PointAtParameter(this Polyline curve, double parameter)
         {
+            if (curve.IsNull())
+                return null;
+
             if (parameter == 0)
                 return curve.StartPoint();
             else if (parameter == 1)
@@ -143,8 +214,16 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
+        [Description("Gets out the Point at the parameters u and v on the surface.")]
+        [Input("surface", "The NurbsSurface to evaluate.")]
+        [Input("u", "The parameter to evaluate along the u domain.")]
+        [Input("v", "The parameter to evaluate along the v domain.")]
+        [Output("pt", "The point at the provided parameters.")]
         public static Point PointAtParameter(this NurbsSurface surface, double u, double v)
         {
+            if (surface.IsNull())
+                return null;
+
             double a = 0;
             Point result = new Point();
 
@@ -176,8 +255,16 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Gets out the Point at the parameter t on the curve, where t for most curves is the normalised length parameter t on the curve. t should for those cases be between 0 and 1, where  0 is the StartPoint and 1 is EndPoint.\n" +
+                     "Note that the parameter does not correspond to a normalised length for Ellipses and NurbsCurves or PolyCurves consisting of any of these.")]
+        [Input("curve", "The ICurve to evaluate.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Output("pt", "The point at the provided parameter.")]
         public static Point IPointAtParameter(this ICurve curve, double t)
         {
+            if (curve.IsNull())
+                return null;
+
             return PointAtParameter(curve as dynamic, t);
         }
 
