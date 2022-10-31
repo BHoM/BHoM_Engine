@@ -54,6 +54,11 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
+        [Description("Extracts a density from a set of IDensityProviders and settings.")]
+        [Input("densityProviders", "The material properties with density to extract a single density value from.")]
+        [Input("options", "Options for the density extraction.")]
+        [Input("raiseWarnings", "Toggle to control if errors and warnings should be raised or not.")]
+        [Output("density", "Single density value found from the densityProviders. NaN if nothing found.")]
         public static double Density(this IEnumerable<IDensityProvider> densityProviders, DensityExtractionOptions options, bool raiseWarnings = true)
         {
             if (densityProviders == null)
@@ -114,8 +119,10 @@ namespace BH.Engine.Matter
             {
                 if (densities.All(x => x <= options.ZeroTolerance)) //If all densities are below the 0 threshold, do not filter, as that means removing all
                 {
-                    if(raiseWarnings)
-                        Base.Compute.RecordWarning($"All density values are below the {nameof(options.ZeroTolerance)} threshold. No Densities filtered out.");
+                    if (raiseWarnings)
+                        Base.Compute.RecordWarning($"All density values are below the {nameof(options.ZeroTolerance)} threshold. NaN density returned.");
+
+                    return double.NaN;
                 }
                 else
                 {
