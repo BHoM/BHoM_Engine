@@ -53,8 +53,6 @@ namespace BH.Engine.Physical
             {
                 List<IDensityProvider> densityProviders = properties.OfType<IDensityProvider>().ToList();
                 density = densityProviders.Density(densityOptions, densityOptions != null); //Only raise warnings and errors if options provided
-                if (double.IsNaN(density))
-                    density = 0;
             }
 
             return new Material
@@ -79,7 +77,7 @@ namespace BH.Engine.Physical
             }
 
             IDensityProvider densityProp = property as IDensityProvider;
-            double density = 0;
+            double density = double.NaN;
             if (densityProp != null)
                 density = densityProp.Density;
 
