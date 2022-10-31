@@ -27,6 +27,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Physical.Materials;
+using BH.oM.Physical.Materials.Options;
+using BH.Engine.Matter;
 
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
@@ -43,35 +45,16 @@ namespace BH.Engine.Physical
         [Input("name", "The name of the material, default empty string")]
         [Input("properties", "A collection of the specific properties of the material to be created, default null")]
         [Output("A Material object")]
-        public static Material Material(string name = "", List<IMaterialProperties> properties = null, double density = double.NaN, double tolerance = 0.001)
+        public static Material Material(string name = "", List<IMaterialProperties> properties = null, double density = double.NaN, DensityExtractionOptions densityOptions = null)
         {
             properties = properties ?? new List<IMaterialProperties>();
 
             if (double.IsNaN(density))
             {
                 List<IDensityProvider> densityProviders = properties.OfType<IDensityProvider>().ToList();
-                if (densityProviders.Count == 0)
+                density = densityProviders.Density(densityOptions, densityOptions != null); //Only raise warnings and errors if options provided
+                if (double.IsNaN(density))
                     density = 0;
-                else if (densityProviders.Count == 1)
-                    density = densityProviders[0].Density;
-                else
-                {
-                    List<double> densities = densityProviders.Select(x => x.Density).ToList();
-                    double min = densities.Min();
-                    double max = densities.Max();
-
-                    if (max < 1e-6)
-                        density = 0;
-                    else
-                    {
-                        double mean = (min + max) / 2;
-
-                        if ((max - min) / mean < tolerance)
-                            density = densities.Average();
-                        else
-                            density = 0;
-                    }
-                }    
             }
 
             return new Material
@@ -91,7 +74,7 @@ namespace BH.Engine.Physical
         {
             if(property == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot create a Physical.Material from a null set of material properties.");
+                Base.Compute.RecordError("Cannot create a Physical.Material from a null set of material properties.");
                 return null;
             }
 
