@@ -36,19 +36,24 @@ namespace BH.Engine.Matter
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Evaluates the mass of an object based its Solid Volume and Density.\nRequires a single consistent value of Density to be provided across all MaterialProperties of a given element.")]
+        [Description("Evaluates the mass of an object based its VolumetricMaterialTakeoff and Density.")]
         [Input("elementM", "The element to evaluate the mass of")]
         [Output("mass", "The physical mass of the element", typeof(Mass))]
         public static double Mass(this IElementM elementM)
         {
             if(elementM == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query the mass of a null element.");
+                Base.Compute.RecordError("Cannot query the mass of a null element.");
                 return 0;
             }
 
-            MaterialComposition mat = elementM.IMaterialComposition();
-            return elementM.ISolidVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density()).Sum();
+            VolumetricMaterialTakeoff mat = elementM.IVolumetricMaterialTakeoff();
+            if (mat.Materials.Any(x => double.IsNaN(x.Density)))
+            {
+                Base.Compute.RecordError($"Unable to compute the mass of the element due to unset density on {string.Join(",", mat.Materials.Where(x => double.IsNaN(x.Density)).Select(x => x.Name))}.");
+                return double.NaN;
+            }
+            return mat.Materials.Zip(mat.Volumes, (m, v) => m.Density * v).Sum();
         }
 
         /******************************************/
