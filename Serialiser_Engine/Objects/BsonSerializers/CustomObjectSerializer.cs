@@ -52,7 +52,7 @@ namespace BH.Engine.Serialiser.BsonSerializers
 
             context.Writer.WriteStartDocument();
 
-            if (value.Name.Length > 0)
+            if (!string.IsNullOrEmpty(value.Name) && value.Name.Length > 0)
             {
                 context.Writer.WriteName("Name");
                 context.Writer.WriteString(value.Name);
