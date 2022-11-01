@@ -381,7 +381,11 @@ namespace BH.Engine.Geometry
             if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "GeometryHash", out extensionMethodResult))
                 return (double[])extensionMethodResult;
 
-            BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(GeometryHash)} method for type {obj.GetType().FullName}.");
+            if (!(obj is IGeometry))
+                BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(GeometryHash)} method for type {obj.GetType().FullName}.");
+            else
+                BH.Engine.Base.Compute.RecordError($"The GeometryHash cannot be computed for a geometry object of type {obj.GetType().FullName}.");
+
             return new double[] { };
         }
 
