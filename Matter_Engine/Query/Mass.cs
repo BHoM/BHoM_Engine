@@ -47,13 +47,17 @@ namespace BH.Engine.Matter
                 return 0;
             }
 
-            VolumetricMaterialTakeoff mat = elementM.IVolumetricMaterialTakeoff();
-            if (mat.Materials.Any(x => double.IsNaN(x.Density)))
+            VolumetricMaterialTakeoff takeoff = elementM.IVolumetricMaterialTakeoff();
+            if (takeoff.Materials.Any(x => double.IsNaN(x.Density)))
             {
-                Base.Compute.RecordError($"Unable to compute the mass of the element due to unset density on {string.Join(",", mat.Materials.Where(x => double.IsNaN(x.Density)).Select(x => x.Name))}.");
+                Base.Compute.RecordError($"Unable to compute the mass of the element due to unset density on {string.Join(",", takeoff.Materials.Where(x => double.IsNaN(x.Density)).Select(x => x.Name))}.");
                 return double.NaN;
             }
-            return mat.Materials.Zip(mat.Volumes, (m, v) => m.Density * v).Sum();
+            if (takeoff.Materials.Any(x => x.Density == 0))
+            {
+                Base.Compute.RecordWarning($"The following materials in the makeup of the element has zero density and are not acounted for in the mass calculation of the element: {string.Join(",", takeoff.Materials.Where(x => double.IsNaN(x.Density)).Select(x => x.Name))}.");
+            }
+            return takeoff.Materials.Zip(takeoff.Volumes, (m, v) => m.Density * v).Sum();
         }
 
         /******************************************/
