@@ -43,17 +43,21 @@ namespace BH.Engine.Matter
         [Input("material", "The material to modify the density of.")]
         [Input("options", "Options controling how the density should be extracted from the Proeprties of the Material.")]
         [Output("material", "The material with density updated to match the proeprties depending on the options input.")]
-        public static void SetDensityFromProperties(this Material material, DensityExtractionOptions options = null)
+        public static Material SetDensityFromProperties(this Material material, DensityExtractionOptions options = null)
         {
             if (material == null)
             {
                 Base.Compute.RecordError("Assign the density of a null material.");
-                return;
+                return null;
             }
+
+            Material clone = material.ShallowClone();
 
             double density = material.Properties.OfType<IDensityProvider>().Density(options, true);
             if (!double.IsNaN(density))
-                material.Density = density;
+                clone.Density = density;
+
+            return clone;
         }
 
         /***************************************************/
