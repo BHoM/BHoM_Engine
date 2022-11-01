@@ -37,7 +37,7 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks the density on all IDensityProviders on the material has the same density as the density on the Material within given tolerance.")]
+        [Description("Checks the density on all IDensityProviders on the material has the same density as the density on the Material within given tolerance. Returns false if the density is unset (NaN) on the material or any of its properties.")]
         [Input("material", "The material to check.")]
         [Input("tolerance", "The allowable difference for two densities to be deemed the same.")]
         [Output("equal", "Returns true if all densities on the material and its proerties are matching.")]
@@ -46,8 +46,20 @@ namespace BH.Engine.Matter
             if (material == null)
                 return false;
 
+            if (double.IsNaN(material.Density))
+            {
+                Base.Compute.RecordWarning($"Density on Material is NaN and cannot be compared with densities on Properties.");
+                return false;
+            }
+
             foreach (IDensityProvider densityProvider in material.Properties.OfType<IDensityProvider>())
             {
+                if (double.IsNaN(densityProvider.Density))
+                {
+                    Base.Compute.RecordWarning($"Density on MaterialProeprty of type {densityProvider.GetType().Name} has NaN density.");
+                    return false;
+                }
+
                 if (Math.Abs(densityProvider.Density - material.Density) > tolerance)
                     return false;
             }
