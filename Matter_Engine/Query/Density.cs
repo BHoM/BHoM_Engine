@@ -48,6 +48,8 @@ namespace BH.Engine.Matter
         [Output("density", "The density of the material.", typeof(Density))]
         public static double Density(this Material material)
         {
+            if (material == null)
+                return double.NaN;
             //Method kept for versioning reasons
             return material.Density;
         }
