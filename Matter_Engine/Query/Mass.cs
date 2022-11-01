@@ -55,7 +55,7 @@ namespace BH.Engine.Matter
             }
             if (takeoff.Materials.Any(x => x.Density == 0))
             {
-                Base.Compute.RecordWarning($"The following materials in the makeup of the element has zero density and are not acounted for in the mass calculation of the element: {string.Join(",", takeoff.Materials.Where(x => double.IsNaN(x.Density)).Select(x => x.Name))}.");
+                Base.Compute.RecordWarning($"The following materials in the makeup of the element has zero density and are not acounted for in the mass calculation of the element: {string.Join(",", takeoff.Materials.Where(x => x.Density == 0).Select(x => x.Name))}.");
             }
             return takeoff.Materials.Zip(takeoff.Volumes, (m, v) => m.Density * v).Sum();
         }
