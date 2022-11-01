@@ -23,8 +23,10 @@
 using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Security.Cryptography.Xml;
 
@@ -36,9 +38,10 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Returns the geometrical identity of any geometry primitive, useful for comparisons and diffing. " + 
-        "Any transformations of underlying geometry performed in methods as part of the calculation of the Geometry Hash " +
-        "are implemented to be translational only to ensure validity of any geometrical tolerance checking between two hashes downstream.")]
+        [Description("Returns the geometrical identity of any IBHoMObject, useful for comparisons and diffing. " + 
+            "The geometrical identity is computed by extracting the geometry of the object via the IGeometry() method." +
+            "Then the Any transformations of underlying geometry performed in methods as part of the calculation of the GeometryHash " +
+            "are implemented to be translational only, in order to support geometrical tolerance (numerical distance) when comparing GeometryHashes downstream.")]
         public static double[] IGeometryHash(this IBHoMObject bhomObj)
         {
             IGeometry igeom = bhomObj.IGeometry();
@@ -127,8 +130,8 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Moving control points by a translation factor composed by the weights " +
-            "and a subarray of the knot vector. " +
+        [Description("The GeometryHash for a NurbsCurve is obtained by getting moving the control points " +
+            "by a translation factor composed by the weights and a subarray of the knot vector. " +
             "The subarray is made by picking as many elements from the knot vector as the curve degree value.")]
         private static double[] GeometryHash(this NurbsCurve curve, double translationFactor)
         {
@@ -263,7 +266,7 @@ namespace BH.Engine.Geometry
         /****  Mesh                                     ****/
         /***************************************************/
 
-        [Description("Get the number of faces that are attached to each control point, " +
+        [Description("The GeometryHash for a Mesh is obtained by getting the number of faces that are attached to each control point, " +
             "and use that count as a translation factor for control points.")]
         private static double[] GeometryHash(this Mesh obj, double translationFactor)
         {
@@ -298,8 +301,8 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Get the number of faces that are attached to each control point, " +
-            "and use that count as a translation factor for control points.")]
+        [Description("The GeometryHash for a Mesh3D is obtained by getting the number of faces that are attached to each control point, " +
+            "and using that count as a translation factor for control points.")]
         private static double[] GeometryHash(this Mesh3D obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.Mesh3D;
@@ -342,16 +345,30 @@ namespace BH.Engine.Geometry
             return obj.ToDoubleArray(translationFactor);
         }
 
+
         /***************************************************/
 
-        [Description("The GeometryHash for a Plane is the GeometryHash of its Origin point translated by its Normal vector.")]
-        private static double[] GeometryHash(this Plane obj, double translationFactor)
+        private static double[] GeometryHash(this Vector obj, double translationFactor)
         {
-            translationFactor += (int)TypeTranslationFactor.Plane;
-
-            return obj.Origin.Translate(obj.Normal).ToDoubleArray(translationFactor);
+            BH.Engine.Base.Compute.RecordWarning($"The GeometryHash for a {nameof(Vector)} cannot be computed.");
+            return new double[] {};
         }
 
+        /***************************************************/
+
+        private static double[] GeometryHash(this Plane obj, double translationFactor)
+        {
+            BH.Engine.Base.Compute.RecordWarning($"The GeometryHash for a {nameof(Plane)} cannot be computed.");
+            return new double[] { };
+        }
+
+        /***************************************************/
+
+        private static double[] GeometryHash(this Cartesian obj, double translationFactor)
+        {
+            BH.Engine.Base.Compute.RecordWarning($"The GeometryHash for a {nameof(BH.oM.Geometry.CoordinateSystem)}.{nameof(Cartesian)} object cannot be computed.");
+            return new double[] { };
+        }
 
         /***************************************************/
         /****  Other methods                            ****/
