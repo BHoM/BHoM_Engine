@@ -37,8 +37,8 @@ namespace BH.Engine.Matter
         /******************************************/
 
         [Description("Evaluates the mass of an object based its VolumetricMaterialTakeoff and Density.")]
-        [Input("elementM", "The element to evaluate the mass of")]
-        [Output("mass", "The physical mass of the element", typeof(Mass))]
+        [Input("elementM", "The element to evaluate the mass of.")]
+        [Output("mass", "The physical mass of the element.", typeof(Mass))]
         public static double Mass(this IElementM elementM)
         {
             if(elementM == null)
