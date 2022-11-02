@@ -56,6 +56,11 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+	<Reference Include="Matter_oM">
+		<HintPath>C:\ProgramData\BHoM\Assemblies\Matter_oM.dll</HintPath>
+		<Private>false</Private>
+		<SpecificVersion>false</SpecificVersion>
+	</Reference>
     <Reference Include="Physical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
       <Private>false</Private>

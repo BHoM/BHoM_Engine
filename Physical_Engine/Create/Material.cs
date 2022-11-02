@@ -27,7 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Physical.Materials;
-using BH.oM.Physical.Materials.Options;
+using BH.oM.Matter.Options;
 using BH.Engine.Matter;
 
 using BH.oM.Base.Attributes;
