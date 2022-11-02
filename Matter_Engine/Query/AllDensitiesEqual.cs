@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.oM.Physical.Materials;
-using BH.oM.Physical.Materials.Options;
+using BH.oM.Matter.Options;
 
 namespace BH.Engine.Matter
 {
