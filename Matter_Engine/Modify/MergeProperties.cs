@@ -41,8 +41,7 @@ namespace BH.Engine.Matter
         [Description("Merges the Properties of the target and source by adding all properties on the source to the target. Checks for duplicate type/namespaces and resolves any duplicates found depending on settings provided.")]
         [Input("target", "The material to merge the properties of the source onto. The Returned material will take name and other properties from the target.")]
         [Input("source", "The source Material to grab proeprties from.")]
-        [Input("prioritiseSource", "If true, proprties of same type/namespace on the source will be prioritised over the counterpart on the target. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the target and source, the one of the source will be used on the returned material.\n" +
-                                   "If false, proeprties on the target will be prioritised. This means that if a property of a specific type/namespace (depending on uniquePerNamespace) exits on both the target and source, the one of the target will be used on the returned material.")]
+        [Input("prioritiseSource", "Controls if target or source should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, source is prioritised, if false, target is prioritised.")]
         [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the target and source based on namespace. If false, this check is instead done on exact type.")]
         [Output("material", "Target material with Properties from the Source merged onto it.")]
         public static Material MergeProperties(this Material target, Material source, bool prioritiseSource, bool uniquePerNamespace)
@@ -62,6 +61,11 @@ namespace BH.Engine.Matter
             Material targetClone = target.ShallowClone();   //Clone the target to be returned
             targetClone.Properties = new List<IMaterialProperties>(target.Properties);  //Clone the target list
 
+            if (double.IsNaN(targetClone.Density))  //If density of target is NaN, use density from source no matter the setting
+                targetClone.Density = source.Density;
+            else if (prioritiseSource && !double.IsNaN(source.Density)) //Density of target is not NaN, use source density if it is not NaN and if setting to prioritise source is true
+                    targetClone.Density = source.Density;
+            
             if (!uniquePerNamespace)    //If not unique by namespace, check properties by type
             {
                 List<Type> targetTypes = target.Properties.Select(x => x.GetType()).ToList();   //Get out existing types on the target
