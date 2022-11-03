@@ -83,37 +83,39 @@ namespace BH.Engine.Versioning
             // Get the list of upgraders to call
             List<string> versions = Query.UpgradersToCall(version);
 
-            // Call all the upgraders in sequence
-            for (int i = 0; i < versions.Count; i++)
+            lock (m_versioningLock)
             {
-                // Create a connection with the upgrader
-                NamedPipeServerStream pipe = GetPipe(versions[i]);
-                if (pipe == null)
-                    return document;
-
-                // Send the document
-                SendDocument(document, pipe);
-
-                // Get the new version back
-                BsonDocument result = ReadDocument(pipe);
-                if (result != null)
+                // Call all the upgraders in sequence
+                for (int i = 0; i < versions.Count; i++)
                 {
-                    if (result.Contains("_t") && result["_t"] == "NoUpdate")
-                    {
-                        if (result.Contains("Message"))
-                        {
-                            noUpdateMessage = result["Message"].ToString();
-                            Engine.Base.Compute.RecordError(noUpdateMessage);
-                        }     
-                    }  
-                    else if (document != result)
-                    {
-                        wasUpdated = true;
-                        document = result;
-                    }   
-                }   
-            }
+                    // Create a connection with the upgrader
+                    NamedPipeServerStream pipe = GetPipe(versions[i]);
+                    if (pipe == null)
+                        return document;
 
+                    // Send the document
+                    SendDocument(document, pipe);
+
+                    // Get the new version back
+                    BsonDocument result = ReadDocument(pipe);
+                    if (result != null)
+                    {
+                        if (result.Contains("_t") && result["_t"] == "NoUpdate")
+                        {
+                            if (result.Contains("Message"))
+                            {
+                                noUpdateMessage = result["Message"].ToString();
+                                Engine.Base.Compute.RecordError(noUpdateMessage);
+                            }
+                        }
+                        else if (document != result)
+                        {
+                            wasUpdated = true;
+                            document = result;
+                        }
+                    }
+                }
+            }
 
             // Record the fact that a document needed to be upgraded
             if (wasUpdated || noUpdateMessage != null)
@@ -233,6 +235,8 @@ namespace BH.Engine.Versioning
         /***************************************************/
 
         private static Dictionary<string, NamedPipeServerStream> m_Pipes = new Dictionary<string, NamedPipeServerStream>();
+
+        private static object m_versioningLock = new object();
 
         /***************************************************/
     }
