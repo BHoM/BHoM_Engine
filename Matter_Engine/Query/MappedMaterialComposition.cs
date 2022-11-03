@@ -43,17 +43,17 @@ namespace BH.Engine.Matter
                      "If no name match is found, atempts to instead find a material with as many matching MaterialProperties (based on type and name) as possible.\n" +
                      "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
         [Input("elements", "The elements to fetch MaterialComposition from.")]
-        [Input("materialMaps", "The Material maps to match to. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
+        [Input("templateMaterials", "The template materials to match to and assign properties from onto the model materials. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that Material composition corresponding to this fragment. If false, the MaterialComposition returned will be calculated, independant of fragment attached.")]
-        [Input("prioritiseMap", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
+        [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials of the element and found matching material map based on namespace. If false, this check is instead done on exact type.")]
         [Output("materialComposition", "The material compositions for each element with materials mapped to the provided transdiciplinary materials.")]
-        public static List<MaterialComposition> MappedMaterialComposition(this IEnumerable<IElementM> elements, IEnumerable<Material> materialMaps, bool checkForTakeoffFragment = true, bool prioritiseMap = true, bool uniquePerNamespace = true)
+        public static List<MaterialComposition> MappedMaterialComposition(this IEnumerable<IElementM> elements, IEnumerable<Material> templateMaterials, bool checkForTakeoffFragment = true, bool prioritiseTemplate = true, bool uniquePerNamespace = true)
         {
             if (elements == null || !elements.Any())
                 return new List<MaterialComposition>();
 
-             return elements.Select(x => x.IMaterialComposition(checkForTakeoffFragment)).AssignTemplate(materialMaps, prioritiseMap, uniquePerNamespace).ToList();
+             return elements.Select(x => x.IMaterialComposition(checkForTakeoffFragment)).AssignTemplate(templateMaterials, prioritiseTemplate, uniquePerNamespace).ToList();
         }
 
         /***************************************************/
