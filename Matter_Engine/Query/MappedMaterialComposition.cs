@@ -53,7 +53,7 @@ namespace BH.Engine.Matter
             if (elements == null || !elements.Any())
                 return new List<MaterialComposition>();
 
-             return elements.Select(x => x.IMaterialComposition(checkForTakeoffFragment)).MapMaterial(materialMaps, prioritiseMap, uniquePerNamespace).ToList();
+             return elements.Select(x => x.IMaterialComposition(checkForTakeoffFragment)).AssignTemplate(materialMaps, prioritiseMap, uniquePerNamespace).ToList();
         }
 
         /***************************************************/

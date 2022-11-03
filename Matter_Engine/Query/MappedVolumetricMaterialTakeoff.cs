@@ -53,7 +53,7 @@ namespace BH.Engine.Matter
             if (elements == null || !elements.Any())
                 return new List<VolumetricMaterialTakeoff>();
 
-            return elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)).MapMaterial(materialMaps, prioritiseMap, uniquePerNamespace).ToList();
+            return elements.Select(x => x.IVolumetricMaterialTakeoff(checkForTakeoffFragment)).AssignTemplate(materialMaps, prioritiseMap, uniquePerNamespace).ToList();
         }
 
         /***************************************************/

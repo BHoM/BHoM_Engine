@@ -44,7 +44,7 @@ namespace BH.Engine.Matter
         [Input("prioritiseSource", "Controls if target or source should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, source is prioritised, if false, target is prioritised.")]
         [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the target and source based on namespace. If false, this check is instead done on exact type.")]
         [Output("material", "Target material with Properties from the Source merged onto it.")]
-        public static Material MergeProperties(this Material target, Material source, bool prioritiseSource, bool uniquePerNamespace)
+        public static Material CombineMaterials(this Material target, Material source, bool prioritiseSource, bool uniquePerNamespace)
         {
             if (target == null)
             {
@@ -61,7 +61,7 @@ namespace BH.Engine.Matter
             Material targetClone = target.ShallowClone();   //Clone the target to be returned
             targetClone.Properties = new List<IMaterialProperties>(target.Properties);  //Clone the target list
 
-            if (double.IsNaN(targetClone.Density))  //If density of target is NaN, use density from source no matter the setting
+            if (double.IsNaN(targetClone.Density))  //If density on target is NaN, use density from source no matter the setting
                 targetClone.Density = source.Density;
             else if (prioritiseSource && !double.IsNaN(source.Density)) //Density of target is not NaN, use source density if it is not NaN and if setting to prioritise source is true
                     targetClone.Density = source.Density;
