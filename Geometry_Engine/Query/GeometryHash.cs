@@ -22,6 +22,7 @@
 
 using BH.Engine.Base;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using System.Collections.Generic;
@@ -38,11 +39,13 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Returns the geometrical identity of any IBHoMObject, useful for comparisons and diffing. " +
-            "The geometrical identity is computed by extracting the geometry of the object via the IGeometry() method." +
-            "Then the Any transformations of underlying geometry performed in methods as part of the calculation of the GeometryHash " +
-            "are implemented to be translational only, in order to support geometrical tolerance (numerical distance) when comparing GeometryHashes downstream.")]
-        public static double[] IGeometryHash(this IGeometry igeometry, double tolerance = Tolerance.Distance)
+        [Description("Returns a signature of the input geometry, useful for distance-based comparisons and diffing." +
+            "\nThe hash is computed as an array representing the coordinate of significant points taken on the geometry." +
+            "\nThe number of points is reduced to the minimum essential to determine uniquely any geometry." +
+            "\nAdditionally, the resulting points are transformed based on the source geometry type, to remove or minimize collisions." +
+            "\n(Any transformation so performed is translational only, in order to support geometrical tolerance, i.e. numerical distance, when comparing GeometryHashes downstream).")]
+        [Output("geomHash", "Array of numbers representing a unique signature of the input geometry.")]
+        public static double[] IGeometryHash(this IGeometry igeometry)
         {
             return GeometryHash(igeometry as dynamic, 0);
         }
@@ -63,62 +66,68 @@ namespace BH.Engine.Geometry
         {
             IEnumerable<ICurve> subParts = curve.ISubParts();
 
-            return subParts.GeometryHash(translationFactor);
-        }
+            bool isMultipleCurves = subParts.Count() != 1;
 
-        /***************************************************/
-
-        [Description("The GeometryHashes are calculated for all of the input curves and then concatenated.")]
-        private static double[] GeometryHash(this IEnumerable<ICurve> curves, double translationFactor)
-        {
-            return curves.SelectMany(c => (double[])GeometryHash(c as dynamic, translationFactor)).ToArray();
+            return subParts.SelectMany(c => (double[])GeometryHash(c as dynamic, translationFactor, isMultipleCurves)).ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for an Arc is calculated as the GeometryHash of the start, end and middle point of the Arc.")]
-        private static double[] GeometryHash(this Arc curve, double translationFactor)
+        private static double[] GeometryHash(this Arc curve, double translationFactor, bool skipLastPoint = false)
         {
             translationFactor += (int)TypeTranslationFactor.Arc;
 
-            return curve.StartPoint().ToDoubleArray(translationFactor)
-                .Concat(curve.EndPoint().ToDoubleArray(translationFactor))
-                .Concat(curve.PointAtParameter(0.5).ToDoubleArray(translationFactor))
-                .ToArray();
+            IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
+               .Concat(curve.PointAtParameter(0.5).ToDoubleArray(translationFactor));
+
+            if (!skipLastPoint)
+                hash = hash.Concat(curve.EndPoint().ToDoubleArray(translationFactor));
+
+            return hash.ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for an Circle is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Circle.")]
-        private static double[] GeometryHash(this Circle curve, double translationFactor)
+        private static double[] GeometryHash(this Circle curve, double translationFactor, bool skipLastPoint = false)
         {
             translationFactor += (int)TypeTranslationFactor.Circle;
 
-            return curve.StartPoint().ToDoubleArray(translationFactor)
-               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor))
-               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor))
-               .ToArray();
+            IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
+                   .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor));
+
+            if (!skipLastPoint)
+                hash = hash.Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
+
+            return hash.ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for an Ellipse is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Ellipse.")]
-        private static double[] GeometryHash(this Ellipse curve, double translationFactor)
+        private static double[] GeometryHash(this Ellipse curve, double translationFactor, bool skipLastPoint = false)
         {
             translationFactor += (int)TypeTranslationFactor.Ellipse;
 
-            return curve.StartPoint().ToDoubleArray(translationFactor)
-               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor))
-               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor))
-               .ToArray();
+            IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
+               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor));
+
+            if (!skipLastPoint)
+                hash = hash.Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
+
+            return hash.ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a Line is calculated as the GeometryHash of the start and end point of the Line.")]
-        private static double[] GeometryHash(this Line curve, double translationFactor)
+        private static double[] GeometryHash(this Line curve, double translationFactor, bool skipLastPoint = false)
         {
             translationFactor += (int)TypeTranslationFactor.Line;
+
+            if (skipLastPoint)
+                return curve.StartPoint().ToDoubleArray(translationFactor);
 
             return curve.StartPoint().ToDoubleArray(translationFactor)
                .Concat(curve.EndPoint().ToDoubleArray(translationFactor))
@@ -130,7 +139,7 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for a NurbsCurve is obtained by getting moving the control points " +
             "by a translation factor composed by the weights and a subarray of the knot vector. " +
             "The subarray is made by picking as many elements from the knot vector as the curve degree value.")]
-        private static double[] GeometryHash(this NurbsCurve curve, double translationFactor)
+        private static double[] GeometryHash(this NurbsCurve curve, double translationFactor, bool skipLastPoint = false)
         {
             int curveDegree = curve.Degree();
 
@@ -140,7 +149,12 @@ namespace BH.Engine.Geometry
             translationFactor += (int)TypeTranslationFactor.NurbsCurve;
 
             List<double> concatenated = new List<double>();
-            for (int i = 0; i < curve.ControlPoints.Count(); i++)
+
+            int controlPointsCount = curve.ControlPoints.Count();
+            if (skipLastPoint)
+                controlPointsCount--;
+
+            for (int i = 0; i < controlPointsCount; i++)
             {
                 double sum = curve.Knots.GetRange(i, curveDegree).Sum();
                 double[] doubles = curve.ControlPoints[i].GeometryHash(sum + curve.Weights[i] + translationFactor);
