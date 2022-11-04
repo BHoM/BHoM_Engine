@@ -38,17 +38,14 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Returns the geometrical identity of any IBHoMObject, useful for comparisons and diffing. " + 
+        [Description("Returns the geometrical identity of any IBHoMObject, useful for comparisons and diffing. " +
             "The geometrical identity is computed by extracting the geometry of the object via the IGeometry() method." +
             "Then the Any transformations of underlying geometry performed in methods as part of the calculation of the GeometryHash " +
             "are implemented to be translational only, in order to support geometrical tolerance (numerical distance) when comparing GeometryHashes downstream.")]
-        public static double[] IGeometryHash(this IBHoMObject bhomObj)
+        public static double[] IGeometryHash(this IGeometry igeometry, double tolerance = Tolerance.Distance)
         {
-            IGeometry igeom = bhomObj.IGeometry();
-
-            return GeometryHash(igeom as dynamic, 0);
+            return GeometryHash(igeometry as dynamic, 0);
         }
-
 
         /***************************************************/
         /****              Private Methods              ****/
@@ -347,30 +344,6 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-
-        private static double[] GeometryHash(this Vector obj, double translationFactor)
-        {
-            BH.Engine.Base.Compute.RecordWarning($"The GeometryHash for a {nameof(Vector)} cannot be computed.");
-            return new double[] {};
-        }
-
-        /***************************************************/
-
-        private static double[] GeometryHash(this Plane obj, double translationFactor)
-        {
-            BH.Engine.Base.Compute.RecordWarning($"The GeometryHash for a {nameof(Plane)} cannot be computed.");
-            return new double[] { };
-        }
-
-        /***************************************************/
-
-        private static double[] GeometryHash(this Cartesian obj, double translationFactor)
-        {
-            BH.Engine.Base.Compute.RecordWarning($"The GeometryHash for a {nameof(BH.oM.Geometry.CoordinateSystem)}.{nameof(Cartesian)} object cannot be computed.");
-            return new double[] { };
-        }
-
-        /***************************************************/
         /****  Other methods                            ****/
         /***************************************************/
 
@@ -381,10 +354,7 @@ namespace BH.Engine.Geometry
             if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "GeometryHash", out extensionMethodResult))
                 return (double[])extensionMethodResult;
 
-            if (!(obj is IGeometry))
-                BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(GeometryHash)} method for type {obj.GetType().FullName}.");
-            else
-                BH.Engine.Base.Compute.RecordError($"The GeometryHash cannot be computed for a geometry object of type {obj.GetType().FullName}.");
+            BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(GeometryHash)} method for type {obj.GetType().FullName}.");
 
             return new double[] { };
         }
@@ -413,23 +383,28 @@ namespace BH.Engine.Geometry
         /****  Private enum                             ****/
         /***************************************************/
 
+        [Description("Multiplier used to define the TypeTranslationFactors.")]
+        private const int m_ToleranceMultiplier = (int)(1e9 * Tolerance.Distance);
+
+        [Description("Translation factors per each type of geometry." +
+            "The translation is proportional ")]
         private enum TypeTranslationFactor
         {
             Point = 0,
-            Plane,
-            Line,
-            Arc,
-            Circle,
-            Ellipse,
-            NurbsCurve,
-            PlanarSurface,
-            Pipe,
-            Extrusion,
-            Loft,
-            NurbsSurface,
-            SurfaceTrim,
-            Mesh,
-            Mesh3D
+            Plane = 1 * m_ToleranceMultiplier,
+            Line = 2 * m_ToleranceMultiplier,
+            Arc = 3 * m_ToleranceMultiplier,
+            Circle = 4 * m_ToleranceMultiplier,
+            Ellipse = 5 * m_ToleranceMultiplier,
+            NurbsCurve = 6 * m_ToleranceMultiplier,
+            PlanarSurface = 7 * m_ToleranceMultiplier,
+            Pipe = 8 * m_ToleranceMultiplier,
+            Extrusion = 9 * m_ToleranceMultiplier,
+            Loft = 10 * m_ToleranceMultiplier,
+            NurbsSurface = 11 * m_ToleranceMultiplier,
+            SurfaceTrim = 12 * m_ToleranceMultiplier,
+            Mesh = 13 * m_ToleranceMultiplier,
+            Mesh3D = 14 * m_ToleranceMultiplier
         }
     }
 }
