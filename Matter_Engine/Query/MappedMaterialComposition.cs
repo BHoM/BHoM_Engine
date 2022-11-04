@@ -48,12 +48,12 @@ namespace BH.Engine.Matter
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials of the element and found matching material map based on namespace. If false, this check is instead done on exact type.")]
         [Output("materialComposition", "The material compositions for each element with materials mapped to the provided transdiciplinary materials.")]
-        public static List<MaterialComposition> MappedMaterialComposition(this IEnumerable<IElementM> elements, IEnumerable<Material> templateMaterials, bool checkForTakeoffFragment = true, bool prioritiseTemplate = true, bool uniquePerNamespace = true)
+        public static MaterialComposition MappedMaterialComposition(this IElementM element, IEnumerable<Material> templateMaterials, bool checkForTakeoffFragment = true, bool prioritiseTemplate = true, bool uniquePerNamespace = true)
         {
-            if (elements == null || !elements.Any())
-                return new List<MaterialComposition>();
+            if (element == null)
+                return null;
 
-             return elements.Select(x => x.IMaterialComposition(checkForTakeoffFragment)).AssignTemplate(templateMaterials, prioritiseTemplate, uniquePerNamespace).ToList();
+             return element.IMaterialComposition(checkForTakeoffFragment).AssignTemplate(templateMaterials, prioritiseTemplate, uniquePerNamespace);
         }
 
         /***************************************************/
