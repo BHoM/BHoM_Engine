@@ -81,24 +81,22 @@ namespace BH.Engine.Matter
                      "First atempts to match the name of the provided materials to the transdiciplinary material maps.\n" +
                      "If no name match is found, atempts to instead find a material with as many matching MaterialProperties (based on type and name) as possible.\n" +
                      "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
-        [Input("materialCompositions", "The MaterialCompositions to Modify. Materials int he MaterialCompositions will be evaluated based on the name and properties.")]
+        [Input("materialCompositions", "The MaterialCompositions to Modify. Materials int he MaterialComposition will be evaluated based on the name and properties.")]
         [Input("templateMaterials", "The template materials to match to and assign properties from onto the model materials. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials and found matching material map based on namespace. If false, this check is instead done on exact type.")]
         [Output("materialCompositions", "MaterialComposition with Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
-        public static IEnumerable<MaterialComposition> AssignTemplate(this IEnumerable<MaterialComposition> materialCompositions, IEnumerable<Material> templateMaterials, bool prioritiseTemplate = true, bool uniquePerNamespace = true)
+        public static MaterialComposition AssignTemplate(this MaterialComposition materialComposition, IEnumerable<Material> templateMaterials, bool prioritiseTemplate = true, bool uniquePerNamespace = true)
         {
-            if (materialCompositions.IsNullOrEmpty())
+            if (materialComposition == null)
                 return null;
 
             if (templateMaterials == null || !templateMaterials.Any())
             {
                 Base.Compute.RecordWarning($"No {nameof(templateMaterials)} provied. Unmapped {nameof(MaterialComposition)}s returned.");
-                return materialCompositions;
+                return materialComposition;
             }
-            IEnumerable<Material> allMaterials = materialCompositions.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
-            Dictionary<Guid, Material> mappedMaterials = allMaterials.AssignTemplate(templateMaterials, prioritiseTemplate, uniquePerNamespace).ToDictionary(x => x.BHoM_Guid);
-            return materialCompositions.Select(x => new MaterialComposition(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Ratios)).ToList();
+            return new MaterialComposition(materialComposition.Materials.AssignTemplate(templateMaterials, prioritiseTemplate, uniquePerNamespace), materialComposition.Ratios);
         }
 
         /***************************************************/
@@ -107,25 +105,23 @@ namespace BH.Engine.Matter
                      "First atempts to match the name of the provided materials to the transdiciplinary material maps.\n" +
                      "If no name match is found, atempts to instead find a material with as many matching MaterialProperties (based on type and name) as possible.\n" +
                      "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
-        [Input("volumetricMaterialTakeoffs", "The VolumetricMaterialTakeoff to Modify. Materials int he VolumetricMaterialTakeoff will be evaluated based on the name and properties.")]
+        [Input("volumetricMaterialTakeoff", "The VolumetricMaterialTakeoff to Modify. Materials int he VolumetricMaterialTakeoff will be evaluated based on the name and properties.")]
         [Input("templateMaterials", "The template materials to match to and assign properties from onto the model materials. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials and found matching material map based on namespace. If false, this check is instead done on exact type.")]
         [Output("volumetricMaterialTakeoffs", "MaterialComposition with Materials with modified list of properties. Materials for which no unique match could be found are unaffected.")]
-        public static IEnumerable<VolumetricMaterialTakeoff> AssignTemplate(this IEnumerable<VolumetricMaterialTakeoff> volumetricMaterialTakeoffs, IEnumerable<Material> templateMaterials, bool prioritiseTemplate = true, bool uniquePerNamespace = true)
+        public static VolumetricMaterialTakeoff AssignTemplate(this VolumetricMaterialTakeoff volumetricMaterialTakeoff, IEnumerable<Material> templateMaterials, bool prioritiseTemplate = true, bool uniquePerNamespace = true)
         {
-            if (volumetricMaterialTakeoffs.IsNullOrEmpty())
+            if (volumetricMaterialTakeoff == null)
                 return null;
 
             if (templateMaterials == null || !templateMaterials.Any())
             {
                 Base.Compute.RecordWarning($"No {nameof(templateMaterials)} provied. Unmapped {nameof(VolumetricMaterialTakeoff)}s returned.");
-                return volumetricMaterialTakeoffs;
+                return volumetricMaterialTakeoff;
             }
 
-            IEnumerable<Material> allMaterials = volumetricMaterialTakeoffs.SelectMany(x => x.Materials).GroupBy(x => x.BHoM_Guid).Select(x => x.First());
-            Dictionary<Guid, Material> mappedMaterials = allMaterials.AssignTemplate(templateMaterials, prioritiseTemplate, uniquePerNamespace).ToDictionary(x => x.BHoM_Guid);
-            return volumetricMaterialTakeoffs.Select(x => new VolumetricMaterialTakeoff(x.Materials.Select(mat => mappedMaterials[mat.BHoM_Guid]), x.Volumes)).ToList();
+            return new VolumetricMaterialTakeoff(volumetricMaterialTakeoff.Materials.AssignTemplate(templateMaterials, prioritiseTemplate, uniquePerNamespace), volumetricMaterialTakeoff.Volumes);
         }
 
         /***************************************************/
