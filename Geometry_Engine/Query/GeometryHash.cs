@@ -105,9 +105,6 @@ namespace BH.Engine.Geometry
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
                    .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor));
 
-            if (!skipEndPoint)
-                hash = hash.Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
-
             return hash.ToArray();
         }
 
@@ -120,9 +117,6 @@ namespace BH.Engine.Geometry
 
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
                .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor));
-
-            if (!skipEndPoint)
-                hash = hash.Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
 
             return hash.ToArray();
         }
