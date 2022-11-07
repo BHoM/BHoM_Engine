@@ -277,6 +277,9 @@ namespace BH.Engine.Geometry
         {
             translationFactor += (int)TypeTranslationFactor.SurfaceTrim;
 
+            // We only consider the Curve3D in order to avoid being redundant with the Curve2D,
+            // and allow distancing comparisons.
+
             return obj.Curve3d.GeometryHash(translationFactor).ToArray();
         }
 
