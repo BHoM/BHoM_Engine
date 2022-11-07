@@ -277,8 +277,7 @@ namespace BH.Engine.Geometry
         {
             translationFactor += (int)TypeTranslationFactor.SurfaceTrim;
 
-            return obj.Curve3d.GeometryHash(translationFactor)
-                .Concat(obj.Curve2d.GeometryHash(translationFactor)).ToArray();
+            return obj.Curve3d.GeometryHash(translationFactor).ToArray();
         }
 
 
