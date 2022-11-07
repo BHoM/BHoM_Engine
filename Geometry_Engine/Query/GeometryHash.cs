@@ -89,7 +89,7 @@ namespace BH.Engine.Geometry
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
                .Concat(curve.PointAtParameter(0.5).ToDoubleArray(translationFactor));
 
-            if (!skipLastPoint)
+            if (!skipEndPoint)
                 hash = hash.Concat(curve.EndPoint().ToDoubleArray(translationFactor));
 
             return hash.ToArray();
@@ -105,7 +105,7 @@ namespace BH.Engine.Geometry
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
                    .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor));
 
-            if (!skipLastPoint)
+            if (!skipEndPoint)
                 hash = hash.Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
 
             return hash.ToArray();
@@ -114,14 +114,14 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for an Ellipse is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Ellipse.")]
-        private static double[] GeometryHash(this Ellipse curve, double translationFactor, bool skipLastPoint = false)
+        private static double[] GeometryHash(this Ellipse curve, double translationFactor, bool skipEndPoint = false)
         {
             translationFactor += (int)TypeTranslationFactor.Ellipse;
 
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
                .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor));
 
-            if (!skipLastPoint)
+            if (!skipEndPoint)
                 hash = hash.Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
 
             return hash.ToArray();
@@ -130,11 +130,11 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for a Line is calculated as the GeometryHash of the start and end point of the Line.")]
-        private static double[] GeometryHash(this Line curve, double translationFactor, bool skipLastPoint = false)
+        private static double[] GeometryHash(this Line curve, double translationFactor, bool skipEndPoint = false)
         {
             translationFactor += (int)TypeTranslationFactor.Line;
 
-            if (skipLastPoint)
+            if (skipEndPoint)
                 return curve.StartPoint().ToDoubleArray(translationFactor);
 
             return curve.StartPoint().ToDoubleArray(translationFactor)
@@ -147,7 +147,7 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for a NurbsCurve is obtained by getting moving the control points " +
             "by a translation factor composed by the weights and a subarray of the knot vector. " +
             "The subarray is made by picking as many elements from the knot vector as the curve degree value.")]
-        private static double[] GeometryHash(this NurbsCurve curve, double translationFactor, bool skipLastPoint = false)
+        private static double[] GeometryHash(this NurbsCurve curve, double translationFactor, bool skipEndPoint = false)
         {
             int curveDegree = curve.Degree();
 
@@ -159,7 +159,7 @@ namespace BH.Engine.Geometry
             List<double> concatenated = new List<double>();
 
             int controlPointsCount = curve.ControlPoints.Count();
-            if (skipLastPoint)
+            if (skipEndPoint)
                 controlPointsCount--;
 
             for (int i = 0; i < controlPointsCount; i++)
