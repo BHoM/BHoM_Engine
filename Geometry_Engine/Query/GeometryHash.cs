@@ -98,7 +98,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for an Circle is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Circle.")]
-        private static double[] GeometryHash(this Circle curve, double translationFactor, bool skipLastPoint = false)
+        private static double[] GeometryHash(this Circle curve, double translationFactor, bool skipEndPoint = false)
         {
             translationFactor += (int)TypeTranslationFactor.Circle;
 
