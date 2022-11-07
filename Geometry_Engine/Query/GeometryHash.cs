@@ -103,7 +103,8 @@ namespace BH.Engine.Geometry
             translationFactor += (int)TypeTranslationFactor.Circle;
 
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
-                   .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor));
+                   .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor))
+                   .Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
 
             return hash.ToArray();
         }
@@ -116,7 +117,8 @@ namespace BH.Engine.Geometry
             translationFactor += (int)TypeTranslationFactor.Ellipse;
 
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
-               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor));
+               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor))
+               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
 
             return hash.ToArray();
         }
