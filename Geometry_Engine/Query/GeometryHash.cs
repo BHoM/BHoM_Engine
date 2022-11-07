@@ -74,7 +74,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for an Arc is calculated as the GeometryHash of the start, end and middle point of the Arc.")]
-        private static double[] GeometryHash(this Arc curve, double translationFactor, bool skipLastPoint = false)
+        private static double[] GeometryHash(this Arc curve, double translationFactor, bool skipEndPoint= false)
         {
             translationFactor += (int)TypeTranslationFactor.Arc;
 
