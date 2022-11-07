@@ -64,11 +64,19 @@ namespace BH.Engine.Geometry
             "The GeometryHashes are then calculated for the individual parts and concatenated.")]
         private static double[] GeometryHash(this ICurve curve, double translationFactor)
         {
-            IEnumerable<ICurve> subParts = curve.ISubParts();
+            List<ICurve> subParts = curve.ISubParts().ToList();
 
-            bool isMultipleCurves = subParts.Count() != 1;
+            List<double> hashes = new List<double>();
 
-            return subParts.SelectMany(c => (double[])GeometryHash(c as dynamic, translationFactor, isMultipleCurves)).ToArray();
+            //Add hash ignoring endpoint for all but last curve
+            for (int i = 0; i < subParts.Count - 1; i++)
+            {
+                hashes.AddRange(GeometryHash(subParts[i] as dynamic, translationFactor, true));
+            }
+            //Include endpoint for hasing for last curve
+            hashes.AddRange(GeometryHash(subParts.Last() as dynamic, translationFactor, false));
+
+            return hashes.ToArray();
         }
 
         /***************************************************/
