@@ -100,6 +100,8 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for an Circle is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Circle.")]
         private static double[] GeometryHash(this Circle curve, double translationFactor, bool skipEndPoint = false)
         {
+            // The input `skipEndPoint` is not used here because Ellipses cannot be part of Polycurves.
+
             translationFactor += (int)TypeTranslationFactor.Circle;
 
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
@@ -114,6 +116,8 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for an Ellipse is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Ellipse.")]
         private static double[] GeometryHash(this Ellipse curve, double translationFactor, bool skipEndPoint = false)
         {
+            // The input `skipEndPoint` is not used here because Ellipses cannot be part of Polycurves.
+
             translationFactor += (int)TypeTranslationFactor.Ellipse;
 
             IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
@@ -145,6 +149,9 @@ namespace BH.Engine.Geometry
             "The subarray is made by picking as many elements from the knot vector as the curve degree value.")]
         private static double[] GeometryHash(this NurbsCurve curve, double translationFactor, bool skipEndPoint = false)
         {
+            // The input `skipEndPoint` is not used here because Nurbs may well extend or end before the last ControlPoint.
+            // Also consider complex situations like Periodic curves.
+
             int curveDegree = curve.Degree();
 
             if (curveDegree == 1)
@@ -155,8 +162,6 @@ namespace BH.Engine.Geometry
             List<double> concatenated = new List<double>();
 
             int controlPointsCount = curve.ControlPoints.Count();
-            if (skipEndPoint)
-                controlPointsCount--;
 
             for (int i = 0; i < controlPointsCount; i++)
             {
