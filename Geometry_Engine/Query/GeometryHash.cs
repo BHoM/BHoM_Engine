@@ -231,17 +231,25 @@ namespace BH.Engine.Geometry
         {
             translationFactor += (int)TypeTranslationFactor.NurbsSurface;
 
-            List<double> concatenated = new List<double>();
-            for (int i = 0; i < obj.ControlPoints.Count(); i++)
-            {
-                double UKnotsSum = obj.UKnots.ToList().GetRange(i, obj.UDegree).Sum();
-                double VKnotsSum = obj.VKnots.ToList().GetRange(i, obj.VDegree).Sum();
+            var uv = obj.UVCount();
 
-                double[] doubles = obj.ControlPoints[i].GeometryHash(UKnotsSum + VKnotsSum + obj.Weights[i] + translationFactor);
-                concatenated.AddRange(doubles);
+            List<double> uKnots = obj.UKnots.ToList();
+            List<double> vKnots = obj.VKnots.ToList();
+
+            List<double> concatenated = new List<double>();
+            for (int i = 0; i < uv[0]; i++)
+            {
+                double uSum = uKnots.GetRange(i, obj.UDegree).Sum();
+                for (int j = 0; j < uv[1]; j++)
+                {
+                    int ptIndex = i * uv[1] + j;
+                    double vSum = vKnots.GetRange(j, obj.VDegree).Sum();
+                    double[] doubles = obj.ControlPoints[ptIndex].GeometryHash(uSum + vSum + obj.Weights[ptIndex] + translationFactor);
+                    concatenated.AddRange(doubles);
+                }
             }
 
-            return obj.ControlPoints.ToDoubleArray(translationFactor)
+            return concatenated
                 .Concat(obj.InnerTrims.SelectMany(it => it.GeometryHash(translationFactor)))
                 .Concat(obj.OuterTrims.SelectMany(it => it.GeometryHash(translationFactor))).ToArray();
         }
