@@ -76,7 +76,7 @@ namespace BH.Engine.Reflection
             if (url == "")
                 return null;
 
-            List<string> path = new List<string>() { url, "blob/master/" };
+            List<string> path = new List<string>() { url, "blob/main/" };
             path.Add(ass.GetName().Name);
             path.AddRange(type.Namespace.Split('.').Skip(3));
             if (type.IsEnum)
@@ -106,7 +106,7 @@ namespace BH.Engine.Reflection
 
             string url = att.Url;
 
-            List<string> path = new List<string>() { url, "blob/master/" };
+            List<string> path = new List<string>() { url, "blob/main/" };
             path.Add(ass.GetName().Name);
             path.AddRange(method.DeclaringType.Namespace.Split('.').Skip(3));
             path.Add(method.DeclaringType.Name);
