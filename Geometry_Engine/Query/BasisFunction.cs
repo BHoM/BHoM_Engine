@@ -69,8 +69,16 @@ namespace BH.Engine.Geometry
                     return t >= sKnot && t < eKnot ? 1 : 0;
             }
 
-            return LinearKnotInterpelation(knots, i, n, t) * BasisFunctionGlobal(knots, i, n - 1, t) +
-                   (1 - LinearKnotInterpelation(knots, i + 1, n, t)) * BasisFunctionGlobal(knots, i + 1, n - 1, t);
+            double ret = 0.0;
+
+            double lin1 = LinearKnotInterpelation(knots, i, n, t);
+            if (lin1 != 0)
+                ret += lin1 * BasisFunctionGlobal(knots, i, n - 1, t);
+            double lin2 = 1.0 - LinearKnotInterpelation(knots, i + 1, n, t);
+            if (lin2 != 0)
+                ret += lin2 * BasisFunctionGlobal(knots, i + 1, n - 1, t);
+
+            return ret;
         }
 
         /***************************************************/
@@ -88,6 +96,54 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        [Description("Computes c number of basis values for the given t of the know vector, and returns an unordered list of indecies for the non-zero basis values.")]
+        private static List<int> BasisArray(this List<double> knots, int n, double t, int c, out double[] bases)
+        {
+            bases = new double[c];
+            List<int> indecies = new List<int>();
+
+            t = t < 0 ? 0 : t > 1 ? 1 : t;
+
+            int stCount = (int)Math.Floor(t * (c - 1));
+            stCount = Math.Min(Math.Max(stCount, 0), c - 1);
+            bool firstZero = false;
+
+            for (int i = stCount; i >= 0; i--)
+            {
+                double basis = BasisFunction(knots, i - 1, n, t);
+                bases[i] = basis;
+                if (basis == 0)
+                {
+                    if (i == stCount)
+                        firstZero = true;
+
+                    if (indecies.Count != 0)
+                        break;
+                }
+                else
+                    indecies.Add(i);
+            }
+
+            if (!firstZero || indecies.Count == 0)
+            {
+                for (int i = stCount + 1; i < c; i++)
+                {
+                    double basis = BasisFunction(knots, i - 1, n, t);
+                    bases[i] = basis;
+
+                    if (basis == 0)
+                    {
+                        if (indecies.Count != 0)
+                            break;
+                    }
+                    else
+                        indecies.Add(i);
+
+                }
+            }
+            return indecies;
+        }
     }
 }
 
