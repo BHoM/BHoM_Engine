@@ -27,6 +27,7 @@ using System.Linq;
 using Mono.Cecil;
 using Mono.Reflection;
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Reflection
 {
@@ -37,6 +38,9 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [PreviousVersion("6.0", "BH.Engine.Reflection.Compute.UnqualifiedName(System.String)")]
+        [Description("Obtain the unqualified name for a given qualified name from a type.")]
+        [Input("qualifiedName", "The qualified name to query the unqualified name from.")]
+        [Output("unqualifiedName", "The unqualified name for the given name.")]
         public static string UnqualifiedName(string qualifiedName)
         {
             if (qualifiedName == null)
