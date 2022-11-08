@@ -231,7 +231,7 @@ namespace BH.Engine.Geometry
         {
             translationFactor += (int)TypeTranslationFactor.NurbsSurface;
 
-            var uv = obj.UVCount();
+            List<int> uv = obj.UVCount();
 
             List<double> uKnots = obj.UKnots.ToList();
             List<double> vKnots = obj.VKnots.ToList();
