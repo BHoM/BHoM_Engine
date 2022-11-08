@@ -26,16 +26,67 @@ using System.Reflection;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Reflection;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Reflection
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<string> SplitByIndices(string text, List<int> indices)
+        [PreviousVersion("6.0", "BH.Engine.Reflection.Compute.UnqualifiedName(System.String)")]
+        public static string UnqualifiedName(string qualifiedName)
+        {
+            if (qualifiedName == null)
+            {
+                Base.Compute.RecordError("Cannot extract the unqualified name from a null string.");
+                return "";
+            }
+
+            int openIndex = qualifiedName.IndexOf('[');
+            int closeIndex = qualifiedName.LastIndexOf(']');
+
+            if (openIndex < 0 || closeIndex < 0)
+                return qualifiedName.Split(',').First();
+
+            string inside = qualifiedName.Substring(openIndex + 1, closeIndex - openIndex - 1);
+            List<int> cuts = FindLevelZero(inside, ',', '[', ']');
+            List<string> parts = SplitByIndices(inside, cuts);
+
+            for (int i = 0; i < parts.Count; i++)
+            {
+                parts[i] = UnqualifiedName(parts[i].Trim('[', ']', ' '));
+            }
+
+            return qualifiedName.Substring(0, openIndex + 1) + parts.Aggregate((a, b) => a + ',' + b) + "]";
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<int> FindLevelZero(string text, char splitChar, char levelUpChar, char levelDownChar)
+        {
+            int level = 0;
+            List<int> indices = new List<int>();
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                char currentChar = text[i];
+                if (currentChar == levelUpChar)
+                    level++;
+                else if (currentChar == levelDownChar)
+                    level--;
+                else if (currentChar == splitChar && level == 0)
+                    indices.Add(i);
+            }
+
+            return indices;
+        }
+
+        private static List<string> SplitByIndices(string text, List<int> indices)
         {
             if (text == null)
             {
