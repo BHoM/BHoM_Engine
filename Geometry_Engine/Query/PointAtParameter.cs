@@ -136,15 +136,12 @@ namespace BH.Engine.Geometry
             Point result = new Point();
 
             var knots = curve.Knots;
-
-            for (int i = 0; i < curve.Weights.Count; i++)
+            double[] bases;
+            foreach (int i in BasisArray(curve.Knots, n, t, curve.Weights.Count, out bases))
             {
-                double basis = BasisFunction(knots, i - 1, n, t) * curve.Weights[i];
+                double basis = bases[i] * curve.Weights[i];
                 a += basis;
-
-                Point pt = curve.ControlPoints[i];
-
-                result += basis * pt;
+                result += basis * curve.ControlPoints[i];
             }
 
             return result / a;
@@ -234,18 +231,20 @@ namespace BH.Engine.Geometry
             List<double> uKnots = surface.UKnots.ToList();
             List<double> vKnots = surface.VKnots.ToList();
 
-            Func<int, int, int> ind = (i,j) => i * uv[1] + j;
+            double[] uBases, vBases;
+            List<int> nonZeroUInds = BasisArray(uKnots, surface.UDegree, u, uv[0], out uBases);
+            List<int> nonZeroVInds = BasisArray(vKnots, surface.VDegree, v, uv[1], out vBases);
 
-            for (int i = 0; i < uv[0]; i++)
+            foreach (int i in nonZeroUInds)
             {
-                for (int j = 0; j < uv[1]; j++)
+                double uBasis = uBases[i];
+                foreach (int j in nonZeroVInds)
                 {
-                    double basis = BasisFunction(uKnots, i - 1, surface.UDegree, u) *
-                                   BasisFunction(vKnots, j - 1, surface.VDegree, v) *
-                                   surface.Weights[ind(i, j)];
-
+                    int ptIndex = i * uv[1] + j;
+                    double vBasis = vBases[j];
+                    double basis = uBasis * vBasis * surface.Weights[ptIndex];
                     a += basis;
-                    result += basis * surface.ControlPoints[ind(i, j)];
+                    result += basis * surface.ControlPoints[ptIndex];
                 }
             }
 
