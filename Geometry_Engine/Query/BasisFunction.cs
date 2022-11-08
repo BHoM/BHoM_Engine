@@ -71,12 +71,12 @@ namespace BH.Engine.Geometry
 
             double ret = 0.0;
 
-            double lin1 = LinearKnotInterpelation(knots, i, n, t);
-            if (lin1 != 0)
-                ret += lin1 * BasisFunctionGlobal(knots, i, n - 1, t);
-            double lin2 = 1.0 - LinearKnotInterpelation(knots, i + 1, n, t);
-            if (lin2 != 0)
-                ret += lin2 * BasisFunctionGlobal(knots, i + 1, n - 1, t);
+            double linInter1 = LinearKnotInterpelation(knots, i, n, t);
+            if (linInter1 != 0)
+                ret += linInter1 * BasisFunctionGlobal(knots, i, n - 1, t);
+            double linInter2 = 1.0 - LinearKnotInterpelation(knots, i + 1, n, t);
+            if (linInter2 != 0)
+                ret += linInter2 * BasisFunctionGlobal(knots, i + 1, n - 1, t);
 
             return ret;
         }
@@ -100,34 +100,38 @@ namespace BH.Engine.Geometry
         [Description("Computes c number of basis values for the given t of the know vector, and returns an unordered list of indecies for the non-zero basis values.")]
         private static List<int> BasisArray(this List<double> knots, int n, double t, int c, out double[] bases)
         {
-            bases = new double[c];
-            List<int> indecies = new List<int>();
+            bases = new double[c];  //Set up array of 0 values to be returned.
+            List<int> indecies = new List<int>();   //List of non-zero indecies. Controlpoitns on these indecies will be the one contributing to the result.
 
             t = t < 0 ? 0 : t > 1 ? 1 : t;
 
-            int stCount = (int)Math.Floor(t * (c - 1));
-            stCount = Math.Min(Math.Max(stCount, 0), c - 1);
+            //The Nurbs curves and surfaces has a range of non-zero basis that are clustered together with 0 values on each end
+            //This method atempts find the range by an initial guess, and then exit as soon as a zero value is found in an atempt to avoid as many 
+            //redundant calls to the BasisFunction as possible.
+
+            int stCount = (int)Math.Floor(t * (c - 1)); //First guess of a value in the non-zero range
+            stCount = Math.Min(Math.Max(stCount, 0), c - 1);    //Ensure the value is valid
             bool firstZero = false;
 
-            for (int i = stCount; i >= 0; i--)
+            for (int i = stCount; i >= 0; i--)  //Loop backwards from the startvalue until a zero value was found
             {
                 double basis = BasisFunction(knots, i - 1, n, t);
                 bases[i] = basis;
-                if (basis == 0)
+                if (basis == 0) //0 basis found
                 {
-                    if (i == stCount)
+                    if (i == stCount)   //If start value was zero, log this, as that mean looping upwards can be skipped as the region of relevant ctrlpts have been passed
                         firstZero = true;
 
-                    if (indecies.Count != 0)
+                    if (indecies.Count != 0)    //If indecies have been added, and current basis is 0, we can exit, as no non-zero basis should exist.
                         break;
                 }
                 else
                     indecies.Add(i);
             }
 
-            if (!firstZero || indecies.Count == 0)
+            if (!firstZero || indecies.Count == 0)  //0 basis found on both "sides". No point in looping upwards
             {
-                for (int i = stCount + 1; i < c; i++)
+                for (int i = stCount + 1; i < c; i++)   //Loop upwards from the start count
                 {
                     double basis = BasisFunction(knots, i - 1, n, t);
                     bases[i] = basis;
