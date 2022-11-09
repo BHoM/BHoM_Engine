@@ -265,7 +265,7 @@ namespace BH.Engine.Geometry
             double[] result = obj.Centreline.GeometryHash(translationFactor + obj.Radius);
 
             if (obj.Capped)
-                result.Concat(obj.Centreline.StartPoint().GeometryHash(translationFactor + obj.Radius));
+                result.Concat(obj.Centreline.IStartPoint().GeometryHash(translationFactor + obj.Radius));
 
             return result;
         }
