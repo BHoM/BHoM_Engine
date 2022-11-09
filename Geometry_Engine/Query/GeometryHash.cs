@@ -377,7 +377,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("The GeometryHash for a Point is simply an array of 3 numbers composed by the Point X, Y and Z coordinates.")]
+        [Description("The GeometryHash for a CompositeGeometry is given as the concatenated GeometryHash of the single elements composing it.")]
         private static double[] GeometryHash(this CompositeGeometry obj, double translationFactor)
         {
             return obj.Elements.SelectMany(c => c.IGeometryHash()).ToArray();
