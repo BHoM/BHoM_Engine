@@ -280,7 +280,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("The GeometryHash for a SurfaceTrim is calculated as the GeometryHash of its Curve3d and Curve2d, concatenated.")]
+        [Description("The GeometryHash for a SurfaceTrim is calculated as the GeometryHash of its Curve3d.")]
         private static double[] GeometryHash(this SurfaceTrim obj, double translationFactor)
         {
             translationFactor += (int)TypeTranslationFactor.SurfaceTrim;
