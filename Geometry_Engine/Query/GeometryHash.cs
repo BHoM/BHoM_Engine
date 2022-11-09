@@ -100,7 +100,7 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for an Circle is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Circle.")]
         private static double[] GeometryHash(this Circle curve, double translationFactor, bool skipEndPoint = false)
         {
-            // The input `skipEndPoint` is not used here because Ellipses cannot be part of Polycurves.
+            // The input `skipEndPoint` is not used here because Circles do not have a clearly defined endpoint to be used in a chain of segment curves.
 
             translationFactor += (int)TypeTranslationFactor.Circle;
 
@@ -116,7 +116,7 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for an Ellipse is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Ellipse.")]
         private static double[] GeometryHash(this Ellipse curve, double translationFactor, bool skipEndPoint = false)
         {
-            // The input `skipEndPoint` is not used here because Ellipses cannot be part of Polycurves.
+            // The input `skipEndPoint` is not used here because Ellipses do not have a clearly defined endpoint to be used in a chain of segment curves.
 
             translationFactor += (int)TypeTranslationFactor.Ellipse;
 
@@ -265,7 +265,7 @@ namespace BH.Engine.Geometry
             double[] result = obj.Centreline.GeometryHash(translationFactor + obj.Radius);
 
             if (obj.Capped)
-                result.Concat(obj.Centreline.StartPoint().GeometryHash(translationFactor + obj.Radius));
+                result.Concat(obj.Centreline.IStartPoint().GeometryHash(translationFactor + obj.Radius));
 
             return result;
         }
