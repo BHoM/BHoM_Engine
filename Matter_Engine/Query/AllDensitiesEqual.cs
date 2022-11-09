@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
  *
@@ -21,17 +21,15 @@
  */
 
 using BH.oM.Base;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using BH.oM.Base.Attributes;
-using BH.oM.Base.Reflection;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using BH.oM.Physical.Materials;
+using BH.oM.Matter.Options;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Matter
 {
     public static partial class Query
     {
@@ -39,54 +37,35 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static UnderlyingType UnderlyingType(this Type type)
+        [Description("Checks the density on all IDensityProviders on the material has the same density as the density on the Material within given tolerance. Returns false if the density is unset (NaN) on the material or any of its properties.")]
+        [Input("material", "The material to check.")]
+        [Input("tolerance", "The allowable difference for two densities to be deemed the same.")]
+        [Output("equal", "Returns true if all densities on the material and its proerties are matching.")]
+        public static bool AllDensitiesEqual(this Material material, double tolerance = 1e-6)
         {
-            if (type == null)
-                return null;
+            if (material == null)
+                return false;
 
-            int depth = 0;
-            while (typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string))
+            if (double.IsNaN(material.Density))
             {
-                Type subType = type.GetElementType();
-                
-                if (subType == null)
-                {
-                    Type[] generics = type.GetGenericArguments();
-                    if (generics.Count() == 1)
-                        subType = generics.First();
-                    else if (generics.Count() == 0)
-                    {
-                        foreach (ConstructorInfo constructor in type.GetConstructors())
-                        {
-                            ParameterInfo[] parameters = constructor.GetParameters();
-                            if (parameters.Count() == 1)
-                            {
-                                string paramType = parameters[0].ParameterType.Name;
-                                if (paramType == "List`1" || paramType == "IEnumerable`1")
-                                {
-                                    subType = parameters[0].ParameterType.GetGenericArguments()[0];
-                                    break;
-                                }   
-                            }
-                        }
-                    }
-                }
-
-                if (subType != null)
-                {
-                    type = subType;
-                    depth++;
-                }
-                else
-                    break;
+                Base.Compute.RecordWarning($"Density on Material is NaN and cannot be compared with densities on Properties.");
+                return false;
             }
 
-            return new UnderlyingType { Type = type, Depth = depth };
+            foreach (IDensityProvider densityProvider in material.Properties.OfType<IDensityProvider>())
+            {
+                if (double.IsNaN(densityProvider.Density))
+                {
+                    Base.Compute.RecordWarning($"Density on MaterialProeprty of type {densityProvider.GetType().Name} has NaN density.");
+                    return false;
+                }
+
+                if (Math.Abs(densityProvider.Density - material.Density) > tolerance)
+                    return false;
+            }
+            return true;
         }
 
         /***************************************************/
     }
 }
-
-
-

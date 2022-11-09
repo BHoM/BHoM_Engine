@@ -222,7 +222,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<Polyline> result = Join(tmpResult, tolerance);
+            List<Polyline> result = Join(tmpResult, tolerance).Select(x => x.Close(tolerance)).ToList();
 
             int res = 0;
             while (res < result.Count)
@@ -355,7 +355,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<PolyCurve> result = IJoin(tmpResult, tolerance).ToList();
+            List<PolyCurve> result = IJoin(tmpResult, tolerance).Select(x => x.Close(tolerance)).ToList();
 
             int res = 0;
             while (res < result.Count)
@@ -404,9 +404,7 @@ namespace BH.Engine.Geometry
             result.Add(regionListPolyCurve[0]);
             for (int i = 1; i < regionListPolyCurve.Count; i++)
             {
-                List<PolyCurve> newResult = new List<PolyCurve>();
-                result.ForEach(r => newResult.AddRange(r.BooleanIntersection((ICurve)regionListPolyCurve[i], tolerance)));
-                result = newResult;
+                result = result.SelectMany(x => x.BooleanIntersection(regionListPolyCurve[i], tolerance)).ToList();
             }
 
             return result;

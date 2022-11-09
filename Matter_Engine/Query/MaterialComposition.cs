@@ -33,19 +33,67 @@ namespace BH.Engine.Matter
 {
     public static partial class Query
     {
-        /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
+        [PreviousVersion("6.0", "BH.Engine.Matter.Query.IMaterialComposition(BH.oM.Dimensional.IElementM)")]
         [Description("Gets the unique Materials along with their relative proportions defining an object's make-up.")]
         [Input("elementM", "The element to get the MaterialComposition from.")]
+        [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that Material composition corresponding to this fragment. If false, the MaterialComposition returned will be calculated, independant of fragment attached.")]
         [Output("materialComposition", "The kind of matter the element is composed of and in which ratios.")]
-        public static MaterialComposition IMaterialComposition(this IElementM elementM)
+        public static MaterialComposition IMaterialComposition(this IElementM elementM, bool checkForTakeoffFragment = true)
         {
-            return Base.Compute.RunExtensionMethod(elementM, "MaterialComposition") as MaterialComposition;
+            if (elementM == null)
+            {
+                Base.Compute.RecordError("Cannot query the MaterialCompositions from a null element.");
+                return null;
+            }
+
+            //If asked to look for fragment, and if fragment exists, return it
+            if (checkForTakeoffFragment)
+            {
+                VolumetricMaterialTakeoff matTakeoff;
+                if (TryGetVolumetricMaterialTakeoffFragment(elementM, out matTakeoff))
+                    return Create.MaterialComposition(matTakeoff);
+            }
+
+            //IElementMs should implement one of the following:
+            // -SolidVolume and MaterialComposition or
+            // -VolumetricMaterialTakeoff
+            //This method first checks if the MaterialComposition method can be found and run, and if so uses it.
+            //If not, it falls back to running the VolumetricMaterialTakeoff method and gets the MaterialComposition from it.
+
+            MaterialComposition matComp;
+            if (TryGetMaterialComposition(elementM, out matComp))
+                return matComp;
+            else
+            {
+                VolumetricMaterialTakeoff takeoff;
+                if (TryGetVolumetricMaterialTakeoff(elementM, out takeoff))
+                    return Create.MaterialComposition(takeoff);
+                else
+                {
+                    Base.Compute.RecordError($"The provided element of type {elementM.GetType()} does not implement MaterialComposition or VolumetricMaterialTakeoff methods. The MaterialComposition could not be extracted.");
+                    return null;
+                }
+            }
         }
 
-        /******************************************/
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Tries running the MaterialComposition method on the IElementM. Returns true if the method successfully can be found.")]
+        private static bool TryGetMaterialComposition(this IElementM elementM, out MaterialComposition materialComposition)
+        {
+            object result;
+            bool success = Base.Compute.TryRunExtensionMethod(elementM, "MaterialComposition", out result);
+            materialComposition = result as MaterialComposition;
+            return success;
+        }
+
+        /***************************************************/
     }
 }
 

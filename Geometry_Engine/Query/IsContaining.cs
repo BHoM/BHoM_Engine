@@ -353,6 +353,15 @@ namespace BH.Engine.Geometry
                 if (pPt.SquareDistance(pt) > sqTol) // not on the same plane
                     return false;
 
+                double distance = pPt.Distance(curve);
+                if (distance < tolerance)
+                {
+                    if (acceptOnEdge)
+                        continue;
+                    else
+                        return false;
+                }
+
                 Point end = p.Origin;  // Avrage of control points
                 Vector direction = (end - pPt).Normalise();     // Gets a line cutting through the curves and the point
                 while (direction.SquareLength() <= 0.5 || edgeDirections.Any(e => 1 - Math.Abs(e.DotProduct(direction)) <= Tolerance.Angle)) // not zeroa or parallel to edges

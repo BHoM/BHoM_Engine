@@ -27,6 +27,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.Physical.Materials;
+using BH.oM.Matter.Options;
+using BH.Engine.Matter;
 
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
@@ -38,18 +40,26 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [PreviousVersion("6.0", "BH.Engine.Physical.Create.Material(System.String, System.Collections.Generic.List<BH.oM.Physical.Materials.IMaterialProperties>)")]
         [Description("Returns a Material object")]
         [Input("name", "The name of the material, default empty string")]
         [Input("properties", "A collection of the specific properties of the material to be created, default null")]
         [Output("A Material object")]
-        public static Material Material(string name = "", List<IMaterialProperties> properties = null)
+        public static Material Material(string name = "", List<IMaterialProperties> properties = null, double density = double.NaN, DensityExtractionOptions densityOptions = null)
         {
             properties = properties ?? new List<IMaterialProperties>();
+
+            if (double.IsNaN(density))
+            {
+                List<IDensityProvider> densityProviders = properties.OfType<IDensityProvider>().ToList();
+                density = densityProviders.Density(densityOptions, densityOptions != null); //Only raise warnings and errors if options provided
+            }
 
             return new Material
             {
                 Name = name,
                 Properties = properties,
+                Density = density
             };
         }
 
@@ -62,14 +72,21 @@ namespace BH.Engine.Physical
         {
             if(property == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot create a Physical.Material from a null set of material properties.");
+                Base.Compute.RecordError("Cannot create a Physical.Material from a null set of material properties.");
                 return null;
             }
+
+            IDensityProvider densityProp = property as IDensityProvider;
+            double density = double.NaN;
+            if (densityProp != null)
+                density = densityProp.Density;
 
             return new Material
             {
                 Name = property.Name,
                 Properties = new List<IMaterialProperties>() { property },
+                Density = density
+
             };
         }
 

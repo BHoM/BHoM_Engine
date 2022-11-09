@@ -52,6 +52,37 @@ namespace BH.Engine.Geometry
 
             return Create.Polyline(polylinePoints);
         }
+
+        /***************************************************/
+
+        [Description("Close open PolyCurve by adding Line segments between each pair of subsequent segment curves if the end point of the first does not lie within tolerance from start point of the second. Does not affect Closed curves.")]
+        [Input("polyCurve", "PolyCurve to close.")]
+        [Input("tolerance", "Distance tolerance used in the method.")]
+        [Output("polyCurve", "Closed polycurve.")]
+        public static PolyCurve Close(this PolyCurve polyCurve, double tolerance = Tolerance.Distance)
+        {
+            if (polyCurve == null || polyCurve.Curves.Count == 0 || polyCurve.IsClosed(tolerance))
+            {
+                return polyCurve;
+            }
+
+            List<ICurve> curves = new List<ICurve>();
+
+            double sqTol = tolerance * tolerance;
+            for (int i = 0; i < polyCurve.Curves.Count; i++)
+            {
+                curves.Add(polyCurve.Curves[i]);
+
+                Point stPt = polyCurve.Curves[i].IEndPoint();
+                Point enPt = polyCurve.Curves[(i + 1) % polyCurve.Curves.Count].IStartPoint();
+                if (stPt.SquareDistance(enPt) > sqTol)
+                    curves.Add(new Line { Start = stPt, End = enPt });
+            }
+
+            return new PolyCurve { Curves = curves };
+        }
+
+        /***************************************************/
     }
 }
 

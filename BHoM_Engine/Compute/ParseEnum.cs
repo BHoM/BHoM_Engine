@@ -64,9 +64,11 @@ namespace BH.Engine.Base
                 return Enum.GetValues(enumType).OfType<Enum>()
                     .FirstOrDefault(x => {
                         FieldInfo fi = enumType.GetField(x.ToString());
-                        DescriptionAttribute[] attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+                        DisplayTextAttribute[] displayTexts = fi.GetCustomAttributes(typeof(DisplayTextAttribute), false) as DisplayTextAttribute[];
+                        DescriptionAttribute[] descriptions = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
 
-                        return attributes != null && attributes.Count() > 0 && attributes.First().Description == value;
+                        return (displayTexts != null && displayTexts.Count() > 0 && displayTexts.First().Text == value)
+                            || (descriptions != null && descriptions.Count() > 0 && descriptions.First().Description == value);
                     });
             }
         }
