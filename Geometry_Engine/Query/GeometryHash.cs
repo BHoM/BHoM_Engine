@@ -116,7 +116,7 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for an Ellipse is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Ellipse.")]
         private static double[] GeometryHash(this Ellipse curve, double translationFactor, bool skipEndPoint = false)
         {
-            // The input `skipEndPoint` is not used here because Ellipses cannot be part of Polycurves.
+            // The input `skipEndPoint` is not used here because Ellipses do not have a clearly defined endpoint to be used in a chain of segment curves.
 
             translationFactor += (int)TypeTranslationFactor.Ellipse;
 
