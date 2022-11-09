@@ -31,18 +31,6 @@ namespace BH.Engine.Data
 {
     public static partial class Query
     {
-        /***************************************************/
-        /**** Interface Methods                         ****/
-        /***************************************************/
-
-        [PreviousVersion("6.0", "BH.Engine.Reflection.Query.ICount(System.Collections.Generic.List<System.Object>)")]
-        [Description("Get the count of the number of items in a list of objects.")]
-        [Input("list", "The list of items to obtain a count of.")]
-        [Output("count", "The number of items in the list.")]
-        public static int ICount<T>(this List<T> list)
-        {
-            return Count(list as dynamic);
-        }
 
         /***************************************************/
         /**** Public Methods                            ****/
@@ -92,6 +80,7 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [PreviousVersion("6.0", "BH.Engine.Reflection.Query.Item(System.Collections.Generic.List<System.Object>)")]
+        [PreviousVersion("6.0", "BH.Engine.Reflection.Query.ICount(System.Collections.Generic.List<System.Object>)")]
         [Description("Get the count of items in the list. Returns the total number of objects held within the list.")]
         [Input("list", "The list of objects to obtain the count from.")]
         [Output("count", "The number of items in the list.")]
@@ -99,17 +88,6 @@ namespace BH.Engine.Data
         {
             return list.Count;
         }
-
-        /***************************************************/
-        /**** Private Methods                            ****/
-        /***************************************************/
-
-        private static int Count<T>(this object obj)
-        {
-            return 0;
-        }
-
-        /***************************************************/
     }
 }
 
