@@ -219,7 +219,7 @@ namespace BH.Engine.Geometry
         {
             translationFactor += (int)TypeTranslationFactor.Loft;
 
-            return obj.Curves.GeometryHash(translationFactor);
+            return obj.Curves.SelectMany(c => c.GeometryHash(translationFactor)).ToArray();
         }
 
         /***************************************************/
@@ -366,7 +366,7 @@ namespace BH.Engine.Geometry
 
 
         /***************************************************/
-        /****  Vector                                   ****/
+        /****  Other methods                            ****/
         /***************************************************/
 
         [Description("The GeometryHash for a Point is simply an array of 3 numbers composed by the Point X, Y and Z coordinates.")]
@@ -375,9 +375,14 @@ namespace BH.Engine.Geometry
             return obj.ToDoubleArray(translationFactor);
         }
 
-
         /***************************************************/
-        /****  Other methods                            ****/
+
+        [Description("The GeometryHash for a Point is simply an array of 3 numbers composed by the Point X, Y and Z coordinates.")]
+        private static double[] GeometryHash(this CompositeGeometry obj, double translationFactor)
+        {
+            return obj.Elements.SelectMany(c => c.IGeometryHash()).ToArray();
+        }
+
         /***************************************************/
 
         // Fallback
