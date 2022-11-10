@@ -24,6 +24,9 @@ using BH.oM.Geometry;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -202,6 +205,48 @@ namespace BH.Engine.Geometry
                 counter++;
             }
             return sections;
+        }
+
+        /***************************************************/
+        /****                Join meshes                ****/
+        /***************************************************/
+
+        [Description("Joins a list of Meshes into a single Mesh. Disjointed Meshes are allowed to be joined into one mesh.")]
+        [Input("meshes", "The meshes to join.")]
+        [Input("mergeVertices", "If true, duplicate vertices will be merged. If false, duplicate vertices will be kept.")]
+        [Input("tolerance", "Only used if mergeVertices is true. The maximum allowable distance between two vertices for them to be deemed the same vertex.", typeof(Length))]
+        [Output("mesh", "The joined meshes as a single mesh.")]
+        public static Mesh Join(this List<Mesh> meshes, bool mergeVertices = false, double tolereance = Tolerance.Distance)
+        {
+            if (meshes == null || meshes.Count == 0)   //No meshes provided, return null
+                return null;
+
+            Mesh returnMesh = meshes[0];    //Set to first mesh as starting point
+
+            for (int i = 1; i < meshes.Count; i++)  //Add on the rest
+            {
+                Mesh mesh = meshes[i];
+                int vertexCount = returnMesh.Vertices.Count;
+
+                returnMesh.Vertices.AddRange(mesh.Vertices);
+                foreach (Face face in mesh.Faces)
+                {
+                    returnMesh.Faces.Add(new Face
+                    {
+                        A = face.A + vertexCount,
+                        B = face.B + vertexCount,
+                        C = face.C + vertexCount,
+                        D = face.D == -1 ? -1 : face.D + vertexCount,
+                    });
+                }
+            }
+
+            if (mergeVertices)
+            {
+                returnMesh = returnMesh.MergedVertices(tolereance);
+            }
+
+            return returnMesh;
         }
 
         /***************************************************/
