@@ -50,22 +50,22 @@ namespace BH.Engine.Geometry
                 return null;
 
             //Set up list on structs containing location and index
-            List<VertexIndex> vertices = mesh.Vertices.Select((x, i) => new VertexIndex(x, i)).ToList();
+            List<Tuple<Point,int>> vertices = mesh.Vertices.Select((x, i) => new Tuple<Point, int>(x, i)).ToList();
 
             //Find duplicate vertex indecies using the same methodology as utilised by cull duplicates
             double sqDist = tolerance * tolerance;
-            Func<VertexIndex, DomainBox> toDomainBox = a => new DomainBox()
+            Func<Tuple<Point, int>, DomainBox> toDomainBox = a => new DomainBox()
             {
                 Domains = new Domain[] {
-                    new Domain(a.Location.X, a.Location.X),
-                    new Domain(a.Location.Y, a.Location.Y),
-                    new Domain(a.Location.Z, a.Location.Z),
+                    new Domain(a.Item1.X, a.Item1.X),
+                    new Domain(a.Item1.Y, a.Item1.Y),
+                    new Domain(a.Item1.Z, a.Item1.Z),
                 }
             };
             Func<DomainBox, DomainBox, bool> treeFunction = (a, b) => a.SquareDistance(b) < sqDist;
-            Func<VertexIndex, VertexIndex, bool> itemFunction = (a, b) => true;  // The distance between the boxes is enough to determine if a Point is in range
+            Func<Tuple<Point, int>, Tuple<Point, int>, bool> itemFunction = (a, b) => true;  // The distance between the boxes is enough to determine if a Point is in range
             //Clusters the points within distance tolerance of each other. This is utilising a DB scan methodology to find duplicate vertices
-            List<List<VertexIndex>> clusteredVertices = Data.Compute.DomainTreeClusters(vertices, toDomainBox, treeFunction, itemFunction, 1);
+            List<List<Tuple<Point, int>>> clusteredVertices = Data.Compute.DomainTreeClusters(vertices, toDomainBox, treeFunction, itemFunction, 1);
 
             //Map of oldIndex -> newindex
             Dictionary<int, int> indexMap = new Dictionary<int, int>();
@@ -75,12 +75,12 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < clusteredVertices.Count; i++)
             {
-                List<VertexIndex> current = clusteredVertices[i];   //Current list of duplicate vertices
-                returnMesh.Vertices.Add(current.Select(x => x.Location).Average());     //Add average point of duplicates
+                List<Tuple<Point, int>> current = clusteredVertices[i];   //Current list of duplicate vertices
+                returnMesh.Vertices.Add(current.Select(x => x.Item1).Average());     //Add average point of duplicates
 
-                foreach (VertexIndex vertex in current) //Loop through all the vertices, setting from previous (vertix.Index) to current (current list index)
+                foreach (Tuple<Point, int> vertex in current) //Loop through all the vertices, setting from previous (vertix.Index) to current (current list index)
                 {
-                    indexMap[vertex.Index] = i;
+                    indexMap[vertex.Item2] = i;
                 }
             }
 
@@ -110,21 +110,6 @@ namespace BH.Engine.Geometry
 
         }
 
-
-        /***************************************************/
-        /**** Private Definitions                       ****/
-        /***************************************************/
-
-        private struct VertexIndex
-        {
-            public VertexIndex(Point point, int index)
-            {
-                Location = point;
-                Index = index;
-            }
-            public Point Location;
-            public int Index;
-        }
 
         /***************************************************/
     }
