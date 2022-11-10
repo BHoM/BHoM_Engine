@@ -243,7 +243,7 @@ namespace BH.Engine.Geometry
 
             if (mergeVertices)
             {
-                returnMesh = returnMesh.MergedVertices(tolereance);
+                returnMesh = returnMesh.MergeVertices(tolereance);
             }
 
             return returnMesh;
