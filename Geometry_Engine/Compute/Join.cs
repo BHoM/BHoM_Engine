@@ -221,7 +221,11 @@ namespace BH.Engine.Geometry
             if (meshes == null || meshes.Count == 0)   //No meshes provided, return null
                 return null;
 
-            Mesh returnMesh = meshes[0];    //Set to first mesh as starting point
+            Mesh returnMesh = new Mesh() //Set to copy of first mesh as starting point
+            {
+                Vertices = meshes[0].Vertices.ToList(),
+                Faces = meshes[0].Faces.ToList()
+            };
 
             for (int i = 1; i < meshes.Count; i++)  //Add on the rest
             {
