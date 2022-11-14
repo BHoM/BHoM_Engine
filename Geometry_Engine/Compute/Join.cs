@@ -211,7 +211,7 @@ namespace BH.Engine.Geometry
         /****                Join meshes                ****/
         /***************************************************/
 
-        [Description("Joins a list of Meshes into a single Mesh. Disjointed Meshes are allowed to be joined into one mesh.")]
+        [Description("Joins a list of Meshes into a single Mesh. Disjointed Meshes are allowed to be joined into one mesh with disjoint topology.")]
         [Input("meshes", "The meshes to join.")]
         [Input("mergeVertices", "If true, duplicate vertices will be merged. If false, duplicate vertices will be kept.")]
         [Input("tolerance", "Only used if mergeVertices is true. The maximum allowable distance between two vertices for them to be deemed the same vertex.", typeof(Length))]
