@@ -216,7 +216,7 @@ namespace BH.Engine.Geometry
         [Input("mergeVertices", "If true, duplicate vertices will be merged. If false, duplicate vertices will be kept.")]
         [Input("tolerance", "Only used if mergeVertices is true. The maximum allowable distance between two vertices for them to be deemed the same vertex.", typeof(Length))]
         [Output("mesh", "The joined meshes as a single mesh.")]
-        public static Mesh Join(this List<Mesh> meshes, bool mergeVertices = false, double tolerance = Tolerance.Distance)
+        public static Mesh Join(this List<Mesh> meshes, bool mergeVertices = true, double tolerance = Tolerance.Distance)
         {
             if (meshes == null || meshes.Count == 0)   //No meshes provided, return null
                 return null;
