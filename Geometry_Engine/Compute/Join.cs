@@ -36,6 +36,10 @@ namespace BH.Engine.Geometry
         /****                Join curves                ****/
         /***************************************************/
 
+        [Description("Joins a collection of PolyCurves into one or more continous PolyCurves. Input PolyCurves are split into segmenets before joining why discontinuous PolyCurves will be split into continuous segments. Method atempts to align tangents of subsequent joined segments which means some segments of the input PolyCurves might be flipped in the returned joined PolyCurves.")]
+        [Input("curves", "The PolyCurves to join.")]
+        [Input("tolerance", "Distance tolerance to be used to check proximity of start and endpoints of curves.", typeof(Length))]
+        [Output("polyCurves", "The joined continous PolyCurves.")]
         public static List<PolyCurve> Join(this List<PolyCurve> curves, double tolerance = Tolerance.Distance)
         {
 
@@ -91,6 +95,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Joins a collection of Lines into one or more continous Polylines. Method atempts to align tangents of subsequent joined segments which means some input Lines might be flipped in the returned joined Polylines.")]
+        [Input("lines", "The Lines to join.")]
+        [Input("tolerance", "Distance tolerance to be used to check proximity of start and endpoints of curves.", typeof(Length))]
+        [Output("pLines", "The joined continous Polyline.")]
         public static List<Polyline> Join(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             List<Polyline> sections = lines.Select(l => new Polyline { ControlPoints = l.ControlPoints() }).ToList();
@@ -99,6 +107,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Joins a collection of Polylines into one or more continous Polylines. Method atempts to align tangents of subsequent joined segments which means some input Polylines might be flipped in the returned joined Polylines.")]
+        [Input("curves", "The Polyline to join.")]
+        [Input("tolerance", "Distance tolerance to be used to check proximity of start and endpoints of curves.", typeof(Length))]
+        [Output("pLines", "The joined continous Polyline.")]
         public static List<Polyline> Join(this List<Polyline> curves, double tolerance = Tolerance.Distance)
         {
             List<Polyline> sections = curves.Select(l => new Polyline { ControlPoints = new List<Point>(l.ControlPoints) }).ToList();
@@ -149,6 +161,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Joins a collection of Curve into one or more PolyCurve. Method atempts to align tangents of subsequent joined segments which means some input Curves might be flipped in the returned joined PolyCurve.")]
+        [Input("curves", "The Curves to join.")]
+        [Input("tolerance", "Distance tolerance to be used to check proximity of start and endpoints of curves.", typeof(Length))]
+        [Output("polyCurves", "The joined PolyCurve.")]
         public static List<PolyCurve> IJoin(this List<ICurve> curves, double tolerance = Tolerance.Distance)
         {
             if (curves == null)
