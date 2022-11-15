@@ -227,6 +227,78 @@ namespace BH.Engine.Geometry
             int degree = curve.Degree();
             return KnotSpan(curve.Knots, curve.Knots.Count - degree, degree, t);
         }
+
+        /***************************************************/
+
+        public static List<Point> MultiplePoints(NurbsCurve curve, int steps)
+        {
+            double stepSize = 1.0 / (double)((double)steps - 1.0);
+            Point[] pts = new Point[steps];
+            bool periodic = curve.IsPeriodic();
+            int degree = curve.Degree();
+            int n = curve.Knots.Count - degree;
+            List<double> knots = curve.Knots;
+
+            if (periodic)
+                pts[0] = GetPoint(curve.ControlPoints, curve.Weights, ITSBasis(knots, degree - 1, degree, 0.0), degree - 1, degree);
+            else
+                pts[0] = curve.ControlPoints[0];
+
+            int iter = 1;
+
+
+            double t = knots[degree - 1] + stepSize;
+
+
+            for (int k = degree - 1; k < n; k++)
+            {
+                while (knots[k] == knots[k + 1] && knots[k] < 1)
+                {
+                    k++;
+                }
+                while (t < knots[k + 1])
+                {
+                    double[] basisArray = ITSBasis(knots, k, degree, t);
+                    pts[iter] = GetPoint(curve.ControlPoints, curve.Weights, basisArray, k, degree);
+                    iter++;
+                    t += stepSize;
+                }
+            }
+
+            if (periodic)
+                pts[steps - 1] = GetPoint(curve.ControlPoints, curve.Weights, ITSBasis(knots, n - 1, degree, 1.0), n - 1, degree);
+            else
+                pts[steps - 1] = curve.ControlPoints.Last();
+
+
+            return pts.ToList();
+        }
+
+        public static double LengthByDiv(this NurbsCurve curve, int steps = 10000)
+        { 
+            List<Point> pts = MultiplePoints(curve, steps);
+            double length = 0;
+            for (int i = 0; i < pts.Count-1; i++)
+            {
+                length += pts[i].Distance(pts[i + 1]);
+            }
+            return length;
+        }
+
+        private static Point GetPoint(List<Point> pts, List<double> weights, double[] basis, int span, int degree)
+        { 
+            Point pt = new Point();
+            double sum = 0;
+            int ptIndexAddtion = span - degree + 1;
+            for (int i = 0; i < basis.Length; i++)
+            {
+                int ptIndex = ptIndexAddtion + i;
+                double basisWeight = basis[i] * weights[ptIndex];
+                pt += pts[ptIndex] * basisWeight;
+                sum += basisWeight;
+            }
+            return pt / sum;
+        }
     }
 }
 
