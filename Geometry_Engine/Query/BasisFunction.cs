@@ -203,8 +203,8 @@ namespace BH.Engine.Geometry
 
         public static int KnotSpan(this List<double> knots, int n, int degree, double t)
         {
-            if (t == knots[n + 1])
-                return n;
+            if (t >= knots[n])
+                return n - 1;
 
             int low = degree - 1;
             int high = n;
