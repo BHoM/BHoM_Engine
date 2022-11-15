@@ -24,6 +24,8 @@ using System;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using System.Collections.Generic;
+using BH.oM.Geometry;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -147,6 +149,83 @@ namespace BH.Engine.Geometry
                 }
             }
             return indecies;
+        }
+
+        /***************************************************/
+
+        public static List<double> BasisArray1(NurbsCurve curve, double t)
+        {
+            int n = curve.Degree();
+            double[] bases;
+            BasisArray(curve.Knots, n, t, curve.Weights.Count, out bases);
+            return bases.ToList();
+        }
+
+        /***************************************************/
+
+        public static List<double> BasisArray2(NurbsCurve curve, double t)
+        {
+            int degree = curve.Degree();
+            int i = KnotSpan(curve.Knots, curve.Knots.Count - degree, degree, t);
+            double[] bases = new double[curve.ControlPoints.Count];
+            double[] nonZeroBases = ITSBasis(curve.Knots, i, degree, t);
+
+            nonZeroBases.CopyTo(bases, i - degree + 1);
+            return bases.ToList();
+        }
+
+        /***************************************************/
+
+        public static double[] ITSBasis(this List<double> knots, int i, int degree, double t)
+        {
+            double[] N = new double[degree + 1];
+            N[0] = 1.0;
+            double[] left = new double[degree + 1];
+            double[] right = new double[degree + 1];
+
+            for (int j = 1; j <= degree; j++)
+            {
+                left[j] = t - knots[i + 1 - j];
+                right[j] = knots[i + j] - t;
+                double saved = 0.0;
+                for (int r = 0; r < j; r++)
+                {
+                    double temp = N[r] / (right[r + 1] + left[j - r]);
+                    N[r] = saved + right[r + 1] * temp;
+                    saved = left[j - r] * temp;
+                }
+                N[j] = saved;
+            }
+            return N;
+        }
+
+        /***************************************************/
+
+        public static int KnotSpan(this List<double> knots, int n, int degree, double t)
+        {
+            if (t == knots[n + 1])
+                return n;
+
+            int low = degree - 1;
+            int high = n;
+            int mid = (low + high) / 2;
+            while (t < knots[mid] || t >= knots[mid + 1])
+            {
+                if (t < knots[mid])
+                    high = mid;
+                else
+                    low = mid;
+                mid = (low + high) / 2;
+            }
+            return mid;
+        }
+
+        /***************************************************/
+
+        public static int KnotSpan(NurbsCurve curve, double t)
+        {
+            int degree = curve.Degree();
+            return KnotSpan(curve.Knots, curve.Knots.Count - degree, degree, t);
         }
     }
 }
