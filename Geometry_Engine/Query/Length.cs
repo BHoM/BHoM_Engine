@@ -213,6 +213,30 @@ namespace BH.Engine.Geometry
             return length;
         }
 
+        [Description("Calculates the length of a Polyline.")]
+        [Input("curve", "The Polyline to calculate the length of.")]
+        [Output("length", "The length of the Polyline.", typeof(Length))]
+        public static double Length(this NurbsCurve curve, int multi = 4)
+        {
+            if (curve == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query length as the geometry is null.");
+                return double.NaN;
+            }
+
+            var divs = curve.CurvePointsByParameterStep(curve.ControlPoints.Count * multi + 1);
+
+            var pts = divs.Item1;
+            var ts = divs.Item2;
+            double length_a = 0.0;
+
+            for (int i = 0; i < pts.Count-2; i+=2)
+            {
+                length_a += curve.GetSegmentLength(ts[0], ts[1], ts[2], pts[0], pts[1], pts[2]);
+            }
+
+            return length_a;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -245,6 +269,37 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
+        private static double GetSegmentLength(this NurbsCurve curve, double t0, double t1, double t2, Point p0, Point p1, Point p2, double tolerance = Tolerance.Distance, double angleTol = 1e-2, double ratioTol = 1.1)
+        {
+            double d1 = p0.Distance(p2);
+            double da = p0.Distance(p1);
+            double db = p1.Distance(p2);
+
+            double d2 = da + db;
+
+            double tol2 = tolerance / 10;
+
+            if (d2 < tolerance)
+            {
+                return d2 + (d2 - d1) / 3;
+            }
+            else if (d1 < tolerance || d2 / d1 < angleTol || da < tol2 || db / da < ratioTol || db < tol2 || da / db < ratioTol)
+            {
+                double t01 = (t0 + t1) / 2;
+                Point p01 = curve.PointAtParameter(t01);
+                double d3 = curve.GetSegmentLength(t0, t01, t1, p0, p01, p1, tolerance, angleTol, ratioTol);
+
+                double t12 = (t1 + t2) / 2;
+                Point p12 = curve.PointAtParameter(t12);
+                double d4 = curve.GetSegmentLength(t1,t12,t2,p1,p12,p2,tolerance,angleTol,ratioTol);
+
+                return d3 + d4;
+            }
+            else
+                return d2 + (d2 - d1) / 3;
+
+        }
 
         [Description("Calculates the square binomial cooefficients used in the infinite series of the ellipse length calculation.")]
         private static List<double> SquareBinomialCoefficientsEllipse(int requiredCount)
