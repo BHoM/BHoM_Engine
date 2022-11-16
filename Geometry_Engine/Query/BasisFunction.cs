@@ -52,6 +52,36 @@ namespace BH.Engine.Geometry
             return BasisFunctionGlobal(knots, i, n, t);
         }
 
+        /***************************************************/
+
+        [Description("Gets the basis functions for the given knot vector for the parameter t in the given span and given degree.")]
+        [Input("knots", "The knot vector to evaluate.")]
+        [Input("span", "The span in which the parameter t resides. The KnotSpan method can be used to identify the span.")]
+        [Input("degree", "Degree of the Curve/Surface in the direction of the provided knots.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Output("basis", "The basis functions of the knot vector for the given parameter in the given span.")]
+        public static double[] BasisFunctions(this IReadOnlyList<double> knots, int span, int degree, double t)
+        {
+            double[] N = new double[degree + 1];
+            N[0] = 1.0;
+            double[] left = new double[degree + 1];
+            double[] right = new double[degree + 1];
+
+            for (int j = 1; j <= degree; j++)
+            {
+                left[j] = t - knots[span + 1 - j];
+                right[j] = knots[span + j] - t;
+                double saved = 0.0;
+                for (int r = 0; r < j; r++)
+                {
+                    double temp = N[r] / (right[r + 1] + left[j - r]);
+                    N[r] = saved + right[r + 1] * temp;
+                    saved = left[j - r] * temp;
+                }
+                N[j] = saved;
+            }
+            return N;
+        }
 
         /***************************************************/
         /**** Private Methods                           ****/
@@ -98,207 +128,6 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        [Description("Computes c number of basis values for the given t of the know vector, and returns an unordered list of indecies for the non-zero basis values.")]
-        private static List<int> BasisArray(this List<double> knots, int n, double t, int c, out double[] bases)
-        {
-            bases = new double[c];  //Set up array of 0 values to be returned.
-            List<int> indecies = new List<int>();   //List of non-zero indecies. Controlpoitns on these indecies will be the one contributing to the result.
-
-            t = t < 0 ? 0 : t > 1 ? 1 : t;
-
-            //The Nurbs curves and surfaces has a range of non-zero basis that are clustered together with 0 values on each end
-            //This method atempts find the range by an initial guess, and then exit as soon as a zero value is found in an atempt to avoid as many 
-            //redundant calls to the BasisFunction as possible.
-
-            int stCount = (int)Math.Floor(t * (c - 1)); //First guess of a value in the non-zero range
-            stCount = Math.Min(Math.Max(stCount, 0), c - 1);    //Ensure the value is valid
-            bool firstZero = false;
-
-            for (int i = stCount; i >= 0; i--)  //Loop backwards from the startvalue until a zero value was found
-            {
-                double basis = BasisFunction(knots, i - 1, n, t);
-                bases[i] = basis;
-                if (basis == 0) //0 basis found
-                {
-                    if (i == stCount)   //If start value was zero, log this, as that mean looping upwards can be skipped as the region of relevant ctrlpts have been passed
-                        firstZero = true;
-
-                    if (indecies.Count != 0)    //If indecies have been added, and current basis is 0, we can exit, as no non-zero basis should exist.
-                        break;
-                }
-                else
-                    indecies.Add(i);
-            }
-
-            if (!firstZero || indecies.Count == 0)  //0 basis found on both "sides". No point in looping upwards
-            {
-                for (int i = stCount + 1; i < c; i++)   //Loop upwards from the start count
-                {
-                    double basis = BasisFunction(knots, i - 1, n, t);
-                    bases[i] = basis;
-
-                    if (basis == 0)
-                    {
-                        if (indecies.Count != 0)
-                            break;
-                    }
-                    else
-                        indecies.Add(i);
-
-                }
-            }
-            return indecies;
-        }
-
-        /***************************************************/
-
-        public static List<double> BasisArray1(NurbsCurve curve, double t)
-        {
-            int n = curve.Degree();
-            double[] bases;
-            BasisArray(curve.Knots, n, t, curve.Weights.Count, out bases);
-            return bases.ToList();
-        }
-
-        /***************************************************/
-
-        public static List<double> BasisArray2(NurbsCurve curve, double t)
-        {
-            int degree = curve.Degree();
-            int i = KnotSpan(curve.Knots, curve.Knots.Count - degree, degree, t);
-            double[] bases = new double[curve.ControlPoints.Count];
-            double[] nonZeroBases = ITSBasis(curve.Knots, i, degree, t);
-
-            nonZeroBases.CopyTo(bases, i - degree + 1);
-            return bases.ToList();
-        }
-
-        /***************************************************/
-
-        public static double[] ITSBasis(this List<double> knots, int i, int degree, double t)
-        {
-            double[] N = new double[degree + 1];
-            N[0] = 1.0;
-            double[] left = new double[degree + 1];
-            double[] right = new double[degree + 1];
-
-            for (int j = 1; j <= degree; j++)
-            {
-                left[j] = t - knots[i + 1 - j];
-                right[j] = knots[i + j] - t;
-                double saved = 0.0;
-                for (int r = 0; r < j; r++)
-                {
-                    double temp = N[r] / (right[r + 1] + left[j - r]);
-                    N[r] = saved + right[r + 1] * temp;
-                    saved = left[j - r] * temp;
-                }
-                N[j] = saved;
-            }
-            return N;
-        }
-
-        /***************************************************/
-
-        public static int KnotSpan(this List<double> knots, int n, int degree, double t)
-        {
-            if (t >= knots[n])
-                return n - 1;
-
-            int low = degree - 1;
-            int high = n;
-            int mid = (low + high) / 2;
-            while (t < knots[mid] || t >= knots[mid + 1])
-            {
-                if (t < knots[mid])
-                    high = mid;
-                else
-                    low = mid;
-                mid = (low + high) / 2;
-            }
-            return mid;
-        }
-
-        /***************************************************/
-
-        public static int KnotSpan(NurbsCurve curve, double t)
-        {
-            int degree = curve.Degree();
-            return KnotSpan(curve.Knots, curve.Knots.Count - degree, degree, t);
-        }
-
-        /***************************************************/
-
-        public static List<Point> MultiplePoints(NurbsCurve curve, int steps)
-        {
-            double stepSize = 1.0 / (double)((double)steps - 1.0);
-            Point[] pts = new Point[steps];
-            bool periodic = curve.IsPeriodic();
-            int degree = curve.Degree();
-            int n = curve.Knots.Count - degree;
-            List<double> knots = curve.Knots;
-
-            if (periodic)
-                pts[0] = GetPoint(curve.ControlPoints, curve.Weights, ITSBasis(knots, degree - 1, degree, 0.0), degree - 1, degree);
-            else
-                pts[0] = curve.ControlPoints[0];
-
-            int iter = 1;
-
-
-            double t = knots[degree - 1] + stepSize;
-
-
-            for (int k = degree - 1; k < n; k++)
-            {
-                while (knots[k] == knots[k + 1] && knots[k] < 1)
-                {
-                    k++;
-                }
-                while (t < knots[k + 1])
-                {
-                    double[] basisArray = ITSBasis(knots, k, degree, t);
-                    pts[iter] = GetPoint(curve.ControlPoints, curve.Weights, basisArray, k, degree);
-                    iter++;
-                    t += stepSize;
-                }
-            }
-
-            if (periodic)
-                pts[steps - 1] = GetPoint(curve.ControlPoints, curve.Weights, ITSBasis(knots, n - 1, degree, 1.0), n - 1, degree);
-            else
-                pts[steps - 1] = curve.ControlPoints.Last();
-
-
-            return pts.ToList();
-        }
-
-        public static double LengthByDiv(this NurbsCurve curve, int steps = 10000)
-        { 
-            List<Point> pts = MultiplePoints(curve, steps);
-            double length = 0;
-            for (int i = 0; i < pts.Count-1; i++)
-            {
-                length += pts[i].Distance(pts[i + 1]);
-            }
-            return length;
-        }
-
-        private static Point GetPoint(List<Point> pts, List<double> weights, double[] basis, int span, int degree)
-        { 
-            Point pt = new Point();
-            double sum = 0;
-            int ptIndexAddtion = span - degree + 1;
-            for (int i = 0; i < basis.Length; i++)
-            {
-                int ptIndex = ptIndexAddtion + i;
-                double basisWeight = basis[i] * weights[ptIndex];
-                pt += pts[ptIndex] * basisWeight;
-                sum += basisWeight;
-            }
-            return pt / sum;
-        }
     }
 }
 
