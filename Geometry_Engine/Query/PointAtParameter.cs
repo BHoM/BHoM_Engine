@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -131,20 +132,23 @@ namespace BH.Engine.Geometry
             if (curve.IsNull())
                 return null;
 
-            int n = curve.Degree();
-            double a = 0;
-            Point result = new Point();
-
+            int degree = curve.Degree();
             var knots = curve.Knots;
-            double[] bases;
-            foreach (int i in BasisArray(curve.Knots, n, t, curve.Weights.Count, out bases))
-            {
-                double basis = bases[i] * curve.Weights[i];
-                a += basis;
-                result += basis * curve.ControlPoints[i];
-            }
 
-            return result / a;
+            int span = knots.KnotSpan(degree, t);
+            double[] basisFunctions = knots.BasisFunctions(span, degree, t);
+
+            Point pt = new Point();
+            double sum = 0;
+            int ptIndexAddtion = span - degree + 1;
+            for (int i = 0; i < basisFunctions.Length; i++)
+            {
+                int ptIndex = ptIndexAddtion + i;
+                double basisWeight = basisFunctions[i] * curve.Weights[ptIndex];
+                pt += curve.ControlPoints[ptIndex] * basisWeight;
+                sum += basisWeight;
+            }
+            return pt / sum;
         }
 
         /***************************************************/
@@ -223,28 +227,37 @@ namespace BH.Engine.Geometry
             if (surface.IsNull())
                 return null;
 
+            int uDegree = surface.UDegree;
+            var uKnots = surface.UKnots;
+
+            int uSpan = uKnots.KnotSpan(uDegree, u);
+            double[] uBasisFunctions = uKnots.BasisFunctions(uSpan, uDegree, u);
+
+            int vDegree = surface.VDegree;
+            var vKnots = surface.VKnots;
+
+            int vSpan = vKnots.KnotSpan(vDegree, v);
+            double[] vBasisFunctions = vKnots.BasisFunctions(vSpan, vDegree, v);
+
+            int uIndexAddtion = uSpan - uDegree + 1;
+            int vIndexAddtion = vSpan - vDegree + 1;
+
+            var uvCount = surface.UVCount();
+
             double a = 0;
             Point result = new Point();
 
-            var uv = surface.UVCount();
-
-            List<double> uKnots = surface.UKnots.ToList();
-            List<double> vKnots = surface.VKnots.ToList();
-
-            double[] uBases, vBases;
-            List<int> nonZeroUInds = BasisArray(uKnots, surface.UDegree, u, uv[0], out uBases);
-            List<int> nonZeroVInds = BasisArray(vKnots, surface.VDegree, v, uv[1], out vBases);
-
-            foreach (int i in nonZeroUInds)
+            for (int i = 0; i < uBasisFunctions.Length; i++)
             {
-                double uBasis = uBases[i];
-                foreach (int j in nonZeroVInds)
+                double uBasis = uBasisFunctions[i];
+                int uIndexFactor = (i + uIndexAddtion) * uvCount[1];
+                for (int j = 0; j < vBasisFunctions.Length; j++)
                 {
-                    int ptIndex = i * uv[1] + j;
-                    double vBasis = vBases[j];
+                    int ptIndex = uIndexFactor + j + vIndexAddtion;
+                    double vBasis = vBasisFunctions[j];
                     double basis = uBasis * vBasis * surface.Weights[ptIndex];
                     a += basis;
-                    result += basis * surface.ControlPoints[ptIndex];
+                    result += surface.ControlPoints[ptIndex] * basis;
                 }
             }
 
