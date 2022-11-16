@@ -40,10 +40,11 @@ namespace BH.Engine.Geometry
         [Input("curve", "The NurbsCurve to divide.")]
         [Input("steps", "The number of divisions.")]
         [Output("pts", "Points along the curve.")]
-        public static List<Point> CurvePointsByParameterStep(NurbsCurve curve, int steps)
+        public static Output<List<Point>, List<double>> CurvePointsByParameterStep(this NurbsCurve curve, int steps)
         {
 
             Point[] pts = new Point[steps];
+            double[] ts = new double[steps];
             bool periodic = curve.IsPeriodic();
             int degree = curve.Degree();
 
@@ -61,6 +62,7 @@ namespace BH.Engine.Geometry
             else
                 pts[0] = curve.ControlPoints[0];
 
+            ts[0] = min;
             int iter = 1;   //Current point index
 
             double t = min + stepSize;
@@ -76,6 +78,7 @@ namespace BH.Engine.Geometry
                 {
                     double[] basisArray = BasisFunctions(knots, k, degree, t);
                     pts[iter] = ComputeCurvePoint(curve.ControlPoints, curve.Weights, basisArray, k, degree);
+                    ts[iter] = t;
                     iter++;
                     t += stepSize;
                 }
@@ -86,8 +89,8 @@ namespace BH.Engine.Geometry
             else
                 pts[steps - 1] = curve.ControlPoints.Last();
 
-
-            return pts.ToList();
+            ts[steps - 1] = max;
+            return new Output<List<Point>, List<double>> { Item1 = pts.ToList(), Item2 = ts.ToList() };
         }
 
         /***************************************************/
