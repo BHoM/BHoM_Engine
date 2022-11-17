@@ -184,7 +184,7 @@ namespace BH.Engine.Serialiser
                 BsonSerializer.RegisterSerializer(typeof(DataTable), new DataTableSerialiser());
                 BsonSerializer.RegisterSerializer(typeof(Bitmap), new BitmapSerializer());
                 BsonSerializer.RegisterSerializer(typeof(IntPtr), new IntPtrSerializer());
-                BsonSerializer.RegisterSerializer(typeof(Regex), new RegexSerializer());
+                BsonSerializer.RegisterSerializer(typeof(Regex), new BsonSerializers.RegexSerializer());
 
                 var typeSerializer = new TypeSerializer();
                 BsonSerializer.RegisterSerializer(typeof(Type), typeSerializer);
