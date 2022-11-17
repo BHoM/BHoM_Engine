@@ -47,6 +47,9 @@ namespace BH.Engine.Geometry
         [Output("geomHash", "Array of numbers representing a unique signature of the input geometry.")]
         public static double[] IGeometryHash(this IGeometry igeometry)
         {
+            if (igeometry == null)
+                return new double[] { };
+
             return GeometryHash(igeometry as dynamic, 0);
         }
 

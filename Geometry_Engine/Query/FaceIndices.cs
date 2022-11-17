@@ -40,6 +40,9 @@ namespace BH.Engine.Geometry
         [Output("indices", "List of indices.")]
         public static List<int> FaceIndices(this Face meshFace)
         {
+            if (meshFace == null)
+                return new List<int>();
+
             List<int> result = new List<int>() { meshFace.A, meshFace.B, meshFace.C };
 
             if (meshFace.D != -1)
