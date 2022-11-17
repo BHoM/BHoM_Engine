@@ -86,7 +86,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
 
-        private static void CreateEnumSerializer<T>() where T : struct
+        private static void CreateEnumSerializer<T>() where T : struct, Enum
         {
             try
             {

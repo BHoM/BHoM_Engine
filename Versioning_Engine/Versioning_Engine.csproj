@@ -20,7 +20,7 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson" Version="2.9.3" />
+    <PackageReference Include="MongoDB.Bson" Version="2.18.0" />
   </ItemGroup>
 
   <ItemGroup>
