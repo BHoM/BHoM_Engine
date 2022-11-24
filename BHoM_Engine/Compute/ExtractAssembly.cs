@@ -41,7 +41,7 @@ namespace BH.Engine.Base
         [Input("assembly", "Assembly to be reflected.")]
         public static void ExtractAssembly(Assembly assembly)
         {
-            if (assembly == null || assembly.ReflectionOnly)
+            if (assembly == null || assembly.IsDynamic || assembly.ReflectionOnly)
                 return;
 
             lock (Global.AssemblyReflectionLock)
