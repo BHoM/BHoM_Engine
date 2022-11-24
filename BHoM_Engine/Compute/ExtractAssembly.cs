@@ -41,7 +41,7 @@ namespace BH.Engine.Base
         [Input("assembly", "Assembly to be reflected.")]
         public static void ExtractAssembly(Assembly assembly)
         {
-            if (assembly == null || assembly.IsDynamic || assembly.ReflectionOnly)
+            if (assembly == null || assembly.IsDynamic || assembly.ReflectionOnly) // Dynamically compiled assemblies throw an exception on reading the ReflectionOnly property (ex. of dynamic assembly can be found in Blazor apps) 
                 return;
 
             lock (Global.AssemblyReflectionLock)
