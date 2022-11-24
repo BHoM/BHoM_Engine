@@ -16,10 +16,10 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("Checks if the space is valid by checking if the perimeter curve is closed, if the perimeter length is not equal 0 and if the space is not self intersecting.")]
-        [Input("spaces", "The Space to check if it is valid.")]
+        [Description("Checks if the space is valid by checking if the perimeter curve is closed, if the perimeter length is not equal to 0 and if the space perimeter is not self intersecting.")]
+        [Input("spaces", "The Spaces to check if they are valid to the given conditions.")]
         [MultiOutput(0,"validSpaces", "Returns list of valid spaces")]
-        [MultiOutput(1, "selfIntersectingSpaces", "Returns list of invalid spaces due to self intersection")]
+        [MultiOutput(1, "selfIntersectingSpaces", "Returns list of invalid spaces due to the perimeter curve self intersecting")]
         [MultiOutput(2, "zeroPerimeterSpaces", "Returns list of invalid spaces due to perimeter length being zero")]
         [MultiOutput(3, "notClosedSpaces", "Returns list of invalid spaces due to not closed perimeter")]
         public static Output<List<Space>, List<Space>, List<Space>, List<Space>> IsValid(this List<Space> spaces)
@@ -59,15 +59,10 @@ namespace BH.Engine.Environment
 
             return new Output<List<Space>, List<Space>, List<Space>, List<Space>>
             {
-
                 Item1 = validSpaces,
-
                 Item2 = selfIntersectingSpaces,
-
                 Item3 = notClosedSpaces,
-
                 Item4 = zeroPerimeterSpaces
-
             };
         }
     }
