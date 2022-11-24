@@ -1,4 +1,26 @@
-﻿using System;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,7 +44,7 @@ namespace BH.Engine.Environment
         [MultiOutput(1, "selfIntersectingSpaces", "Returns list of invalid spaces due to the perimeter curve self intersecting")]
         [MultiOutput(2, "zeroPerimeterSpaces", "Returns list of invalid spaces due to perimeter length being zero")]
         [MultiOutput(3, "notClosedSpaces", "Returns list of invalid spaces due to not closed perimeter")]
-        public static Output<List<Space>, List<Space>, List<Space>, List<Space>> IsValid(this List<Space> spaces)
+        public static Output<List<Space>, List<Space>, List<Space>, List<Space>> IsValid(this List<Space> spaces, double intersectionTolerance = BH.oM.Geometry.Tolerance.Distance, double lengthTolerance = BH.oM.Geometry.Tolerance.Distance, double closedSpacesTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             List<Space> validSpaces = new List<Space>();
             List<Space> selfIntersectingSpaces = new List<Space>();
@@ -33,19 +55,21 @@ namespace BH.Engine.Environment
             {
                 bool isvalid = true;
 
-                if (space.IsSelfIntersecting())
+                if (space.IsSelfIntersecting(intersectionTolerance))
                 {
                     selfIntersectingSpaces.Add(space);
                     isvalid = false;
                 }
 
-                if (space.Perimeter.Length() == 0)
+                double length = space.Perimeter.Length();
+
+                if ((length >= (0 - lengthTolerance)) && (length <= (0 + lengthTolerance)))
                 {
                     zeroPerimeterSpaces.Add(space);
                     isvalid = false;
                 }
 
-                if (!space.Perimeter.IIsClosed())
+                if (!space.Perimeter.IIsClosed(closedSpacesTolerance))
                 {
                     notClosedSpaces.Add(space);
                     isvalid = false;
