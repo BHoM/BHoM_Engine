@@ -38,6 +38,9 @@ namespace BH.Engine.Environment
     {
         [Description("Checks if the space is valid by checking if the perimeter curve is closed, if the perimeter length is not equal to 0 and if the space perimeter is not self intersecting.")]
         [Input("spaces", "The Spaces to check if they are valid to the given conditions.")]
+        [Input("intersectionTolerance", "Minimum distance to be considered intersecting.", typeof(Length))]
+        [Input("lengthTolerance", "Minimum distance to considerthat a line has length.", typeof(Length))]
+        [Input("closedSpacesTolerance", "Distance tolerance for closedness validation.", typeof(Length))]
         [MultiOutput(0, "validSpaces", "Returns list of valid spaces.")]
         [MultiOutput(1, "selfIntersectingSpaces", "Returns list of invalid spaces due to the perimeter curve self intersecting.")]
         [MultiOutput(2, "zeroPerimeterSpaces", "Returns list of invalid spaces due to perimeter length being zero.")]
