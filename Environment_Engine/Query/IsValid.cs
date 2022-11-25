@@ -44,12 +44,21 @@ namespace BH.Engine.Environment
         [MultiOutput(3, "notClosedSpaces", "Returns list of invalid spaces due to not closed perimeter.")]
         public static Output<List<Space>, List<Space>, List<Space>, List<Space>> IsValid(this List<Space> spaces, double intersectionTolerance = BH.oM.Geometry.Tolerance.Distance, double lengthTolerance = BH.oM.Geometry.Tolerance.Distance, double closedSpacesTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
+            if(spaces == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Spaces input cannot be null, please provide valid spaces.");
+                return null;
+            }
+                
             List<Space> validSpaces = new List<Space>();
             List<Space> selfIntersectingSpaces = new List<Space>();
             List<Space> zeroPerimeterSpaces = new List<Space>();
             List<Space> notClosedSpaces = new List<Space>();
             foreach (Space space in spaces)
             {
+                if(space == null)
+                    continue;
+                    
                 bool isvalid = true;
                 if (space.IsSelfIntersecting(intersectionTolerance))
                 {
