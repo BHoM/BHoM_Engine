@@ -41,6 +41,7 @@ namespace BH.Engine.Environment
 
         [Description("Determines whether the space is closed by ensuring all edges are connected to other elements")]
         [Input("panels", "The collection of Environment Panels that represent the space to check")]
+        [Input("tolerance", "The tolerance for determining whether the panels are intersecting.")]
         [Output("isClosed", "True if the space is closed, false otherwise")]
         public static bool IsClosed(this List<Panel> panels, double tolerance = Tolerance.Distance)
         {
@@ -53,7 +54,7 @@ namespace BH.Engine.Environment
 
             foreach(Line l in unique)
             {
-                if(edgeParts.Where(x => x.BooleanIntersection(l) != null).ToList().Count < 2)
+                if(edgeParts.Where(x => x.BooleanIntersection(l, tolerance) != null).ToList().Count < 2)
                     return false;
             }
 
