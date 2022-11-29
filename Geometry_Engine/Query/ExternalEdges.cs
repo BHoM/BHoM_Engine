@@ -145,12 +145,14 @@ namespace BH.Engine.Geometry
             {
                 List<Line> edges = mesh.Faces.SelectMany(f => f.Edges(mesh)).ToList();
 
+                double sqTol = tolerance * tolerance;
+
                 for (int i = edges.Count - 1; i > 0; i--)
                 {
                     for (int n = i - 1; n >= 0; n--)
                     {
-                        if ((edges[i].Start == edges[n].Start & edges[i].End == edges[n].End) | // edge[i] == edge[n]
-                            (edges[i].Start == edges[n].End & edges[i].End == edges[n].Start))   // edge[i] == edge[n].Reverse()
+                        if ((edges[i].Start.SquareDistance(edges[n].Start) < sqTol && edges[i].End.SquareDistance(edges[n].End) < sqTol) || // edge[i] == edge[n]
+                            (edges[i].Start.SquareDistance(edges[n].End) < sqTol && edges[i].End.SquareDistance(edges[n].Start) < sqTol))   // edge[i] == edge[n].Reverse()
                         {
                             edges.RemoveAt(i); // shared edge so remove both
                             edges.RemoveAt(n);
