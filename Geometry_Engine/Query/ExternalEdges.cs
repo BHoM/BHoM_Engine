@@ -36,6 +36,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
+        [Description("Gets the external edge curves of the Extrusion.")]
         public static List<ICurve> ExternalEdges(this Extrusion surface)
         {
             ICurve curve = surface.Curve;
@@ -62,6 +63,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the external edge curves of the Loft as the curves of the Loft.")]
         public static List<ICurve> ExternalEdges(this Loft surface)
         {
             return surface.Curves; //TODO: Is that always correct?
@@ -69,6 +71,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the external edge curves of the Pipe. If the Pipe is capped, this returns a circle at each end of the centre curve. If the pipe is uncapped, this method returns an empty list.")]
         public static List<ICurve> ExternalEdges(this Pipe surface)
         {
             if (!surface.Capped)
@@ -86,6 +89,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the external edge curves of the PlanarSurface as its ExternalBoundary.")]
         public static List<ICurve> ExternalEdges(this PlanarSurface surface)
         {
             return new List<ICurve> { surface.ExternalBoundary };
@@ -93,6 +97,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the external edge curves of the PolySurface the external edge curves of all of its parts.")]
         public static List<ICurve> ExternalEdges(this PolySurface surface)
         {
             return surface.Surfaces.SelectMany(x => x.IExternalEdges()).ToList();
@@ -104,11 +109,11 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("6.0", "BH.Engine.Geometry.Query.ExternalEdges(BH.oM.Geometry.Mesh)")]
-        [Description("Gets the external edges of a mesh as a set of lines. Extraction is done by finding all unique edges in the mesh.")]
-        [Input("mesh", "The mesh to extract external edges from.")]
+        [Description("Gets the external edge curves of a mesh as a set of lines. Extraction is done by finding all unique edges in the mesh.")]
+        [Input("mesh", "The mesh to extract external edge curves from.")]
         [Input("filterByTopology", "If true, edges with unique topology are returned. If false, edges with unique geometry is returned. Toggle only renders different result for meshes with duplicate nodes.")]
         [Input("tolerance", "Tolerance to be used for identifying duplicate edges. Only used if filterByTopology is false.")]
-        [Output("edges", "The external edges of the mesh.")]
+        [Output("edges", "The external edge curves of the mesh.")]
         public static List<Line> ExternalEdges(this Mesh mesh, bool filterByTopology = false, double tolerance = Tolerance.Distance)
         {
             if (mesh == null)
@@ -170,6 +175,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Gets the external edge curves of the ISurface.")]
         public static List<ICurve> IExternalEdges(this ISurface surface)
         {
             return ExternalEdges(surface as dynamic);
