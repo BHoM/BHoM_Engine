@@ -70,6 +70,7 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-values, Continuous U-value, or Cavity U-value assigned.");
                 return null;
             }
+            if ((glassUValues.Count == 1) && (glassEdgeUValues.Count <= 0))
             {
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has center of Glass U-value without Edge of Glass u-values assigned.");
                 return null;
