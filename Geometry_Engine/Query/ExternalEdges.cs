@@ -26,6 +26,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -102,7 +103,13 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Mesh                     ****/
         /***************************************************/
 
-        public static List<Line> ExternalEdges(this Mesh mesh)
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.ExternalEdges(BH.oM.Geometry.Mesh)")]
+        [Description("Gets the external edges of a mesh as a set of lines. Extraction is done by finding all unique edges in the mesh.")]
+        [Input("mesh", "The mesh to extract external edges from.")]
+        [Input("filterByTopology", "If true, edges with unique topology are returned. If false, edges with unique geometry is returned. Toggle only renders different result for meshes with duplicate nodes.")]
+        [Input("tolerance", "Tolerance to be used for identifying duplicate edges. Only used if filterByTopology is false.")]
+        [Output("edges", "The external edges of the mesh.")]
+        public static List<Line> ExternalEdges(this Mesh mesh, bool filterByTopology = false, double tolerance = Tolerance.Distance)
         {
             if (mesh == null)
                 return null;
@@ -110,23 +117,50 @@ namespace BH.Engine.Geometry
             if (mesh.Faces.Count < 1)
                 return null;
 
-            List<Line> edges = mesh.Faces.SelectMany(f => f.Edges(mesh)).ToList();
-
-            for (int i = edges.Count - 1; i > 0; i--)
+            if (filterByTopology)
             {
-                for (int n = i - 1; n >= 0; n--)
+                List<Tuple<int, int>> allEdgeTopologies = new List<Tuple<int, int>>();
+
+                //Creates tuples of indecies of edges of each face, ordering the index order so the lowest number is always first (to simplify grouping lower down)
+                foreach (Face face in mesh.Faces)
                 {
-                    if ((edges[i].Start == edges[n].Start & edges[i].End == edges[n].End) | // edge[i] == edge[n]
-                        (edges[i].Start == edges[n].End & edges[i].End == edges[n].Start))   // edge[i] == edge[n].Reverse()
+                    allEdgeTopologies.Add(new Tuple<int, int>(Math.Min(face.A, face.B), Math.Max(face.A, face.B)));
+                    allEdgeTopologies.Add(new Tuple<int, int>(Math.Min(face.B, face.C), Math.Max(face.B, face.C)));
+                    if (face.D == -1)
                     {
-                        edges.RemoveAt(i); // shared edge so remove both
-                        edges.RemoveAt(n);
-                        i--;
-                        break;
+                        allEdgeTopologies.Add(new Tuple<int, int>(Math.Min(face.C, face.A), Math.Max(face.C, face.A)));
+                    }
+                    else
+                    {
+                        allEdgeTopologies.Add(new Tuple<int, int>(Math.Min(face.C, face.D), Math.Max(face.C, face.D)));
+                        allEdgeTopologies.Add(new Tuple<int, int>(Math.Min(face.D, face.A), Math.Max(face.D, face.A)));
                     }
                 }
+
+                IEnumerable<Tuple<int, int>> unique = allEdgeTopologies.GroupBy(x => x).Where(x => x.Count() == 1).SelectMany(x => x);  //Get out instances that are uniqe
+
+                return unique.Select(x => new Line { Start = mesh.Vertices[x.Item1], End = mesh.Vertices[x.Item2] }).ToList(); //Generate lines based on the unique tuples
             }
-            return edges;
+            else
+            {
+                List<Line> edges = mesh.Faces.SelectMany(f => f.Edges(mesh)).ToList();
+
+                for (int i = edges.Count - 1; i > 0; i--)
+                {
+                    for (int n = i - 1; n >= 0; n--)
+                    {
+                        if ((edges[i].Start == edges[n].Start & edges[i].End == edges[n].End) | // edge[i] == edge[n]
+                            (edges[i].Start == edges[n].End & edges[i].End == edges[n].Start))   // edge[i] == edge[n].Reverse()
+                        {
+                            edges.RemoveAt(i); // shared edge so remove both
+                            edges.RemoveAt(n);
+                            i--;
+                            break;
+                        }
+                    }
+                }
+                return edges;
+            }
         }
 
 
