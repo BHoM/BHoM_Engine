@@ -58,7 +58,7 @@ namespace BH.Engine.Facade
             List<IFragment> glassUValues = panel.Construction.GetAllFragments(typeof(UValueGlassCentre));
             if (glassUValues.Count > 0)
             {
-                BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has Glass U-value assigned. Panels can only receive Continuous U-value");
+                BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has Glass U-value assigned. Panels can only receive Continuous U-value and/or Cavity U-value.");
                 return null;
             }
 
@@ -70,9 +70,14 @@ namespace BH.Engine.Facade
             }
 
             List<IFragment> contUValues = panel.Construction.GetAllFragments(typeof(UValueContinuous));
-            if (contUValues.Count <= 0)
+            List<IFragment> cavityUValues = panel.Construction.GetAllFragments(typeof(UValueCavity));
+            double contUValue = 0;
+            double cavityUValue = 0;
+            double panelUValue = 0;
+
+            if ((contUValues.Count <= 0) && (cavityUValues.Count <= 0))
             {
-                Base.Compute.RecordError($"Panel {panel.BHoM_Guid} does not have Continuous U-value assigned.");
+                Base.Compute.RecordError($"Panel {panel.BHoM_Guid} does not have Continuous U-value or Cavity U-value assigned.");
                 return null;
             }
             if (contUValues.Count > 1)
@@ -80,7 +85,27 @@ namespace BH.Engine.Facade
                 Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has more than one Continuous U-value assigned.");
                 return null;
             }
-            double contUValue = (contUValues[0] as UValueContinuous).UValue;
+            if (cavityUValues.Count > 1)
+            {
+                Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has more than one Cavity U-value assigned.");
+                return null;
+            }
+            if ((contUValues.Count == 1) && (cavityUValues.Count == 1))
+            {
+                contUValue = (contUValues[0] as UValueContinuous).UValue;
+                cavityUValue = (cavityUValues[0] as UValueCavity).UValue;
+                panelUValue = 1 / (1 / contUValue + 1 / cavityUValue);
+            }
+            if ((contUValues.Count == 1) && (cavityUValues.Count <= 0))
+            {
+                contUValue = (contUValues[0] as UValueContinuous).UValue;
+                panelUValue = contUValue;
+            }
+            if ((contUValues.Count <= 0) && (cavityUValues.Count == 1))
+            {
+                cavityUValue = (cavityUValues[0] as UValueCavity).UValue;
+                panelUValue = cavityUValue;
+            }
 
             List<FrameEdge> frameEdges = panel.ExternalEdges;
             List<double> frameUValues = new List<double>();
@@ -99,7 +124,6 @@ namespace BH.Engine.Facade
             {
                 BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has a calculated area of 0. Ensure the panel is valid with associated edges defining its geometry and try again.");
             }
-            double panelUValue = contUValue;
             double effectiveUValue = panelUValue;
 
             List<Opening> panelOpenings = panel.Openings;
