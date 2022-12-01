@@ -40,7 +40,7 @@ namespace BH.Engine.Matter
 
         [Description("Maps a set of model materials to a set of template materials by name and returns the found tempaltes, i.e. finds a material in the list of template materials that has the same name as the material in the model material and returns it. Returns null if nothing is found. The list order of the returned materials correspond to the list order of the input materials.")]
         [Input("modelMaterials", "The materials to find a matching template to.")]
-        [Input("tempalteMaterials", "The template materials to scan.")]
+        [Input("templateMaterials", "The template materials to scan.")]
         [Output("matchedMaterials", "The a list of template materials matched to the model materials by name. Order corresponds to the model materials. Method returns null for cases where no match is found.")]
         public static List<Material> MatchMaterials(this List<Material> modelMaterials, List<Material> templateMaterials)
         {
