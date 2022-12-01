@@ -81,7 +81,7 @@ namespace BH.Engine.Matter
                      "First atempts to match the name of the provided materials to the transdiciplinary material maps.\n" +
                      "If no name match is found, atempts to instead find a material with as many matching MaterialProperties (based on type and name) as possible.\n" +
                      "If a unique match is found based on one of the above matching methods, all Properties from the transdiciplinary material is applied to the material to be matched.")]
-        [Input("materialCompositions", "The MaterialCompositions to Modify. Materials int he MaterialComposition will be evaluated based on the name and properties.")]
+        [Input("materialComposition", "The MaterialCompositions to Modify. Materials int he MaterialComposition will be evaluated based on the name and properties.")]
         [Input("templateMaterials", "The template materials to match to and assign properties from onto the model materials. Should generally have unique names. Names of material as well as material properties will be used to map to the materials to be modified.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Input("uniquePerNamespace", "If true, the method is checking for similarity of MaterialProperties on the materials and found matching material map based on namespace. If false, this check is instead done on exact type.")]
