@@ -45,6 +45,7 @@ namespace BH.Engine.Environment
         [MultiOutput(1, "selfIntersectingSpaces", "Returns list of invalid spaces due to the perimeter curve self intersecting.")]
         [MultiOutput(2, "zeroPerimeterSpaces", "Returns list of invalid spaces due to perimeter length being zero.")]
         [MultiOutput(3, "notClosedSpaces", "Returns list of invalid spaces due to not closed perimeter.")]
+        [MultiOutput(4, "nullPerimeterSpaces", "Returns list of invalid spaces due to having a null perimeter.")]
         public static Output<List<Space>, List<Space>, List<Space>, List<Space>> IsValid(this List<Space> spaces, double intersectionTolerance = BH.oM.Geometry.Tolerance.Distance, double lengthTolerance = BH.oM.Geometry.Tolerance.Distance, double closedSpacesTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if(spaces == null)
@@ -57,10 +58,18 @@ namespace BH.Engine.Environment
             List<Space> selfIntersectingSpaces = new List<Space>();
             List<Space> zeroPerimeterSpaces = new List<Space>();
             List<Space> notClosedSpaces = new List<Space>();
+            List<Space> nullPerimeterSpaces = new List<Space>();
+
             foreach (Space space in spaces)
             {
                 if(space == null)
                     continue;
+
+                if(space.Perimeter == null)
+                {
+                    nullPerimeterSpaces.Add(space);
+                    continue; //Don't run the rest of the loop and risk it crashing on the other checks if the perimeter is null
+                }
                     
                 bool isvalid = true;
                 if (space.IsSelfIntersecting(intersectionTolerance))
