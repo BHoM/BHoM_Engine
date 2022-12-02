@@ -46,7 +46,7 @@ namespace BH.Engine.Environment
         [MultiOutput(2, "zeroPerimeterSpaces", "Returns list of invalid spaces due to perimeter length being zero.")]
         [MultiOutput(3, "notClosedSpaces", "Returns list of invalid spaces due to not closed perimeter.")]
         [MultiOutput(4, "nullPerimeterSpaces", "Returns list of invalid spaces due to having a null perimeter.")]
-        public static Output<List<Space>, List<Space>, List<Space>, List<Space>> IsValid(this List<Space> spaces, double intersectionTolerance = BH.oM.Geometry.Tolerance.Distance, double lengthTolerance = BH.oM.Geometry.Tolerance.Distance, double closedSpacesTolerance = BH.oM.Geometry.Tolerance.Distance)
+        public static Output<List<Space>, List<Space>, List<Space>, List<Space>, List<Space>> IsValid(this List<Space> spaces, double intersectionTolerance = BH.oM.Geometry.Tolerance.Distance, double lengthTolerance = BH.oM.Geometry.Tolerance.Distance, double closedSpacesTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if(spaces == null)
             {
@@ -97,7 +97,14 @@ namespace BH.Engine.Environment
                 }
             }
 
-            return new Output<List<Space>, List<Space>, List<Space>, List<Space>>{Item1 = validSpaces, Item2 = selfIntersectingSpaces, Item3 = notClosedSpaces, Item4 = zeroPerimeterSpaces};
+            return new Output<List<Space>, List<Space>, List<Space>, List<Space>, List<Space>>
+            {
+                Item1 = validSpaces, 
+                Item2 = selfIntersectingSpaces,
+                Item3 = zeroPerimeterSpaces,
+                Item4 = notClosedSpaces,
+                Item5 = nullPerimeterSpaces,
+            };
         }
     }
 }
