@@ -126,7 +126,7 @@ namespace BH.Engine.Geometry
             {
                 List<Tuple<int, int>> allEdgeTopologies = new List<Tuple<int, int>>();
 
-                //Creates tuples of indecies of edges of each face, ordering the index order so the lowest number is always first (to simplify grouping lower down)
+                //Creates tuples of indices of edges of each face, ordering the index order so the lowest number is always first (to simplify grouping lower down)
                 foreach (Face face in mesh.Faces)
                 {
                     allEdgeTopologies.Add(new Tuple<int, int>(Math.Min(face.A, face.B), Math.Max(face.A, face.B)));
