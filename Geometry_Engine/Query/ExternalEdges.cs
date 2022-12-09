@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using BH.oM.Data.Collections;
+using BH.Engine.Data;
 
 namespace BH.Engine.Geometry
 {
@@ -148,25 +150,23 @@ namespace BH.Engine.Geometry
             }
             else
             {
+                //Filter by geometry. Use domain tree clustering to find items in range of each other, and return unique instances
                 List<Line> edges = mesh.Faces.SelectMany(f => f.Edges(mesh)).ToList();
 
                 double sqTol = tolerance * tolerance;
 
-                for (int i = edges.Count - 1; i > 0; i--)
-                {
-                    for (int n = i - 1; n >= 0; n--)
-                    {
-                        if ((edges[i].Start.SquareDistance(edges[n].Start) < sqTol && edges[i].End.SquareDistance(edges[n].End) < sqTol) || // edge[i] == edge[n]
-                            (edges[i].Start.SquareDistance(edges[n].End) < sqTol && edges[i].End.SquareDistance(edges[n].Start) < sqTol))   // edge[i] == edge[n].Reverse()
-                        {
-                            edges.RemoveAt(i); // shared edge so remove both
-                            edges.RemoveAt(n);
-                            i--;
-                            break;
-                        }
-                    }
-                }
-                return edges;
+                //Function turning a line into a singluar box at mid point. The boxes are used as a first pass filtering, why this should be sufficient
+                Func<Line, DomainBox> toDomainBox = l => { Point mid = l.PointAtParameter(0.5); return Data.Create.DomainBox(new List<double[]> { new double[] { mid.X, mid.X }, new double[] { mid.Y, mid.Y }, new double[] { mid.Z, mid.Z } }); };
+                //Function for evaluating the boxes. Square distance between the boxes used (equal to square distance of midpoints of edges)
+                Func<DomainBox, DomainBox, bool> treeFunction = (a, b) => a.SquareDistance(b) < sqTol;
+                //Function evaluating the two lines against each other. Called as a second level filtering after the initial check based on midpoint is done.
+                Func<Line, Line, bool> itemFunction = (a, b) => (a.Start.SquareDistance(b.Start) < sqTol && a.End.SquareDistance(b.End) < sqTol) || // edge[i] == edge[n]
+                                                                (a.Start.SquareDistance(b.End) < sqTol && a.End.SquareDistance(b.Start) < sqTol);
+                //Cluster
+                List<List<Line>> clusteredItems = Data.Compute.DomainTreeClusters(edges, toDomainBox, treeFunction, itemFunction, 1);
+                //Return unique items (clusters that have a single item in them)
+                return clusteredItems.Where(x => x.Count == 1).SelectMany(x => x).ToList();
+
             }
         }
 
