@@ -120,7 +120,7 @@ namespace BH.Engine.Geometry
                 return null;
 
             if (mesh.Faces.Count < 1)
-                return null;
+                return new List<Line>();
 
             if (filterByTopology)
             {
