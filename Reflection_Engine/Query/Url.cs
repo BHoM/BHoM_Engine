@@ -23,6 +23,7 @@
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -34,6 +35,9 @@ namespace BH.Engine.Reflection
         /**** Interface Methods                         ****/
         /***************************************************/
 
+        [Description("Obtain the URL to the code of the given object. The URL returned will link directly to the source code for that object if it exists.")]
+        [Input("obj", "An object to obtain the URL for.")]
+        [Output("url", "The URL of the source code for the object. Null if no source code URL could be ascertained.")]
         public static string IUrl(this object obj)
         {
             if (obj == null)
@@ -59,6 +63,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Obtain the URL to the code of the given type. The URL returned will link directly to the source code for that type if it exists.")]
+        [Input("type", "The type to obtain the URL for.")]
+        [Output("url", "The URL of the source code for the type. Null if no source code URL could be ascertained.")]
         public static string Url(this Type type)
         {
             if (type == null)
@@ -68,15 +75,15 @@ namespace BH.Engine.Reflection
             if (ass == null)
                 return null;
 
-            AssemblyUrlAttribute att = ass.GetCustomAttribute<AssemblyUrlAttribute>();
+            AssemblyDescriptionAttribute att = ass.GetCustomAttribute<AssemblyDescriptionAttribute>();
             if (att == null)
                 return null;
 
-            string url = att.Url;
+            string url = att.Description;
             if (url == "")
                 return null;
 
-            List<string> path = new List<string>() { url, "blob/master/" };
+            List<string> path = new List<string>() { url, "blob/main/" };
             path.Add(ass.GetName().Name);
             path.AddRange(type.Namespace.Split('.').Skip(3));
             if (type.IsEnum)
@@ -91,6 +98,9 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Obtain the URL to the code of the given method. The URL returned will link directly to the source code for that method if it exists.")]
+        [Input("method", "The method to obtain the URL for.")]
+        [Output("url", "The URL of the source code for the method. Null if no source code URL could be ascertained.")]
         public static string Url(this MethodBase method)
         {
             if (method == null)
@@ -100,13 +110,13 @@ namespace BH.Engine.Reflection
             if (ass == null)
                 return null;
 
-            AssemblyUrlAttribute att = ass.GetCustomAttribute<AssemblyUrlAttribute>();
+            AssemblyDescriptionAttribute att = ass.GetCustomAttribute<AssemblyDescriptionAttribute>();
             if (att == null)
                 return null;
 
-            string url = att.Url;
+            string url = att.Description;
 
-            List<string> path = new List<string>() { url, "blob/master/" };
+            List<string> path = new List<string>() { url, "blob/main/" };
             path.Add(ass.GetName().Name);
             path.AddRange(method.DeclaringType.Namespace.Split('.').Skip(3));
             path.Add(method.DeclaringType.Name);

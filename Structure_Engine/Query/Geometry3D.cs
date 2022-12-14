@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
             {
                 CompositeGeometry compositeGeometry = new CompositeGeometry();
 
-                double thickness = panel.Property.IAverageThickness();
+                double thickness = panel.Property.IVolumePerArea();
                 Vector translateVect = new Vector() { Z = -thickness / 2 };
                 Vector extrudeVect = new Vector() { Z = thickness };
 

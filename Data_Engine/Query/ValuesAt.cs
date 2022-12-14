@@ -123,7 +123,14 @@ namespace BH.Engine.Data
             CustomObject obj = new CustomObject();
             foreach (DataColumn col in columns)
             {
-                obj.CustomData[col.ColumnName] = row[col];
+                if (col.ColumnName == "Name")
+                    obj.Name = row[col].ToString();
+                else if (col.ColumnName == "Tags")
+                    obj.Tags = row[col] as HashSet<string> ?? new HashSet<string>();
+                else if (col.ColumnName == "BHoM_Guid")
+                    obj.BHoM_Guid = (Guid)row[col];
+                else
+                    obj.CustomData[col.ColumnName] = row[col];
             }
             return obj;
         }

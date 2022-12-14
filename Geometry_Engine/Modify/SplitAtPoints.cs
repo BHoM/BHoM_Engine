@@ -27,6 +27,8 @@ using System.Linq;
 using System.Collections.Generic;
 using BH.oM.Base.Attributes;
 using BH.Engine.Base;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -36,6 +38,11 @@ namespace BH.Engine.Geometry
         /****          Split curve at points            ****/
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("arc", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<Arc> SplitAtPoints(this Arc arc, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (!points.Any())
@@ -43,41 +50,139 @@ namespace BH.Engine.Geometry
 
             List<Arc> result = new List<Arc>();
             List<Point> cPts = new List<Point>();
-            Vector normal = arc.Normal();
 
+            double sqTol = tolerance * tolerance;
+            Plane arcPlane = arc.FitPlane();
+            //Collect all points on the circle of the arc (points not on arc filtered out lower down)
+            //Doing this half manually (Not calling IsOnCurve) due to wanting the projected points anyway, and this is more efficient.
+            //Angles checked to be in domain while looping through the points further down the algorithm
             foreach (Point point in points)
             {
-                if (point.IsOnCurve(arc, tolerance))
-                    cPts.Add(point);
+                Point projPt = point.Project(arcPlane);
+                double projSqDist = projPt.SquareDistance(point);
+                if (projSqDist > sqTol)
+                    continue;   //Not in plane
+
+                double inPlaneDist = Math.Abs(projPt.Distance(arcPlane.Origin) - arc.Radius);
+                if (inPlaneDist > tolerance)
+                    continue;   //Not within tolerance distance in plane
+
+                if (projSqDist + inPlaneDist * inPlaneDist > sqTol) //Distance to the circle of the full arc (c^2=a^2+b^2 where a is out of plane distance and b is in plane distance) 
+                    continue;   //Not on circle
+
+                cPts.Add(projPt);   //Store projected point rather than original for more accurate angle calculation
             }
 
-            cPts.Add(arc.StartPoint());
-            cPts.Add(arc.EndPoint());
-            cPts = cPts.CullDuplicates(tolerance);
-            cPts = cPts.SortAlongCurve(arc, tolerance);
-
-            if (arc.EndAngle - 2 * Math.PI < tolerance && arc.EndAngle - 2 * Math.PI > -tolerance)
-                cPts.Add(arc.EndPoint());
-
-            if (cPts.Count > 2)
+            //If any points on the full circle corresponding to the arc
+            if (cPts.Count > 0)
             {
-                Double startAng = arc.StartAngle;
-                Double endAng = arc.EndAngle;
-                Double tmpAng = 0;
-                Arc tmpArc;
-
-                for (int i = 1; i < cPts.Count; i++)
+                if (arc.Radius * 2 < tolerance) //Angle tolerance calculation below fails if this is true, as it means computing ASin of a value larger than 1. Good check to make anyway, as a arc this small is a singularity within the tolerance.
                 {
-                    tmpArc = arc.DeepClone();
-
-                    tmpArc.StartAngle = startAng;
-                    tmpAng = (2 * Math.PI + (cPts[i - 1] - arc.Centre()).SignedAngle(cPts[i] - arc.Centre(), normal)) % (2 * Math.PI);
-                    endAng = startAng + tmpAng;
-                    tmpArc.EndAngle = endAng;
-                    result.Add(tmpArc);
-                    startAng = endAng;
+                    Base.Compute.RecordError("Arc has a radius smaller than half of the tolerance provided. All points on the arc deemed the same within tolerance. Unable to split arc at points.");
+                    return null;
                 }
 
+                //Allowable difference in angle for the points on the arc to be tolerance distance away from each other
+                double angleTolerance = 2 * Math.Asin(tolerance / 2 / arc.Radius); //This is the equivalent of straight line distance between two points rather than distance along the arc
+
+                if (Math.Abs(arc.Angle()) > Math.PI * 2 + angleTolerance)
+                {
+                    //Record warning for invalid overlapping arcs. The method could still provide some potentially usefull outputs, so can still let it run, but with warning given.
+                    Base.Compute.RecordWarning("Arc is overlapping itself (angle > PI*2). Points on the overlap will only split the arc once at points of overlap.");
+                }
+
+                //Arc currently only really valid if this start is smaller than end
+                //An arc with a StartAngle larger than EndAngle gives negative lengths and have issues in other methods.
+                //Handling currently invalid case in this method to atempt to future proof
+                bool startSmaller = arc.StartAngle < arc.EndAngle;
+
+                //Setup angle domain parameters
+                double minAngle, maxAngle;
+                if (startSmaller)
+                {
+                    minAngle = arc.StartAngle;
+                    maxAngle = arc.EndAngle;
+                }
+                else
+                {
+                    minAngle = arc.EndAngle;
+                    maxAngle = arc.StartAngle;
+                }
+
+                List<double> angles = new List<double>();
+                foreach (Point p in cPts)
+                {
+                    //Calculate angles in relation to the coordinate system X axis for the point (this is the meassure used by the Angle class)
+                    double angle = arc.CoordinateSystem.X.SignedAngle((p - arc.CoordinateSystem.Origin), arc.CoordinateSystem.Z);
+
+                    //Ensure angle is in the domain of the arc
+                    if (angle < minAngle)
+                    {
+                        do
+                        {
+                            if (minAngle - angle < angleTolerance)  //Within tolerance of start point.
+                            {
+                                angle = double.MaxValue;    //Set to max value to be caught by check in relation to max angle
+                                break;  //Break out the while loop
+                            }
+
+                            angle += 2 * Math.PI;   //As long as angle is smaller than the minimum (StartAngle) increase by full lap
+                        } while (angle < minAngle);
+
+                        if (angle < maxAngle && maxAngle - angle > angleTolerance)   //Inside the domain and not to close to end point
+                        {
+                            angles.Add(angle);  //Store angle
+                        }
+                    }
+                    else if (angle > maxAngle)
+                    {
+                        do
+                        {
+                            if (angle - maxAngle < angleTolerance)  //Within tolerance of end point
+                            {
+                                angle = double.MinValue;    //Set to min value to be caught by check in relation to min angle
+                                break;  //Break out the while loop
+                            }
+                            angle -= 2 * Math.PI;   //As long as angle is larger than the maximum (EndAngle) decrease by full lap
+                        } while (angle > maxAngle);
+
+                        if (angle > minAngle && angle - minAngle > angleTolerance)   //Inside the domain and not close to startpoint
+                        {
+                            angles.Add(angle);  //Store angle
+                        }
+                    }
+                    else if (angle - minAngle > angleTolerance && maxAngle - angle > angleTolerance)    //In the domain - check not to close to start/end points
+                    {
+                        angles.Add(angle);  //Store angle
+                    }
+                }
+
+                if (angles.Count == 0)  //No angles in range
+                    return new List<Arc> { arc.DeepClone() };
+
+                //Sorts the angle and remove duplicates within tolerance
+                //Both more efficient and accurate to handles this with the angles compared to removing duplicate input points
+                //Doing it this way ensures points on the curve are not within tolerance, rather than the input points, that could be
+                //Outside tolerance in relation to each other, but ending up on the same point on the arc
+                //The below does the equivalent of a DBScan (which is what the CullDuplicates for points relies on)
+                angles = angles.OrderedNonDuplicates(angleTolerance);
+
+                angles.Insert(0, minAngle);  //Insert minAngle (StartAngle) as first step
+                angles.Add(maxAngle);  //Add maxAngle (EndAngle) to the end
+
+                if (!startSmaller)  //As mentioned above, Arcs currently invalid if false, but handling here for completeness
+                    angles.Reverse();
+
+                for (int i = 1; i < angles.Count; i++)
+                {
+                    result.Add(new Arc
+                    {
+                        CoordinateSystem = arc.CoordinateSystem,
+                        Radius = arc.Radius,
+                        StartAngle = angles[i - 1],
+                        EndAngle = angles[i]
+                    });
+                }
             }
             else
                 result.Add(arc.DeepClone());
@@ -86,6 +191,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("circle", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<ICurve> SplitAtPoints(this Circle circle, List<Point> points, double tolerance = Tolerance.Distance)
         {
 
@@ -155,6 +265,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("line", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<Line> SplitAtPoints(this Line line, List<Point> points, double tolerance = Tolerance.Distance)
         {
             List<Line> result = new List<Line>();
@@ -184,121 +299,109 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static List<PolyCurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("curve", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
+        public static List<ICurve> SplitAtPoints(this PolyCurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
+            if (curve == null || points == null)
+                return null;
+
             if (points.Count == 0)
-                return new List<PolyCurve> { curve.DeepClone() };
+                return new List<ICurve> { curve.DeepClone() };
 
-            List<PolyCurve> result = new List<PolyCurve>();
-            List<ICurve> tmpResult = new List<ICurve>();
-            List<Point> subPoints = new List<Point>();
-            List<Point> onCurvePoints = new List<Point>();
+            List<ICurve> result = new List<ICurve>();
 
-            foreach (Point p in points)
+            List<ICurve> subParts = curve.ISubParts().ToList(); //Subparts of PolyCurve
+            List<Point> nonDuplicatePoints = points.CullDuplicates(tolerance);
+
+            PolyCurve prev = null;  //Polycurve to collect parts across segments
+            double sqTol = tolerance * tolerance;
+            for (int k = 0; k < subParts.Count; k++)
             {
-                if (p.IsOnCurve(curve, tolerance))
-                    onCurvePoints.Add(p);
-            }
+                ICurve crv = subParts[k];
 
-            onCurvePoints = onCurvePoints.CullDuplicates(tolerance);
+                List<ICurve> split = crv.ISplitAtPoints(nonDuplicatePoints, tolerance); //Split with all point. Methods called filters out points on the particular curve
 
-            if (onCurvePoints.Count == 0)
-                return new List<PolyCurve> { curve.DeepClone() };
-
-            onCurvePoints = onCurvePoints.SortAlongCurve(curve);
-
-            foreach (ICurve crv in curve.SubParts())
-            {
-                if (crv is Arc)
+                if (split.Count == 0)   //Should never happen
                 {
-                    foreach (Point point in onCurvePoints)
+                    Base.Compute.RecordWarning($"Unable to split a segment of type {crv.GetType()} in a Polycurve. Segment ignored in returned split curve.");
+                    continue;
+                }
+
+                //Check if split at start or end of current segment by checking if the start and/or end point of the first resp last segment is within tolerance of the split points.
+                Point stPt = split.First().IStartPoint();
+                Point enPt = split.Last().IEndPoint();
+                bool splitAtStart = nonDuplicatePoints.Any(x => x.SquareDistance(stPt) < sqTol);
+                bool splitAtEnd = nonDuplicatePoints.Any(x => x.SquareDistance(enPt) < sqTol);
+
+                for (int i = 0; i < split.Count; i++)
+                {
+                    if (i == 0 && splitAtStart) //If first split segment and split at start
                     {
-                        if (point.IIsOnCurve(crv, tolerance))
-                            subPoints.Add(point);
-                    }
-                    tmpResult.AddRange((crv as Arc).SplitAtPoints(subPoints));
-                    subPoints.Clear();
-                }
-                else if (crv is Line)
-                {
-                    foreach (Point point in onCurvePoints)
-                    {
-                        if (point.IIsOnCurve(crv, tolerance))
-                            subPoints.Add(point);
-                    }
-                    tmpResult.AddRange((crv as Line).SplitAtPoints(subPoints));
-                    subPoints.Clear();
-                }
-                else if (crv is Circle)
-                {
-                    List<PolyCurve> tResult = new List<PolyCurve>();
-                    foreach (Arc arc in (crv as Circle).SplitAtPoints(onCurvePoints, tolerance))
-                        tResult.Add(new PolyCurve { Curves = new List<ICurve> { arc } });
-                    result.AddRange(tResult);
-                }
-                else
-                {
-                    Base.Compute.RecordError($"SplitAtPoints is not implemented for PolyCurves consisting of ICurves of type: {crv.GetType().Name}.");
-                    return null;
-                }
-            }
-
-            int i = 0;
-            int j = 0;
-
-            if (curve.IStartPoint().IsEqual(onCurvePoints[0]))
-            {
-                onCurvePoints.Add(onCurvePoints[0]);
-                onCurvePoints.RemoveAt(0);
-            }
-
-            while (i <= onCurvePoints.Count)
-            {
-                List<ICurve> subResultList = new List<ICurve>();
-
-                while (j < tmpResult.Count)
-                {
-                    subResultList.Add(tmpResult[j]);
-                    if (i < onCurvePoints.Count)
-                    {
-                        if (tmpResult[j].IEndPoint().IsEqual(onCurvePoints[i]) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IStartPoint().IsEqual(onCurvePoints[i])))
+                        if (prev != null)   //Check if previous exist and if so, add it
                         {
-                            j++;
-                            break;
+                            if (prev.Curves.Count == 1)     //If prev is single segment curve
+                                result.Add(prev.Curves[0]); //Only add the segment rather than the wrapping PolyCurve
+                            else                            //Prev more than single segment
+                                result.Add(prev);           //Add prev to return list
                         }
-                        else if (tmpResult[j].IEndPoint().IsEqual(curve.EndPoint()) || (curve.IIsClosed(tolerance) && !curve.IIsClockwise(curve.INormal(), tolerance) && tmpResult[j].IEndPoint().IsEqual(curve.StartPoint())))
+
+                        prev = null;    //Prev handled -> set to null
+                    }
+
+                    if (i != split.Count - 1 || splitAtEnd)   //If not last split or if split at end. Only need special case for last segment if _not_ splitting at endpoint
+                    {
+                        if (prev != null)   //Prev set - only true if this is the first split and not splitting at start
                         {
-                            j++;
-                            break;
+                            prev.Curves.Add(split[i]);  //Add full split segment to prev
+                            result.Add(prev);   //Add prev to output list
+                            prev = null;    //Prev handled, set to null. If splitting at end, nothing to bring over
+                        }
+                        else    //Prev not set
+                        {
+                            result.Add(split[i]);   //Add full split segment to output list
                         }
                     }
-                    j++;
+                    else    //Last split and not splitting at end
+                    {
+                        if (prev != null)   //If prev is set - should only be true for single split segment not split at start
+                            prev.Curves.Add(split[i]);   //Add current split segment to prev
+                        else
+                            prev = new PolyCurve { Curves = new List<ICurve> { split[i] } }; //If prev is not set, set it with current split segment added
+                    }
                 }
 
-                if (subResultList.Count > 0)
-                    result.Add(new PolyCurve { Curves = subResultList.ToList() });
-
-                i++;
             }
 
-            if (curve.IsClosed(tolerance) && !(curve.SubParts()[0] is Circle))
-                if (!curve.StartPoint().IsEqual(onCurvePoints[onCurvePoints.Count - 1]))
+            if (prev != null)   //If prev is set
+            {
+                if (curve.StartPoint().SquareDistance(curve.EndPoint()) < sqTol && result.Count != 0) //If curve is closed (Not using curve.IsClosed() here due to it checking if closed and not disjointed. Here we only want to check if endpoints match for the full curve. This way disjointed curves will work as well)
                 {
-                    List<ICurve> subResultList = new List<ICurve>();
-                    foreach (ICurve subCrv in result[result.Count - 1].ISubParts())
-                        subResultList.Add(subCrv);
-                    foreach (ICurve subCrv in result[0].ISubParts())
-                        subResultList.Add(subCrv);
-                    result.RemoveAt(0);
-                    result.RemoveAt(result.Count - 1);
-                    result.Add(new PolyCurve { Curves = subResultList.ToList() });
+                    prev.Curves.AddRange(result[0].ISubParts());    //Apply all of the parts of the first return to prev
+                    result[0] = prev;                               //Replace first part with prev
                 }
+                else //If not, simply add the prev to the return list
+                {
+                    if (prev.Curves.Count == 1)     //If prev is single segment curve
+                        result.Add(prev.Curves[0]); //Only add the segment rather than the wrapping PolyCurve
+                    else                            //Prev more than single segment
+                        result.Add(prev);           //Add prev to return list
+                }
+            }
 
             return result;
         }
 
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("curve", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<Polyline> SplitAtPoints(this Polyline curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (points.Count == 0)
@@ -365,6 +468,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Splits the curve at the provided Points and returns a list of curves corresponding to the segments. Points with a distance to the curve larger than the tolerance will be ignored.")]
+        [Input("curve", "The curve to split.")]
+        [Input("points", "The set of points to split the curve at. Method will ignore points that have a distance to the curve that is larger than the provided tolerance.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("split", "The segments of the curve corresponding to the original curve split at the position of the provided points.")]
         public static List<ICurve> ISplitAtPoints(this ICurve curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             List<ICurve> result = new List<ICurve>();
@@ -385,6 +493,33 @@ namespace BH.Engine.Geometry
         {
             Base.Compute.RecordError($"SplitAtPoints is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Orders the incoming values and and removes duplicates by clustering similar to a DBScan clustering and then returning the average of each group.")]
+        [Input("values", "Values to order and cull duplicates from.")]
+        [Input("tolerance", "Allowable tolerance between two values for them to be deemed the same.")]
+        [Output("values", "A set of ordered, non-duplicate values corresponding to the input values.")]
+        private static List<double> OrderedNonDuplicates(this List<double> values, double tolerance)
+        {
+            values = values.OrderBy(x => x).ToList(); //Sort the values
+
+            List<List<double>> groups = new List<List<double>>() { new List<double> { values[0] } };    //Populate group list, and add first (smallest) value
+            int groupIndex = 0;
+            for (int i = 1; i < values.Count; i++)  //Loop through all values and check if within tolerance from the last added.
+            {
+                if (values[i] - groups[groupIndex].Last() < tolerance)    //Angles are sorted, so only need to compare to the one last added
+                    groups[groupIndex].Add(values[i]);  //Within tolerance -> add to group
+                else
+                {
+                    groups.Add(new List<double>() { values[i] });   //Outside tolerance -> new group
+                    groupIndex++;
+                }
+            }
+            return groups.Select(x => x.Average()).ToList();    //Compute and return the average of each group
         }
 
         /***************************************************/

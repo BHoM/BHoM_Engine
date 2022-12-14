@@ -50,6 +50,8 @@ namespace BH.Engine.Versioning
                 return m_UpgraderVersions;
 
             string upgraderFolder = Path.Combine(Base.Query.BHoMFolder(), "..", "Upgrades");
+            if (!Directory.Exists(upgraderFolder))
+                return new List<string>();
 
             m_UpgraderVersions = Directory.GetDirectories(upgraderFolder, "BHoMUpgrader*", SearchOption.TopDirectoryOnly).Select(folder =>
             {

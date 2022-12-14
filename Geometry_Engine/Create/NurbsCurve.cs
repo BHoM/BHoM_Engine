@@ -25,6 +25,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -34,6 +35,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates an NurbsCurve based on its core properties.")]
+        [InputFromProperty("controlPoints")]
+        [InputFromProperty("weights")]
+        [InputFromProperty("knots")]
+        [Output("curve", "The created NurbsCurve.")]
         public static NurbsCurve NurbsCurve(IEnumerable<Point> controlPoints, IEnumerable<double> weights, IEnumerable<double> knots)
         {
             return new NurbsCurve { ControlPoints = controlPoints.ToList(), Knots = knots.ToList(), Weights = weights.ToList() };
@@ -45,6 +51,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [NotImplemented]
+        [Description("Not yet implemented method for generating random nurbs curve.")]
         public static NurbsCurve RandomNurbsCurve(Random rnd, BoundingBox box = null, int minNbCPs = 5, int maxNbCPs = 20)
         {
             throw new NotImplementedException();

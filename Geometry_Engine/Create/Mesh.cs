@@ -24,6 +24,9 @@ using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +36,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a Mesh based on a collection of Points and Faces.")]
+        [InputFromProperty("vertices")]
+        [InputFromProperty("faces")]
+        [Output("mesh", "The created Mesh.")]
         public static Mesh Mesh(IEnumerable<Point> vertices, IEnumerable<Face> faces)
         {
             return new Mesh
@@ -47,16 +54,28 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random Mesh based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resulting geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Input("minNbCPs", "Minimum number of vertices in the random Mesh.")]
+        [Input("maxNbCPs", "Maximum number of vertices in the random Mesh.")]
+        [Output("mesh", "The generated random Mesh.")]
         public static Mesh RandomMesh(int seed = -1, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextRandomSeed();
             Random rnd = new Random(seed);
             return RandomMesh(rnd, box, minNbCPs, maxNbCPs);
         }
 
         /***************************************************/
 
+        [Description("Creates a random Mesh using the provided Random class. If Box is provided, the resulting geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Input("minNbCPs", "Minimum number of vertices in the random Mesh.")]
+        [Input("maxNbCPs", "Maximum number of vertices in the random Mesh.")]
+        [Output("mesh", "The generated random Mesh.")]
         public static Mesh RandomMesh(Random rnd, BoundingBox box = null, int minNbCPs = 4, int maxNbCPs = 20)
         {
             if (box == null)

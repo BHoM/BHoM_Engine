@@ -23,7 +23,9 @@
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -52,6 +54,62 @@ namespace BH.Engine.Geometry
                     face.A, face.B, face.C
                 };
             }
+        }
+
+        /***************************************************/
+
+        [Description("Returns all the unique of the polyline if it is closed. This means that the last control point will be omitted for a closed Polyline. Undefined if the curve is open.")]
+        [Input("pLine", "The Polyline to extract vertices from.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("vertices", "Vertices of the Polyline.")]
+        public static List<Point> Vertices(this Polyline pLine, double tolerance = Tolerance.Distance)
+        {
+            if (pLine == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot get vertices from a null curve.");
+                return new List<Point>();
+            }
+            if (!pLine.IsClosed(tolerance))
+            {
+                Base.Compute.RecordError("Input curve is not closed. Verticies not defined.");
+                return new List<Point>();
+            }
+
+            return pLine.ControlPoints.GetRange(0, pLine.ControlPoints.Count - 1);
+        }
+
+        /***************************************************/
+
+        [Description("Returns the Vertices of the Polygon.")]
+        [Input("pGon", "The Polygon to extract the Vertices from.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("vertices", "Vertices of the Polyline.")]
+        public static List<Point> Vertices(this Polygon pGon, double tolerance = Tolerance.Distance)
+        {
+            if (pGon == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot get vertices from a null curve.");
+                return new List<Point>();
+            }
+            return pGon.Vertices.ToList();
+        }
+
+        /***************************************************/
+        /**** Public Methods - Interface                ****/
+        /***************************************************/
+
+        [Description("Returns the Vertices of the IPolyline if it is closed. Undefined for open IPolylines.")]
+        [Input("pline", "The IPolyline to extract the Vertices from.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("vertices", "Vertices of the IPolyline.")]
+        public static List<Point> IVertices(this IPolyline pline, double tolerance = Tolerance.Distance)
+        {
+            if (pline == null)
+            {
+                Engine.Base.Compute.RecordError("Cannot get vertices from a null curve.");
+                return new List<Point>();
+            }
+            return Vertices(pline as dynamic, tolerance);
         }
 
         /***************************************************/

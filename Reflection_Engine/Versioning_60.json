@@ -1,0 +1,5 @@
+﻿{
+  "MessageForDeleted": {
+    "BH.Engine.Reflection.Compute.SplitByIndices(System.String, System.Collections.Generic.List<System.Int32>)": "This method was assisting in the unqualified name query method. Usage of this method shows this method has not been used outside of the calling method, and so has been made private to avoid UI clutter. If this method is required again, please reach out to the development team."
+  }
+}

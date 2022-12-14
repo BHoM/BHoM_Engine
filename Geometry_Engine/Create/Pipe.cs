@@ -23,6 +23,9 @@
 using BH.oM.Geometry;
 using System;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -32,6 +35,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates an Pipe based on its core properties.")]
+        [InputFromProperty("centreline")]
+        [InputFromProperty("radius")]
+        [InputFromProperty("capped")]
+        [Output("pipe", "The created Pipe.")]
         public static Pipe Pipe(ICurve centreline, double radius, bool capped = true)
         {
             return new Pipe
@@ -47,16 +55,24 @@ namespace BH.Engine.Geometry
         /**** Random Geometry                           ****/
         /***************************************************/
 
+        [Description("Creates a random Pipe based on a seed. If no seed is provided, a random one will be generated. If Box is provided, the resulting geometry will be contained within the box.")]
+        [Input("seed", "Input seed for random generation. If -1 is provided, a random seed will be generated.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Output("pipe", "The generated random Pipe.")]
         public static Pipe RandomPipe(int seed = -1, BoundingBox box = null)
         {
             if (seed == -1)
-                seed = m_Random.Next();
+                seed = NextRandomSeed();
             Random rnd = new Random(seed);
             return RandomPipe(rnd, box);
         }
 
         /***************************************************/
 
+        [Description("Creates a random Pipe using the provided Random class. If Box is provided, the resulting geometry will be contained within the box.")]
+        [Input("rnd", "Random object to be used to generate the random geometry.")]
+        [Input("box", "Optional containing box. The geometry created will be limited to the bounding box. If no box is provided, values between 0 and 1 will be used when generating properties for the geometry.")]
+        [Output("pipe", "The generated random Pipe.")]
         public static Pipe RandomPipe(Random rnd, BoundingBox box = null)
         {
             if (box == null)

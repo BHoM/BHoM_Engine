@@ -110,6 +110,8 @@ namespace BH.Engine.Environment
                 List<Panel> culledPanels = cullDuplicates.CullDuplicates();
                 foreach (Panel p in culledPanels)
                     returnPanels.Add(p);
+
+                returnPanels = returnPanels.CullDuplicates();
             }
             else
                 returnPanels.AddRange(fixedPanels);

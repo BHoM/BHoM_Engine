@@ -42,9 +42,10 @@ namespace BH.Engine.Graphics
         [Input("colours", "A list of colours for the gradient.")]
         [Input("positions", "A corresponding list of positions for the coloured markers between 0 and 1.")]
         [Output("gradient", "A colour Gradient.")]
-        public static Gradient Gradient(IEnumerable<Color> colors, IEnumerable<decimal> positions)
+        [PreviousInputNames("colours", "colors")]
+        public static Gradient Gradient(IEnumerable<Color> colours, IEnumerable<decimal> positions)
         {
-            if (colors.Count() != positions.Count())
+            if (colours.Count() != positions.Count())
             {
                 Engine.Base.Compute.RecordWarning("Different number and colours and positions provided. Gradient created will only contain information matching the shorter of the lists. For all input data to be used please provide the same number of colours and positions");
             }
@@ -55,7 +56,7 @@ namespace BH.Engine.Graphics
             return new Gradient()
             {
                 Markers = new SortedDictionary<decimal, Color>(
-                    colors.Zip(positions, (c, p) => new { c, p })
+                    colours.Zip(positions, (c, p) => new { c, p })
                     .ToDictionary(x => x.p, x => x.c)
                     )
             };
@@ -63,8 +64,8 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("Creates a default colour gradient with colour values corresponding to values between 0 and 1")]
-        [Output("gradient", "Default colour Gradient")]
+        [Description("Creates a default colour gradient with colour values corresponding to values between 0 and 1.")]
+        [Output("gradient", "Default colour Gradient.")]
         public static Gradient Gradient()
         {
             List<Color> colors = new List<Color>();
@@ -72,10 +73,9 @@ namespace BH.Engine.Graphics
             double inc = 1.0 / m_DefaultOrdinal.Length;
             for(int i = 0;i< m_DefaultOrdinal.Length; i++)
             {
-                colors.Add(System.Drawing.ColorTranslator.FromHtml(m_DefaultOrdinal[i]));
+                colors.Add(m_DefaultOrdinal[i]);
                 positions.Add(System.Convert.ToDecimal(inc * i));
             }
-
             return Gradient(colors, positions);
 
         }
@@ -84,7 +84,7 @@ namespace BH.Engine.Graphics
         /****           Private Fields                  ****/
         /***************************************************/
         //data viz hex colour sets
-        private static string[] m_DefaultOrdinal = new string[] { "#E6484D", "#8db9ca", "#EE7837", "#FCD16D", "#AFC1A2", "#b62b77", "#8f72b0", "#5d822d", "#585253", "#24135f", "#6d104e", "#006da8", "#f0ac1b", "#1c3660", "#bc204b", "#d06a13" };
+        private static Color[] m_DefaultOrdinal = new Color[] { Color.FromArgb(230,72,77), Color.FromArgb(141,185,202), Color.FromArgb(238,120,55), Color.FromArgb(252,209,109), Color.FromArgb(175,193,162), Color.FromArgb(182,43,119), Color.FromArgb(143,114,176), Color.FromArgb(93,130,45), Color.FromArgb(88,82,83), Color.FromArgb(36,19,95), Color.FromArgb(109,16,78), Color.FromArgb(0,109,168), Color.FromArgb(240,172,27), Color.FromArgb(28,54,96), Color.FromArgb(188,32,75), Color.FromArgb(208,106,19) };
       
     }
 }

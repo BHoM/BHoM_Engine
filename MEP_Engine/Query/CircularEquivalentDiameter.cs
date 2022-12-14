@@ -59,8 +59,8 @@ namespace BH.Engine.MEP
                 return - 1;
             }
 
-            double a = 1000 * (box.Height - 2 * box.Thickness);
-            double b = 1000 * (box.Width - 2 * box.Thickness);
+            double a = 1000 * box.Height;
+            double b = 1000 * box.Width;
             return (1.30 * Math.Pow(a * b, 0.625) / Math.Pow(a + b, 0.250)) / 1000;
         }
 

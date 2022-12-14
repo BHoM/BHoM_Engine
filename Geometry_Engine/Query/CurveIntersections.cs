@@ -24,6 +24,9 @@ using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Base.Attributes;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +36,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Arc curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
             Circle circle1 = new Circle { Centre = curve1.CoordinateSystem.Origin, Normal = curve1.CoordinateSystem.Z, Radius = curve1.Radius };
@@ -56,6 +64,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Arc curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             Circle circle1 = new Circle { Centre = curve1.CoordinateSystem.Origin, Normal = curve1.CoordinateSystem.Z, Radius = curve1.Radius };
@@ -76,6 +89,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Circle curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
             return curve2.CurveIntersections(curve1, tolerance);
@@ -83,6 +101,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Circle curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             List<Point> result = new List<Point>();
@@ -146,6 +169,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Line curve1, Arc curve2, double tolerance = Tolerance.Distance)
         {
             return curve2.LineIntersections(curve1, false, tolerance);
@@ -153,6 +181,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Arc curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.LineIntersections(curve2, false, tolerance);
@@ -160,6 +193,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Circle curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.LineIntersections(curve2, false, tolerance);
@@ -167,6 +205,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Line curve1, Circle curve2, double tolerance = Tolerance.Distance)
         {
             return curve2.LineIntersections(curve1, false, tolerance);
@@ -174,6 +217,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this Line curve1, Line curve2, double tolerance = Tolerance.Distance)
         {
             return curve1.LineIntersections(curve2, false, tolerance);
@@ -181,14 +229,27 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> CurveIntersections(this PolyCurve curve1, PolyCurve curve2, double tolerance = Tolerance.Distance)
         {
             List<Point> result = new List<Point>();
-            foreach (ICurve c1 in curve1.SubParts())
+            List<ICurve> subCurves1 = curve1.ISubParts().ToList();
+            List<ICurve> subCurves2 = curve2.ISubParts().ToList();
+            List<BoundingBox> boxes1 = subCurves1.Select(x => x.IBounds()).ToList();
+            List<BoundingBox> boxes2 = subCurves2.Select(x => x.IBounds()).ToList();
+
+            for (int i = 0; i < subCurves1.Count; i++)
             {
-                foreach (ICurve c2 in curve2.SubParts())
+                for (int j = 0; j < subCurves2.Count; j++)
                 {
-                    result.AddRange(CurveIntersections(c1 as dynamic, c2 as dynamic, tolerance));
+                    if (boxes1[i].IsInRange(boxes2[j], tolerance))
+                    {
+                        result.AddRange(CurveIntersections(subCurves1[i] as dynamic, subCurves2[j] as dynamic, tolerance));
+                    }
                 }
             }
             return result.CullDuplicates(tolerance);
@@ -198,14 +259,27 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Computes and returns any intersection points of the two provided curves.")]
+        [Input("curve1", "The first curve to intersect.")]
+        [Input("curve2", "The second curve to intersect.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("intersections", "All points corresponding to the intersection between the two provided curves.")]
         public static List<Point> ICurveIntersections(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
             List<Point> result = new List<Point>();
-            foreach (ICurve c1 in curve1.ISubParts())
+            List<ICurve> subCurves1 = curve1.ISubParts().ToList();
+            List<ICurve> subCurves2 = curve2.ISubParts().ToList();
+            List<BoundingBox> boxes1 = subCurves1.Select(x => x.IBounds()).ToList();
+            List<BoundingBox> boxes2 = subCurves2.Select(x => x.IBounds()).ToList();
+
+            for (int i = 0; i < subCurves1.Count; i++)
             {
-                foreach (ICurve c2 in curve2.ISubParts())
+                for (int j = 0; j < subCurves2.Count; j++)
                 {
-                    result.AddRange(CurveIntersections(c1 as dynamic, c2 as dynamic, tolerance));
+                    if (boxes1[i].IsInRange(boxes2[j], tolerance))
+                    {
+                        result.AddRange(CurveIntersections(subCurves1[i] as dynamic, subCurves2[j] as dynamic, tolerance));
+                    }
                 }
             }
             return result.CullDuplicates(tolerance);

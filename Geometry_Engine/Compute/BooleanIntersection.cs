@@ -26,6 +26,8 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -35,6 +37,10 @@ namespace BH.Engine.Geometry
         /****      public Methods - Bounding Boxes      ****/
         /***************************************************/
 
+        [Description("Creates and returns the boolean intersection of all provided bounding boxes, which is a new Bounding box that is the overlap of all of the provided boxes.")]
+        [Input("boxes", "Collection of bounding boxes to compute the intersection of.")]
+        [Input("tolerance", "Tolerance to be used to check if the overlap is within acceptable range.", typeof(Length))]
+        [Output("intersection", "The bounding box that is the intersection of all of the provided boxes.")]
         public static BoundingBox BooleanIntersection(this List<BoundingBox> boxes, double tolerance = Tolerance.Distance)
         {
             double minX = double.MinValue;
@@ -59,12 +65,16 @@ namespace BH.Engine.Geometry
 
             return new BoundingBox { Min = new Point { X = minX, Y = minY, Z = minZ }, Max = new Point { X = maxX, Y = maxY, Z = maxZ } };
         }
-        
 
         /***************************************************/
         /****          public Methods - Lines           ****/
         /***************************************************/
 
+        [Description("Computes the boolean intersection of two lines, e.g. the overlap of the lines and returns a new line matching this overlap. If the curves are not overlapping null will be returned.")]
+        [Input("line", "First line to intersect.")]
+        [Input("refLine", "Second line ot intersect.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("intersection", "The line corresponding to the overlap of the two provided lines or null if no overlap could be found.")]
         public static Line BooleanIntersection(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
             if (line == null || line.Length() <= tolerance || refLine.Length() <= tolerance)
@@ -94,6 +104,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes the boolean intersection of a line and a collection of other lines, e.g. all overlaps of the first line and the reference lines and returns a new collection of lines matching the overlap.")]
+        [Input("line", "First line to intersect.")]
+        [Input("refLines", "A collection of reference lines to intersect with the first line.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("intersection", "The collection of lines corresponding to the overlaps of the first line and any of the reference lines.")]
         public static List<Line> BooleanIntersection(this Line line, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
             List<Line> result = new List<Line>();
@@ -112,6 +127,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes the boolean intersection of a collection of lines, e.g. the overlap of all the provided lines and returns this overlap as a new line.")]
+        [Input("lines", "The collection of lines to intersect.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("intersection", "The line corresponding to the overlap all of the provided lines.")]
         public static Line BooleanIntersection(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             if (lines[0].Length() <= tolerance)
@@ -131,6 +150,12 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
+        [Description("Computes the boolean intersection of two closed coplanar polyline regions, e.g. the overlap(s) of the regions and returns collection of Polylines matching the overlap(s).")]
+        [Input("region", "First region to intersect.")]
+        [Input("refRegion", "Second region ot intersect.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Input("angleTolerance", "Angle tolerance to be used in the method.", typeof(Length))]
+        [Output("intersection", "The Polyline region(s) corresponding to the overlap(s) of the two provided regions.")]
         public static List<Polyline> BooleanIntersection(this Polyline region, Polyline refRegion, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (!region.IsClosed(tolerance) || !refRegion.IsClosed(tolerance))
@@ -197,7 +222,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<Polyline> result = Join(tmpResult, tolerance);
+            List<Polyline> result = Join(tmpResult, tolerance).Select(x => x.Close(tolerance)).ToList();
 
             int res = 0;
             while (res < result.Count)
@@ -213,6 +238,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes the boolean intersection of a collection of Polyline regions, e.g. the overlap(s) of all the provided regions and returns collection of Polylines matching the overlap(s).")]
+        [Input("regions", "The collection of Polyline regions to intersect.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("intersection", "The Polyline region(s) corresponding to the overlap(s) of all of the provided regions.")]
         public static List<Polyline> BooleanIntersection(this List<Polyline> regions, double tolerance = Tolerance.Distance)
         {
             if (regions.Count < 2)
@@ -239,6 +268,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes the boolean intersection of two closed coplanar curve regions, e.g. the overlap(s) of the regions and returns collection of Polycurves matching the overlap(s).")]
+        [Input("region", "First region to intersect.")]
+        [Input("refRegion", "Second region ot intersect.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("intersection", "The Polycurve region(s) corresponding to the overlap(s) of the two provided regions.")]
         public static List<PolyCurve> BooleanIntersection(this ICurve region, ICurve refRegion, double tolerance = Tolerance.Distance)
         {
             if (region is NurbsCurve || region is Ellipse || refRegion is NurbsCurve || refRegion is Ellipse)
@@ -321,7 +355,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<PolyCurve> result = IJoin(tmpResult, tolerance).ToList();
+            List<PolyCurve> result = IJoin(tmpResult, tolerance).Select(x => x.Close(tolerance)).ToList();
 
             int res = 0;
             while (res < result.Count)
@@ -338,6 +372,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes the boolean intersection of a collection of curve regions, e.g. the overlap(s) of all the provided regions and returns collection of PolyCurve regions matching the overlap(s).")]
+        [Input("regions", "The collection of Curve regions to intersect.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("intersection", "The PolyCurve region(s) corresponding to the overlap(s) of all of the provided regions.")]
         public static List<PolyCurve> BooleanIntersection(this IEnumerable<ICurve> regions, double tolerance = Tolerance.Distance)
         {
             List<ICurve> regionsList = regions.ToList();
@@ -366,9 +404,7 @@ namespace BH.Engine.Geometry
             result.Add(regionListPolyCurve[0]);
             for (int i = 1; i < regionListPolyCurve.Count; i++)
             {
-                List<PolyCurve> newResult = new List<PolyCurve>();
-                result.ForEach(r => newResult.AddRange(r.BooleanIntersection((ICurve)regionListPolyCurve[i], tolerance)));
-                result = newResult;
+                result = result.SelectMany(x => x.BooleanIntersection(regionListPolyCurve[i], tolerance)).ToList();
             }
 
             return result;
@@ -378,19 +414,22 @@ namespace BH.Engine.Geometry
         /***          Private methods                    ***/
         /***************************************************/
 
-        private static Boolean IsSimilarSegment(this ICurve curve, ICurve refCurve, double tolerance = Tolerance.Distance)
+        [Description("Checks if two segments are similar by comparing the start and end points (allowing for reversed order, i.e. start against end) as well as the mid points.")]
+        private static bool IsSimilarSegment(this ICurve curve, ICurve refCurve, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;
             Point sp = curve.IStartPoint();
             Point rsp = refCurve.IStartPoint();
-            Point mp = curve.IPointAtParameter(0.5);
-            Point rmp = refCurve.IPointAtParameter(0.5);
             Point ep = curve.IEndPoint();
             Point rep = refCurve.IEndPoint();
-
-            return mp.SquareDistance(rmp) <= sqTol && 
-                   ((sp.SquareDistance(rsp) <= sqTol && ep.SquareDistance(rep) <= sqTol) ||
-                   (sp.SquareDistance(rep) <= sqTol && ep.SquareDistance(rsp) <= sqTol));
+            if ((sp.SquareDistance(rsp) <= sqTol && ep.SquareDistance(rep) <= sqTol) ||
+                   (sp.SquareDistance(rep) <= sqTol && ep.SquareDistance(rsp) <= sqTol))
+            {
+                Point mp = curve.IPointAtParameter(0.5);
+                Point rmp = refCurve.IPointAtParameter(0.5);
+                return mp.SquareDistance(rmp) <= sqTol;
+            }
+            return false;
         }
 
         /***************************************************/      

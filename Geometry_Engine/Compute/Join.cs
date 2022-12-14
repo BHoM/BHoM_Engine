@@ -24,6 +24,9 @@ using BH.oM.Geometry;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +36,10 @@ namespace BH.Engine.Geometry
         /****                Join curves                ****/
         /***************************************************/
 
+        [Description("Joins a collection of PolyCurves into one or more continous PolyCurves. Input PolyCurves are split into segmenets before joining why discontinuous PolyCurves will be split into continuous segments. Method atempts to align tangents of subsequent joined segments which means some segments of the input PolyCurves might be flipped in the returned joined PolyCurves.")]
+        [Input("curves", "The PolyCurves to join.")]
+        [Input("tolerance", "Distance tolerance to be used to check proximity of start and endpoints of curves.", typeof(Length))]
+        [Output("polyCurves", "The joined continous PolyCurves.")]
         public static List<PolyCurve> Join(this List<PolyCurve> curves, double tolerance = Tolerance.Distance)
         {
 
@@ -88,6 +95,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Joins a collection of Lines into one or more continous Polylines. Method atempts to align tangents of subsequent joined segments which means some input Lines might be flipped in the returned joined Polylines.")]
+        [Input("lines", "The Lines to join.")]
+        [Input("tolerance", "Distance tolerance to be used to check proximity of start and endpoints of curves.", typeof(Length))]
+        [Output("pLines", "The joined continous Polyline.")]
         public static List<Polyline> Join(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
             List<Polyline> sections = lines.Select(l => new Polyline { ControlPoints = l.ControlPoints() }).ToList();
@@ -96,6 +107,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Joins a collection of Polylines into one or more continous Polylines. Method atempts to align tangents of subsequent joined segments which means some input Polylines might be flipped in the returned joined Polylines.")]
+        [Input("curves", "The Polyline to join.")]
+        [Input("tolerance", "Distance tolerance to be used to check proximity of start and endpoints of curves.", typeof(Length))]
+        [Output("pLines", "The joined continous Polyline.")]
         public static List<Polyline> Join(this List<Polyline> curves, double tolerance = Tolerance.Distance)
         {
             List<Polyline> sections = curves.Select(l => new Polyline { ControlPoints = new List<Point>(l.ControlPoints) }).ToList();
@@ -146,6 +161,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Joins a collection of Curve into one or more PolyCurve. Method atempts to align tangents of subsequent joined segments which means some input Curves might be flipped in the returned joined PolyCurve.")]
+        [Input("curves", "The Curves to join.")]
+        [Input("tolerance", "Distance tolerance to be used to check proximity of start and endpoints of curves.", typeof(Length))]
+        [Output("polyCurves", "The joined PolyCurve.")]
         public static List<PolyCurve> IJoin(this List<ICurve> curves, double tolerance = Tolerance.Distance)
         {
             if (curves == null)
@@ -202,6 +221,52 @@ namespace BH.Engine.Geometry
                 counter++;
             }
             return sections;
+        }
+
+        /***************************************************/
+        /****                Join meshes                ****/
+        /***************************************************/
+
+        [Description("Joins a list of Meshes into a single Mesh. Disjointed Meshes are allowed to be joined into one mesh with disjoint topology.")]
+        [Input("meshes", "The meshes to join.")]
+        [Input("mergeVertices", "If true, duplicate vertices will be merged. If false, duplicate vertices will be kept.")]
+        [Input("tolerance", "Only used if mergeVertices is true. The maximum allowable distance between two vertices for them to be deemed the same vertex.", typeof(Length))]
+        [Output("mesh", "The joined meshes as a single mesh.")]
+        public static Mesh Join(this List<Mesh> meshes, bool mergeVertices = true, double tolerance = Tolerance.Distance)
+        {
+            if (meshes == null || meshes.Count == 0)   //No meshes provided, return null
+                return null;
+
+            Mesh returnMesh = new Mesh() //Set to copy of first mesh as starting point
+            {
+                Vertices = meshes[0].Vertices.ToList(),
+                Faces = meshes[0].Faces.ToList()
+            };
+
+            for (int i = 1; i < meshes.Count; i++)  //Add on the rest
+            {
+                Mesh mesh = meshes[i];
+                int vertexCount = returnMesh.Vertices.Count;
+
+                returnMesh.Vertices.AddRange(mesh.Vertices);
+                foreach (Face face in mesh.Faces)
+                {
+                    returnMesh.Faces.Add(new Face
+                    {
+                        A = face.A + vertexCount,
+                        B = face.B + vertexCount,
+                        C = face.C + vertexCount,
+                        D = face.D == -1 ? -1 : face.D + vertexCount,
+                    });
+                }
+            }
+
+            if (mergeVertices)
+            {
+                returnMesh = returnMesh.MergeVertices(tolerance);
+            }
+
+            return returnMesh;
         }
 
         /***************************************************/

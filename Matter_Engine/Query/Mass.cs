@@ -36,19 +36,28 @@ namespace BH.Engine.Matter
         /****            IElement1D            ****/
         /******************************************/
 
-        [Description("Evaluates the mass of an object based its Solid Volume and Density.\nRequires a single consistent value of Density to be provided across all MaterialProperties of a given element.")]
-        [Input("elementM", "The element to evaluate the mass of")]
-        [Output("mass", "The physical mass of the element", typeof(Mass))]
+        [Description("Evaluates the mass of an object based its VolumetricMaterialTakeoff and Density.")]
+        [Input("elementM", "The element to evaluate the mass of.")]
+        [Output("mass", "The physical mass of the element.", typeof(Mass))]
         public static double Mass(this IElementM elementM)
         {
             if(elementM == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query the mass of a null element.");
+                Base.Compute.RecordError("Cannot query the mass of a null element.");
                 return 0;
             }
 
-            MaterialComposition mat = elementM.IMaterialComposition();
-            return elementM.ISolidVolume() * mat.Materials.Zip(mat.Ratios, (m,r) => r * m.Density()).Sum();
+            VolumetricMaterialTakeoff takeoff = elementM.IVolumetricMaterialTakeoff();
+            if (takeoff.Materials.Any(x => double.IsNaN(x.Density)))
+            {
+                Base.Compute.RecordError($"Unable to compute the mass of the element due to unset density on {string.Join(",", takeoff.Materials.Where(x => double.IsNaN(x.Density)).Select(x => x.Name))}.");
+                return double.NaN;
+            }
+            if (takeoff.Materials.Any(x => x.Density == 0))
+            {
+                Base.Compute.RecordWarning($"The following materials in the makeup of the element has zero density and are not acounted for in the mass calculation of the element: {string.Join(",", takeoff.Materials.Where(x => x.Density == 0).Select(x => x.Name))}.");
+            }
+            return takeoff.Materials.Zip(takeoff.Volumes, (m, v) => m.Density * v).Sum();
         }
 
         /******************************************/

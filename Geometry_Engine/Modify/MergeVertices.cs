@@ -21,10 +21,15 @@
  */
 
 using BH.Engine.Base;
+using BH.oM.Data.Collections;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BH.Engine.Data;
+using BH.oM.Base.Attributes;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -34,103 +39,77 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Mesh MergedVertices(this Mesh mesh, double tolerance = Tolerance.Distance) //TODO: use the point matrix 
+        [PreviousVersion("6.0", "BH.Engine.Geometry.Modify.MergedVertices(BH.oM.Geometry.Mesh, System.Double)")]
+        [Description("Merges duplicate vertices of the mesh and ensures faces are updated to have their indecies pointig at the index of the new merged vertex.")]
+        [Input("mesh", "The mesh to merge duplicate vertices of.")]
+        [Input("tolerance", "The maximum allowable distance between two vertices for them to be deemed the same vertex.", typeof(Length))]
+        [Output("mesh", "Mesh with merged vertices.")]
+        public static Mesh MergeVertices(this Mesh mesh, double tolerance = Tolerance.Distance)
         {
-            List<Face> faces = mesh.Faces.Select(x => x.DeepClone()).ToList();
-            List<VertexIndex> vertices = mesh.Vertices.Select((x, i) => new VertexIndex(x.DeepClone(), i)).ToList();
-            
-            foreach( Face face in faces)
+            if (mesh == null)
+                return null;
+
+            //Set up list on structs containing location and index
+            List<Tuple<Point,int>> vertices = mesh.Vertices.Select((x, i) => new Tuple<Point, int>(x, i)).ToList();
+
+            //Find duplicate vertex indecies using the same methodology as utilised by cull duplicates
+            double sqDist = tolerance * tolerance;
+            Func<Tuple<Point, int>, DomainBox> toDomainBox = a => new DomainBox()
             {
-                vertices[face.A].Faces.Add(face);
-                vertices[face.B].Faces.Add(face);
-                vertices[face.C].Faces.Add(face);
+                Domains = new Domain[] {
+                    new Domain(a.Item1.X, a.Item1.X),
+                    new Domain(a.Item1.Y, a.Item1.Y),
+                    new Domain(a.Item1.Z, a.Item1.Z),
+                }
+            };
+            Func<DomainBox, DomainBox, bool> treeFunction = (a, b) => a.SquareDistance(b) < sqDist;
+            Func<Tuple<Point, int>, Tuple<Point, int>, bool> itemFunction = (a, b) => true;  // The distance between the boxes is enough to determine if a Point is in range
+            //Clusters the points within distance tolerance of each other. This is utilising a DB scan methodology to find duplicate vertices
+            List<List<Tuple<Point, int>>> clusteredVertices = Data.Compute.DomainTreeClusters(vertices, toDomainBox, treeFunction, itemFunction, 1);
 
-                if (face.IsQuad())
-                    vertices[face.A].Faces.Add(face);
-            }
+            //Map of oldIndex -> newindex
+            Dictionary<int, int> indexMap = new Dictionary<int, int>();
 
-            vertices.Sort(delegate (VertexIndex v1, VertexIndex v2)
+            //Mesh to be returned
+            Mesh returnMesh = new Mesh();
+
+            for (int i = 0; i < clusteredVertices.Count; i++)
             {
-                return v1.Location.SquareDistance(Point.Origin).CompareTo(v2.Location.SquareDistance(Point.Origin));
-            });
+                List<Tuple<Point, int>> current = clusteredVertices[i];   //Current list of duplicate vertices
+                returnMesh.Vertices.Add(current.Select(x => x.Item1).Average());     //Add average point of duplicates
 
-
-            List<int> culledIndices = new List<int>();
-            double sqTol = tolerance * tolerance;
-
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                double distance = vertices[i].Location.Distance(Point.Origin);
-                int j = i + 1;
-                while (j < vertices.Count && Math.Abs(vertices[j].Location.Distance(Point.Origin) - distance) < tolerance)
+                foreach (Tuple<Point, int> vertex in current) //Loop through all the vertices, setting from previous (vertix.Index) to current (current list index)
                 {
-                    VertexIndex v2 = vertices[j];
-                    if (vertices[i].Location.SquareDistance(vertices[j].Location) < sqTol)
-                    {
-                        SetFaceIndex(v2.Faces, vertices[j].Index, vertices[i].Index);
-                        culledIndices.Add(vertices[j].Index);
-                        v2.Index = vertices[i].Index;
-                        break;
-                    }
-                    j++;
+                    indexMap[vertex.Item2] = i;
                 }
             }
 
-            for (int i = 0; i < faces.Count; i++)
+            foreach (Face face in mesh.Faces)   //Loop through all faces, make use of index map to find new index value
             {
-                for (int k = 0; k < culledIndices.Count; k++)
+                Face newFace = new Face();
+                int a, b, c, d;
+                if (indexMap.TryGetValue(face.A, out a))
+                    newFace.A = a;
+                if (indexMap.TryGetValue(face.B, out b))
+                    newFace.B = b;
+                if (indexMap.TryGetValue(face.C, out c))
+                    newFace.C = c;
+
+                if (face.D != -1)   //if -1, keep as -1, as this indicates a triangular face
                 {
-                    if (faces[i].A > culledIndices[k])
-                        faces[i].A--;
-                    if (faces[i].B > culledIndices[k])
-                        faces[i].B--;
-                    if (faces[i].C > culledIndices[k])
-                        faces[i].C--;
-                    if (faces[i].D > culledIndices[k])
-                        faces[i].D--;
+                    if (indexMap.TryGetValue(face.D, out d))
+                        newFace.D = d;
                 }
+                else
+                    newFace.D = -1;
+
+                returnMesh.Faces.Add(newFace);
             }
 
-            return new Mesh { Vertices = vertices.Select(x => x.Location).ToList(), Faces = faces };
+            return returnMesh;
+
         }
 
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void SetFaceIndex(List<Face> faces, int from, int to)
-        {
-            foreach (Face f in faces)
-            {
-                if (f.A == from)
-                    f.A = to;
-                else if (f.B == from)
-                    f.B = to;
-                else if (f.C == from)
-                    f.C = to;
-                else if (f.D == from)
-                    f.D = to;
-            }
-        }
-
-
-        /***************************************************/
-        /**** Private Definitions                       ****/
-        /***************************************************/
-
-        private struct VertexIndex
-        {
-            public VertexIndex(Point point, int index)
-            {
-                Location = point;
-                Index = index;
-                Faces = new List<Face>();
-            }
-            public List<Face> Faces;
-            public Point Location;
-            public int Index;
-        }
 
         /***************************************************/
     }

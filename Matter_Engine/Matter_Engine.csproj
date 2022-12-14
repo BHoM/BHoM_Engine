@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
+        <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <Version>5.0.0</Version>
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Matter</RootNamespace>
-    <FileVersion>5.2.0.0</FileVersion>
+    <FileVersion>6.0.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -45,6 +47,11 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+	<Reference Include="Matter_oM">
+		<HintPath>C:\ProgramData\BHoM\Assemblies\Matter_oM.dll</HintPath>
+		<Private>false</Private>
+		<SpecificVersion>false</SpecificVersion>
+	</Reference>
     <Reference Include="Physical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
       <Private>false</Private>

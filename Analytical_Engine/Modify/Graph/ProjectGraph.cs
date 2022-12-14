@@ -64,12 +64,18 @@ namespace BH.Engine.Analytical
         [Output("graph", "The spatial Graph.")]
         private static Graph ProjectGraph(this Graph graph, GeometricProjection projection)
         {
-            Graph geometricGraph = graph.DeepClone();
-            foreach (IBHoMObject entity in geometricGraph.Entities.Values.ToList())
+            Graph geometricGraph = new Graph
             {
-                if (!typeof(IElement0D).IsAssignableFrom(entity.GetType()))
-                    geometricGraph.RemoveEntity(entity.BHoM_Guid);
-            }
+                BHoM_Guid = graph.BHoM_Guid,
+                CustomData = graph.CustomData,
+                Fragments = graph.Fragments,
+                Name = graph.Name,
+                Tags = graph.Tags
+            };
+
+            geometricGraph.Entities = graph.Entities.Where(x => x.Value is IElement0D).ToDictionary(x => x.Key, x => x.Value);
+            HashSet<Guid> filteredEntityIds = new HashSet<Guid>(geometricGraph.Entities.Keys);
+            geometricGraph.Relations = graph.Relations.Where(x => filteredEntityIds.Contains(x.Target) && filteredEntityIds.Contains(x.Source)).ToList();
 
             return geometricGraph;
         }

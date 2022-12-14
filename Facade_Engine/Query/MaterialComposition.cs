@@ -55,7 +55,7 @@ namespace BH.Engine.Facade
         {
             if (curtainWall == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null curtain wall.");
+                BH.Engine.Base.Compute.RecordError("Cannot query the Material Composition of a null curtain wall.");
                 return null;
             }
 
@@ -100,9 +100,15 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            if (panel.Construction == null || panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
+            if (panel.Construction == null)
             {
-                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + " does not have a construction assigned");
+                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + " does not have a construction assigned.");
+                return null;
+            }
+
+            if (panel.Construction.IThickness() < oM.Geometry.Tolerance.Distance)
+            {
+                BH.Engine.Base.Compute.RecordError("Panel " + panel.BHoM_Guid + "'s construction has a thickness of 0. MaterialComposition requires a panel construction with a thickness to work.");
                 return null;
             }
 
@@ -115,11 +121,29 @@ namespace BH.Engine.Facade
             }
 
             MaterialComposition pMat = panel.Construction.IMaterialComposition();
+            List<MaterialComposition> matComps = new List<MaterialComposition>() { pMat };
+            List<double> volumes = new List<double>() { panel.SolidVolume() };
+
+            if (panel.ExternalEdges != null)
+            {
+                foreach (FrameEdge extEdge in panel.ExternalEdges)
+                {
+                    if (extEdge.FrameEdgeProperty != null)
+                    {
+                        MaterialComposition matComp = extEdge.MaterialComposition();
+                        if (matComp != null)
+                        {
+                            matComps.Add(matComp);
+                            double edgeVol = extEdge.SolidVolume();
+                            volumes.Add(edgeVol);
+                            volumes[0] -= edgeVol;
+                        }
+                    }
+                }
+            }
 
             if (panel.Openings != null && panel.Openings.Count != 0)
             {
-                List<MaterialComposition> matComps = new List<MaterialComposition>() { pMat };
-                List<double> volumes = new List<double>() { panel.SolidVolume() };
                 foreach (Opening opening in panel.Openings)
                 {
                     MaterialComposition matComp = opening.MaterialComposition();
@@ -130,13 +154,10 @@ namespace BH.Engine.Facade
                         volumes.Add(tempVolume);
                         volumes[0] -= tempVolume;
                     }
-                }
-
-
-                return Matter.Compute.AggregateMaterialComposition(matComps, volumes);
+                }  
             }
 
-            return pMat;
+            return Matter.Compute.AggregateMaterialComposition(matComps, volumes);
         }
 
 
@@ -153,15 +174,15 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            if (opening.OpeningConstruction == null)
+            if (opening.OpeningConstruction == null || (opening.OpeningConstruction.IThickness() < oM.Geometry.Tolerance.Distance))
             {
-                if (opening.Edges == null || !opening.Edges.Any(x => x.FrameEdgeProperty != null))
+                if (opening.Edges == null || !opening.Edges.Any(x => x.FrameEdgeProperty != null) || !opening.Edges.Any(x=>x.FrameEdgeProperty.SectionProperties.Count() != 0))
                 {
-                    Engine.Base.Compute.RecordError("Opening " + opening.BHoM_Guid + " does not have any constructions assigned");
+                    Engine.Base.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have a frame edge property assigned to get material composition from.");
                     return null;
                 }
                 else
-                    Engine.Base.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have an opening construction assigned. Material Composition is being calculated based on frame edges only.");
+                    Engine.Base.Compute.RecordWarning("Opening " + opening.BHoM_Guid + " does not have a valid opening construction assigned. Material Composition is being calculated based on frame edges only.");
             }
 
             List<Layer> layers = (List<Layer>)Base.Query.PropertyValue(opening.OpeningConstruction, "Layers");
@@ -177,7 +198,7 @@ namespace BH.Engine.Facade
 
             double glazedVolume = 0;
 
-            if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() > oM.Geometry.Tolerance.Distance && layers != null)
+            if (opening.OpeningConstruction != null && opening.OpeningConstruction.IThickness() >= oM.Geometry.Tolerance.Distance && layers != null)
             {
                 if (opening.Edges != null && opening.Edges.Count != 0)
                 {
@@ -239,7 +260,7 @@ namespace BH.Engine.Facade
             if (frameEdge.FrameEdgeProperty == null || frameEdge.FrameEdgeProperty.SectionProperties.Count() == 0)
             {
                 Engine.Base.Compute.RecordWarning("FrameEdge " + frameEdge.BHoM_Guid + " does not have a frame edge property assigned to get material composition from, so the material composition returned is empty.");
-                return new MaterialComposition(new List<Material>() { new Material() }, new List<double> { 1 } ); ;
+                return new MaterialComposition(new List<Material>(), new List<double>()); ;
             }
 
             if (frameEdge.FrameEdgeProperty.SectionProperties.Any(x => x.Material == null))

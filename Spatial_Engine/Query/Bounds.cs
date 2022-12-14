@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Spatial.ShapeProfiles;
 
 namespace BH.Engine.Spatial
 {
@@ -116,6 +117,27 @@ namespace BH.Engine.Spatial
             return Bounds(element as dynamic);
         }
 
+
+        /******************************************/
+        /****             Profiles             ****/
+        /******************************************/
+
+        [Description("Queries the BoundingBox of a Profile. Acts on the profile edges through the Geometry_Engine.")]
+        [Input("profile", "The profile with the geometry to get the BoundingBox of.")]
+        [Output("bounds", "A BoundingBox encapsulating the geometrical definition of the profile.")]
+        public static BoundingBox Bounds(this IProfile profile)
+        {
+            if (profile?.Edges == null || !profile.Edges.Any())
+                return null;
+
+            BoundingBox bounds = new BoundingBox();
+            foreach (BH.oM.Geometry.ICurve edge in profile.Edges)
+            {
+                bounds += edge.IBounds();
+            }
+
+            return bounds;
+        }
 
         /******************************************/
     }
