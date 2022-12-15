@@ -99,6 +99,7 @@ namespace BH.Engine.Geometry
             int uIndexAddtion = KnotSpan(surface.UKnots, surface.UDegree, u) - surface.UDegree + 1;
             int vIndexAddtion = KnotSpan(surface.VKnots, surface.VDegree, v) - surface.VDegree + 1;
 
+            //Construct list of list of relevant controlpoints for the parameters in homogenous coordinates as double[] where the the first three values corespond to the coordinates sclaed by the weight and 4th value correspond to the weights
             for (int i = 0; i <= surface.UDegree; i++)
             {
                 List<double[]> list = new List<double[]>();
@@ -113,8 +114,10 @@ namespace BH.Engine.Geometry
                 ptsArray.Add(list);
             }
 
+            //Compute the derivatives in homogenous coordinates
             List<List<double[]>> derivatives = SurfaceDerivatives(surface.UKnots, surface.VKnots, surface.UDegree, surface.VDegree, ptsArray, numberOfDerivates, u, v);
 
+            //Split into Aders containing the still scaled derivative vectors and wDers containing the derivatives of the weights
             List<List<Vector>> aDers = new List<List<Vector>>();
             List<List<double>> wDers = new List<List<double>>();
 
@@ -131,59 +134,53 @@ namespace BH.Engine.Geometry
                 wDers.Add(wRow);
             }
 
-            Vector[,] surfaceDerivatives = new Vector[numberOfDerivates + 1, numberOfDerivates + 1];
+            //Vector[,] surfaceDerivatives = new Vector[numberOfDerivates + 1, numberOfDerivates + 1];
+            List<List<Vector>> surfaceDerivatives = new List<List<Vector>>();
             int[][] binomals = Binomals();
 
+            //Compute derivatives in cartesian coordinates
             for (int k = 0; k <= numberOfDerivates; k++)
             {
+                surfaceDerivatives.Add(new List<Vector>());
                 for (int l = 0; l <= numberOfDerivates - k; l++)
                 {
-                    if (k > surface.UDegree || l > surface.VDegree)
+                    if (k > surface.UDegree || l > surface.VDegree) //If level of derivation exceeds the degree, add 0 vector
                     {
-                        surfaceDerivatives[k, l] = new Vector();
+                        surfaceDerivatives[k].Add(new Vector());
                         continue;
                     }
                     Vector der = aDers[k][l];
 
                     for (int j = 1; j <= l; j++)
                     {
-                        der -= binomals[l][j] * wDers[0][j] * surfaceDerivatives[k, l - j];
+                        der -= binomals[l][j] * wDers[0][j] * surfaceDerivatives[k][l - j];
                     }
 
                     for (int i = 1; i <= k; i++)
                     {
-                        der -= binomals[k][i] * wDers[i][0] * surfaceDerivatives[k - i, l];
+                        der -= binomals[k][i] * wDers[i][0] * surfaceDerivatives[k - i][l];
 
                         Vector temp = new Vector();
-                        for (int j = 1; j < l + 1; j++)
+                        for (int j = 1; j <= l; j++)
                         {
-                            temp += binomals[l][j] * wDers[i][j] * surfaceDerivatives[k - 1, l - j];
+                            temp += binomals[l][j] * wDers[i][j] * surfaceDerivatives[k - i][l - j];
                         }
 
                         der -= binomals[k][i] * temp;
                     }
 
-                    surfaceDerivatives[k, l] = der / wDers[0][0];
+                    surfaceDerivatives[k].Add(der / wDers[0][0]);
                 }
             }
 
-            List<List<Vector>> surfaceDerList = new List<List<Vector>>();
-
-            for (int i = 0; i <= numberOfDerivates; i++)
-            {
-                List<Vector> row = new List<Vector>();
-                for (int j = 0; j <= numberOfDerivates - i; j++)
-                {
-                    row.Add(surfaceDerivatives[i, j]);
-                }
-                surfaceDerList.Add(row);
-            }
-
-            return surfaceDerList;
+            return surfaceDerivatives;
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
+        [Description("Computes the non vanishing Curve derivatives. Method is c# implementation of method found in the Nurbs Book.")]
         private static List<double[]> CurveDerivatives(this IReadOnlyList<double> knots, int degree, List<double[]> pts, int numberOfDers, double t)
         {
 
@@ -219,6 +216,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes the non vanishing Surface derivatives. Method is C# implementation of method found in the Nurbs Book.")]
         private static List<List<double[]>> SurfaceDerivatives(this IReadOnlyList<double> knotsU, IReadOnlyList<double> knotsV, int degreeU, int degreeV, List<List<double[]>> pts, int numberOfDers, double u, double v)
         {
 
@@ -282,6 +280,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Utility method to add and scaled factor of values in one array to another.")]
         private static void AddMultiply(double[] addTo, double[] toAdd, double multi)
         {
             for (int i = 0; i < addTo.Length; i++)
@@ -292,6 +291,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Precomputed integer Binomals (k i) where outer index corresponds to k and inner to i. Computed up to level 20.")]
         private static int[][] Binomals()
         {
             lock (m_binomalsLock)
@@ -303,18 +303,20 @@ namespace BH.Engine.Geometry
 
                 m_binomals = new int[maxDim][];
 
+                //Compute the binomal as triangular jagged array as Pascals triangle
+                //https://en.wikipedia.org/wiki/Binomial_coefficient
                 for (int i = 0; i < maxDim; i++)
                 {
-                    m_binomals[i] = new int[i + 1];
+                    m_binomals[i] = new int[i + 1]; //length as 1 more than current row (due to zero indexing) First row has 1 item, 2nd has 2 etc.
 
                     for (int j = 0; j < i + 1; j++)
                     {
                         if (j == 0)
-                            m_binomals[i][j] = 1;
+                            m_binomals[i][j] = 1;   //Edge value always 1
                         else if (j == i)
-                            m_binomals[i][j] = 1;
+                            m_binomals[i][j] = 1;   //Edge value always 1
                         else
-                            m_binomals[i][j] = m_binomals[i - 1][j - 1] + m_binomals[i - 1][j];
+                            m_binomals[i][j] = m_binomals[i - 1][j - 1] + m_binomals[i - 1][j];     //Non edge values sum of the two values "above"
                     }
                 }
 
