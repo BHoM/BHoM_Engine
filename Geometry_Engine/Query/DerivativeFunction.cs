@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Gets the basis functions for the given knot vector for the parameter t in the given span and given degree.")]
+        [Description("Gets the basis functions for the given knot vector for the parameter t in the given span and given degree. Method is a C# implementation of method found in the Nurbs book.")]
         [Input("knots", "The knot vector to evaluate.")]
         [Input("span", "The span in which the parameter t resides. The KnotSpan method can be used to identify the span.")]
         [Input("degree", "Degree of the Curve/Surface in the direction of the provided knots.")]
@@ -142,7 +142,8 @@ namespace BH.Engine.Geometry
                     s2 = jTemp;
                 }
             }
-            double mult = degree;
+
+
             List<List<double>> dersList = new List<List<double>>();
 
             double sFac = 1.0;
@@ -158,24 +159,6 @@ namespace BH.Engine.Geometry
                 sFac *= (degree - k);
             }
 
-            //for (int k = 1; k <= numberOfDerivates; k++)
-            //{
-            //    for (int j = 0; j <= degree; j++)
-            //    {
-            //        ders[k, j] *= mult;
-            //    }
-            //    mult *= (double)(degree - k);
-            //}
-
-            //for (int k = 0; k <= numberOfDerivates; k++)
-            //{
-            //    List<double> list = new List<double>();
-            //    for (int j = 0; j <= degree; j++)
-            //    {
-            //        list.Add(ders[k, j]);
-            //    }
-            //    dersList.Add(list);
-            //}
             return dersList;
         }
 
