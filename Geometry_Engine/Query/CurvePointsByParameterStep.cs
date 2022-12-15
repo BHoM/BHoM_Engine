@@ -76,7 +76,7 @@ namespace BH.Engine.Geometry
                 }
                 while (t < knots[k + 1])    //While t is the knotspan corresponding to k
                 {
-                    double[] basisArray = BasisFunctions(knots, k, degree, t);
+                    List<double> basisArray = BasisFunctions(knots, k, degree, t);
                     pts[iter] = ComputeCurvePoint(curve.ControlPoints, curve.Weights, basisArray, k, degree);
                     ts[iter] = t;
                     iter++;
@@ -97,12 +97,12 @@ namespace BH.Engine.Geometry
         /**** private Methods                           ****/
         /***************************************************/
 
-        private static Point ComputeCurvePoint(List<Point> pts, List<double> weights, double[] basis, int span, int degree)
+        private static Point ComputeCurvePoint(List<Point> pts, List<double> weights, List<double> basis, int span, int degree)
         {
             Point pt = new Point();
             double sum = 0;
             int ptIndexAddtion = span - degree + 1;
-            for (int i = 0; i < basis.Length; i++)
+            for (int i = 0; i < basis.Count; i++)
             {
                 int ptIndex = ptIndexAddtion + i;
                 double basisWeight = basis[i] * weights[ptIndex];

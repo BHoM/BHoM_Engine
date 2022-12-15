@@ -136,12 +136,12 @@ namespace BH.Engine.Geometry
             var knots = curve.Knots;
 
             int span = knots.KnotSpan(degree, t);
-            double[] basisFunctions = knots.BasisFunctions(span, degree, t);
+            List<double> basisFunctions = knots.BasisFunctions(span, degree, t);
 
             Point pt = new Point();
             double sum = 0;
             int ptIndexAddtion = span - degree + 1;
-            for (int i = 0; i < basisFunctions.Length; i++)
+            for (int i = 0; i < basisFunctions.Count; i++)
             {
                 int ptIndex = ptIndexAddtion + i;
                 double basisWeight = basisFunctions[i] * curve.Weights[ptIndex];
@@ -231,13 +231,13 @@ namespace BH.Engine.Geometry
             var uKnots = surface.UKnots;
 
             int uSpan = uKnots.KnotSpan(uDegree, u);
-            double[] uBasisFunctions = uKnots.BasisFunctions(uSpan, uDegree, u);
+            List<double> uBasisFunctions = uKnots.BasisFunctions(uSpan, uDegree, u);
 
             int vDegree = surface.VDegree;
             var vKnots = surface.VKnots;
 
             int vSpan = vKnots.KnotSpan(vDegree, v);
-            double[] vBasisFunctions = vKnots.BasisFunctions(vSpan, vDegree, v);
+            List<double> vBasisFunctions = vKnots.BasisFunctions(vSpan, vDegree, v);
 
             int uIndexAddtion = uSpan - uDegree + 1;
             int vIndexAddtion = vSpan - vDegree + 1;
@@ -247,11 +247,11 @@ namespace BH.Engine.Geometry
             double a = 0;
             Point result = new Point();
 
-            for (int i = 0; i < uBasisFunctions.Length; i++)
+            for (int i = 0; i < uBasisFunctions.Count; i++)
             {
                 double uBasis = uBasisFunctions[i];
                 int uIndexFactor = (i + uIndexAddtion) * uvCount[1];
-                for (int j = 0; j < vBasisFunctions.Length; j++)
+                for (int j = 0; j < vBasisFunctions.Count; j++)
                 {
                     int ptIndex = uIndexFactor + j + vIndexAddtion;
                     double vBasis = vBasisFunctions[j];

@@ -60,10 +60,10 @@ namespace BH.Engine.Geometry
         [Input("degree", "Degree of the Curve/Surface in the direction of the provided knots.")]
         [Input("t", "The parameter to evaluate.")]
         [Output("basis", "The basis functions of the knot vector for the given parameter in the given span.")]
-        public static double[] BasisFunctions(this IReadOnlyList<double> knots, int span, int degree, double t)
+        public static List<double> BasisFunctions(this IReadOnlyList<double> knots, int span, int degree, double t)
         {
-            double[] N = new double[degree + 1];
-            N[0] = 1.0;
+            List<double> basis = Enumerable.Repeat(0.0, degree + 1).ToList();
+            basis[0] = 1.0;
             double[] left = new double[degree + 1];
             double[] right = new double[degree + 1];
 
@@ -74,13 +74,13 @@ namespace BH.Engine.Geometry
                 double saved = 0.0;
                 for (int r = 0; r < j; r++)
                 {
-                    double temp = N[r] / (right[r + 1] + left[j - r]);
-                    N[r] = saved + right[r + 1] * temp;
+                    double temp = basis[r] / (right[r + 1] + left[j - r]);
+                    basis[r] = saved + right[r + 1] * temp;
                     saved = left[j - r] * temp;
                 }
-                N[j] = saved;
+                basis[j] = saved;
             }
-            return N;
+            return basis;
         }
 
         /***************************************************/
