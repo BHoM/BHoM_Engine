@@ -45,14 +45,16 @@ namespace BH.Engine.Geometry
         [MultiOutput(3, "maxK", "Maximum principal direction. Tangent of the curve on the surface with the most curvature.")]
         public static Output<double, double, Vector,Vector> PrincipalCurvatureAtParameter(this NurbsSurface surface, double u, double v)
         {
+            List<List<Vector>> derivatives = surface.DerivativesAtParameter(2, u, v, true);
             // Vector entries for a "Hessian" with regard to u and v
-            Vector dU2 = DerivativeAtParameter(surface, u, v, 2, 0);
-            Vector dUV = DerivativeAtParameter(surface, u, v, 1, 1);
-            Vector dV2 = DerivativeAtParameter(surface, u, v, 0, 2);
+            Vector dU2 = derivatives[2][0];
+            Vector dUV = derivatives[1][1];
+            Vector dV2 = derivatives[0][2];
 
             // Get the local space, dU and dV are the basis vectors for the Hessian above.
-            Vector dU = DerivativeAtParameter(surface, u, v, 1, 0);
-            Vector dV = DerivativeAtParameter(surface, u, v, 0, 1);
+            Vector dU = derivatives[1][0];
+            Vector dV = derivatives[0][1];
+
             Vector normal = dU.CrossProduct(dV).Normalise();
 
             // We reduce the vector valued Hessian to a scalar valued Hessian, where the value (of the imagined original function) is the distance from the point we evaluate along the normal

@@ -45,8 +45,9 @@ namespace BH.Engine.Geometry
             // There is however no such luck. But ||C'xC''|| / (||C'||)^3 is the magnitude regardless. 
             // So we set it to that magnitude while correcting the direction through a repeated crossproduct.
 
-            Vector dC = curve.DerivativeAtParameter(t, 1);
-            Vector ddC = curve.DerivativeAtParameter(t, 2);
+            List<Vector> derivatives = curve.DerivativesAtParameter(2, t, true);
+            Vector dC = derivatives[1];
+            Vector ddC = derivatives[2];
 
             Vector orth = dC.CrossProduct(ddC);
 
