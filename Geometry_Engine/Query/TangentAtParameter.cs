@@ -138,7 +138,7 @@ namespace BH.Engine.Geometry
             if (curve.IsNull())
                 return null;
 
-            return DerivativeAtParameter(curve, t, 1)?.Normalise();
+            return DerivativesAtParameter(curve, 1, t, true)[1].Normalise();
         }
 
         /***************************************************/
@@ -216,54 +216,9 @@ namespace BH.Engine.Geometry
             if (surface.IsNull())
                 return null;
 
-            double a = 0;
-            double dua = 0;
-            double dva = 0;
-            Point result = new Point();
-            Point resultU = new Point();
-            Point resultV = new Point();
-
-            var uKnots = surface.UKnots.ToList();
-            var vKnots = surface.VKnots.ToList();
-
-            var uv = surface.UVCount();
-
-            Func<int, int, int> ind = (i,j) => i * uv[1] + j;
-
-            for (int i = 0; i < uv[0]; i++)
-            {
-                for (int j = 0; j < uv[1]; j++)
-                {
-                    double ubasis = BasisFunction(uKnots, i - 1, surface.UDegree, u);
-                    double vbasis = BasisFunction(vKnots, j - 1, surface.VDegree, v);
-                    double basis = ubasis * vbasis * surface.Weights[ind(i, j)];
-
-                    double dubasis = DerivativeFunction(uKnots, i - 1, surface.UDegree, u) *
-                                     vbasis * surface.Weights[ind(i, j)];
-
-                    double dvbasis = DerivativeFunction(vKnots, j - 1, surface.VDegree, v) *
-                                     ubasis * surface.Weights[ind(i, j)];
-
-                    a += basis;
-                    dua += dubasis;
-                    dva += dvbasis;
-
-                    Point pt = surface.ControlPoints[ind(i, j)];
-
-                    result += basis * pt;
-
-                    resultU += dubasis * pt;
-                    resultV += dvbasis * pt;
-                }
-            }
-
-            return new Output<Vector, Vector>()
-            {
-                Item1 = (resultU * a - result * dua).Normalise(),
-                Item2 = (resultV * a - result * dva).Normalise(),
-            };
+            List<List<Vector>> derivatives = surface.DerivativesAtParameter(1, u, v, true);
+            return new Output<Vector, Vector>() { Item1 = derivatives[1][0].Normalise(), Item2 = derivatives[0][1].Normalise() };
         }
-
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
