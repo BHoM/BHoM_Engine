@@ -41,9 +41,16 @@ namespace BH.Engine.Geometry
         [Input("t", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Input("numberOfDerivates", "Number of derivatives to evaluate. Will only return non-vanishing derivatives, this is, maximum derivative is the degree of the curve.")]
         [Output("derivatives", "List containing the derivatives where the index correspond to the level of derivation, i.e. index 0 is no derivative (position) and index 1 is the 1st derivative.")]
-        public static List<Vector> DerivativesAtParameter(this NurbsCurve curve, int numberOfDerivates, double t)
+        public static List<Vector> DerivativesAtParameter(this NurbsCurve curve, int numberOfDerivates, double t, bool normalisedParameter)
         {
+            if (curve == null)
+                return new List<Vector>();
+
             int degree = curve.Degree();
+
+            if (normalisedParameter)
+                t = Convert.ToKnotDomain(t, curve.Knots, degree);
+
             numberOfDerivates = Math.Min(numberOfDerivates, degree);
 
             //Construct list of homogenous controlpoints as double[] where the the first three values corespond to the coordinates sclaed by the weight and 4th value correspond to the weights
@@ -89,8 +96,16 @@ namespace BH.Engine.Geometry
         [Input("v", "Parameter to evaluate at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Input("numberOfDerivates", "Maximum total derivation degree to evaluate. value of 2 will evaluate up to [2,0], [1,1] and [0,2]. Will only return non-vanishing derivatives, this is, maximum derivative is the degree of the curve.")]
         [Output("derivatives", "Nested list of derivative vectors where the outer list index correspond to the derivative in u direction and inner list index to the derivative in v direction, i.e. index 0,0 is no derivative (position) and index 1,0 is the 1st derivative in u direction on no derivative in the v direction.")]
-        public static List<List<Vector>> DerivativesAtParameter(this NurbsSurface surface, int numberOfDerivates, double u, double v)
+        public static List<List<Vector>> DerivativesAtParameter(this NurbsSurface surface, int numberOfDerivates, double u, double v, bool normalisedParameter)
         {
+            if (surface == null)
+                return new List<List<Vector>>();
+
+            if (normalisedParameter)
+            {
+                u = Convert.ToKnotDomain(u, surface.UKnots, surface.UDegree);
+                v = Convert.ToKnotDomain(v, surface.VKnots, surface.VDegree);
+            }
 
             List<List<double[]>> ptsArray = new List<List<double[]>>();
 
