@@ -125,7 +125,7 @@ namespace BH.Engine.Geometry
         [Description("Gets out the Point at the parameter t on the curve.\n" +
                      "Note that for a general case this does not correspond to a normalised length parameter along the curve.")]
         [Input("curve", "The NurbsCurve to evaluate.")]
-        [Input("t", "The parameter to evaluate.")]
+        [Input("t", "Parameter to get the Point at. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Output("pt", "The point at the provided parameter.")]
         public static Point PointAtParameter(this NurbsCurve curve, double t)
         {
@@ -134,6 +134,8 @@ namespace BH.Engine.Geometry
 
             int degree = curve.Degree();
             var knots = curve.Knots;
+
+            t = Convert.ToKnotDomain(t, curve.Knots, degree);
 
             int span = knots.KnotSpan(degree, t);
             List<double> basisFunctions = knots.BasisFunctions(span, degree, t);
@@ -219,8 +221,8 @@ namespace BH.Engine.Geometry
 
         [Description("Gets out the Point at the parameters u and v on the surface.")]
         [Input("surface", "The NurbsSurface to evaluate.")]
-        [Input("u", "The parameter to evaluate along the u domain.")]
-        [Input("v", "The parameter to evaluate along the v domain.")]
+        [Input("u", "The parameter to evaluate along the u domain. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
+        [Input("v", "The parameter to evaluate along the v domain. Should be between 0 and 1. For values outside the range, the closest value will be used.")]
         [Output("pt", "The point at the provided parameters.")]
         public static Point PointAtParameter(this NurbsSurface surface, double u, double v)
         {
@@ -229,12 +231,14 @@ namespace BH.Engine.Geometry
 
             int uDegree = surface.UDegree;
             var uKnots = surface.UKnots;
+            u = Convert.ToKnotDomain(u, surface.UKnots, surface.UDegree);
 
             int uSpan = uKnots.KnotSpan(uDegree, u);
             List<double> uBasisFunctions = uKnots.BasisFunctions(uSpan, uDegree, u);
 
             int vDegree = surface.VDegree;
             var vKnots = surface.VKnots;
+            v = Convert.ToKnotDomain(v, surface.VKnots, surface.VDegree);
 
             int vSpan = vKnots.KnotSpan(vDegree, v);
             List<double> vBasisFunctions = vKnots.BasisFunctions(vSpan, vDegree, v);
