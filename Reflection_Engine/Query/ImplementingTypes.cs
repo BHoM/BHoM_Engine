@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +34,8 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Returns all the loaded types that implement the specified interface.")]
+        [Input("@interface", "Interface to find its implementing types.")]
+        [Output("implementingTypes", "Collection of types that implement the input interface.")]
         public static List<Type> ImplementingTypes(this Type @interface)
         {
             if(@interface == null)
