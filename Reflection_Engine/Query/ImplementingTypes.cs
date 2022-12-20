@@ -33,9 +33,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns all the loaded types that implement the specified interface.")]
+        [Description("Returns all loaded BHoM types that implement the specified interface.")]
         [Input("@interface", "Interface to find its implementing types.")]
-        [Output("implementingTypes", "Collection of types that implement the input interface.")]
+        [Output("implementingTypes", "Collection of BHoM types that implement the input interface.")]
         public static List<Type> ImplementingTypes(this Type @interface)
         {
             if(@interface == null)
