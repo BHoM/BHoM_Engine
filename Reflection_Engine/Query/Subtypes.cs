@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +34,9 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Returns all the loaded types that inherit from the specified parent type.")]
+        [Input("parentType", "Parent type of the subtypes to be returned.")]
+        [Input("includeInterfaces", "If true, interfaces will be included in the return set, otherwise not.")]
+        [Output("subtypes", "Collection of subtypes of the input parent type.")]
         public static List<Type> Subtypes(this Type parentType, bool includeInterfaces = true)
         {
             if (parentType == null)
