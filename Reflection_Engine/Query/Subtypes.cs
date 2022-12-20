@@ -33,11 +33,10 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns all the loaded types that inherit from the specified parent type.")]
+        [Description("Returns all loaded BHoM types that inherit from the specified parent type.")]
         [Input("parentType", "Parent type of the subtypes to be returned.")]
-        [Input("includeInterfaces", "If true, interfaces will be included in the return set, otherwise not.")]
-        [Output("subtypes", "Collection of subtypes of the input parent type.")]
-        public static List<Type> Subtypes(this Type parentType, bool includeInterfaces = true)
+        [Output("subtypes", "Collection of BHoM subtypes of the input parent type.")]
+        public static List<Type> Subtypes(this Type parentType)
         {
             if (parentType == null)
             {
@@ -48,7 +47,7 @@ namespace BH.Engine.Reflection
             List<Type> implemented = new List<Type>();
             foreach (Type t in Base.Query.BHoMTypeList())
             {
-                if ((includeInterfaces || !t.IsInterface) && parentType.IsAssignableFrom(t))
+                if (parentType.IsAssignableFrom(t))
                     implemented.Add(t);
             }
 
