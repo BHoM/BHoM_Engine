@@ -32,7 +32,7 @@ namespace BH.Engine.MEP.Mechanical
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the change in heat during a process for air given mass flow rate and two enthalpy points.")]
+        [Description("Calculates the change in heat during a process for air given volumetric flow rate and two enthalpy points.")]
         [Input("volumetricFlowRate", "Mass flow rate of fluid (air) of the process. [KG Dry Air/s].")]
         [Input("enthalpyIn", "Entering enthalpy value for process [KJ/KG Dry Air.")]
         [Input("enthalpyOut", "Leaving enthalpy value for process [KJ/KG Dry Air.")]
