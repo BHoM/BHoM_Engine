@@ -32,7 +32,7 @@ namespace BH.Engine.MEP.Mechanical
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the change in heat during a process for water given mass flow rate and two temperature points." +
+        [Description("Calculates the change in heat during a process for water given volumetric flow rate and two temperature points." +
             "Per ASHRAE Handbook HVAC Systems and Equipment 2020 (SI Edition) Chapter 13 Hydronic Heating and Cooling.")]
         [Input("volumetricFlowRate",  "Volumetric fluid flow rate.", typeof(VolumetricFlowRate))]
         [Input("temperatureIn", "Entering temperature value.", typeof(Temperature))]
