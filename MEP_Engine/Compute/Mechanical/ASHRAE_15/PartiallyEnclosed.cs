@@ -44,11 +44,7 @@ namespace BH.Engine.MEP.Mechanical.ASHRAE_15
                 return -1;
             }
 
-
-            double ventilationFreeArea = 0.138 * Math.Pow(massOfRefrigerant, 0.5);
-
-
-            return ventilationFreeArea;
+            return 0.138 * Math.Pow(massOfRefrigerant, 0.5);
         }
 
         /***************************************************/

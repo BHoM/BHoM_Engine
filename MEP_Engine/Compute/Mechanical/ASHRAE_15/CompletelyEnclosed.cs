@@ -45,10 +45,7 @@ namespace BH.Engine.MEP.Mechanical.ASHRAE_15
             }
 
 
-            double ventilationAirFlow = 70 * Math.Pow(massOfRefrigerant, 0.5);
-
-
-            return ventilationAirFlow;
+            return 70 * Math.Pow(massOfRefrigerant, 0.5);
         }
 
         /***************************************************/
