@@ -40,7 +40,7 @@ namespace BH.Engine.MEP.Mechanical
         [Input("latentHeatVaporizationWater", "Latent heat of vaporization of water value [kJ/kg].")]
         [Input("fluidDensity", "Fluid density value [kg/m3].")]
         [Output("latentHeat", "Latent heat value [kW].")]
-        public static double AirSideProcessLatentHeat(double volumetricFlowRate, double humidityRatioIn, double humidityRatioOut, double latentHeatVaporizationWater = double.MinValue, double airDensity = double.MinValue)
+        public static double AirProcessLatentHeat(double volumetricFlowRate, double humidityRatioIn, double humidityRatioOut, double latentHeatVaporizationWater = double.MinValue, double airDensity = double.MinValue)
         {
             if(volumetricFlowRate == double.NaN)
             {
@@ -62,15 +62,13 @@ namespace BH.Engine.MEP.Mechanical
 
             if (latentHeatVaporizationWater == double.MinValue)
             {
-                BH.Engine.Base.Compute.RecordNote("Latent Heat of Vaporization of Water has been set to the default value of 2454 kJ/kg " +
-                   "which is density of air at standard temperature and pressure.");
+                BH.Engine.Base.Compute.RecordNote("Latent Heat of Vaporization of Water has been set to the default value of 2454 kJ/kg which is density of air at standard temperature and pressure.");
                 latentHeatVaporizationWater = 2454;
             }
 
             if (airDensity == double.MinValue)
             {
-                BH.Engine.Base.Compute.RecordNote("Air density has been set to the default value of 1.202 kg/m3 " +
-                   "which is density of air at standard temperature and pressure.");
+                BH.Engine.Base.Compute.RecordNote("Air density has been set to the default value of 1.202 kg/m3 which is density of air at standard temperature and pressure.");
                 airDensity = 1.202;
             }
             
