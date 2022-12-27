@@ -64,6 +64,7 @@ namespace BH.Engine.MEP.Mechanical
                    "which is the value for water at standard temperature and pressure.");
                 fluiddensity = 1000;
             }
+            
             if (fluidSpecificHeat == double.MinValue)
             {
                 Base.Compute.RecordNote("Fluid specific heat has been set to the default value of 4.18 kJ/kg-K " +
