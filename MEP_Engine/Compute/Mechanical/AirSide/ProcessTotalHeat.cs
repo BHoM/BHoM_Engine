@@ -38,7 +38,7 @@ namespace BH.Engine.MEP.Mechanical
         [Input("enthalpyOut", "Leaving enthalpy value for process [KJ/KG Dry Air.")]
         [Input("fluidDensity", "Fluid density value [kg/m3].")]
         [Output("totalHeat", "Total heat change value during process [kW].")]
-        public static double AirSideProcessHeat(double volumetricFlowRate, double enthalpyIn, double enthalpyOut, double fluidDensity = double.MinValue)
+        public static double AirProcessHeat(double volumetricFlowRate, double enthalpyIn, double enthalpyOut, double fluidDensity = double.MinValue)
         {
             if(volumetricFlowRate == double.NaN)
             {
@@ -60,8 +60,7 @@ namespace BH.Engine.MEP.Mechanical
 
             if (fluidDensity == double.MinValue)
             {
-                BH.Engine.Base.Compute.RecordNote("Fluid density has been set to the default value of 1.202 kg/m3 " +
-                   "which is density of air at standard temperature and pressure.");
+                BH.Engine.Base.Compute.RecordNote("Fluid density has been set to the default value of 1.202 kg/m3 which is density of air at standard temperature and pressure.");
                 fluidDensity = 1.202;
             }
 

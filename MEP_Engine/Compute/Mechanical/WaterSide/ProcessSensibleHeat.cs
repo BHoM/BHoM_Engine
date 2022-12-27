@@ -32,13 +32,13 @@ namespace BH.Engine.MEP.Mechanical
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the change in heat during a process for water given volumetric flow rate and two temperature points." +
+        [Description("Calculates the change in heat during a process for water given volumetric flow rate and two temperature points. " +
             "Per ASHRAE Handbook HVAC Systems and Equipment 2020 (SI Edition) Chapter 13 Hydronic Heating and Cooling.")]
         [Input("volumetricFlowRate",  "Volumetric fluid flow rate.", typeof(VolumetricFlowRate))]
         [Input("temperatureIn", "Entering temperature value.", typeof(Temperature))]
         [Input("temperatureOut", "Leaving temperature value.", typeof(Temperature))]
         [Output("totalHeat", "Total heat value.", typeof(Energy))]
-        public static double WaterSideProcessSensibleHeat(double volumetricFlowRate, double temperatureIn, double temperatureOut, double fluidSpecificHeat = double.MinValue, double fluiddensity = double.MinValue)
+        public static double HydronicProcessSensibleHeat(double volumetricFlowRate, double temperatureIn, double temperatureOut, double fluidSpecificHeat = double.MinValue, double fluiddensity = double.MinValue)
         {
             if (volumetricFlowRate == double.NaN)
             {
@@ -60,15 +60,13 @@ namespace BH.Engine.MEP.Mechanical
 
             if (fluiddensity == double.MinValue)
             {
-                Base.Compute.RecordNote("Fluid density has been set to the default value of 1000 kg/m3 " +
-                   "which is the value for water at standard temperature and pressure.");
+                Base.Compute.RecordNote("Fluid density has been set to the default value of 1000 kg/m3 which is the value for water at standard temperature and pressure.");
                 fluiddensity = 1000;
             }
             
             if (fluidSpecificHeat == double.MinValue)
             {
-                Base.Compute.RecordNote("Fluid specific heat has been set to the default value of 4.18 kJ/kg-K " +
-                    "which is the value for water at standard temperature and pressure.");
+                Base.Compute.RecordNote("Fluid specific heat has been set to the default value of 4.18 kJ/kg-K which is the value for water at standard temperature and pressure.");
                 fluidSpecificHeat = 4.18;
             }
             
