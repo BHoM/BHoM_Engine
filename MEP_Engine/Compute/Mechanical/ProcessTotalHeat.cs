@@ -32,17 +32,16 @@ namespace BH.Engine.MEP.Mechanical
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the change in heat during a process for air given volumetric flow rate and two enthalpy points.")]
-        [Input("volumetricFlowRate", "Mass flow rate of fluid (air) of the process. [KG Dry Air/s].")]
+        [Description("Calculates the change in heat during a process given mass flow rate and two enthalpy points.")]
+        [Input("massFlowRate", "Mass flow rate of fluid (air) of the process. [KG Dry Air/s].")]
         [Input("enthalpyIn", "Entering enthalpy value for process [KJ/KG Dry Air.")]
         [Input("enthalpyOut", "Leaving enthalpy value for process [KJ/KG Dry Air.")]
-        [Input("fluidDensity", "Fluid density value [kg/m3].")]
         [Output("totalHeat", "Total heat change value during process [kW].")]
-        public static double AirProcessHeat(double volumetricFlowRate, double enthalpyIn, double enthalpyOut, double fluidDensity = double.MinValue)
+        public static double ProcessHeat(double massFlowRate, double enthalpyIn, double enthalpyOut)
         {
-            if(volumetricFlowRate == double.NaN)
+            if(massFlowRate == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the total heat from a null volumetricFlowRate value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the total heat from a null massFlowRate value");
                 return -1;
             }
 
@@ -58,13 +57,7 @@ namespace BH.Engine.MEP.Mechanical
                 return -1;
             }
 
-            if (fluidDensity == double.MinValue)
-            {
-                BH.Engine.Base.Compute.RecordNote("Fluid density has been set to the default value of 1.202 kg/m3 which is density of air at standard temperature and pressure.");
-                fluidDensity = 1.202;
-            }
-
-            return MassFlowRate(volumetricFlowRate, fluidDensity) * (enthalpyIn -enthalpyOut);
+            return massFlowRate * (enthalpyIn -enthalpyOut);
         }
 
         /***************************************************/
