@@ -39,6 +39,8 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the external edge curves of the Extrusion.")]
+        [Input("surface", "Surface to extract external edges from.")]
+        [Output("edges", "The external edges of the surface.")]
         public static List<ICurve> ExternalEdges(this Extrusion surface)
         {
             ICurve curve = surface.Curve;
@@ -66,6 +68,8 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the external edge curves of the Loft as the curves of the Loft.")]
+        [Input("surface", "Surface to extract external edges from.")]
+        [Output("edges", "The external edges of the surface.")]
         public static List<ICurve> ExternalEdges(this Loft surface)
         {
             return surface.Curves; //TODO: Is that always correct?
@@ -74,6 +78,8 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the external edge curves of the Pipe. If the Pipe is capped, this returns a circle at each end of the centre curve. If the pipe is uncapped, this method returns an empty list.")]
+        [Input("surface", "Surface to extract external edges from.")]
+        [Output("edges", "The external edges of the surface.")]
         public static List<ICurve> ExternalEdges(this Pipe surface)
         {
             if (!surface.Capped)
@@ -92,6 +98,8 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the external edge curves of the PlanarSurface as its ExternalBoundary.")]
+        [Input("surface", "Surface to extract external edges from.")]
+        [Output("edges", "The external edges of the surface.")]
         public static List<ICurve> ExternalEdges(this PlanarSurface surface)
         {
             return new List<ICurve> { surface.ExternalBoundary };
@@ -100,6 +108,8 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the external edge curves of the PolySurface the external edge curves of all of its parts.")]
+        [Input("surface", "Surface to extract external edges from.")]
+        [Output("edges", "The external edges of the surface.")]
         public static List<ICurve> ExternalEdges(this PolySurface surface)
         {
             return surface.Surfaces.SelectMany(x => x.IExternalEdges()).ToList();
@@ -176,6 +186,8 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the external edge curves of the ISurface.")]
+        [Input("surface", "Surface to extract external edges from.")]
+        [Output("edges", "The external edges of the surface.")]
         public static List<ICurve> IExternalEdges(this ISurface surface)
         {
             return ExternalEdges(surface as dynamic);
