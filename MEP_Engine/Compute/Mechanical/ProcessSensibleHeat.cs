@@ -32,18 +32,17 @@ namespace BH.Engine.MEP.Mechanical
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the change in sensible heat during a process for air given volumetric flow rate and two temperature points.")]
-        [Input("volumetricFlowRate", "Volumetric fluid flow rate.", typeof(VolumetricFlowRate))]
+        [Description("Calculates the change in sensible heat during a process given mass flow rate and two temperature points.")]
+        [Input("massFlowRate", "Mass flow rate [m3/s].")]
         [Input("temperatureIn", "Entering temperature value [C].")]
         [Input("temperatureOut", "Leavings temperature value [C].")]
         [Input("specificHeat", "Specific Heat value [kJ/kg-K].")]
-        [Input("fluidDensity", "Fluid density value [kg/m3].")]
         [Output("sensibleHeat", "Sensible heat value [kW].")]
-        public static double AirProcessSensibleHeat(double volumetricFlowRate, double temperatureIn, double temperatureOut, double specificHeat = double.MinValue, double fluidDensity = double.MinValue)
+        public static double ProcessSensibleHeat(double massFlowRate, double temperatureIn, double temperatureOut, double specificHeat)
         {
-            if(volumetricFlowRate == double.NaN)
+            if(massFlowRate == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the sensible heat from a null volumetricFlowRate value.");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the sensible heat from a null massFlowRate value.");
                 return -1;
             }
 
@@ -59,19 +58,13 @@ namespace BH.Engine.MEP.Mechanical
                 return -1;
             }
             
-            if (specificHeat == double.MinValue)
+            if (specificHeat == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordNote("Specific heat has been set to the default value of 1.005 kJ/kg K which is specific heat of air at standard temperature and pressure.");
-                specificHeat = 1.005;
+                BH.Engine.Base.Compute.RecordError("Cannot compute the sensible heat from a null specificHeat value.");
+                return -1;
             }
 
-            if (fluidDensity == double.MinValue)
-            {
-                BH.Engine.Base.Compute.RecordNote("Fluid density has been set to the default value of 1.202 kg/m3 which is density of air at standard temperature and pressure.");
-                fluidDensity = 1.202;
-            }
-
-            return specificHeat * MassFlowRate(volumetricFlowRate, fluidDensity) * (temperatureIn - temperatureOut);
+            return specificHeat * massFlowRate * (temperatureIn - temperatureOut);
         }
 
         /***************************************************/

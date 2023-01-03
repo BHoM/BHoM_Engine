@@ -33,18 +33,17 @@ namespace BH.Engine.MEP.Mechanical
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the change in sensible heat during a process for air given volumetric flow rate and two humidityRatio points.")]
-        [Input("volumetricFlowRate", "Volumetric fluid flow rate.", typeof(VolumetricFlowRate))]
+        [Description("Calculates the change in sensible heat during a process given mass flow rate and two humidity ratio points.")]
+        [Input("massFlowRate", "Mass flow rate [m3/s].")]
         [Input("humidityRatioIn", "Entering humidity Ratio value [kg water/kg dry air].")]
         [Input("humidityRatioOut", "Leaving humidity Ratio value [kg water/kg dry air].")]
         [Input("latentHeatVaporizationWater", "Latent heat of vaporization of water value [kJ/kg].")]
-        [Input("fluidDensity", "Fluid density value [kg/m3].")]
         [Output("latentHeat", "Latent heat value [kW].")]
-        public static double AirProcessLatentHeat(double volumetricFlowRate, double humidityRatioIn, double humidityRatioOut, double latentHeatVaporizationWater = double.MinValue, double airDensity = double.MinValue)
+        public static double ProcessLatentHeat(double massFlowRate, double humidityRatioIn, double humidityRatioOut, double latentHeatVaporizationWater = double.MinValue)
         {
-            if(volumetricFlowRate == double.NaN)
+            if(massFlowRate == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the latent heat from a null volumetricFlowRate value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the latent heat from a null massFlowRate value");
                 return -1;
             }
 
@@ -65,14 +64,8 @@ namespace BH.Engine.MEP.Mechanical
                 BH.Engine.Base.Compute.RecordNote("Latent Heat of Vaporization of Water has been set to the default value of 2454 kJ/kg which is density of air at standard temperature and pressure.");
                 latentHeatVaporizationWater = 2454;
             }
-
-            if (airDensity == double.MinValue)
-            {
-                BH.Engine.Base.Compute.RecordNote("Air density has been set to the default value of 1.202 kg/m3 which is density of air at standard temperature and pressure.");
-                airDensity = 1.202;
-            }
             
-            return latentHeatVaporizationWater * MassFlowRate(volumetricFlowRate, airDensity) * (humidityRatioIn-humidityRatioOut);
+            return latentHeatVaporizationWater * massFlowRate * (humidityRatioIn-humidityRatioOut);
         }
 
         /***************************************************/
