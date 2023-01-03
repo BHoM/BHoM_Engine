@@ -34,8 +34,6 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        private static Dictionary<Type, List<Type>> m_cachedBaseTypes = new Dictionary<Type, List<Type>>();
-
         [Description("Gets all implemented interfaces and the base type (if present) of a given type.")]
         [Input("type", "Type whose base types will be returned.")]
         [Output("baseTypes", "All implemented interfaces and the base type (if present) of the input type.")]
@@ -44,12 +42,7 @@ namespace BH.Engine.Reflection
             if (type == null)
                 return new List<Type>();
 
-            List<Type> baseTypes;
-
-            if (m_cachedBaseTypes.TryGetValue(type, out baseTypes))
-                return baseTypes;
-            else
-                baseTypes = new List<Type>();
+            List<Type> baseTypes = new List<Type>();
 
             baseTypes.AddRange(type.GetInterfaces());
 
@@ -57,12 +50,9 @@ namespace BH.Engine.Reflection
             if (baseType != null)
                 baseTypes.Add(baseType);
 
-            m_cachedBaseTypes[type] = baseTypes;
-
             return baseTypes;
         }
+
+        /***************************************************/
     }
 }
-
-
-
