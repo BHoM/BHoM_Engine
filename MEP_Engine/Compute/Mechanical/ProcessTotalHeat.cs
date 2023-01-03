@@ -37,7 +37,7 @@ namespace BH.Engine.MEP.Mechanical
         [Input("enthalpyIn", "Entering enthalpy value for process [KJ/KG Dry Air.")]
         [Input("enthalpyOut", "Leaving enthalpy value for process [KJ/KG Dry Air.")]
         [Output("totalHeat", "Total heat change value during process [kW].")]
-        public static double ProcessHeat(double massFlowRate, double enthalpyIn, double enthalpyOut)
+        public static double ProcessTotalHeat(double massFlowRate, double enthalpyIn, double enthalpyOut)
         {
             if(massFlowRate == double.NaN)
             {
