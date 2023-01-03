@@ -47,8 +47,11 @@ namespace BH.Engine.Reflection
             baseTypes.AddRange(type.GetInterfaces());
 
             Type baseType = type.BaseType;
-            if (baseType != null)
+            while (baseType != null)
+            {
                 baseTypes.Add(baseType);
+                baseType = baseType.BaseType;
+            }
 
             return baseTypes;
         }
