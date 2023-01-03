@@ -34,9 +34,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets all implemented interfaces and the base type (if present) of a given type.")]
+        [Description("Gets all implemented interfaces and all base types (if present) of a given type.")]
         [Input("type", "Type whose base types will be returned.")]
-        [Output("baseTypes", "All implemented interfaces and the base type (if present) of the input type.")]
+        [Output("baseTypes", "All implemented interfaces and all base types (if present) of the input type.")]
         public static List<Type> BaseTypes(this Type type)
         {
             if (type == null)
