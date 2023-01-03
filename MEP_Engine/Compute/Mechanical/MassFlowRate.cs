@@ -42,13 +42,13 @@ namespace BH.Engine.MEP.Mechanical
         {
             if(volumetricFlowRate == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the latent heat from a null airflow value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the mass flow rate from a null volumetricFlowRate value.");
                 return -1;
             }
 
             if (fluidDensity == double.NaN)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot compute the latent heat from a null fluidDensity value");
+                BH.Engine.Base.Compute.RecordError("Cannot compute the mass flow rate from a null fluidDensity value");
                 return -1;
             }
 
