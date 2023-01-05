@@ -94,7 +94,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.PolyCurve, System.Double, System.Double)")]
         [Description("Gets the points at kinks of the curve, i.e. Points where the tangent between two sub curves coming in to the same point is outside of the provided tolerance.")]
         [Input("curve", "The IPolyCurve to get the discontinuity points from.")]
         [Input("distanceTolerance", "Distance tolerance for extracting discontinuity points.", typeof(Length))]
@@ -135,7 +134,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.DiscontinuityPoints(BH.oM.Geometry.Polyline, System.Double, System.Double)")]
         [Description("Gets the points at kinks of the curve, i.e. points where the tangent between two segments coming in to the same point is outside of the provided tolerance.")]
         [Input("curve", "The IPolyline to get the discontinuity points from.")]
         [Input("distanceTolerance", "Distance tolerance for extracting discontinuity points.", typeof(Length))]

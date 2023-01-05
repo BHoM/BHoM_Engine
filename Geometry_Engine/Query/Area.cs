@@ -127,7 +127,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.PolyCurve, System.Double)")]
         [Description("Calculates the area of the provided geometry.")]
         [Input("curve", "The PolyCurve to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]
@@ -188,7 +187,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Geometry.Query.Area(BH.oM.Geometry.Polyline, System.Double)")]
         [Description("Calculates the area of the provided geometry.")]
         [Input("curve", "The Polyline to get the area of.")]
         [Input("tolerance", "The tolerance to apply to the area calculation.")]

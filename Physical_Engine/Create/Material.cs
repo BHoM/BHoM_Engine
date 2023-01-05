@@ -40,7 +40,6 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Physical.Create.Material(System.String, System.Collections.Generic.List<BH.oM.Physical.Materials.IMaterialProperties>)")]
         [Description("Returns a Material object")]
         [Input("name", "The name of the material, default empty string")]
         [Input("properties", "A collection of the specific properties of the material to be created, default null")]

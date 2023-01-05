@@ -39,7 +39,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Geometry.Modify.MergedVertices(BH.oM.Geometry.Mesh, System.Double)")]
         [Description("Merges duplicate vertices of the mesh and ensures faces are updated to have their indecies pointig at the index of the new merged vertex.")]
         [Input("mesh", "The mesh to merge duplicate vertices of.")]
         [Input("tolerance", "The maximum allowable distance between two vertices for them to be deemed the same vertex.", typeof(Length))]
