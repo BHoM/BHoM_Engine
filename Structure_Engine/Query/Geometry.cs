@@ -58,7 +58,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("5.1", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.SectionProperties.SteelSection)")]
+        [PreviousVersion("6.1", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.SectionProperties.SteelSection)")]
         [Description("Gets the geometry of a GeometricalSection as its profile outlines the global XY plane. Method required for automatic display in UI packages.")]
         [Input("section", "GeometricalSection to get outline geometry from.")]
         [Output("outlines", "The geometry of the GeometricalSection as its outline in the global XY plane.")]
