@@ -50,6 +50,9 @@ namespace BH.Engine.Environment
         [Output("isShade", "Will return true if the panel is a shade type.")]
         public static bool IsShade(this Panel panel)
         {
+            if (panel == null)
+                return false;
+
             return panel.Type.IsShade();
         }
 
