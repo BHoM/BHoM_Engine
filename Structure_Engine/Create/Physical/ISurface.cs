@@ -35,6 +35,7 @@ using BH.oM.Structure.Fragments;
 using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Spatial;
 using System;
 
 namespace BH.Engine.Structure
