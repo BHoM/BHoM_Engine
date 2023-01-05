@@ -37,7 +37,6 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Matter.Query.IMaterialComposition(BH.oM.Dimensional.IElementM)")]
         [Description("Gets the unique Materials along with their relative proportions defining an object's make-up.")]
         [Input("elementM", "The element to get the MaterialComposition from.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that Material composition corresponding to this fragment. If false, the MaterialComposition returned will be calculated, independant of fragment attached.")]

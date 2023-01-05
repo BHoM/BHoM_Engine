@@ -42,7 +42,6 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Matter.Query.Density(BH.oM.Physical.Materials.Material, System.Type, System.Double)")]
         [Description("Returns the density of a Material.")]
         [Input("material", "The material to query density from.")]
         [Output("density", "The density of the material.", typeof(Density))]

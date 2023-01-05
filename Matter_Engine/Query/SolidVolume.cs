@@ -36,7 +36,6 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Matter.Query.ISolidVolume(BH.oM.Dimensional.IElementM)")]
         [Description("Returns an element's solid volume, i.e. the the volume of the element that had any materiality, excluding cavities, openings and voids.")]
         [Input("elementM", "The element to get the volume from.")]
         [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns that total volume corresponding to this fragment. If false, the SolidVolume returned will be calculated, independant of fragment attached.")]
