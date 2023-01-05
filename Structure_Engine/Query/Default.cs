@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Output("material","The default material of the type provided.")]
         public static IMaterialFragment Default(this MaterialType materialType)
         {
-            string libraryName = "Materials";
+            string libraryName = "Structure\\Materials";
             string matName = null;
             switch (materialType)
             {
