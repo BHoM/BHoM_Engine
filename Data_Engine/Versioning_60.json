@@ -1,5 +1,0 @@
-﻿{
-  "MessageForDeleted": {
-    "BH.Engine.Reflection.Query.Item(System.Object)": "This method was a fallback method which has been made private to avoid confusion in script use. The return value of this method is always set to 0, so if you were using this method in your script, please replace it with the value of 0."
-  }
-}
