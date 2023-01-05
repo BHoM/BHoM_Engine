@@ -50,7 +50,7 @@ namespace BH.Engine.Graphics
             // Sets a default gradient if none is already set
             if (gradientOptions.Gradient == null)
             {
-                gradientOptions.Gradient = Library.Query.Match("Gradients", defaultGradient) as Gradient;
+                gradientOptions.Gradient = Library.Query.Match("Graphics\\Gradients", defaultGradient) as Gradient;
                 if (gradientOptions.Gradient == null)
                 {
                     Compute.RecordError("Could not find gradient " + defaultGradient + " in the Library, make sure you have BHoM Datasets or create a custom gradient");
