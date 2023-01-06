@@ -38,7 +38,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this SVGStyle svgStyle)
         {
-            if(svgStyle == null)
+            if (svgStyle == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert a null SVG Style.");
                 return "";
@@ -99,7 +99,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this SVGObject svgObject)
         {
-            if(svgObject == null)
+            if (svgObject == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert a null SVG object.");
                 return "";
@@ -131,7 +131,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this SVGDocument svgDocument)
         {
-            if(svgDocument == null)
+            if (svgDocument == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert a null SVG Document.");
                 return "";
@@ -175,7 +175,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Point point)
         {
-            if(point == null)
+            if (point == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert a null point to SVG string.");
                 return "";
@@ -195,7 +195,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Line line)
         {
-            if(line == null)
+            if (line == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert a null line to SVG string.");
                 return "";
@@ -216,7 +216,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Circle circle)
         {
-            if(circle == null)
+            if (circle == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert a null circle to SVG string.");
                 return "";
@@ -236,7 +236,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Arc arc)
         {
-            if(arc == null)
+            if (arc == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert a null arc to SVG string.");
                 return "";
@@ -262,7 +262,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Ellipse ellipse)
         {
-            if(ellipse == null)
+            if (ellipse == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert a null ellipse to SVG string.");
                 return "";
@@ -285,7 +285,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this Polyline polyline)
         {
-            if(polyline == null)
+            if (polyline == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert null polyline to SVG string.");
                 return "";
@@ -316,7 +316,7 @@ namespace BH.Engine.Graphics
 
         public static string ToSVGString(this NurbsCurve nurbCurve)
         {
-            if(nurbCurve == null)
+            if (nurbCurve == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot convert null nurb curve to SVG string.");
                 return "";
@@ -370,6 +370,24 @@ namespace BH.Engine.Graphics
             nurbString += "\"/>";
 
             return nurbString;
+        }
+
+        /***************************************************/
+        /**** Fallback Methods                          ****/
+        /***************************************************/
+
+        private static string ToSVGString(this IGeometry geometry)
+        {
+            if (geometry == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot convert a null to SVG string.");
+                return "";
+            }
+            else
+            {
+                BH.Engine.Base.Compute.RecordError($"Cannot convert a {geometry.GetType().Name} to SVG string.");
+                return "";
+            }
         }
 
         /***************************************************/
