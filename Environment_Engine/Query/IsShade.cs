@@ -50,6 +50,12 @@ namespace BH.Engine.Environment
         [Output("isShade", "Will return true if the panel is a shade type.")]
         public static bool IsShade(this Panel panel)
         {
+            if (panel == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query whether a panel is a shade or not if it is null.");
+                return false;
+            }
+
             return panel.Type.IsShade();
         }
 
