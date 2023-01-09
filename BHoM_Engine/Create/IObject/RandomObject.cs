@@ -21,10 +21,12 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -37,6 +39,9 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a random object of the specified type. All properties of the object will be initialised as random objects.")]
+        [Input("type", "The type of random object to create.")]
+        [Output("object", "The created random object.")]
         public static IObject RandomObject(Type type)
         {
             return RandomObject(type, m_RandomSeed.Next());
@@ -44,6 +49,10 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Creates a random object of the specified type. All properties of the object will be initialised as random objects.")]
+        [Input("type", "The type of random object to create.")]
+        [Input("seed", "The seed to use for the Random generation.")]
+        [Output("object", "The created random object.")]
         public static IObject RandomObject(Type type, int seed)
         {
             // make sure the type inherits from IObject
