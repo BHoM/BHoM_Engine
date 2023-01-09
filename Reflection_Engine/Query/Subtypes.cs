@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,10 @@ namespace BH.Engine.Reflection
             List<Type> implemented = new List<Type>();
             foreach (Type t in Base.Query.BHoMTypeList())
             {
-                if (parentType.IsAssignableFrom(t))
+                if (t == parentType)
+                    continue;
+
+                if (parentType.IsAssignableFromIncludeGenerics(t))
                     implemented.Add(t);
             }
 
@@ -57,6 +61,3 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
-
-
-
