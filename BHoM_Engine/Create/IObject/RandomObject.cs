@@ -95,8 +95,9 @@ namespace BH.Engine.Base
         {
             // Create object
             object obj = null;
+
             if (type.GetInterface("IImmutable") != null)
-                return CreateImmutable(type, rnd, depth);
+                obj = CreateImmutable(type, rnd, depth);
             else if (type.IsGenericType)
             {
                 type = GetType(type);
@@ -104,12 +105,21 @@ namespace BH.Engine.Base
             }
             else if (typeof(BH.oM.Base.IFragment).IsAssignableFrom(type))
             {
-                // Do not instantiate random Fragments to avoid "missing parameterless constructor" exception
-                return null;
+                try
+                {
+                    obj = Activator.CreateInstance(type);
+                }
+                catch (Exception e)
+                {
+                    Compute.RecordError($"Failed to instantiate a Fragment of type {type.Name} due to the following exception: {e.Message}");
+                    return null;
+                }
             }
             else
                 obj = Activator.CreateInstance(type);
 
+            if (obj == null)
+                return null;
 
             // Set its public properties
             foreach (PropertyInfo prop in type.GetProperties())
