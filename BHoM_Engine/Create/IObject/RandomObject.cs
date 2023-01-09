@@ -201,7 +201,7 @@ namespace BH.Engine.Base
                 case "Guid":
                     return Guid.NewGuid();
                 case "String":
-                    return Path.GetRandomFileName().Replace(".", "");
+                    return new string(RandomEnumerable(typeof(IEnumerable<char>), rnd, depth).Cast<char>().ToArray());
                 case "Color":
                     return System.Drawing.Color.FromArgb(1, 2, 3, 4);
                 case "Dictionary`2":
