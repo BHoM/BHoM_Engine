@@ -58,12 +58,13 @@ namespace BH.Engine.Geometry
 
                     int[] row = new int[i + 1]; //length as 1 more than current row (due to zero indexing) First row has 1 item, 2nd has 2 etc.
                     row[0] = 1;         //Edge value always 1
+                    row[i] = 1;         //Edge value always 1
 
                     for (int j = 1; j < i; j++)
                     {
                         row[j] = m_binomals[i - 1][j - 1] + m_binomals[i - 1][j];     //Non edge values sum of the two values "above"
                     }
-                    row[i] = 1;         //Edge value always 1
+
                     m_binomals.Add(row);
                     i++;
                 }
