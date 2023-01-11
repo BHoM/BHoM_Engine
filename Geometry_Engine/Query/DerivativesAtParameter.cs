@@ -70,8 +70,6 @@ namespace BH.Engine.Geometry
                 wDers.Add(cwDer[3]);
             }
 
-            int[][] binomals = Binomals();
-
             List<Vector> derivates = new List<Vector>();
 
             //Compute the Derivatives in Cartesian coordinates
@@ -80,7 +78,7 @@ namespace BH.Engine.Geometry
                 Vector v = aDers[k];
                 for (int i = 1; i <= k; i++)
                 {
-                    v -= binomals[k][i] * wDers[i] * derivates[k - i];
+                    v -= Binomal(k, i) * wDers[i] * derivates[k - i];
                 }
                 derivates.Add(v / wDers[0]);
             }
@@ -151,7 +149,6 @@ namespace BH.Engine.Geometry
 
             //Vector[,] surfaceDerivatives = new Vector[numberOfDerivates + 1, numberOfDerivates + 1];
             List<List<Vector>> surfaceDerivatives = new List<List<Vector>>();
-            int[][] binomals = Binomals();
 
             //Compute derivatives in cartesian coordinates
             for (int k = 0; k <= numberOfDerivates; k++)
@@ -168,20 +165,20 @@ namespace BH.Engine.Geometry
 
                     for (int j = 1; j <= l; j++)
                     {
-                        der -= binomals[l][j] * wDers[0][j] * surfaceDerivatives[k][l - j];
+                        der -= Binomal(l, j) * wDers[0][j] * surfaceDerivatives[k][l - j];
                     }
 
                     for (int i = 1; i <= k; i++)
                     {
-                        der -= binomals[k][i] * wDers[i][0] * surfaceDerivatives[k - i][l];
+                        der -= Binomal(k, i) * wDers[i][0] * surfaceDerivatives[k - i][l];
 
                         Vector temp = new Vector();
                         for (int j = 1; j <= l; j++)
                         {
-                            temp += binomals[l][j] * wDers[i][j] * surfaceDerivatives[k - i][l - j];
+                            temp += Binomal(l, j) * wDers[i][j] * surfaceDerivatives[k - i][l - j];
                         }
 
-                        der -= binomals[k][i] * temp;
+                        der -= Binomal(k, i) * temp;
                     }
 
                     surfaceDerivatives[k].Add(der / wDers[0][0]);
@@ -306,46 +303,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Precomputed integer Binomals (k i) where outer index corresponds to k and inner to i. Computed up to level 20.")]
-        private static int[][] Binomals()
-        {
-            lock (m_binomalsLock)
-            {
-                if (m_binomals != null)
-                    return m_binomals;
-
-                int maxDim = 20;
-
-                m_binomals = new int[maxDim][];
-
-                //Compute the binomal as triangular jagged array as Pascals triangle
-                //https://en.wikipedia.org/wiki/Binomial_coefficient
-                for (int i = 0; i < maxDim; i++)
-                {
-                    m_binomals[i] = new int[i + 1]; //length as 1 more than current row (due to zero indexing) First row has 1 item, 2nd has 2 etc.
-
-                    for (int j = 0; j < i + 1; j++)
-                    {
-                        if (j == 0)
-                            m_binomals[i][j] = 1;   //Edge value always 1
-                        else if (j == i)
-                            m_binomals[i][j] = 1;   //Edge value always 1
-                        else
-                            m_binomals[i][j] = m_binomals[i - 1][j - 1] + m_binomals[i - 1][j];     //Non edge values sum of the two values "above"
-                    }
-                }
-
-                return m_binomals;
-            }
-        }
-
-
-        /***************************************************/
-
-        private static int[][] m_binomals = null;
-        private static object m_binomalsLock = new object();
-
-        /***************************************************/
+        
     }
 
 }
