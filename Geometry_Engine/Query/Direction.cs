@@ -40,21 +40,6 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        public static Vector Normal(this Mesh mesh, Face face, double tolerance = Tolerance.Distance)
-        {
-            List<Point> vertices = mesh.Vertices;
-
-            Point p1 = vertices[(face.A)];
-            Point p2 = vertices[(face.B)];
-            Point p3 = vertices[(face.C)];
-            Vector v1 = p2 - p1;
-            Vector v2 = p3 - p1;
-            double sqTol = tolerance * tolerance;
-            return v1.SquareLength() <= sqTol || v2.SquareLength() <= sqTol ? null : Query.CrossProduct(p2 - p1, p3 - p1);
-        }
-
-        /***************************************************/
     }
 }
 
