@@ -54,7 +54,8 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Plane Project(this Plane plane, Plane ToPlane, Vector vector)
+        [PreviousVersion("6.1", "BH.Engine.Geometry.Modify.Project(BH.oM.Geometry.Plane, BH.oM.Geometry.Plane, BH.oM.Geometry.Vector)")]
+        public static Plane ProjectAlong(this Plane plane, Plane ToPlane, Vector vector)
         {
             double dp = plane.Normal.DotProduct(ToPlane.Normal);
             if (Math.Abs(dp) <= Tolerance.Angle)
