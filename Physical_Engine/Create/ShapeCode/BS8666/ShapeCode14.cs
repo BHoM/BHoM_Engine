@@ -40,7 +40,11 @@ namespace BH.Engine.Physical
         [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
         public static ShapeCode14 ShapeCode14(double b, double c, double d, double diameter, double bendRadius)
         {
-            double a = Math.Sqrt(Math.Pow(d,2) + Math.Pow(b-bendRadius,2));
+            double r = bendRadius + diameter;
+            double h2 = (d - r) * (d - r) + (b - r) * (b - r);
+            double a1 = Math.Sqrt(h2 - r * r);
+
+            double a = a1 + r;
 
             if (b < Tolerance.Distance || c < Tolerance.Distance || d < Tolerance.Distance)
             {
