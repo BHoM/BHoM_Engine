@@ -148,11 +148,6 @@ namespace BH.Engine.Physical
                 Base.Compute.RecordError("The parameters A and C of ShapeCode14 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
             }
-            else if(Math.Abs(Math.Pow(shapeCode.A,2) - Math.Pow(shapeCode.D,2) - Math.Pow(shapeCode.B - shapeCode.BendRadius,2)) > Tolerance.Distance)
-            {
-                Base.Compute.RecordError("The parameters A, D and (B - 2*BendRadius) must form a right angled triangle.");
-                return false;
-            }
             else if (shapeCode.BendRadius > shapeCode.A - shapeCode.GeneralEndProjection() || shapeCode.BendRadius > shapeCode.C - shapeCode.GeneralEndProjection())
             {
                 Base.Compute.RecordError("The A and C parameters of ShapeCode14 must be greater than the bending radius plus the minimum end projection.");
@@ -166,12 +161,12 @@ namespace BH.Engine.Physical
 
         private static bool IsCompliant(this ShapeCode15 shapeCode)
         {
-            if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.B - shapeCode.Diameter, 2) - Math.Pow(shapeCode.D, 2)) > Tolerance.MacroDistance)
-            {
-                Base.Compute.RecordError("The parameters A, B and D of ShapeCode15 do not form a right angled triangle within tolerance.");
-                return false;
-            }
-            else if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
+            //if (Math.Abs(Math.Pow(shapeCode.A, 2) - Math.Pow(shapeCode.B - shapeCode.Diameter, 2) - Math.Pow(shapeCode.D, 2)) > Tolerance.MacroDistance)
+            //{
+            //    Base.Compute.RecordError("The parameters A, B and D of ShapeCode15 do not form a right angled triangle within tolerance.");
+            //    return false;
+            //}
+            if (shapeCode.A < shapeCode.GeneralEndProjection() || shapeCode.C < shapeCode.GeneralEndProjection())
             {
                 Base.Compute.RecordError("The parameters A and C of ShapeCode15 must be greater than the minimum general end projection defined in BS 8666:2020 Table 2.");
                 return false;
