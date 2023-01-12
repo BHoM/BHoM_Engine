@@ -55,14 +55,14 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("6.1", "BH.Engine.Geometry.Modify.Project(BH.oM.Geometry.Plane, BH.oM.Geometry.Plane, BH.oM.Geometry.Vector)")]
-        public static Plane ProjectAlong(this Plane plane, Plane ToPlane, Vector vector)
+        public static Plane ProjectAlong(this Plane plane, Plane toPlane, Vector vector)
         {
-            double dp = plane.Normal.DotProduct(ToPlane.Normal);
+            double dp = plane.Normal.DotProduct(toPlane.Normal);
             if (Math.Abs(dp) <= Tolerance.Angle)
                 return null;
 
-            Vector normal = dp > 0 ? ToPlane.Normal : ToPlane.Normal.Reverse();
-            return new Plane { Origin = plane.Origin.ProjectAlong(ToPlane, vector), Normal = normal };
+            Vector normal = dp > 0 ? toPlane.Normal : toPlane.Normal.Reverse();
+            return new Plane { Origin = plane.Origin.ProjectAlong(toPlane, vector), Normal = normal };
         }
 
 
