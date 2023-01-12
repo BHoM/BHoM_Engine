@@ -55,6 +55,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousVersion("6.1", "BH.Engine.Geometry.Modify.Project(BH.oM.Geometry.Plane, BH.oM.Geometry.Plane, BH.oM.Geometry.Vector)")]
+        [PreviousInputNames("ToPlane", "toPlane")]
         public static Plane ProjectAlong(this Plane plane, Plane toPlane, Vector vector)
         {
             double dp = plane.Normal.DotProduct(toPlane.Normal);
