@@ -40,7 +40,7 @@ namespace BH.Engine.Physical
         [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
         public static ShapeCode00 ShapeCode00(double a, double diameter, double bendRadius = 0)
         {
-            if(a < Tolerance.Distance)
+            if(a < 0)
             {
                 Base.Compute.RecordError("One or more of the parameters given is zero and therefore the ShapeCode cannot be created.");
                 return null;
