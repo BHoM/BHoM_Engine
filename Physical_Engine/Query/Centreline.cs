@@ -297,25 +297,35 @@ namespace BH.Engine.Physical
 
         private static ICurve Centreline(this ShapeCode26 shapeCode)
         {
-            double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
-            double angle = Math.Atan(shapeCode.D / shapeCode.E);
-            double lengthReductionBottom = (bendOffset + shapeCode.Diameter / 2) * Math.Sin(angle) / 2;
+            double d = shapeCode.D - shapeCode.Diameter;  //Height centreline
+            double alpha = Math.Atan(shapeCode.E / d);  //Angle of the upper corner of the triangle F-d-B 
+            double beta = alpha / 2 + Math.PI / 4;      //Angle of the bisector between A and B
+            double arcAngle = Math.PI / 2 - alpha;      //Angle of the arc
 
-            Point aEnd = new Point() { X = shapeCode.A - lengthReductionBottom };
-            Point abCentre = aEnd + new Vector() { Y = bendOffset };
-            Point cEnd = new Point() { X = shapeCode.A + shapeCode.E + shapeCode.C, Y = shapeCode.D - shapeCode.Diameter};
-            Point cStart = cEnd + new Vector() { X = -shapeCode.C + lengthReductionBottom };
-            Point bcCentre = cStart + new Vector() { Y = -bendOffset };
-            Vector bDir = bcCentre - abCentre;
-            Vector bPerp = bDir.CrossProduct(Vector.ZAxis);
-            Point bMid = bcCentre.Translate(bDir * shapeCode.B).Translate(bPerp * bendOffset);
-            Point bStart = abCentre.CircleTangentialPoint(bMid, bendOffset)[1];
-            Point bEnd = bcCentre.CircleTangentialPoint(bStart, bendOffset)[1];
+            double r = shapeCode.BendRadius + shapeCode.Diameter / 2;   //Centreline bend radius
+            double x = r / Math.Tan(beta);                              //Distance from AB corner with 0 radius to end of A
+            double s = Math.Sqrt(r * r + x * x);                        //Distance from arc centre to AB corner
+            double t = s - r;                                           //Hypotenous of triangle from AB corner to arc
+            double addRed = x / s * t;                                  //Reduction in the leng reduction. This is X-distance from arc centre to AB using the fact that triangles are of the same shape
+
+            double lengthReduction = x - addRed;
+
+            //Corner AB
+            Point aEnd = new Point() { X = shapeCode.A - lengthReduction };
+            Point abCentre = aEnd + new Vector() { Y = r };
+            Point bStart = aEnd.Rotate(abCentre, Vector.ZAxis, arcAngle);
+
+            //Corner BC
+            Point cStart = new Point { X = shapeCode.A + shapeCode.E + lengthReduction, Y = d };
+            Point bcCentre = new Point { X = cStart.X, Y = cStart.Y - r };
+            Point bEnd = cStart.Rotate(bcCentre, Vector.ZAxis, arcAngle);
+
+            Point cEnd = new Point { X = shapeCode.A + shapeCode.E + shapeCode.C, Y = cStart.Y };
 
             Line a = new Line() { Start = new Point(), End = aEnd };
-            ICurve abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
-            Line b = new Line() { Start = bStart, End = bEnd };
-            ICurve bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
+            Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
+            Line b = new Line { Start = bStart, End = bEnd };
+            Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
             Line c = new Line() { Start = cStart, End = cEnd };
 
             return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c } };
