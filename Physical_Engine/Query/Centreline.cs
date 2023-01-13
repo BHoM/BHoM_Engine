@@ -240,6 +240,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [NotImplemented]
         private static ICurve Centreline(this ShapeCode24 shapeCode)
         {
             double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
@@ -383,6 +384,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [NotImplemented]
         private static ICurve Centreline(this ShapeCode29 shapeCode)
         {
             double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
@@ -867,6 +869,7 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [NotImplemented]
         private static ICurve Centreline(this ShapeCode56 shapeCode)
         {
             double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
