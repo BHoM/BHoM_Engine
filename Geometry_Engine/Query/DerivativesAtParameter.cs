@@ -54,36 +54,14 @@ namespace BH.Engine.Geometry
             numberOfDerivates = Math.Min(numberOfDerivates, degree);
 
             //Construct list of homogenous controlpoints as double[] where the the first three values corespond to the coordinates sclaed by the weight and 4th value correspond to the weights
-            List<double[]> cw = curve.ControlPoints.Zip(curve.Weights, (p, w) => new double[] { p.X * w, p.Y * w, p.Z * w, w }).ToList();
+            Output<List<double[]>, bool> cw_isRational = curve.ControlPoints.ToDoubleArray(curve.Weights);
+            List<double[]> cw = cw_isRational.Item1;
+            bool isRational = cw_isRational.Item2;
             
-            //Compute the derivatives for the homogenous coordinates
+            //Compute the derivatives for the homogenous/cartesian coordinates coordinates
             List<double[]> cwDers = CurveDerivatives(curve.Knots, degree, cw, numberOfDerivates, t);
 
-            //Split into Aders containing the still scaled derivative vectors and wDers containing the derivatives of the weights
-            List<Vector> aDers = new List<Vector>();
-            List<double> wDers = new List<double>();
-
-            for (int i = 0; i < cwDers.Count; i++)
-            {
-                double[] cwDer = cwDers[i];
-                aDers.Add(new Vector { X = cwDer[0], Y = cwDer[1], Z = cwDer[2] });
-                wDers.Add(cwDer[3]);
-            }
-
-            List<Vector> derivates = new List<Vector>();
-
-            //Compute the Derivatives in Cartesian coordinates
-            for (int k = 0; k <= numberOfDerivates; k++)
-            {
-                Vector v = aDers[k];
-                for (int i = 1; i <= k; i++)
-                {
-                    v -= Binomal(k, i) * wDers[i] * derivates[k - i];
-                }
-                derivates.Add(v / wDers[0]);
-            }
-
-            return derivates;
+            return cwDers.ToCartesianDerivatesCurve(isRational);
         }
 
 
