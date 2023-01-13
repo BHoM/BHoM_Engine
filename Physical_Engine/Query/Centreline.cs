@@ -644,34 +644,47 @@ namespace BH.Engine.Physical
 
         private static ICurve Centreline(this ShapeCode46 shapeCode)
         {
-            double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
-            double angle = Math.Acos(shapeCode.F / shapeCode.B);
-            double lengthReduction = ((shapeCode.BendRadius + shapeCode.Diameter) * angle) / 2;
+            double d = shapeCode.D - shapeCode.Diameter;  //Height centreline
+            double alpha = Math.Atan(shapeCode.F / d);  //Angle of the upper corner of the triangle F-d-B 
+            double beta = alpha / 2 + Math.PI / 4;      //Angle of the bisector between A and B
+            double arcAngle = Math.PI / 2 - alpha;      //Angle of the arc
 
-            Point aEnd = new Point() { X = shapeCode.A - lengthReduction};
-            Point abCentre = aEnd + new Vector() { Y = -bendOffset };
-            Line abRadius = new Line() { Start = abCentre, End = aEnd }.Rotate(abCentre, Vector.ZAxis, -angle);
-            Point bLeftStart = abRadius.End;
-            Line bLeft = new Line() { Start = bLeftStart, End = bLeftStart + new Vector() { X = shapeCode.B - 2*lengthReduction } }.Rotate(bLeftStart, Vector.ZAxis, -angle);
-            Point bLeftEnd = bLeft.End;
-            Line bcRadius = new Line() { Start = bLeftEnd, End = bLeftEnd + new Vector() { X = bendOffset } }.Rotate(bLeftEnd, Vector.ZAxis, Math.PI/2 - angle);
-            Point bcCentre = bcRadius.End;
-            Point cStart = bcCentre + new Vector() { Y = -bendOffset };
-            Point cEnd = cStart + new Vector() { X = shapeCode.C - 2 * lengthReduction };
-            Point cbCentre = cEnd + new Vector() { Y = bendOffset };
-            Line cbRadius = new Line() { Start = cbCentre, End = cEnd }.Rotate(cbCentre, Vector.ZAxis, angle);
-            Point bRightStart = cbRadius.End;
-            Line bRight = new Line() { Start = bRightStart, End = bRightStart + new Vector() { X = shapeCode.B - lengthReduction } }.Rotate(bRightStart, Vector.ZAxis, angle);
-            Point bRightEnd = bRight.End;
-            Line deRadius = new Line() { Start = bRightEnd, End = bRightEnd + new Vector() { X = bendOffset } }.Rotate(bRightEnd, Vector.ZAxis, -Math.PI / 2 + angle);
-            Point deCentre = deRadius.End;
-            Point eStart = deCentre + new Vector() { Y = bendOffset };
+            double r = shapeCode.BendRadius + shapeCode.Diameter / 2;   //Centreline bend radius
+            double x = r / Math.Tan(beta);                              //Distance from AB corner with 0 radius to end of A
+            double s = Math.Sqrt(r * r + x * x);                        //Distance from arc centre to AB corner
+            double t = s - r;                                           //Hypotenous of triangle from AB corner to arc
+            double addRed = x / s * t;                                  //Reduction in the leng reduction. This is X-distance from arc centre to AB using the fact that triangles are of the same shape
+
+            double lengthReduction = x - addRed;
+            //Corner AB
+            Point aEnd = new Point() { X = shapeCode.A - lengthReduction };
+            Point abCentre = aEnd + new Vector() { Y = -r };
+            Point bLeftStart = aEnd.Rotate(abCentre, Vector.ZAxis, -arcAngle);
+
+            //Corner BC left
+            Point cStart = new Point { X = shapeCode.A + shapeCode.F + lengthReduction, Y = -d };
+            Point bcCentre = new Point { X = cStart.X, Y = cStart.Y + r };
+            Point bLeftEnd = cStart.Rotate(bcCentre, Vector.ZAxis, -arcAngle);
+
+            //Corner BC right
+            Point cEnd = new Point { X = cStart.X + shapeCode.C - 2 * lengthReduction, Y = cStart.Y };
+            Point cbCentre = new Point { X = cEnd.X, Y = cEnd.Y + r };
+            Point bRightStart = cEnd.Rotate(cbCentre, Vector.ZAxis, arcAngle);
+
+            //Corner BE
+            Point eStart = new Point { X = shapeCode.A + shapeCode.C + shapeCode.F * 2 + lengthReduction };
+            Point deCentre = new Point { X = eStart.X, Y = eStart.Y - r };
+            Point bRightEnd = eStart.Rotate(deCentre, Vector.ZAxis, arcAngle);
+            Point eEnd = new Point { X = shapeCode.A + shapeCode.C + shapeCode.F * 2 + shapeCode.E };
+
 
             Line a = new Line() { Start = new Point(), End = aEnd };
             Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bLeftStart);
+            Line bLeft = new Line { Start = bLeftStart, End = bLeftEnd };
             Arc bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bLeftEnd, cStart);
             Line c = new Line() { Start = cStart, End = cEnd };
             Arc cdArc = Engine.Geometry.Create.ArcByCentre(cbCentre, cEnd, bRightStart);
+            Line bRight = new Line { Start = bRightStart, End = bRightEnd };
             Arc deArc = Engine.Geometry.Create.ArcByCentre(deCentre, bRightEnd, eStart);
             Line e = new Line() { Start = eStart, End = eStart + new Vector { X = shapeCode.E - lengthReduction } };
 
