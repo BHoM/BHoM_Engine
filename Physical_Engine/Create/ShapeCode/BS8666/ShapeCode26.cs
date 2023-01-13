@@ -46,7 +46,20 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            double b = Math.Pow(Math.Pow(d, 2) + Math.Pow(e, 2), 0.5);
+            double dRed = d - diameter;  //Height centreline
+            double alpha = Math.Atan(e / dRed);  //Angle of the upper corner of the triangle F-d-B 
+            double beta = alpha / 2 + Math.PI / 4;      //Angle of the bisector between A and B
+            double arcAngle = Math.PI / 2 - alpha;      //Angle of the arc
+
+            double r = bendRadius + diameter / 2;   //Centreline bend radius
+            double x = r / Math.Tan(beta);                              //Distance from AB corner with 0 radius to end of A
+            double s = Math.Sqrt(r * r + x * x);                        //Distance from arc centre to AB corner
+            double t = s - r;                                           //Hypotenous of triangle from AB corner to arc
+            double yRed = r / s * t;                                  //Reduction in the leng reduction. This is X-distance from arc centre to AB using the fact that triangles are of the same shape
+
+            dRed = dRed - 2 * yRed;
+
+            double b = Math.Pow(Math.Pow(dRed, 2) + Math.Pow(e, 2), 0.5);
 
             ShapeCode26 shapeCode = new ShapeCode26(a, b, c, d, e, diameter, bendRadius);
 
