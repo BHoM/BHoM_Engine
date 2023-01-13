@@ -36,6 +36,7 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [NotImplemented]
         [Description("Creates a ShapeCode object using the parameters provided. Refer to the object descriptions for alignment.")]
         [Output("shapeCode", "A ShapeCode to be used with Reinforcement objects.")]
         public static ShapeCode24 ShapeCode24(double a, double c, double d, double e, double diameter, double bendRadius)
