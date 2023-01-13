@@ -38,7 +38,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the hook diameter based on the diameter of the reinforcement bar, the shape code and the bend radius.")]
         [Input("reinforcement", "The reinforcement that contains the diameter, ShapeCode and bend radius.")]
-        [Output("hookDiameter", "The anticipated hook diameter based on the diameter of the reinforcement bar", typeof(Length))]
+        [Output("hookDiameter", "The anticipated hook diameter based on the diameter of the reinforcement bar.", typeof(Length))]
         public static double HookDiameter(this Reinforcement reinforcement)
         {
             return reinforcement.IsNull() ? 0 : HookDiameter(reinforcement.ShapeCode);
@@ -48,7 +48,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the hook diameter based on the diameter of the reinforcement bar, the shape code and the bend radius.")]
         [Input("shapeCode", "The ShapeCode used to determine the standard to calculate the scheduling radius.")]
-        [Output("hookDiameter", "The anticipated hook diameter based on the diameter of the reinforcement bar", typeof(Length))]
+        [Output("hookDiameter", "The anticipated hook diameter based on the diameter of the reinforcement bar.", typeof(Length))]
         public static double HookDiameter(this IShapeCode shapeCode)
         {
             if (shapeCode.IsNull())

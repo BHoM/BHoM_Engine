@@ -43,7 +43,7 @@ namespace BH.Engine.Physical
 
         [Description("Creates a Reinforcement object storing the ShapeCode and coordinate system.")]
         [Input("coordinateSystem", "Position and orientation of the Reinforcement in Space.Refer to the description of the shape codes for how they relate to the coordinate system.")]
-        [Input("shapeCode", "The name of the beam, default empty string")]
+        [Input("shapeCode", "The name of the beam, default empty string.")]
         [Output("reinforcement", "The reinforcement object with a compliant shape code in accordance with BS 8666:2020.")]
         public static Reinforcement Reinforcement(Cartesian coordinateSystem, IShapeCode shapeCode)
         {
