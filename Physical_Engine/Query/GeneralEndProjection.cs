@@ -39,7 +39,7 @@ namespace BH.Engine.Physical
         [Description("Gets the minimum end projection for general bends (bobs) or links where the bend is greater than or equal to 150 degrees." +
             "This is based on the diameter of the reinforcement bar and the standard is determined from the ShapeCode namespace.")]
         [Input("reinforcement", "The reinforcement that contains the diameter and the ShapeCode.")]
-        [Output("endProjection", "The minimum end projection based on the diameter of the reinforcement bar", typeof(Length))]
+        [Output("endProjection", "The minimum end projection based on the diameter of the reinforcement bar.", typeof(Length))]
         public static double GeneralEndProjection(this Reinforcement reinforcement)
         {
             return reinforcement.IsNull() ? 0 : GeneralEndProjection(reinforcement.ShapeCode);
@@ -50,7 +50,7 @@ namespace BH.Engine.Physical
         [Description("Gets the minimum end projection for general bends (bobs) or links where the bend is greater than or equal to 150 degrees." +
             "This is based on the diameter of the reinforcement bar and the standard is determined from the ShapeCode namespace.")]
         [Input("shapeCode", "The ShapeCode used to determine the standard to calculate the scheduling radius.")]
-        [Output("endProjection", "The minimum end projection based on the diameter of the reinforcement bar", typeof(Length))]
+        [Output("endProjection", "The minimum end projection based on the diameter of the reinforcement bar.", typeof(Length))]
         public static double GeneralEndProjection(this IShapeCode shapeCode)
         {
             if (shapeCode.IsNull())

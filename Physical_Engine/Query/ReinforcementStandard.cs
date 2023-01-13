@@ -51,7 +51,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the standard for reinforcement (e.g. BS 8666) based on the namespace of the ShapeCode.")]
-        [Input("shapeCode", "The ShapeCode used to determine the reinforcement standard.")]
+        [Input("type", "The ShapeCode type.")]
         [Output("standard", "The standard for reinforcement (e.g. BS 8666).")]
         public static string ReinforcementStandard(this Type type)
         {

@@ -62,7 +62,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the minimum scheduling radius based on the diameter of the reinforcement bar. The standard is determined from the namespace of the ShapeCode.")]
-        [Input("shapeCode", "The ShapeCode used to determine the standard to calculate the scheduling radius.")]
+        [Input("diameter", "The diameter used to calculate the scheduling radius.")]
         [Output("schedulingRadius", "The minimum scheduling radius based on the diameter of the reinforcement bar to the standard of the ShapeCode.", typeof(Length))]
         public static double SchedulingRadius<T>(this double diameter) where T : IShapeCode
         {

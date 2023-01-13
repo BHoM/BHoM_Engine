@@ -39,7 +39,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the total length of the Reinforcement with ShapeCode00 using the formulation in BS 8666:2020 Table 5.")]
-        [Input("shapeCode", "The ShapeCode to calculate the total length for.")]
+        [Input("reinforcement", "The Reinforcement to calculate the total length for.")]
         [Output("length", "The total length of the Reinforcement determined by the ShapeCode parameters.", typeof(Length))]
         public static double Length(this Reinforcement reinforcement)
         {
