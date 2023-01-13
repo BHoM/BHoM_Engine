@@ -133,11 +133,11 @@ namespace BH.Engine.Physical
             double bendOffset = shapeCode.BendRadius + shapeCode.Diameter / 2;
 
             Point cEnd = new Point() { X = shapeCode.C - bendOffset - shapeCode.Diameter / 2 };
-            Point arcCentre = cEnd + new Vector() { Y = bendOffset };
-            Circle circle = new Circle() { Centre = arcCentre, Normal = Vector.ZAxis, Radius = bendOffset };
+            Point caCentre = cEnd + new Vector() { Y = bendOffset };
+            Circle circle = new Circle() { Centre = caCentre, Normal = Vector.ZAxis, Radius = bendOffset };
             Point aEnd = new Point() { X = shapeCode.C - shapeCode.D + shapeCode.Diameter/2*Math.Cos(angle), Y = shapeCode.B - shapeCode.Diameter/2*(1 + Math.Sin(angle)) };
 
-            Point aStart = arcCentre.CircleTangentialPoint(aEnd, bendOffset)[1];
+            Point aStart = caCentre.CircleTangentialPoint(aEnd, bendOffset)[1];
             //Point aStart = circle.ClosestPoint(aEnd).Rotate(arcCentre, Vector.ZAxis, -Math.PI / 2);
 
             Line c = new Line() { Start = new Point(), End = cEnd };
@@ -156,11 +156,11 @@ namespace BH.Engine.Physical
             double lengthReduction = (shapeCode.BendRadius + shapeCode.Diameter) *Math.Sin(angle/2);
 
             Point cEnd = new Point() { X = -shapeCode.C + lengthReduction };
-            Point arcCentre = cEnd + new Vector() { Y = bendOffset };
-            Circle circle = new Circle() { Centre = arcCentre, Normal = Vector.ZAxis, Radius = bendOffset };
+            Point acCentre = cEnd + new Vector() { Y = bendOffset };
+            Circle circle = new Circle() { Centre = acCentre, Normal = Vector.ZAxis, Radius = bendOffset };
             Point aEnd = new Point() { X = -shapeCode.C - shapeCode.D + shapeCode.Diameter / 2 * Math.Cos(angle), Y = shapeCode.B - shapeCode.Diameter/2*( 1 + Math.Sin(angle))};
 
-            Point aStart = arcCentre.CircleTangentialPoint(aEnd, bendOffset)[0];
+            Point aStart = acCentre.CircleTangentialPoint(aEnd, bendOffset)[0];
             //Point aStart = circle.ClosestPoint(aEnd).Rotate(arcCentre, Vector.ZAxis, Math.PI / 2);
 
             Line c = new Line() { Start = new Point(), End = cEnd };
@@ -273,8 +273,6 @@ namespace BH.Engine.Physical
             return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c } };
         }
 
-        //
-
         /***************************************************/
 
         private static ICurve Centreline(this ShapeCode25 shapeCode)
@@ -311,19 +309,24 @@ namespace BH.Engine.Physical
 
             Point aEnd = new Point() { X = shapeCode.A - lengthReductionBottom };
             Point abCentre = aEnd + new Vector() { Y = bendOffset };
-            Circle bottomCircle = new Circle() { Centre = abCentre, Radius = bendOffset, Normal = Vector.ZAxis };
+            //Circle bottomCircle = new Circle() { Centre = abCentre, Radius = bendOffset, Normal = Vector.ZAxis };
             Point cEnd = new Point() { X = shapeCode.A + shapeCode.E + shapeCode.C, Y = shapeCode.D - shapeCode.Diameter};
-            Point cStart = cEnd.Translate(new Vector() { X = -shapeCode.C + lengthReductionBottom });
-            Point bcCentre = cStart.Translate(new Vector() { Y = -bendOffset });
-            Circle topCircle = new Circle() { Centre = bcCentre, Radius = bendOffset, Normal = Vector.ZAxis };
-            Point bStart = bottomCircle.ClosestPoint(new Point() { X = shapeCode.A + shapeCode.E - shapeCode.Diameter / 2 * Math.Cos(angle), Y = shapeCode.D - shapeCode.Diameter - shapeCode.Diameter / 2*Math.Sin(angle) })
-                .Rotate(abCentre, Vector.ZAxis, -Math.PI / 2);
-            Point bEnd = topCircle.ClosestPoint(bStart).Rotate(bcCentre, Vector.ZAxis, -Math.PI / 2);
+            Point cStart = cEnd + new Vector() { X = -shapeCode.C + lengthReductionBottom };
+            Point bcCentre = cStart + new Vector() { Y = -bendOffset };
+            Vector bDir = bcCentre - abCentre;
+            Vector bPerp = bDir.CrossProduct(Vector.ZAxis);
+            Point bMid = bcCentre.Translate(bDir * shapeCode.B).Translate(bPerp * bendOffset);
+            //Circle topCircle = new Circle() { Centre = bcCentre, Radius = bendOffset, Normal = Vector.ZAxis };
+            Point bStart = abCentre.CircleTangentialPoint(bMid, bendOffset)[1];
+            //Point bStart = bottomCircle.ClosestPoint(new Point() { X = shapeCode.A + shapeCode.E - shapeCode.Diameter / 2 * Math.Cos(angle), Y = shapeCode.D - shapeCode.Diameter - shapeCode.Diameter / 2*Math.Sin(angle) })
+            //    .Rotate(abCentre, Vector.ZAxis, -Math.PI / 2);
+            //Point bEnd = topCircle.ClosestPoint(bStart).Rotate(bcCentre, Vector.ZAxis, -Math.PI / 2);
+            Point bEnd = bcCentre.CircleTangentialPoint(bStart, bendOffset)[1];
 
             Line a = new Line() { Start = new Point(), End = aEnd };
-            ICurve abArc = bottomCircle.SplitAtPoints(new List<Point>() { aEnd, bStart })[0];
+            ICurve abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
             Line b = new Line() { Start = bStart, End = bEnd };
-            ICurve bcArc = topCircle.SplitAtPoints(new List<Point>() { bEnd, cStart })[0].IFlip();
+            ICurve bcArc = Engine.Geometry.Create.ArcByCentre(bcCentre, bEnd, cStart);
             Line c = new Line() { Start = cStart, End = cEnd };
 
             return new PolyCurve() { Curves = new List<ICurve>() { a, abArc, b, bcArc, c } };
@@ -343,8 +346,9 @@ namespace BH.Engine.Physical
             Point bStart = bEnd.Translate(new Vector() { X = -shapeCode.B + bendOffset + shapeCode.Diameter / 2 + lengthReduction });
             Point abCentre = bStart.Translate(new Vector() { Y = - bendOffset});
             Point aStart = new Point() { X = -shapeCode.B - shapeCode.E + + shapeCode.Diameter/2* (1 + Math.Cos(angle)), Y = shapeCode.C - shapeCode.D + shapeCode.Diameter / 2 * Math.Sin(angle) };
-            Circle circle = new Circle() { Centre = abCentre, Normal = Vector.ZAxis, Radius = bendOffset };
-            Point aEnd = circle.ClosestPoint(aStart).Rotate(abCentre, Vector.ZAxis, -Math.PI / 2);
+            //Circle circle = new Circle() { Centre = abCentre, Normal = Vector.ZAxis, Radius = bendOffset };
+            //Point aEnd = circle.ClosestPoint(aStart).Rotate(abCentre, Vector.ZAxis, -Math.PI / 2);
+            Point aEnd = abCentre.CircleTangentialPoint(aStart, bendOffset)[1];
 
             Line a = new Line() { Start = aStart, End = aEnd };
             Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
@@ -369,8 +373,9 @@ namespace BH.Engine.Physical
             Point bStart = bEnd.Translate(new Vector() { X = -shapeCode.B + bendOffset + shapeCode.Diameter / 2 + lengthReduction });
             Point abCentre = bStart.Translate(new Vector() { Y = -bendOffset });
             Point aStart = new Point() { X = -shapeCode.B - shapeCode.E + shapeCode.Diameter / 2 * (1 + Math.Cos(angle)), Y = - shapeCode.C - shapeCode.D + shapeCode.Diameter / 2* Math.Sin(angle) };
-            Circle circle = new Circle() { Centre = abCentre, Normal = Vector.ZAxis, Radius = bendOffset };
-            Point aEnd = circle.ClosestPoint(aStart).Rotate(abCentre, Vector.ZAxis, -Math.PI / 2);
+            //Circle circle = new Circle() { Centre = abCentre, Normal = Vector.ZAxis, Radius = bendOffset };
+            //Point aEnd = circle.ClosestPoint(aStart).Rotate(abCentre, Vector.ZAxis, -Math.PI / 2);
+            Point aEnd = abCentre.CircleTangentialPoint(aStart, bendOffset)[1];
 
             Line a = new Line() { Start = aStart, End = aEnd };
             Arc abArc = Engine.Geometry.Create.ArcByCentre(abCentre, aEnd, bStart);
@@ -590,10 +595,11 @@ namespace BH.Engine.Physical
             Point bStart = cbCentre + new Vector() { Y = -bendOffset };
             Point bEnd = bStart + new Vector() { X = shapeCode.B - bendOffset - shapeCode.Diameter/2 - lengthReduction };
             Point baCentre = bEnd + new Vector() { Y = bendOffset };
-            Circle baCircle = new Circle() { Centre = baCentre, Normal = Vector.ZAxis, Radius = bendOffset};
+            //Circle baCircle = new Circle() { Centre = baCentre, Normal = Vector.ZAxis, Radius = bendOffset};
             Point aEnd = new Point() { X = shapeCode.B + shapeCode.F - shapeCode.Diameter / 2,
                 Y = -shapeCode.C + shapeCode.Diameter + shapeCode.E - shapeCode.Diameter - shapeCode.Diameter/2};
-            Point aStart = baCircle.ClosestPoint(aEnd).Rotate(baCentre, Vector.ZAxis, -Math.PI / 2);
+            //Point aStart = baCircle.ClosestPoint(aEnd).Rotate(baCentre, Vector.ZAxis, -Math.PI / 2);
+            Point aStart = baCentre.CircleTangentialPoint(aEnd, bendOffset)[1];
 
 
 
