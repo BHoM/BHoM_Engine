@@ -62,7 +62,7 @@ namespace BH.Engine.Geometry
                 {
                     Point p = points[i];
                     double w = weights[i];
-                    result.Add(new double[] { p.X / w, p.Y / w, p.Z / w, w });
+                    result.Add(new double[] { p.X * w, p.Y * w, p.Z * w, w });
                 }
             }
             else
