@@ -95,7 +95,7 @@ namespace BH.Engine.Geometry
         public static bool IsInPlane(this Ellipse ellipse, Plane plane, double tolerance = Tolerance.Distance, double angTolerance = Tolerance.Angle)
         {
             //TODO: Is this check enough?
-            return ellipse.Normal().IsParallel(plane.Normal, angTolerance) != 0 && Math.Abs(plane.Normal.DotProduct(ellipse.Centre - plane.Origin)) <= tolerance;
+            return ellipse.Normal().IsParallel(plane.Normal, angTolerance) != 0 && Math.Abs(plane.Normal.DotProduct(ellipse.CoordinateSystem.Origin - plane.Origin)) <= tolerance;
         }
 
         /***************************************************/

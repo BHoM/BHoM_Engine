@@ -111,9 +111,7 @@ namespace BH.Engine.Geometry
         {
             return Math.Abs(ellipse.Radius1 - other.Radius1) < tolerance
                 && Math.Abs(ellipse.Radius2 - other.Radius2) < tolerance
-                && ellipse.Centre.IsEqual(other.Centre, tolerance)
-                && ellipse.Axis1.IsEqual(other.Axis1, tolerance)
-                && ellipse.Axis2.IsEqual(other.Axis2, tolerance);
+                && ellipse.CoordinateSystem.IsEqual(other.CoordinateSystem);
         }
 
         /***************************************************/

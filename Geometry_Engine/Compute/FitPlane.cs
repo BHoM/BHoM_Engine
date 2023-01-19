@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
         [Output("fitPlane", "Plane fit into control points of the input Ellipse based on the least squares algorithm.")]
         public static Plane FitPlane(this Ellipse curve, double tolerance = Tolerance.Distance)
         {
-            return new Plane { Origin = curve.Centre, Normal = curve.Axis1.CrossProduct(curve.Axis2).Normalise() };
+            return (Plane)curve.CoordinateSystem;
         }
 
         /***************************************************/

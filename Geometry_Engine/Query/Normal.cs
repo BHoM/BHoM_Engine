@@ -263,8 +263,7 @@ namespace BH.Engine.Geometry
                 Engine.Base.Compute.RecordError("Cannot compute the normal of a null curve.");
                 return null;
             }
-            Vector normal = (curve.Axis1).CrossProduct(curve.Axis2);
-            return normal;
+            return curve.CoordinateSystem.Z;
         }
 
         /***************************************************/
