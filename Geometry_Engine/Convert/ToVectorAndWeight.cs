@@ -43,29 +43,67 @@ namespace BH.Engine.Geometry
         [MultiOutput(1, "weights", "The weights from the controlpoints if rational, otherwise a list of 1's of equal length to the list of control points.")]
         public static Output<List<Vector>, List<double>> ToVectorsAndWeight(this List<double[]> controlPoints, bool isRational)
         {
+            return ToVectorsAndWeight(controlPoints, isRational, false);
+        }
+
+        /***************************************************/
+
+        [Description("Converts the list of double[] control points to a list of Vector and Weights.")]
+        [Input("controlPoints", "The list of control points to convert.")]
+        [Input("isRational", "If true, the controlPoints are assumed to be 4d or 3d (depending on if planar) in honogenous coordinates, if false assumed to be 3d or 2d (depending on if planar) in cartesian coordinates.")]
+        [Input("planar", "If true, the controlpoints are assumed to have only x and y coordinates defined, if false assumed to have x, y and z coordinates defined.")]
+        [MultiOutput(0, "vecs", "The Vector resulting from the conversion from either cartesian or homogenous coordinates, depending on isRational.")]
+        [MultiOutput(1, "weights", "The weights from the controlpoints if rational, otherwise a list of 1's of equal length to the list of control points.")]
+        public static Output<List<Vector>, List<double>> ToVectorsAndWeight(this List<double[]> controlPoints, bool isRational, bool planar)
+        {
             List<Vector> vectors = new List<Vector>();
             List<double> weight = new List<double>();
 
             if (isRational)
             {
-                for (int i = 0; i < controlPoints.Count; i++)
+                if (planar)
                 {
-                    double[] ptW = controlPoints[i];
-                    double w = ptW[3];
-                    vectors.Add(new Vector() { X = ptW[0] / w, Y = ptW[1] / w, Z = ptW[2] / w });
-                    weight.Add(w);
+                    for (int i = 0; i < controlPoints.Count; i++)
+                    {
+                        double[] ptW = controlPoints[i];
+                        double w = ptW[2];
+                        vectors.Add(new Vector() { X = ptW[0] / w, Y = ptW[1] / w });
+                        weight.Add(w);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < controlPoints.Count; i++)
+                    {
+                        double[] ptW = controlPoints[i];
+                        double w = ptW[3];
+                        vectors.Add(new Vector() { X = ptW[0] / w, Y = ptW[1] / w, Z = ptW[2] / w });
+                        weight.Add(w);
+                    }
                 }
             }
-            else 
+            else
             {
-                for (int i = 0; i < controlPoints.Count; i++)
+                if (planar)
                 {
-                    double[] pt = controlPoints[i];
-                    vectors.Add(new Vector() { X = pt[0], Y = pt[1], Z = pt[2] });
-                    weight.Add(1.0);    //All weights equal to 1.0 for non-rational
+                    for (int i = 0; i < controlPoints.Count; i++)
+                    {
+                        double[] pt = controlPoints[i];
+                        vectors.Add(new Vector() { X = pt[0], Y = pt[1] });
+                        weight.Add(1.0);    //All weights equal to 1.0 for non-rational
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < controlPoints.Count; i++)
+                    {
+                        double[] pt = controlPoints[i];
+                        vectors.Add(new Vector() { X = pt[0], Y = pt[1], Z = pt[2] });
+                        weight.Add(1.0);    //All weights equal to 1.0 for non-rational
+                    }
                 }
             }
-            return new Output<List<Vector>, List<double>> { Item1 = vectors, Item2 = weight };
+            return new Output<List<PoVectorint>, List<double>> { Item1 = vectors, Item2 = weight };
         }
 
         /***************************************************/
