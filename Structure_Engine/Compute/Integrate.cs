@@ -171,7 +171,7 @@ namespace BH.Engine.Structure
             else if (crv is Ellipse)
             {
                 Ellipse ellipse = crv as Ellipse;
-                ellipse.Centre = ellipse.Centre.Translate(adjustment);
+                ellipse.CoordinateSystem.Origin = ellipse.CoordinateSystem.Origin.Translate(adjustment);
             }
             else if (crv is PolyCurve)
             {

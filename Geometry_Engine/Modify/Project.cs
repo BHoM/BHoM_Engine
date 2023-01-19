@@ -26,6 +26,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Geometry
 {
@@ -109,7 +110,9 @@ namespace BH.Engine.Geometry
             Vector axis2 = axis1.CrossProduct(p.Normal);
             double radius2 = circle.Radius * circle.Normal.DotProduct(p.Normal);
 
-            return new Ellipse { Centre = circle.Centre.Project(p), Axis1 = axis1, Axis2 = axis2, Radius1 = circle.Radius, Radius2 = radius2 };
+            Cartesian coordinateSystem = new Cartesian(circle.Centre.Project(p), axis1, axis2, p.Normal);
+
+            return new Ellipse { CoordinateSystem = coordinateSystem, Radius1 = circle.Radius, Radius2 = radius2 };
         }
 
         /***************************************************/

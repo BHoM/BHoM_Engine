@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Linq;
 using System.ComponentModel;
@@ -44,7 +45,7 @@ namespace BH.Engine.Geometry
         {
             return new Ellipse
             {
-                Centre = centre,
+                CoordinateSystem = new Cartesian { Origin = centre },
                 Radius1 = radius1,
                 Radius2 = radius2
             };
@@ -61,14 +62,9 @@ namespace BH.Engine.Geometry
         [Output("ellipse", "The created Ellipse.")]
         public static Ellipse Ellipse(Point centre, Vector axis1, Vector axis2, double radius1, double radius2)
         {
-            if (Math.Abs(axis1.DotProduct(axis2)) > Tolerance.Angle)
-                Base.Compute.RecordWarning("Axis1 and axis2 are not orthogonal. Result may be wrong.");
-
             return new Ellipse
             {
-                Centre = centre,
-                Axis1 = axis1.Normalise(),
-                Axis2 = axis2.Normalise(),
+                CoordinateSystem = Create.CartesianCoordinateSystem(centre,axis1,axis2),
                 Radius1 = radius1,
                 Radius2 = radius2
             };
@@ -104,32 +100,27 @@ namespace BH.Engine.Geometry
                 Vector axis1 = RandomVector(rnd).Normalise();
                 return new Ellipse
                 {
-                    Centre = RandomPoint(rnd),
-                    Axis1 = axis1,
-                    Axis2 = RandomVector(rnd).Project(new Plane { Normal = axis1 }).Normalise(),
+                    CoordinateSystem = RandomCartesianCoordinateSystem(rnd),
                     Radius1 = rnd.NextDouble(),
                     Radius2 = rnd.NextDouble()
                 };
             }
             else
             {
-                Point centre = RandomPoint(rnd, box);
-                Vector axis1 = RandomVector(rnd).Normalise();
+                Cartesian coordinateSystem = RandomCartesianCoordinateSystem(rnd, box);
                 double maxRadius = new double[]
                 {
-                    box.Max.X - centre.X,
-                    box.Max.Y - centre.Y,
-                    box.Max.Z - centre.Z,
-                    centre.X - box.Min.X,
-                    centre.Y - box.Min.Y,
-                    centre.Z - box.Min.Z
+                    box.Max.X - coordinateSystem.Origin.X,
+                    box.Max.Y - coordinateSystem.Origin.Y,
+                    box.Max.Z - coordinateSystem.Origin.Z,
+                    coordinateSystem.Origin.X - box.Min.X,
+                    coordinateSystem.Origin.Y - box.Min.Y,
+                    coordinateSystem.Origin.Z - box.Min.Z
                 }.Min();
 
                 return new Ellipse
                 {
-                    Centre = centre,
-                    Axis1 = axis1,
-                    Axis2 = RandomVector(rnd).Project(new Plane { Normal = axis1 }).Normalise(),
+                    CoordinateSystem = coordinateSystem,
                     Radius1 = maxRadius * rnd.NextDouble(),
                     Radius2 = maxRadius * rnd.NextDouble()
                 };

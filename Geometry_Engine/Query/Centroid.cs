@@ -279,7 +279,7 @@ namespace BH.Engine.Geometry
         [Output("centroid", "The Point at the centre of given Ellipse.")]
         public static Point Centroid(this Ellipse ellipse, double tolerance = Tolerance.Distance)
         {
-            return ellipse.Centre;
+            return ellipse.CoordinateSystem.Origin;
         }
 
         /***************************************************/

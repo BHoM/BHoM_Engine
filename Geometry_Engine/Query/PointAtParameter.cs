@@ -77,7 +77,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Gets out the Point at the normalised angle parameter t on the curve. t should be between 0 and 1 where 0 corresponds to 0 angle and 1 corresponds to a full lap of 2*PI radians.\n" + 
+        [Description("Gets out the Point at the normalised angle parameter t on the curve. t should be between 0 and 1 where 0 corresponds to 0 angle and 1 corresponds to a full lap of 2*PI radians.\n" +
                      "Note that for a general case this does not correspond to a normalised length parameter along the curve, i.e. t value 1/3 does not (for the general case) give the point at 1/3 length around the perimiter but rather the point at the angle parameter corresponding to 1/3 of a full lap.")]
         [Input("curve", "The Ellipse to evaluate.")]
         [Input("t", "The normalised angle parameter to evaluate. Should be a value between 0 and 1.")]
@@ -96,7 +96,7 @@ namespace BH.Engine.Geometry
             double axis1Factor = curve.Radius1 * Math.Cos(angleParameter);
             double axis2Factor = curve.Radius2 * Math.Sin(angleParameter);
 
-            return curve.Centre + curve.Axis1 * axis1Factor + curve.Axis2 * axis2Factor;
+            return curve.CoordinateSystem.Origin + curve.CoordinateSystem.X * axis1Factor + curve.CoordinateSystem.Y * axis2Factor;
         }
 
         /***************************************************/

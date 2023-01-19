@@ -92,9 +92,7 @@ namespace BH.Engine.Geometry
         {
             return new Ellipse
             {
-                Axis1 = ellipse.Axis1.Mirror(p),
-                Axis2 = ellipse.Axis2.Mirror(p),
-                Centre = ellipse.Centre.Mirror(p),
+                CoordinateSystem = ellipse.CoordinateSystem.Mirror(p),
                 Radius1 = ellipse.Radius1,
                 Radius2 = ellipse.Radius2,
             };

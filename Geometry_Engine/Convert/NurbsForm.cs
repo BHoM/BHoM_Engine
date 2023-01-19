@@ -112,9 +112,9 @@ namespace BH.Engine.Geometry
         public static NurbsCurve ToNurbsCurve(this Ellipse ellipse)
         {
             {
-                Point centre = ellipse.Centre;
-                Vector d1 = ellipse.Radius1 * ellipse.Axis1;
-                Vector d2 = ellipse.Radius2 * ellipse.Axis2;
+                Point centre = ellipse.CoordinateSystem.Origin;
+                Vector d1 = ellipse.Radius1 * ellipse.CoordinateSystem.X;
+                Vector d2 = ellipse.Radius2 * ellipse.CoordinateSystem.Y;
                 double factor = Math.Cos(Math.PI / 4);
 
                 List<Point> points = new List<Point>

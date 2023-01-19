@@ -65,11 +65,11 @@ namespace BH.Engine.Geometry
             //TODO: Should this give back the control points of a circle in nurbs form?
             return new List<Point>()
             {
-                curve.Centre + curve.Radius1*curve.Axis1,
-                curve.Centre + curve.Radius2*curve.Axis2,
-                curve.Centre - curve.Radius1*curve.Axis1,
-                curve.Centre - curve.Radius2*curve.Axis2,
-                curve.Centre + curve.Radius1*curve.Axis1,
+                curve.CoordinateSystem.Origin + curve.Radius1*curve.CoordinateSystem.X,
+                curve.CoordinateSystem.Origin + curve.Radius2*curve.CoordinateSystem.Y,
+                curve.CoordinateSystem.Origin - curve.Radius1*curve.CoordinateSystem.X,
+                curve.CoordinateSystem.Origin - curve.Radius2*curve.CoordinateSystem.Y,
+                curve.CoordinateSystem.Origin + curve.Radius1*curve.CoordinateSystem.X,
             };
         }
 

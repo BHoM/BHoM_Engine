@@ -135,11 +135,9 @@ namespace BH.Engine.Geometry
             if (transform.IsRigidTransformation() || transform.IsUniformScaling())
                 return new Ellipse
                 {
-                    Centre = curve.Centre.Transform(transform),
-                    Axis1 = curve.Axis1.Transform(transform),
-                    Axis2 = curve.Axis2.Transform(transform),
-                    Radius1 = (curve.Axis1.Normalise() * curve.Radius1).Transform(transform).Length(),
-                    Radius2 = (curve.Axis2.Normalise() * curve.Radius2).Transform(transform).Length(),
+                    CoordinateSystem = curve.CoordinateSystem.Transform(transform),
+                    Radius1 = (curve.CoordinateSystem.X.Normalise() * curve.Radius1).Transform(transform).Length(),
+                    Radius2 = (curve.CoordinateSystem.Y.Normalise() * curve.Radius2).Transform(transform).Length(),
                 };
             else
             {

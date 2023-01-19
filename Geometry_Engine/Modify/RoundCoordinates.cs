@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Geometry
 {
@@ -228,13 +229,12 @@ namespace BH.Engine.Geometry
         [Output("curve", "The modified BHoM Geometry Ellipse. As Line if zero length.")]
         public static Ellipse RoundCoordinates(this Ellipse ellipse, int decimalPlaces = 6)
         {
+            Cartesian oldCoordinates = ellipse.CoordinateSystem;
             return new Ellipse()
             {
-                Centre = ellipse.Centre.RoundCoordinates(decimalPlaces),
+                CoordinateSystem = new Cartesian(oldCoordinates.Origin.RoundCoordinates(decimalPlaces), oldCoordinates.X, oldCoordinates.Y, oldCoordinates.Z),
                 Radius1 = Math.Round(ellipse.Radius1, decimalPlaces),
                 Radius2 = Math.Round(ellipse.Radius2, decimalPlaces),
-                Axis1 = ellipse.Axis1,
-                Axis2 = ellipse.Axis2
             };
         }
 

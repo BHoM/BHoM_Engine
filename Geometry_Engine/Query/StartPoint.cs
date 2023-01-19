@@ -52,7 +52,7 @@ namespace BH.Engine.Geometry
 
         public static Point StartPoint(this Ellipse ellipse)
         {
-            return ellipse.Centre + ellipse.Radius1 * ellipse.Axis1.Normalise();
+            return ellipse.CoordinateSystem.Origin + ellipse.Radius1 * ellipse.CoordinateSystem.X;
         }
 
         /***************************************************/

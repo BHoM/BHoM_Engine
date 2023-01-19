@@ -268,13 +268,13 @@ namespace BH.Engine.Graphics
                 return "";
             }
 
-            Point centerPt = ellipse.Centre;
+            Point centerPt = ellipse.CoordinateSystem.Origin;
 
             string ellipseString = "<ellipse cx=\"" + centerPt.X.ToString()
                                    + "\" cy=\"" + centerPt.Y.ToString()
                                    + "\" rx=\"" + ellipse.Radius1.ToString()
                                    + "\" ry=\"" + ellipse.Radius2.ToString()
-                                   + "\" transform=\"rotate(" + ((Engine.Geometry.Query.Angle(ellipse.Axis1, Vector.XAxis)) * 180 / Math.PI).ToString()
+                                   + "\" transform=\"rotate(" + ((Engine.Geometry.Query.Angle(ellipse.CoordinateSystem.X, Vector.XAxis)) * 180 / Math.PI).ToString()
                                    + " " + centerPt.X.ToString()
                                    + " " + centerPt.Y.ToString() + ")\"/>";
 

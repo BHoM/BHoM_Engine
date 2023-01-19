@@ -254,16 +254,16 @@ namespace BH.Engine.Geometry
             if (ellipse == null)
                 return null;
 
-            if (ellipse.Axis1 == new Vector { X = 0, Y = 0, Z = 0 } || ellipse.Axis2 == new Vector { X = 0, Y = 0, Z = 0 })
+            if (ellipse.CoordinateSystem.X == new Vector { X = 0, Y = 0, Z = 0 } || ellipse.CoordinateSystem.Y == new Vector { X = 0, Y = 0, Z = 0 })
                 throw new InvalidOperationException("Method trying to operate on an invalid ellipse");
 
-            Point centre = ellipse.Centre;
+            Point centre = ellipse.CoordinateSystem.Origin;
             double cx = centre.X, cy = centre.Y, cz = centre.Z;
 
-            Vector u = ellipse.Axis2.Normalise() * ellipse.Radius2;
+            Vector u = ellipse.CoordinateSystem.Y.Normalise() * ellipse.Radius2;
             double ux = u.X, uy = u.Y, uz = u.Z;
 
-            Vector v = ellipse.Axis1.Normalise() * ellipse.Radius1;
+            Vector v = ellipse.CoordinateSystem.X.Normalise() * ellipse.Radius1;
             double vx = v.X, vy = v.Y, vz = v.Z;
 
             ux *= ux; uy *= uy; uz *= uz;
