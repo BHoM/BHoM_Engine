@@ -103,7 +103,7 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
-            return new Output<List<PoVectorint>, List<double>> { Item1 = vectors, Item2 = weight };
+            return new Output<List<Vector>, List<double>> { Item1 = vectors, Item2 = weight };
         }
 
         /***************************************************/
