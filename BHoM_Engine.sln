@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1684
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BHoM_Engine", "BHoM_Engine\BHoM_Engine.csproj", "{AEAF161D-8206-40B8-93A7-67ABEBF2EE19}"
 EndProject
@@ -52,6 +52,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structure_Engine", "Structure_Engine\Structure_Engine.csproj", "{0C8044E4-3C1E-4138-9223-65A0CFB2113F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Versioning_Engine", "Versioning_Engine\Versioning_Engine.csproj", "{28D7ABDA-43DC-4A63-8C5F-D3B137E0CD21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialiser_Engine2", "Serialiser_Engine2\Serialiser_Engine2.csproj", "{368D133C-C05D-4A68-839F-F77E9F5CD4C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -159,6 +161,10 @@ Global
 		{28D7ABDA-43DC-4A63-8C5F-D3B137E0CD21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28D7ABDA-43DC-4A63-8C5F-D3B137E0CD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28D7ABDA-43DC-4A63-8C5F-D3B137E0CD21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{368D133C-C05D-4A68-839F-F77E9F5CD4C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{368D133C-C05D-4A68-839F-F77E9F5CD4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{368D133C-C05D-4A68-839F-F77E9F5CD4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{368D133C-C05D-4A68-839F-F77E9F5CD4C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
