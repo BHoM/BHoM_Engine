@@ -22,6 +22,7 @@
 
 using BH.oM.Base.Attributes;
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Reflection
@@ -33,6 +34,9 @@ namespace BH.Engine.Reflection
         /*******************************************/
 
         [PreviousVersion("6.1", "BH.Engine.Serialiser.Query.GenericTypeConstraint(System.Type)")]
+        [Description("Obtains the type constraint for the provided generic type.")]
+        [Input("type", "The generic type to obtain a type constraint for.")]
+        [Output("constraint", "The generic type constraint for the provided type.")]
         public static Type GenericTypeConstraint(this Type type)
         {
             if(type == null)
