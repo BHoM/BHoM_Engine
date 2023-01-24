@@ -26,6 +26,8 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using System;
+using System.CodeDom;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -39,7 +41,7 @@ namespace BH.Engine.Serialiser
 
         public static void RegisterClassMap(Type type)
         {
-            if (!BsonClassMap.IsClassMapRegistered(type))
+            if (!BsonClassMap.IsClassMapRegistered(type) && !m_TypesRegistered.Contains(type.FullName))
             {
                 try
                 {
@@ -59,6 +61,8 @@ namespace BH.Engine.Serialiser
                     }
                     else
                         BsonSerializer.RegisterDiscriminatorConvention(type, new GenericDiscriminatorConvention());
+
+                    m_TypesRegistered.Add(type.FullName);
                 }
                 catch (Exception e)
                 {
@@ -104,6 +108,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
 
         private static MethodInfo m_CreateEnumSerializer = typeof(Compute).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
+        private static List<string> m_TypesRegistered = new List<string>();
 
         /*******************************************/
     }
