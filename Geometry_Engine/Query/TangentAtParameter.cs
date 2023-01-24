@@ -60,6 +60,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Vector TangentAtParameter(this Ellipse ellipse, double parameter, double tolerance = Tolerance.Distance)
+        {
+            if (ellipse.IsNull())
+                return null;
+
+            if (parameter < 0)
+                parameter = 0;
+            if (parameter > 1)
+                parameter = 1;
+
+            double angle = parameter * 2 * Math.PI;
+
+            return (ellipse.Axis2 * (Math.Cos(angle) / ellipse.Radius1) - ellipse.Axis1 * (Math.Sin(angle) / ellipse.Radius2)).Normalise();
+        }
+
+        /***************************************************/
+
         public static Vector TangentAtParameter(this Line curve, double parameter, double tolerance = Tolerance.Distance)
         {
             double paramTol = tolerance / curve.Length();
