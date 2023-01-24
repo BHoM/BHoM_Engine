@@ -27,6 +27,8 @@ using System.Collections.Generic;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Quantities.Attributes;
+using BH.oM.Base;
+using static System.Net.WebRequestMethods;
 
 namespace BH.Engine.Geometry
 {
@@ -162,6 +164,92 @@ namespace BH.Engine.Geometry
                 if (pt.Distance(p) > tolerance) return false;
                 if ((acceptOnEdge && pt.Distance(curve.Centre) - curve.Radius - tolerance > 0) || (!acceptOnEdge && pt.Distance(curve.Centre) - curve.Radius + tolerance >= 0)) return false;
             }
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Input("curve", "The Ellipse to check if it is containing all of the provided points.")]
+        [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
+        [Input("acceptOnEdge", "If true, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
+        public static bool IsContaining(this Ellipse curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            if (curve.IsNull())
+                return false;
+
+            Plane p = new Plane { Origin = curve.Centre, Normal = curve.Normal() };
+            Output<Point, Point> focals = curve.FocalPoints();
+            Point f1 = focals.Item1;
+            Point f2 = focals.Item2;
+
+            //All points on the ellipse have have a distance equal two times the larger radii from the two focalpoints combined
+            double limitDist = Math.Max(curve.Radius1, curve.Radius2) * 2;
+
+            //To handle tolerance in relation to edge, a first pass is made that finds points clearly outside/inside the ellipse (10 times tolerance)
+            //Then a second pass is made to check if the points near the edge actually are on the edge or not
+            //Implemented in this fashion for efficency reasons, as the first loop is significantly less expensive than the iterative method of finding
+            //The closes point on an ellipse
+            List<Point> ptsNearEdge = new List<Point>();
+
+            double edgeCheckTol = tolerance * 10;
+
+            foreach (Point pt in points)
+            {
+                if (pt.Distance(p) > tolerance)
+                    return false;
+
+                double sumDist = f1.Distance(pt) + f2.Distance(pt);
+
+                if (sumDist < limitDist)
+                {
+                    //If smaller and we accept on edge, we can simply continue, as the point will be inside or on the edge, and for this case, that does not matter
+                    //If accept on edge is false, we need to store the point for checking distance to edge at later run
+                    if (!acceptOnEdge)
+                    {
+                        if (limitDist - sumDist < edgeCheckTol)  //Close to edge - store for check
+                            ptsNearEdge.Add(pt);
+                    }
+                }
+                else
+                {
+                    //If larger and we do not accept on edge, we can simply return false as this point is either outside or on the edge
+                    if (!acceptOnEdge)
+                        return false;
+                    else
+                    {
+                        //If we accept on edge, and the point is near the edge, need to store for evaluation
+                        if (sumDist - limitDist < edgeCheckTol)
+                            ptsNearEdge.Add(pt);
+                        else
+                            return false;   //If not close to edge, we can simply exit here, as the point si clearly outside
+                    }
+                }
+            }
+
+            if (acceptOnEdge)
+            {
+                //If accept on edge is true, all points are either near the edge or outside.
+                //If any of the poitns found are _not_ near the edge, return false
+                foreach (Point pt in ptsNearEdge)
+                {
+                    if (pt.Distance(curve) > tolerance)
+                        return false;
+                }
+            }
+            else
+            {
+                //If accept on edge is false, all points near the edge is either on the edge or inside
+                //If any of the points found are near the edge, return false
+                foreach (Point pt in ptsNearEdge)
+                {
+                    if (pt.Distance(curve) < tolerance)
+                        return false;
+                }
+            }
+
             return true;
         }
 
