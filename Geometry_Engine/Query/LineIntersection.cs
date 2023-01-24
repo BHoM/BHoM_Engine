@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Quantities.Attributes;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Geometry
 {
@@ -241,6 +242,124 @@ namespace BH.Engine.Geometry
                     iPts.Add(pt + v);
                     iPts.Add(pt - v);
                 }
+            }
+
+            if (l.Infinite)
+                return iPts;
+
+            List<Point> output = new List<Point>();
+            foreach (Point pt in iPts)
+            {
+                if (pt.Distance(l) <= tolerance)
+                    output.Add(pt);
+            }
+
+            return output;
+        }
+
+        /***************************************************/
+
+        [Description("Calculates and returns the intersection points of a Line and a Circle.")]
+        [Input("circle", "Circle to intersect with the Line.")]
+        [Input("line", "Line to intersect with the Circle.")]
+        [Input("useInfiniteLine", "If true or if the Infinite property of the Line is true, a intersection point found that is outside the domain of the Lines start and end point is accepted. If false, and the Lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
+        [Output("intersections", "The intersection points of the Circle and the Line.")]
+        public static List<Point> LineIntersections(this Ellipse ellipse, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
+        {
+            Line l = new Line { Start = line.Start, End = line.End, Infinite = useInfiniteLine || line.Infinite };
+            List<Point> iPts = new List<Point>();
+
+            Plane p = new Plane { Origin = ellipse.Centre, Normal = ellipse.Normal() };
+            if (Math.Abs(p.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
+            {   // Not Coplanar
+                Point pt = l.PlaneIntersection(p, tolerance: tolerance);
+                if (pt != null && pt.Distance(ellipse) <= tolerance)    // On Curve
+                    iPts.Add(pt);
+            }
+            else
+            {   // Coplanar
+                //Transform to ellipse coordinates
+                Cartesian coordinateSystem = Create.CartesianCoordinateSystem(ellipse.Centre, ellipse.Axis1, ellipse.Axis2);
+                TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(coordinateSystem);
+                Line lineLoc = l.Transform(transform);
+
+                Point p1 = lineLoc.Start;
+                Point p2 = lineLoc.End;
+                double rx = ellipse.Radius1;
+                double ry = ellipse.Radius2;
+
+
+                bool tangential = false;
+                Point p3 = new Point();
+                Point p4 = new Point();
+                if (Math.Abs(p1.X - p2.X) > tolerance)
+                {
+                    //Non vertical line. Evaluate with slope from X
+                    double s = (p2.Y - p1.Y) / (p2.X - p1.X);
+                    double si = p2.Y - (s * p2.X);
+
+                    double a = (ry * ry) + (rx * rx * s * s);
+                    double b = 2.0 * rx * rx * si * s;
+                    double c = rx * rx * si * si - rx * rx * ry * ry;
+
+                    double sqrtTerm = (b * b) - (4.0 * a * c);
+                    double checkVal = sqrtTerm / (2 * a);
+                    double radicand_sqrt;
+
+                    if (Math.Abs(checkVal) < tolerance)
+                    {
+                        //intersection is tangential
+                        radicand_sqrt = 0;   //Set to zero to ensure no negative sqrt
+                        tangential = true;
+                    }
+                    else if (checkVal < 0)  //no intersection
+                        return new List<Point>();
+                    else
+                        radicand_sqrt = Math.Sqrt(sqrtTerm);
+
+                    p3.X = (-b - radicand_sqrt) / (2.0 * a);
+                    p4.X = (-b + radicand_sqrt) / (2.0 * a);
+                    p3.Y = s * p3.X + si;
+                    p4.Y = s * p4.X + si;
+                }
+                else
+                {
+                    //Vertical line, evaluate with slope from Y
+                    double s = (p2.X - p1.X) / (p2.Y - p1.Y);
+                    double si = p2.X - (s * p2.Y);
+
+                    double a = (rx * rx) + (ry * ry * s * s);
+                    double b = 2.0 * ry * ry * si * s;
+                    double c = ry * ry * si * si - ry * ry * rx * rx;
+
+                    double sqrtTerm = (b * b) - (4.0 * a * c);
+                    double checkVal = sqrtTerm / (2 * a);
+                    double radicand_sqrt;
+
+                    if (Math.Abs(checkVal) < tolerance)
+                    {
+                        //intersection is tangential
+                        radicand_sqrt = 0;   //Set to zero to ensure no negative sqrt
+                        tangential = true;
+                    }
+                    else if (checkVal < 0)  //no intersection
+                        return new List<Point>();
+                    else
+                        radicand_sqrt = Math.Sqrt(sqrtTerm);
+
+                    p3.Y = (-b - radicand_sqrt) / (2.0 * a);
+                    p4.Y = (-b + radicand_sqrt) / (2.0 * a);
+                    p3.X = s * p3.Y + si;
+                    p4.X = s * p4.Y + si;
+                }
+
+                //Tranform back to global coordinates
+                transform = Create.OrientationMatrixGlobalToLocal(coordinateSystem);
+                iPts.Add(p3.Transform(transform));
+
+                if(!tangential)
+                    iPts.Add(p4.Transform(transform));
             }
 
             if (l.Infinite)
