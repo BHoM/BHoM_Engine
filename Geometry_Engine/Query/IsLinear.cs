@@ -55,6 +55,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsLinear(this Ellipse ellipse, double tolerance = Tolerance.Distance)
+        {
+            return false;
+        }
+
+        /***************************************************/
+
         public static bool IsLinear(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.IsCollinear(tolerance);
