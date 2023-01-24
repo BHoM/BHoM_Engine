@@ -46,6 +46,22 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Record an event with details of a C# exception within the BHoM logging system.")]
+        [Input("exception", "The C# exception being caught to provide the event and stack information for.")]
+        [Input("message", "An optional additional message which will be displayed first in the event log.")]
+        [Output("success", "True if the event has been successfully recorded as a BHoM Event.")]
+        public static bool RecordEvent(Exception exception, string message = "")
+        {
+            if (!string.IsNullOrEmpty(message))
+                message = $"{message}\n\n{exception.ToString()}";
+            else
+                message = exception.ToString();
+
+            return RecordEvent(new Event { Message = message, StackTrace = exception.StackTrace, Type = EventType.Unknown });
+        }
+
+        /***************************************************/
+
         [Description("Records an event in the BHoM event log.")]
         [Input("newEvent", "Event to be logged.")]
         [Output("success", "True if the event is logged successfully.")]
