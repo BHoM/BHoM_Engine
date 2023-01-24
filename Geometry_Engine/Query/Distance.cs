@@ -113,6 +113,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static double Distance(this Point point, Ellipse circle)
+        {
+            return point.Distance(circle.ClosestPoint(point));
+        }
+
+        /***************************************************/
+
         public static double Distance(this Point point, Polyline curve)
         {
             return point.Distance(curve.ClosestPoint(point));
