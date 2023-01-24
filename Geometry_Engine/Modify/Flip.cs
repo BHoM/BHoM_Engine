@@ -52,6 +52,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Ellipse Flip(this Ellipse curve)
+        {
+            return new Ellipse { Axis1 = curve.Axis1, Axis2 = -curve.Axis2, Centre = curve.Centre, Radius1 = curve.Radius1, Radius2 = curve.Radius2 };
+        }
+
+        /***************************************************/
+
         public static Line Flip(this Line curve)
         {
             return new Line { Start = curve.End, End = curve.Start };
