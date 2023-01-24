@@ -23,6 +23,8 @@
 using BH.oM.Base.Debugging;
 using BH.oM.Base.Attributes;
 using System.Linq;
+using System.ComponentModel;
+using System;
 
 namespace BH.Engine.Base
 {
@@ -32,9 +34,26 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Record a warning within the BHoM logging system.")]
+        [Input("message", "The message to be recorded for this warning.")]
+        [Output("success", "True if the warning has been successfully recorded as a BHoM Event.")]
         public static bool RecordWarning(string message)
         {
             return RecordEvent(new Event { Message = message, Type = EventType.Warning });
+        }
+
+        [Description("Record a warning with details of a C# exception within the BHoM logging system.")]
+        [Input("exception", "The C# exception being caught to provide the warning and stack information for.")]
+        [Input("message", "An optional additional message which will be displayed first in the event log.")]
+        [Output("success", "True if the warning has been successfully recorded as a BHoM Event.")]
+        public static bool RecordWarning(Exception exception, string message = "")
+        {
+            if (!string.IsNullOrEmpty(message))
+                message = $"{message}\n\n{exception.ToString()}";
+            else
+                message = exception.ToString();
+
+            return RecordEvent(new Event { Message = message, StackTrace = exception.StackTrace, Type = EventType.Warning });
         }
     }
 }
