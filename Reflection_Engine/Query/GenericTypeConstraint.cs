@@ -20,10 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using System;
 using System.Linq;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
@@ -31,6 +32,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
+        [PreviousVersion("6.1", "BH.Engine.Serialiser.Query.GenericTypeConstraint(System.Type)")]
         public static Type GenericTypeConstraint(this Type type)
         {
             if(type == null)
