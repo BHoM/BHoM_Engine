@@ -57,7 +57,3 @@ namespace BH.Engine.Base
         }
     }
 }
-
-
-
-
