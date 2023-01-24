@@ -50,6 +50,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static Vector StartDir(this Ellipse ellipse)
+        {
+            //Ellipse starts and ends at the first axis point, and move towards the second axis, hence second axis is the tangent at start and end
+            return ellipse?.Axis2;
+        }
+
+        /***************************************************/
+
         public static Vector StartDir(this Line line)
         {
             return line.Direction();
