@@ -42,6 +42,8 @@ namespace BH.Engine.Base
             return RecordEvent(new Event { Message = message, Type = EventType.Warning });
         }
 
+        /***************************************************/
+
         [Description("Record a warning with details of a C# exception within the BHoM logging system.")]
         [Input("exception", "The C# exception being caught to provide the warning and stack information for.")]
         [Input("message", "An optional additional message which will be displayed first in the event log.")]
