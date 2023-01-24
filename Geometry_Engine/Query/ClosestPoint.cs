@@ -158,7 +158,7 @@ namespace BH.Engine.Geometry
                 tx /= t;
                 ty /= t;
                 c++;
-            } while ((Math.Abs(1 - t) > tolerance || c < 4) && c < 100);
+            } while ((Math.Abs(1 - t) > tolerance || c < 5) && c < 100);
 
             //Get to correct quadrant
             if (ptLoc.X < 0)
