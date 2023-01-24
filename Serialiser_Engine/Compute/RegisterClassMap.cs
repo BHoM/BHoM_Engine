@@ -108,7 +108,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
 
         private static MethodInfo m_CreateEnumSerializer = typeof(Compute).GetMethod("CreateEnumSerializer", BindingFlags.NonPublic | BindingFlags.Static);
-        private static List<string> m_TypesRegistered = new List<string>();
+        private static HashSet<string> m_TypesRegistered = new HashSet<string>();
 
         /*******************************************/
     }
