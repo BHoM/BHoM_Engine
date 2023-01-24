@@ -23,6 +23,7 @@
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -35,6 +36,9 @@ namespace BH.Engine.Reflection
         /*******************************************/
 
         [PreviousVersion("6.1", "BH.Engine.Serialiser.Query.ParametersWithConstraints(System.Reflection.MethodBase)")]
+        [Description("Obtains the parameters of a method. Returns generic constraints if the method contains generic parameters.")]
+        [Input("method", "A method to obtain the parameters of. Generic Constraints will be taken into consideration.")]
+        [Output("parameters", "The parameters of the provided method.")]
         public static ParameterInfo[] ParametersWithConstraints(this MethodBase method)
         {
             if(method == null)
