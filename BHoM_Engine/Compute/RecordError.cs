@@ -23,6 +23,8 @@
 using BH.oM.Base.Debugging;
 using BH.oM.Base.Attributes;
 using System.Linq;
+using System.ComponentModel;
+using System;
 
 namespace BH.Engine.Base
 {
@@ -32,13 +34,26 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Record an error within the BHoM logging system.")]
+        [Input("message", "The message to be recorded for this error.")]
+        [Output("success", "True if the error has been successfully recorded as a BHoM Event.")]
         public static bool RecordError(string message)
         {
             return RecordEvent(new Event { Message = message, Type = EventType.Error });
         }
+
+        [Description("Record an error with details of a C# exception within the BHoM logging system.")]
+        [Input("exception", "The C# exception being caught to provide the error and stack information for.")]
+        [Input("message", "An optional additional message which will be displayed first in the event log.")]
+        [Output("success", "True if the error has been successfully recorded as a BHoM Event.")]
+        public static bool RecordError(Exception exception, string message = "")
+        {
+            if (!string.IsNullOrEmpty(message))
+                message = $"{message}\n\n{exception.ToString()}";
+            else
+                message = exception.ToString();
+
+            return RecordEvent(new Event { Message = message, StackTrace = exception.StackTrace, Type = EventType.Error });
+        }
     }
 }
-
-
-
-
