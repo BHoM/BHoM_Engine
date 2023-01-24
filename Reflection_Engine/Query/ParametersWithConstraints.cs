@@ -20,12 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Reflection
 {
     public static partial class Query
     {
@@ -33,6 +34,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
+        [PreviousVersion("6.1", "BH.Engine.Serialiser.Query.ParametersWithConstraints(System.Reflection.MethodBase)")]
         public static ParameterInfo[] ParametersWithConstraints(this MethodBase method)
         {
             if(method == null)

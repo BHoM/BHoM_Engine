@@ -26,8 +26,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.ComponentModel;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Reflection
 {
     public static partial class Create
     {
@@ -35,6 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
+        [PreviousVersion("6.1", "BH.Engine.Serialiser.Create.MethodBase(System.Type, System.String, System.Collections.Generic.List<System.String>)")]
         [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
         public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypeNames)
         {
@@ -150,6 +152,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
+        [PreviousVersion("6.1", "BH.Engine.Serialiser.Create.MethodBase(System.Type, System.String, System.Collections.Generic.List<System.Type>)")]
         [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
         public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
         {
