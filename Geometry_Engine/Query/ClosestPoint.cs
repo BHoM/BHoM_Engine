@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using BH.oM.Geometry.CoordinateSystem;
+using Humanizer;
 
 namespace BH.Engine.Geometry
 {
@@ -102,6 +104,73 @@ namespace BH.Engine.Geometry
                 return circle.StartPoint();
             else
                 return circle.Centre + (point.Project(p) - circle.Centre).Normalise() * circle.Radius;
+        }
+
+        /***************************************************/
+
+        public static Point ClosestPoint(this Ellipse ellipse, Point point, double tolerance = Tolerance.Distance)
+        {
+            //Tranform the point to the local coordinates of the ellipse
+            //After tranformation can see it as the ellipse centre in the origin with first axis long global x and second axis along global y
+            Cartesian coordinateSystem = Create.CartesianCoordinateSystem(ellipse.Centre, ellipse.Axis1, ellipse.Axis2);
+            TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(coordinateSystem);
+            Point ptLoc = point.Transform(transform);
+
+            //Algorithm from:
+            //https://blog.chatfield.io/simple-method-for-distance-to-ellipse/
+            //https://github.com/0xfaded/ellipse_demo/issues/1
+
+            //Treat as point is in upper quadrant
+            double px = Math.Abs(ptLoc.X);
+            double py = Math.Abs(ptLoc.Y);
+
+            double tx = 0.707;
+            double ty = 0.707;
+
+            double a = ellipse.Radius1;
+            double b = ellipse.Radius2;
+            double t = 1;
+
+            tolerance /= (2 * Math.Max(a, b));
+
+            int c = 0;
+
+            do
+            {
+                double x = a * tx;
+                double y = b * ty;
+
+                double ex = (a * a - b * b) * (tx * tx * tx) / a;
+                double ey = (b * b - a * a) * (ty * ty * ty) / b;
+
+                double rx = x - ex;
+                double ry = y - ey;
+
+                double qx = px - ex;
+                double qy = py - ey;
+
+                double r = Math.Sqrt(ry * ry + rx * rx);
+                double q = Math.Sqrt(qy * qy + qx * qx);
+
+                tx = Math.Min(1, Math.Max(0, (qx * r / q + ex) / a));
+                ty = Math.Min(1, Math.Max(0, (qy * r / q + ey) / b));
+                t = Math.Sqrt(ty * ty + tx * tx);
+                tx /= t;
+                ty /= t;
+                c++;
+            } while ((Math.Abs(1 - t) > tolerance || c < 4) && c < 100);
+
+            //Get to correct quadrant
+            if (ptLoc.X < 0)
+                tx = -tx;
+            if (ptLoc.Y < 0)
+                ty = -ty;
+
+            ptLoc = new Point { X = a * tx, Y = b * ty };
+
+            //Tranform back to global coordinates
+            transform = Create.OrientationMatrixGlobalToLocal(coordinateSystem);
+            return ptLoc.Transform(transform);
         }
 
         /***************************************************/
