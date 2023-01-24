@@ -60,6 +60,15 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsPolylinear(this Ellipse curve)
+        {
+            //Could argue that the ellipse is polylinear if one of the radii is 0, but given the use of this method,
+            //which is to check if the curve is built up of multiple line segments, it makes more sense to simply return false.
+            return false; 
+        }
+
+        /***************************************************/
+
         public static bool IsPolylinear(this Line curve)
         {
             return true;
