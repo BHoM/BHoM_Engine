@@ -50,7 +50,7 @@ namespace BH.Engine.Base
         [Output("success", "True if the warning has been successfully recorded as a BHoM Event.")]
         public static bool RecordWarning(Exception exception, string message = "")
         {
-            return RecordEvent(exception, message, EventType.Error);
+            return RecordEvent(exception, message, EventType.Warning);
         }
     }
 }

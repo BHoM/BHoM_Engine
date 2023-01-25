@@ -66,7 +66,7 @@ namespace BH.Engine.Base
             else
                 message = exceptionMessage;
 
-            return RecordEvent(new Event { Message = message, StackTrace = exception.StackTrace, Type = EventType.Unknown });
+            return RecordEvent(new Event { Message = message, StackTrace = exception.StackTrace, Type = type });
         }
 
         /***************************************************/
