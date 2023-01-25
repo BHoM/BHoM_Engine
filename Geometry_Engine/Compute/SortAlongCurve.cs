@@ -69,6 +69,24 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static List<Point> SortAlongCurve(this List<Point> points, Ellipse ellipse, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
+        {
+            if (ellipse.Radius1 <= distanceTolerance && ellipse.Radius2 <= distanceTolerance)
+                return points.Select(p => p.DeepClone()).ToList();
+
+            //Could be optimised to avoid the mutliple calls to closest point (avoiding the additional call made by ParameterAtPoint, but mimicing how the other methods are running for now.
+            List<Tuple<Point, double>> cData = points.Select(p => new Tuple<Point, double>(p.DeepClone(), ellipse.ParameterAtPoint(ellipse.ClosestPoint(p, distanceTolerance), distanceTolerance))).ToList();
+
+            cData.Sort(delegate (Tuple<Point, double> d1, Tuple<Point, double> d2)
+            {
+                return d1.Item2.CompareTo(d2.Item2);
+            });
+
+            return cData.Select(d => d.Item1).ToList();
+        }
+
+        /***************************************************/
+
         public static List<Point> SortAlongCurve(this List<Point> points, Line line, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (line.Length() <= distanceTolerance)
