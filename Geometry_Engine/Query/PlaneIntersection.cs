@@ -177,6 +177,24 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static List<Point> PlaneIntersections(this Ellipse curve, Plane plane, double tolerance = Tolerance.Distance)
+        {
+            if(curve.IsNull())
+                return new List<Point>();
+
+            Vector normal = curve.Normal();
+            if (normal.IsParallel(plane.Normal) != 0)
+                return new List<Point>();
+
+             //Get line from intersection of planes
+            Line l = plane.PlaneIntersection(new Plane { Origin = curve.Centre, Normal = normal }, tolerance);
+
+            //Get intersection points between ellipse and infinite line
+            return curve.LineIntersections(l, true, tolerance);
+        }
+
+        /***************************************************/
+
         public static List<Point> PlaneIntersections(this Line curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             List<Point> result = new List<Point>();
