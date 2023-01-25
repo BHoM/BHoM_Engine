@@ -113,9 +113,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double Distance(this Point point, Ellipse circle)
+        public static double Distance(this Point point, Ellipse ellipse)
         {
-            return point.Distance(circle.ClosestPoint(point));
+            return point.Distance(ellipse.ClosestPoint(point));
         }
 
         /***************************************************/
