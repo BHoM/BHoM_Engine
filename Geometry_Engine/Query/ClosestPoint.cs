@@ -131,12 +131,12 @@ namespace BH.Engine.Geometry
             //Check ratio - if ratio more than a certain degree, treat as line
             double max = Math.Max(a, b);
             double min = Math.Min(a, b);
-            double h = (max - min) / (max + min);
+            double aspectRatio = max / min;
 
             //When h is equal to 1, the ellipse is a line
             //The algorithm below will not be able to handle to elongated ellipses, hence 
             //pointless to evaluate.
-            if (1 - h < 1e-16)
+            if (min == 0 || aspectRatio > 1e20)
             {
                 //Raise a warning when b is not exactly equal to 0
                 if (b != 0)
@@ -154,7 +154,7 @@ namespace BH.Engine.Geometry
 
                 double t;
 
-                tolerance /= (2 * Math.Max(a, b));
+                tolerance = tolerance * min / (max * 2);
 
                 int c = 0;
 
@@ -193,11 +193,15 @@ namespace BH.Engine.Geometry
             }
             else
             {
+                //Method essentially the same as above, but not optimised to avoid trig functions
+                //This works a lot better for some extreme elipses, with a ratio of radii of over 1:5000
+                //This ofc also works well for elipses with a more reasonable aspect ratio, but as most elipses in practice will have a more reasonable
+                //aspect ratio, less than 1:5000, worth keeping the above as it runs quicker, and will be used by most cases.
                 double t = Math.PI / 4;
                 double deltaT = 0;
 
-                tolerance /= (2 * Math.Max(a, b));
-
+                tolerance = tolerance * min / (max * 2);
+                tolerance = Math.Max(tolerance, 1e-16); //Pointless to use a tolerance less than this when using floating points
                 int c = 0;
 
                 double x, y;
@@ -227,7 +231,7 @@ namespace BH.Engine.Geometry
                     t += deltaT;
                     t = Math.Min(Math.PI / 2, Math.Max(0, t));
                     c++;
-                } while ((Math.Abs(deltaT) > tolerance) && c < 100);
+                } while ((Math.Abs(deltaT) > tolerance) && c < 20);
 
                 //Get to correct quadrant
                 if (ptLoc.X < 0)
@@ -243,55 +247,6 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        //public static Point ClosestPoint3(this Ellipse ellipse, Point point, double tolerance = Tolerance.Distance)
-        //{
-        //    //Tranform the point to the local coordinates of the ellipse
-        //    //After tranformation can see it as the ellipse centre in the origin with first axis long global x and second axis along global y
-        //    Cartesian coordinateSystem = Create.CartesianCoordinateSystem(ellipse.Centre, ellipse.Axis1, ellipse.Axis2);
-        //    TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(coordinateSystem);
-        //    Point ptLoc = point.Transform(transform);
-
-        //    //Algorithm from:
-        //    //https://blog.chatfield.io/simple-method-for-distance-to-ellipse/
-        //    //https://github.com/0xfaded/ellipse_demo/issues/1
-
-        //    //Treat as point is in upper quadrant
-        //    double px = Math.Abs(ptLoc.X);
-        //    double py = Math.Abs(ptLoc.Y);
-
-        //    double a = ellipse.Radius1;
-        //    double b = ellipse.Radius2;
-
-        //    //Check ratio - if ratio more than a certain degree, treat as line
-        //    double max = Math.Max(a, b);
-        //    double min = Math.Min(a, b);
-        //    double h = (max - min) / (max + min);
-
-        //    //When h is equal to 1, the ellipse is a line
-        //    //The algorithm below will not be able to handle to elongated ellipses, hence 
-        //    //pointless to evaluate.
-        //    if (1 - h < 1e-16)
-        //    {
-        //        //Raise a warning when b is not exactly equal to 0
-        //        if (b != 0)
-        //        {
-        //            Base.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the Closest point. Point on line between vertex and co-vertex returned.");
-        //        }
-
-        //        Point closePt = new Line() { Start = new Point { X = a }, End = new Point { Y = b } }.ClosestPoint(new Point { X = px, Y = py });
-        //        ptLoc = new Point { X = ptLoc.X > 0 ? closePt.X : -closePt.X, Y = ptLoc.Y > 0 ? closePt.Y : -closePt.Y };
-        //    }
-        //    else
-        //    {
-                
-        //    }
-        //    //Tranform back to global coordinates
-        //    transform = Create.OrientationMatrixGlobalToLocal(coordinateSystem);
-        //    return ptLoc.Transform(transform);
-        //}
-
-        ///***************************************************/
 
         public static Point ClosestPoint(this Line line, Point point, bool infiniteSegment = false)
         {
