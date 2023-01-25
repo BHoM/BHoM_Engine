@@ -147,7 +147,7 @@ namespace BH.Engine.Geometry
                 Point closePt = new Line() { Start = new Point { X = a }, End = new Point { Y = b } }.ClosestPoint(new Point { X = px, Y = py });
                 ptLoc = new Point { X = ptLoc.X > 0 ? closePt.X : -closePt.X, Y = ptLoc.Y > 0 ? closePt.Y : -closePt.Y };
             }
-            else if (max / min < 5000) //Ratio of less than 1:5000 - Use the trig free optimised version that runs quicker
+            else if (max / min < 3000) //Ratio of less than 1:3000 - Use the trig free optimised version that runs quicker
             {
                 double tx = 0.707;
                 double ty = 0.707;
@@ -194,9 +194,9 @@ namespace BH.Engine.Geometry
             else
             {
                 //Method essentially the same as above, but not optimised to avoid trig functions
-                //This works a lot better for some extreme elipses, with a ratio of radii of over 1:5000
+                //This works a lot better for some extreme elipses, with a ratio of radii of over 1:3000
                 //This ofc also works well for elipses with a more reasonable aspect ratio, but as most elipses in practice will have a more reasonable
-                //aspect ratio, less than 1:5000, worth keeping the above as it runs quicker, and will be used by most cases.
+                //aspect ratio, less than 1:3000, worth keeping the above as it runs quicker, and will be used by most cases.
                 double t = Math.PI / 4;
                 double deltaT = 0;
 
