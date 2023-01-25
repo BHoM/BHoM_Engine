@@ -259,12 +259,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Calculates and returns the intersection points of a Line and a Circle.")]
-        [Input("circle", "Circle to intersect with the Line.")]
-        [Input("line", "Line to intersect with the Circle.")]
+        [Description("Calculates and returns the intersection points of a Line and a Ellipse.")]
+        [Input("ellipse", "Ellipse to intersect with the Line.")]
+        [Input("line", "Line to intersect with the Ellipse.")]
         [Input("useInfiniteLine", "If true or if the Infinite property of the Line is true, a intersection point found that is outside the domain of the Lines start and end point is accepted. If false, and the Lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Output("intersections", "The intersection points of the Circle and the Line.")]
+        [Output("intersections", "The intersection points of the Ellipse and the Line.")]
         public static List<Point> LineIntersections(this Ellipse ellipse, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             Line l = new Line { Start = line.Start, End = line.End, Infinite = useInfiniteLine || line.Infinite };
