@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using BH.oM.Geometry.CoordinateSystem;
 using Humanizer;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -124,56 +125,173 @@ namespace BH.Engine.Geometry
             double px = Math.Abs(ptLoc.X);
             double py = Math.Abs(ptLoc.Y);
 
-            double tx = 0.707;
-            double ty = 0.707;
-
             double a = ellipse.Radius1;
             double b = ellipse.Radius2;
-            double t = 1;
 
-            tolerance /= (2 * Math.Max(a, b));
+            //Check ratio - if ratio more than a certain degree, treat as line
+            double max = Math.Max(a, b);
+            double min = Math.Min(a, b);
+            double h = (max - min) / (max + min);
 
-            int c = 0;
-
-            do
+            //When h is equal to 1, the ellipse is a line
+            //The algorithm below will not be able to handle to elongated ellipses, hence 
+            //pointless to evaluate.
+            if (1 - h < 1e-16)
             {
-                double x = a * tx;
-                double y = b * ty;
+                //Raise a warning when b is not exactly equal to 0
+                if (b != 0)
+                {
+                    Base.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the Closest point. Point on line between vertex and co-vertex returned.");
+                }
 
-                double ex = (a * a - b * b) * (tx * tx * tx) / a;
-                double ey = (b * b - a * a) * (ty * ty * ty) / b;
+                Point closePt = new Line() { Start = new Point { X = a }, End = new Point { Y = b } }.ClosestPoint(new Point { X = px, Y = py });
+                ptLoc = new Point { X = ptLoc.X > 0 ? closePt.X : -closePt.X, Y = ptLoc.Y > 0 ? closePt.Y : -closePt.Y };
+            }
+            else if (max / min < 5000) //Ratio of less than 1:5000 - Use the trig free optimised version that runs quicker
+            {
+                double tx = 0.707;
+                double ty = 0.707;
 
-                double rx = x - ex;
-                double ry = y - ey;
+                double t;
 
-                double qx = px - ex;
-                double qy = py - ey;
+                tolerance /= (2 * Math.Max(a, b));
 
-                double r = Math.Sqrt(ry * ry + rx * rx);
-                double q = Math.Sqrt(qy * qy + qx * qx);
+                int c = 0;
 
-                tx = Math.Min(1, Math.Max(0, (qx * r / q + ex) / a));
-                ty = Math.Min(1, Math.Max(0, (qy * r / q + ey) / b));
-                t = Math.Sqrt(ty * ty + tx * tx);
-                tx /= t;
-                ty /= t;
-                c++;
-            } while ((Math.Abs(1 - t) > tolerance || c < 5) && c < 100);
+                do
+                {
+                    double x = a * tx;
+                    double y = b * ty;
 
-            //Get to correct quadrant
-            if (ptLoc.X < 0)
-                tx = -tx;
-            if (ptLoc.Y < 0)
-                ty = -ty;
+                    double ex = (a * a - b * b) * (tx * tx * tx) / a;
+                    double ey = (b * b - a * a) * (ty * ty * ty) / b;
 
-            ptLoc = new Point { X = a * tx, Y = b * ty };
+                    double rx = x - ex;
+                    double ry = y - ey;
 
+                    double qx = px - ex;
+                    double qy = py - ey;
+
+                    double r = Math.Sqrt(ry * ry + rx * rx);
+                    double q = Math.Sqrt(qy * qy + qx * qx);
+
+                    tx = Math.Min(1, Math.Max(0, (qx * r / q + ex) / a));
+                    ty = Math.Min(1, Math.Max(0, (qy * r / q + ey) / b));
+                    t = Math.Sqrt(ty * ty + tx * tx);
+                    tx /= t;
+                    ty /= t;
+                    c++;
+                } while ((Math.Abs(1 - t) > tolerance || c < 5) && c < 100);
+
+                //Get to correct quadrant
+                if (ptLoc.X < 0)
+                    tx = -tx;
+                if (ptLoc.Y < 0)
+                    ty = -ty;
+
+                ptLoc = new Point { X = a * tx, Y = b * ty };
+            }
+            else
+            {
+                double t = Math.PI / 4;
+                double deltaT = 0;
+
+                tolerance /= (2 * Math.Max(a, b));
+
+                int c = 0;
+
+                double x, y;
+
+                do
+                {
+                    double tx = Math.Cos(t);
+                    double ty = Math.Sin(t);
+                    x = a * tx;
+                    y = b * ty;
+
+                    double ex = (a * a - b * b) * (tx * tx * tx) / a;
+                    double ey = (b * b - a * a) * (ty * ty * ty) / b;
+
+                    double rx = x - ex;
+                    double ry = y - ey;
+
+                    double qx = px - ex;
+                    double qy = py - ey;
+
+                    double r = Math.Sqrt(ry * ry + rx * rx);
+                    double q = Math.Sqrt(qy * qy + qx * qx);
+
+                    double deltaC = r * Math.Asin((rx * qy - ry * qx) / (r * q));
+                    deltaT = deltaC / Math.Sqrt(a * a + b * b - x * x - y * y);
+
+                    t += deltaT;
+                    t = Math.Min(Math.PI / 2, Math.Max(0, t));
+                    c++;
+                } while ((Math.Abs(deltaT) > tolerance) && c < 100);
+
+                //Get to correct quadrant
+                if (ptLoc.X < 0)
+                    x = -x;
+                if (ptLoc.Y < 0)
+                    y = -y;
+
+                ptLoc = new Point { X = x, Y = y };
+            }
             //Tranform back to global coordinates
             transform = Create.OrientationMatrixGlobalToLocal(coordinateSystem);
             return ptLoc.Transform(transform);
         }
 
         /***************************************************/
+
+        //public static Point ClosestPoint3(this Ellipse ellipse, Point point, double tolerance = Tolerance.Distance)
+        //{
+        //    //Tranform the point to the local coordinates of the ellipse
+        //    //After tranformation can see it as the ellipse centre in the origin with first axis long global x and second axis along global y
+        //    Cartesian coordinateSystem = Create.CartesianCoordinateSystem(ellipse.Centre, ellipse.Axis1, ellipse.Axis2);
+        //    TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(coordinateSystem);
+        //    Point ptLoc = point.Transform(transform);
+
+        //    //Algorithm from:
+        //    //https://blog.chatfield.io/simple-method-for-distance-to-ellipse/
+        //    //https://github.com/0xfaded/ellipse_demo/issues/1
+
+        //    //Treat as point is in upper quadrant
+        //    double px = Math.Abs(ptLoc.X);
+        //    double py = Math.Abs(ptLoc.Y);
+
+        //    double a = ellipse.Radius1;
+        //    double b = ellipse.Radius2;
+
+        //    //Check ratio - if ratio more than a certain degree, treat as line
+        //    double max = Math.Max(a, b);
+        //    double min = Math.Min(a, b);
+        //    double h = (max - min) / (max + min);
+
+        //    //When h is equal to 1, the ellipse is a line
+        //    //The algorithm below will not be able to handle to elongated ellipses, hence 
+        //    //pointless to evaluate.
+        //    if (1 - h < 1e-16)
+        //    {
+        //        //Raise a warning when b is not exactly equal to 0
+        //        if (b != 0)
+        //        {
+        //            Base.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the Closest point. Point on line between vertex and co-vertex returned.");
+        //        }
+
+        //        Point closePt = new Line() { Start = new Point { X = a }, End = new Point { Y = b } }.ClosestPoint(new Point { X = px, Y = py });
+        //        ptLoc = new Point { X = ptLoc.X > 0 ? closePt.X : -closePt.X, Y = ptLoc.Y > 0 ? closePt.Y : -closePt.Y };
+        //    }
+        //    else
+        //    {
+                
+        //    }
+        //    //Tranform back to global coordinates
+        //    transform = Create.OrientationMatrixGlobalToLocal(coordinateSystem);
+        //    return ptLoc.Transform(transform);
+        //}
+
+        ///***************************************************/
 
         public static Point ClosestPoint(this Line line, Point point, bool infiniteSegment = false)
         {
