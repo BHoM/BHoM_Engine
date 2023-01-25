@@ -203,7 +203,7 @@ namespace BH.Engine.Geometry
 
                 double sumDist = f1.Distance(pt) + f2.Distance(pt);
 
-                if (sumDist < limitDist)
+                if (sumDist <= limitDist)
                 {
                     //If smaller and we accept on edge, we can simply continue, as the point will be inside or on the edge, and for this case, that does not matter
                     //If accept on edge is false, we need to store the point for checking distance to edge at later run
