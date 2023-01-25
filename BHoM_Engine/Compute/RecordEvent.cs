@@ -50,12 +50,21 @@ namespace BH.Engine.Base
         [Input("exception", "The C# exception being caught to provide the event and stack information for.")]
         [Input("message", "An optional additional message which will be displayed first in the event log.")]
         [Output("success", "True if the event has been successfully recorded as a BHoM Event.")]
-        public static bool RecordEvent(Exception exception, string message = "")
+        public static bool RecordEvent(Exception exception, string message = "", EventType type = EventType.Unknown)
         {
+            string exceptionMessage = "";
+
+            Exception e = exception;
+            while(e != null)
+            {
+                exceptionMessage += $"{e.Message}{Environment.NewLine}{Environment.NewLine}";
+                e = e.InnerException;
+            }
+
             if (!string.IsNullOrEmpty(message))
-                message = $"{message}\n\n{exception.ToString()}";
+                message = $"{message}\n\n{exceptionMessage}";
             else
-                message = exception.ToString();
+                message = exceptionMessage;
 
             return RecordEvent(new Event { Message = message, StackTrace = exception.StackTrace, Type = EventType.Unknown });
         }
@@ -73,8 +82,11 @@ namespace BH.Engine.Base
                 return false;
             }
 
-            string trace = System.Environment.StackTrace;
-            newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
+            if (string.IsNullOrEmpty(newEvent.StackTrace))
+            {
+                string trace = System.Environment.StackTrace;
+                newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
+            }
 
             lock (Global.DebugLogLock)
             {
