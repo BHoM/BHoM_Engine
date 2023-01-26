@@ -49,6 +49,7 @@ namespace BH.Engine.Base
         [Description("Record an event with details of a C# exception within the BHoM logging system.")]
         [Input("exception", "The C# exception being caught to provide the event and stack information for.")]
         [Input("message", "An optional additional message which will be displayed first in the event log.")]
+        [Input("type", "Type of the event to be logged.")]
         [Output("success", "True if the event has been successfully recorded as a BHoM Event.")]
         public static bool RecordEvent(Exception exception, string message = "", EventType type = EventType.Unknown)
         {
