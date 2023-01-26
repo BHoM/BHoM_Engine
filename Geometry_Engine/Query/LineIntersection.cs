@@ -322,8 +322,6 @@ namespace BH.Engine.Geometry
 
                 double sqrtTerm = (b * b) - (4.0 * a * c);
                 double checkVal = sqrtTerm / (4 * a);
-                //if (Math.Abs(s) < 1)
-                //    checkVal = Math.Abs(s) * checkVal;
                 double radicand_sqrt;
 
                 double maxRadius = Math.Max(rx, ry);
