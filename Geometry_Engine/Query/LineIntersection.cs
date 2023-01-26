@@ -289,69 +289,93 @@ namespace BH.Engine.Geometry
                 double rx = ellipse.Radius1;
                 double ry = ellipse.Radius2;
 
-
                 bool tangential = false;
+                bool mayBeTangential = false;
+                bool isOverlapping = true;
                 Point p3 = new Point();
                 Point p4 = new Point();
-                if (Math.Abs(p1.X - p2.X) > tolerance)
+
+                bool isVertical = Math.Abs(p1.X - p2.X) < tolerance;
+
+                double a, b, c, s, si;
+
+                if (isVertical)
+                {
+                    //Vertical line, evaluate with slope from Y
+                    s = (p2.X - p1.X) / (p2.Y - p1.Y);
+                    si = p2.X - (s * p2.Y);
+
+                    a = (rx * rx) + (ry * ry * s * s);
+                    b = 2.0 * ry * ry * si * s;
+                    c = ry * ry * si * si - ry * ry * rx * rx;
+                }
+                else
                 {
                     //Non vertical line. Evaluate with slope from X
-                    double s = (p2.Y - p1.Y) / (p2.X - p1.X);
-                    double si = p2.Y - (s * p2.X);
+                    s = (p2.Y - p1.Y) / (p2.X - p1.X);
+                    si = p2.Y - (s * p2.X);
 
-                    double a = (ry * ry) + (rx * rx * s * s);
-                    double b = 2.0 * rx * rx * si * s;
-                    double c = rx * rx * si * si - rx * rx * ry * ry;
+                    a = (ry * ry) + (rx * rx * s * s);
+                    b = 2.0 * rx * rx * si * s;
+                    c = rx * rx * si * si - rx * rx * ry * ry;
+                }
 
-                    double sqrtTerm = (b * b) - (4.0 * a * c);
-                    double checkVal = sqrtTerm / (2 * a);
-                    double radicand_sqrt;
+                double sqrtTerm = (b * b) - (4.0 * a * c);
+                double checkVal = sqrtTerm / (4 * a);
+                if (Math.Abs(s) < 1)
+                    checkVal = Math.Abs(s) * checkVal;
+                double radicand_sqrt;
 
-                    if (Math.Abs(checkVal) < tolerance)
-                    {
-                        //intersection is tangential
-                        radicand_sqrt = 0;   //Set to zero to ensure no negative sqrt
-                        tangential = true;
-                    }
-                    else if (checkVal < 0)  //no intersection
-                        return new List<Point>();
-                    else
-                        radicand_sqrt = Math.Sqrt(sqrtTerm);
+                double maxRadius = Math.Max(rx, ry);
 
+                if (Math.Abs(checkVal) < tolerance) //For this case, the intersection is guarantiued to be tangential
+                {
+                    //intersection is tangential
+                    radicand_sqrt = 0;   //Set to zero to ensure no negative sqrt
+                    tangential = true;
+                }
+                else if (Math.Abs(checkVal) < tolerance * maxRadius * maxRadius)
+                {
+                    //Intersection might be tangential, but extra (more expensive) checks are required
+                    mayBeTangential = true;
+                    radicand_sqrt = Math.Sqrt(Math.Abs(sqrtTerm));
+                    isOverlapping = sqrtTerm > 0;
+                }
+                else if (checkVal < 0)  //no intersection
+                    return new List<Point>();
+                else
+                    radicand_sqrt = Math.Sqrt(sqrtTerm);
+
+                if (isVertical)
+                {
+                    //Initialise values based vertical slope
+                    p3.Y = (-b - radicand_sqrt) / (2.0 * a);
+                    p4.Y = (-b + radicand_sqrt) / (2.0 * a);
+                    p3.X = s * p3.Y + si;
+                    p4.X = s * p4.Y + si;
+                }
+                else
+                {
+                    //Initialise based on non-vertical slope
                     p3.X = (-b - radicand_sqrt) / (2.0 * a);
                     p4.X = (-b + radicand_sqrt) / (2.0 * a);
                     p3.Y = s * p3.X + si;
                     p4.Y = s * p4.X + si;
                 }
-                else
+
+                if (mayBeTangential)
                 {
-                    //Vertical line, evaluate with slope from Y
-                    double s = (p2.X - p1.X) / (p2.Y - p1.Y);
-                    double si = p2.X - (s * p2.Y);
+                    Point midPt = (p3 + p4) / 2;
+                    Point closePt = ClosestPointEllipseLocal(rx, ry, midPt, tolerance);
 
-                    double a = (rx * rx) + (ry * ry * s * s);
-                    double b = 2.0 * ry * ry * si * s;
-                    double c = ry * ry * si * si - ry * ry * rx * rx;
-
-                    double sqrtTerm = (b * b) - (4.0 * a * c);
-                    double checkVal = sqrtTerm / (2 * a);
-                    double radicand_sqrt;
-
-                    if (Math.Abs(checkVal) < tolerance)
+                    if (midPt.SquareDistance(closePt) <= tolerance * tolerance)
                     {
-                        //intersection is tangential
-                        radicand_sqrt = 0;   //Set to zero to ensure no negative sqrt
+                        //Is tangential
+                        p3 = (midPt + closePt) / 2;
                         tangential = true;
                     }
-                    else if (checkVal < 0)  //no intersection
+                    else if (!isOverlapping)  //Not tangential, and not overlapping -> no intersection
                         return new List<Point>();
-                    else
-                        radicand_sqrt = Math.Sqrt(sqrtTerm);
-
-                    p3.Y = (-b - radicand_sqrt) / (2.0 * a);
-                    p4.Y = (-b + radicand_sqrt) / (2.0 * a);
-                    p3.X = s * p3.Y + si;
-                    p4.X = s * p4.Y + si;
                 }
 
                 //Tranform back to global coordinates
