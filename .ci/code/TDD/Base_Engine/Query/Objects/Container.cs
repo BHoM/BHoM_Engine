@@ -6,7 +6,7 @@ using System.Collections;
 namespace BH.oM.Base
 {
     // Must be unpackable
-    public class Container<T> : IContainer
+    public class Container<T> : BHoMObject, IContainer
     {
         public T? SomeObject { get; set; }
         public IEnumerable<T> ListOfObjects { get; set; } = new List<T>();
