@@ -322,8 +322,8 @@ namespace BH.Engine.Geometry
 
                 double sqrtTerm = (b * b) - (4.0 * a * c);
                 double checkVal = sqrtTerm / (4 * a);
-                if (Math.Abs(s) < 1)
-                    checkVal = Math.Abs(s) * checkVal;
+                //if (Math.Abs(s) < 1)
+                //    checkVal = Math.Abs(s) * checkVal;
                 double radicand_sqrt;
 
                 double maxRadius = Math.Max(rx, ry);
@@ -334,7 +334,7 @@ namespace BH.Engine.Geometry
                     radicand_sqrt = 0;   //Set to zero to ensure no negative sqrt
                     tangential = true;
                 }
-                else if (Math.Abs(checkVal) < tolerance * maxRadius * maxRadius)
+                else if (Math.Abs(checkVal) < tolerance * maxRadius * maxRadius * 10)
                 {
                     //Intersection might be tangential, but extra (more expensive) checks are required
                     mayBeTangential = true;
