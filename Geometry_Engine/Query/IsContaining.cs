@@ -28,7 +28,7 @@ using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Base;
-using static System.Net.WebRequestMethods;
+using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Geometry
 {
@@ -180,37 +180,93 @@ namespace BH.Engine.Geometry
             if (curve.IsNull())
                 return false;
 
-            Plane p = new Plane { Origin = curve.Centre, Normal = curve.Normal() };
-            Output<Point, Point> focals = curve.FocalPoints();
-            Point f1 = focals.Item1;
-            Point f2 = focals.Item2;
 
-            //All points on the ellipse have have a distance equal two times the larger radii from the two focalpoints combined
-            double limitDist = Math.Max(curve.Radius1, curve.Radius2) * 2;
+            double minRad = Math.Min(curve.Radius1, curve.Radius2);
 
-            //To handle tolerance in relation to edge, a first pass is made that finds points clearly outside/inside the ellipse (10 times tolerance)
+            if (minRad < tolerance && !acceptOnEdge)
+            {
+                //If the minimum radius is lower than tolerance, the points will always be either on the edge or outside
+                return false;  
+            }
+
+            //Tranform the point to the local coordinates of the ellipse
+            //After tranformation can see it as the ellipse centred in the origin with first axis long global x and second axis along global y
+            Cartesian coordinateSystem = Create.CartesianCoordinateSystem(curve.Centre, curve.Axis1, curve.Axis2);
+            TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(coordinateSystem);
+
+            double sqTol = tolerance * tolerance;
+            if (minRad < tolerance)
+            {
+                //Accept on edge is true, as other case already been handled.
+                //For this case just need to check if the points are on the edge, as minimum radisu is lower than tolerance
+                foreach (Point point in points)
+                {
+                    Point ptLoc = point.Transform(transform);
+                    if (Math.Abs(ptLoc.Z) > tolerance)
+                        return false;   //Tranformation made makes it so that the global XY plane is the plane of the ellipse, hence a point with Z-coordinate outside tolerance is not in the plane
+
+                    Point closePt = ClosestPointEllipseLocal(curve.Radius1, curve.Radius2, point.Transform(transform), tolerance);
+                    if (closePt.SquareDistance(point) > sqTol)
+                        return false;
+                }
+            }
+
+
+            //To handle tolerance in relation to edge, a first pass is made that finds points clearly outside/inside the ellipse
             //Then a second pass is made to check if the points near the edge actually are on the edge or not
             //Implemented in this fashion for efficency reasons, as the first loop is significantly less expensive than the iterative method of finding
-            //The closes point on an ellipse
+            //The closest point on an ellipse
             List<Point> ptsNearEdge = new List<Point>();
 
-            double edgeCheckTol = tolerance * 10;
+            //Scale factors for creation of ellipses that are guarantiued to contain points on the edge.
+            //A point that is on the edge is guarantiued to be inside the ellipse scaled up by the scaleOutside and guarantiued to be outside an ellipse scaled by the scaleInside
+            //Note that this methodology captures some points that are not on the edge, but that is simply handled by the second pass.
+            //Note that simply adding tolerance to the radii would give a tighter fit BUT does _NOT_ work, as that version of scaling up does _not_ capture point within tolerance along the edge between the vertex and co-vertex
+            double scaleOutside = (minRad + tolerance) / minRad;
+            double scaleInside = (minRad - tolerance) / minRad;
+
+            //Radii of actual ellipse
+            double rx = curve.Radius1;
+            double ry = curve.Radius2;
+
+            //Radii of ellipse scaled up (points on edge are guarantiued to be inside this ellipse)
+            double rx_Out = rx * scaleOutside;
+            double ry_Out = ry * scaleOutside;
+
+            //Radii of ellipse scaled down (points on edge are guarantiued to be outside this ellipse)
+            double rx_In = rx * scaleInside;
+            double ry_In = ry * scaleInside;
 
             foreach (Point pt in points)
             {
-                if (pt.Distance(p) > tolerance)
-                    return false;
+                Point ptLoc = pt.Transform(transform);
 
-                double sumDist = f1.Distance(pt) + f2.Distance(pt);
+                if (Math.Abs(ptLoc.Z) > tolerance)
+                    return false;   //Tranformation made makes it so that the global XY plane is the plane of the ellipse, hence a point with Z-coordinate outside tolerance is not in the plane
 
-                if (sumDist <= limitDist)
+                double x = ptLoc.X;
+                double y = ptLoc.Y;
+
+                double dx = x / rx;
+                double dy = y / ry;
+
+                double tot = dx * dx + dy * dy;
+
+                if (tot <= 1)
                 {
                     //If smaller and we accept on edge, we can simply continue, as the point will be inside or on the edge, and for this case, that does not matter
                     //If accept on edge is false, we need to store the point for checking distance to edge at later run
                     if (!acceptOnEdge)
                     {
-                        if (limitDist - sumDist < edgeCheckTol)  //Close to edge - store for check
-                            ptsNearEdge.Add(pt);
+                        //Check if outside the ellipse scaled inwards
+                        dx = x / rx_In;
+                        dy = y / ry_In;
+                        tot = dx * dx + dy * dy;
+
+                        //if tot >= 1, the point can be on the edge, and needs to be stored for further evaluation.
+                        //If tot < 1, the point is clearly inside, and can simply continue
+                        if (tot >= 1) 
+                            ptsNearEdge.Add(ptLoc);
                     }
                 }
                 else
@@ -220,32 +276,37 @@ namespace BH.Engine.Geometry
                         return false;
                     else
                     {
-                        //If we accept on edge, and the point is near the edge, need to store for evaluation
-                        if (sumDist - limitDist < edgeCheckTol)
-                            ptsNearEdge.Add(pt);
+                        //Check if inside the ellipse scaled outwards
+                        dx = x / rx_Out;
+                        dy = y / ry_Out;
+                        tot = dx * dx + dy * dy;
+
+                        //If tot <= 1, the point can be on the edge, and needs to be stored for further evaluation
+                        if (tot <= 1)
+                            ptsNearEdge.Add(ptLoc);
                         else
-                            return false;   //If not close to edge, we can simply exit here, as the point si clearly outside
+                            return false;   //If not close to edge, we can simply exit here, as the point is clearly outside
                     }
                 }
             }
 
             if (acceptOnEdge)
             {
-                //If accept on edge is true, all points are either near the edge or outside.
+                //If accept on edge is true, all ptsNearEdge are either on the edge within tolerance or outside.
                 //If any of the poitns found are _not_ near the edge, return false
                 foreach (Point pt in ptsNearEdge)
                 {
-                    if (pt.Distance(curve) > tolerance)
+                    if (ClosestPointEllipseLocal(rx, ry, pt, tolerance).SquareDistance(pt) > sqTol)
                         return false;
                 }
             }
             else
             {
-                //If accept on edge is false, all points near the edge is either on the edge or inside
+                //If accept on edge is false, all ptsNearEdge is either on the edge within tolerance or inside
                 //If any of the points found are near the edge, return false
                 foreach (Point pt in ptsNearEdge)
                 {
-                    if (pt.Distance(curve) < tolerance)
+                    if (ClosestPointEllipseLocal(rx, ry, pt, tolerance).SquareDistance(pt) < sqTol)
                         return false;
                 }
             }
