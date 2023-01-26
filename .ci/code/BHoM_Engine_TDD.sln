@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reflection_Engine", "..\..\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TDD", "TDD\TDD.csproj", "{A3FF09CC-65CC-49ED-B7FE-80EF1662B97B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structure_Engine", "..\..\Structure_Engine\Structure_Engine.csproj", "{CAF96F8E-6AF6-40D1-8B1F-745BF050D671}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A3FF09CC-65CC-49ED-B7FE-80EF1662B97B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3FF09CC-65CC-49ED-B7FE-80EF1662B97B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3FF09CC-65CC-49ED-B7FE-80EF1662B97B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAF96F8E-6AF6-40D1-8B1F-745BF050D671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAF96F8E-6AF6-40D1-8B1F-745BF050D671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAF96F8E-6AF6-40D1-8B1F-745BF050D671}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAF96F8E-6AF6-40D1-8B1F-745BF050D671}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

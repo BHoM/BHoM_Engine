@@ -20,11 +20,18 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\BHoM_Engine\BHoM_Engine.csproj" />
     <ProjectReference Include="..\..\..\Reflection_Engine\Reflection_Engine.csproj" />
+    <ProjectReference Include="..\..\..\Structure_Engine\Structure_Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+    </Reference>
+    <Reference Include="Geometry_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Structure_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Structure_oM.dll</HintPath>
     </Reference>
   </ItemGroup>
 
