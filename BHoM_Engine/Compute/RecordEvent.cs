@@ -57,7 +57,11 @@ namespace BH.Engine.Base
             Exception e = exception;
             while(e != null)
             {
-                exceptionMessage += $"{e.Message}{Environment.NewLine}{Environment.NewLine}";
+                if (!string.IsNullOrEmpty(exceptionMessage))
+                    exceptionMessage += $"{Environment.NewLine}{Environment.NewLine}";
+
+                exceptionMessage += $"{e.Message}";
+
                 e = e.InnerException;
             }
 
