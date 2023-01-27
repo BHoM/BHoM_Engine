@@ -53,6 +53,9 @@ namespace BH.Engine.Base
         [Output("success", "True if the event has been successfully recorded as a BHoM Event.")]
         public static bool RecordEvent(Exception exception, string message = "", EventType type = EventType.Unknown)
         {
+            if (exception == null)
+                return false;
+
             string exceptionMessage = "";
 
             Exception e = exception;
