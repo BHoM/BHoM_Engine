@@ -179,15 +179,32 @@ namespace BH.Engine.Geometry
 
         public static List<Point> PlaneIntersections(this Ellipse curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            if(curve.IsNull())
+            if (curve.IsNull())
                 return new List<Point>();
 
             Vector normal = curve.Normal();
             if (normal.IsParallel(plane.Normal) != 0)
                 return new List<Point>();
 
-             //Get line from intersection of planes
-            Line l = plane.PlaneIntersection(new Plane { Origin = curve.Centre, Normal = normal }, tolerance);
+            //Get line from intersection of planes
+            //Simply calling plane-plane intersection leads to some numerical instabilities for some extreme cases
+            //The methodology here is a bit more expensive, but gives more stable results
+            Plane curvePlane = new Plane { Origin = curve.Centre, Normal = normal };
+
+            Vector lineDir = curvePlane.Normal.CrossProduct(plane.Normal).Normalise();
+            Vector vectorInCurvePlane = curvePlane.Normal.CrossProduct(lineDir);
+            Vector vectorInPlane = plane.Normal.CrossProduct(lineDir);
+
+            //Get out a line that has start and end as close to the plane origins as possible
+            Point start = curvePlane.Origin.ProjectAlong(plane, vectorInCurvePlane);
+            Point end = plane.Origin.ProjectAlong(curvePlane, vectorInPlane);
+
+            //For numerical stability reasons, want the line to be at least 1 long.
+            //If distance between points is smaller than 1, instead set the end to start moved by the line direction
+            if (start.SquareDistance(end) < 1.0)
+                end = start + lineDir;
+
+            Line l = new Line { Start = start, End = end, Infinite = true };
 
             //Get intersection points between ellipse and infinite line
             return curve.LineIntersections(l, true, tolerance);
