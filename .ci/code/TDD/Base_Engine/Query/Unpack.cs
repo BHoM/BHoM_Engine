@@ -27,30 +27,55 @@ using BH.Engine.Base;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using System.Collections;
+using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
     public partial class Query
     {
-        [SetUp]
-        public void Setup()
+        static Query()
         {
-            // BH.Engine.Base.Create.RandomObject() can't deal with generics. Using AutoFaker instead. Example:
-            // var test = new AutoFaker<Container<int>>().Generate();
+            // The static ctor is called only once at the test class initialisation.
+
+            AutoFaker.Configure(builder =>
+            {
+                builder
+                  .WithRepeatCount(1);        // Configures the number of items in a collection.
+            });
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            // This method is called once per Test execution (after the TestCaseSource attribute resolution).
         }
 
         private static IEnumerable<TestCaseData> GetTestContainers()
         {
-            // AutoFaker creates 3 objects of the requested type per each IEnumerable property.
-            // E.g. Container<Bar> will have 1 + 3 + 3 * 3 = 13 Bars.  
-            yield return new TestCaseData(new AutoFaker<Container<Bar>>().Generate(), 13);
-            yield return new TestCaseData(new AutoFaker<DictionaryContainer<Bar>>().Generate(), 16);
-            yield return new TestCaseData(new AutoFaker<DictionaryListContainer<Bar>>().Generate(), 22);
-            yield return new TestCaseData(new AutoFaker<ListOfDictionariesContainer<Bar>>().Generate(), 13);
-            yield return new TestCaseData(new AutoFaker<ListOfListOfListContainer<Bar>>().Generate(), 13);
+            // BH.Engine.Base.Create.RandomObject() can't deal with generics. Using AutoFaker instead. Example:
+            // AutoFaker creates 1 objects of the requested type per each IEnumerable property.
+            // E.g. Container<Bar> will have 1 + 1 + 1 = 3 Bars.  
+            yield return new TestCaseData(new AutoFaker<Container<Bar>>().Generate(), 3);
+            yield return new TestCaseData(new AutoFaker<DictionaryContainer<Bar>>().Generate(), 4);
+            yield return new TestCaseData(new AutoFaker<DictionaryListContainer<Bar>>().Generate(), 4);
+            yield return new TestCaseData(new AutoFaker<ListOfDictionariesContainer<Bar>>().Generate(), 3);
+            yield return new TestCaseData(new AutoFaker<ListOfListOfListContainer<Bar>>().Generate(), 3);
         }
 
-        [Test, TestCaseSource(nameof(GetTestContainers))]
+        private static IEnumerable<TestCaseData> GetTestContainerOfContainers()
+        {
+            // Container of containers.
+            // AutoFaker creates 1 objects of the requested type per each IEnumerable property.
+            // E.g. Container<Container<Bar>> will have 3 + 3 + 3 = 9 Bars.  
+            yield return new TestCaseData(new AutoFaker<Container<Container<Bar>>>().Generate(), 9);
+            yield return new TestCaseData(new AutoFaker<DictionaryContainer<Container<Bar>>>().Generate(), 12);
+            yield return new TestCaseData(new AutoFaker<DictionaryListContainer<Container<Bar>>>().Generate(), 12);
+            yield return new TestCaseData(new AutoFaker<ListOfDictionariesContainer<Container<Bar>>>().Generate(), 9);
+            yield return new TestCaseData(new AutoFaker<ListOfListOfListContainer<Container<Bar>>>().Generate(), 9);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(GetTestContainers))]
         public void Unpack<T>(Container<T> container, int numberOfObjects)
         {
             var result = container.Unpack();
@@ -59,25 +84,34 @@ namespace BH.Engine.Base
         }
 
         [Test]
-        public void Unpack_DiscardCustomData()
+        [TestCaseSource(nameof(GetTestContainerOfContainers))]
+        public void UnpackContainerOfContainers<T>(Container<T> container, int numberOfObjects)
+        {
+            var result = container.Unpack();
+
+            Assert.That(result.OfType<Bar>().Count(), Is.EqualTo(numberOfObjects));
+        }
+
+        [Test]
+        public void Unpack_DisregardCustomData()
         {
             var validContainer = new AutoFaker<Container<Bar>>().Generate();
             validContainer.CustomData["bar"] = new AutoFaker<Bar>().Generate();
 
             var result = validContainer.Unpack();
 
-            Assert.That(result.OfType<Bar>().Count(), Is.EqualTo(13));
+            Assert.That(result.OfType<Bar>().Count(), Is.EqualTo(3));
         }
 
         [Test]
-        public void Unpack_DiscardFragments()
+        public void Unpack_DisregardFragments()
         {
             var validContainer = new AutoFaker<Container<Bar>>().Generate();
             validContainer.Fragments.Add(new TestFragment() { SomeObject = new Bar() });
 
             var result = validContainer.Unpack();
 
-            Assert.That(result.OfType<Bar>().Count(), Is.EqualTo(13));
+            Assert.That(result.OfType<Bar>().Count(), Is.EqualTo(3));
         }
     }
 }
