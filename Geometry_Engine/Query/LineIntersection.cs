@@ -328,13 +328,8 @@ namespace BH.Engine.Geometry
 
                 double maxRadius = Math.Max(rx, ry);
 
-                /*if (Math.Abs(checkVal) < tolerance) //For this case, the intersection is guarantiued to be tangential
-                {
-                    //intersection is tangential
-                    radicand_sqrt = 0;   //Set to zero to ensure no negative sqrt
-                    tangential = true;
-                }
-                else */if (Math.Abs(checkVal) < tolerance * maxRadius * maxRadius * 10)
+                //This value have been found by testing to capture potential tangetial cases
+                if (Math.Abs(checkVal) < tolerance * maxRadius * maxRadius * 10)
                 {
                     //Intersection might be tangential, but extra (more expensive) checks are required
                     mayBeTangential = true;
