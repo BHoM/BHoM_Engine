@@ -38,12 +38,12 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Unpacks the contents of the input IContainer. The contents are flattened into a list of objects." + 
-            "The flattening supports properties of IContainer that are Lists, List of Lists, Dictionaries (the values are flattened) and Dictionaries with a Value that is a list (the list is flattened)." + 
+        [Description("Unpacks the contents of the input IContainer. The contents are flattened into a list of objects." +
+            "The flattening supports properties of IContainer that are Lists, List of Lists, Dictionaries (the values are flattened) and Dictionaries with a Value that is a list (the list is flattened)." +
             "Any other nested datastructure has its elements returned as-is.")]
         [Input("container", "The IContainer to be unpacked.")]
         [Output("objs", "Objects unpacked from the container.")]
-        public static IEnumerable<IObject> Unpack(this BH.oM.Base.IContainer container)
+        public static IEnumerable<IObject> Unpack(this oM.Base.IContainer container)
         {
             var result = new List<IObject>();
 
@@ -65,20 +65,31 @@ namespace BH.Engine.Base
                         {
                             foreach (var enumOfEnumItem in nestedEnum)
                             {
-                                if (enumOfEnumItem is IObject iObj) result.Add(iObj);
+                                AddToResultOrRecurse(result, enumOfEnumItem);
                             }
                         }
                         else
-                            if(enumItem is IObject iObj) result.Add(iObj);
+                            AddToResultOrRecurse(result, enumItem);
                     }
                 }
                 else
-                    if (propValue is IObject iObj) result.Add(iObj);
+                    AddToResultOrRecurse(result, propValue);
             }
 
             return result;
         }
 
         /***************************************************/
+
+        private static void AddToResultOrRecurse(List<IObject> resultList, object obj)
+        {
+            if (!(obj is IObject iObj))
+                return;
+
+            if (iObj is oM.Base.IContainer container)
+                resultList.AddRange(container.Unpack());
+            else
+                resultList.Add(iObj);
+        }
     }
 }
