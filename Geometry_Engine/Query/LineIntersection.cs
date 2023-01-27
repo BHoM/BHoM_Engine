@@ -295,14 +295,16 @@ namespace BH.Engine.Geometry
                 Point p3 = new Point();
                 Point p4 = new Point();
 
-                bool isVertical = Math.Abs(p1.X - p2.X) < tolerance;
+                double dx = p2.X- p1.X;
+                double dy = p2.Y- p1.Y;
+                bool isSteepSlope = Math.Abs(dx) < Math.Abs(dy);
 
                 double a, b, c, s, si;
 
-                if (isVertical)
+                if (isSteepSlope)
                 {
-                    //Vertical line, evaluate with slope from Y
-                    s = (p2.X - p1.X) / (p2.Y - p1.Y);
+                    //Closer to vertical line, evaluate with slope from Y
+                    s = dx / dy;
                     si = p2.X - (s * p2.Y);
 
                     a = (rx * rx) + (ry * ry * s * s);
@@ -311,8 +313,8 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
-                    //Non vertical line. Evaluate with slope from X
-                    s = (p2.Y - p1.Y) / (p2.X - p1.X);
+                    //Closer to horizontal line. Evaluate with slope from X
+                    s = dy / dx;
                     si = p2.Y - (s * p2.X);
 
                     a = (ry * ry) + (rx * rx * s * s);
@@ -326,13 +328,13 @@ namespace BH.Engine.Geometry
 
                 double maxRadius = Math.Max(rx, ry);
 
-                if (Math.Abs(checkVal) < tolerance) //For this case, the intersection is guarantiued to be tangential
+                /*if (Math.Abs(checkVal) < tolerance) //For this case, the intersection is guarantiued to be tangential
                 {
                     //intersection is tangential
                     radicand_sqrt = 0;   //Set to zero to ensure no negative sqrt
                     tangential = true;
                 }
-                else if (Math.Abs(checkVal) < tolerance * maxRadius * maxRadius * 10)
+                else */if (Math.Abs(checkVal) < tolerance * maxRadius * maxRadius * 10)
                 {
                     //Intersection might be tangential, but extra (more expensive) checks are required
                     mayBeTangential = true;
@@ -344,7 +346,7 @@ namespace BH.Engine.Geometry
                 else
                     radicand_sqrt = Math.Sqrt(sqrtTerm);
 
-                if (isVertical)
+                if (isSteepSlope)
                 {
                     //Initialise values based vertical slope
                     p3.Y = (-b - radicand_sqrt) / (2.0 * a);
@@ -361,19 +363,33 @@ namespace BH.Engine.Geometry
                     p4.Y = s * p4.X + si;
                 }
 
+                double z = (p1.Z + p2.Z) / 2;
+                p3.Z = z;
+                p4.Z = z;
+
                 if (mayBeTangential)
                 {
-                    Point midPt = (p3 + p4) / 2;
-                    Point closePt = ClosestPointEllipseLocal(rx, ry, midPt, tolerance);
+                    double sqTol = tolerance * tolerance;
 
-                    if (midPt.SquareDistance(closePt) <= tolerance * tolerance)
+                    if (p3.SquareDistance(p4) <= sqTol) //Check both points within range of each other
                     {
-                        //Is tangential
-                        p3 = (midPt + closePt) / 2;
+                        p3 = (p3 + p4) / 2;
                         tangential = true;
                     }
-                    else if (!isOverlapping)  //Not tangential, and not overlapping -> no intersection
-                        return new List<Point>();
+                    else    //If not in range, check if midpoint is within tolerance distance of the ellipse
+                    {
+                        Point midPt = (p3 + p4) / 2;
+                        Point closePt = ClosestPointEllipseLocal(rx, ry, midPt, tolerance);
+
+                        if (midPt.SquareDistance(closePt) <= tolerance * tolerance)
+                        {
+                            //Is tangential
+                            p3 = (midPt + closePt) / 2;
+                            tangential = true;
+                        }
+                        else if (!isOverlapping)  //Not tangential, and not overlapping -> no intersection
+                            return new List<Point>();
+                    }
                 }
 
                 //Tranform back to global coordinates
