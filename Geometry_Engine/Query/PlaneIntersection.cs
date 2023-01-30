@@ -182,35 +182,65 @@ namespace BH.Engine.Geometry
             if (curve.IsNull())
                 return new List<Point>();
 
-            Vector normal = curve.Normal();
-            if (normal.IsParallel(plane.Normal) != 0)
-                return new List<Point>();
+            //Projecting the curve axes scaled by radius as onto the plane normal and curve centre to the plane (including sign) gives the equation
+            //f(t) = a*cost(t)+b*sint(t)+c that is the distance from the ellipse to the plane.
+            //Solving for f(t) = 0 given the ellipse parameter at the intersection point
 
-            //Get line from intersection of planes
-            //Simply calling plane-plane intersection leads to some numerical instabilities for some extreme cases
-            //The methodology here is a bit more expensive, but gives more stable results
-            Plane curvePlane = new Plane { Origin = curve.Centre, Normal = normal };
+            double a = curve.Axis1.DotProduct(plane.Normal) * curve.Radius1;    //First axis projected to the plane normal and scaled by the radius 
+            double b = curve.Axis2.DotProduct(plane.Normal) * curve.Radius2;    //Second axis projected to the plane normal and scaled by the radius
+            double c = plane.Normal.DotProduct(curve.Centre - plane.Origin);    //Signed distance from the centre to the plane
 
-            Vector lineDir = curvePlane.Normal.CrossProduct(plane.Normal).Normalise();
-            Vector vectorInCurvePlane = curvePlane.Normal.CrossProduct(lineDir);
-            Vector vectorInPlane = plane.Normal.CrossProduct(lineDir);
+            List<double> ts = new List<double>();
 
-            //Get out a line that has start and end as close to the plane origins as possible
-            Point start = curvePlane.Origin.ProjectAlong(plane, vectorInCurvePlane);
-            Point end = plane.Origin.ProjectAlong(curvePlane, vectorInPlane);
+            bool isOverlapping = true;
+            bool checkTangency = false;
+            //Special case a == c
+            if (Math.Abs(a - c) < tolerance)
+            {
+                if (Math.Abs(1 - b) > tolerance)
+                    ts.Add(2 * (Math.PI - Math.Atan(a / b)));
+            }
+            else
+            {
+                double sqrtTerm = a * a + b * b - c * c;
+                isOverlapping = sqrtTerm > 0;  //If this is true, there will be an intersection
+                checkTangency = Math.Abs(sqrtTerm) / (2 * Math.Max(curve.Radius1, curve.Radius2)) < tolerance;  //If true, need to check if the intersection is tangential
 
-            //For numerical stability reasons, want the line to be at least 1 long.
-            //If distance between points is smaller than 1, instead set the end to start moved by the line direction
-            if (start.SquareDistance(end) < 1.0)
-                end = start + lineDir;
+                if (!isOverlapping)
+                {
+                    if (checkTangency)
+                        sqrtTerm = 0;   //Set to 0, to be picked up in tangency check
+                    else
+                        return new List<Point>();   //Not overlapping and not tangential
+                }
 
-            Line l = new Line { Start = start, End = end, Infinite = true };
+                sqrtTerm = Math.Sqrt(sqrtTerm);
+                ts.Add(2 * Math.Atan((b - sqrtTerm) / (a - c)));
+                ts.Add(2 * Math.Atan((b + sqrtTerm) / (a - c)));
+            }
 
-            //Get intersection points between ellipse and infinite line
-            return curve.LineIntersections(l, true, tolerance);
+            //Function for getting the point on the ellipse based ont he angle parameter
+            Func<double, Point> elipsePt = t => curve.Centre + Math.Cos(t) * curve.Radius1 * curve.Axis1 + Math.Sin(t) * curve.Radius2 * curve.Axis2;
+
+            
+            if (checkTangency)
+            {
+                //Get out the point at the mid parameter
+                Point tangentPt = elipsePt((ts[0] + ts[1]) / 2);
+
+                //If point at mid parameter is within tolerance distance from the plane, return it
+                if (tangentPt.Distance(plane) < tolerance)
+                    return new List<Point> { tangentPt };
+                else if (!isOverlapping)    //If not tangential and not overlapping, there is no intersection. Return empty list
+                    return new List<Point>();
+            }
+
+            //All checks done, simply return the points at the found parameters
+            return ts.Select(elipsePt).ToList();
         }
 
         /***************************************************/
+
 
         public static List<Point> PlaneIntersections(this Line curve, Plane plane, double tolerance = Tolerance.Distance)
         {
