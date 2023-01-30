@@ -37,9 +37,13 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Vectors                  ****/
         /***************************************************/
 
+        [Description("Finds the closest point in the provided set of points in relation to the provided Point.")]
+        [Input("cloud", "The set of points from which to find the closest to the provided point.")]
+        [Input("point", "The reference point. The point in the cloud with the smallest distance to this point will be returned.")]
+        [Input("closePt", "The point in the cloud with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this IEnumerable<Point> cloud, Point point)
         {
-            double minDist = Double.PositiveInfinity;
+            double minDist = double.PositiveInfinity;
             double sqDist = 0;
             Point cp = null;
 
@@ -58,6 +62,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Finds the closest point in the provided set of points in relation to the provided Point.")]
+        [Input("points", "The set of points from which to find the closest to the provided point.")]
+        [Input("point", "The reference point. The point in the set of points with the smallest distance to this point will be returned.")]
+        [Input("closePt", "The point in list of points with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this Point point, IEnumerable<Point> points)
         {
             return points.ClosestPoint(point);
@@ -65,6 +73,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Method only defined to satisfy IGeometry interface. A Vector does not have a set location in space, why null always is returned by this method.")]
+        [Input("vector", "Unused for this method. A Vector does not have a set location in space, why null always is returned by this method.")]
+        [Input("point", "Unused for this method. A Vector does not have a set location in space, why null always is returned by this method.")]
+        [Input("closePt", " A Vector does not have a set location in space, why null always is returned by this method.")]
         public static Point ClosestPoint(this Vector vector, Point point)
         {
             return null;
@@ -72,6 +84,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Finds the closest point on the Plane in relation to the provided Point.")]
+        [Input("plane", "The Plane on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the Plane with the smallest distance to this point will be returned.")]
+        [Input("closePt", "The point on the Plane with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this Plane plane, Point point)
         {
             return point.Project(plane);
@@ -82,6 +98,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Finds the closest point on the Arc in relation to the provided Point.")]
+        [Input("curve", "The Arc on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the Arc with the smallest distance to this point will be returned.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Input("closePt", "The point on the Arc with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this Arc curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (point.SquareDistance(curve.Centre()) <= tolerance * tolerance)
@@ -98,6 +119,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Finds the closest point on the Circle in relation to the provided Point.")]
+        [Input("circle", "The Circle on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the Circle with the smallest distance to this point will be returned.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Input("closePt", "The point on the Circle with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this Circle circle, Point point, double tolerance = Tolerance.Distance)
         {
             Plane p = new Plane { Origin = circle.Centre, Normal = circle.Normal };
@@ -110,6 +136,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Finds the closest point on the Ellipse in relation to the provided Point.")]
+        [Input("ellipse", "The Ellipse on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the Ellipse with the smallest distance to this point will be returned.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Input("closePt", "The point on the Ellipse with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this Ellipse ellipse, Point point, double tolerance = Tolerance.Distance)
         {
             //Tranform the point to the local coordinates of the ellipse
@@ -128,6 +159,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Finds the closest point on the Line in relation to the provided Point.")]
+        [Input("line", "The Line on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the Line with the smallest distance to this point will be returned.")]
+        [Input("infiniteSegment", "If true, the returned point will be the closest point on the infinite line. If false, returned point will be the closest point on the finite line segment.")]
+        [Input("closePt", "The point on the Line with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this Line line, Point point, bool infiniteSegment = false)
         {
             Vector dir = line.Direction();
@@ -141,6 +177,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Finds the closest point on the PolyCurve in relation to the provided Point.")]
+        [Input("curve", "The PolyCurve on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the PolyCurve with the smallest distance to this point will be returned.")]
+        [Input("closePt", "The point on the PolyCurve with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this PolyCurve curve, Point point)
         {
             double minDist = double.PositiveInfinity;
@@ -163,6 +203,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Finds the closest point on the Polyline in relation to the provided Point.")]
+        [Input("curve", "The Polyline on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the Polyline with the smallest distance to this point will be returned.")]
+        [Input("closePt", "The point on the Polyline with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this Polyline curve, Point point)
         {
             double minDist = double.PositiveInfinity;
@@ -183,11 +227,14 @@ namespace BH.Engine.Geometry
             return closest;
         }
 
-
         /***************************************************/
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
+        [Description("Finds the closest point on the PlanarSurface in relation to the provided Point.")]
+        [Input("surface", "The PlanarSurface on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the PlanarSurface with the smallest distance to this point will be returned.")]
+        [Input("closePt", "The point on the PlanarSurface with the smallest distance to the provided point.")]
         public static Point ClosestPoint(this PlanarSurface surface, Point point)
         {
             Plane panelPlane = surface.FitPlane();
@@ -203,11 +250,14 @@ namespace BH.Engine.Geometry
             return (panelOutline.IIsContaining(cPt)) ? cPt[0] : panelOutline.IClosestPoint(cPt[0]);
         }
 
-
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Finds the closest point on the geometry in relation to the provided Point.")]
+        [Input("geometry", "The geometry on which to find the cloest point in relation to the provided point.")]
+        [Input("point", "The reference point. The point on the geometry with the smallest distance to this point will be returned.")]
+        [Input("closePt", "The point on the geometry with the smallest distance to the provided point.")]
         public static Point IClosestPoint(this IGeometry geometry, Point point)
         {
             return ClosestPoint(geometry as dynamic, point);
