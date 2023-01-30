@@ -26,6 +26,8 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -35,6 +37,12 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
+        [Description("Sorts a set of points along the provided curve. Sorting is done based on the curve parameter at the position of the closest point on the curve in relation to each provided Point.")]
+        [Input("points", "The list of points to sort.")]
+        [Input("arc", "The Arc to sort along.")]
+        [Input("distanceTolerance", "Tolerance to be used for distance computations in the method.", typeof(Length))]
+        [Input("angleTolerance", "Tolerance to be used for angle computations in the methods.", typeof(Angle))]
+        [Output("sortedPts", "The provided points sorted along the curve.")]
         public static List<Point> SortAlongCurve(this List<Point> points, Arc arc, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (arc.Angle() <= angleTolerance)
@@ -52,6 +60,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Sorts a set of points along the provided curve. Sorting is done based on the curve parameter at the position of the closest point on the curve in relation to each provided Point.")]
+        [Input("points", "The list of points to sort.")]
+        [Input("circle", "The Circle to sort along.")]
+        [Input("distanceTolerance", "Tolerance to be used for distance computations in the method.", typeof(Length))]
+        [Input("angleTolerance", "Tolerance to be used for angle computations in the methods.", typeof(Angle))]
+        [Output("sortedPts", "The provided points sorted along the curve.")]
         public static List<Point> SortAlongCurve(this List<Point> points, Circle circle, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (circle.Radius <= distanceTolerance)
@@ -69,6 +83,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Sorts a set of points along the provided curve. Sorting is done based on the curve parameter at the position of the closest point on the curve in relation to each provided Point.")]
+        [Input("points", "The list of points to sort.")]
+        [Input("ellipse", "The Ellipse to sort along.")]
+        [Input("distanceTolerance", "Tolerance to be used for distance computations in the method.", typeof(Length))]
+        [Input("angleTolerance", "Tolerance to be used for angle computations in the methods.", typeof(Angle))]
+        [Output("sortedPts", "The provided points sorted along the curve.")]
         public static List<Point> SortAlongCurve(this List<Point> points, Ellipse ellipse, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (ellipse.Radius1 <= distanceTolerance && ellipse.Radius2 <= distanceTolerance)
@@ -87,6 +107,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Sorts a set of points along the provided curve. Sorting is done based on the curve parameter at the position of the closest point on the curve in relation to each provided Point.")]
+        [Input("points", "The list of points to sort.")]
+        [Input("line", "The Line to sort along.")]
+        [Input("distanceTolerance", "Tolerance to be used for distance computations in the method.", typeof(Length))]
+        [Input("angleTolerance", "Tolerance to be used for angle computations in the methods.", typeof(Angle))]
+        [Output("sortedPts", "The provided points sorted along the curve.")]
         public static List<Point> SortAlongCurve(this List<Point> points, Line line, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             if (line.Length() <= distanceTolerance)
@@ -131,6 +157,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Sorts a set of points along the provided curve. Sorting is done based on the curve parameter at the position of the closest point on the curve in relation to each provided Point.")]
+        [Input("points", "The list of points to sort.")]
+        [Input("curve", "The PolyCurve to sort along.")]
+        [Input("distanceTolerance", "Tolerance to be used for distance computations in the method.", typeof(Length))]
+        [Input("angleTolerance", "Tolerance to be used for angle computations in the methods.", typeof(Angle))]
+        [Output("sortedPts", "The provided points sorted along the curve.")]
         public static List<Point> SortAlongCurve(this List<Point> points, PolyCurve curve, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
 
@@ -146,6 +178,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Sorts a set of points along the provided curve. Sorting is done based on the curve parameter at the position of the closest point on the curve in relation to each provided Point.")]
+        [Input("points", "The list of points to sort.")]
+        [Input("curve", "The Polyline to sort along.")]
+        [Input("distanceTolerance", "Tolerance to be used for distance computations in the method.", typeof(Length))]
+        [Input("angleTolerance", "Tolerance to be used for angle computations in the methods.", typeof(Angle))]
+        [Output("sortedPts", "The provided points sorted along the curve.")]
         public static List<Point> SortAlongCurve(this List<Point> points, Polyline curve, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             List<Point> result = new List<Point>();
@@ -191,6 +229,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Sorts a set of points along the provided curve. Sorting is done based on the curve parameter at the position of the closest point on the curve in relation to each provided Point.")]
+        [Input("points", "The list of points to sort.")]
+        [Input("curve", "The curve to sort along.")]
+        [Input("distanceTolerance", "Tolerance to be used for distance computations in the method.", typeof(Length))]
+        [Input("angleTolerance", "Tolerance to be used for angle computations in the methods.", typeof(Angle))]
+        [Output("sortedPts", "The provided points sorted along the curve.")]
         public static List<Point> ISortAlongCurve(this List<Point> points, ICurve curve, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             return SortAlongCurve(points, curve as dynamic, distanceTolerance, angleTolerance);
