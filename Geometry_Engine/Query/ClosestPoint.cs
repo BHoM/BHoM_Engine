@@ -275,7 +275,7 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        /**** Private Methods                  ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         [Description("Gets the closest point on an ellipse centred around the global origin with first axis along global X and second axis along global Y.")]
