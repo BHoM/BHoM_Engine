@@ -26,6 +26,8 @@ using System.Linq;
 using BH.oM.Geometry;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -35,52 +37,79 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Vector TangentAtParameter(this Arc curve, double parameter, double tolerance = Tolerance.Distance)
+        [Description("Gets out the Tangent Vector at the normalised angle parameter t on the curve. t should be between 0 and 1 where 0 corresponds to StartAngle and 1 corresponds to EndAngle.\n" +
+                     "For a circular Arc this is equivalent to the point at the normalised length paramter where 0 is the StartTangent and 1 is EndTangent.")]
+        [Input("curve", "The Arc to evaluate.")]
+        [Input("t", "The normalised length/angle parameter to evaluate. Should be a value between 0 and 1.")]
+        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Output("tan", "The tangent vector at the provided parameter.")]
+        [PreviousInputNames("t", "parameter")]
+        public static Vector TangentAtParameter(this Arc curve, double t, double tolerance = Tolerance.Distance)
         {
             double paramTol = tolerance / curve.Length();
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+            if (t > 1 + paramTol || t < 0 - paramTol)
                 return null;
 
-            return curve.CoordinateSystem.Y.Rotate(curve.StartAngle + (curve.EndAngle - curve.StartAngle) * parameter, curve.CoordinateSystem.Z);
+            return curve.CoordinateSystem.Y.Rotate(curve.StartAngle + (curve.EndAngle - curve.StartAngle) * t, curve.CoordinateSystem.Z);
         }
 
         /***************************************************/
 
-        public static Vector TangentAtParameter(this Circle curve, double parameter, double tolerance = Tolerance.Distance)
+        [Description("Gets out the Tangent Vector at the normalised angle parameter t on the curve. t should be between 0 and 1 where 0 corresponds to 0 angle and 1 corresponds to a full lap of 2*PI radians.\n" +
+             "For a Circle this is equivalent to the point at the normalised length paramter.")]
+        [Input("curve", "The Arc to evaluate.")]
+        [Input("t", "The normalised length/angle parameter to evaluate. Should be a value between 0 and 1.")]
+        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Output("tan", "The tangent vector at the provided parameter.")]
+        [PreviousInputNames("t", "parameter")]
+        public static Vector TangentAtParameter(this Circle curve, double t, double tolerance = Tolerance.Distance)
         {
             double paramTol = tolerance / curve.Length();
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+            if (t > 1 + paramTol || t < 0 - paramTol)
                 return null;
 
             Vector n = curve.Normal;
             Vector refVector = 1 - Math.Abs(n.DotProduct(Vector.XAxis)) > Tolerance.Angle ? Vector.XAxis : Vector.ZAxis;
             Vector localX = n.CrossProduct(refVector).Normalise();
-            return n.CrossProduct(localX).Rotate(parameter * 2 * Math.PI, n);
+            return n.CrossProduct(localX).Rotate(t * 2 * Math.PI, n);
         }
 
         /***************************************************/
 
-        public static Vector TangentAtParameter(this Ellipse ellipse, double parameter, double tolerance = Tolerance.Distance)
+        [Description("Gets out the Tangent Vector at the normalised angle parameter t on the curve. t should be between 0 and 1 where 0 corresponds to 0 angle and 1 corresponds to a full lap of 2*PI radians.\n" +
+             "Note that for a general case this does not correspond to a normalised length parameter along the curve, i.e. t value 1/3 does not (for the general case) give the point at 1/3 length around the perimiter but rather the point at the angle parameter corresponding to 1/3 of a full lap.")]
+        [Input("curve", "The Ellipse to evaluate.")]
+        [Input("t", "The normalised angle parameter to evaluate. Should be a value between 0 and 1.")]
+        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Output("tan", "The tangent vector at the provided parameter.")]
+        [PreviousInputNames("t", "parameter")]
+        public static Vector TangentAtParameter(this Ellipse ellipse, double t, double tolerance = Tolerance.Distance)
         {
             if (ellipse.IsNull())
                 return null;
 
-            if (parameter < 0)
-                parameter = 0;
-            if (parameter > 1)
-                parameter = 1;
+            if (t < 0)
+                t = 0;
+            if (t > 1)
+                t = 1;
 
-            double angle = parameter * 2 * Math.PI;
+            double angle = t * 2 * Math.PI;
 
             return (ellipse.Axis2 * (Math.Cos(angle) / ellipse.Radius1) - ellipse.Axis1 * (Math.Sin(angle) / ellipse.Radius2)).Normalise();
         }
 
         /***************************************************/
 
-        public static Vector TangentAtParameter(this Line curve, double parameter, double tolerance = Tolerance.Distance)
+        [Description("Gets out the Tangent Vector at the normalised length parameter t on the curve. t should be between 0 and 1, where  0 is the Start Tangent and 1 is End Tangent.")]
+        [Input("curve", "The Line to evaluate.")]
+        [Input("t", "The normalised length parameter to evaluate. Should be a value between 0 and 1.")]
+        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Output("tan", "The tangent vector at the provided parameter.")]
+        [PreviousInputNames("t", "parameter")]
+        public static Vector TangentAtParameter(this Line curve, double t, double tolerance = Tolerance.Distance)
         {
             double paramTol = tolerance / curve.Length();
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+            if (t > 1 + paramTol || t < 0 - paramTol)
                 return null;
 
             return curve.Direction();
@@ -88,6 +117,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets out the Tangent Vector at the parameter t on the curve.\n" +
+             "Note that for a general case this does not correspond to a normalised length parameter along the curve.")]
+        [Input("curve", "The NurbsCurve to evaluate.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Output("tan", "The tangent vector at the provided parameter.")]
+        [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this NurbsCurve curve, double t, double tolerance = Tolerance.Distance)
         {
             return DerivativeAtParameter(curve, t, 1)?.Normalise();
@@ -95,14 +131,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector TangentAtParameter(this PolyCurve curve, double parameter, double tolerance = Tolerance.Distance)
+        [Description("Gets out the Tangent Vector at the parameter t on the curve, where t generally is the normalised length parameter t on the curve. t should be between 0 and 1, where  0 is the Start Tangent and 1 is End Tangent." +
+             "Note that for PolyCurve consisting of a single ellipse the parameter will correspond to the normalised angle parameter rather than the normalised length parameter.")]
+        [Input("curve", "The PolyCurve to evaluate.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Output("tan", "The tangent vector at the provided parameter.")]
+        [PreviousInputNames("t", "parameter")]
+        public static Vector TangentAtParameter(this PolyCurve curve, double t, double tolerance = Tolerance.Distance)
         {
             double length = curve.Length();
             double paramTol = tolerance / length;
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+            if (t > 1 + paramTol || t < 0 - paramTol)
                 return null;
 
-            double cLength = parameter * length;
+            double cLength = t * length;
             foreach (ICurve c in curve.SubParts())
             {
                 double l = c.ILength();
@@ -115,14 +158,20 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Vector TangentAtParameter(this Polyline curve, double parameter, double tolerance = Tolerance.Distance)
+        [Description("Gets out the Tangent Vector at the parameter t on the curve, where t is the normalised length parameter t on the curve. t should be between 0 and 1, where 0 is the Start Tangent and 1 is End Tangent.")]
+        [Input("curve", "The Polyline to evaluate.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Output("tan", "The tangent vector at the provided parameter.")]
+        [PreviousInputNames("t", "parameter")]
+        public static Vector TangentAtParameter(this Polyline curve, double t, double tolerance = Tolerance.Distance)
         {
             double length = curve.Length();
             double paramTol = tolerance / length;
-            if (parameter > 1 + paramTol || parameter < 0 - paramTol)
+            if (t > 1 + paramTol || t < 0 - paramTol)
                 return null;
 
-            double cLength = parameter * length;
+            double cLength = t * length;
             double sum = 0;
             foreach (Line line in curve.SubParts())
             {
@@ -193,9 +242,16 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        public static Vector ITangentAtParameter(this ICurve curve, double parameter, double tolerance = Tolerance.Distance)
+        [Description("Gets out the Tangent Vector at the parameter t on the curve, where t for most curves is the normalised length parameter t on the curve. t should for those cases be between 0 and 1, where  0 is the Start Tangent and 1 is End Tangent.\n" +
+             "Note that the parameter does not correspond to a normalised length for Ellipses and NurbsCurves or PolyCurves consisting of any of these.")]
+        [Input("curve", "The ICurve to evaluate.")]
+        [Input("t", "The parameter to evaluate.")]
+        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Output("tan", "The tangent vector at the provided parameter.")]
+        [PreviousInputNames("t", "parameter")]
+        public static Vector ITangentAtParameter(this ICurve curve, double t, double tolerance = Tolerance.Distance)
         {
-            return TangentAtParameter(curve as dynamic, parameter, tolerance);
+            return TangentAtParameter(curve as dynamic, t, tolerance);
         }
 
 
