@@ -25,6 +25,8 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -34,6 +36,10 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Returns if the curve is Linear or not. For a Line this always returns true.")]
+        [Input("line", "The Line to check for linearity.")]
+        [Input("tolerance", "Distance tolerance to use for check whether the curve is linear or not.", typeof(Length))]
+        [Output("isLinear", "Return true if the curve is linear. For a line this always return true.")]
         public static bool IsLinear(this Line line, double tolerance = Tolerance.Distance)
         {
             return true;
@@ -41,6 +47,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns if the curve is Linear or not. For a Arc this always returns false.")]
+        [Input("arc", "The Arc to check for linearity.")]
+        [Input("tolerance", "Distance tolerance to use for check whether the curve is linear or not.", typeof(Length))]
+        [Output("isLinear", "Return true if the curve is linear. For a Arc this always return false.")]
         public static bool IsLinear(this Arc arc, double tolerance = Tolerance.Distance)
         {
             return false;
@@ -48,6 +58,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns if the curve is Linear or not. For a Circle this always returns false.")]
+        [Input("circle", "The Circle to check for linearity.")]
+        [Input("tolerance", "Distance tolerance to use for check whether the curve is linear or not.", typeof(Length))]
+        [Output("isLinear", "Return true if the curve is linear. For a Circle this always return false.")]
         public static bool IsLinear(this Circle circle, double tolerance = Tolerance.Distance)
         {
             return false;
@@ -55,6 +69,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns if the curve is Linear or not. For a Ellipse this always returns false.")]
+        [Input("ellipse", "The Ellipse to check for linearity.")]
+        [Input("tolerance", "Distance tolerance to use for check whether the curve is linear or not.", typeof(Length))]
+        [Output("isLinear", "Return true if the curve is linear. For a Ellipse this always return false.")]
         public static bool IsLinear(this Ellipse ellipse, double tolerance = Tolerance.Distance)
         {
             return false;
@@ -62,6 +80,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns if the curve is Linear or not, i.e. if all the controlpoints of the Polyline are colinear.")]
+        [Input("curve", "The Polyline to check for linearity.")]
+        [Input("tolerance", "Distance tolerance to use for check whether the curve is linear or not.", typeof(Length))]
+        [Output("isLinear", "Return true if the curve is linear.")]
         public static bool IsLinear(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.IsCollinear(tolerance);
@@ -69,6 +91,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Returns if the curve is Linear or not, i.e. if the Polycurve is built up of a set of colinear curves.")]
+        [Input("curve", "The PolyCurve to check for linearity.")]
+        [Input("tolerance", "Distance tolerance to use for check whether the curve is linear or not.", typeof(Length))]
+        [Output("isLinear", "Return true if the curve is linear.")]
         public static bool IsLinear(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints().IsCollinear(tolerance);
@@ -79,6 +105,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Returns if the curve is Linear or not.")]
+        [Input("curve", "The curve to check for linearity.")]
+        [Input("tolerance", "Distance tolerance to use for check whether the curve is linear or not.", typeof(Length))]
+        [Output("isLinear", "Return true if the curve is linear.")]
         public static bool IIsLinear(this ICurve curve, double tolerance = Tolerance.Distance)
         {
             return IsLinear(curve as dynamic, tolerance);
