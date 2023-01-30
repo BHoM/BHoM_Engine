@@ -27,6 +27,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using BH.Engine.Base;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -36,6 +37,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Flips the direction of the curve, meaning start becomes end and end becoming start, and that the tangent at each point of the curve is reversed.")]
+        [Input("curve", "The curve to flip.")]
+        [Output("curve", "The curve with flipped direction.")]
         public static Arc Flip(this Arc curve)
         {
             Cartesian system = Create.CartesianCoordinateSystem(curve.CoordinateSystem.Origin, curve.CoordinateSystem.X, -curve.CoordinateSystem.Y);
@@ -45,6 +49,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Flips the direction of the curve, meaning start becomes end and end becoming start, and that the tangent at each point of the curve is reversed.")]
+        [Input("curve", "The curve to flip.")]
+        [Output("curve", "The curve with flipped direction.")]
         public static Circle Flip(this Circle curve)
         {
             return new Circle { Centre = curve.Centre, Normal = -curve.Normal, Radius = curve.Radius };
@@ -52,6 +59,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Flips the direction of the curve, meaning start becomes end and end becoming start, and that the tangent at each point of the curve is reversed.")]
+        [Input("curve", "The curve to flip.")]
+        [Output("curve", "The curve with flipped direction.")]
         public static Ellipse Flip(this Ellipse curve)
         {
             return new Ellipse { Axis1 = curve.Axis1, Axis2 = -curve.Axis2, Centre = curve.Centre, Radius1 = curve.Radius1, Radius2 = curve.Radius2 };
@@ -59,6 +69,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Flips the direction of the curve, meaning start becomes end and end becoming start, and that the tangent at each point of the curve is reversed.")]
+        [Input("curve", "The curve to flip.")]
+        [Output("curve", "The curve with flipped direction.")]
         public static Line Flip(this Line curve)
         {
             return new Line { Start = curve.End, End = curve.Start };
@@ -66,6 +79,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Flips the direction of the curve, meaning start becomes end and end becoming start, and that the tangent at each point of the curve is reversed.")]
+        [Input("curve", "The curve to flip.")]
+        [Output("curve", "The curve with flipped direction.")]
         public static NurbsCurve Flip(this NurbsCurve curve)
         {
             NurbsCurve result = curve.DeepClone();
@@ -80,6 +96,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Flips the direction of the curve, meaning start becomes end and end becoming start, and that the tangent at each point of the curve is reversed.")]
+        [Input("curve", "The curve to flip.")]
+        [Output("curve", "The curve with flipped direction.")]
         public static PolyCurve Flip(this PolyCurve curve)
         {
             return new PolyCurve { Curves = curve.Curves.Select(x => x.IFlip()).Reverse().ToList() };
@@ -87,6 +106,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Flips the direction of the curve, meaning start becomes end and end becoming start, and that the tangent at each point of the curve is reversed.")]
+        [Input("curve", "The curve to flip.")]
+        [Output("curve", "The curve with flipped direction.")]
         public static Polyline Flip(this Polyline curve)
         {
             return new Polyline { ControlPoints = curve.ControlPoints.Reverse<Point>().ToList() };
@@ -97,6 +119,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Flips the direction of the curve, meaning start becomes end and end becoming start, and that the tangent at each point of the curve is reversed.")]
+        [Input("curve", "The curve to flip.")]
+        [Output("curve", "The curve with flipped direction.")]
         public static ICurve IFlip(this ICurve curve)
         {
             return Flip(curve as dynamic);
