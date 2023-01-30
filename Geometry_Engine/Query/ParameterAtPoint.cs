@@ -24,6 +24,8 @@ using System;
 using System.Collections.Generic;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +35,13 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Computes and returns the parameter at the curve that corresponds to the provided point.\n" +
+                    "This is the reverse of PointAtParameter, i.e. providing the resulting parameter from this method to PointAtParamter should result in the provided Point.\n" +
+                    "Method returns -1 for points with a distance larger than the provided tolerance from the curve.")]
+        [Input("curve", "The Arc from which to get the parameter.")]
+        [Input("point", "The point to get the parameter at.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Method returns -1 for Points with a distance larger than this value from the curve.", typeof(Length))]
+        [Output("t", "The curve parameter at the provided point.")]
         public static double ParameterAtPoint(this Arc curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
@@ -51,6 +60,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns the parameter at the curve that corresponds to the provided point.\n" +
+            "This is the reverse of PointAtParameter, i.e. providing the resulting parameter from this method to PointAtParamter should result in the provided Point.\n" +
+            "Method returns -1 for points with a distance larger than the provided tolerance from the curve.")]
+        [Input("curve", "The Circle from which to get the parameter.")]
+        [Input("point", "The point to get the parameter at.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Method returns -1 for Points with a distance larger than this value from the curve.", typeof(Length))]
+        [Output("t", "The curve parameter at the provided point.")]
         public static double ParameterAtPoint(this Circle curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
@@ -63,6 +79,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns the parameter at the curve that corresponds to the provided point.\n" +
+            "This is the reverse of PointAtParameter, i.e. providing the resulting parameter from this method to PointAtParamter should result in the provided Point.\n" +
+            "Method returns -1 for points with a distance larger than the provided tolerance from the curve.")]
+        [Input("curve", "The Ellipse from which to get the parameter.")]
+        [Input("point", "The point to get the parameter at.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Method returns -1 for Points with a distance larger than this value from the curve.", typeof(Length))]
+        [Output("t", "The curve parameter at the provided point.")]
         public static double ParameterAtPoint(this Ellipse curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
@@ -79,6 +102,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns the parameter at the curve that corresponds to the provided point.\n" +
+            "This is the reverse of PointAtParameter, i.e. providing the resulting parameter from this method to PointAtParamter should result in the provided Point.\n" +
+            "Method returns -1 for points with a distance larger than the provided tolerance from the curve.")]
+        [Input("curve", "The Line from which to get the parameter.")]
+        [Input("point", "The point to get the parameter at.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Method returns -1 for Points with a distance larger than this value from the curve.", typeof(Length))]
+        [Output("t", "The curve parameter at the provided point.")]
         public static double ParameterAtPoint(this Line curve, Point point, double tolerance = Tolerance.Distance)
         {
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
@@ -92,6 +122,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns the parameter at the curve that corresponds to the provided point.\n" +
+            "This is the reverse of PointAtParameter, i.e. providing the resulting parameter from this method to PointAtParamter should result in the provided Point.\n" +
+            "Method returns -1 for points with a distance larger than the provided tolerance from the curve.")]
+        [Input("curve", "The PolyCurve from which to get the parameter.")]
+        [Input("point", "The point to get the parameter at.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Method returns -1 for Points with a distance larger than this value from the curve.", typeof(Length))]
+        [Output("t", "The curve parameter at the provided point.")]
         public static double ParameterAtPoint(this PolyCurve curve, Point point, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;
@@ -113,6 +150,13 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns the parameter at the curve that corresponds to the provided point.\n" +
+            "This is the reverse of PointAtParameter, i.e. providing the resulting parameter from this method to PointAtParamter should result in the provided Point.\n" +
+            "Method returns -1 for points with a distance larger than the provided tolerance from the curve.")]
+        [Input("curve", "The Polyline from which to get the parameter.")]
+        [Input("point", "The point to get the parameter at.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Method returns -1 for Points with a distance larger than this value from the curve.", typeof(Length))]
+        [Output("t", "The curve parameter at the provided point.")]
         public static double ParameterAtPoint(this Polyline curve, Point point, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;
@@ -137,6 +181,13 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Computes and returns the parameter at the curve that corresponds to the provided point.\n" +
+            "This is the reverse of PointAtParameter, i.e. providing the resulting parameter from this method to PointAtParamter should result in the provided Point.\n" +
+            "Method returns -1 for points with a distance larger than the provided tolerance from the curve.")]
+        [Input("curve", "The curve from which to get the parameter.")]
+        [Input("point", "The point to get the parameter at.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Method returns -1 for Points with a distance larger than this value from the curve.", typeof(Length))]
+        [Output("t", "The curve parameter at the provided point.")]
         public static double IParameterAtPoint(this ICurve curve, Point point, double tolerance = Tolerance.Distance)
         {
             return ParameterAtPoint(curve as dynamic, point, tolerance);
