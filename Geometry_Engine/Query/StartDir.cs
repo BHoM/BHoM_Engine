@@ -25,6 +25,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -34,6 +35,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Gets the tangent vector at the start of the Arc.")]
+        [Input("arc", "The Arc from which to get the tangent at the start point.")]
+        [Input("startTan", "The tangent vector at the start of the Arc.")]
         public static Vector StartDir(this Arc arc)
         {
             return arc.CoordinateSystem.Y.Rotate(arc.StartAngle, arc.CoordinateSystem.Z);
@@ -41,6 +45,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the tangent vector at the start of the Circle.")]
+        [Input("circle", "The Circle from which to get the tangent at the start point.")]
+        [Input("startTan", "The tangent vector at the start of the Circle.")]
         public static Vector StartDir(this Circle circle)
         {
             Vector n = circle.Normal;
@@ -50,6 +57,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the tangent vector at the start of the Ellipse.")]
+        [Input("ellipse", "The Ellipse from which to get the tangent at the start point.")]
+        [Input("startTan", "The tangent vector at the start of the Ellipse.")]
         public static Vector StartDir(this Ellipse ellipse)
         {
             //Ellipse starts and ends at the first axis point, and move towards the second axis, hence second axis is the tangent at start and end
@@ -58,6 +68,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the tangent vector at the start of the Line.")]
+        [Input("line", "The Line from which to get the tangent at the start point.")]
+        [Input("startTan", "The tangent vector at the start of the Line.")]
         public static Vector StartDir(this Line line)
         {
             return line.Direction();
@@ -65,6 +78,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the tangent vector at the start of the PolyCurve.")]
+        [Input("curve", "The PolyCurve from which to get the tangent at the start point.")]
+        [Input("startTan", "The tangent vector at the start of the PolyCurve.")]
         public static Vector StartDir(this PolyCurve curve)
         {
             return curve.Curves.Count > 0 ? curve.Curves.First().IStartDir() : null;
@@ -72,6 +88,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Gets the tangent vector at the start of the Polyline.")]
+        [Input("curve", "The Polyline from which to get the tangent at the start point.")]
+        [Input("startTan", "The tangent vector at the start of the Polyline.")]
         public static Vector StartDir(this Polyline curve)
         {
             List<Point> pts = curve.ControlPoints;
@@ -90,6 +109,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Gets the tangent vector at the start of the curve.")]
+        [Input("curve", "The curve from which to get the tangent at the start point.")]
+        [Input("startTan", "The tangent vector at the start of the curve.")]
         public static Vector IStartDir(this ICurve curve)
         {
             return StartDir(curve as dynamic);
