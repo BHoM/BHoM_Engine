@@ -83,9 +83,9 @@ namespace BH.Engine.Geometry
         [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
-        public static Vector TangentAtParameter(this Ellipse ellipse, double t, double tolerance = Tolerance.Distance)
+        public static Vector TangentAtParameter(this Ellipse curve, double t, double tolerance = Tolerance.Distance)
         {
-            if (ellipse.IsNull())
+            if (curve.IsNull())
                 return null;
 
             if (t < 0)
@@ -95,7 +95,7 @@ namespace BH.Engine.Geometry
 
             double angle = t * 2 * Math.PI;
 
-            return (ellipse.Axis2 * (Math.Cos(angle) / ellipse.Radius1) - ellipse.Axis1 * (Math.Sin(angle) / ellipse.Radius2)).Normalise();
+            return (curve.Axis2 * (Math.Cos(angle) / curve.Radius1) - curve.Axis1 * (Math.Sin(angle) / curve.Radius2)).Normalise();
         }
 
         /***************************************************/
