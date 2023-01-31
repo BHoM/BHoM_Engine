@@ -88,6 +88,9 @@ namespace BH.Engine.Geometry
         [Output("t", "The curve parameter at the provided point.")]
         public static double ParameterAtPoint(this Ellipse curve, Point point, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull() || point.IsNull())
+                return double.NaN;
+
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
                 return -1;
 
