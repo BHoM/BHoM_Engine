@@ -193,7 +193,7 @@ namespace BH.Engine.Geometry
         [Description("Computes and returns the minimum distance between the two curves.")]
         [Input("curve1", "First curve for distance computation.")]
         [Input("curve2", "Second curve for distance computation.")]
-        [Input("tolerance", "Distance tolerance used in the method", typeof(Length))]
+        [Input("tolerance", "Distance tolerance used in the method.", typeof(Length))]
         [Output("dist", "The mimum distance between the two curves.", typeof(Length))]
         public static double Distance(this ICurve curve1, ICurve curve2, double tolerance = Tolerance.Distance)
         {
