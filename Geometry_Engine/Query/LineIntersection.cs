@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
         [Input("line2", "Second Line to intersect.")]
         [Input("useInfiniteLines", "If true or if a lines Infinite property is true, a intersection point found that is outside the domain of that lines start and end point is accepted. If false, and the lines Infinite property is false, the found intersection point needs to be on the finite line segment, between or on the start and end point, if not, null is returned.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Used for checking if the intersection point is within acceptable distance from the Lines.", typeof(Length))]
-        [Input("angleTolerance", "Angle tolerance to be used in the method. Used for checking if the lines are collinear", typeof(Angle))]
+        [Input("angleTolerance", "Angle tolerance to be used in the method. Used for checking if the lines are collinear.", typeof(Angle))]
         [Output("intersection", "The intersection point of the two Lines. If no intersection point is found, null is returned.")]
         public static Point LineIntersection(this Line line1, Line line2, bool useInfiniteLines = false, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
