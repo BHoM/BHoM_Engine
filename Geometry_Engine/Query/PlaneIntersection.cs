@@ -186,8 +186,15 @@ namespace BH.Engine.Geometry
             //f(t) = a*cos(t)+b*sin(t)+c that is the distance from the ellipse to the plane.
             //Solving for f(t) = 0 given the ellipse parameter at the intersection point
 
-            double a = curve.Axis1.DotProduct(plane.Normal) * curve.Radius1;    //First axis projected to the plane normal and scaled by the radius 
-            double b = curve.Axis2.DotProduct(plane.Normal) * curve.Radius2;    //Second axis projected to the plane normal and scaled by the radius
+            //Magnitude of projecting curve axes to plane normal
+            double a = curve.Axis1.DotProduct(plane.Normal);    
+            double b = curve.Axis2.DotProduct(plane.Normal);
+
+            if ((Math.Abs(a) + Math.Abs(b)) < tolerance)  //Curve and plane are parallel
+                return new List<Point>();
+
+            a = a * curve.Radius1;                                              //First axis projected to the plane normal and scaled by the radius 
+            b = b * curve.Radius2;                                              //Second axis projected to the plane normal and scaled by the radius
             double c = plane.Normal.DotProduct(curve.Centre - plane.Origin);    //Signed distance from the centre to the plane
 
             List<double> ts = new List<double>();
