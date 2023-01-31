@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
                      "For a circular Arc this is equivalent to the point at the normalised length paramter where 0 is the StartTangent and 1 is EndTangent.")]
         [Input("curve", "The Arc to evaluate.")]
         [Input("t", "The normalised length/angle parameter to evaluate. Should be a value between 0 and 1.")]
-        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Arc curve, double t, double tolerance = Tolerance.Distance)
@@ -59,7 +59,7 @@ namespace BH.Engine.Geometry
              "For a Circle this is equivalent to the point at the normalised length paramter.")]
         [Input("curve", "The Arc to evaluate.")]
         [Input("t", "The normalised length/angle parameter to evaluate. Should be a value between 0 and 1.")]
-        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Circle curve, double t, double tolerance = Tolerance.Distance)
@@ -80,7 +80,7 @@ namespace BH.Engine.Geometry
              "Note that for a general case this does not correspond to a normalised length parameter along the curve, i.e. t value 1/3 does not (for the general case) give the point at 1/3 length around the perimiter but rather the point at the angle parameter corresponding to 1/3 of a full lap.")]
         [Input("curve", "The Ellipse to evaluate.")]
         [Input("t", "The normalised angle parameter to evaluate. Should be a value between 0 and 1.")]
-        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Ellipse curve, double t, double tolerance = Tolerance.Distance)
@@ -103,7 +103,7 @@ namespace BH.Engine.Geometry
         [Description("Gets out the Tangent Vector at the normalised length parameter t on the curve. t should be between 0 and 1, where  0 is the Start Tangent and 1 is End Tangent.")]
         [Input("curve", "The Line to evaluate.")]
         [Input("t", "The normalised length parameter to evaluate. Should be a value between 0 and 1.")]
-        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Line curve, double t, double tolerance = Tolerance.Distance)
@@ -121,7 +121,7 @@ namespace BH.Engine.Geometry
              "Note that for a general case this does not correspond to a normalised length parameter along the curve.")]
         [Input("curve", "The NurbsCurve to evaluate.")]
         [Input("t", "The parameter to evaluate.")]
-        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this NurbsCurve curve, double t, double tolerance = Tolerance.Distance)
@@ -135,7 +135,7 @@ namespace BH.Engine.Geometry
              "Note that for PolyCurve consisting of a single ellipse the parameter will correspond to the normalised angle parameter rather than the normalised length parameter.")]
         [Input("curve", "The PolyCurve to evaluate.")]
         [Input("t", "The parameter to evaluate.")]
-        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this PolyCurve curve, double t, double tolerance = Tolerance.Distance)
@@ -161,7 +161,7 @@ namespace BH.Engine.Geometry
         [Description("Gets out the Tangent Vector at the parameter t on the curve, where t is the normalised length parameter t on the curve. t should be between 0 and 1, where 0 is the Start Tangent and 1 is End Tangent.")]
         [Input("curve", "The Polyline to evaluate.")]
         [Input("t", "The parameter to evaluate.")]
-        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Polyline curve, double t, double tolerance = Tolerance.Distance)
@@ -185,6 +185,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns the Tangent Vectors along the NurbsSurface U and V directions at parameters u and v. u and v  should both be between 0 and 1, where 0 is the parameter at the first edge and 1 is the parameter at the oposite edge.\n" + 
+                     "No acound is taken for any surface trims which means the tangents returned could be inside an opening or ouside the outer trim.")]
+        [Input("surface", "The NurbsSurface to evaluate.")]
+        [Input("u", "Parameter along the first (U) direction of the surface.")]
+        [Input("v", "Parameter along the second (V) direction of the surface.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [MultiOutput(0, "uTangent", "The tangent of the surface along it's U direction.")]
         [MultiOutput(1, "vTangent", "The tangent of the surface along it's V direction.")]
         public static Output<Vector, Vector> TangentAtParameter(this NurbsSurface surface, double u, double v, double tolerance = Tolerance.Distance)
@@ -246,7 +252,7 @@ namespace BH.Engine.Geometry
              "Note that the parameter does not correspond to a normalised length for Ellipses and NurbsCurves or PolyCurves consisting of any of these.")]
         [Input("curve", "The ICurve to evaluate.")]
         [Input("t", "The parameter to evaluate.")]
-        [Input("tolerance", "Distance tolerance to be used int he method.", typeof(Length))]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("tan", "The tangent vector at the provided parameter.")]
         [PreviousInputNames("t", "parameter")]
         public static Vector ITangentAtParameter(this ICurve curve, double t, double tolerance = Tolerance.Distance)
