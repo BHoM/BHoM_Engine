@@ -25,6 +25,8 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -34,9 +36,19 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
-        //TODO: Testing needed!!
+        [Description("Computes the intersection between two planes and returns the resulting line. The returned line will have a length of one, with IsInfinite set to true and direction computed as the normalised vector resulting from the cross product between normal of first and second plane.\n" + 
+                     "The start and end points of the line are set according to the following:\n" + 
+                     "- If the line direction has a vertical (Z) component: The start point of the returned line will be the point along the line with Z == 0, and the end point will be the start point moved with the direction vector.\n" +
+                     "- Else, if the line direction has a Y component:  The start point of the returned line will be the point along the line with Y == 0, and the end point will be the start point moved with the direction vector.\n" +
+                     "- Else: The start point of the returned line will be the point along the line with X == 0, and the end point will be the start point moved with the direction vector.\n" + 
+                     "Null is returned for two parallel planes.")]
+        [Input("plane1", "First plane for intersection.")]
+        [Input("plane2", "Second plane for intersection.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interLine", "The resulting infinite intersection line between the two planes, with a segment length set to 1.")]
         public static Line PlaneIntersection(this Plane plane1, Plane plane2, double tolerance = Tolerance.Distance)
         {
+            //TODO: Testing needed!!
 
             if (plane1.Normal.IsParallel(plane2.Normal) != 0)
                 return null;
@@ -83,6 +95,11 @@ namespace BH.Engine.Geometry
         /**** public Methods - Bounding Box             ****/
         /***************************************************/
 
+        [Description("Computes the intersection between a BoundingBox and a Plane, and returns the resulting Polyline if any intersection is found. Returns null if no intersection is found.")]
+        [Input("boundingBox", "The BoundingBox to intersect with the Plane.")]
+        [Input("plane", "The plane to intersect with the box.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Input("interCurve", "The resulting polyline from the intersection between the plane and the boundingbox.")]
         public static Polyline PlaneIntersection(this BoundingBox boundingBox, Plane plane, double tolerance = Tolerance.Distance)
         {
             List<Point> controlPoints = new List<Point>();
@@ -110,6 +127,11 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Computes and returns the intersection point(s) between the Arc and the Plane. Returns an empty list if the plane is parallel with the curve plane, including the case where the curve is fully within the plane.")]
+        [Input("curve", "The Arc to intersect with the Plane.")]
+        [Input("plane", "The Plane to intersect with the Arc.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interPts", "The resulting intersection points between the Arc and the Plane.")]
         public static List<Point> PlaneIntersections(this Arc curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             //Construct cricle for intersection
@@ -148,9 +170,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        //TODO: Testing needed!!
+        [Description("Computes and returns the intersection point(s) between the Circle and the Plane. Returns an empty list if the plane is parallel with the curve plane, including the case where the curve is fully within the plane.")]
+        [Input("curve", "The Circle to intersect with the Plane.")]
+        [Input("plane", "The Plane to intersect with the Circle.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interPts", "The resulting intersection points between the Circle and the Plane.")]
         public static List<Point> PlaneIntersections(this Circle curve, Plane plane, double tolerance = Tolerance.Distance)
         {
+            //TODO: Testing needed!!
             if (curve.Normal.IsParallel(plane.Normal) != 0)
                 return new List<Point>();
 
@@ -177,6 +204,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns the intersection point(s) between the Ellipse and the Plane. Returns an empty list if the plane is parallel with the curve plane, including the case where the curve is fully within the plane.")]
+        [Input("curve", "The Ellipse to intersect with the Plane.")]
+        [Input("plane", "The Plane to intersect with the Ellipse.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interPts", "The resulting intersection points between the Ellipse and the Plane.")]
         public static List<Point> PlaneIntersections(this Ellipse curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             if (curve.IsNull())
@@ -233,7 +265,7 @@ namespace BH.Engine.Geometry
                 ts.Add(2 * Math.Atan((b + sqrtTerm) / (a - c)));
             }
 
-            //Function for getting the point on the ellipse based ont he angle parameter
+            //Function for getting the point on the ellipse based ont the angle parameter
             Func<double, Point> elipsePt = t => curve.Centre + Math.Cos(t) * curve.Radius1 * curve.Axis1 + Math.Sin(t) * curve.Radius2 * curve.Axis2;
 
             
@@ -255,7 +287,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-
+        [Description("Computes and returns the intersection point between the Line and the Plane. Returns an empty list if the plane is parallel with the curve plane, including the case where the curve is fully within the plane.")]
+        [Input("curve", "The Line to intersect with the Plane.")]
+        [Input("plane", "The Plane to intersect with the Line.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interPt", "The resulting intersection point between the Line and the Plane.")]
         public static List<Point> PlaneIntersections(this Line curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             List<Point> result = new List<Point>();
@@ -266,6 +302,12 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes and returns the intersection point between the Line and the Plane. Returns null if the plane is parallel with the curve plane, including the case where the curve is fully within the plane.")]
+        [Input("curve", "The Line to intersect with the Plane.")]
+        [Input("plane", "The Plane to intersect with the Line.")]
+        [Input("infiniteSegment", "If true, the intersection will computed based on the infinite line. If false, will be based on the finite line segment.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interPt", "The resulting intersection point between the Line and the Plane.")]
         public static Point PlaneIntersection(this Line line, Plane plane, bool useInfiniteLine = true, double tolerance = Tolerance.Distance)
         {
             useInfiniteLine &= line.Infinite;
@@ -298,18 +340,28 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        //TODO: Testing needed!!
+        [Description("Computes and returns the intersection point(s) between the PolyCurve and the Plane. Returns an empty list if the plane is parallel with the curve plane, including the case where the curve is fully within the plane.")]
+        [Input("curve", "The PolyCurve to intersect with the Plane.")]
+        [Input("plane", "The Plane to intersect with the PolyCurve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interPts", "The resulting intersection points between the PolyCurve and the Plane.")]
         public static List<Point> PlaneIntersections(this PolyCurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
+            //TODO: Testing needed!!
             return curve.Curves.SelectMany(x => x.IPlaneIntersections(plane, tolerance)).ToList();
             //throw new NotImplementedException();
         }
 
         /***************************************************/
 
-        //TODO: Testing needed!!
+        [Description("Computes and returns the intersection point(s) between the Polyline and the Plane. Returns an empty list if the plane is parallel with the curve plane, including the case where the curve is fully within the plane.")]
+        [Input("curve", "The Polyline to intersect with the Plane.")]
+        [Input("plane", "The Plane to intersect with the Polyline.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interPts", "The resulting intersection points between the Polyline and the Plane.")]
         public static List<Point> PlaneIntersections(this Polyline curve, Plane plane, double tolerance = Tolerance.Distance)
         {
+            //TODO: Testing needed!!
             List<Point> result = new List<Point>();
             List<int> sameSide = plane.Side(curve.ControlPoints, tolerance);
 
@@ -348,6 +400,11 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Computes and returns the intersection point(s) between the curve and the Plane. Returns an empty list if the plane is parallel with the curve plane, including the case where the curve is fully within the plane.")]
+        [Input("curve", "The curve to intersect with the Plane.")]
+        [Input("plane", "The Plane to intersect with the curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method", typeof(Length))]
+        [Output("interPts", "The resulting intersection points between the curve and the Plane.")]
         public static List<Point> IPlaneIntersections(this ICurve curve, Plane plane, double tolerance = Tolerance.Distance)
         {
             return PlaneIntersections(curve as dynamic, plane, tolerance);
