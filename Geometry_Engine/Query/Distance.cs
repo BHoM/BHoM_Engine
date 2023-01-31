@@ -160,6 +160,9 @@ namespace BH.Engine.Geometry
         [Output("dist", "The Euclidean distance between the Point and the Ellipse.", typeof(Length))]
         public static double Distance(this Point point, Ellipse ellipse)
         {
+            if (ellipse.IsNull() || point.IsNull())
+                return double.NaN;
+
             return point.Distance(ellipse.ClosestPoint(point));
         }
 
