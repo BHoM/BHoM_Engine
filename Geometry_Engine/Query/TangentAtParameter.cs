@@ -46,6 +46,9 @@ namespace BH.Engine.Geometry
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Arc curve, double t, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull())
+                return null;
+
             double paramTol = tolerance / curve.Length();
             if (t > 1 + paramTol || t < 0 - paramTol)
                 return null;
@@ -64,6 +67,9 @@ namespace BH.Engine.Geometry
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Circle curve, double t, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull())
+                return null;
+
             double paramTol = tolerance / curve.Length();
             if (t > 1 + paramTol || t < 0 - paramTol)
                 return null;
@@ -108,6 +114,9 @@ namespace BH.Engine.Geometry
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Line curve, double t, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull())
+                return null;
+
             double paramTol = tolerance / curve.Length();
             if (t > 1 + paramTol || t < 0 - paramTol)
                 return null;
@@ -126,6 +135,9 @@ namespace BH.Engine.Geometry
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this NurbsCurve curve, double t, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull())
+                return null;
+
             return DerivativeAtParameter(curve, t, 1)?.Normalise();
         }
 
@@ -140,6 +152,9 @@ namespace BH.Engine.Geometry
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this PolyCurve curve, double t, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull())
+                return null;
+
             double length = curve.Length();
             double paramTol = tolerance / length;
             if (t > 1 + paramTol || t < 0 - paramTol)
@@ -166,6 +181,9 @@ namespace BH.Engine.Geometry
         [PreviousInputNames("t", "parameter")]
         public static Vector TangentAtParameter(this Polyline curve, double t, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull())
+                return null;
+
             double length = curve.Length();
             double paramTol = tolerance / length;
             if (t > 1 + paramTol || t < 0 - paramTol)
@@ -195,6 +213,9 @@ namespace BH.Engine.Geometry
         [MultiOutput(1, "vTangent", "The tangent of the surface along it's V direction.")]
         public static Output<Vector, Vector> TangentAtParameter(this NurbsSurface surface, double u, double v, double tolerance = Tolerance.Distance)
         {
+            if (surface.IsNull())
+                return null;
+
             double a = 0;
             double dua = 0;
             double dva = 0;
@@ -257,6 +278,9 @@ namespace BH.Engine.Geometry
         [PreviousInputNames("t", "parameter")]
         public static Vector ITangentAtParameter(this ICurve curve, double t, double tolerance = Tolerance.Distance)
         {
+            if (curve.IsNull())
+                return null;
+
             return TangentAtParameter(curve as dynamic, t, tolerance);
         }
 

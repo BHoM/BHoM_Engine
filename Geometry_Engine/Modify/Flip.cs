@@ -64,6 +64,9 @@ namespace BH.Engine.Geometry
         [Output("curve", "The curve with flipped direction.")]
         public static Ellipse Flip(this Ellipse curve)
         {
+            if (curve.IsNull())
+                return null;
+
             return new Ellipse { Axis1 = curve.Axis1, Axis2 = -curve.Axis2, Centre = curve.Centre, Radius1 = curve.Radius1, Radius2 = curve.Radius2 };
         }
 
