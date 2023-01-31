@@ -183,7 +183,7 @@ namespace BH.Engine.Geometry
                 return new List<Point>();
 
             //Projecting the curve axes scaled by radius as onto the plane normal and curve centre to the plane (including sign) gives the equation
-            //f(t) = a*cost(t)+b*sint(t)+c that is the distance from the ellipse to the plane.
+            //f(t) = a*cos(t)+b*sin(t)+c that is the distance from the ellipse to the plane.
             //Solving for f(t) = 0 given the ellipse parameter at the intersection point
 
             double a = curve.Axis1.DotProduct(plane.Normal) * curve.Radius1;    //First axis projected to the plane normal and scaled by the radius 
@@ -197,8 +197,15 @@ namespace BH.Engine.Geometry
             //Special case a == c
             if (Math.Abs(a - c) < tolerance)
             {
-                if (Math.Abs(1 - b) > tolerance)
+                //Below if statement is to avoid division by 0. 
+                //Still holds, even if b == 0, as Atan(t) -> PI/2 as t -> infinity+
+                //Hence, 2(PI-Atan(a/b)) -> 2(PI-PI/2)=PI as b -> 0
+                //For future reference, Atan(t) -> -PI/2 as t -> infinity- , which results in expression evaluation to 3PI, but
+                //Sin(PI) = Sin(3PI) = 0 and Cos(PI) = Cos(3PI) = -1, hence will evalutate to the same position on the ellipse and no need to differentiate between the 0- and 0+ case of b
+                if (Math.Abs(b) > 1e-16)
                     ts.Add(2 * (Math.PI - Math.Atan(a / b)));
+                else
+                    ts.Add(Math.PI);
             }
             else
             {
