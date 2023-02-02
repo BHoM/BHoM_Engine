@@ -120,7 +120,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Computes and returns the Square distance between the Point and the closest point on the Line.")]
+        [Description("Computes and returns the square distance between the Point and the closest point on the Line.")]
         [Input("point", "Point for square distance computation.")]
         [Input("line", "Line for square distance computation.")]
         [Input("infiniteSegment", "If true, distance will be computed to the closest point on the infinite line. If false, the distance will be compated to the closest point on the finite line segment.")]

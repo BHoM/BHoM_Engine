@@ -218,8 +218,8 @@ namespace BH.Engine.Geometry
             //The closest point on an ellipse
             List<Point> ptsNearEdge = new List<Point>();
 
-            //Scale factors for creation of ellipses that are guarantiued to contain points on the edge.
-            //A point that is on the edge is guarantiued to be inside the ellipse scaled up by the scaleOutside and guarantiued to be outside an ellipse scaled by the scaleInside
+            //Scale factors for creation of ellipses that are guaranteed to contain points on the edge.
+            //A point that is on the edge is guaranteed to be inside the ellipse scaled up by the scaleOutside and guaranteed to be outside an ellipse scaled by the scaleInside
             //Note that this methodology captures some points that are not on the edge, but that is simply handled by the second pass.
             //Note that simply adding tolerance to the radii would give a tighter fit BUT does _NOT_ work, as that version of scaling up does _not_ capture point within tolerance along the edge between the vertex and co-vertex,
             //i.e. the result of offsetting an ellipse by a certain distance is _not_ another ellipse.
