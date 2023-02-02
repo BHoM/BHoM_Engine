@@ -268,11 +268,10 @@ namespace BH.Engine.Geometry
             //Function for getting the point on the ellipse based ont the angle parameter
             Func<double, Point> ellipsePt = t => curve.Centre + Math.Cos(t) * curve.Radius1 * curve.Axis1 + Math.Sin(t) * curve.Radius2 * curve.Axis2;
 
-            
             if (checkTangency)
             {
                 //Get out the point at the mid parameter
-                Point tangentPt = elipsePt((ts[0] + ts[1]) / 2);
+                Point tangentPt = ellipsePt((ts[0] + ts[1]) / 2);
 
                 //If point at mid parameter is within tolerance distance from the plane, return it
                 if (tangentPt.Distance(plane) < tolerance)
@@ -282,7 +281,7 @@ namespace BH.Engine.Geometry
             }
 
             //All checks done, simply return the points at the found parameters
-            return ts.Select(elipsePt).ToList();
+            return ts.Select(ellipsePt).ToList();
         }
 
         /***************************************************/
