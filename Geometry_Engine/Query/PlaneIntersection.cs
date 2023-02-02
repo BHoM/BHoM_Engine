@@ -266,7 +266,7 @@ namespace BH.Engine.Geometry
             }
 
             //Function for getting the point on the ellipse based ont the angle parameter
-            Func<double, Point> elipsePt = t => curve.Centre + Math.Cos(t) * curve.Radius1 * curve.Axis1 + Math.Sin(t) * curve.Radius2 * curve.Axis2;
+            Func<double, Point> ellipsePt = t => curve.Centre + Math.Cos(t) * curve.Radius1 * curve.Axis1 + Math.Sin(t) * curve.Radius2 * curve.Axis2;
 
             
             if (checkTangency)
