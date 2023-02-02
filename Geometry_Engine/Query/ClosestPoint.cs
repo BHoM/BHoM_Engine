@@ -313,7 +313,7 @@ namespace BH.Engine.Geometry
                 //Raise a warning when b is not exactly equal to 0
                 if (b != 0)
                 {
-                    Base.Compute.RecordWarning("The aspect ratio of the provided Ellipse is to large to be able to accurately evaluate the Closest point. Point on line between vertex and co-vertex returned.");
+                    Base.Compute.RecordWarning("The aspect ratio of the provided Ellipse is too large to be able to accurately evaluate the Closest point. Point on line between vertex and co-vertex returned.");
                 }
 
                 Point closePt = new Line() { Start = new Point { X = a }, End = new Point { Y = b } }.ClosestPoint(new Point { X = px, Y = py });

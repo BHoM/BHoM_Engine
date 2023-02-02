@@ -96,7 +96,7 @@ namespace BH.Engine.Geometry
 
             if (t < 0)
                 t = 0;
-            if (t > 1)
+            else if (t > 1)
                 t = 1;
 
             double angle = t * 2 * Math.PI;
