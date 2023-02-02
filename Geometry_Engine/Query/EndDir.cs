@@ -57,12 +57,11 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Gets the tangent vector at the end of the Ellipse.")]
+        [Description("Gets the tangent vector at the end of the Ellipse. An ellipse starts and ends at the first axis point, and move towards the second axis, hence second axis is the tangent at start and end.")]
         [Input("ellipse", "The Ellipse from which to get the tangent at the end point.")]
         [Output("endTan", "The tangent vector at the end of the Ellipse.")]
         public static Vector EndDir(this Ellipse ellipse)
         {
-            //Ellipse starts and ends at the first axis point, and move towards the second axis, hence second axis is the tangent at start and end
             return ellipse?.Axis2;
         }
 
