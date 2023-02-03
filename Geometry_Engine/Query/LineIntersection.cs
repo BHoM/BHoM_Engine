@@ -268,7 +268,7 @@ namespace BH.Engine.Geometry
         public static List<Point> LineIntersections(this Ellipse ellipse, Line line, bool useInfiniteLine = false, double tolerance = Tolerance.Distance)
         {
             if (ellipse.IsNull() || line.IsNull())
-                return new List<Point>();
+                return null;
 
             Line l = new Line { Start = line.Start, End = line.End, Infinite = useInfiniteLine || line.Infinite };
             List<Point> iPts = new List<Point>();
