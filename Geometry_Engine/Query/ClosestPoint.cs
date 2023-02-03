@@ -305,7 +305,7 @@ namespace BH.Engine.Geometry
             double min = Math.Min(a, b);
             double aspectRatio = max / min;
 
-            //When h is equal to 1, the ellipse is a line
+            //When aspect ratio is closing in on infinity, the ellipse is a line
             //The algorithm below will not be able to handle to elongated ellipses, hence 
             //pointless to evaluate.
             if (min == 0 || aspectRatio > 1e20)
@@ -319,14 +319,17 @@ namespace BH.Engine.Geometry
                 Point closePt = new Line() { Start = new Point { X = a }, End = new Point { Y = b } }.ClosestPoint(new Point { X = px, Y = py });
                 return new Point { X = pt.X > 0 ? closePt.X : -closePt.X, Y = pt.Y > 0 ? closePt.Y : -closePt.Y };
             }
-            else if (max / min < 3000) //Ratio of less than 1:3000 - Use the trig free optimised version that runs quicker
+            else if (aspectRatio < 3000) //Ratio of less than 1:3000 - Use the trig free optimised version that runs quicker
             {
                 double tx = 0.707;
                 double ty = 0.707;
 
                 double t;
 
-                tolerance = tolerance * min / (max * 2);
+                //Hardcoded tolerance for t
+                //0 < t < 1, hence using 10^(-16) as that is the limit on precision for floating point parameters with double precision
+                //No reasonable way to relate this to the distance tolerance, as this just relates to the algorithm below, checking for t == 1
+                tolerance = 1e-16;
 
                 int c = 0;
 
@@ -353,7 +356,7 @@ namespace BH.Engine.Geometry
                     tx /= t;
                     ty /= t;
                     c++;
-                } while ((Math.Abs(1 - t) > tolerance || c < 5) && c < 100);
+                } while (Math.Abs(1 - t) > tolerance && c < 10);
 
                 //Get to correct quadrant
                 if (pt.X < 0)
@@ -369,7 +372,13 @@ namespace BH.Engine.Geometry
                 //This works a lot better for some extreme elipses, with a ratio of radii of over 1:3000
                 //This ofc also works well for elipses with a more reasonable aspect ratio, but as most elipses in practice will have a more reasonable
                 //aspect ratio, less than 1:3000, worth keeping the above as it runs quicker, and will be used by most cases.
-                double t = Math.PI / 4;
+
+                double t;
+                if (px > a || py > b)           //Clearly outside, use Atan2 as initialisation value
+                    t = Math.Atan2(py, px);     //For a point clearly outside, this initial guess for t generally gives quicker convergance
+                else
+                    t = Math.PI / 4;            //45 degrees as initial guess for cases inside the boundingbox of the ellipse. This should never be a optimally bad guess and should hence converge for all cases
+
                 double deltaT = 0;
 
                 tolerance = tolerance * min / (max * 2);
@@ -403,7 +412,7 @@ namespace BH.Engine.Geometry
                     t += deltaT;
                     t = Math.Min(Math.PI / 2, Math.Max(0, t));
                     c++;
-                } while ((Math.Abs(deltaT) > tolerance) && c < 20);
+                } while ((Math.Abs(deltaT) > tolerance) && c < 40);
 
                 //Get to correct quadrant
                 if (pt.X < 0)
