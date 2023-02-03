@@ -327,9 +327,9 @@ namespace BH.Engine.Geometry
                 double t;
 
                 //Hardcoded tolerance for t
-                //0 < t < 1, hence using 10^(-16) as that is the limit on precision for floating point parameters with double precision
+                //0 < t < 1, hence using 10^(-15) as that is the limit on precision for floating point parameters with double precision
                 //No reasonable way to relate this to the distance tolerance, as this just relates to the algorithm below, checking for t == 1
-                tolerance = 1e-16;
+                tolerance = 1e-15;
 
                 int c = 0;
 
