@@ -28,6 +28,7 @@ using BH.oM.Geometry.CoordinateSystem;
 using Humanizer;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using System.Reflection.Emit;
 
 namespace BH.Engine.Geometry
 {
@@ -321,8 +322,8 @@ namespace BH.Engine.Geometry
             }
             else if (aspectRatio < 3000) //Ratio of less than 1:3000 - Use the trig free optimised version that runs quicker
             {
-                double tx = 0.707;
-                double ty = 0.707;
+                double tx = Math.Sqrt(0.5);
+                double ty = tx;
 
                 double t;
 
