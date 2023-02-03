@@ -177,9 +177,6 @@ namespace BH.Engine.Geometry
         [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
         public static bool IsContaining(this Ellipse curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
-                return false;
-
 
             double minRad = Math.Min(curve.Radius1, curve.Radius2);
 

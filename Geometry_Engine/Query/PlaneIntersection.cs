@@ -211,8 +211,8 @@ namespace BH.Engine.Geometry
         [Output("interPts", "The resulting intersection points between the Ellipse and the Plane.")]
         public static List<Point> PlaneIntersections(this Ellipse curve, Plane plane, double tolerance = Tolerance.Distance)
         {
-            if (curve.IsNull())
-                return new List<Point>();
+            if (curve.IsNull() || plane.IsNull())
+                return null;
 
             //Projecting the curve axes scaled by radius as onto the plane normal and curve centre to the plane (including sign) gives the equation
             //f(t) = a*cos(t)+b*sin(t)+c that is the distance from the ellipse to the plane.
