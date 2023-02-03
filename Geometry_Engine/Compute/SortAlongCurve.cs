@@ -91,11 +91,14 @@ namespace BH.Engine.Geometry
         [Output("sortedPts", "The provided points sorted along the curve.")]
         public static List<Point> SortAlongCurve(this List<Point> points, Ellipse ellipse, double distanceTolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            if(points == null || points.Count == 0)
+            if (points == null)
+                return null;
+
+            if (points.Count == 0)
                 return new List<Point>();
 
             if (ellipse.IsNull())
-                return new List<Point>();
+                return null;
 
             if (ellipse.Radius1 <= distanceTolerance && ellipse.Radius2 <= distanceTolerance)
                 return points.Select(p => p.DeepClone()).ToList();
