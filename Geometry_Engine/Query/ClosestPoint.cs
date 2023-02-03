@@ -333,6 +333,7 @@ namespace BH.Engine.Geometry
                 tolerance = 1e-15;
 
                 int c = 0;
+                int maxIterations = 10; //From empirical testing on a varying range of ellispes, this has found to be a good maximum value. Many cases will converge with significantly fewer iterations.
 
                 do
                 {
@@ -357,7 +358,7 @@ namespace BH.Engine.Geometry
                     tx /= t;
                     ty /= t;
                     c++;
-                } while (Math.Abs(1 - t) > tolerance && c < 10);
+                } while (Math.Abs(1 - t) > tolerance && c < maxIterations);
 
                 //Get to correct quadrant
                 if (pt.X < 0)
@@ -385,7 +386,7 @@ namespace BH.Engine.Geometry
                 tolerance = tolerance * min / (max * 2);
                 tolerance = Math.Max(tolerance, 1e-16); //Pointless to use a tolerance less than this when using floating points
                 int c = 0;
-
+                int maxIterations = 40; //From empirical testing on a varying range of ellispes, this has found to be a good maximum value. Most cases will converge with significantly fewer iterations.
                 double x, y;
 
                 do
@@ -413,7 +414,7 @@ namespace BH.Engine.Geometry
                     t += deltaT;
                     t = Math.Min(Math.PI / 2, Math.Max(0, t));
                     c++;
-                } while ((Math.Abs(deltaT) > tolerance) && c < 40);
+                } while ((Math.Abs(deltaT) > tolerance) && c < maxIterations);
 
                 //Get to correct quadrant
                 if (pt.X < 0)
