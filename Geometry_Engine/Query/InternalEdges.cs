@@ -93,6 +93,15 @@ namespace BH.Engine.Geometry
             return surface.Surfaces.SelectMany(x => x.IInternalEdges()).ToList();
         }
 
+        /***************************************************/
+
+        public static List<ICurve> InternalEdges(this NurbsSurface surface)
+        {
+            if (surface.IsNull())
+                return null;
+
+            return surface.InnerTrims.Select(x => x.Curve3d).ToList();
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/

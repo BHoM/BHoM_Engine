@@ -115,6 +115,21 @@ namespace BH.Engine.Geometry
             return surface.Surfaces.SelectMany(x => x.IExternalEdges()).ToList();
         }
 
+        /***************************************************/
+
+        [Description("Gets the external edge curves of the PolySurface the external edge curves of all of its parts.")]
+        [Input("surface", "Surface to extract external edges from.")]
+        [Output("edges", "The external edges of the surface.")]
+        public static List<ICurve> ExternalEdges(this NurbsSurface surface)
+        {
+            if (surface.IsNull())
+                return null;
+
+            if(surface.OuterTrims.Any())
+                return surface.OuterTrims.Select(x => x.Curve3d).ToList();
+
+
+        }
 
         /***************************************************/
         /**** Public Methods - Mesh                     ****/
