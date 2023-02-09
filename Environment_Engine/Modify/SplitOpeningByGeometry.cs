@@ -33,6 +33,7 @@ using System;
 using BH.oM.Geometry;
 
 using BH.Engine.Base;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Environment
 {
@@ -44,9 +45,17 @@ namespace BH.Engine.Environment
         [Output("openings", "A collection of Environment Openings split into the geometry parts provided")]
         public static List<Opening> SplitOpeningByGeometry(this Opening opening, List<Polyline> polylines)
         {
-            List<Opening> openings = new List<Opening>();
+            Polyline outline = opening.Polyline();
+            if (outline == null)
+            {
+                BH.Engine.Base.Compute.RecordError("The outline of the opening needs to be polylinear.");
+                return null;
+            }
 
-            foreach (Polyline p in polylines)
+            List<Line> cutting = polylines.SelectMany(x => x.SubParts()).ToList();
+
+            List<Opening> openings = new List<Opening>();
+            foreach (Polyline p in outline.Split(cutting))
             {
                 Opening pan = opening.ShallowClone();
                 pan.Edges = p.ToEdges();
