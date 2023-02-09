@@ -66,14 +66,10 @@ namespace BH.Engine.Geometry
 
         public static Point StartPoint(this NurbsCurve curve)
         {
-            //TODO: This should be based on the basis function?
-            if (!curve.IsPeriodic())
-                return curve.ControlPoints.FirstOrDefault();
-            else
-            {
-                Base.Compute.RecordError("StartPoint is not implemented for periodic NurbsCurves");
+            if (curve.IsNull())
                 return null;
-            }
+
+            return curve.PointAtParameter(0);
         }
 
         /***************************************************/
