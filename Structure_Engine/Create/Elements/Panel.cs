@@ -33,6 +33,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
 using BH.Engine.Analytical;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Structure
 {
@@ -76,12 +77,13 @@ namespace BH.Engine.Structure
         [InputFromProperty("property")]
         [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel.")]
+        [Input("tolerance", "Distance tolerance, used as a margin of error for checking that the outline is closed.", typeof(Length))]
         [Output("panel", "The created Panel.")]
-        public static Panel Panel(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "")
+        public static Panel Panel(ICurve outline, List<ICurve> openings = null, ISurfaceProperty property = null, Vector localX = null, string name = "", double tolerance = Tolerance.Distance)
         {
             if (outline.IsNull())
                 return null;
-            else if (!outline.IIsClosed())
+            else if (!outline.IIsClosed(tolerance))
             {
                 Base.Compute.RecordError("Outline is not closed. Could not create Panel.");
                 return null;
@@ -101,8 +103,9 @@ namespace BH.Engine.Structure
         [InputFromProperty("property")]
         [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel(s).")]
+        [Input("tolerance", "Distance tolerance, used as a margin of error for comparing the outlines.", typeof(Length))]
         [Output("panel", "The created Panel(s).")]
-        public static List<Panel> Panel(List<ICurve> outlines, ISurfaceProperty property = null, Vector localX = null, string name = "")
+        public static List<Panel> Panel(List<ICurve> outlines, ISurfaceProperty property = null, Vector localX = null, string name = "", double tolerance = Tolerance.Distance)
         {
             if (outlines.IsNullOrEmpty() || outlines.Any(x => x.IsNull()))
                 return null;
@@ -110,7 +113,7 @@ namespace BH.Engine.Structure
             List<Panel> result = new List<Panel>();
             List<List<IElement1D>> outlineEdges = outlines.Select(x => x.ISubParts().Select(y => new Edge { Curve = y } as IElement1D).ToList()).ToList();
 
-            List<List<List<IElement1D>>> sortedOutlines = outlineEdges.DistributeOutlines(true);
+            List<List<List<IElement1D>>> sortedOutlines = outlineEdges.DistributeOutlines(true, tolerance);
             foreach (List<List<IElement1D>> panelOutlines in sortedOutlines)
             {
                 Panel panel = new Panel();
@@ -140,10 +143,11 @@ namespace BH.Engine.Structure
         [InputFromProperty("property")]
         [Input("localX", "Vector to set as local x of the Panel. Default value of null gives default orientation. If this vector is not in the plane of the Panel it will get projected. If the vector is parallel to the normal of the Panel the operation will fail and the Panel local orientation will be set to default.")]
         [Input("name", "The name of the created Panel.")]
+        [Input("tolerance", "Distance tolerance, used as a margin of error for checking that the outline is closed.", typeof(Length))]
         [Output("panel", "The created Panel.")]
-        public static Panel Panel(PlanarSurface surface, ISurfaceProperty property = null, Vector localX = null, string name = "")
+        public static Panel Panel(PlanarSurface surface, ISurfaceProperty property = null, Vector localX = null, string name = "", double tolerance = Tolerance.Distance)
         {
-            return surface.IsNull() ? null : Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, localX, name);
+            return surface.IsNull() ? null : Panel(surface.ExternalBoundary, surface.InternalBoundaries.ToList(), property, localX, name, tolerance);
         }
 
         /***************************************************/
