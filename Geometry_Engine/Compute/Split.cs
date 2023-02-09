@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
         [Input("distanceTolerance", "Tolerance to use for distance measurment operations, default to BH.oM.Geometry.Tolerance.Distance.")]
         [Input("decimalPlaces", "All coordinates of the geometry will be rounded to the number of decimal places specified. Default 6.")]
         [Output("regions", "Closed polygon regions contained within the outer region cut by the cutting lines.")]
-        public static List<Polyline> Split(Polyline outerRegion, List<Line> cuttingLines, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, int decimalPlaces = 6)
+        public static List<Polyline> Split(this Polyline outerRegion, List<Line> cuttingLines, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, int decimalPlaces = 6)
         {
             //Preproc the cutting lines to take only the parts inside the outer region
             cuttingLines = cuttingLines.BooleanUnion(distanceTolerance);
