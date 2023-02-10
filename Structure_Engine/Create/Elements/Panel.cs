@@ -97,7 +97,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Structure.Create.Panel(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, BH.oM.Geometry.Vector, System.String)")]
+        [PreviousVersion("6.1", "BH.Engine.Structure.Create.Panel(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, BH.oM.Geometry.Vector, System.String)")]
         [Description("Creates a list of Panels based on a collection of outline curves. \n" +
                      "Method will distribute the outlines such that the outermost curve will be assumed to be an external outline of a panel, and any curve contained in this outline will be assumed as an opening of this Panel. \n" +
                      "Any outline curve inside an opening will again be assumed to be the outline of a new Panel.")]
