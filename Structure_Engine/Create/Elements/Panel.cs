@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("6.0", "BH.Engine.Structure.Create.Panel(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, BH.oM.Geometry.Vector, System.String)")]
+        [PreviousVersion("6.1", "BH.Engine.Structure.Create.Panel(BH.oM.Geometry.ICurve, System.Collections.Generic.List<BH.oM.Geometry.ICurve>, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, BH.oM.Geometry.Vector, System.String)")]
         [Description("Creates a structural Panel from a closed curve defining the outline, and any number of closed curves defining openings.")]
         [Input("outline", "A closed Curve defining the outline of the Panel. The ExternalEdges of the Panel will be the subparts of this curve, where each edge will corespond to one curve segment.")]
         [Input("openings", "A collection of closed curves representing the openings of the Panel.")]
