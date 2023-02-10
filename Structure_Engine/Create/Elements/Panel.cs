@@ -140,7 +140,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("BH.Engine.Structure.Create.Panel(BH.oM.Geometry.PlanarSurface, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, BH.oM.Geometry.Vector, System.String)")]
+        [PreviousVersion("6.1", "BH.Engine.Structure.Create.Panel(BH.oM.Geometry.PlanarSurface, BH.oM.Structure.SurfaceProperties.ISurfaceProperty, BH.oM.Geometry.Vector, System.String)")]
         [Description("Creates a structural Panel from a PlanarSurface, creating external edges from the ExternalBoundary and openings from the InternalBoundaries of the PlanarSurface.")]
         [Input("surface", "A planar surface used to define the geometry of the panel, i.e. the external edges and the openings.")]
         [InputFromProperty("property")]
