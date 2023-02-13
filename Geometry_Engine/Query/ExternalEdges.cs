@@ -129,6 +129,43 @@ namespace BH.Engine.Geometry
                 return surface.OuterTrims.Select(x => x.Curve3d).ToList();
 
 
+            int uCount = surface.UKnots.Count - surface.UDegree + 1;
+            int vCount = surface.VKnots.Count - surface.VDegree + 1;
+            int totCount = surface.ControlPoints.Count;
+
+            NurbsCurve edge1 = new NurbsCurve { Knots = surface.UKnots.ToList() };
+
+            for (int i = 0; i < totCount; i += vCount)
+            {
+                edge1.ControlPoints.Add(surface.ControlPoints[i]);
+                edge1.Weights.Add(surface.Weights[i]);
+            }
+
+            NurbsCurve edge2 = new NurbsCurve { Knots = surface.VKnots.ToList() };
+
+            for (int i = totCount - vCount; i < totCount; i++)
+            {
+                edge2.ControlPoints.Add(surface.ControlPoints[i]);
+                edge2.Weights.Add(surface.Weights[i]);
+            }
+
+            NurbsCurve edge3 = new NurbsCurve() { Knots = surface.UKnots.Select(x => -x).Reverse().ToList() };
+
+            for (int i = totCount - 1; i > 0; i -= vCount)
+            {
+                edge3.ControlPoints.Add(surface.ControlPoints[i]);
+                edge3.Weights.Add(surface.Weights[i]);
+            }
+
+            NurbsCurve edge4 = new NurbsCurve() { Knots = surface.VKnots.Select(x => -x).Reverse().ToList() };
+
+            for (int i = vCount - 1; i >= 0; i -= 1)
+            {
+                edge4.ControlPoints.Add(surface.ControlPoints[i]);
+                edge4.Weights.Add(surface.Weights[i]);
+            }
+
+            return new List<ICurve> { edge1, edge2, edge3, edge4 };
         }
 
         /***************************************************/
