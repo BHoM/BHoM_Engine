@@ -155,7 +155,7 @@ namespace BH.Engine.Structure
 
             string message = $"{nameof(LVLP)} does not contain a value for flatwise perpendicular youngs modulus. {stiffnessType} value for edgewise perpendicular youngs modulus will be assigned in its place.";
             message += $"{nameof(LVLP)} does not contain a value for perpendicular shear modulus. {stiffnessType} value for flat shear modulus has been assigned to the Y component of the shear modulus Vector.";
-
+            Base.Compute.RecordNote(message);
 
             if (orientationType == TimberAnalysisOrientation.Flatwise)
             {
