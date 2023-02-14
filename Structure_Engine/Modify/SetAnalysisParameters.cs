@@ -37,9 +37,11 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Sets YoungsModulus and ShearModulus used for analysis of the material based on the product specific properties.")]
+        [Input("timber", "Timber material to update the Analysis proeprties of.")]
+        [Input("stiffnessType", "Controls if mean or Characteristic values should be used when assigning stiffness values.")]
+        [Input("orientationType", "Controls if material is oriented in a flatwise or edgewise manner. Not used for all timber products.")]
+        [Output("timber", "The timber material with updated stiuffness properties based on the inputs and product specific values.")]
         public static void ISetAnalysisParameters(this ITimber timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
         {
             SetAnalysisParameters(timber as dynamic, stiffnessType, orientationType);
@@ -48,92 +50,146 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
+        [Description("Sets YoungsModulus and ShearModulus used for analysis of the material based on the product specific properties.")]
+        [Input("timber", "Timber material to update the Analysis proeprties of.")]
+        [Input("stiffnessType", "Controls if mean or Characteristic values should be used when assigning stiffness values.")]
+        [Output("timber", "The timber material with updated stiuffness properties based on the inputs and product specific values.")]
+        public static void SetAnalysisParameters(this SawnTimber timber, TimberAnalysisStiffness stiffnessType)
+        {
+            string message = "";
+            if (stiffnessType == TimberAnalysisStiffness.Mean)
+            {
+                timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Mean, Z = timber.E_90_Mean };
+                timber.ShearModulus = new Vector { X = timber.G_Mean, Y = timber.G_Mean, Z = timber.G_Mean };
 
-        ///***************************************************/
+                message = $"{nameof(SawnTimber)} only contaiains mean value for shear modulus, no rolling shear stiffness. Mean shear stiffness ({nameof(timber.G_Mean)}) will be applied in all directions.";
+            }
+            else
+            {
+                timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_Mean, Z = timber.E_90_Mean };
+                timber.ShearModulus = new Vector { X = timber.G_Mean, Y = timber.G_Mean, Z = timber.G_Mean };
 
-        //[Description("")]
-        //[Input("", "")]
-        //[Output("", "")]
-        //public static void SetAnalysisParameters(this SawnTimber timber, TimberAnalysisStiffness stiffnessType)
-        //{
-        //    if (stiffnessType == TimberAnalysisStiffness.Mean)
-        //    {
-        //        timber.YoungsModulus = new Vector { X = timber.YoungsModulusParallelMean, Y = timber.YoungsModulusPerpendicularMean, Z = timber.YoungsModulusPerpendicularMean };
-        //        timber.ShearModulus = new Vector { X = timber.ShearModulusMean, Y = timber.ShearModulusMean, Z = timber.ShearModulusMean };
-        //    }
-        //    else
-        //    {
-        //        timber.YoungsModulus = new Vector { X = timber.YoungsModulusParallelCharacteristic, Y = timber.YoungsModulusPerpendicularMean, Z = timber.YoungsModulusPerpendicularMean };
-        //        timber.ShearModulus = new Vector { X = timber.ShearModulusMean, Y = timber.ShearModulusMean, Z = timber.ShearModulusMean };
-        //    }
-        //}
+                message = $"{nameof(SawnTimber)} materials does not contain characteristic values for youngs modulus perpendicular. Mean value of perpendicular stiffness used." + Environment.NewLine;
+                message += $"{nameof(SawnTimber)} only contaiains mean value for shear modulus, no characteristic values or rolling shear stiffness. Mean shear stiffness ({nameof(timber.G_Mean)}) will be applied in all directions.";
+            }
+            Base.Compute.RecordNote(message);
+        }
 
-        ///***************************************************/
+        /***************************************************/
 
-        //[Description("")]
-        //[Input("", "")]
-        //[Output("", "")]
-        //public static void SetAnalysisParameters(this Glulam timber, TimberAnalysisStiffness stiffnessType)
-        //{
-        //    if (stiffnessType == TimberAnalysisStiffness.Mean)
-        //    {
-        //        timber.YoungsModulus = new Vector { X = timber.YoungsModulusParallelMean, Y = timber.YoungsModulusPerpendicularMean, Z = timber.YoungsModulusPerpendicularMean };
-        //        timber.ShearModulus = new Vector { X = timber.ShearModulusMean, Y = timber.ShearModulusMean, Z = timber.RollingShearModulusMean };
-        //    }
-        //    else
-        //    {
-        //        timber.YoungsModulus = new Vector { X = timber.YoungsModulusParallelCharacteristic, Y = timber.YoungsModulusPerpendicularCharacteristic, Z = timber.YoungsModulusPerpendicularCharacteristic };
-        //        timber.ShearModulus = new Vector { X = timber.ShearModulusCharacteristic, Y = timber.ShearModulusCharacteristic, Z = timber.RollingShearModulusCharacteristic };
-        //    }
-        //}
+        [Description("Sets YoungsModulus and ShearModulus used for analysis of the material based on the product specific properties.")]
+        [Input("timber", "Timber material to update the Analysis proeprties of.")]
+        [Input("stiffnessType", "Controls if mean or Characteristic values should be used when assigning stiffness values.")]
+        [Output("timber", "The timber material with updated stiuffness properties based on the inputs and product specific values.")]
+        public static void SetAnalysisParameters(this Glulam timber, TimberAnalysisStiffness stiffnessType)
+        {
+            if (stiffnessType == TimberAnalysisStiffness.Mean)
+            {
+                timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Mean, Z = timber.E_90_Mean };
+                timber.ShearModulus = new Vector { X = timber.G_Mean, Y = timber.Gr_Mean, Z = timber.G_Mean };
+            }
+            else
+            {
+                timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_k, Z = timber.E_90_k };
+                timber.ShearModulus = new Vector { X = timber.G_k, Y = timber.Gr_k, Z = timber.G_k };
+            }
+        }
 
-        ///***************************************************/
+        /***************************************************/
 
-        //[Description("")]
-        //[Input("", "")]
-        //[Output("", "")]
-        //public static void SetAnalysisParameters(this LVLC timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType)
-        //{
-        //    if (orientationType == TimberAnalysisOrientation.Unknown)
-        //        BH.Engine.Base.Compute.RecordError($"Requires set {orientationType} to be able to set analysis parameters for materials of type {nameof(LVLC)}.");
-        //    else if (orientationType == TimberAnalysisOrientation.Flatwise)
-        //    {
-        //        if (stiffnessType == TimberAnalysisStiffness.Mean)
-        //        {
-        //            timber.YoungsModulus = new Vector { X = timber.YoungsModulusParallelMean, Y = timber.YoungsModulusPerpendicularFlatMean, Z = timber.YoungsModulusPerpendicularFlatMean };
-        //            timber.ShearModulus = new Vector { X = timber.ShearModulusParallelFlatMean, Y = timber.ShearModulusParallelFlatMean, Z = timber.ShearModulusPerpendicularFlatMean };
-        //        }
-        //        else
-        //        {
-        //            timber.YoungsModulus = new Vector { X = timber.YoungsModulusParallelCharacteristic, Y = timber.YoungsModulusPerpendicularFlatCharacteristic, Z = timber.YoungsModulusPerpendicularFlatCharacteristic };
-        //            timber.ShearModulus = new Vector { X = timber.ShearModulusParallelFlatCharacteristic, Y = timber.ShearModulusParallelFlatCharacteristic, Z = timber.ShearModulusPerpendicularFlatCharacteristic };
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (stiffnessType == TimberAnalysisStiffness.Mean)
-        //        {
-        //            timber.YoungsModulus = new Vector { X = timber.YoungsModulusParallelMean, Y = timber.YoungsModulusPerpendicularEdgeMean, Z = timber.YoungsModulusPerpendicularEdgeMean };
-        //            timber.ShearModulus = new Vector { X = timber.ShearModulusEdgeMean, Y = timber.ShearModulusEdgeMean, Z = timber.ShearModulusPerpendicularFlatMean };
-        //        }
-        //        else
-        //        {
-        //            timber.YoungsModulus = new Vector { X = timber.YoungsModulusParallelCharacteristic, Y = timber.YoungsModulusPerpendicularFlatCharacteristic, Z = timber.YoungsModulusPerpendicularFlatCharacteristic };
-        //            timber.ShearModulus = new Vector { X = timber.ShearModulusParallelFlatCharacteristic, Y = timber.ShearModulusParallelFlatCharacteristic, Z = timber.ShearModulusPerpendicularFlatCharacteristic };
-        //        }
-        //    }
-        //}
+        [Description("Sets YoungsModulus and ShearModulus used for analysis of the material based on the product specific properties.")]
+        [Input("timber", "Timber material to update the Analysis proeprties of.")]
+        [Input("stiffnessType", "Controls if mean or Characteristic values should be used when assigning stiffness values.")]
+        [Input("orientationType", "Controls if material is oriented in a flatwise or edgewise manner.")]
+        [Output("timber", "The timber material with updated stiuffness properties based on the inputs and product specific values.")]
+        public static void SetAnalysisParameters(this LVLC timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType)
+        {
+            if (orientationType == TimberAnalysisOrientation.Unknown)
+            {
+                Base.Compute.RecordError($"Requires set {orientationType} to be able to set analysis parameters for materials of type {nameof(LVLC)}.");
+                return;
+            }
+            
+            if (orientationType == TimberAnalysisOrientation.Flatwise)
+            {
+                if (stiffnessType == TimberAnalysisStiffness.Mean)
+                {
+                    timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Edge_Mean, Z = timber.E_90_Flat_Mean };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Edge_Mean };
+                }
+                else
+                {
+                    timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_Edge_k, Z = timber.E_90_Flat_k };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Edge_k };
+                }
+            }
+            else
+            {
+                if (stiffnessType == TimberAnalysisStiffness.Mean)
+                {
+                    timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Flat_Mean, Z = timber.E_90_Edge_Mean };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Flat_Mean };
+                }
+                else
+                {
+                    timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_Flat_k, Z = timber.E_90_Edge_k };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Flat_k };
+                }
+            }
+        }
 
-        private static void SetAnalysisParameters(this ITimber<IYoungsModulusTimber, IShearModulusTimber, IStrengthTimber> timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        { 
-            timber.YoungsModulus = timber.YoungsModulusProperties.IYoungsModulusVector(stiffnessType, orientationType);
-            timber.ShearModulus = timber.ShearModulusProperties.IShearModulusVector(stiffnessType, orientationType);
+        /***************************************************/
+
+        [Description("Sets YoungsModulus and ShearModulus used for analysis of the material based on the product specific properties.")]
+        [Input("timber", "Timber material to update the Analysis proeprties of.")]
+        [Input("stiffnessType", "Controls if mean or Characteristic values should be used when assigning stiffness values.")]
+        [Input("orientationType", "Controls if material is oriented in a flatwise or edgewise manner.")]
+        [Output("timber", "The timber material with updated stiuffness properties based on the inputs and product specific values.")]
+        public static void SetAnalysisParameters(this LVLP timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType)
+        {
+            if (orientationType == TimberAnalysisOrientation.Unknown)
+            {
+                Base.Compute.RecordError($"Requires set {orientationType} to be able to set analysis parameters for materials of type {nameof(LVLC)}.");
+                return;
+            }
+
+            string message = $"{nameof(LVLP)} does not contain a value for flatwise perpendicular youngs modulus. {stiffnessType} value for edgewise perpendicular youngs modulus will be assigned in its place.";
+            message += $"{nameof(LVLP)} does not contain a value for perpendicular shear modulus. {stiffnessType} value for flat shear modulus has been assigned to the Y component of the shear modulus Vector.";
+
+
+            if (orientationType == TimberAnalysisOrientation.Flatwise)
+            {
+                if (stiffnessType == TimberAnalysisStiffness.Mean)
+                {
+                    timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Edge_Mean, Z = timber.E_90_Edge_Mean };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_Mean, Y = timber.G_0_Flat_Mean, Z = timber.G_0_Edge_Mean };
+                }
+                else
+                {
+                    timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_Edge_k, Z = timber.E_90_Edge_k };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_k, Y = timber.G_0_Flat_k, Z = timber.G_0_Edge_k };
+                }
+            }
+            else
+            {
+                if (stiffnessType == TimberAnalysisStiffness.Mean)
+                {
+                    timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Edge_Mean, Z = timber.E_90_Edge_Mean };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_Mean, Y = timber.G_0_Flat_Mean, Z = timber.G_0_Flat_Mean };
+                }
+                else
+                {
+                    timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_Edge_k, Z = timber.E_90_Edge_k };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_k, Y = timber.G_0_Flat_k, Z = timber.G_0_Flat_k };
+                }
+            }
         }
 
         /***************************************************/
         /**** Private Methods - fallback                ****/
         /***************************************************/
 
+        [Description("Method allowing the dynamic casting to find method that do not require orientationType for setting analytical properties.")]
         private static void SetAnalysisParameters(this ITimber timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
         {
             SetAnalysisParameters(timber as dynamic, stiffnessType);
@@ -141,203 +197,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Fallback for materials not yet implemented.")]
         private static void SetAnalysisParameters(this ITimber timber, TimberAnalysisStiffness stiffnessType)
         {
             BH.Engine.Base.Compute.RecordError($"{nameof(SetAnalysisParameters)} is not implemented for ITimber of type {timber.GetType()}");
-        }
-
-        /***************************************************/
-
-        private static Vector IYoungsModulusVector(this IYoungsModulusTimber youngsModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        {
-            return YoungsModulusVector(youngsModulusProprties as dynamic, stiffnessType, orientationType);
-        }
-
-        /***************************************************/
-
-        private static Vector YoungsModulusVector(this YoungsModulusSawnTimber youngsModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        {
-            if (stiffnessType == TimberAnalysisStiffness.Mean)
-            {
-                return new Vector { X = youngsModulusProprties.ParallelMean, Y = youngsModulusProprties.PerpendicularMean, Z = youngsModulusProprties.PerpendicularMean };
-            }
-            else
-            {
-                BH.Engine.Base.Compute.RecordNote("Sawn timber materials does not contain characteristic values for youngs modulus perpendicular. Mean value of perpendicular stiffness used.");
-               return new Vector { X = youngsModulusProprties.ParallelCharacteristic, Y = youngsModulusProprties.PerpendicularMean, Z = youngsModulusProprties.PerpendicularMean };
-            }
-        }
-
-        /***************************************************/
-
-        private static Vector YoungsModulusVector(this YoungsModulusGlulam youngsModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        {
-            if (stiffnessType == TimberAnalysisStiffness.Mean)
-            {
-                return new Vector { X = youngsModulusProprties.ParallelMean, Y = youngsModulusProprties.PerpendicularMean, Z = youngsModulusProprties.PerpendicularMean };
-            }
-            else
-            {
-                return new Vector { X = youngsModulusProprties.ParallelCharacteristic, Y = youngsModulusProprties.PerpendicularCharacteristic, Z = youngsModulusProprties.PerpendicularCharacteristic };
-            }
-        }
-
-        /***************************************************/
-
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static Vector YoungsModulusVector(this YoungsModulusLVLC youngsModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType)
-        {
-            if (orientationType == TimberAnalysisOrientation.Unknown)
-            {
-                Base.Compute.RecordError($"Requires set {orientationType} to be able to set analysis parameters for materials of type {nameof(LVLC)}.");
-                return null;
-            }
-            else if (orientationType == TimberAnalysisOrientation.Flatwise)
-            {
-                if (stiffnessType == TimberAnalysisStiffness.Mean)
-                {
-                    return new Vector { X = youngsModulusProprties.ParallelMean, Y = youngsModulusProprties.PerpendicularEdgeMean, Z = youngsModulusProprties.PerpendicularFlatMean };
-                }
-                else
-                {
-                    return new Vector { X = youngsModulusProprties.ParallelCharacteristic, Y = youngsModulusProprties.PerpendicularEdgeCharacteristic, Z = youngsModulusProprties.PerpendicularFlatCharacteristic };
-                }
-            }
-            else
-            {
-                if (stiffnessType == TimberAnalysisStiffness.Mean)
-                {
-                    return new Vector { X = youngsModulusProprties.ParallelMean, Y = youngsModulusProprties.PerpendicularFlatMean, Z = youngsModulusProprties.PerpendicularEdgeMean };
-                }
-                else
-                {
-                    return new Vector { X = youngsModulusProprties.ParallelCharacteristic, Y = youngsModulusProprties.PerpendicularFlatCharacteristic, Z = youngsModulusProprties.PerpendicularEdgeCharacteristic };
-                }
-            }
-        }
-
-        /***************************************************/
-
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static Vector YoungsModulusVector(this YoungsModulusLVLP youngsModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType)
-        {
-            if (stiffnessType == TimberAnalysisStiffness.Mean)
-            {
-                return new Vector { X = youngsModulusProprties.ParallelMean, Y = youngsModulusProprties.PerpendicularEdgeMean, Z = youngsModulusProprties.PerpendicularEdgeMean };
-            }
-            else
-            {
-                return new Vector { X = youngsModulusProprties.ParallelCharacteristic, Y = youngsModulusProprties.PerpendicularEdgeCharacteristic, Z = youngsModulusProprties.PerpendicularEdgeCharacteristic };
-            }
-        }
-
-        /***************************************************/
-
-        private static Vector IShearModulusVector(this IShearModulusTimber shearModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        {
-            return ShearModulusVector(shearModulusProprties as dynamic, stiffnessType, orientationType);
-        }
-
-        /***************************************************/
-
-        private static Vector ShearModulusVector(this ShearModulusSawnTimber shearModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        {
-            string message = "";
-
-            if (stiffnessType == TimberAnalysisStiffness.Characteristic)
-                message = $"{nameof(SawnTimber)} only contaiains mean value for shear modulus (G0,mean), no characteristic values or rolling shear stiffness. Mean shear strength will be applied in all directions.";
-            else
-                message = $"{nameof(SawnTimber)} only contaiains mean value for shear modulus (G0,mean), no rolling shear stiffness. Mean shear strength will be applied in all directions.";
-
-            Base.Compute.RecordNote(message);
-
-            return new Vector { X = shearModulusProprties.Mean, Y = shearModulusProprties.Mean, Z = shearModulusProprties.Mean };
-        }
-
-        /***************************************************/
-
-        private static Vector ShearModulusVector(this ShearModulusGlulam shearModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        {
-            if (stiffnessType == TimberAnalysisStiffness.Mean)
-            {
-                return new Vector { X = shearModulusProprties.Mean, Y = shearModulusProprties.RollingMean, Z = shearModulusProprties.Mean };
-            }
-            else
-            {
-                return new Vector { X = shearModulusProprties.Characteristic, Y = shearModulusProprties.RollingCharacteristic, Z = shearModulusProprties.Mean };
-            }
-        }
-
-        /***************************************************/
-
-        private static Vector ShearModulusVector(this ShearModulusLVLC shearModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        {
-            if (orientationType == TimberAnalysisOrientation.Unknown)
-            {
-                Base.Compute.RecordError($"Requires set {orientationType} to be able to set analysis parameters for materials of type {nameof(LVLC)}.");
-                return null;
-            }
-            else if (orientationType == TimberAnalysisOrientation.Flatwise)
-            {
-                if (stiffnessType == TimberAnalysisStiffness.Mean)
-                {
-                    return new Vector { X = shearModulusProprties.ParallelFlatMean, Y = shearModulusProprties.PerpendicularFlatMean, Z = shearModulusProprties.EdgeMean };
-                }
-                else
-                {
-                    return new Vector { X = shearModulusProprties.ParallelFlatCharacteristic, Y = shearModulusProprties.PerpendicularFlatCharacteristic, Z = shearModulusProprties.EdgeCharacteristic };
-                }
-            }
-            else
-            {
-                if (stiffnessType == TimberAnalysisStiffness.Mean)
-                {
-                    return new Vector { X = shearModulusProprties.EdgeMean, Y = shearModulusProprties.PerpendicularFlatMean, Z = shearModulusProprties.ParallelFlatMean };
-                }
-                else
-                {
-                    return new Vector { X = shearModulusProprties.EdgeCharacteristic, Y = shearModulusProprties.PerpendicularFlatCharacteristic, Z = shearModulusProprties.ParallelFlatCharacteristic };
-                }
-            }
-        }
-
-        /***************************************************/
-
-        private static Vector ShearModulusVector(this ShearModulusLVLP shearModulusProprties, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown)
-        {
-            if (orientationType == TimberAnalysisOrientation.Unknown)
-            {
-                Base.Compute.RecordError($"Requires set {orientationType} to be able to set analysis parameters for materials of type {nameof(LVLC)}.");
-                return null;
-            }
-
-            Base.Compute.RecordNote($"{nameof(LVLP)} does not contain a value for perpendicular shear modulus. {stiffnessType} value for flat shear modulus has been assigned to the Y component of the shear modulus Vector.");
-            if (orientationType == TimberAnalysisOrientation.Flatwise)
-            {
-                if (stiffnessType == TimberAnalysisStiffness.Mean)
-                {
-                    return new Vector { X = shearModulusProprties.FlatMean, Y = shearModulusProprties.FlatMean, Z = shearModulusProprties.EdgeMean };
-                }
-                else
-                {
-                    return new Vector {X = shearModulusProprties.FlatCharacteristic, Y = shearModulusProprties.FlatCharacteristic, Z = shearModulusProprties.EdgeCharacteristic };
-                }
-            }
-            else
-            {
-                if (stiffnessType == TimberAnalysisStiffness.Mean)
-                {
-                    return new Vector { X = shearModulusProprties.EdgeMean, Y = shearModulusProprties.FlatMean, Z = shearModulusProprties.FlatMean };
-                }
-                else
-                {
-                    return new Vector { X = shearModulusProprties.EdgeCharacteristic, Y = shearModulusProprties.FlatCharacteristic, Z = shearModulusProprties.FlatCharacteristic };
-                }
-            }
         }
 
         /***************************************************/
