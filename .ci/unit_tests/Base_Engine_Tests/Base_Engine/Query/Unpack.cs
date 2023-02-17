@@ -88,7 +88,7 @@ namespace BH.Engine.Base
         {
             var result = container.Unpack();
 
-            Assert.That(result.OfType<BHoMObject>().Count(), Is.EqualTo(numberOfObjects));
+            result.OfType<BHoMObject>().Count().ShouldBeEquivalentTo(numberOfObjects);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace BH.Engine.Base
 
             var result = validContainer.Unpack();
 
-            Assert.That(result.OfType<BHoMObject>().Count(), Is.EqualTo(3));
+            result.OfType<BHoMObject>().Count().ShouldBeEquivalentTo(3);
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace BH.Engine.Base
 
             var result = validContainer.Unpack();
 
-            Assert.That(result.OfType<BHoMObject>().Count(), Is.EqualTo(3));
+            result.OfType<BHoMObject>().Count().ShouldBeEquivalentTo(3);
         }
     }
 }
