@@ -58,9 +58,10 @@ namespace BH.Tests.Engine.Base.Query
                     if (ev.Type == oM.Base.Debugging.EventType.Warning || ev.Type == oM.Base.Debugging.EventType.Error)
                         Assert.Warn($"{ev.Type}: {ev.Message}");
                     else
-                        Console.WriteLine($"{ev.Type}: {ev.Message}");
+                        TestContext.Out.Write($"{ev.Type}: {ev.Message}");
                 }
             }
+
             BH.Engine.Base.Compute.ClearCurrentEvents();
         }
 
