@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+
+    <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,12 +17,11 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <PackageReference Include="Shouldly" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BHoM_Engine\BHoM_Engine.csproj" />
-    <ProjectReference Include="..\..\..\Reflection_Engine\Reflection_Engine.csproj" />
-    <ProjectReference Include="..\..\..\Structure_Engine\Structure_Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
