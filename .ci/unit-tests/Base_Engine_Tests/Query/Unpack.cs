@@ -131,38 +131,5 @@ namespace BH.Tests.Engine.Base.Query
 
             result.OfType<BHoMObject>().Count().ShouldBeEquivalentTo(3);
         }
-
-        [Test]
-        public void PurposedlyFailingTest()
-        {
-            var validContainer = new AutoFaker<Container<BHoMObject>>().Generate();
-            validContainer.Fragments.Add(new TestFragment() { SomeObject = new BHoMObject() });
-
-            var result = validContainer.Unpack();
-
-            result.OfType<BHoMObject>().FirstOrDefault().ShouldBeEquivalentTo(new BHoMObject());
-        }
-
-        [Test]
-        public void ErrorReportingTest()
-        {
-            BH.Engine.Base.Compute.RecordError($"Some error logged via BH.Engine.Base.Compute.{nameof(Compute.RecordError)}");
-            Assert.Pass(); // Make it pass intentionally here; the recorded error should still make the test report failure on TearDown
-        }
-
-        [Test]
-        public void WarningReportingTest()
-        {
-            BH.Engine.Base.Compute.RecordWarning($"Some warning logged via BH.Engine.Base.Compute.{nameof(Compute.RecordWarning)}");
-            Assert.Pass();
-        }
-
-
-        [Test]
-        public void NoteReportingTest()
-        {
-            BH.Engine.Base.Compute.RecordNote($"Some note logged via BH.Engine.Base.Compute.{nameof(Compute.RecordNote)}");
-            Assert.Pass();
-        }
     }
 }
