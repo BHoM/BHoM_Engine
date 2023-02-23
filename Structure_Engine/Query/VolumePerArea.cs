@@ -36,9 +36,9 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
         public static double VolumePerArea(this ConstantThickness property)
         {
             return property.IsNull() ? 0 : property.Thickness;
@@ -46,9 +46,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
         public static double VolumePerArea(this Ribbed property)
         {
             if (property.IsNull())
@@ -66,9 +66,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
         public static double VolumePerArea(this Waffle property)
         {
             if (property.IsNull())
@@ -93,9 +93,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
         public static double VolumePerArea(this LoadingPanelProperty property)
         {
             Base.Compute.RecordWarning("Structural IAreaElements are defined without volume.");
@@ -105,8 +105,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the average solid thickness of the property for the purpose of calculating solid volume.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
         public static double VolumePerArea(this Layered property)
         {
             if (property.IsNull())
@@ -120,9 +120,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
         public static double VolumePerArea(this SlabOnDeck property)
         {
             if (property.IsNull())
@@ -140,9 +140,9 @@ namespace BH.Engine.Structure
             return property.SlabThickness + h * (b + (s - (b + t)) / 2) / s + (property.DeckThickness * property.DeckVolumeFactor)/2;
         }
 
-        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
         public static double VolumePerArea(this CorrugatedDeck property)
         {
             if (property.IsNull())
@@ -153,14 +153,114 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this OneDirectionalVoided property)
+        {
+            if (property.IsNull())
+                return double.NaN;
+
+            double voidHeight = property.TotalDepth - (property.TopThickness + property.BottomThickness);
+
+            if (voidHeight < 0)
+            {
+                Base.Compute.RecordError($"The {nameof(property.TopThickness)} + {nameof(property.BottomThickness)} is larger than the {property.TotalDepth}. The {nameof(OneDirectionalVoided)} is invalid and volume cannot be computed.");
+                return double.NaN;
+            }
+
+            if (property.StemWidth == 0 || property.Spacing < property.StemWidth)
+            {
+                Base.Compute.RecordError($"The stemwidth is 0 or spacing smaller than stem width. The {nameof(OneDirectionalVoided)} is invalid and volume cannot be computed.");
+                return double.NaN;
+            }
+
+            double volPerAreaVoid = voidHeight * (property.StemWidth / property.Spacing);
+            return property.TopThickness + property.BottomThickness + volPerAreaVoid;
+
+        }
+
+        /***************************************************/
+
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this BiDirectionalVoided property)
+        {
+            if (property.IsNull())
+                return double.NaN;
+
+            double voidHeight = property.TotalDepth - (property.TopThickness + property.BottomThickness);
+
+            if (voidHeight < 0)
+            {
+                Base.Compute.RecordError($"The {nameof(property.TopThickness)} + {nameof(property.BottomThickness)} is larger than the {property.TotalDepth}. The {nameof(BiDirectionalVoided)} is invalid and volume cannot be computed.");
+                return double.NaN;
+            }
+
+            if (property.StemWidthX == 0 || property.SpacingX < property.StemWidthX || property.StemWidthY == 0 || property.SpacingY < property.StemWidthY)
+            {
+                Base.Compute.RecordError($"The stemwidth is 0 or spacing smaller than stem width. The {nameof(BiDirectionalVoided)} is invalid and volume cannot be computed.");
+                return double.NaN;
+            }
+
+            double volPerAreaVoid = voidHeight * (property.StemWidthX * property.SpacingY + property.StemWidthY * property.SpacingX - property.StemWidthX * property.StemWidthY) / (property.SpacingX * property.SpacingY);
+            return property.TopThickness + property.BottomThickness + volPerAreaVoid;
+
+        }
+
+        /***************************************************/
+
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this HollowCore property)
+        {
+            if (property.IsNull())
+                return double.NaN;
+
+            double voidZoneHeight = property.VoidZoneHeight();
+
+            if (double.IsNaN(voidZoneHeight))
+                return double.NaN;
+
+            if (voidZoneHeight > property.Thickness)
+            {
+                Base.Compute.RecordError($"The {nameof(voidZoneHeight)} is larger than the {property.Thickness}. The {nameof(HollowCore)} is invalid and volume cannot be computed.");
+                return double.NaN;
+            }
+
+            double solidThickness = property.Thickness - voidZoneHeight;
+
+            double voidZoneRatio = property.VoidZoneSolidRatio();
+
+            if (double.IsNaN(voidZoneHeight))
+                return double.NaN;
+
+
+            return solidThickness + voidZoneHeight * voidZoneRatio;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this ToppedSlab property)
+        {
+            if (property.IsNull() || property.BaseProperty.IsNull())
+                return double.NaN;
+
+            return property.BaseProperty.VolumePerArea() + property.ToppingThickness;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Gets the average thickness of the property for the purpose of calculating solid volume.")]
-        [Input("property", "The property to evaluate the average thickness of.")]
-        [Output("volumePerArea", "The average thickness of the property for the purpose of calculating solid volume.", typeof(Length))]
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
         public static double IVolumePerArea(this ISurfaceProperty property)
         {
             return property.IsNull() ? 0 : VolumePerArea(property as dynamic);
