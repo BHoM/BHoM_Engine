@@ -122,6 +122,56 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this OneDirectionalVoided property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.TopThickness;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this BiDirectionalVoided property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.TopThickness;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this HollowCore property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.Thickness;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this ToppedSlab property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.BaseProperty.ITotalThickness() + property.ToppingThickness;
+        }
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
