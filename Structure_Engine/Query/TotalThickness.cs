@@ -130,7 +130,7 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
-            return property.TopThickness;
+            return property.TotalDepth;
         }
 
         /***************************************************/
@@ -143,7 +143,7 @@ namespace BH.Engine.Structure
             if (property.IsNull())
                 return 0;
 
-            return property.TopThickness;
+            return property.TotalDepth;
         }
 
         /***************************************************/

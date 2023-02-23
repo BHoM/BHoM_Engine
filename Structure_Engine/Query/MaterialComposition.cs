@@ -196,7 +196,7 @@ namespace BH.Engine.Structure
             if (property.IsNull() || property.BaseProperty.IsNull() || property.Material.IsNull())
                 return null;
 
-            double baseVolume = property.BaseProperty.VolumePerArea();
+            double baseVolume = property.BaseProperty.IVolumePerArea();
             double toppingVol = property.ToppingThickness;
 
             MaterialComposition baseComposition = property.BaseProperty.IMaterialComposition(reinforcementDensity);
