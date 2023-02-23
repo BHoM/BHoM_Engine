@@ -31,6 +31,7 @@ using BH.oM.Physical.Materials;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Physical.Constructions;
 using BH.oM.Quantities.Attributes;
+using BH.Engine.Matter;
 
 namespace BH.Engine.Physical
 {
@@ -67,19 +68,11 @@ namespace BH.Engine.Physical
         [Output("materialComposition", "The kind of matter the ISurface is composed of and in which ratios.")]
         public static MaterialComposition MaterialComposition(this ISurface surface)
         {
-            if (surface == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot query the material composition of a null surface.");
+            VolumetricMaterialTakeoff takeoff = surface.IVolumetricMaterialTakeoff();
+            if (takeoff == null)
                 return null;
-            }
 
-            if (surface.Construction == null)
-            {
-                Engine.Base.Compute.RecordError("The MaterialComposition could not be queried as no IConstruction has been assigned to the ISurface.");
-                return null;
-            }
-
-            return surface.Construction.IMaterialComposition();
+            return Matter.Create.MaterialComposition(takeoff);
         }
 
         /***************************************************/
@@ -89,36 +82,11 @@ namespace BH.Engine.Physical
         [Output("materialComposition", "The kind of matter the IOpening is composed of and in which ratios.")]
         public static MaterialComposition MaterialComposition(this IOpening opening)
         {
-            MaterialComposition materialComposition = null;
-            if (opening is Window)
-            {
-                if ((opening as Window).Construction == null)
-                {
-                    Engine.Base.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
-                    return null;
-                }
-
-                materialComposition = (opening as Window).Construction.IMaterialComposition();
-            }
-
-            if (opening is Door)
-            {
-                if ((opening as Door).Construction == null)
-                {
-                    Engine.Base.Compute.RecordError("The IOpening MaterialComposition could not be calculated as no IConstruction has been assigned.");
-                    return null;
-                }
-
-                materialComposition = (opening as Door).Construction.IMaterialComposition();
-            }
-
-            if (opening is BH.oM.Physical.Elements.Void)
-            {
-                Engine.Base.Compute.RecordError("Void's do not support constructions and therefore, contain no material composition. Returning null.");
+            VolumetricMaterialTakeoff takeoff = opening.IVolumetricMaterialTakeoff();
+            if (takeoff == null)
                 return null;
-            }
 
-            return materialComposition;
+            return Matter.Create.MaterialComposition(takeoff);
         }
 
         /***************************************************/
@@ -201,7 +169,7 @@ namespace BH.Engine.Physical
         {
             if (prop == null)
             {
-                Compute.RecordError("Cannot evaluate MaterialComposition because the Construction was null.");
+                Base.Compute.RecordError("Cannot evaluate MaterialComposition because the Construction was null.");
                 return null;
             }
 
@@ -210,13 +178,13 @@ namespace BH.Engine.Physical
 
             if (prop.Layers.All(x => x.Material == null))
             {
-                Compute.RecordError("Cannote evaluate MaterialComposition because all of the materials are null.");
+                Base.Compute.RecordError("Cannote evaluate MaterialComposition because all of the materials are null.");
                 return null;
             }
 
             if (prop.Layers.Any(x => x.Material == null))
             {
-                Compute.RecordWarning("At least one Material in a Layered surface property was null. MaterialConstruction excludes this layer, assuming it is void space.");
+                Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. MaterialConstruction excludes this layer, assuming it is void space.");
             }
 
             IEnumerable<Layer> layers = prop.Layers.Where(x => x.Material != null);
