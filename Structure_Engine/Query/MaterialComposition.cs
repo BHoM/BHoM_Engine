@@ -159,7 +159,7 @@ namespace BH.Engine.Structure
             }
 
             if (reinforcementDensity != null)
-                Base.Compute.RecordWarning("the layered property has a ReinforcementDensity which will not be included in the MaterialComposition, because it is not known which layer to replace. Please account for this reinforcement externally.");
+                Base.Compute.RecordWarning("The layered property has a ReinforcementDensity which will not be included in the MaterialComposition, because it is not known which layer to replace. Please account for this reinforcement externally.");
 
             if (property.Layers.Any(x => x.Material == null)) //cull any null layers, raise a warning.            
                 Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. VolumePerArea excludes this layer, assuming it is void space.");
@@ -183,6 +183,31 @@ namespace BH.Engine.Structure
                 Base.Compute.RecordWarning("the CorrugatedDeck property has a ReinforcementDensity which will not be included in the MaterialComposition, because it is inconceivable.");
 
             return (MaterialComposition)Physical.Create.Material(property.Material);
+        }
+
+        /***************************************************/
+
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
+        public static MaterialComposition MaterialComposition(this ToppedSlab property, ReinforcementDensity reinforcementDensity = null)
+        {
+            if (property.IsNull() || property.BaseProperty.IsNull() || property.Material.IsNull())
+                return null;
+
+            double baseVolume = property.BaseProperty.VolumePerArea();
+            double toppingVol = property.ToppingThickness;
+
+            MaterialComposition baseComposition = property.BaseProperty.IMaterialComposition(reinforcementDensity);
+
+            MaterialComposition toppingComposition;
+            if (reinforcementDensity == null)
+                toppingComposition = (MaterialComposition)Physical.Create.Material(property.Material);
+            else
+                toppingComposition = property.Material.MaterialComposition(reinforcementDensity);
+
+            return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition> { baseComposition, toppingComposition }, new List<double> { baseVolume, toppingVol });
         }
 
         /***************************************************/
