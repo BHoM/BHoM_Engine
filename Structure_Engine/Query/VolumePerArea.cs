@@ -251,7 +251,7 @@ namespace BH.Engine.Structure
             if (property.IsNull() || property.BaseProperty.IsNull())
                 return double.NaN;
 
-            return property.BaseProperty.VolumePerArea() + property.ToppingThickness;
+            return property.BaseProperty.IVolumePerArea() + property.ToppingThickness;
         }
 
         /***************************************************/
