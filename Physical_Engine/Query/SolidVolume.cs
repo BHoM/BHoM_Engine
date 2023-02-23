@@ -34,6 +34,8 @@ using BH.Engine.Spatial;
 using BH.oM.Base;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Reflection;
+using BH.oM.Physical.Materials;
+using BH.Engine.Matter;
 
 namespace BH.Engine.Physical
 {
@@ -70,23 +72,11 @@ namespace BH.Engine.Physical
         [Output("volume", "The ISurface's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this oM.Physical.Elements.ISurface surface)
         {
-            if (surface == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot query the solid volume of a null surface.");
-                return 0;
-            }
+            VolumetricMaterialTakeoff takeoff = surface.IVolumetricMaterialTakeoff();
+            if (takeoff == null)
+                return double.NaN;
 
-            if (surface.Construction == null)
-            {
-                Engine.Base.Compute.RecordError("The ISurface Solid Volume could not be calculated as no IConstruction has been assigned. Returning zero volume.");
-                return 0;
-            }
-
-            if (surface.Offset != Offset.Centre && !surface.Location.IIsPlanar())
-                Base.Compute.RecordWarning("The SolidVolume for non-Planar ISurfaces with offsets other than Centre is approxamite at best");
-            double area = surface.Location.IArea();
-            area -= surface.Openings.Sum(x => x.Location.IArea());
-            return area * surface.Construction.IVolumePerArea();
+            return takeoff.SolidVolume();
         }
 
         /***************************************************/
@@ -140,29 +130,11 @@ namespace BH.Engine.Physical
         [Output("volume", "The window's solid material volume.", typeof(Volume))]
         public static double SolidVolume(this IOpening opening)
         {
-            if (opening is BH.oM.Physical.Elements.Void)
-            {
-                Engine.Base.Compute.RecordError("Voids contain no solid volume. Try querying the desired value another way.");
-                return 0;
-            }
+            VolumetricMaterialTakeoff takeoff = opening.IVolumetricMaterialTakeoff();
+            if (takeoff == null)
+                return double.NaN;
 
-            double area = opening.IArea();
-            double thickness = 0;
-
-            if (opening is Window)
-                thickness = (opening as Window).Construction.IVolumePerArea();
-            else if (opening is Door)
-                thickness = (opening as Door).Construction.IVolumePerArea();
-
-            double solidVolume = area * thickness;
-
-            if (solidVolume <= 0)
-            {
-                Engine.Base.Compute.RecordError("Solid volume cannot be calculated for element of type :" + opening.GetType() + ". Returning zero volume.");
-                return 0;
-            }
-
-            return solidVolume;
+            return takeoff.SolidVolume();
         }
         
         /***************************************************/
