@@ -139,6 +139,30 @@ namespace BH.Engine.Structure
         [Description("Gets the warping constant for the profile.")]
         [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
         [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
+        public static double WarpingConstant(this VoidedISectionProfile profile)
+        {
+            if (profile.IsNull())
+                return 0;
+
+
+            //Calculated according to https://www.steelforlifebluebook.co.uk/explanatory-notes/ec3-ukna/properties/
+
+            List<PolyCurve> curvesZ = Engine.Geometry.Compute.IJoin(profile.Edges.ToList());
+
+            double iz = curvesZ.Sum(x => x.IIntegrateRegion(2));
+
+            double tf = profile.FlangeThickness;
+            double hs = profile.Height - tf;
+
+            return iz * hs * hs / 4;
+
+        }
+
+        /***************************************************/
+
+        [Description("Gets the warping constant for the profile.")]
+        [Input("profile", "The ShapeProfile to calculate the warping constant for.")]
+        [Output("Iw", "The warping constant of the profile.", typeof(WarpingConstant))]
         public static double WarpingConstant(this FabricatedISectionProfile profile)
         {
             if (profile.IsNull())
