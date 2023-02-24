@@ -39,12 +39,13 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("6.1", "BH.Engine.Structure.Compute.IntegrateSection(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, System.Double)")]
         [Description("Calculates Section properties for a region on the XY-Plane. /n" +
                      "The resulting properties are oriented to the XY-Plane.")]
         [Input("curves", "Non-intersecting edge curves that make up the section.")]
         [Input("tolerance", "The angleTolerance for dividing the section curves.")]
         [Output("V", "Dictionary containing the section properties for the X and Y axis.")]
-        public static Dictionary<string, double> IntegrateSection(List<ICurve> curves, double tolerance = 0.04)
+        public static Dictionary<string, double> IntegrateSection(List<ICurve> curves, double tolerance = 0.04, bool computeShearArea = true)
         {
             Dictionary<string, double> results = new Dictionary<string, double>();
 
@@ -198,16 +199,24 @@ namespace BH.Engine.Structure
             results["Welz"] = results["Iz"] / Math.Max(results["Vy"], results["Vpy"]);
             results["Wely"] = results["Iy"] / Math.Max(results["Vz"], results["Vpz"]);
 
-            if (discontinius)
+            if (computeShearArea)
             {
-                Engine.Base.Compute.RecordWarning("Asy and Asz are not calculated for discontinuous sections. They have ben set to 0");
-                results["Asy"] = 0;
-                results["Asz"] = 0;
+                if (discontinius)
+                {
+                    Engine.Base.Compute.RecordWarning("Asy and Asz are not calculated for discontinuous sections. They have ben set to 0");
+                    results["Asy"] = 0;
+                    results["Asz"] = 0;
+                }
+                else
+                {
+                    results["Asy"] = pLineZ.ShearAreaPolyline(results["Iz"]);
+                    results["Asz"] = pLineY.ShearAreaPolyline(results["Iy"]);
+                }
             }
             else
             {
-                results["Asy"] = pLineZ.ShearAreaPolyline(results["Iz"]);
-                results["Asz"] = pLineY.ShearAreaPolyline(results["Iy"]);
+                results["Asy"] = 0;
+                results["Asz"] = 0;
             }
 
             return results;
