@@ -401,6 +401,29 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Calculates the torsional constant for the profile. Note that this is not the polar moment of inertia.\n" +
+             "Formulae taken from https://orangebook.arcelormittal.com/explanatory-notes/long-products/section-properties/, modified to remove impact of voided zone.")]
+        [Input("profile", "The ShapeProfile to calculate the torsional constant for.")]
+        [Output("J", "Torsional constant of the profile. Note that this is not the polar moment of inertia.", typeof(TorsionConstant))]
+        public static double TorsionalConstant(this VoidedISectionProfile profile)
+        {
+            if (profile.IsNull())
+                return 0;
+
+            double b = profile.Width;
+            double h = profile.Height;
+            double tf = profile.FlangeThickness;
+            double tw = profile.WebThickness;
+            double r = profile.RootRadius;
+
+            double alpha = AlphaTJunction(tw, tf, r);
+            double D = InscribedDiameterTJunction(tw, tf, r);
+
+            return (2 * b * Math.Pow(tf, 3) + (h - profile.OpeningHeight - 2 * tf) * Math.Pow(tw, 3)) / 3 + 2 * alpha * Math.Pow(D, 4) - 0.420 * Math.Pow(tf, 4);
+        }
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
