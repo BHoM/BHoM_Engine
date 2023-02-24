@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
                 Engine.Base.Compute.RecordError("The Bars Solid Volume could not be calculated as no section property has been assigned. Returning zero volume.");
                 return 0;
             }
-            return bar.SectionProperty.Area * bar.Length();
+            return bar.SectionProperty.IVolumePerLength() * bar.Length();
         }
 
         /***************************************************/
