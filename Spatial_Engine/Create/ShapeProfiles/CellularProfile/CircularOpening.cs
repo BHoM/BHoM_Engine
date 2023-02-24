@@ -44,6 +44,12 @@ namespace BH.Engine.Spatial
             if (double.IsNaN(lengthEndPost))
                 lengthEndPost = widthWebPost;
 
+            if (widthWebPost > diameter)
+            {
+                Engine.Base.Compute.RecordError($"The {nameof(diameter)} needs to be larger than {nameof(widthWebPost)}. Unable to create circular opening.");
+                return null;
+            }
+
             double spacing = diameter + widthWebPost;
 
             return new CircularOpening(diameter, spacerHeight, widthWebPost, lengthEndPost, spacing);
