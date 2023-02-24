@@ -122,10 +122,7 @@ namespace BH.Engine.Structure
         private static double AreaReduction(this HexagonalOpening opening)
         {
             double areaOpening = opening.Height * (opening.Width + opening.WidthWebPost) / 2;
-
-            double areaRectange = opening.Spacing * opening.Height;
-            double areaSolid = areaRectange - areaOpening;
-            return areaSolid / opening.Spacing;
+            return areaOpening / opening.Spacing;
         }
 
         /***************************************************/
@@ -134,10 +131,7 @@ namespace BH.Engine.Structure
         {
             double r = opening.Diameter / 2;
             double areaOpening = r * r * Math.PI;
-
-            double areaRectange = opening.Spacing * opening.Diameter;
-            double areaSolid = areaRectange - areaOpening;
-            return areaSolid / opening.Spacing;
+            return areaOpening / opening.Spacing;
         }
 
         /***************************************************/
@@ -145,10 +139,7 @@ namespace BH.Engine.Structure
         private static double AreaReduction(this SinusoidalOpening opening)
         {
             double areaOpening = opening.Height * (opening.SinusoidalLength + opening.WidthWebPost);
-
-            double areaRectange = opening.Spacing * opening.Height;
-            double areaSolid = areaRectange - areaOpening;
-            return areaSolid / opening.Spacing;
+            return areaOpening / opening.Spacing;
         }
 
         /***************************************************/
