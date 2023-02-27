@@ -48,9 +48,14 @@ namespace BH.Engine.Structure
                 return 0.0;
 
             double solidArea = section.SolidProfile.Area();
-            double areaReduction = section.Opening.IAreaReduction();
 
-            return solidArea - areaReduction * section.BaseProfile.WebThickness;
+            if (Math.Abs(section.Opening.WidthWebPost - section.Opening.LengthEndPost) > Tolerance.Distance)
+                BH.Engine.Base.Compute.RecordNote("Volume for cellular beam is computed as if the end post length is the same as the same as intermidiate web post.");
+
+            //The reduction in volume per metre of the section
+            double openingReduction = section.Opening.IOpeningArea() / section.Opening.Spacing * section.SolidProfile.WebThickness;
+
+            return solidArea - openingReduction;
         }
 
         [Description("Calculates the volume per length for the section the volume per metre of the concrete section + the volume per metre of the steel section.")]
@@ -104,47 +109,6 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        /***************************************************/
-
-        private static double IAreaReduction(this ICellularOpening opening)
-        {
-            if (Math.Abs(opening.WidthWebPost - opening.LengthEndPost) > Tolerance.Distance)
-                BH.Engine.Base.Compute.RecordNote("Volume for cellular beam is computed as if the end post length is the same as the same as intermidiate web post.");
-
-            return AreaReduction(opening as dynamic);
-        }
-
-        /***************************************************/
-
-        private static double AreaReduction(this HexagonalOpening opening)
-        {
-            double areaOpening = opening.Height * (opening.Width + opening.WidthWebPost) / 2;
-            return areaOpening / opening.Spacing;
-        }
-
-        /***************************************************/
-
-        private static double AreaReduction(this CircularOpening opening)
-        {
-            double r = opening.Diameter / 2;
-            double areaOpening = r * r * Math.PI;
-            return areaOpening / opening.Spacing;
-        }
-
-        /***************************************************/
-
-        private static double AreaReduction(this SinusoidalOpening opening)
-        {
-            double areaOpening = opening.Height * (opening.SinusoidalLength + opening.WidthWebPost);
-            return areaOpening / opening.Spacing;
-        }
-
-        /***************************************************/
-
-
     }
 }
 
