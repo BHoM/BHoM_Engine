@@ -42,11 +42,11 @@ namespace BH.Engine.Spatial
         [InputFromProperty("widthWebPost")]
         [InputFromProperty("spacerHeight")]
         [Output("opening", "THe created SinusoidalOpening.")]
-        public static SinusoidalOpening SinusoidalOpening(double height, double sinusoidalLength, double widthWebPost, double spacerHeight = 0)
+        public static SinusoidalOpening SinusoidalOpening(double height, double sinusoidalLength, double widthWebPost)
         {
             double spacing = 2 * (widthWebPost + sinusoidalLength);
 
-            return new SinusoidalOpening(height, sinusoidalLength, spacerHeight, widthWebPost, spacing);
+            return new SinusoidalOpening(height, sinusoidalLength, widthWebPost, spacing);
         }
 
         /***************************************************/

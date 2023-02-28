@@ -58,14 +58,12 @@ namespace BH.Engine.Structure
                 return null;
             }
             double openingCutHeight = opening.IHeight();
+            double openingAddition = opening.IHeightAddition();
 
-            double webHeight = baseProfile.Height - 2 * (baseProfile.FlangeThickness + baseProfile.RootRadius);
 
-            double topHeight = (baseProfile.Height - openingCutHeight / 2) / 2;
-
-            double totalHeight = openingCutHeight / 2 + opening.SpacerHeight + baseProfile.Height - opening.ICutReduction() - cutThickness;
+            double totalHeight = openingCutHeight / 2 + openingAddition + baseProfile.Height - opening.ICutReduction() - cutThickness;
            
-            VoidedISectionProfile openingProfile = Spatial.Create.VoidedISectionProfile(totalHeight, openingCutHeight, baseProfile.Width, baseProfile.WebThickness, baseProfile.FlangeThickness, baseProfile.RootRadius, baseProfile.ToeRadius);
+            VoidedISectionProfile openingProfile = Spatial.Create.VoidedISectionProfile(totalHeight, openingCutHeight + openingAddition, baseProfile.Width, baseProfile.WebThickness, baseProfile.FlangeThickness, baseProfile.RootRadius, baseProfile.ToeRadius);
 
             if (openingProfile == null)
                 return null;
@@ -161,6 +159,27 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         private static double CutReduction(this SinusoidalOpening opening)
+        {
+            return 0;
+        }
+
+        /***************************************************/
+
+        private static double IHeightAddition(this ICellularOpening opening)
+        { 
+            return HeightAddition(opening as dynamic);
+        }
+
+        /***************************************************/
+
+        private static double HeightAddition(this HexagonalOpening opening)
+        {
+            return opening.SpacerHeight;
+        }
+
+        /***************************************************/
+
+        private static double HeightAddition(this ICellularOpening opening)
         {
             return 0;
         }
