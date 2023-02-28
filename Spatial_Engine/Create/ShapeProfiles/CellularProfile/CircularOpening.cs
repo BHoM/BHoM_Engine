@@ -36,13 +36,13 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static CircularOpening CircularOpening(double diameter, double widthWebPost, double lengthEndPost = double.NaN, double spacerHeight = 0)
+        [Description("Creates a CircularOpening to be applied to a cellular/castelated beam.")]
+        [InputFromProperty("diameter")]
+        [InputFromProperty("widthWebPost")]
+        [InputFromProperty("spacerHeight")]
+        [Output("opening", "THe created CircularOpening.")]
+        public static CircularOpening CircularOpening(double diameter, double widthWebPost, double spacerHeight = 0)
         {
-            if (double.IsNaN(lengthEndPost))
-                lengthEndPost = widthWebPost;
 
             if (widthWebPost > diameter)
             {
@@ -52,7 +52,7 @@ namespace BH.Engine.Spatial
 
             double spacing = diameter + widthWebPost;
 
-            return new CircularOpening(diameter, spacerHeight, widthWebPost, lengthEndPost, spacing);
+            return new CircularOpening(diameter, spacerHeight, widthWebPost, spacing);
         }
 
         /***************************************************/
