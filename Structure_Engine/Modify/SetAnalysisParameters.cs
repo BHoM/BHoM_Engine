@@ -143,12 +143,12 @@ namespace BH.Engine.Structure
                 if (stiffnessType == TimberAnalysisStiffness.Mean)
                 {
                     timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = perpValue, Z = timber.E_90_Flat_Mean };
-                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Edge_Mean };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Flat_Mean };
                 }
                 else
                 {
                     timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = perpValue, Z = timber.E_90_Flat_k };
-                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Edge_k };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Flat_k };
                 }
             }
             else
@@ -156,12 +156,13 @@ namespace BH.Engine.Structure
                 if (stiffnessType == TimberAnalysisStiffness.Mean)
                 {
                     timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Flat_Mean, Z = perpValue };
-                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Flat_Mean };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Edge_Mean };
                 }
                 else
                 {
                     timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_Flat_k, Z = perpValue };
-                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Flat_k };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Edge_k };
+
                 }
             }
             timber.SetPoissonsRatio(poissonsRatio_0_90, poissonsRatio_90_90);
@@ -189,12 +190,12 @@ namespace BH.Engine.Structure
                 if (stiffnessType == TimberAnalysisStiffness.Mean)
                 {
                     timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Edge_Mean, Z = timber.E_90_Flat_Mean };
-                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Edge_Mean };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Flat_Mean };
                 }
                 else
                 {
                     timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_Edge_k, Z = timber.E_90_Flat_k };
-                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Edge_k };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Flat_k };
                 }
             }
             else
@@ -202,12 +203,12 @@ namespace BH.Engine.Structure
                 if (stiffnessType == TimberAnalysisStiffness.Mean)
                 {
                     timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Flat_Mean, Z = timber.E_90_Edge_Mean };
-                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Flat_Mean };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_Mean, Y = timber.G_90_Flat_Mean, Z = timber.G_0_Edge_Mean };
                 }
                 else
                 {
                     timber.YoungsModulus = new Vector { X = timber.E_0_k, Y = timber.E_90_Flat_k, Z = timber.E_90_Edge_k };
-                    timber.ShearModulus = new Vector { X = timber.G_0_Edge_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Flat_k };
+                    timber.ShearModulus = new Vector { X = timber.G_0_Flat_k, Y = timber.G_90_Flat_k, Z = timber.G_0_Edge_k };
                 }
             }
             timber.SetPoissonsRatio(poissonsRatio_0_90, poissonsRatio_90_90);
