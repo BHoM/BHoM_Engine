@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates the maximum possible Cellular section from the provided SteelSection and opening.")]
-        [Input("baseSEction", "The prismatic steel section being turned into a cellular section. The Steel section needs to have a profile of type ISectionProfile. Material from steel section will be applied to the created cellular section.")]
+        [Input("baseSection", "The prismatic steel section being turned into a cellular section. The Steel section needs to have a profile of type ISectionProfile. Material from steel section will be applied to the created cellular section.")]
         [Input("opening", "The openings in the finished cellular section. Opening setting will be used to produce as tight cut as possible on the base section, producing the cellular section with maximum possible height.")]
         [Input("cutThickness", "Additional reduction factor on the final height of the section. Reduction based on thickness of the cutting process when producing the cellular section.", typeof(Length))]
         [InputFromProperty("name")]
@@ -70,6 +70,37 @@ namespace BH.Engine.Structure
             
             
             ISectionProfile solidProfile = Spatial.Create.ISectionProfile(totalHeight, baseProfile.Width, baseProfile.WebThickness, baseProfile.FlangeThickness, baseProfile.RootRadius, baseProfile.ToeRadius);
+
+            return CellularSection(openingProfile, solidProfile, opening, baseProfile, baseSection.Material as Steel, name);
+        }
+
+        /***************************************************/
+
+        [Description("Creates a Cellular section from the provided SteelSection, height, and opening.")]
+        [Input("baseSection", "The prismatic steel section being turned into a cellular section. The Steel section needs to have a profile of type ISectionProfile. Material from steel section will be applied to the created cellular section.")]
+        [Input("height", "The total height of the final section.", typeof(Length))]
+        [Input("opening", "The openings in the finished cellular section.")]
+        [InputFromProperty("name")]
+        [Output("section", "Created cellular section.")]
+        public static CellularSection CellularSectionFromBaseSection(SteelSection baseSection, double height, ICellularOpening opening, string name = "")
+        {
+            ISectionProfile baseProfile = baseSection.SectionProfile as ISectionProfile;
+
+            if (baseProfile == null)
+            {
+                Engine.Base.Compute.RecordError($"Can only create Cellular beams from SteelSections with profiles of type {nameof(ISectionProfile)}");
+                return null;
+            }
+            double openingCutHeight = opening.IHeight();
+            double openingAddition = opening.IHeightAddition();
+
+            VoidedISectionProfile openingProfile = Spatial.Create.VoidedISectionProfile(height, openingCutHeight + openingAddition, baseProfile.Width, baseProfile.WebThickness, baseProfile.FlangeThickness, baseProfile.RootRadius, baseProfile.ToeRadius);
+
+            if (openingProfile == null)
+                return null;
+
+
+            ISectionProfile solidProfile = Spatial.Create.ISectionProfile(height, baseProfile.Width, baseProfile.WebThickness, baseProfile.FlangeThickness, baseProfile.RootRadius, baseProfile.ToeRadius);
 
             return CellularSection(openingProfile, solidProfile, opening, baseProfile, baseSection.Material as Steel, name);
         }
