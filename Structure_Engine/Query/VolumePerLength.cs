@@ -49,9 +49,6 @@ namespace BH.Engine.Structure
 
             double solidArea = section.SolidProfile.Area();
 
-            if (Math.Abs(section.Opening.WidthWebPost - section.Opening.LengthEndPost) > Tolerance.Distance)
-                BH.Engine.Base.Compute.RecordNote("Volume for cellular beam is computed as if the end post length is the same as the same as intermidiate web post.");
-
             //The reduction in volume per metre of the section
             double openingReduction = section.Opening.IOpeningArea() / section.Opening.Spacing * section.SolidProfile.WebThickness;
 

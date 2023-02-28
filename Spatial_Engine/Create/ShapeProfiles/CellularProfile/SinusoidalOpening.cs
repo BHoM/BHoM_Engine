@@ -36,17 +36,17 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static SinusoidalOpening SinusoidalOpening(double height, double sinusoidalLength, double widthWebPost, double lengthEndPost = double.NaN, double spacerHeight = 0)
+        [Description("Creates a SinusoidalOpening to be applied to a cellular/castelated beam.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("sinusoidalLength")]
+        [InputFromProperty("widthWebPost")]
+        [InputFromProperty("spacerHeight")]
+        [Output("opening", "THe created SinusoidalOpening.")]
+        public static SinusoidalOpening SinusoidalOpening(double height, double sinusoidalLength, double widthWebPost, double spacerHeight = 0)
         {
-            if (double.IsNaN(lengthEndPost))
-                lengthEndPost = widthWebPost;
-
             double spacing = 2 * (widthWebPost + sinusoidalLength);
 
-            return new SinusoidalOpening(height, sinusoidalLength, spacerHeight, widthWebPost, lengthEndPost, spacing);
+            return new SinusoidalOpening(height, sinusoidalLength, spacerHeight, widthWebPost, spacing);
         }
 
         /***************************************************/
