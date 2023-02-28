@@ -63,7 +63,7 @@ namespace BH.Engine.Spatial
                 Base.Compute.RecordError("Unable to query the area from a null opening.");
                 return double.NaN;
             }
-            return opening.Height * (opening.Width + opening.WidthWebPost) / 2;
+            return opening.Height * (opening.Width + opening.WidthWebPost) / 2 + opening.SpacerHeight * opening.Width;
         }
 
         /***************************************************/
@@ -78,6 +78,7 @@ namespace BH.Engine.Spatial
                 Base.Compute.RecordError("Unable to query the area from a null opening.");
                 return double.NaN;
             }
+            double w = opening.SinusoidalLength * 2 + opening.WidthWebPost;
             return opening.Height * (opening.SinusoidalLength + opening.WidthWebPost);
         }
 

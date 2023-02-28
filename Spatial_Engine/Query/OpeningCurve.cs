@@ -42,7 +42,7 @@ namespace BH.Engine.Spatial
         [Description("Returns the curve of a single opening in the XY plane.")]
         [Input("opening", "The cellular opening to fetch the opening curve from.")]
         [Output("curve", "The outline curve of a single opening.")]
-        public static Circle OpeningCurve(this CircularOpening opening)
+        public static ICurve OpeningCurve(this CircularOpening opening)
         {
             if (opening == null)
             {
@@ -65,16 +65,38 @@ namespace BH.Engine.Spatial
                 Base.Compute.RecordError("Unable to query the curve from a null opening.");
                 return null;
             }
-            List<Point> ctrlPts = new List<Point>
+
+            List<Point> ctrlPts;
+            if (opening.SpacerHeight == 0)
             {
-                new Point{ X = opening.WidthWebPost/2, Y = -opening.Height/2 },
-                new Point{ X = opening.Width/2},
-                new Point{ X = opening.WidthWebPost/2, Y = opening.Height/2},
-                new Point{ X = -opening.WidthWebPost/2, Y = opening.Height/2 },
-                new Point{ X = -opening.Width/2},
-                new Point{ X = -opening.WidthWebPost/2, Y = -opening.Height/2 },
-                new Point{ X = opening.WidthWebPost/2, Y = -opening.Height/2 },
-            };
+                ctrlPts = new List<Point>
+                {
+                    new Point{ X = opening.WidthWebPost/2, Y = -opening.Height/2 },
+                    new Point{ X = opening.Width/2},
+                    new Point{ X = opening.WidthWebPost/2, Y = opening.Height/2},
+                    new Point{ X = -opening.WidthWebPost/2, Y = opening.Height/2 },
+                    new Point{ X = -opening.Width/2},
+                    new Point{ X = -opening.WidthWebPost/2, Y = -opening.Height/2 },
+                    new Point{ X = opening.WidthWebPost/2, Y = -opening.Height/2 },
+                };
+            }
+            else
+            {
+                double h = opening.Height + opening.SpacerHeight;
+                ctrlPts = new List<Point>
+                {
+                    new Point{ X = opening.WidthWebPost / 2, Y = - h / 2 },
+                    new Point{ X = opening.Width/2, Y = - opening.SpacerHeight/2},
+                    new Point{ X = opening.Width/2, Y = opening.SpacerHeight/2},
+                    new Point{ X = opening.WidthWebPost/2, Y = h/2},
+                    new Point{ X = -opening.WidthWebPost/2, Y =h/2 },
+                    new Point{ X = -opening.Width/2, Y = opening.SpacerHeight/2},
+                    new Point{ X = -opening.Width/2, Y = -opening.SpacerHeight/2},
+                    new Point{ X = -opening.WidthWebPost/2, Y = -h/2 },
+                    new Point{ X = opening.WidthWebPost/2, Y = -h/2 },
+                };
+            }
+
             return new Polyline { ControlPoints = ctrlPts };
         }
 
