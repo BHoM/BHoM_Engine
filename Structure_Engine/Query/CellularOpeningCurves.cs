@@ -20,19 +20,18 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
-using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Spatial.ShapeProfiles.CellularOpenings;
+using BH.oM.Structure.Elements;
+using BH.oM.Structure.SectionProperties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace BH.Engine.Spatial
+namespace BH.Engine.Structure
 {
     public static partial class Query
     {
@@ -40,41 +39,21 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Distributes a series of openings along a centreline. Method will fit in as many openings along the curve as it can, starting from the start of the curve.")]
-        [Input("opening", "CellularOpening do ditribute along curve.")]
-        [Input("centreline", "Centreline curve to distribute the openings along.")]
-        [Input("normal", "Normal direction of the element the openings belong to. The openings will be in a plane spanned by the tangent of the centreline and the normal vector.")]
+        [Description("Distributes a series of cellular openings along the centreline of the bar centreline. Method will fit in as many openings along the curve as it can, starting from the start of the curve.\n" +
+                     "An empty list is returned if the bar does not contain a cellular section.")]
+        [Input("bar", "Centreline curve to distribute the openings along.")]
         [Input("tolerance", "Tolerance used for checking how many openings that can be fitted along the centreline.", typeof(Length))]
-        [Output("openingCurve", "The distributed opening curves.")]
-        public static List<ICurve> DistributedOpeningCurves(this ICellularOpening opening, Line centreline, Vector normal, double tolerance = Tolerance.Distance)
+        [Output("openingCurve", "The distributed cellular opening curves along the bar centreline.")]
+        public static List<ICurve> CellularOpeningCurves(this Bar bar, double tolerance = Tolerance.Distance)
         {
-            if (opening == null || centreline == null || normal == null)
-            {
-                Base.Compute.RecordError("Unable to distribute curves due to null inputs.");
+            if (bar.IsNull())
                 return null;
-            }
 
-            ICurve openingCurve = opening.IOpeningCurve();
+            CellularSection section = bar.SectionProperty as CellularSection;
+            if (section == null)
+                return new List<ICurve>();
 
-            Vector tan = centreline.Direction(tolerance);
-
-            Cartesian coordinateSystem = Engine.Geometry.Create.CartesianCoordinateSystem(centreline.Start, tan, normal);
-            TransformMatrix orient = Engine.Geometry.Create.OrientationMatrixGlobalToLocal(coordinateSystem);
-
-            ICurve orientedOpening = BH.Engine.Geometry.Modify.ITransform(openingCurve, orient);
-
-
-            double endLength = opening.Spacing / 2 + opening.WidthWebPost;
-            double max = centreline.Length() - endLength;
-            double currCentre = endLength;
-
-            List<ICurve> openingCurves = new List<ICurve>();
-            while (currCentre <= max + tolerance)
-            {
-                openingCurves.Add(orientedOpening.ITranslate(tan * currCentre));
-                currCentre += opening.Spacing;
-            }
-            return openingCurves;
+            return Engine.Spatial.Query.DistributedOpeningCurves(section.Opening, bar.Centreline(), bar.Normal(), tolerance);
         }
 
         /***************************************************/
