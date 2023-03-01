@@ -52,6 +52,9 @@ namespace BH.Engine.Structure
             //The reduction in volume per metre of the section
             double openingReduction = section.Opening.IOpeningArea() / section.Opening.Spacing * section.SolidProfile.WebThickness;
 
+            if (openingReduction != 0)
+                Base.Compute.RecordNote($"The volume per length for cellular sections is a slight approximation. To get a more accurate volume for a particular bar with the section use the {nameof(Query.SolidVolume)} method instead.");
+
             return solidArea - openingReduction;
         }
 
