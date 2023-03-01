@@ -44,7 +44,7 @@ namespace BH.Engine.Spatial
         [Input("centreline", "Centreline curve to distribute the openings along.")]
         [Input("normal", "Normal direction of the element the openings belong to. The openings will be in a plane spanned by the tangent of the centreline and the normal vector.")]
         [Output("openingCurve", "The distributed opening curves.")]
-        public static List<ICurve> DistributedOpeningCurves(this ICellularOpening opening, Line centreline, Vector normal)
+        public static List<ICurve> DistributedOpeningCurves(this ICellularOpening opening, Line centreline, Vector normal, double tolerance = Tolerance.Distance)
         {
             if (opening == null || centreline == null || normal == null)
             {
@@ -54,7 +54,7 @@ namespace BH.Engine.Spatial
 
             ICurve openingCurve = opening.IOpeningCurve();
 
-            Vector tan = centreline.Direction();
+            Vector tan = centreline.Direction(tolerance);
 
             Cartesian coordinateSystem = Engine.Geometry.Create.CartesianCoordinateSystem(centreline.Start, tan, normal);
             TransformMatrix orient = Engine.Geometry.Create.OrientationMatrixGlobalToLocal(coordinateSystem);
@@ -67,7 +67,7 @@ namespace BH.Engine.Spatial
             double currCentre = endLength;
 
             List<ICurve> openingCurves = new List<ICurve>();
-            while (currCentre < max)
+            while (currCentre <= max + tolerance)
             {
                 openingCurves.Add(orientedOpening.ITranslate(tan * currCentre));
                 currCentre += opening.Spacing;
