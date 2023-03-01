@@ -31,6 +31,9 @@ using System;
 using BH.oM.Physical.Materials;
 using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Spatial;
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Spatial.ShapeProfiles;
+using static System.Collections.Specialized.BitVector32;
 
 namespace BH.Engine.Structure
 {
@@ -53,7 +56,7 @@ namespace BH.Engine.Structure
                 Engine.Base.Compute.RecordError("The Bars Solid Volume could not be calculated as no section property has been assigned. Returning zero volume.");
                 return 0;
             }
-            return bar.SectionProperty.IVolumePerLength() * bar.Length();
+            return bar.SectionProperty.ISolidVolume(bar.Length());
         }
 
         /***************************************************/
@@ -79,7 +82,55 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
+        private static double ISolidVolume(this ISectionProperty sectionProperty, double length)
+        {
+            return SolidVolume(sectionProperty as dynamic, length);
+        }
+
+        /***************************************************/
+
+        private static double SolidVolume(ISectionProperty sectionProperty, double length)
+        {
+            return sectionProperty.Area * length;
+        }
+
+        /***************************************************/
+
+        private static double SolidVolume(IGeometricalSection sectionProperty, double length)
+        {
+            //If contains tapered profile, that is used
+            double area;
+            if (sectionProperty.SectionProfile is TaperedProfile)
+                area = (sectionProperty.SectionProfile as TaperedProfile).Area();
+            else
+                area = sectionProperty.Area;
+
+            return area * length;
+        }
+
+        /***************************************************/
+
+        private static double SolidVolume(CellularSection sectionProperty, double length)
+        {
+            //If contains tapered profile, that is used
+            double solidArea = sectionProperty.SolidProfile.Area();
+            double openingCount = Math.Floor((length - sectionProperty.Opening.WidthWebPost) / sectionProperty.Opening.Spacing);
+
+            return solidArea * length - openingCount * sectionProperty.Opening.IOpeningArea() * sectionProperty.SolidProfile.WebThickness;
+        }
+
+        /***************************************************/
+
+        private static double SolidVolume(CompositeSection sectionProperty, double length)
+        {
+            //TODO: Handle embedment etc..
+            return sectionProperty.ConcreteSection.ISolidVolume(length) + sectionProperty.SteelSection.ISolidVolume(length);
+        }
+
+        /***************************************************/
     }
 }
 
