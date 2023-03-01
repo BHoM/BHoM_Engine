@@ -24,7 +24,9 @@ using BH.oM.Structure.Elements;
 using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Spatial;
+using BH.oM.Physical.Materials;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -34,12 +36,17 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the mass of a Bar as its length times mass per metre. The mass per metre is generally calculated as section area multiplied by the density. No offsets or similar ar taken into acount.")]
+        [Description("Calculates the mass of a Bar as its solid volume (generally take as length times section area) times density(ies) of its material. No offsets or similar ar taken into acount.")]
         [Input("bar", "The Bar to calculate the mass for.")]
         [Output("mass", "The mass of the Bar.", typeof(Mass))]
         public static double Mass(this Bar bar)
         {
-            return bar.IsNull() ? 0 : bar.Length() * bar.SectionProperty.IMassPerMetre();
+            if(bar.IsNull())
+                return 0;
+
+            double volume = bar.SolidVolume();
+            MaterialComposition comp = bar.MaterialComposition();
+            return comp.Materials.Zip(comp.Ratios, (m, r) => m.Density * r * volume).Sum();
         }
 
         /***************************************************/
