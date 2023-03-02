@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
                 timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Mean, Z = timber.E_90_Mean };
                 timber.ShearModulus = new Vector { X = timber.G_Mean, Y = timber.G_Mean, Z = timber.G_Mean };
 
-                message = $"{nameof(SawnTimber)} only contaiains mean value for shear modulus, no rolling shear stiffness. Mean shear stiffness ({nameof(timber.G_Mean)}) will be applied in all directions.";
+                message = $"{nameof(SawnTimber)} only contains mean value for shear modulus, no rolling shear stiffness. Mean shear stiffness ({nameof(timber.G_Mean)}) will be applied in all directions.";
             }
             else
             {
@@ -76,7 +76,7 @@ namespace BH.Engine.Structure
                 timber.ShearModulus = new Vector { X = timber.G_Mean, Y = timber.G_Mean, Z = timber.G_Mean };
 
                 message = $"{nameof(SawnTimber)} materials does not contain characteristic values for youngs modulus perpendicular. Mean value of perpendicular stiffness used." + Environment.NewLine;
-                message += $"{nameof(SawnTimber)} only contaiains mean value for shear modulus, no characteristic values or rolling shear stiffness. Mean shear stiffness ({nameof(timber.G_Mean)}) will be applied in all directions.";
+                message += $"{nameof(SawnTimber)} only contains mean value for shear modulus, no characteristic values or rolling shear stiffness. Mean shear stiffness ({nameof(timber.G_Mean)}) will be applied in all directions.";
             }
             timber.SetPoissonsRatio(poissonsRatio_0_90, poissonsRatio_90_90);
             Base.Compute.RecordNote(message);
