@@ -118,7 +118,7 @@ namespace BH.Engine.Structure
         {
             if (orientationType == TimberAnalysisOrientation.Unknown)
             {
-                Base.Compute.RecordError($"Requires set {orientationType} to be able to set analysis parameters for materials of type {nameof(LaminatedVeneerLumberCrossbands)}.");
+                Base.Compute.RecordError($"Requires set {nameof(TimberAnalysisOrientation)} to be able to set analysis parameters for materials of type {nameof(LaminatedVeneerLumberCrossbands)}.");
                 return;
             }
 
@@ -181,7 +181,7 @@ namespace BH.Engine.Structure
         {
             if (orientationType == TimberAnalysisOrientation.Unknown)
             {
-                Base.Compute.RecordError($"Requires set {orientationType} to be able to set analysis parameters for materials of type {nameof(LaminatedVeneerLumberParallel)}.");
+                Base.Compute.RecordError($"Requires set {nameof(TimberAnalysisOrientation)} to be able to set analysis parameters for materials of type {nameof(LaminatedVeneerLumberParallel)}.");
                 return;
             }
 
