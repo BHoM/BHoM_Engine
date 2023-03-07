@@ -165,7 +165,7 @@ namespace BH.Engine.Structure
 
             if (voidHeight < 0)
             {
-                Base.Compute.RecordError($"The {nameof(property.TopThickness)} + {nameof(property.BottomThickness)} is larger than the {property.TotalDepth}. The {nameof(OneDirectionalVoided)} is invalid and volume cannot be computed.");
+                Base.Compute.RecordError($"The {nameof(property.TopThickness)} + {nameof(property.BottomThickness)} is larger than the {nameof(property.TotalDepth)}. The {nameof(OneDirectionalVoided)} is invalid and volume cannot be computed.");
                 return double.NaN;
             }
 
@@ -194,7 +194,7 @@ namespace BH.Engine.Structure
 
             if (voidHeight < 0)
             {
-                Base.Compute.RecordError($"The {nameof(property.TopThickness)} + {nameof(property.BottomThickness)} is larger than the {property.TotalDepth}. The {nameof(BiDirectionalVoided)} is invalid and volume cannot be computed.");
+                Base.Compute.RecordError($"The {nameof(property.TopThickness)} + {nameof(property.BottomThickness)} is larger than the {nameof(property.TotalDepth)}. The {nameof(BiDirectionalVoided)} is invalid and volume cannot be computed.");
                 return double.NaN;
             }
 
@@ -226,7 +226,7 @@ namespace BH.Engine.Structure
 
             if (voidZoneHeight > property.Thickness)
             {
-                Base.Compute.RecordError($"The {nameof(voidZoneHeight)} is larger than the {property.Thickness}. The {nameof(HollowCore)} is invalid and volume cannot be computed.");
+                Base.Compute.RecordError($"The {nameof(voidZoneHeight)} is larger than the {nameof(property.Thickness)}. The {nameof(HollowCore)} is invalid and volume cannot be computed.");
                 return double.NaN;
             }
 
