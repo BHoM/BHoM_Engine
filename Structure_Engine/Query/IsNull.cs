@@ -577,17 +577,17 @@ namespace BH.Engine.Structure
             {
                 if (timber.YoungsModulus == null)
                 { 
-                    ErrorMessage(methodName, $"{nameof(timber.YoungsModulus)} of the {typeof(T).Name}", msg);
+                    ErrorMessage(methodName, $"{nameof(timber.YoungsModulus)} of the {typeof(T).Name}", string.IsNullOrEmpty(msg) ? $"Call the {nameof(Modify.SetAnalysisParameters)} method to initialise the analysis vectors of the {typeof(T).Name}." : msg);
                     return true;
                 }
                 if (timber.ShearModulus == null)
                 {
-                    ErrorMessage(methodName, $"{nameof(timber.ShearModulus)} of the {typeof(T).Name}", msg);
+                    ErrorMessage(methodName, $"{nameof(timber.ShearModulus)} of the {typeof(T).Name}", string.IsNullOrEmpty(msg) ? $"Call the {nameof(Modify.SetAnalysisParameters)} method to initialise the analysis vectors of the {typeof(T).Name}." : msg);
                     return true;
                 }
                 if (timber.PoissonsRatio == null)
                 {
-                    ErrorMessage(methodName, $"{nameof(timber.PoissonsRatio)} of the {typeof(T).Name}", msg);
+                    ErrorMessage(methodName, $"{nameof(timber.PoissonsRatio)} of the {typeof(T).Name}", string.IsNullOrEmpty(msg) ? $"Call the {nameof(Modify.SetAnalysisParameters)} method to initialise the analysis vectors of the {typeof(T).Name}." : msg);
                     return true;
                 }
             }
