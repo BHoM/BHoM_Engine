@@ -562,7 +562,8 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a ITimber is null and outputs relevant error message.")]
-        [Input("rebarIntent", "The PanelRebarIntent to test for null.")]
+        [Input("timber", "The ITimber to test for null.")]
+        [Input("checkAnalysisVectors", "If false, only the main material is checked if it is null. If true, stiffness vectors on the material are also checked for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the PanelRebarIntent is null.")]
