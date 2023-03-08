@@ -605,6 +605,8 @@ namespace BH.Engine.Structure
             return "Gen " + material.MaterialAnalyticalValues();
         }
 
+        /***************************************************/
+
         [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to get a default description for.")]
         [Output("desc", "The generated description for the material.")]
@@ -616,6 +618,8 @@ namespace BH.Engine.Structure
             return "Timber " + material.MaterialAnalyticalValues();
         }
 
+        /***************************************************/
+
         [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to get a default description for.")]
         [Output("desc", "The generated description for the material.")]
@@ -625,6 +629,24 @@ namespace BH.Engine.Structure
                 return "null material";
 
             return "Gen " + material.MaterialAnalyticalValues();
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the material based on its properties.")]
+        [Input("material", "The material to get a default description for.")]
+        [Output("desc", "The generated description for the material.")]
+        public static string Description(this ITimber material)
+        {
+            if (material == null)
+                return "null material";
+
+            string timberTypeName = material.IAcronymTypeName();
+
+            if (material.YoungsModulus == null && material.ShearModulus == null && material.PoissonsRatio == null)
+                return $"{timberTypeName} - Analysis unset";
+            else
+                return $"{timberTypeName} {material.MaterialAnalyticalValues()}";
         }
 
         /***************************************************/
@@ -774,6 +796,73 @@ namespace BH.Engine.Structure
                 default:
                     return "-";
             }
+        }
+
+        /***************************************************/
+
+        [Description("Gets a shortened version of the timber type name.")]
+        private static string IAcronymTypeName(this ITimber material)
+        {
+            if (material == null)
+                return "null material";
+
+            return AcronymTypeName(material as dynamic);
+        }
+
+        /***************************************************/
+
+        [Description("Gets a shortened version of the timber type name.")]
+        private static string AcronymTypeName(this SawnTimber material)
+        {
+            if (material == null)
+                return "null material";
+
+            return "Timber";
+        }
+
+        /***************************************************/
+
+        [Description("Gets a shortened version of the timber type name.")]
+        private static string AcronymTypeName(this Glulam material)
+        {
+            if (material == null)
+                return "null material";
+
+            return "GL";
+        }
+
+        /***************************************************/
+
+        [Description("Gets a shortened version of the timber type name.")]
+        private static string AcronymTypeName(this LaminatedVeneerLumberCrossbands material)
+        {
+            if (material == null)
+                return "null material";
+
+            return "LVL Crossband";
+        }
+
+        /***************************************************/
+
+        [Description("Gets a shortened version of the timber type name.")]
+        private static string AcronymTypeName(this LaminatedVeneerLumberParallel material)
+        {
+            if (material == null)
+                return "null material";
+
+            return "LVL Parallel";
+        }
+
+        /***************************************************/
+
+        [Description("Gets a shortened version of the timber type name.")]
+        private static string AcronymTypeName(this ITimber material)
+        {
+            if (material == null)
+                return "null material";
+
+            //Fallback to type name
+            return material.GetType().Name;
         }
 
         /***************************************************/
