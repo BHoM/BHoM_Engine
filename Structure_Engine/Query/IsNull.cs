@@ -561,6 +561,40 @@ namespace BH.Engine.Structure
             return false;
         }
 
+        [Description("Checks if a ITimber is null and outputs relevant error message.")]
+        [Input("rebarIntent", "The PanelRebarIntent to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PanelRebarIntent is null.")]
+        public static bool IsNull<T>(this T timber, bool checkAnalysisVetors = false, [CallerMemberName] string methodName = "Method", string msg = "") where T : ITimber
+        {
+            if (timber == null)
+            {
+                ErrorMessage(methodName, typeof(T).Name, msg);
+                return true;
+            }
+            else if (checkAnalysisVetors)
+            {
+                if (timber.YoungsModulus == null)
+                { 
+                    ErrorMessage(methodName, $"{nameof(timber.YoungsModulus)} of the {typeof(T).Name}", msg);
+                    return true;
+                }
+                if (timber.ShearModulus == null)
+                {
+                    ErrorMessage(methodName, $"{nameof(timber.ShearModulus)} of the {typeof(T).Name}", msg);
+                    return true;
+                }
+                if (timber.PoissonsRatio == null)
+                {
+                    ErrorMessage(methodName, $"{nameof(timber.PoissonsRatio)} of the {typeof(T).Name}", msg);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
