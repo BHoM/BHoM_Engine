@@ -48,11 +48,15 @@ namespace BH.Engine.Structure
         [Output("timber", "The timber material with updated stiffness properties based on the inputs and product specific values.")]
         public static void ISetAnalysisParameters(this ITimber timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType = TimberAnalysisOrientation.Unknown, TimberAnalysisDominantLoadCondition loadCondition = TimberAnalysisDominantLoadCondition.Bending, double poissonsRatio_0_90 = 0.4, double poissonsRatio_90_90 = 0.4)
         {
+            if (timber.IsNull(false))
+                return;
+
             SetAnalysisParameters(timber as dynamic, stiffnessType, orientationType, loadCondition, poissonsRatio_0_90, poissonsRatio_90_90);
         }
 
         /***************************************************/
-
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         [Description("Sets YoungsModulus and ShearModulus used for analysis of the material based on the product specific properties.")]
         [Input("timber", "Timber material to update the Analysis properties of.")]
@@ -62,6 +66,9 @@ namespace BH.Engine.Structure
         [Output("timber", "The timber material with updated stiffness properties based on the inputs and product specific values.")]
         public static void SetAnalysisParameters(this SawnTimber timber, TimberAnalysisStiffness stiffnessType, double poissonsRatio_0_90 = 0.4, double poissonsRatio_90_90 = 0.4)
         {
+            if (timber.IsNull(false))
+                return;
+
             string message = "";
             if (stiffnessType == TimberAnalysisStiffness.Mean)
             {
@@ -92,6 +99,9 @@ namespace BH.Engine.Structure
         [Output("timber", "The timber material with updated stiffness properties based on the inputs and product specific values.")]
         public static void SetAnalysisParameters(this Glulam timber, TimberAnalysisStiffness stiffnessType, double poissonsRatio_0_90 = 0.4, double poissonsRatio_90_90 = 0.4)
         {
+            if (timber.IsNull(false))
+                return;
+
             if (stiffnessType == TimberAnalysisStiffness.Mean)
             {
                 timber.YoungsModulus = new Vector { X = timber.E_0_Mean, Y = timber.E_90_Mean, Z = timber.E_90_Mean };
@@ -117,6 +127,9 @@ namespace BH.Engine.Structure
         [Output("timber", "The timber material with updated stiffness properties based on the inputs and product specific values.")]
         public static void SetAnalysisParameters(this LaminatedVeneerLumberCrossbands timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType, TimberAnalysisDominantLoadCondition loadCondition, double poissonsRatio_0_90 = 0.4, double poissonsRatio_90_90 = 0.4)
         {
+            if (timber.IsNull(false))
+                return;
+
             if (orientationType == TimberAnalysisOrientation.Unknown)
             {
                 Base.Compute.RecordError($"Requires set {nameof(TimberAnalysisOrientation)} to be able to set analysis parameters for materials of type {nameof(LaminatedVeneerLumberCrossbands)}.");
@@ -180,6 +193,9 @@ namespace BH.Engine.Structure
         [Output("timber", "The timber material with updated stiffness properties based on the inputs and product specific values.")]
         public static void SetAnalysisParameters(this LaminatedVeneerLumberParallel timber, TimberAnalysisStiffness stiffnessType, TimberAnalysisOrientation orientationType, double poissonsRatio_0_90 = 0.4, double poissonsRatio_90_90 = 0.4)
         {
+            if (timber.IsNull(false))
+                return;
+
             if (orientationType == TimberAnalysisOrientation.Unknown)
             {
                 Base.Compute.RecordError($"Requires set {nameof(TimberAnalysisOrientation)} to be able to set analysis parameters for materials of type {nameof(LaminatedVeneerLumberParallel)}.");
