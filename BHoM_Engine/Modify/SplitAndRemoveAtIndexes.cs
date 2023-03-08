@@ -20,28 +20,42 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
+using BH.oM.Base;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Base
 {
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods - Vectors                  ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Point ProjectionOnXY(this Point pnt)
+        public static List<List<T>> SplitAndRemoveAtIndexes<T>(this List<T> items, List<int> indexes)
         {
-            return new Point { X = pnt.X, Y = pnt.Y, Z = 0 };
+            int startIndex = 0;
+            indexes.Add(items.Count);
+            var result = new List<List<T>>();
+
+            foreach (int i in indexes)
+            {
+                var subList = items.Skip(startIndex).Take(i - startIndex).ToList();
+                result.Add(subList);
+                startIndex = i + 1;
+            }
+
+            return result;
         }
 
         /***************************************************/
     }
 }
+
+
 
 
