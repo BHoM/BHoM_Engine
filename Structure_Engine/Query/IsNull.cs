@@ -566,14 +566,14 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the PanelRebarIntent is null.")]
-        public static bool IsNull<T>(this T timber, bool checkAnalysisVetors = false, [CallerMemberName] string methodName = "Method", string msg = "") where T : ITimber
+        public static bool IsNull<T>(this T timber, bool checkAnalysisVectors = false, [CallerMemberName] string methodName = "Method", string msg = "") where T : ITimber
         {
             if (timber == null)
             {
                 ErrorMessage(methodName, typeof(T).Name, msg);
                 return true;
             }
-            else if (checkAnalysisVetors)
+            else if (checkAnalysisVectors)
             {
                 if (timber.YoungsModulus == null)
                 { 
