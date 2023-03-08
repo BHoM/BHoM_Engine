@@ -644,9 +644,9 @@ namespace BH.Engine.Structure
             string timberTypeName = material.IAcronymTypeName();
 
             if (material.YoungsModulus == null && material.ShearModulus == null && material.PoissonsRatio == null)
-                return $"{timberTypeName} - Analysis unset";
+                return $"{timberTypeName} - Analysis values unset";
             else
-                return $"{timberTypeName} {material.MaterialAnalyticalValues()}";
+                return $"{timberTypeName} - {material.MaterialAnalyticalValues()}";
         }
 
         /***************************************************/
