@@ -85,7 +85,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the volumetric material takeoff from the Void object. This will always return an empty takeoff as a void represent an area of no materiality.")]
-        [Input("surface", "The physical opening object to extract the volumetric material takeoff from.")]
+        [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
         [Output("volTakeoff", "The volumetric material takeoff for the opening. For a void this will alwys be an empty Material Takeoff.")]
         public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this BH.oM.Physical.Elements.Void opening)
         {
@@ -96,7 +96,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the volumetric material takeoff from the Window.")]
-        [Input("surface", "The physical opening object to extract the volumetric material takeoff from.")]
+        [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
         [Output("volTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
         public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this Window opening)
         {
@@ -124,7 +124,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the volumetric material takeoff from the Door.")]
-        [Input("surface", "The physical opening object to extract the volumetric material takeoff from.")]
+        [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
         [Output("volTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
         public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this Door opening)
         {
@@ -154,7 +154,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets the volumetric material takeoff from the IOpening.")]
-        [Input("surface", "The physical opening object to extract the volumetric material takeoff from.")]
+        [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
         [Output("volTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
         public static VolumetricMaterialTakeoff IVolumetricMaterialTakeoff(this IOpening opening)
         {
