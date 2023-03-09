@@ -566,7 +566,7 @@ namespace BH.Engine.Structure
         [Input("checkAnalysisVectors", "If false, only the main material is checked if it is null. If true, stiffness vectors on the material are also checked for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the PanelRebarIntent is null.")]
+        [Output("isNull", "True if the ITimber is null.")]
         public static bool IsNull<T>(this T timber, bool checkAnalysisVectors = false, [CallerMemberName] string methodName = "Method", string msg = "") where T : ITimber
         {
             if (timber == null)
