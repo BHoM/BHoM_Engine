@@ -43,7 +43,7 @@ namespace BH.Engine.Environment
     {
         [Description("")]
         [Input("PastObjects","The old set of objects")]
-        [Input("FollowinigObjects","The new set of the objects")]
+        [Input("FollowingObjects","The new set of the objects")]
         [MultiOutput(0,"ModifiedObjects","The Modified Objects")]
         [MultiOutput(1,"UnchangedObjects","The Unchanged Objects")]
         public static Output<IEnumerable<object>, IEnumerable<object>> MapSpaces(IEnumerable<Space> pastSpace, IEnumerable<Space> followingSpace, List<string> propertiesToConsider = null)
