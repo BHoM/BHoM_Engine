@@ -57,9 +57,13 @@ namespace BH.Engine.Structure
                 Engine.Base.Compute.RecordError($"Can only create Cellular beams from SteelSections with profiles of type {nameof(ISectionProfile)}");
                 return null;
             }
+
+            //Bring name over from baseSection to baseProfile
+            if (string.IsNullOrEmpty(baseProfile.Name) && !string.IsNullOrEmpty(baseSection.Name))
+                baseProfile.Name = baseSection.Name;
+
             double openingCutHeight = opening.IHeight();
             double openingAddition = opening.IHeightAddition();
-
 
             double totalHeight = openingCutHeight / 2 + openingAddition + baseProfile.Height - opening.ICutReduction() - cutThickness;
            
@@ -67,8 +71,7 @@ namespace BH.Engine.Structure
 
             if (openingProfile == null)
                 return null;
-            
-            
+                       
             ISectionProfile solidProfile = Spatial.Create.ISectionProfile(totalHeight, baseProfile.Width, baseProfile.WebThickness, baseProfile.FlangeThickness, baseProfile.RootRadius, baseProfile.ToeRadius);
 
             return CellularSection(openingProfile, solidProfile, opening, baseProfile, baseSection.Material as Steel, name);
@@ -91,6 +94,11 @@ namespace BH.Engine.Structure
                 Engine.Base.Compute.RecordError($"Can only create Cellular beams from SteelSections with profiles of type {nameof(ISectionProfile)}");
                 return null;
             }
+
+            //Bring name over from baseSection to baseProfile
+            if (string.IsNullOrEmpty(baseProfile.Name) && !string.IsNullOrEmpty(baseSection.Name))
+                baseProfile.Name = baseSection.Name;
+
             double openingCutHeight = opening.IHeight();
             double openingAddition = opening.IHeightAddition();
 
