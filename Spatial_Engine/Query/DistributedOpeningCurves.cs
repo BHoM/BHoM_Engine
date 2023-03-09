@@ -63,17 +63,20 @@ namespace BH.Engine.Spatial
 
             ICurve orientedOpening = BH.Engine.Geometry.Modify.ITransform(openingCurve, orient);
 
-
-            double endLength = opening.Spacing / 2 + opening.WidthWebPost;
-            double max = centreline.Length() - endLength;
-            double currCentre = endLength;
+            double length = centreline.Length();
+            double distributionLength = length - opening.WidthWebPost;  //Will require one extra endpost on the end compared to spacing distribution
+            int count = (int)Math.Floor((distributionLength + tolerance) / opening.Spacing);    //Number of openings that can be fitted
+            distributionLength = count * opening.Spacing;   //The length along the element where openings can be fitted
+            double endAdditional = (length - distributionLength) / 2;   //Leftover on each side
+            double currCentre = endAdditional + opening.Spacing / 2;
 
             List<ICurve> openingCurves = new List<ICurve>();
-            while (currCentre <= max + tolerance)
+            for (int i = 0; i < count; i++)
             {
                 openingCurves.Add(orientedOpening.ITranslate(tan * currCentre));
                 currCentre += opening.Spacing;
             }
+
             return openingCurves;
         }
 
