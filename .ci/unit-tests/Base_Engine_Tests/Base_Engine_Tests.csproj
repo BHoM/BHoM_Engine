@@ -11,6 +11,8 @@
     <IsPackable>false</IsPackable>
 
     <Configurations>Debug;Release;Test</Configurations>
+
+    <RootNamespace>BH.Tests.Engine.Base</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +39,9 @@
       <HintPath>$(ProgramData)\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="NUnit_Engine">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\NUnit_Engine.dll</HintPath>
     </Reference>
     <Reference Include="Structure_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Structure_oM.dll</HintPath>
