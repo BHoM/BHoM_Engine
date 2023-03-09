@@ -37,8 +37,8 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the ratio of solid material to void in the opening sone of the HollowCore, where 1 means no voids and 0 means complete void. Please note that this is only relates to the thickness zone with voids, not including solid areas at top and bottom.")]
-        [Input("hollowCore", "THe hollow core property to get the solid ratio of the voided zone from. The ratio is extracted from the opening profile of the property.")]
+        [Description("Gets the ratio of solid material to void in the opening sone of the HollowCore, where 1 means no voids and 0 means complete void. Please note that this only relates to the thickness zone with voids, not including solid areas at top and bottom.")]
+        [Input("hollowCore", "The hollow core property to get the solid ratio of the voided zone from. The ratio is extracted from the opening profile of the property.")]
         [Output("solidRatio", "The solid ratio of the voided zone.", typeof(Ratio))]
         public static double VoidZoneSolidRatio(this HollowCore hollowCore)
         {

@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Input("holeHeight", "Height of the voided elongated circular holes.", typeof(Length))]
         [Input("holeWidth", "Width of the voided elongated circular holes. This also corresponds to the diamter of the circular ends of the voids.", typeof(Length))]
         [Input("holeSpacing", "Centre-Centre spacing of the voided holes.", typeof(Length))]
-        [Input("material", "Concrete material of the hollow core. Default concrete material will be assigned if nothing is provided.", typeof(Length))]
+        [Input("material", "Concrete material of the hollow core. Default concrete material will be assigned if nothing is provided.")]
         [InputFromProperty("name")]
         [Output("hollowCore", "The created hollow core property.")]
         public static HollowCore ElogatedCircularVoidHollowCore(double thickness, double holeHeight, double holeWidth, double holeSpacing, Concrete material = null, string name = "")

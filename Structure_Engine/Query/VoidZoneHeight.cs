@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the height of the hollow core zone of the hollow core property.")]
-        [Input("hollowCore", "THe hollow core property to get the height of the voided zone from. The height is extracted from the opening profile of the property.")]
+        [Input("hollowCore", "The hollow core property to get the height of the voided zone from. The height is extracted from the opening profile of the property.")]
         [Output("voidHeight", "The height of the voided zone.", typeof(Length))]
         public static double VoidZoneHeight(this HollowCore hollowCore)
         {

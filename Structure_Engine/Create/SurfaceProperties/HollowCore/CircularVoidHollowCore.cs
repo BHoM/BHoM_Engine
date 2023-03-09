@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("thickness")]
         [Input("holeDiameter", "Diameter of the voided circular holes.", typeof(Length))]
         [Input("holeSpacing", "Centre-Centre spacing of the voided circular holes.", typeof(Length))]
-        [Input("material", "Concrete material of the hollow core. Default concrete material will be assigned if nothing is provided.", typeof(Length))]
+        [Input("material", "Concrete material of the hollow core. Default concrete material will be assigned if nothing is provided.")]
         [InputFromProperty("name")]
         [Output("hollowCore", "The created hollow core property.")]
         public static HollowCore CircularVoidHollowCore(double thickness, double holeDiameter, double holeSpacing, Concrete material = null, string name = "")
