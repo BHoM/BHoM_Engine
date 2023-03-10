@@ -44,9 +44,14 @@ namespace BH.Engine.Spatial
         [Output("opening", "The created HexagonalCellularOpening.")]
         public static HexagonalCellularOpening HexagonalCellularOpening(double height, double width, double spacing, double spacerHeight = 0)
         {
-            if (width > spacing)
+            if (width >= spacing)
             {
-                Engine.Base.Compute.RecordError($"The {nameof(spacing)} needs to be larger than {nameof(width)}. Unable to create {nameof(SinusoidalCellularOpening)}.");
+                Engine.Base.Compute.RecordError($"The {nameof(spacing)} needs to be larger than {nameof(width)}. Unable to create {nameof(HexagonalCellularOpening)}.");
+                return null;
+            }
+            if (spacing > 2 * width)
+            {
+                Engine.Base.Compute.RecordError($"The {nameof(spacing)} needs to be smaller than 2 * {nameof(width)}. Unable to create {nameof(HexagonalCellularOpening)}.");
                 return null;
             }
 
