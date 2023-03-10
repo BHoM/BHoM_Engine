@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
@@ -58,9 +59,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            //Bring name over from baseSection to baseProfile
-            if (string.IsNullOrEmpty(baseProfile.Name) && !string.IsNullOrEmpty(baseSection.Name))
-                baseProfile.Name = baseSection.Name;
+            baseProfile = baseProfile.ApplyBasePropertiesFromSection(baseSection);
 
             double openingCutHeight = opening.IHeight();
             double openingAddition = opening.IHeightAddition();
@@ -95,9 +94,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            //Bring name over from baseSection to baseProfile
-            if (string.IsNullOrEmpty(baseProfile.Name) && !string.IsNullOrEmpty(baseSection.Name))
-                baseProfile.Name = baseSection.Name;
+            baseProfile = baseProfile.ApplyBasePropertiesFromSection(baseSection);
 
             double openingCutHeight = opening.IHeight();
             double openingAddition = opening.IHeightAddition();
@@ -142,6 +139,30 @@ namespace BH.Engine.Structure
                 constants["Vpz"], constants["Vy"], constants["Vpy"], constants["Asy"], constants["Asz"]);
 
             return PostProcessSectionCreate(section, name, material, MaterialType.Steel);
+        }
+
+        /***************************************************/
+
+        private static ISectionProfile ApplyBasePropertiesFromSection(this ISectionProfile profile, SteelSection baseSection)
+        {
+            ISectionProfile clone = profile.DeepClone();
+
+            //Bring name over from baseSection to baseProfile
+            if (string.IsNullOrEmpty(clone.Name) && !string.IsNullOrEmpty(baseSection.Name))
+                clone.Name = baseSection.Name;
+
+            foreach (string tag in baseSection.Tags)
+            {
+                clone.Tags.Add(tag);
+            }
+
+            foreach (IFragment fragment in baseSection.Fragments)
+            {
+                if (!profile.Fragments.Contains(fragment.GetType()))
+                    profile.Fragments.Add(fragment);
+            }
+
+            return clone;
         }
 
         /***************************************************/
