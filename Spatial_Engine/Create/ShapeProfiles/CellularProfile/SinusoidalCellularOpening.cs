@@ -36,18 +36,17 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a HexagonalOpening to be applied to a cellular/castelated beam.")]
+        [Description("Creates a SinusoidalCellularOpening to be applied to a cellular/castelated beam.")]
         [InputFromProperty("height")]
-        [InputFromProperty("width")]
+        [InputFromProperty("sinusoidalLength")]
         [InputFromProperty("widthWebPost")]
         [InputFromProperty("spacerHeight")]
-        [Output("opening", "The created HexagonalOpening.")]
-        public static HexagonalOpening HexagonalOpening(double height, double width, double widthWebPost, double spacerHeight = 0)
+        [Output("opening", "The created SinusoidalCellularOpening.")]
+        public static SinusoidalCellularOpening SinusoidalCellularOpening(double height, double sinusoidalLength, double widthWebPost)
         {
+            double spacing = 2 * (widthWebPost + sinusoidalLength);
 
-            double spacing = width + widthWebPost;
-
-            return new HexagonalOpening(height, width, spacerHeight, widthWebPost, spacing);
+            return new SinusoidalCellularOpening(height, sinusoidalLength, widthWebPost, spacing);
         }
 
         /***************************************************/

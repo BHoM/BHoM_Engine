@@ -153,21 +153,21 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static double Height(this HexagonalOpening opening)
+        private static double Height(this HexagonalCellularOpening opening)
         {
             return opening.Height;
         }
 
         /***************************************************/
 
-        private static double Height(this CircularOpening opening)
+        private static double Height(this CircularCellularOpening opening)
         {
             return opening.Diameter;
         }
 
         /***************************************************/
 
-        private static double Height(this SinusoidalOpening opening)
+        private static double Height(this SinusoidalCellularOpening opening)
         {
             return opening.Height;
         }
@@ -181,14 +181,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static double CutReduction(this HexagonalOpening opening)
+        private static double CutReduction(this HexagonalCellularOpening opening)
         {
             return 0;
         }
 
         /***************************************************/
 
-        private static double CutReduction(this CircularOpening opening)
+        private static double CutReduction(this CircularCellularOpening opening)
         {
             double r = opening.Diameter / 2;
             double w = opening.WidthWebPost / 2;
@@ -197,7 +197,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static double CutReduction(this SinusoidalOpening opening)
+        private static double CutReduction(this SinusoidalCellularOpening opening)
         {
             return 0;
         }
@@ -211,7 +211,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static double HeightAddition(this HexagonalOpening opening)
+        private static double HeightAddition(this HexagonalCellularOpening opening)
         {
             return opening.SpacerHeight;
         }
