@@ -22,6 +22,7 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 using BH.oM.Spatial.ShapeProfiles.CellularOpenings;
 using System;
 using System.Collections.Generic;
@@ -38,13 +39,19 @@ namespace BH.Engine.Spatial
 
         [Description("Creates a SinusoidalCellularOpening to be applied to a cellular/castelated beam.")]
         [InputFromProperty("height")]
-        [InputFromProperty("sinusoidalLength")]
-        [InputFromProperty("widthWebPost")]
-        [InputFromProperty("spacerHeight")]
+        [Input("openingWidth", "Total width of the opening. Needs to be smaller than the spacing.", typeof(Length))]
+        [InputFromProperty("spacing")]
         [Output("opening", "The created SinusoidalCellularOpening.")]
-        public static SinusoidalCellularOpening SinusoidalCellularOpening(double height, double sinusoidalLength, double widthWebPost)
+        public static SinusoidalCellularOpening SinusoidalCellularOpening(double height, double openingWidth, double spacing)
         {
-            double spacing = 2 * (widthWebPost + sinusoidalLength);
+            if (openingWidth > spacing)
+            {
+                Engine.Base.Compute.RecordError($"The {nameof(spacing)} needs to be larger than {nameof(openingWidth)}. Unable to create {nameof(SinusoidalCellularOpening)}.");
+                return null;
+            }
+
+            double widthWebPost = spacing - openingWidth;
+            double sinusoidalLength = (openingWidth - widthWebPost) / 2;
 
             return new SinusoidalCellularOpening(height, sinusoidalLength, widthWebPost, spacing);
         }
