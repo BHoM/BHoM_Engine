@@ -40,7 +40,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Returns the curve of a single opening in the XY plane.")]
-        [Input("opening", "The cellular opening to fetch the opening curve from.")]
+        [Input("opening", "The cellular opening to get the opening curve from.")]
         [Output("curve", "The outline curve of a single opening.")]
         public static ICurve OpeningCurve(this CircularOpening opening)
         {
@@ -56,7 +56,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Returns the curve of a single opening in the XY plane.")]
-        [Input("opening", "The cellular opening to fetch the opening curve from.")]
+        [Input("opening", "The cellular opening to get the opening curve from.")]
         [Output("curve", "The outline curve of a single opening.")]
         public static Polyline OpeningCurve(this HexagonalOpening opening)
         {
@@ -103,7 +103,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
 
         [Description("Returns the curve of a single opening in the XY plane.")]
-        [Input("opening", "The cellular opening to fetch the opening curve from.")]
+        [Input("opening", "The cellular opening to get the opening curve from.")]
         [Output("curve", "The outline curve of a single opening.")]
         public static PolyCurve OpeningCurve(this SinusoidalOpening opening)
         {

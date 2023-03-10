@@ -201,7 +201,7 @@ namespace BH.Engine.Structure
 
             if (computeShearArea)
             {
-                if (discontinius)
+                if (discontinuous)
                 {
                     Engine.Base.Compute.RecordWarning("Asy and Asz are not calculated for discontinuous sections. They have ben set to 0");
                     results["Asy"] = 0;

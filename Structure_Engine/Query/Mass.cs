@@ -36,7 +36,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the mass of a Bar as its solid volume (generally take as length times section area) times density(ies) of its material. No offsets or similar ar taken into acount.")]
+        [Description("Calculates the mass of a Bar as its solid volume (generally taken as length times section area) times density(ies) of its material. No offsets or similar are taken into account.")]
         [Input("bar", "The Bar to calculate the mass for.")]
         [Output("mass", "The mass of the Bar.", typeof(Mass))]
         public static double Mass(this Bar bar)

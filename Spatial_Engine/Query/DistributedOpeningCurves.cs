@@ -40,10 +40,10 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Distributes a series of openings along a centreline. Method will fit in as many openings along the curve as it can, starting from the start of the curve.")]
-        [Input("opening", "CellularOpening do ditribute along curve.")]
+        [Description("Distributes a series of openings along a centreline from the start point.")]
+        [Input("opening", "CellularOpening to distribute along curve.")]
         [Input("centreline", "Centreline curve to distribute the openings along.")]
-        [Input("normal", "Normal direction of the element the openings belong to. The openings will be in a plane spanned by the tangent of the centreline and the normal vector.")]
+        [Input("normal", "Normal direction of the element the openings belong to.")]
         [Input("tolerance", "Tolerance used for checking how many openings that can be fitted along the centreline.", typeof(Length))]
         [Output("openingCurve", "The distributed opening curves.")]
         public static List<ICurve> DistributedOpeningCurves(this ICellularOpening opening, Line centreline, Vector normal, double tolerance = Tolerance.Distance)
