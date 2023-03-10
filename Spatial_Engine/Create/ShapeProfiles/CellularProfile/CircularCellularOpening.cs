@@ -36,7 +36,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a CircularCellularOpening to be applied to a cellular/castelated beam.")]
+        [Description("Creates a CircularCellularOpening to be applied to a cellular/castellated beam.")]
         [InputFromProperty("diameter")]
         [InputFromProperty("spacing")]
         [Output("opening", "The created CircularCellularOpening.")]
