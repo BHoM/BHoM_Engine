@@ -37,7 +37,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a SinusoidalCellularOpening to be applied to a cellular/castelated beam.")]
+        [Description("Creates a SinusoidalCellularOpening to be applied to a cellular/castellated beam.")]
         [InputFromProperty("height")]
         [InputFromProperty("width")]
         [InputFromProperty("spacing")]

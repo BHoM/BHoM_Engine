@@ -36,7 +36,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a HexagonalCellularOpening to be applied to a cellular/castelated beam.")]
+        [Description("Creates a HexagonalCellularOpening to be applied to a cellular/castellated beam.")]
         [InputFromProperty("height")]
         [InputFromProperty("width")]
         [InputFromProperty("spacing")]
