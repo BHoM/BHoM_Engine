@@ -109,7 +109,7 @@ namespace BH.Engine.Structure
                             if (curvesZ[i].IsContaining(new List<Point>() { curvesZ[j].IStartPoint() }))
                                 depth[j]++;
             }
-            bool discontinius = depth.Where(x => x == 0).Count() > 1;
+            bool discontinuous = depth.Where(x => x == 0).Count() > 1;
             for (int i = 0; i < depth.Length; i++)
             {
                 if (depth[i] % 2 == 0)

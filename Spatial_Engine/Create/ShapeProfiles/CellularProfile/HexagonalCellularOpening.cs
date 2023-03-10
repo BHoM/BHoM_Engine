@@ -36,22 +36,18 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a CircularOpening to be applied to a cellular/castelated beam.")]
-        [InputFromProperty("diameter")]
+        [Description("Creates a HexagonalCellularOpening to be applied to a cellular/castelated beam.")]
+        [InputFromProperty("height")]
+        [InputFromProperty("width")]
         [InputFromProperty("widthWebPost")]
-        [Output("opening", "The created CircularOpening.")]
-        public static CircularOpening CircularOpening(double diameter, double widthWebPost)
+        [InputFromProperty("spacerHeight")]
+        [Output("opening", "The created HexagonalCellularOpening.")]
+        public static HexagonalCellularOpening HexagonalCellularOpening(double height, double width, double widthWebPost, double spacerHeight = 0)
         {
 
-            if (widthWebPost > diameter)
-            {
-                Engine.Base.Compute.RecordError($"The {nameof(diameter)} needs to be larger than {nameof(widthWebPost)}. Unable to create circular opening.");
-                return null;
-            }
+            double spacing = width + widthWebPost;
 
-            double spacing = diameter + widthWebPost;
-
-            return new CircularOpening(diameter, widthWebPost, spacing);
+            return new HexagonalCellularOpening(height, width, spacerHeight, widthWebPost, spacing);
         }
 
         /***************************************************/

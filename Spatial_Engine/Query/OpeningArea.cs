@@ -40,7 +40,7 @@ namespace BH.Engine.Spatial
         [Description("Returns the area of a single opening.")]
         [Input("opening", "The cellular opening to calculate the area of.")]
         [Output("area", "The area of a single opening.", typeof(Area))]
-        public static double OpeningArea(this CircularOpening opening)
+        public static double OpeningArea(this CircularCellularOpening opening)
         {
             if (opening == null)
             {
@@ -56,7 +56,7 @@ namespace BH.Engine.Spatial
         [Description("Returns the area of a single opening.")]
         [Input("opening", "The cellular opening to calculate the area of.")]
         [Output("area", "The area of a single opening.", typeof(Area))]
-        public static double OpeningArea(this HexagonalOpening opening)
+        public static double OpeningArea(this HexagonalCellularOpening opening)
         {
             if (opening == null)
             {
@@ -71,7 +71,7 @@ namespace BH.Engine.Spatial
         [Description("Returns the area of a single opening.")]
         [Input("opening", "The cellular opening to calculate the area of.")]
         [Output("area", "The area of a single opening.", typeof(Area))]
-        public static double OpeningArea(this SinusoidalOpening opening)
+        public static double OpeningArea(this SinusoidalCellularOpening opening)
         {
             if (opening == null)
             {
