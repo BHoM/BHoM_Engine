@@ -41,7 +41,7 @@ namespace BH.Engine.Spatial
         [InputFromProperty("width")]
         [InputFromProperty("widthWebPost")]
         [InputFromProperty("spacerHeight")]
-        [Output("opening", "THe created HexagonalOpening.")]
+        [Output("opening", "The created HexagonalOpening.")]
         public static HexagonalOpening HexagonalOpening(double height, double width, double widthWebPost, double spacerHeight = 0)
         {
 
