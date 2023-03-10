@@ -173,8 +173,17 @@ namespace BH.Engine.Physical
                 return null;
             }
 
-            if (prop.Layers.IsNullOrEmpty()) //.IsNullOrEmpty raises it's own error
+            if (prop.Layers == null) //.IsNullOrEmpty raises it's own error
+            {
+                Base.Compute.RecordError("Cannote evaluate MaterialComposition because the layers are null.");
                 return null;
+            }
+
+            if (prop.Layers.Count == 0)
+            {
+                Base.Compute.RecordWarning($"Construction {(string.IsNullOrEmpty(prop.Name) ? "NoName" : prop.Name)} does not conatin any layers. An empty MaterialComposition is returned in its place.");
+                return new MaterialComposition(new List<Material>(), new List<double>());
+            }
 
             if (prop.Layers.All(x => x.Material == null))
             {
