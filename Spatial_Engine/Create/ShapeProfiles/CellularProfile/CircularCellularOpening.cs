@@ -42,10 +42,14 @@ namespace BH.Engine.Spatial
         [Output("opening", "The created CircularCellularOpening.")]
         public static CircularCellularOpening CircularCellularOpening(double diameter, double spacing)
         {
-
-            if (diameter > spacing)
+            if (diameter >= spacing)
             {
                 Engine.Base.Compute.RecordError($"The {nameof(spacing)} needs to be larger than {nameof(diameter)}. Unable to create {nameof(CircularCellularOpening)}.");
+                return null;
+            }
+            if (spacing > 2 * diameter)
+            {
+                Engine.Base.Compute.RecordError($"The {nameof(spacing)} needs to be smaller than 2 * {nameof(diameter)}. Unable to create {nameof(CircularCellularOpening)}.");
                 return null;
             }
 
