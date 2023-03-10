@@ -167,6 +167,11 @@ namespace BH.Engine.Physical
 
         private static VolumetricMaterialTakeoff TakeOff(double area, IConstruction construction)
         {
+            MaterialComposition comp = construction.IMaterialComposition();
+            if (comp == null)
+                return null;
+            if(comp.Materials.Count == 0)
+                return new VolumetricMaterialTakeoff(new List<Material>(), new List<double>());
             return Matter.Create.VolumetricMaterialTakeoff(construction.IMaterialComposition(), construction.IThickness() * area);
         }
 
