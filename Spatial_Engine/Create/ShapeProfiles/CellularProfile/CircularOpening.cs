@@ -39,7 +39,7 @@ namespace BH.Engine.Spatial
         [Description("Creates a CircularOpening to be applied to a cellular/castelated beam.")]
         [InputFromProperty("diameter")]
         [InputFromProperty("widthWebPost")]
-        [Output("opening", "THe created CircularOpening.")]
+        [Output("opening", "The created CircularOpening.")]
         public static CircularOpening CircularOpening(double diameter, double widthWebPost)
         {
 
