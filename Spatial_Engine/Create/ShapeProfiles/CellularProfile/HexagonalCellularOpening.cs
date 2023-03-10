@@ -39,13 +39,18 @@ namespace BH.Engine.Spatial
         [Description("Creates a HexagonalCellularOpening to be applied to a cellular/castelated beam.")]
         [InputFromProperty("height")]
         [InputFromProperty("width")]
-        [InputFromProperty("widthWebPost")]
+        [InputFromProperty("spacing")]
         [InputFromProperty("spacerHeight")]
         [Output("opening", "The created HexagonalCellularOpening.")]
-        public static HexagonalCellularOpening HexagonalCellularOpening(double height, double width, double widthWebPost, double spacerHeight = 0)
+        public static HexagonalCellularOpening HexagonalCellularOpening(double height, double width, double spacing, double spacerHeight = 0)
         {
+            if (width > spacing)
+            {
+                Engine.Base.Compute.RecordError($"The {nameof(spacing)} needs to be larger than {nameof(width)}. Unable to create {nameof(SinusoidalCellularOpening)}.");
+                return null;
+            }
 
-            double spacing = width + widthWebPost;
+            double widthWebPost = spacing - width;
 
             return new HexagonalCellularOpening(height, width, spacerHeight, widthWebPost, spacing);
         }

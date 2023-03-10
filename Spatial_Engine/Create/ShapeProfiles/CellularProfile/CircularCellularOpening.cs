@@ -38,18 +38,18 @@ namespace BH.Engine.Spatial
 
         [Description("Creates a CircularCellularOpening to be applied to a cellular/castelated beam.")]
         [InputFromProperty("diameter")]
-        [InputFromProperty("widthWebPost")]
+        [InputFromProperty("spacing")]
         [Output("opening", "The created CircularCellularOpening.")]
-        public static CircularCellularOpening CircularCellularOpening(double diameter, double widthWebPost)
+        public static CircularCellularOpening CircularCellularOpening(double diameter, double spacing)
         {
 
-            if (widthWebPost > diameter)
+            if (diameter > spacing)
             {
-                Engine.Base.Compute.RecordError($"The {nameof(diameter)} needs to be larger than {nameof(widthWebPost)}. Unable to create circular opening.");
+                Engine.Base.Compute.RecordError($"The {nameof(spacing)} needs to be larger than {nameof(diameter)}. Unable to create {nameof(CircularCellularOpening)}.");
                 return null;
             }
 
-            double spacing = diameter + widthWebPost;
+            double widthWebPost = spacing - diameter;
 
             return new CircularCellularOpening(diameter, widthWebPost, spacing);
         }
