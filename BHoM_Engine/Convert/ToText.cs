@@ -220,12 +220,13 @@ namespace BH.Engine.Base
 
         private static string ToText(object item, bool includePath = false)
         {
-            if (item == null)
+            Type type = item?.GetType();
+            if (type == null)
                 return "null";
-            else if (item is string)
+            else if (type.IsPrimitive || type == typeof(DateTime))
                 return item.ToString();
             else
-                return item.GetType().ToString();
+                return type.ToString();
         }
 
         /***************************************************/
