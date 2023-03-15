@@ -29,26 +29,20 @@ namespace BH.Engine.Base
 {
     public static partial class Query
     {
-        [Description("Determine whether a type is a numeric type.")]
+        [Description("Determine whether a type is a floating-point numeric type." +
+            "\nSee https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types for more information.")]
         [Input("type", "Type that we want to check if it is numeric type or not.")]
-        [Input("enumsAreNumbers", "(Optional, defaults to false) Whether `enum` types should be considered to be numeric.")]
         [Output("isNumeric", "True if the object is a numeric Type, false if not.")]
-        public static bool IsNumeric(this Type type, bool enumsAreNumbers = false)
+        public static bool IsNumericFloatingPointType(this Type type)
         {
+            // As per https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types
+
             switch (Type.GetTypeCode(type))
             {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
                 case TypeCode.Decimal:
                 case TypeCode.Double:
                 case TypeCode.Single:
-                    return !type.IsEnum || enumsAreNumbers;
+                    return true;
                 default:
                     return false;
             }
