@@ -223,7 +223,7 @@ namespace BH.Engine.Base
             Type type = item?.GetType();
             if (type == null)
                 return "null";
-            else if (type.IsPrimitive || type == typeof(DateTime))
+            else if (type.IsPrimitive || type == typeof(string) || type == typeof(DateTime))
                 return item.ToString();
             else
                 return type.ToString();
