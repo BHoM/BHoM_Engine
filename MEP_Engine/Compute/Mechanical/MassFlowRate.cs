@@ -37,7 +37,7 @@ namespace BH.Engine.MEP.Mechanical
         [Description("Calculates the mass flow rate of a fluid from the volumetric flow rate and density of the fluid.")]
         [Input("volumetricFlowRate", "Volumetric fluid flow rate.", typeof(VolumetricFlowRate))]
         [Input("fluidDensity", "Fluid density value [kg/m3].")]
-        [Output("massFlowRate", "Mass flow rate [m3/s].")]
+        [Output("massFlowRate", "Mass flow rate [kg/s].")]
         public static double MassFlowRate(double volumetricFlowRate, double fluidDensity)
         {
             if(volumetricFlowRate == double.NaN)

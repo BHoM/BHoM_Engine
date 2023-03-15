@@ -34,7 +34,7 @@ namespace BH.Engine.MEP.Mechanical
         /***************************************************/
 
         [Description("Calculates the change in sensible heat during a process given mass flow rate and two humidity ratio points.")]
-        [Input("massFlowRate", "Mass flow rate [m3/s].")]
+        [Input("massFlowRate", "Mass flow rate [kg/s].")]
         [Input("humidityRatioIn", "Entering humidity Ratio value [kg water/kg dry air].")]
         [Input("humidityRatioOut", "Leaving humidity Ratio value [kg water/kg dry air].")]
         [Input("latentHeatVaporizationWater", "Latent heat of vaporization of water value [kJ/kg].")]
@@ -61,11 +61,11 @@ namespace BH.Engine.MEP.Mechanical
 
             if (latentHeatVaporizationWater == double.MinValue)
             {
-                BH.Engine.Base.Compute.RecordNote("Latent Heat of Vaporization of Water has been set to the default value of 2454 kJ/kg which is density of air at standard temperature and pressure.");
+                BH.Engine.Base.Compute.RecordNote("Latent Heat of Vaporization of Water has been set to the default value of 2454 kJ/kg which is applicable at standard temperature and pressure.");
                 latentHeatVaporizationWater = 2454;
             }
             
-            return latentHeatVaporizationWater * massFlowRate * (humidityRatioIn-humidityRatioOut);
+            return latentHeatVaporizationWater * massFlowRate * (humidityRatioIn - humidityRatioOut);
         }
 
         /***************************************************/
