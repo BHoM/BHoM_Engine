@@ -30,19 +30,19 @@ using BH.oM.Structure.Constraints;
 
 namespace BH.Tests.Engine.Base.Query
 {
-    public class IsNumericTests
+    public class IsNumericIntegralTypeTests
     {
         [Test]
-        public void AreEnumsNumeric()
+        public void AreEnumsIntegral()
         {
-            BH.Engine.Base.Query.IsNumeric(typeof(DOFType), false).ShouldBe(false);
-            BH.Engine.Base.Query.IsNumeric(typeof(DOFType), true).ShouldBe(true);
+            BH.Engine.Base.Query.IsNumericIntegralType(typeof(DOFType), false).ShouldBe(false);
+            BH.Engine.Base.Query.IsNumericIntegralType(typeof(DOFType), true).ShouldBe(true);
 
-            BH.Engine.Base.Query.IsNumeric(typeof(DOFType)).ShouldBe(true, "By default, IsNumeric() considers enums as a numeric type.");
+            BH.Engine.Base.Query.IsNumeric(typeof(DOFType)).ShouldBe(true, "By default, IsNumericIntegralType() considers enums as a numeric integral type.");
         }
 
         [Test]
-        public void AreIntegersNumeric()
+        public void AreIntsIntegral()
         {
             BH.Engine.Base.Query.IsNumeric(10.GetType(), true).ShouldBe(true);
             BH.Engine.Base.Query.IsNumeric(10.GetType(), false).ShouldBe(true);
