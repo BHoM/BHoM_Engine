@@ -34,8 +34,8 @@ namespace BH.Engine.MEP.Mechanical
 
         [Description("Calculates the change in heat during a process given mass flow rate and two enthalpy points.")]
         [Input("massFlowRate", "Mass flow rate of fluid (air) of the process. [KG Dry Air/s].")]
-        [Input("enthalpyIn", "Entering enthalpy value for process [KJ/KG Dry Air.")]
-        [Input("enthalpyOut", "Leaving enthalpy value for process [KJ/KG Dry Air.")]
+        [Input("enthalpyIn", "Entering enthalpy value for process [KJ/KG Dry Air].")]
+        [Input("enthalpyOut", "Leaving enthalpy value for process [KJ/KG Dry Air].")]
         [Output("totalHeat", "Total heat change value during process [kW].")]
         public static double ProcessTotalHeat(double massFlowRate, double enthalpyIn, double enthalpyOut)
         {
@@ -57,7 +57,7 @@ namespace BH.Engine.MEP.Mechanical
                 return -1;
             }
 
-            return massFlowRate * (enthalpyIn -enthalpyOut);
+            return massFlowRate * (enthalpyIn - enthalpyOut);
         }
 
         /***************************************************/

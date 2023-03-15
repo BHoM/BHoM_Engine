@@ -33,7 +33,7 @@ namespace BH.Engine.MEP.Mechanical
         /***************************************************/
 
         [Description("Calculates the change in sensible heat during a process given mass flow rate and two temperature points.")]
-        [Input("massFlowRate", "Mass flow rate [m3/s].")]
+        [Input("massFlowRate", "Mass flow rate [kg/s].")]
         [Input("temperatureIn", "Entering temperature value [C].")]
         [Input("temperatureOut", "Leavings temperature value [C].")]
         [Input("specificHeat", "Specific Heat value [kJ/kg-K].")]
