@@ -32,9 +32,9 @@ namespace BH.Engine.Base
         [Description("Determine whether a type is a integral numeric type (an integer)." +
             "\nSee https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types for more information.")]
         [Input("type", "Type that we want to check if it is numeric type or not.")]
-        [Input("enumsAreNumbers", "(Optional, defaults to true) Whether `enum` types should be considered to be numeric.")]
+        [Input("enumsAsNumbers", "(Optional, defaults to true) Whether `enum` types should be considered to be numeric.")]
         [Output("isNumeric", "True if the object is a numeric Type, false if not.")]
-        public static bool IsNumericIntegralType(this Type type, bool enumsAreNumbers = true)
+        public static bool IsNumericIntegralType(this Type type, bool enumsAsNumbers = true)
         {
             // As per https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
 
@@ -48,7 +48,7 @@ namespace BH.Engine.Base
                 case TypeCode.Int16:
                 case TypeCode.Int32:
                 case TypeCode.Int64:
-                    return !type.IsEnum || enumsAreNumbers;
+                    return !type.IsEnum || enumsAsNumbers;
                 default:
                     return false;
             }
