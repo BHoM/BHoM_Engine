@@ -29,6 +29,7 @@ namespace BH.Engine.Base
 {
     public static partial class Query
     {
+        [PreviousVersion("6.1", "BH.Engine.Base.Query.IsNumeric(System.Type)")]
         [Description("Determine whether a type is a numeric type.")]
         [Input("type", "Type that we want to check if it is numeric type or not.")]
         [Input("enumsAsNumbers", "(Optional, defaults to true) Whether `enum` types should be considered to be numeric.")]
