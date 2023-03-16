@@ -31,9 +31,9 @@ namespace BH.Engine.Base
     {
         [Description("Determine whether a type is a numeric type.")]
         [Input("type", "Type that we want to check if it is numeric type or not.")]
-        [Input("enumsAreNumbers", "(Optional, defaults to true) Whether `enum` types should be considered to be numeric.")]
+        [Input("enumsAsNumbers", "(Optional, defaults to true) Whether `enum` types should be considered to be numeric.")]
         [Output("isNumeric", "True if the object is a numeric Type, false if not.")]
-        public static bool IsNumeric(this Type type, bool enumsAreNumbers = true)
+        public static bool IsNumeric(this Type type, bool enumsAsNumbers = true)
         {
             switch (Type.GetTypeCode(type))
             {
@@ -45,10 +45,11 @@ namespace BH.Engine.Base
                 case TypeCode.Int16:
                 case TypeCode.Int32:
                 case TypeCode.Int64:
+                    return !type.IsEnum || enumsAsNumbers;
                 case TypeCode.Decimal:
                 case TypeCode.Double:
                 case TypeCode.Single:
-                    return !type.IsEnum || enumsAreNumbers;
+                    return true;
                 default:
                     return false;
             }
