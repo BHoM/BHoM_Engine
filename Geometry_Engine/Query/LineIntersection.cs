@@ -482,6 +482,64 @@ namespace BH.Engine.Geometry
             return iPts.CullDuplicates(tolerance);
         }
 
+        /***************************************************/
+
+        [Description("Find sections of the input line that intersect the regions defined by the input polylines.")]
+        [Input("regions", "Polylines defining closed regions that the line potentially intersects.")]
+        [Input("line", "The line to check for intersection with regions defined by the input polylines.")]
+        [Input("tolerance", "Minimum length required on new intersection lines.", typeof(Length))]
+        [Output("intersections", "Sections of the input line that intersect the regions defined by the input polylines.")]
+        public static List<Line> LineIntersections(this List<Polyline> regions, Line line, double tolerance = Tolerance.Distance)
+         {
+            var intersections = new List<Line>();
+            if (regions.Count == 0)
+                return intersections;
+
+            foreach (Polyline pLine in regions)
+            {
+                if (line.IsInRange(pLine.Bounds()) == false)
+                    continue;
+
+                if (pLine.IsContaining(line))
+                {
+                    intersections.Add(line);
+                    continue;
+                }
+
+                var intPoints = pLine.LineIntersections(line);
+
+                if (intPoints.Count == 1)
+                {
+                    Point intPnt = intPoints[0];
+                    Point pntInOtherObject = line.ControlPoints().Where(x => pLine.IIsContaining(new List<Point> { x })).FirstOrDefault();
+
+                    if (pntInOtherObject != null && intPnt.Distance(pntInOtherObject) > tolerance)
+                    {
+                        intersections.Add(new Line() { Start = intPoints[0], End = pntInOtherObject });
+                    }
+                }
+                else if (intPoints.Count == 2)
+                {
+                    var p1 = intPoints[0];
+                    var p2 = intPoints[1];
+                    if (p1.Distance(p2) > tolerance)
+                    {
+                        intersections.Add(new Line() { Start = p1, End = p2 });
+                    }
+                }
+                else
+                {
+                    Line intLine = intPoints.FitLine();
+                    if (intLine == null)
+                        continue;
+
+                    intersections.Add(intLine);
+                }
+            }
+
+            return intersections.OrderByDescending(x => x.Length()).ToList();
+        }
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
