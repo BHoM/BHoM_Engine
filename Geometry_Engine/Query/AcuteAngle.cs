@@ -31,17 +31,17 @@ namespace BH.Engine.Geometry
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
         [Description("Get the smallest acute angle between 2 vectors regardless of their directions.")]
-        [Input("v1", "The first vector.")]
-        [Input("v2", "The second vector.")]
+        [Input("vector1", "The first vector.")]
+        [Input("vector2", "The second vector.")]
         [Output("angle", "The smallest acute angle between 2 vectors regardless of their directions.")]
-        public static double AcuteAngle(this Vector v1, Vector v2)
+        public static double AcuteAngle(this Vector vector1, Vector vector2)
         {
-            double angle1 = v1.Angle(v2);
-            double angle2 = v1.Angle(v2.Reverse());
+            double angle1 = vector1.Angle(vector2);
+            double angle2 = vector1.Angle(vector2.Reverse());
             return Math.Min(angle1, angle2);
         }
 
