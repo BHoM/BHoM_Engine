@@ -20,67 +20,54 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Base
 {
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        public static void CopyProperties(this object source, object destination)
+        [Description("Copy values from parameters of a source object to parameters of the same names in the target object.")]
+        [Input("source", "The source object containing parameter values to copy from.")]
+        [Input("target", "The target object containing parameter values to copy to.")]
+        public static void CopyProperties(this object source, object target)
         {
-            // If any this null throw an exception
-            if (source == null || destination == null)
-                throw new Exception("Source or/and Destination Objects are null");
-
-            // Getting the Types of the objects
-            Type typeDest = destination.GetType();
-            Type typeSrc = source.GetType();
-
-            // Iterate the Properties of the source instance and  
-            // populate them from their destination counterparts  
-            PropertyInfo[] srcProps = typeSrc.GetProperties();
-            foreach (PropertyInfo srcProp in srcProps)
+            if (source == null || target == null)
             {
-                if (!srcProp.CanRead)
-                {
+                Compute.RecordWarning("Can't copy parameter values to or from a null object.");
+                return;
+            }
+
+            Type targetType = target.GetType();
+            Type sourceType = source.GetType();
+
+            foreach (PropertyInfo sourcePropInfo in sourceType.GetProperties())
+            {
+                if (!sourcePropInfo.CanRead)
                     continue;
-                }
-                PropertyInfo targetProperty = typeDest.GetProperty(srcProp.Name);
-                if (targetProperty == null)
-                {
+
+                PropertyInfo targetPropInfo = targetType.GetProperty(sourcePropInfo.Name);
+                if (targetPropInfo == null)
                     continue;
-                }
-                if (!targetProperty.CanWrite)
-                {
+
+                if (targetPropInfo.CanWrite == false)
                     continue;
-                }
-                if (targetProperty.GetSetMethod(true) != null && targetProperty.GetSetMethod(true).IsPrivate)
-                {
+
+                if (targetPropInfo.GetSetMethod(true)?.IsPrivate == true)
                     continue;
-                }
-                if ((targetProperty.GetSetMethod().Attributes & MethodAttributes.Static) != 0)
-                {
+
+                if (targetPropInfo.PropertyType.IsAssignableFrom(sourcePropInfo.PropertyType) == false)
                     continue;
-                }
-                if (!targetProperty.PropertyType.IsAssignableFrom(srcProp.PropertyType))
-                {
-                    continue;
-                }
-                // Passed all tests, lets set the value
-                targetProperty.SetValue(destination, srcProp.GetValue(source, null), null);
+
+                targetPropInfo.SetValue(target, sourcePropInfo.GetValue(source, null), null);
             }
         }
-
 
         /***************************************************/
     }

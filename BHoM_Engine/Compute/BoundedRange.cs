@@ -21,28 +21,27 @@
  */
 
 using BH.oM.Base.Attributes;
-using BH.oM.Base.Debugging;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
 
 namespace BH.Engine.Base
 {
     public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Clears the current event log buffer.")]
-        [Output("success", "True if the buffer is cleared successfully.")]
-        public static List<double> BoundedRange(double min, double max, double step)
+        [Description("Returns a sequence of doubles, beginning from a start value, increments by a step value, and stops before a end value.")]
+        [Input("start", "The starting value for the new sequence of doubles.")]
+        [Input("end", "The ending value for the new sequence of doubles.")]
+        [Input("step", "The difference between consecutive values the new sequence of doubles.")]
+        [Output("sequence", "A sequence of doubles, beginning from a start value, increments by a step value, and stops before a end value.")]
+        public static List<double> BoundedRange(double start, double end, double step)
         {
             var result = new List<double>();
 
-            for (double i = min; i <= max; i += step)
+            for (double i = start; i <= end; i += step)
             {
                 result.Add(i);
             }
