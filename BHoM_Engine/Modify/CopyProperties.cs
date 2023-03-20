@@ -36,7 +36,7 @@ namespace BH.Engine.Base
         [Description("Copy values from parameters of a source object to parameters of the same names in the target object.")]
         [Input("source", "The source object containing parameter values to copy from.")]
         [Input("target", "The target object containing parameter values to copy to.")]
-        public static void CopyProperties(this object source, object target)
+        public static void CopyIdenticalProperties(this object source, object target)
         {
             if (source == null || target == null)
             {
