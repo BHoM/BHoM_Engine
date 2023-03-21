@@ -20,12 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.ComponentModel;
 using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Base
@@ -33,9 +30,13 @@ namespace BH.Engine.Base
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
+        [Description("Removes list items at given indexes and returns the remaining groups of consecutive items as individual sublists.")]
+        [Input("items", "Items in the list to be split.")]
+        [Input("indexes", "Indexes of items to be removed.")]
+        [Output("lists", "Sublists of consecutive items that remain after items at input indexes have been removed.")]
         public static List<List<T>> SplitAndRemoveAtIndexes<T>(this List<T> items, List<int> indexes)
         {
             int startIndex = 0;

@@ -20,13 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using BH.oM.Geometry;
 using System.ComponentModel;
-using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -36,17 +32,16 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Computes and returns the Euclidean distance between two points.")]
-        [Input("a", "First Point for distance computation.")]
-        [Input("b", "Second Point for distance computation.")]
-        [Output("dist", "The Euclidean distance between the two points.", typeof(Length))]
-        public static double DistanceAlongVector(this Line ray, Point point, Vector vector)
+        [Description("Gets the distance between a point and a line along the input vector's direction. Input line and point must be on the same plane.")]
+        [Input("line", "A line to compute distance to the input point. Should have Infinite set to True if enabling useInfiniteLine")]
+        [Input("point", "A point to compute distance to the input line.")]
+        [Input("vector", "A vector along which we will measure the distance from point to line.")]
+        [Input("useInfiniteLine", "Whether to compute the distance using an infinite version of the input line.")]
+        [Output("distance", "The distance between the input point and line along the input vector's direction.")]
+        public static double DistanceAlongVector(this Line line, Point point, Vector vector, bool useInfiniteLine = true)
         {
-            //Get the distance between a point and a line along the input vector's direction
-            //Input Line and Point must be on the same plane
-
             Line otherLine = new Line { Start = point, End = point + vector, Infinite = true };
-            Point intPnt = ray.LineIntersection(otherLine, true);
+            Point intPnt = line.LineIntersection(otherLine, useInfiniteLine);
 
             if (intPnt == null)
                 return -1;

@@ -20,10 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -33,10 +33,14 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        public static Polyline Thicken(this Line line, double thickness)
+        [Description("Thicken a line to create a closed polyline with the same direction and a custom width.")]
+        [Input("line", "A line to convert into a closed polyline using thickening.")]
+        [Input("width", "A custom width for the new closed polyline.")]
+        [Output("polyline", "A closed polyline with the same direction as the input line but also a custom width.")]
+        public static Polyline Thicken(this Line line, double width)
         {
-            var l1 = line.Offset(thickness / 2, Vector.ZAxis);
-            var l2 = line.Offset(thickness / 2, -Vector.ZAxis);
+            var l1 = line.Offset(width / 2, Vector.ZAxis);
+            var l2 = line.Offset(width / 2, -Vector.ZAxis);
             var cPnts = new List<Point> { l1.Start, l1.End, l2.End, l2.Start };
 
             return new Polyline { ControlPoints = cPnts }.Close();

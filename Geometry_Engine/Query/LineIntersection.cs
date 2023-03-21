@@ -511,11 +511,11 @@ namespace BH.Engine.Geometry
                 if (intPoints.Count == 1)
                 {
                     Point intPnt = intPoints[0];
-                    Point pntInOtherObject = line.ControlPoints().Where(x => pLine.IIsContaining(new List<Point> { x })).FirstOrDefault();
+                    Point pointInRegion = line.ControlPoints().Where(x => pLine.IIsContaining(new List<Point> { x })).FirstOrDefault();
 
-                    if (pntInOtherObject != null && intPnt.Distance(pntInOtherObject) > tolerance)
+                    if (pointInRegion != null && intPnt.Distance(pointInRegion) > tolerance)
                     {
-                        intersections.Add(new Line() { Start = intPoints[0], End = pntInOtherObject });
+                        intersections.Add(new Line() { Start = intPoints[0], End = pointInRegion });
                     }
                 }
                 else if (intPoints.Count == 2)

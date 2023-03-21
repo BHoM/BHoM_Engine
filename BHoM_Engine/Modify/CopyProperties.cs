@@ -36,16 +36,16 @@ namespace BH.Engine.Base
         [Description("Copy values from parameters of a source object to parameters of the same names in the target object.")]
         [Input("source", "The source object containing parameter values to copy from.")]
         [Input("target", "The target object containing parameter values to copy to.")]
-        public static void CopyIdenticalProperties(this object source, object target)
+        public static void CopyIdenticalProperties(this object sourceObj, object targetObj)
         {
-            if (source == null || target == null)
+            if (sourceObj == null || targetObj == null)
             {
                 Compute.RecordWarning("Can't copy parameter values to or from a null object.");
                 return;
             }
 
-            Type targetType = target.GetType();
-            Type sourceType = source.GetType();
+            Type targetType = targetObj.GetType();
+            Type sourceType = sourceObj.GetType();
 
             foreach (PropertyInfo sourcePropInfo in sourceType.GetProperties())
             {
@@ -65,7 +65,7 @@ namespace BH.Engine.Base
                 if (targetPropInfo.PropertyType.IsAssignableFrom(sourcePropInfo.PropertyType) == false)
                     continue;
 
-                targetPropInfo.SetValue(target, sourcePropInfo.GetValue(source, null), null);
+                targetPropInfo.SetValue(targetObj, sourcePropInfo.GetValue(sourceObj, null), null);
             }
         }
 

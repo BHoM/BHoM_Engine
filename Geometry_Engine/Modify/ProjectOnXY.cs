@@ -20,21 +20,22 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using BH.oM.Geometry;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
     public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods - Vectors                  ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
+        [Description("Returns the projection of a point on the XY plane. Shorthand method to run quicker than BH.Engine.Geometry.Project(this Point, Plane).")]
+        [Input("pnt", "A point to project onto the XY plane.")]
+        [Input("indexes", "Indexes of items to be removed.")]
+        [Output("pntOnXY", "Projection of the input point on the XY plane.")]
         public static Point ProjectOnXY(this Point pnt)
         {
             return new Point { X = pnt.X, Y = pnt.Y, Z = 0 };
