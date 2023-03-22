@@ -21,37 +21,23 @@
  */
 
 using BH.oM.Base.Attributes;
-using BH.oM.Geometry;
 using System;
 using System.ComponentModel;
 
-namespace BH.Engine.Geometry
+namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Convert
     {
         /***************************************************/
-        /****              Public Methods               ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the distance between a point and a line along the input vector's direction. Input line and point must be on the same plane.")]
-        [Input("line", "A line to compute distance to the input point. Should have Infinite set to True if enabling useInfiniteLine")]
-        [Input("point", "A point to compute distance to the input line.")]
-        [Input("vector", "A vector along which we will measure the distance from point to line.")]
-        //[Input("useInfiniteLine", "Whether to compute the distance using an infinite version of the input line.")]
-        [Output("distance", "The distance between the input point and line along the input vector's direction.")]
-        public static double DistanceAlongVector(this Line line, Point point, Vector vector)
+        [Description("Convert a value from radians to degrees.")]
+        [Input("value", "A value in radians to convert to degree.")]
+        [Output("degreeValue", "The input value converted from radians to degrees.")]
+        public static double ToDegrees(double value)
         {
-            var projectedPnt = point.Project(line);
-            Vector projectionVect = point - projectedPnt;
-            return Math.Abs(projectionVect.DotProduct(vector.Normalise()));
-
-            //Line otherLine = new Line { Start = point, End = point + vector, Infinite = true };
-            //Point intPnt = line.LineIntersection(otherLine, useInfiniteLine);
-
-            //if (intPnt == null)
-            //    return -1;
-
-            //return intPnt.Distance(point);
+            return value * (180 / Math.PI);
         }
 
         /***************************************************/

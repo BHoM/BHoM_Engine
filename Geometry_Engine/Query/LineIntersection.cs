@@ -484,60 +484,72 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Find sections of the input line that intersect the regions defined by the input polylines.")]
-        [Input("regions", "Polylines defining closed regions that the line potentially intersects.")]
-        [Input("line", "The line to check for intersection with regions defined by the input polylines.")]
-        [Input("tolerance", "Minimum length required on new intersection lines.", typeof(Length))]
-        [Output("intersections", "Sections of the input line that intersect the regions defined by the input polylines.")]
-        public static List<Line> LineIntersections(this List<Polyline> regions, Line line, double tolerance = Tolerance.Distance)
-         {
+        [Description("Find segments of a line lying inside the region defined by a polyline.")]
+        [Input("line", "A line to check for intersection with a region defined by the input polylines.")]
+        [Input("pLine", "A polyline defining a closed region that the input line potentially intersects.")]
+        [Input("tolerance", "Minimum length required on new intersection lines.")]
+        [Output("intersections", "Segments of the input the lie inside the region defined by the input polyline.")]
+        public static List<Line> LineIntersections(this Line line, Polyline pLine, double tolerance = Tolerance.Distance)
+        {
             var intersections = new List<Line>();
-            if (regions.Count == 0)
+
+            if (line.IsInRange(pLine.Bounds()) == false)
                 return intersections;
 
-            foreach (Polyline pLine in regions)
+            if (pLine.IsContaining(line))
+                return new List<Line> { line };
+
+            List<Point> intPnts = pLine.LineIntersections(line);
+            if (!intPnts.Any())
+                return intersections;
+
+            List<double> lineParams = intPnts.Select(x => line.ParameterAtPoint(x)).ToList();
+
+            var pntsSortedByParams = intPnts
+                .Zip(lineParams, (pnt, prm) => new { pnt, prm })
+                .OrderBy(x => x.prm)
+                .Select(x => x).ToList();
+
+            var startPnt = line.PointAtParameter(0);
+            if (pLine.IsContaining(new List<Point> { startPnt }))
             {
-                if (line.IsInRange(pLine.Bounds()) == false)
-                    continue;
-
-                if (pLine.IsContaining(line))
+                var intPnt = pntsSortedByParams.First().pnt;
+                if (intPnt.Distance(startPnt) > tolerance)
                 {
-                    intersections.Add(line);
-                    continue;
-                }
-
-                var intPoints = pLine.LineIntersections(line);
-
-                if (intPoints.Count == 1)
-                {
-                    Point intPnt = intPoints[0];
-                    Point pointInRegion = line.ControlPoints().Where(x => pLine.IIsContaining(new List<Point> { x })).FirstOrDefault();
-
-                    if (pointInRegion != null && intPnt.Distance(pointInRegion) > tolerance)
-                    {
-                        intersections.Add(new Line() { Start = intPoints[0], End = pointInRegion });
-                    }
-                }
-                else if (intPoints.Count == 2)
-                {
-                    var p1 = intPoints[0];
-                    var p2 = intPoints[1];
-                    if (p1.Distance(p2) > tolerance)
-                    {
-                        intersections.Add(new Line() { Start = p1, End = p2 });
-                    }
-                }
-                else
-                {
-                    Line intLine = intPoints.FitLine();
-                    if (intLine == null)
-                        continue;
-
-                    intersections.Add(intLine);
+                    intersections.Add(new Line() { Start = startPnt, End = intPnt });
                 }
             }
 
-            return intersections.OrderByDescending(x => x.Length()).ToList();
+            var endPnt = line.PointAtParameter(1);
+            if (pLine.IsContaining(new List<Point> { endPnt }))
+            {
+                var intPnt = pntsSortedByParams.Last().pnt;
+                if (intPnt.Distance(endPnt) > tolerance)
+                {
+                    intersections.Add(new Line() { Start = intPnt, End = endPnt });
+                }
+            }
+
+            for (int i = 0; i < (pntsSortedByParams.Count - 1); i++)
+            {
+                var item1 = pntsSortedByParams[i];
+                var item2 = pntsSortedByParams[i + 1];
+                var pnt1 = item1.pnt;
+                var pnt2 = item2.pnt;
+
+                if (pnt1.Distance(pnt2) < tolerance)
+                    continue;
+
+                double averageParam = (item1.prm + item2.prm) / 2;
+                var midPnt = new List<Point> { line.PointAtParameter(averageParam) };
+
+                if (pLine.IsContaining(midPnt))
+                {
+                    intersections.Add(new Line() { Start = pnt1, End = pnt2 });
+                }
+            }
+
+            return intersections;
         }
 
 
