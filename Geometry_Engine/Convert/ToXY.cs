@@ -26,7 +26,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    public static partial class Convert
     {
         /***************************************************/
         /****               Public Methods              ****/
@@ -36,12 +36,13 @@ namespace BH.Engine.Geometry
         [Input("pnt", "A point to project onto the XY plane.")]
         [Input("indexes", "Indexes of items to be removed.")]
         [Output("pntOnXY", "Projection of the input point on the XY plane.")]
-        public static Point ProjectOnXY(this Point pnt)
+        public static Point ToXY(this Point pnt)
         {
             return new Point { X = pnt.X, Y = pnt.Y, Z = 0 };
         }
 
         /***************************************************/
+
     }
 }
 
