@@ -66,6 +66,12 @@ namespace BH.Engine.Structure
         [Output("transformed", "Modified Bar with unchanged properties, but transformed nodes and orientation.")]
         public static Bar Transform(this Bar bar, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
+            if (bar.StartNode?.Position == null || bar.EndNode?.Position == null)
+            {
+                BH.Engine.Base.Compute.RecordWarning("The bar could not be transformed because at least one of its nodes (or their location) is null.");
+                return bar;
+            }
+
             if (!transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
