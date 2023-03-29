@@ -29,52 +29,52 @@
 
   <ItemGroup>
     <Reference Include="Analytical_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Analytical_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Analytical_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Architecture_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Architecture_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Architecture_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="BHoM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Dimensional_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Geometry_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Inspection_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Inspection_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Inspection_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="MEP_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\MEP_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\MEP_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Physical_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Physical_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Quantities_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Quantities_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Quantities_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Spatial_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Spatial_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
