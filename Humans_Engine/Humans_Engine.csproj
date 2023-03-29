@@ -35,27 +35,27 @@
 
   <ItemGroup>
     <Reference Include="Architecture_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Architecture_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Architecture_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="BHoM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Dimensional_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Geometry_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Humans_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Humans_oM.dll</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
