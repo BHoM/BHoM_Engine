@@ -485,10 +485,10 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Find segments of a line lying inside the region defined by a polyline.")]
-        [Input("line", "A line to check for intersection with a region defined by the input polylines.")]
+        [Input("line", "A line to check for intersections with a region defined by the input polylines.")]
         [Input("pLine", "A polyline defining a closed region that the input line potentially intersects.")]
-        [Input("tolerance", "Minimum length required on new intersection lines.")]
-        [Output("intersections", "Segments of the input the lie inside the region defined by the input polyline.")]
+        [Input("tolerance", "Minimum length required of new intersection lines.")]
+        [Output("intersections", "Segments of the input line that lie inside the region defined by the input polyline.")]
         public static List<Line> LineIntersections(this Line line, Polyline pLine, double tolerance = Tolerance.Distance)
         {
             var intersections = new List<Line>();
@@ -499,21 +499,21 @@ namespace BH.Engine.Geometry
             if (pLine.IsContaining(line))
                 return new List<Line> { line };
 
-            List<Point> intPnts = pLine.LineIntersections(line);
-            if (!intPnts.Any())
+            List<Point> intersectionPnts = pLine.LineIntersections(line);
+            if (!intersectionPnts.Any())
                 return intersections;
 
-            List<double> lineParams = intPnts.Select(x => line.ParameterAtPoint(x)).ToList();
+            List<double> pointParameters = intersectionPnts.Select(x => line.ParameterAtPoint(x)).ToList();
 
-            var pntsSortedByParams = intPnts
-                .Zip(lineParams, (pnt, prm) => new { pnt, prm })
-                .OrderBy(x => x.prm)
+            var sortedPointParamPairs = intersectionPnts
+                .Zip(pointParameters, (point, param) => new { point, param })
+                .OrderBy(x => x.param)
                 .Select(x => x).ToList();
 
             var startPnt = line.PointAtParameter(0);
             if (pLine.IsContaining(new List<Point> { startPnt }))
             {
-                var intPnt = pntsSortedByParams.First().pnt;
+                var intPnt = sortedPointParamPairs.First().point;
                 if (intPnt.Distance(startPnt) > tolerance)
                 {
                     intersections.Add(new Line() { Start = startPnt, End = intPnt });
@@ -523,29 +523,29 @@ namespace BH.Engine.Geometry
             var endPnt = line.PointAtParameter(1);
             if (pLine.IsContaining(new List<Point> { endPnt }))
             {
-                var intPnt = pntsSortedByParams.Last().pnt;
+                var intPnt = sortedPointParamPairs.Last().point;
                 if (intPnt.Distance(endPnt) > tolerance)
                 {
                     intersections.Add(new Line() { Start = intPnt, End = endPnt });
                 }
             }
 
-            for (int i = 0; i < (pntsSortedByParams.Count - 1); i++)
+            for (int i = 0; i < (sortedPointParamPairs.Count - 1); i++)
             {
-                var item1 = pntsSortedByParams[i];
-                var item2 = pntsSortedByParams[i + 1];
-                var pnt1 = item1.pnt;
-                var pnt2 = item2.pnt;
+                var entry1 = sortedPointParamPairs[i];
+                var entry2 = sortedPointParamPairs[i + 1];
+                var point1 = entry1.point;
+                var point2 = entry2.point;
 
-                if (pnt1.Distance(pnt2) < tolerance)
+                if (point1.Distance(point2) < tolerance)
                     continue;
 
-                double averageParam = (item1.prm + item2.prm) / 2;
+                double averageParam = (entry1.param + entry2.param) / 2;
                 var midPnt = new List<Point> { line.PointAtParameter(averageParam) };
 
                 if (pLine.IsContaining(midPnt))
                 {
-                    intersections.Add(new Line() { Start = pnt1, End = pnt2 });
+                    intersections.Add(new Line() { Start = point1, End = point2 });
                 }
             }
 

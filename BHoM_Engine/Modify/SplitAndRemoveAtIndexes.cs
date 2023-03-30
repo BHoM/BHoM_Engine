@@ -33,9 +33,9 @@ namespace BH.Engine.Base
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Removes list items at given indexes and returns the remaining groups of consecutive items as individual sublists.")]
-        [Input("items", "Items in the list to be split.")]
-        [Input("indexes", "Indexes of items to be removed.")]
+        [Description("Removes list items at given indexes, then returns the remaining objects as sublists of consecutive items.")]
+        [Input("items", "A list of items to split at one or more indexes.")]
+        [Input("indexes", "Indexes of items to remove.")]
         [Output("lists", "Sublists of consecutive items that remain after items at input indexes have been removed.")]
         public static List<List<T>> SplitAndRemoveAtIndexes<T>(this List<T> items, List<int> indexes)
         {

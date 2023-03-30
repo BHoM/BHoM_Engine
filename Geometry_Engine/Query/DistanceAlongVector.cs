@@ -34,15 +34,15 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Gets the distance between a point and a line along the input vector's direction. Input line and point must be on the same plane.")]
-        [Input("line", "A line to compute distance to the input point. Should have Infinite set to True if enabling useInfiniteLine")]
+        [Input("line", "A line to compute distance to the input point.")]
         [Input("point", "A point to compute distance to the input line.")]
-        [Input("vector", "A vector along which we will measure the distance from point to line.")]
+        [Input("vector", "A vector along which we will measure the distance from the point to the line.")]
         [Output("distance", "The distance between the input point and line along the input vector's direction.")]
-        public static double DistanceAlongVector(this Line line, Point point, Vector vector)
+        public static double DistanceAlongVector(this Line line, Point point, Vector directionVector)
         {
-            var projectedPnt = point.Project(line);
-            Vector projectionVect = point - projectedPnt;
-            return Math.Abs(projectionVect.DotProduct(vector.Normalise()));
+            Vector projectionVector = point - point.Project(line);
+
+            return Math.Abs(projectionVector.DotProduct(directionVector.Normalise()));
         }
 
         /***************************************************/

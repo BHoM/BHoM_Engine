@@ -32,9 +32,8 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Returns the projection of a point on the XY plane. Shorthand method to run quicker than BH.Engine.Geometry.Project(this Point, Plane).")]
+        [Description("Returns the projection of a point on the XY plane. This shorthand method should run quicker than BH.Engine.Geometry.Project(this Point, Plane) in performance-sensitive applications.")]
         [Input("pnt", "A point to project onto the XY plane.")]
-        [Input("indexes", "Indexes of items to be removed.")]
         [Output("pntOnXY", "Projection of the input point on the XY plane.")]
         public static Point ToXY(this Point pnt)
         {
