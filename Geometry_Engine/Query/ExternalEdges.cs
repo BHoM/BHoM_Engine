@@ -120,7 +120,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Mesh                     ****/
         /***************************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Geometry.Query.ExternalEdges(BH.oM.Geometry.Mesh)")]
         [Description("Gets the external edge curves of a mesh as a set of lines. Extraction is done by finding all unique edges in the mesh.")]
         [Input("mesh", "The mesh to extract external edge curves from.")]
         [Input("filterByTopology", "If true, edges with unique topology are returned. If false, edges with unique geometry is returned. Toggle only renders different result for meshes with duplicate nodes.")]

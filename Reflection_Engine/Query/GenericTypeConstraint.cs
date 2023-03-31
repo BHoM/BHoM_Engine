@@ -33,7 +33,6 @@ namespace BH.Engine.Reflection
         /**** Public Methods                    ****/
         /*******************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Serialiser.Query.GenericTypeConstraint(System.Type)")]
         [Description("Obtains the type constraint for the provided generic type.")]
         [Input("type", "The generic type to obtain a type constraint for.")]
         [Output("constraint", "The generic type constraint for the provided type.")]

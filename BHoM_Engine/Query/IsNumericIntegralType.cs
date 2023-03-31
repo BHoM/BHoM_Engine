@@ -29,7 +29,6 @@ namespace BH.Engine.Base
 {
     public static partial class Query
     {
-        [PreviousVersion("6.1", "BH.Engine.Base.Query.IsNumericIntegralType(System.Type)")]
         [Description("Determine whether a type is a integral numeric type (an integer)." +
             "\nSee https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types for more information.")]
         [Input("type", "Type that we want to check if it is numeric type or not.")]
