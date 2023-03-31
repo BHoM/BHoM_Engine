@@ -43,8 +43,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Structure.Query.DescriptionOrName(BH.oM.Structure.SurfaceProperties.ISurfaceProperty)")]
-        [PreviousVersion("6.1", "BH.Engine.Structure.Query.DescriptionOrName(BH.oM.Structure.SectionProperties.ISectionProperty)")]
         [Description("Gets the name from a IProperty. If null or empty, a default description name is provided instead.")]
         [Input("property", "The IProperty go get the name or default description from.")]
         [PreviousInputNames("property", "section")]

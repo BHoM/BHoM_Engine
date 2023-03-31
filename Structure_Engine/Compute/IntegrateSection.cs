@@ -39,7 +39,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Structure.Compute.IntegrateSection(System.Collections.Generic.List<BH.oM.Geometry.ICurve>, System.Double)")]
         [Description("Calculates Section properties for a region on the XY-Plane. /n" +
                      "The resulting properties are oriented to the XY-Plane.")]
         [Input("curves", "Non-intersecting edge curves that make up the section.")]

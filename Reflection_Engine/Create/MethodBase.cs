@@ -36,7 +36,6 @@ namespace BH.Engine.Reflection
         /**** Public Methods                    ****/
         /*******************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Serialiser.Create.MethodBase(System.Type, System.String, System.Collections.Generic.List<System.String>)")]
         [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
         public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypeNames)
         {
@@ -152,7 +151,6 @@ namespace BH.Engine.Reflection
 
         /*******************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Serialiser.Create.MethodBase(System.Type, System.String, System.Collections.Generic.List<System.Type>)")]
         [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
         public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
         {
