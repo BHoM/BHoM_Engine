@@ -35,7 +35,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Geometry.Query.Normal(BH.oM.Geometry.Mesh, BH.oM.Geometry.Face, System.Double)")]
         [Description("Returns a vector normal to a given face of the mesh.")]
         [Input("face", "The Face to get the normal to.")]
         [Input("mesh", "The Mesh containing the face to get the normal to.")]

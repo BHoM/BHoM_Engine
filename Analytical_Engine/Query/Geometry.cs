@@ -43,7 +43,6 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Structure.Query.Position(BH.oM.Structure.Elements.Node)")]
         [Description("Gets the geometry of a INode as a Point. Method required for automatic display in UI packages.")]
         [Input("node", "INode to get the Point from.")]
         [Output("point", "The geometry of the INode.")]

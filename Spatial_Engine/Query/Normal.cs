@@ -35,7 +35,6 @@ namespace BH.Engine.Spatial
         /****            IElement2D            ****/
         /******************************************/
         
-        [PreviousVersion("6.1", "BH.Engine.Structure.Query.Normal(BH.oM.Structure.Elements.Panel)")]
         [Description("Returns the normal to the IElement2D which is perpendicular to its plane and oriented according to the right hand rule in relation to the outline curve.")]
         [Input("element2D", "The IElement2D to get the normal from.")]
         [PreviousInputNames("element2D", "panel")]
