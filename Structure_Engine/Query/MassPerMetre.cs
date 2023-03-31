@@ -70,7 +70,6 @@ namespace BH.Engine.Structure
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Structure.Query.MassPerMetre(BH.oM.Structure.SectionProperties.ISectionProperty)")]
         [Description("Calculates the mass per length for the section, generally as its area mulitplied by the density. General dispatch method that calls the correct method based on type.")]
         [Input("section", "The SectionProperty to calculate the mass per area for.")]
         [Output("massPerLength", "The mass per length for the section.", typeof(MassPerUnitLength))]

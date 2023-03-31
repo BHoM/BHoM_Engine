@@ -35,7 +35,6 @@ namespace BH.Engine.Reflection
         /**** Public Methods                    ****/
         /*******************************************/
 
-        [PreviousVersion("6.1", "BH.Engine.Serialiser.Query.ParametersWithConstraints(System.Reflection.MethodBase)")]
         [Description("Obtains the parameters of a method. Returns generic constraints if the method contains generic parameters.")]
         [Input("method", "A method to obtain the parameters of. Generic Constraints will be taken into consideration.")]
         [Output("parameters", "The parameters of the provided method.")]
