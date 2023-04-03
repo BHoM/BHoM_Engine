@@ -34,7 +34,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Shift items in a list forward and move overflowing items at the end back to the start of the list.")]
-        [Input("list", "A list containing items to shift. For example, control points of a polyline which we want to traverse from a particular point.")]
+        [Input("list", "A list containing items to shift. For example, control points of a polyline which we want to traverse from a particular index.")]
         [Input("offset", "The number of items to move from the start to the end of the input list.")]
         [Output("list", "A list with items in the input list .")]
         public static List<T> ShiftList<T>(this List<T> list, int offset)
