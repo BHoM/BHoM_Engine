@@ -39,7 +39,7 @@ namespace BH.Engine.Base
         [Output("sequence", "A sequence of doubles, beginning from a start value, increments by a step value, and stops before a end value.")]
         public static List<double> BoundedRange(double start, double end, double step)
         {
-            var result = new List<double>();
+            List<double> result = new List<double>();
 
             for (double i = start; i <= end; i += step)
             {

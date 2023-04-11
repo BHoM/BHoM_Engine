@@ -25,7 +25,7 @@ using System.Reflection;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Reflection
 {
     public static partial class Modify
     {
@@ -39,10 +39,7 @@ namespace BH.Engine.Base
         public static void CopyPropertiesByName(this object sourceObj, object targetObj)
         {
             if (sourceObj == null || targetObj == null)
-            {
-                Compute.RecordWarning("Can't copy parameter values to or from a null object.");
                 return;
-            }
 
             Type targetType = targetObj.GetType();
             Type sourceType = sourceObj.GetType();

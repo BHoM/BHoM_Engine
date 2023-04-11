@@ -41,11 +41,11 @@ namespace BH.Engine.Base
         {
             int startIndex = 0;
             indexes.Add(items.Count);
-            var result = new List<List<T>>();
+            List<List<T>> result = new List<List<T>>();
 
             foreach (int i in indexes)
             {
-                var subList = items.Skip(startIndex).Take(i - startIndex).ToList();
+                List<T> subList = items.Skip(startIndex).Take(i - startIndex).ToList();
                 result.Add(subList);
                 startIndex = i + 1;
             }

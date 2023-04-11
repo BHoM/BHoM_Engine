@@ -20,11 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.ComponentModel;
-
-using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
         [Description("Get the smallest possible angle between 2 vectors regardless of their directions.")]
         [Input("vector1", "The first vector.")]
         [Input("vector2", "The second vector.")]
-        [Output("angle", "The smallest possible angle between 2 vectors regardless of their directions.")]
+        [Output("angle", "The smallest possible angle between 2 vectors regardless of their directions.", typeof(Angle))]
         public static double AcuteAngle(this Vector vector1, Vector vector2)
         {
             double angle1 = vector1.Angle(vector2);

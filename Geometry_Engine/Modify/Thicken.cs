@@ -39,9 +39,9 @@ namespace BH.Engine.Geometry
         [Output("polyline", "A closed polyline with the same direction as the input line but also a custom width.")]
         public static Polyline Thicken(this Line line, double width)
         {
-            var l1 = line.Offset(width / 2, Vector.ZAxis);
-            var l2 = line.Offset(width / 2, -Vector.ZAxis);
-            var cPnts = new List<Point> { l1.Start, l1.End, l2.End, l2.Start };
+            Line l1 = line.Offset(width / 2, Vector.ZAxis);
+            Line l2 = line.Offset(width / 2, -Vector.ZAxis);
+            List<Point> cPnts = new List<Point> { l1.Start, l1.End, l2.End, l2.Start };
 
             return new Polyline { ControlPoints = cPnts }.Close();
         }
