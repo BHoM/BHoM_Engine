@@ -56,7 +56,8 @@ namespace BH.Engine.Reflection
                 if (!targetPropInfo.CanWrite)
                     continue;
 
-                if (targetPropInfo.GetSetMethod(true)?.IsPrivate == true)
+                var setMethod = targetPropInfo.GetSetMethod(true);
+                if (setMethod != null && setMethod.IsPrivate)
                     continue;
 
                 if (!targetPropInfo.PropertyType.IsAssignableFrom(sourcePropInfo.PropertyType))
