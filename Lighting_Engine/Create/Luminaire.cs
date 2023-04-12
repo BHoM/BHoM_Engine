@@ -35,6 +35,8 @@ using BH.oM.Lighting.Elements;
 
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
+using BH.Engine.Base;
+using ICSharpCode.Decompiler.IL.Transforms;
 
 namespace BH.Engine.Lighting
 {
@@ -156,10 +158,29 @@ namespace BH.Engine.Lighting
         [Output("luminaire", "The created luminaire.")]
         public static Luminaire Luminaire(this Point pt, Vector orientation = null, LuminaireType type = null, string name = "")
         {
+            Basis basis = null;
+
+            if (orientation != null && orientation.Length() != 0)
+            {
+                double angle = orientation.Angle(Vector.ZAxis);
+                {
+                    if (angle < Tolerance.Angle)
+                        basis = Engine.Geometry.Create.Basis(Vector.XAxis, Vector.YAxis);
+                    else if (Math.Abs(Math.PI - angle) < Tolerance.Angle)
+                        basis = Engine.Geometry.Create.Basis(Vector.XAxis.Reverse(), Vector.YAxis);
+                    else
+                    {
+                        Vector x = orientation.CrossProduct(Vector.ZAxis).Project(Plane.XY).Normalise();
+                        Vector y = orientation.CrossProduct(x).Normalise();
+                        basis = Engine.Geometry.Create.Basis(x, y);
+                    }
+                }
+            }
+        
             Luminaire luminaire = new Luminaire
             {
                 Position = pt,
-                Direction = orientation,
+                Orientation = basis,
                 LuminaireType = type,
                 Name = name
             };
