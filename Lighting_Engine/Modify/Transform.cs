@@ -50,7 +50,7 @@ namespace BH.Engine.Lighting
 
             Luminaire result = luminaire.ShallowClone();
             result.Position = result.Position.Transform(transform);
-            result.Direction = result.Direction.Transform(transform);
+            result.Orientation = result.Orientation.Transform(transform);
             return result;
         }
 
