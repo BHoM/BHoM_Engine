@@ -33,10 +33,10 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Thicken a line to create a closed polyline with the same direction but also a custom width.")]
+        [Description("Thicken a line to create a closed polyline with the same direction and a custom width.")]
         [Input("line", "A line to convert into a closed polyline via thickening.")]
         [Input("width", "A custom width for the new closed polyline.")]
-        [Output("polyline", "A closed polyline with the same direction as the input line but also a custom width.")]
+        [Output("polyline", "A closed polyline with the same direction as the input line and a custom width.")]
         public static Polyline Thicken(this Line line, double width)
         {
             Line l1 = line.Offset(width / 2, Vector.ZAxis);
@@ -49,6 +49,3 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
-
-
-

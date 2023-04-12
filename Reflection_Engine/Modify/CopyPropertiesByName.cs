@@ -53,13 +53,13 @@ namespace BH.Engine.Reflection
                 if (targetPropInfo == null)
                     continue;
 
-                if (targetPropInfo.CanWrite == false)
+                if (!targetPropInfo.CanWrite)
                     continue;
 
                 if (targetPropInfo.GetSetMethod(true)?.IsPrivate == true)
                     continue;
 
-                if (targetPropInfo.PropertyType.IsAssignableFrom(sourcePropInfo.PropertyType) == false)
+                if (!targetPropInfo.PropertyType.IsAssignableFrom(sourcePropInfo.PropertyType))
                     continue;
 
                 targetPropInfo.SetValue(targetObj, sourcePropInfo.GetValue(sourceObj, null), null);
@@ -69,7 +69,3 @@ namespace BH.Engine.Reflection
         /***************************************************/
     }
 }
-
-
-
-
