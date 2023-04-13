@@ -47,6 +47,7 @@ namespace BH.Engine.Diffing
         [Input("number2", "Second number to compare.")]
         [Input("propertyFullName", "If the numbers are part of an object, full name of the property that owns them. This name will be used to seek matches in the ComparisoConfig named numeric tolerance/significant figures.")]
         [Input("comparisonConfig", "Object containing the settings for this numerical comparison.")]
+        [Output("seenAsDifferent", "Whether the input numbers are seen as different, given the numerical approximations specified in the comparisonConfig.")]
         public static bool NumericalDifferenceInclusion(this object number1, object number2, string propertyFullName = null, BaseComparisonConfig comparisonConfig = null)
         {
             comparisonConfig = comparisonConfig ?? new ComparisonConfig();
@@ -64,6 +65,7 @@ namespace BH.Engine.Diffing
         [Input("globalNumericTolerance", "Fallback numeric tolerance to be used when no named match is found.")]
         [Input("namedSignificantFigures", "Custom significant figures associated with a certain name, to be matched with the `fullName` input.")]
         [Input("globalSignificantFigures", "Fallback significant figures to be used when no named match is found.")]
+        [Output("seenAsDifferent", "Whether the input numbers are seen as different, given the numerical approximations specified.")]
         public static bool NumericalDifferenceInclusion(this object number1, object number2, string fullName,
             HashSet<NamedNumericTolerance> namedNumericTolerances = null,
             double globalNumericTolerance = double.MinValue,
@@ -83,12 +85,13 @@ namespace BH.Engine.Diffing
                     double toleranceToUse = BH.Engine.Base.Query.NumericTolerance(namedNumericTolerances, globalNumericTolerance, fullName);
                     if (toleranceToUse != double.MinValue)
                     {
-                        double value1 = double.Parse(number1.ToString()).RoundWithTolerance(toleranceToUse);
-                        double value2 = double.Parse(number2.ToString()).RoundWithTolerance(toleranceToUse);
+                        double value1 = double.Parse(number1.ToString());
+                        double value2 = double.Parse(number2.ToString());
 
-                        // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
-                        if (value1 == value2)
-                            return false;
+                        double difference = Math.Abs(value1 - value2);
+
+                        // If the difference is less than the Tolerance, it means that we do not want to consider this Difference. Skip.
+                        return difference > toleranceToUse;
                     }
                 }
 
@@ -101,8 +104,7 @@ namespace BH.Engine.Diffing
                         double value2 = double.Parse(number2.ToString()).RoundToSignificantFigures(significantFiguresToUse);
 
                         // If, once rounded, the numbers are the same, it means that we do not want to consider this Difference. Skip.
-                        if (value1 == value2)
-                            return false;
+                        return value1 != value2;
                     }
                 }
             }
