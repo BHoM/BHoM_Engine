@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -20,68 +20,54 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using MongoDB.Bson;
+using BH.Engine.Reflection;
 using BH.Engine.Versioning;
-using System.Collections;
+using BH.oM.Base;
+using MongoDB.Bson.IO;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 
 namespace BH.Engine.Serialiser
 {
-    public static partial class Convert
+    public static partial class Compute
     {
+
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-
-        public static BsonDocument ToBson(this object obj)
+        public static void Serialise(this MethodBase value, BsonDocumentWriter writer)
         {
-            if (obj is null)
+            if (value == null)
             {
-                return null;
+                writer.WriteNull();
+                return;
             }
-            else if (obj is string)
-            {
-                BsonDocument document;
-                BsonDocument.TryParse(obj as string, out document);
-                return document;
-            }
-            else
-            {
-                BsonDocument document = new BsonDocument();
-                obj.ISerialise(new MongoDB.Bson.IO.BsonDocumentWriter(document));
-                if (document != null)
-                    document.AddVersion();
-                return document;
-            }
-                
+
+            writer.WriteStartDocument();
+
+            writer.WriteName("_t");
+            writer.WriteString(typeof(MethodBase).ToString());
+
+            writer.WriteName("TypeName");
+            writer.WriteString(value.DeclaringType.ToJson());
+
+            writer.WriteName("MethodName");
+            writer.WriteString(value.Name);
+
+            ParameterInfo[] parameters = value.ParametersWithConstraints();
+            writer.WriteName("Parameters");
+            writer.WriteStartArray();
+            foreach (ParameterInfo info in parameters)
+                writer.WriteString(info.ParameterType.ToJson());
+            writer.WriteEndArray();
+
+            writer.AddVersion();
+
+            writer.WriteEndDocument();
         }
-
-        /*******************************************/
-
-        public static object FromBson(BsonDocument bson)
-        {
-            // Patch for handling the case where a string is a top object - will need proper review in next quarter
-            if (bson.Contains("_t") && bson["_t"] == "System.String" && bson.Contains("_v"))
-                return bson["_v"].AsString;
-            else
-                return FromOldBson(bson);
-        }
-
-
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
-
-        /*******************************************/
-        /**** Private Fields                    ****/
-        /*******************************************/
-
 
         /*******************************************/
     }
 }
-
-
-
-
