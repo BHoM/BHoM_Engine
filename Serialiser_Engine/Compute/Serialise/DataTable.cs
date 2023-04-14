@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -21,67 +21,39 @@
  */
 
 using BH.oM.Base;
-using MongoDB.Bson;
-using BH.Engine.Versioning;
-using System.Collections;
+using MongoDB.Bson.IO;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace BH.Engine.Serialiser
 {
-    public static partial class Convert
+    public static partial class Compute
     {
+
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-
-        public static BsonDocument ToBson(this object obj)
+        public static void Serialise(this DataTable value, BsonDocumentWriter writer)
         {
-            if (obj is null)
+            if (value == null)
             {
-                return null;
+                writer.WriteNull();
+                return;
             }
-            else if (obj is string)
+
+            writer.WriteStartArray();
+            foreach (DataRow dr in value.Rows)
             {
-                BsonDocument document;
-                BsonDocument.TryParse(obj as string, out document);
-                return document;
+                var dictionary = dr.Table.Columns.Cast<DataColumn>().ToDictionary(col => col.ColumnName, col => dr[col.ColumnName]);
+                dictionary.Serialise(writer);
             }
-            else
-            {
-                BsonDocument document = new BsonDocument();
-                obj.ISerialise(new MongoDB.Bson.IO.BsonDocumentWriter(document));
-                if (document != null)
-                    document.AddVersion();
-                return document;
-            }
-                
+            writer.WriteEndArray();
         }
-
-        /*******************************************/
-
-        public static object FromBson(BsonDocument bson)
-        {
-            // Patch for handling the case where a string is a top object - will need proper review in next quarter
-            if (bson.Contains("_t") && bson["_t"] == "System.String" && bson.Contains("_v"))
-                return bson["_v"].AsString;
-            else
-                return FromOldBson(bson);
-        }
-
-
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
-
-        /*******************************************/
-        /**** Private Fields                    ****/
-        /*******************************************/
-
 
         /*******************************************/
     }
 }
-
-
-
-
