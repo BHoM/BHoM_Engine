@@ -193,7 +193,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         private static ConcurrentDictionary<string, Func<object[], object>> m_CompiledFunctions = new ConcurrentDictionary<string, Func<object[], object>>();
-        //private static readonly object m_RunExtensionMethodLock = new object();
+        private static readonly object m_RunExtensionMethodLock = new object();
 
         /***************************************************/
 
