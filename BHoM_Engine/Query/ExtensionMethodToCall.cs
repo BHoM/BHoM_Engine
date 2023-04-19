@@ -81,15 +81,26 @@ namespace BH.Engine.Base
                 return GetStoredExtensionMethod(key);
 
             //Loop through all methods with matching name, first argument and number of parameters, sorted by best match to the first argument
-            foreach (MethodInfo method in type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length == parameters.Length).SortExtensionMethods(type))
+            foreach (MethodInfo method in type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length >= parameters.Length).SortExtensionMethods(type))
             {
                 ParameterInfo[] paramInfo = method.GetParameters();
 
                 // Make sure the type of parameters is matching, skipping first as already used to extract parameters
                 bool matchingTypes = true;
-                for (int i = 1; i < parameters.Length; i++)
+                for (int i = 1; i < paramInfo.Length; i++)
                 {
-                    if (!paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
+                    //If more parameters to method then provided, check if parameter has defaul value (is optional)
+                    if (i >= parameters.Length)
+                    {
+                        
+                        if (!paramInfo[i].Attributes.HasFlag(ParameterAttributes.HasDefault))
+                        {
+                            //No default value -> no match -> abort for this method
+                            matchingTypes = false;
+                            break;
+                        }
+                    }
+                    else if (!paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
                     {
                         //Parameter does not match, abort for this method
                         matchingTypes = false;
