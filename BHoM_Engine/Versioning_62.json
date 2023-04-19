@@ -1,0 +1,27 @@
+{
+  "Namespace": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "Type": {
+    "ToNew": {
+
+    },
+    "ToOld": {
+    }
+  },
+  "Property": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "MessageForDeleted": {
+    "BH.Engine.Base.Compute.RunExtensionMethod(System.Object, System.Reflection.MethodInfo, System.Object[])": "Method removed when refactoring the RunExtensionMethod framework to have all calls go through TryRunExtensionMethod. Method identified to not be used outside the backend core logic of RunExtensionMethod and hence removed. Please raise an issue on https://github.com/BHoM/BHoM_Engine if you have any issues with this method being deleted.",
+    "BH.Engine.Base.Compute.RunExtensionMethod(System.Object, System.Reflection.MethodInfo)": "Method removed when refactoring the RunExtensionMethod framework to have all calls go through TryRunExtensionMethod. Method identified to not be used outside the backend core logic of RunExtensionMethod and hence removed. Please raise an issue on https://github.com/BHoM/BHoM_Engine if you have any issues with this method being deleted."
+  },
+  "MessageForNoUpgrade": {
+  }
+}
