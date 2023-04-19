@@ -51,6 +51,18 @@ namespace BH.Engine.Base
 
             if (name.Contains('<'))
                 return GenericType(name, silent);
+            else if (name.Contains('`') && name.Contains("[["))
+            {
+                int idx = name.IndexOf('`');
+                int idx2 = name.IndexOf('[');
+                string genericName = name.Substring(0, idx2);
+                List<string> parts = name.Substring(idx2)
+                    .Trim(new char[] { '[', ']' })
+                    .Split(new string[] { "],[" }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => x.Split(new char[] { ',' }).First())
+                    .ToList();
+                return GenericType(genericName, parts);
+            }
 
             List<Type> types = null;
             if (!typeDictionary.TryGetValue(name, out types))

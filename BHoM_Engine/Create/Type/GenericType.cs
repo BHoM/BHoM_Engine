@@ -90,7 +90,18 @@ namespace BH.Engine.Base
             }
             //Main type definition as string up until the first split char (first '<').
             //Number of generic arguments will be 1 less than the number of argsSplit count
-            Type typeDefinition = Type(name.Substring(0, argsSplit[0]) + "`" + (argsSplit.Count - 1));
+            return GenericType(name.Substring(0, argsSplit[0]) + "`" + (argsSplit.Count - 1), arguments, silent);
+        }
+
+        /***************************************************/
+
+        [Description("Creates a generic BHoM type that matches the given name.")]
+        [Input("name", "Name to be searched for among all BHoM generic types.")]
+        [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Output("type", "BHoM generic type that matches the given name.")]
+        public static Type GenericType(string name, List<string> arguments, bool silent = false)
+        {
+            Type typeDefinition = Type(name);
             if (typeDefinition == null)
                 return null;
 

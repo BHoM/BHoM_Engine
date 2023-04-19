@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -22,72 +22,40 @@
 
 using BH.oM.Base;
 using MongoDB.Bson;
-using BH.Engine.Versioning;
-using System.Collections;
+using MongoDB.Bson.IO;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace BH.Engine.Serialiser
 {
-    public static partial class Convert
+    public static partial class Compute
     {
+
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-
-        public static BsonDocument ToBson(this object obj)
+        public static DateTimeOffset DeserialiseDateTimeOffset(this BsonValue bson, ref bool failed, DateTimeOffset value = default(DateTimeOffset))
         {
-            if (obj is null)
+            if (!bson.IsBsonArray)
             {
-                return null;
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a DateTimeOffset and received " + bson.ToString() + " instead.");
+                failed = true;
+                return value;
             }
-            else if (obj is string)
+
+            BsonArray array = bson.AsBsonArray;
+            if (array.Count != 2)
             {
-                BsonDocument document;
-                BsonDocument.TryParse(obj as string, out document);
-                return document;
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a DateTimeOffset and received " + bson.ToString() + " instead. This should be represented with an array of two values.");
+                failed = true;
+                return value;
             }
-            else
-            {
-                BsonDocument document = new BsonDocument();
-                obj.ISerialise(new MongoDB.Bson.IO.BsonDocumentWriter(document));
-                if (document != null)
-                    document.AddVersion();
-                return document;
-            }
-                
+
+            return new DateTimeOffset(array[0].ToInt64(), new TimeSpan(TimeSpan.TicksPerMinute * array[1].ToInt64()));
+            
         }
-
-        /*******************************************/
-
-        public static object FromBson(BsonDocument bson)
-        {
-            bool failed = false;
-            object result = Compute.IDeserialise(bson, ref failed);
-
-            if (failed)
-            {
-                //TODO: handle versioning here
-                return result;
-            }
-            else
-                return result;
-        }
-
-
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
-
-        /*******************************************/
-        /**** Private Fields                    ****/
-        /*******************************************/
-
 
         /*******************************************/
     }
 }
-
-
-
-

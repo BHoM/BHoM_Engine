@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Base;
+using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
@@ -34,49 +35,52 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static void Serialise(this CustomObject value, BsonDocumentWriter writer)
+        public static CustomObject DeserialiseCustomObject(this BsonValue bson, ref bool failed, CustomObject value = null)
         {
+            if (!bson.IsBsonDocument)
+            {
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a Custom object and received " + bson.ToString() + " instead.");
+                failed = true;
+                return new CustomObject();
+            }
+
             if (value == null)
+                value = new CustomObject();
+
+            BsonDocument doc = bson.AsBsonDocument;
+
+            foreach (BsonElement element in doc)
             {
-                writer.WriteNull();
-                return;
+                switch (element.Name)
+                {
+                    case "_t":
+                        // ignore
+                        break;
+                    case "_bhomVersion":
+                        // ignore
+                        break;
+                    case "Name":
+                        value.Name = element.Value.DeserialiseString(ref failed, value.Name);
+                        break;
+                    case "BHoM_Guid":
+                        value.BHoM_Guid = element.Value.DeserialiseGuid(ref failed, value.BHoM_Guid);
+                        break;
+                    case "Tags":
+                        value.Tags = element.Value.DeserialiseHashSet(ref failed, value.Tags);
+                        break;
+                    case "Fragments":
+                        value.Fragments = element.Value.DeserialiseFragmentSet(ref failed, value.Fragments);
+                        break;
+                    case "CustomData":
+                        value.CustomData = element.Value.DeserialiseDictionary(ref failed, value.CustomData);
+                        break;
+                    default:
+                        value.CustomData[element.Name] = element.Value.IDeserialise(ref failed);
+                        break;
+                }
             }
 
-            Dictionary<string, object> data = new Dictionary<string, object>(value.CustomData);
-
-            writer.WriteStartDocument();
-
-            if (!string.IsNullOrEmpty(value.Name) && value.Name.Length > 0)
-            {
-                writer.WriteName("Name");
-                writer.WriteString(value.Name);
-            }
-
-            foreach (KeyValuePair<string, object> kvp in data)
-            {
-                writer.WriteName(kvp.Key);
-                ISerialise(kvp.Value, writer);
-            }
-
-            if (value.Tags.Count > 0)
-            {
-                writer.WriteName("Tags");
-                writer.WriteStartArray();
-                foreach (string tag in value.Tags)
-                    writer.WriteString(tag);
-                writer.WriteEndArray();
-            }
-
-            if (value.Fragments.Count > 0)
-            {
-                writer.WriteName("Fragments");
-                value.Fragments.Serialise(writer);
-            }
-
-            writer.WriteName("BHoM_Guid");
-            writer.WriteString(value.BHoM_Guid.ToString());
-
-            writer.WriteEndDocument();
+            return value;
         }
 
         /*******************************************/

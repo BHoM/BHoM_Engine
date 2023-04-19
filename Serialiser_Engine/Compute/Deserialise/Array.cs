@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -22,72 +22,71 @@
 
 using BH.oM.Base;
 using MongoDB.Bson;
-using BH.Engine.Versioning;
-using System.Collections;
+using MongoDB.Bson.IO;
 using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
 
 namespace BH.Engine.Serialiser
 {
-    public static partial class Convert
+    public static partial class Compute
     {
+
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-
-        public static BsonDocument ToBson(this object obj)
+        public static T[] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[] value = null)
         {
-            if (obj is null)
+            if (bson.IsBsonNull)
             {
                 return null;
             }
-            else if (obj is string)
+            else if (!bson.IsBsonArray)
             {
-                BsonDocument document;
-                BsonDocument.TryParse(obj as string, out document);
-                return document;
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise an array and received " + bson.ToString() + " instead.");
+                failed = true;
+                return value;
             }
-            else
-            {
-                BsonDocument document = new BsonDocument();
-                obj.ISerialise(new MongoDB.Bson.IO.BsonDocumentWriter(document));
-                if (document != null)
-                    document.AddVersion();
-                return document;
-            }
-                
+
+            List<T> values = new List<T>();
+            foreach (BsonValue item in bson.AsBsonArray)
+                values.Add((T)item.IDeserialise(typeof(T), ref failed));
+
+            return values.ToArray();
         }
 
         /*******************************************/
 
-        public static object FromBson(BsonDocument bson)
+        public static T[,] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[,] value = null)
         {
-            bool failed = false;
-            object result = Compute.IDeserialise(bson, ref failed);
-
-            if (failed)
+            if (bson.IsBsonNull)
             {
-                //TODO: handle versioning here
-                return result;
+                return null;
             }
-            else
-                return result;
+            else if (!bson.IsBsonArray)
+            {
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise an array and received " + bson.ToString() + " instead.");
+                failed = true;
+                return value;
+            }
+
+            List<T[]> values = new List<T[]>();
+            foreach (BsonValue item in bson.AsBsonArray)
+                values.Add(item.DeserialiseArray(ref failed, new T[0]));
+
+            int maxLength = values.Select(x => x.Length).Max();
+            T[,] array = new T[values.Count, maxLength];
+            for (int i = 0; i < values.Count; i++)
+            {
+                for (int j = 0; j < maxLength; j++)
+                    array[i, j] = values[i][j];
+            }
+            return array;
+
+
         }
-
-
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
-
-        /*******************************************/
-        /**** Private Fields                    ****/
-        /*******************************************/
-
 
         /*******************************************/
     }
 }
-
-
-
-
