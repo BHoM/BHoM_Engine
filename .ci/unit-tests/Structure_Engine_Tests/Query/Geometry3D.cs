@@ -36,7 +36,7 @@ namespace BH.Tests.Engine.Base.Query
         [Test]
         public static void BarGeometry3DNotNull()
         {
-            Bar bar = (Bar)BH.Engine.Base.Create.RandomObject(typeof(Bar));
+            Bar bar = BH.Engine.Structure.Create.Bar(new oM.Geometry.Line { Start = new oM.Geometry.Point(), End = new oM.Geometry.Point { X = 1 } }, BH.Engine.Structure.Create.SteelCircularSection(0.2), 0);
             var geom = BH.Engine.Structure.Query.Geometry3D(bar);
             geom.ShouldNotBeNull();
         }
@@ -44,7 +44,7 @@ namespace BH.Tests.Engine.Base.Query
         [Test]
         public static void BarIGeometry3DExtensionMethodNotNull()
         {
-            Bar bar = (Bar)BH.Engine.Base.Create.RandomObject(typeof(Bar));
+            Bar bar = BH.Engine.Structure.Create.Bar(new oM.Geometry.Line { Start = new oM.Geometry.Point(), End = new oM.Geometry.Point { X = 1 } }, BH.Engine.Structure.Create.SteelCircularSection(0.2), 0);
             var geom = bar.IGeometry3D();
             geom.ShouldNotBeNull();
         }
