@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -22,72 +22,61 @@
 
 using BH.oM.Base;
 using MongoDB.Bson;
-using BH.Engine.Versioning;
-using System.Collections;
+using MongoDB.Bson.IO;
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace BH.Engine.Serialiser
 {
-    public static partial class Convert
+    public static partial class Compute
     {
+
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-
-        public static BsonDocument ToBson(this object obj)
+        public static DataTable DeserialiseDataTable(this BsonValue bson, ref bool failed, DataTable value = null)
         {
-            if (obj is null)
+            if (bson.IsBsonArray)
             {
-                return null;
-            }
-            else if (obj is string)
-            {
-                BsonDocument document;
-                BsonDocument.TryParse(obj as string, out document);
-                return document;
+                DataTable table = new DataTable();
+                bool initialised = false;
+
+                foreach (BsonDocument doc in bson.AsBsonArray.OfType<BsonDocument>())
+                {
+                    Dictionary<string, object> rowData = doc.DeserialiseDictionary(ref failed, new Dictionary<string, object>());
+                    if (!initialised)
+                    {
+                        foreach (var kvp in rowData)
+                        {
+                            table.Columns.Add(new DataColumn(kvp.Key, kvp.Value.GetType()));
+                        }
+                        initialised = true;
+                    }
+
+                    DataRow row = table.NewRow();
+
+                    foreach (var kvp in rowData)
+                    {
+                        row[kvp.Key] = kvp.Value;
+                    }
+                    table.Rows.Add(row);
+                }
+
+                return table;
             }
             else
             {
-                BsonDocument document = new BsonDocument();
-                obj.ISerialise(new MongoDB.Bson.IO.BsonDocumentWriter(document));
-                if (document != null)
-                    document.AddVersion();
-                return document;
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a data table and received " + bson.ToString() + " instead.");
+                failed = true;
+                return value;
             }
-                
         }
-
-        /*******************************************/
-
-        public static object FromBson(BsonDocument bson)
-        {
-            bool failed = false;
-            object result = Compute.IDeserialise(bson, ref failed);
-
-            if (failed)
-            {
-                //TODO: handle versioning here
-                return result;
-            }
-            else
-                return result;
-        }
-
-
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
-
-        /*******************************************/
-        /**** Private Fields                    ****/
-        /*******************************************/
-
 
         /*******************************************/
     }
 }
-
-
-
-

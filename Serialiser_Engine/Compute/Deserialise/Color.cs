@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -22,72 +22,36 @@
 
 using BH.oM.Base;
 using MongoDB.Bson;
-using BH.Engine.Versioning;
-using System.Collections;
+using MongoDB.Bson.IO;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Text;
 
 namespace BH.Engine.Serialiser
 {
-    public static partial class Convert
+    public static partial class Compute
     {
+
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-
-        public static BsonDocument ToBson(this object obj)
+        public static Color DeserialiseColor(this BsonValue bson, ref bool failed, Color value = default(Color))
         {
-            if (obj is null)
+            if (bson.IsBsonDocument)
             {
-                return null;
-            }
-            else if (obj is string)
-            {
-                BsonDocument document;
-                BsonDocument.TryParse(obj as string, out document);
-                return document;
+                BsonDocument doc = bson.AsBsonDocument;
+                return Color.FromArgb(doc["A"].AsInt32, doc["R"].AsInt32, doc["G"].AsInt32, doc["B"].AsInt32);
             }
             else
             {
-                BsonDocument document = new BsonDocument();
-                obj.ISerialise(new MongoDB.Bson.IO.BsonDocumentWriter(document));
-                if (document != null)
-                    document.AddVersion();
-                return document;
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a color and received " + bson.ToString() + " instead.");
+                failed = true;
+                return value;
             }
-                
         }
-
-        /*******************************************/
-
-        public static object FromBson(BsonDocument bson)
-        {
-            bool failed = false;
-            object result = Compute.IDeserialise(bson, ref failed);
-
-            if (failed)
-            {
-                //TODO: handle versioning here
-                return result;
-            }
-            else
-                return result;
-        }
-
-
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
-
-        /*******************************************/
-        /**** Private Fields                    ****/
-        /*******************************************/
-
 
         /*******************************************/
     }
 }
-
-
-
-
