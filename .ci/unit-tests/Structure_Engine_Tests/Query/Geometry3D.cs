@@ -26,11 +26,11 @@ using NUnit.Framework;
 using AutoBogus;
 using Shouldly;
 using BH.oM.Structure.Elements;
-using BH.Engine.Base;
+using BH.oM.Test.NUnit;
 
 namespace BH.Tests.Engine.Base.Query
 {
-    public class Geometry3D
+    public class Geometry3D : NUnitTest
     {
         [Test]
         public static void BarGeometry3DNotNull()
