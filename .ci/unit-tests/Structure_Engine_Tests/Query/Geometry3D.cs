@@ -27,6 +27,7 @@ using AutoBogus;
 using Shouldly;
 using BH.oM.Structure.Elements;
 using BH.oM.Test.NUnit;
+using BH.oM.Structure.SectionProperties;
 
 namespace BH.Tests.Engine.Base.Query
 {
@@ -46,6 +47,19 @@ namespace BH.Tests.Engine.Base.Query
             Bar bar = (Bar)BH.Engine.Base.Create.RandomObject(typeof(Bar));
             var geom = bar.IGeometry3D();
             geom.ShouldNotBeNull();
+        }
+
+        [Test]
+        [Description("Calls an IGeometry3D extension method and another extension method. Useful to very that the matching lookup works when multiple delegates are stored.")]
+        public static void MultipleGeometry3DExtensionMethodNotNull()
+        {
+            ConcreteSection concreteSection = (ConcreteSection)BH.Engine.Base.Create.RandomObject(typeof(ConcreteSection));
+            var geom = BH.Engine.Base.Query.IGeometry3D(concreteSection);
+            geom.ShouldNotBeNull();
+
+            Bar bar = (Bar)BH.Engine.Base.Create.RandomObject(typeof(Bar));
+            var geom2 = BH.Engine.Analytical.Query.Geometry(bar);
+            geom2.ShouldNotBeNull();
         }
     }
 }
