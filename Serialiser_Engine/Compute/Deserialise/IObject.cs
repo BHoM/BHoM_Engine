@@ -20,10 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
+using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace BH.Engine.Serialiser
@@ -34,49 +37,52 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static void Serialise(this CustomObject value, BsonDocumentWriter writer)
+        public static IObject DeserialiseIObject(this BsonValue bson, ref bool failed, IObject value = null)
         {
-            if (value == null)
+            if (bson.IsBsonNull)
+                return null;
+            else if (!bson.IsBsonDocument)
             {
-                writer.WriteNull();
-                return;
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise an IObject and received " + bson.ToString() + " instead.");
+                failed = true;
+                return value;
             }
 
-            Dictionary<string, object> data = new Dictionary<string, object>(value.CustomData);
-
-            writer.WriteStartDocument();
-
-            if (!string.IsNullOrEmpty(value.Name) && value.Name.Length > 0)
+            BsonDocument doc = bson.AsBsonDocument;
+            Type type = doc["_t"].DeserialiseType(ref failed);
+            if (value == null || value.GetType() != type)
             {
-                writer.WriteName("Name");
-                writer.WriteString(value.Name);
+                if (typeof(IImmutable).IsAssignableFrom(type))
+                    return bson.DeserialiseImmutable(ref failed, type);
+                else
+                    value = Activator.CreateInstance(type) as IObject;
+            }
+                
+            foreach (BsonElement item in doc)
+            {
+                PropertyInfo prop = type.GetProperty(item.Name);
+
+                if (prop == null)
+                {
+                    if (value is IBHoMObject && !item.Name.StartsWith("_"))
+                        ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(ref failed);
+                }
+                else
+                {
+                    if (!prop.CanWrite)
+                    {
+                        if (!(value is IImmutable))
+                        {
+                            BH.Engine.Base.Compute.RecordError("Property is not settable.");
+                            failed = true;
+                        }
+                    }
+                    else
+                        prop.SetValue(value, item.Value.IDeserialise(prop.PropertyType, ref failed, prop.GetValue(value)));
+                }
             }
 
-            foreach (KeyValuePair<string, object> kvp in data)
-            {
-                writer.WriteName(kvp.Key);
-                ISerialise(kvp.Value, writer);
-            }
-
-            if (value.Tags.Count > 0)
-            {
-                writer.WriteName("Tags");
-                writer.WriteStartArray();
-                foreach (string tag in value.Tags)
-                    writer.WriteString(tag);
-                writer.WriteEndArray();
-            }
-
-            if (value.Fragments.Count > 0)
-            {
-                writer.WriteName("Fragments");
-                value.Fragments.Serialise(writer);
-            }
-
-            writer.WriteName("BHoM_Guid");
-            writer.WriteString(value.BHoM_Guid.ToString());
-
-            writer.WriteEndDocument();
+            return value;
         }
 
         /*******************************************/

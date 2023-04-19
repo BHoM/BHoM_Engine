@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -22,72 +22,54 @@
 
 using BH.oM.Base;
 using MongoDB.Bson;
-using BH.Engine.Versioning;
-using System.Collections;
+using MongoDB.Bson.IO;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace BH.Engine.Serialiser
 {
-    public static partial class Convert
+    public static partial class Compute
     {
+
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-
-        public static BsonDocument ToBson(this object obj)
+        public static FragmentSet DeserialiseFragmentSet(this BsonValue bson, ref bool failed, FragmentSet value = null)
         {
-            if (obj is null)
+            if (value == null)
+                value = new FragmentSet();
+
+            BsonArray array = null;
+            if (bson.IsBsonArray)
             {
-                return null;
+                array = bson.AsBsonArray;
             }
-            else if (obj is string)
+            else if (bson.IsBsonDocument)
             {
-                BsonDocument document;
-                BsonDocument.TryParse(obj as string, out document);
-                return document;
+                BsonDocument doc = bson.AsBsonDocument;
+                if (doc.Contains("_Items"))
+                    array = doc["_Items"].AsBsonArray;
+            }
+
+            if (array != null)
+            {
+                foreach (BsonValue item in array)
+                {
+                    IFragment fragment = item.IDeserialise(ref failed) as IFragment;
+                    if (fragment != null)
+                        value.Add(fragment);
+                }
             }
             else
             {
-                BsonDocument document = new BsonDocument();
-                obj.ISerialise(new MongoDB.Bson.IO.BsonDocumentWriter(document));
-                if (document != null)
-                    document.AddVersion();
-                return document;
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a FragmentSet and received " + bson.ToString() + " instead.");
+                failed = true;
             }
-                
+
+            return value;
         }
-
-        /*******************************************/
-
-        public static object FromBson(BsonDocument bson)
-        {
-            bool failed = false;
-            object result = Compute.IDeserialise(bson, ref failed);
-
-            if (failed)
-            {
-                //TODO: handle versioning here
-                return result;
-            }
-            else
-                return result;
-        }
-
-
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-
-
-        /*******************************************/
-        /**** Private Fields                    ****/
-        /*******************************************/
-
 
         /*******************************************/
     }
 }
-
-
-
-
