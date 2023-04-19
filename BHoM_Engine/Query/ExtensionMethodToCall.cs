@@ -60,11 +60,14 @@ namespace BH.Engine.Base
 
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
 
-        [Description("Helper method doing the heavy lifting of ExtensionMethodToCall. Finds the matching method via reflection and caches if for subsequent calls.")]
-        private static MethodInfo ExtensionMethodToCall(string methodName, object[] parameters)
+        [Description("Method doing the heavy lifting of ExtensionMethodToCall. Finds the matching method via reflection and caches if for subsequent calls.\n" +
+                     "Finds an extension method accepting multiple arguments with extra emphasis on the first argument in terms of type matching.\n" +
+                     "Method found can have more arguments than the provided parameters, if all of those additional arguments have default values.")]
+        [Input("methodName", "The name of the method to be sought.")]
+        [Input("parameters", "The arguments of the call to the method.")]
+        [Output("method", "Most suitable extension method with requested name and parameters. If no method was found, null is returned.")]
+        public static MethodInfo ExtensionMethodToCall(string methodName, object[] parameters)
         {
             if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
                 return null;
