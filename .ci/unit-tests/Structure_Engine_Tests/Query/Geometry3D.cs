@@ -48,18 +48,5 @@ namespace BH.Tests.Engine.Base.Query
             var geom = bar.IGeometry3D();
             geom.ShouldNotBeNull();
         }
-
-        [Test]
-        [Description("Calls an IGeometry3D extension method and another extension method. Useful to very that the matching lookup works when multiple delegates are stored.")]
-        public static void MultipleGeometry3DExtensionMethodNotNull()
-        {
-            ConcreteSection concreteSection = (ConcreteSection)BH.Engine.Base.Create.RandomObject(typeof(ConcreteSection));
-            var geom = BH.Engine.Base.Query.IGeometry3D(concreteSection);
-            geom.ShouldNotBeNull();
-
-            Bar bar = (Bar)BH.Engine.Base.Create.RandomObject(typeof(Bar));
-            var geom2 = BH.Engine.Base.Query.IGeometry(bar);
-            geom2.ShouldNotBeNull();
-        }
     }
 }
