@@ -42,8 +42,10 @@ namespace BH.Engine.Base
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         public static object RunExtensionMethod(object target, string methodName)
         {
-            MethodInfo method = Query.ExtensionMethodToCall(target, methodName);
-            return RunExtensionMethod(target, method);
+            if (TryRunExtensionMethod(target, methodName, out object result))
+                return result;
+            else
+                return null;
         }
 
         /***************************************************/
@@ -56,8 +58,10 @@ namespace BH.Engine.Base
         [Output("result", "The result of the method execution. If no method was found, null is returned.")]
         public static object RunExtensionMethod(object target, string methodName, object[] parameters)
         {
-            MethodInfo method = Query.ExtensionMethodToCall(target, methodName, parameters);
-            return RunExtensionMethod(target, method, parameters);
+            if(TryRunExtensionMethod(target, methodName, parameters, out object result))
+                return result;
+            else
+                return null;
         }
 
         /***************************************************/
