@@ -58,7 +58,7 @@ namespace BH.Tests.Engine.Base.Query
             geom.ShouldNotBeNull();
 
             Bar bar = (Bar)BH.Engine.Base.Create.RandomObject(typeof(Bar));
-            var geom2 = BH.Engine.Analytical.Query.Geometry(bar);
+            var geom2 = BH.Engine.Base.Query.IGeometry(bar);
             geom2.ShouldNotBeNull();
         }
     }
