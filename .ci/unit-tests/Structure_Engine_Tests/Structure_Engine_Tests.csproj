@@ -31,6 +31,8 @@
   <ItemGroup>
     <Reference Include="Analytical_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Analytical_oM.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="BHoM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM.dll</HintPath>
@@ -39,6 +41,8 @@
     </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Geometry_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Geometry_oM.dll</HintPath>
@@ -47,6 +51,8 @@
     </Reference>
     <Reference Include="NUnit_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\NUnit_Engine.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Structure_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Structure_oM.dll</HintPath>
