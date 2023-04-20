@@ -40,7 +40,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static IImmutable DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType)
         {
-            if (!bson.IsBsonDocument)
+            if (bson.IsBsonNull)
+                return null;
+            else if (!bson.IsBsonDocument)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an Immutable object and received " + bson.ToString() + " instead.");
                 failed = true;

@@ -37,7 +37,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static CustomObject DeserialiseCustomObject(this BsonValue bson, ref bool failed, CustomObject value = null)
         {
-            if (!bson.IsBsonDocument)
+            if (bson.IsBsonNull)
+                return null;
+            else if (!bson.IsBsonDocument)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a Custom object and received " + bson.ToString() + " instead.");
                 failed = true;
