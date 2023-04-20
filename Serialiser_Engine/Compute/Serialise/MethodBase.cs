@@ -48,7 +48,7 @@ namespace BH.Engine.Serialiser
             writer.WriteStartDocument();
 
             writer.WriteName("_t");
-            writer.WriteString(typeof(MethodBase).ToString());
+            writer.WriteString(value.GetType().ToString());
 
             writer.WriteName("TypeName");
             writer.WriteString(value.DeclaringType.ToJson());
