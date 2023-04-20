@@ -50,14 +50,21 @@ namespace BH.Engine.Serialiser
 
             BsonDocument doc = bson.AsBsonDocument;
             Type type = doc["_t"].DeserialiseType(ref failed);
-            if (value == null || value.GetType() != type)
-            {
-                if (typeof(IImmutable).IsAssignableFrom(type))
-                    return bson.DeserialiseImmutable(ref failed, type);
-                else
-                    value = Activator.CreateInstance(type) as IObject;
-            }
-                
+            if (typeof(IImmutable).IsAssignableFrom(type))
+                return bson.DeserialiseImmutable(ref failed, type);
+            else if (value == null || value.GetType() != type)
+                value = Activator.CreateInstance(type) as IObject;
+
+            return SetProperties(doc, ref failed, type, value);
+        }
+
+
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+
+        private static IObject SetProperties(this BsonDocument doc, ref bool failed, Type type, IObject value)
+        {
             foreach (BsonElement item in doc)
             {
                 PropertyInfo prop = type.GetProperty(item.Name);
@@ -67,6 +74,8 @@ namespace BH.Engine.Serialiser
                     if (value is IBHoMObject && !item.Name.StartsWith("_"))
                         ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(ref failed);
                 }
+                else if (item.Name == "CustomData" && value is IBHoMObject)
+                    ((IBHoMObject)value).CustomData = item.Value.DeserialiseDictionary(ref failed, ((IBHoMObject)value).CustomData);
                 else
                 {
                     if (!prop.CanWrite)

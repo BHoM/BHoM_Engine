@@ -56,7 +56,9 @@ namespace BH.Engine.Serialiser
 
         public static Tuple<T1, T2> DeserialiseTuple<T1, T2>(this BsonValue bson, ref bool failed, Tuple<T1, T2> value = null)
         {
-            if (bson.IsBsonArray)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsBsonArray)
             {
                 BsonArray array = bson.AsBsonArray;
                 if (array.Count != 2)
@@ -84,7 +86,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static Tuple<T1, T2, T3> DeserialiseTuple<T1, T2, T3>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3> value = null)
         {
-            if (bson.IsBsonArray)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsBsonArray)
             {
                 BsonArray array = bson.AsBsonArray;
                 if (array.Count != 3)
@@ -113,7 +117,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static Tuple<T1, T2, T3, T4> DeserialiseTuple<T1, T2, T3, T4>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4> value = null)
         {
-            if (bson.IsBsonArray)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsBsonArray)
             {
                 BsonArray array = bson.AsBsonArray;
                 if (array.Count != 4)
@@ -143,7 +149,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static Tuple<T1, T2, T3, T4, T5> DeserialiseTuple<T1, T2, T3, T4, T5>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4, T5> value = null)
         {
-            if (bson.IsBsonArray)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsBsonArray)
             {
                 BsonArray array = bson.AsBsonArray;
                 if (array.Count != 5)
