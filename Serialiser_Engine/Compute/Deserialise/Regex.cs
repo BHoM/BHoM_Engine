@@ -38,7 +38,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static Regex DeserialiseRegex(this BsonValue bson, ref bool failed, Regex value = null)
         {
-            if (bson.IsString)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsString)
                 return new Regex(bson.AsString);
             else 
             {

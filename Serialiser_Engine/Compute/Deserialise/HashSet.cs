@@ -37,7 +37,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static HashSet<T> DeserialiseHashSet<T>(this BsonValue bson, ref bool failed, HashSet<T> value = null)
         {
-            if (!bson.IsBsonArray)
+            if (bson.IsBsonNull)
+                return null;
+            else if (!bson.IsBsonArray)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a List and received " + bson.ToString() + " instead.");
                 failed = true;

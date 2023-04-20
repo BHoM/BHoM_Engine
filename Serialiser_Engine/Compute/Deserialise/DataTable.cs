@@ -41,7 +41,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static DataTable DeserialiseDataTable(this BsonValue bson, ref bool failed, DataTable value = null)
         {
-            if (bson.IsBsonArray)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsBsonArray)
             {
                 DataTable table = new DataTable();
                 bool initialised = false;
