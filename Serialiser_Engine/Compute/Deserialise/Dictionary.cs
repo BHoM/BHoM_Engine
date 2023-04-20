@@ -42,7 +42,9 @@ namespace BH.Engine.Serialiser
             if (value == null)
                 value = new Dictionary<TK, TV>();
 
-            if (bson.IsBsonDocument && typeof(TK) == typeof(string))
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsBsonDocument && typeof(TK) == typeof(string))
             {
                 foreach (BsonElement item in bson.AsBsonDocument)
                     value[(TK)(object)(item.Name)] = (TV)item.Value.IDeserialise(typeof(TV), ref failed);

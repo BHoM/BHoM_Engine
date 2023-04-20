@@ -39,7 +39,9 @@ namespace BH.Engine.Serialiser
         public static Type DeserialiseType(this BsonValue bson, ref bool failed, Type value = null)
         {
             // Handle the case where the type is represented as a string
-            if (bson.IsString)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsString)
             {
                 Type type = BH.Engine.Base.Create.Type(bson.AsString);
                 if (type != null)

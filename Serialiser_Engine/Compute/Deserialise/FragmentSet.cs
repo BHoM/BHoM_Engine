@@ -41,7 +41,9 @@ namespace BH.Engine.Serialiser
                 value = new FragmentSet();
 
             BsonArray array = null;
-            if (bson.IsBsonArray)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsBsonArray)
             {
                 array = bson.AsBsonArray;
             }

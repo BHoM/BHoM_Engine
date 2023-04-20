@@ -37,7 +37,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static string DeserialiseString(this BsonValue bson, ref bool failed, string value = "")
         {
-            if (bson.IsString)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsString)
                 return bson.AsString;
             else if (bson.IsBsonDocument)
             {
