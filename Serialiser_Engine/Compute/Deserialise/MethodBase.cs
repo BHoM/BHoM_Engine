@@ -42,7 +42,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static MethodBase DeserialiseMethodBase(this BsonValue bson, ref bool failed, MethodBase value = null)
         {
-            if (!bson.IsBsonDocument)
+            if (bson.IsBsonNull)
+                return null;
+            else if (!bson.IsBsonDocument)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a MethodBase and received " + bson.ToString() + " instead.");
                 failed = true;
