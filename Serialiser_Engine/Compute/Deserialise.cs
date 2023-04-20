@@ -38,7 +38,9 @@ namespace BH.Engine.Serialiser
 
         public static object IDeserialise(this BsonValue bson, ref bool failed)
         {
-            if (bson.IsBsonArray)
+            if (bson.IsBsonNull)
+                return null;
+            else if (bson.IsBsonArray)
                 return bson.DeserialiseList(ref failed, new List<object>());
             else if (bson.IsBsonDocument)
             {
@@ -70,6 +72,9 @@ namespace BH.Engine.Serialiser
 
         public static object IDeserialise(this BsonValue bson, Type targetType, ref bool failed, object value = null)
         {
+            if (bson.IsBsonNull)
+                return null;
+
             // Cover all base types
             switch (targetType.FullName)
             {
@@ -106,6 +111,8 @@ namespace BH.Engine.Serialiser
                 case "System.Object":
                     return IDeserialise(bson, ref failed);
                 case "System.Reflection.MethodBase":
+                case "System.Reflection.MethodInfo":
+                case "System.Reflection.ConstructorInfo":
                     return DeserialiseMethodBase(bson, ref failed);
                 case "System.Text.RegularExpressions.Regex":
                     return DeserialiseRegex(bson, ref failed);
