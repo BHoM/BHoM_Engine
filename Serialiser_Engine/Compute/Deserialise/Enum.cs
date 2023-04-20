@@ -51,6 +51,8 @@ namespace BH.Engine.Serialiser
                 else
                     value = BH.Engine.Base.Compute.ParseEnum<T>(bson["Value"].AsString);
             }
+            else if (bson.IsInt32)
+                value = (T)(object)bson.AsInt32;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an enum and received " + bson.ToString() + " instead.");
