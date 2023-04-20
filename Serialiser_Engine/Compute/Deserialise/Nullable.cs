@@ -20,14 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
 using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace BH.Engine.Serialiser
@@ -38,45 +35,15 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static IImmutable DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType)
+        public static object DeserialiseNullable(this BsonValue bson, ref bool failed, Type targetType)
         {
             if (bson.IsBsonNull)
                 return null;
-            else if (!bson.IsBsonDocument)
+            else
             {
-                BH.Engine.Base.Compute.RecordError("Expected to deserialise an Immutable object and received " + bson.ToString() + " instead.");
-                failed = true;
-                return null;
+                Type itemType = targetType.GetGenericArguments()[0];
+                return IDeserialise(bson, targetType, ref failed);
             }
-
-            BsonDocument doc = bson.AsBsonDocument;
-            ConstructorInfo[] constructors = targetType.GetConstructors();
-            if (constructors.Length > 0)
-            {
-                var ctor = targetType.GetConstructors().OrderByDescending(x => x.GetParameters().Count()).First();
-                var parameters = ctor.GetParameters();
-
-                var matches = parameters
-                    .GroupJoin(doc,
-                        parameter => parameter.Name,
-                        property => property.Name,
-                        (parameter, props) => new { Parameter = parameter, Properties = props },
-                        StringComparer.OrdinalIgnoreCase);
-
-                if (matches.All(m => m.Properties.Count() == 1))
-                {
-                    List<object> arguments = new List<object>();
-                    foreach (var match in matches)
-                        arguments.Add(IDeserialise(match.Properties.First().Value, match.Parameter.ParameterType, ref failed));
-                    IImmutable result = ctor.Invoke(arguments.ToArray()) as IImmutable;
-
-                    if (result != null)
-                        return SetProperties(doc, ref failed, targetType, result) as IImmutable;
-                }
-            }
-
-            return null;
-
         }
 
         /*******************************************/
