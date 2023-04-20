@@ -22,6 +22,7 @@
 
 using BH.oM.Base.Attributes;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -47,8 +48,6 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            Dictionary<string, List<Type>> typeDictionary = Query.BHoMTypeDictionary();
-
             if (name.Contains('<'))
                 return GenericType(name, silent);
             else if (name.Contains('`') && name.Contains("[["))
@@ -65,7 +64,7 @@ namespace BH.Engine.Base
             }
 
             List<Type> types = null;
-            if (!typeDictionary.TryGetValue(name, out types))
+            if (!Global.BHoMTypeDictionary.TryGetValue(name, out types))
             {
                 Type type = System.Type.GetType(name);
                 if (type == null && name.EndsWith("&"))
