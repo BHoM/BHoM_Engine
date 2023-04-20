@@ -24,8 +24,9 @@ using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-
+using System.Collections.ObjectModel;
 
 namespace BH.Engine.Serialiser
 {
@@ -84,7 +85,7 @@ namespace BH.Engine.Serialiser
                     return DeserialiseDateTime(bson, ref failed);
                 case "System.DateTimeOffset":
                     return DeserialiseDateTimeOffset(bson, ref failed);
-                case "system.Decimal":
+                case "System.Decimal":
                     return DeserialiseDecimal(bson, ref failed);
                 case "System.Double":
                     return DeserialiseDouble(bson, ref failed);
@@ -122,18 +123,26 @@ namespace BH.Engine.Serialiser
             switch (targetType.Name)
             {
                 case "Dictionary`2":
-                    return DeserialiseDictionary(bson, ref failed, EnsureNotNull(value, targetType) as dynamic);
+                    return DeserialiseDictionary(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic);
                 case "HashSet`1":
-                    return DeserialiseHashSet(bson, ref failed, EnsureNotNull(value, targetType) as dynamic);
+                    return DeserialiseHashSet(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic);
                 case "List`1":
-                    return DeserialiseList(bson, ref failed, EnsureNotNull(value, targetType) as dynamic);
+                    return DeserialiseList(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic);
                 case "IDictionary`2":
-                    return DeserialiseDictionary(bson, ref failed, CreateEmptyDictionary(value, targetType) as dynamic);
+                    return DeserialiseDictionary(bson, ref failed, CreateEmptyDictionary(targetType) as dynamic);
                 case "IEnumerable`1":
-                    return DeserialiseList(bson, ref failed, CreateEmptyList(value, targetType) as dynamic);
+                case "IList`1":
+                case "IReadOnlyList`1":
+                    return DeserialiseList(bson, ref failed, CreateEmptyList(targetType) as dynamic);
                 case "IComparable":
                 case "IComparable`1":
                     return IDeserialise(bson, ref failed);
+                case "Nullable`1":
+                    return DeserialiseNullable(bson, ref failed, targetType);
+                case "SortedDictionary`2":
+                    return DeserialiseSortedDictionary(bson, ref failed, CreateEmptyDictionary(targetType) as dynamic);
+                case "ReadOnlyCollection`1":
+                    return DeserialiseReadOnlyCollection(bson, ref failed, CreateEmptyList(targetType) as dynamic);
                 case "Tuple`2":
                 case "Tuple`3":
                 case "Tuple`4":
@@ -143,10 +152,10 @@ namespace BH.Engine.Serialiser
 
             if (targetType.IsEnum)
                 return DeserialiseEnum(bson, ref failed, EnsureNotNull(value, targetType) as dynamic);
-            else if (typeof(IObject).IsAssignableFrom(targetType))
+            else if (typeof(IObject).IsAssignableFrom(targetType) || (targetType.IsInterface && targetType.FullName.StartsWith("BH.")))
                 return DeserialiseIObject(bson, ref failed, value as dynamic);
             else if (typeof(Array).IsAssignableFrom(targetType))
-                return DeserialiseArray(bson, ref failed, CreateEmptyArray(value, targetType) as dynamic);
+                return DeserialiseArray(bson, ref failed, CreateEmptyArray(targetType) as dynamic);
             else
             {
                 BH.Engine.Base.Compute.RecordError("Object of type " + targetType.ToString() + " cannot be deserialised.");
@@ -172,49 +181,46 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static object CreateEmptyList(object value, Type targetType)
+        private static object EnsureNotNullAndClear(ICollection value, Type targetType)
         {
-            if (value == null)
-            {
-                Type itemType = targetType.GetGenericArguments()[0];
-                Type listType = typeof(List<>);
-                Type constructedListType = listType.MakeGenericType(itemType);
-                return Activator.CreateInstance(constructedListType);
-            }
-            else
-                return value;   
-        }
-
-        /*******************************************/
-
-        private static object CreateEmptyDictionary(object value, Type targetType)
-        {
-            if (value == null)
-            {
-                Type[] types = targetType.GetGenericArguments();
-                Type dicType = typeof(Dictionary<,>);
-                Type constructedDicType = dicType.MakeGenericType(types);
-                return Activator.CreateInstance(constructedDicType);
-            }
+            if (targetType.IsAbstract)
+                return value;
+            else if (value == null || value.Count > 0)
+                return Activator.CreateInstance(targetType);
             else
                 return value;
         }
 
         /*******************************************/
 
-        private static object CreateEmptyArray(object value, Type targetType)
+        private static object CreateEmptyList(Type targetType)
         {
-            if (value == null)
-            {
-                if (targetType.Name.EndsWith("[]"))
-                    return Activator.CreateInstance(targetType, new object[] { 0 });
-                else if (targetType.Name.EndsWith("[,]"))
-                    return Activator.CreateInstance(targetType, new object[] { 0, 0 });
-                else
-                    return value;
-            }
+            Type itemType = targetType.GetGenericArguments()[0];
+            Type listType = typeof(List<>);
+            Type constructedListType = listType.MakeGenericType(itemType);
+            return Activator.CreateInstance(constructedListType);  
+        }
+
+        /*******************************************/
+
+        private static object CreateEmptyDictionary(Type targetType)
+        {
+            Type[] types = targetType.GetGenericArguments();
+            Type dicType = typeof(Dictionary<,>);
+            Type constructedDicType = dicType.MakeGenericType(types);
+            return Activator.CreateInstance(constructedDicType);
+        }
+
+        /*******************************************/
+
+        private static object CreateEmptyArray(Type targetType)
+        {
+            if (targetType.Name.EndsWith("[]"))
+                return Activator.CreateInstance(targetType, new object[] { 0 });
+            else if (targetType.Name.EndsWith("[,]"))
+                return Activator.CreateInstance(targetType, new object[] { 0, 0 });
             else
-                return value;
+                return null;
         }
 
         /*******************************************/
