@@ -38,15 +38,17 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("6.2", "BH.Engine.Structure.Create.ElogatedCircularVoidHollowCore(System.Double, System.Double, System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String)")]
         [Description("Creates a HollowCore surface property with elongated circular voids.")]
         [InputFromProperty("thickness")]
         [Input("holeHeight", "Height of the voided elongated circular holes.", typeof(Length))]
         [Input("holeWidth", "Width of the voided elongated circular holes. This also corresponds to the diamter of the circular ends of the voids.", typeof(Length))]
         [Input("holeSpacing", "Centre-Centre spacing of the voided holes.", typeof(Length))]
         [Input("material", "Concrete material of the hollow core. Default concrete material will be assigned if nothing is provided.")]
+        [InputFromProperty("direction")]
         [InputFromProperty("name")]
         [Output("hollowCore", "The created hollow core property.")]
-        public static HollowCore ElogatedCircularVoidHollowCore(double thickness, double holeHeight, double holeWidth, double holeSpacing, Concrete material = null, string name = "")
+        public static HollowCore ElogatedCircularVoidHollowCore(double thickness, double holeHeight, double holeWidth, double holeSpacing, Concrete material = null, PanelDirection direction = PanelDirection.X, string name = "")
         {
             if (thickness < holeHeight)
             {
@@ -74,6 +76,7 @@ namespace BH.Engine.Structure
                 Thickness = thickness,
                 Material = material,
                 Name = name,
+                Direction = direction,
                 Openings = new ElongatedCircularHollowCoreOpeningProfiles { Height = holeHeight, Width = holeWidth, Spacing = holeSpacing }
             };
         }

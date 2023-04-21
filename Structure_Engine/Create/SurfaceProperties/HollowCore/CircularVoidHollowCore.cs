@@ -38,14 +38,16 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("6.2", "BH.Engine.Structure.Create.CircularVoidHollowCore(System.Double, System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String)")]
         [Description("Creates a HollowCore surface property with circular voids.")]
         [InputFromProperty("thickness")]
         [Input("holeDiameter", "Diameter of the voided circular holes.", typeof(Length))]
         [Input("holeSpacing", "Centre-Centre spacing of the voided circular holes.", typeof(Length))]
         [Input("material", "Concrete material of the hollow core. Default concrete material will be assigned if nothing is provided.")]
+        [InputFromProperty("direction")]
         [InputFromProperty("name")]
         [Output("hollowCore", "The created hollow core property.")]
-        public static HollowCore CircularVoidHollowCore(double thickness, double holeDiameter, double holeSpacing, Concrete material = null, string name = "")
+        public static HollowCore CircularVoidHollowCore(double thickness, double holeDiameter, double holeSpacing, Concrete material = null, PanelDirection direction = PanelDirection.X, string name = "")
         {
             if (thickness < holeDiameter)
             {
@@ -67,6 +69,7 @@ namespace BH.Engine.Structure
                 Thickness = thickness,
                 Material = material,
                 Name = name,
+                Direction = direction,
                 Openings = new CircularHollowCoreOpeningProfiles { Diameter = holeDiameter, Spacing = holeSpacing },
             };
         }
