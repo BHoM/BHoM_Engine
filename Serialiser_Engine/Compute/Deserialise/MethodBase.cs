@@ -68,12 +68,12 @@ namespace BH.Engine.Serialiser
                 if (method == null || method.IsDeprecated())
                 {
                     // Try to upgrade through versioning
-                    BsonDocument oldDoc = new BsonDocument();
-                    doc["_t"] = "System.Reflection.MethodBase";
-                    doc["TypeName"] = typeName;
-                    doc["MethodName"] = methodName;
-                    doc["Parameters"] = new BsonArray(paramTypesJson);
-                    BsonDocument newDoc = Versioning.Convert.ToNewVersion(oldDoc, version);
+                    //BsonDocument oldDoc = new BsonDocument();
+                    //oldDoc["_t"] = "System.Reflection.MethodBase";
+                    //oldDoc["TypeName"] = typeName;
+                    //oldDoc["MethodName"] = methodName;
+                    //oldDoc["Parameters"] = new BsonArray(paramTypesJson);
+                    BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc, version);
                     if (newDoc != null && newDoc.Contains("TypeName") && newDoc.Contains("MethodName") && newDoc.Contains("Parameters"))
                         method = GetMethod(newDoc["MethodName"].AsString, newDoc["TypeName"].AsString, newDoc["Parameters"].AsBsonArray.Select(x => x.AsString).ToList());
                 }
