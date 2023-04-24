@@ -39,6 +39,8 @@ namespace BH.Engine.Serialiser
         {
             if (bson.IsDecimal128)
                 return bson.AsDecimal;
+            else if(bson.IsString && decimal.TryParse(bson.AsString, out decimal d))
+                return d;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a decimal and received " + bson.ToString() + " instead.");
