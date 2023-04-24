@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Base;
+using Humanizer;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
@@ -36,21 +37,35 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static Type DeserialiseType(this BsonValue bson, ref bool failed, Type value = null)
+        public static Type DeserialiseType(this BsonValue bson, ref bool failed, Type value, string version, bool isUpgraded)
         {
             // Handle the case where the type is represented as a string
             if (bson.IsBsonNull)
                 return null;
             else if (bson.IsString)
             {
-                Type type = BH.Engine.Base.Create.Type(bson.AsString);
+                Type type = BH.Engine.Base.Create.Type(bson.AsString, true);
                 if (type != null)
                     return type;
                 else
                 {
-                    failed = true;
-                    BH.Engine.Base.Compute.RecordError("Failed to convert the string into a type: " + bson.AsString);
-                    return value;
+                    if (!isUpgraded)
+                    {
+                        BsonDocument doc = new BsonDocument();
+                        doc["_t"] = "System.Type";
+                        doc["Name"] = bson.AsString;
+                        BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc, version);
+                        if (newDoc != null && newDoc.Contains("Name"))
+                            type = GetTypeFromName(newDoc["Name"].AsString);
+                    }
+                    if (type != null)
+                        return type;
+                    else
+                    {
+                        failed = true;
+                        BH.Engine.Base.Compute.RecordError("Failed to convert the string into a type: " + bson.AsString);
+                        return value;
+                    }
                 }
             }
 
@@ -64,7 +79,7 @@ namespace BH.Engine.Serialiser
 
             // Handle the case where the type is stored as a BsonDocument
             string fullName = "";
-            string version = "";
+            //string version = "";
             List<Type> genericTypes = new List<Type>();
             List<Type> constraints = new List<Type>();
 
@@ -81,10 +96,10 @@ namespace BH.Engine.Serialiser
                         version = element.Value.DeserialiseString(ref failed);
                         break;
                     case "GenericArguments":
-                        genericTypes = element.Value.DeserialiseList(ref failed, genericTypes);
+                        genericTypes = element.Value.DeserialiseList(ref failed, genericTypes, version, isUpgraded);
                         break;
                     case "Constraints":
-                        constraints = element.Value.DeserialiseList(ref failed, constraints);
+                        constraints = element.Value.DeserialiseList(ref failed, constraints, version, isUpgraded);
                         break;
                 }
             }
@@ -93,7 +108,7 @@ namespace BH.Engine.Serialiser
             {
                 Type type = GetTypeFromName(fullName);
 
-                if (type == null && fullName != "T")
+                if (type == null && fullName != "T" && !isUpgraded)
                 {
                     // Try to upgrade through versioning
                     BsonDocument doc = new BsonDocument();
