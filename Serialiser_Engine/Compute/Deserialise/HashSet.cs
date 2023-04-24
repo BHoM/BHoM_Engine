@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static HashSet<T> DeserialiseHashSet<T>(this BsonValue bson, ref bool failed, HashSet<T> value = null)
+        public static HashSet<T> DeserialiseHashSet<T>(this BsonValue bson, ref bool failed, HashSet<T> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -50,7 +50,7 @@ namespace BH.Engine.Serialiser
                 value = new HashSet<T>();
 
             foreach (BsonValue item in bson.AsBsonArray)
-                value.Add((T)item.IDeserialise(typeof(T), ref failed));
+                value.Add((T)item.IDeserialise(typeof(T), ref failed, null, version, isUpgraded));
 
             return value;
         }

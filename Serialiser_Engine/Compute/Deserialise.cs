@@ -27,6 +27,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using BH.Engine.Versioning;
 
 namespace BH.Engine.Serialiser
 {
@@ -36,32 +37,38 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static object IDeserialise(this BsonValue bson, ref bool failed)
+        public static object IDeserialise(this BsonValue bson, ref bool failed, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
             else if (bson.IsBsonArray)
-                return bson.DeserialiseList(ref failed, new List<object>());
+                return bson.DeserialiseList(ref failed, new List<object>(), version, isUpgraded);
             else if (bson.IsBsonDocument)
             {
                 BsonDocument doc = bson.AsBsonDocument;
                 if (!doc.Contains("_t"))
                 {
-                    return bson.DeserialiseCustomObject(ref failed);
+                    return bson.DeserialiseCustomObject(ref failed, null, version, isUpgraded);
                 }
                 else if (doc["_t"] == "System.String")
                     return bson.DeserialiseString(ref failed);
                 else
                 {
-                    Type type = doc["_t"].DeserialiseType(ref failed);
+                    string docVersion = doc.Version();
+                    if (!string.IsNullOrEmpty(docVersion))
+                        version = docVersion;
+                    Type type = doc["_t"].DeserialiseType(ref failed, null, version, isUpgraded);
                     if (type == null)
-                    {
-                        failed = true;
-                        BH.Engine.Base.Compute.RecordError("Failed to deserialise object of unknown type " + bson["_t"].AsString + ".");
-                        return null;
-                    }
+                        return DeserialiseDeprecate(doc, ref failed) as IObject;
+                    //return DeserialiseCustomObject(doc, ref failed);
+                    //if (type == null)
+                    //{
+                    //    failed = true;
+                    //    BH.Engine.Base.Compute.RecordError("Failed to deserialise object of unknown type " + bson["_t"].AsString + ".");
+                    //    return null;
+                    //}
                     else
-                        return IDeserialise(bson, type, ref failed);
+                        return IDeserialise(bson, type, ref failed, null, version, isUpgraded);
                 }
             }
             else
@@ -70,7 +77,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        public static object IDeserialise(this BsonValue bson, Type targetType, ref bool failed, object value = null)
+        public static object IDeserialise(this BsonValue bson, Type targetType, ref bool failed, object value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -83,9 +90,9 @@ namespace BH.Engine.Serialiser
                 case "System.Drawing.Bitmap":
                     return DeserialiseBitmap(bson, ref failed);
                 case "BH.oM.Base.CustomObject":
-                    return DeserialiseCustomObject(bson, ref failed);
+                    return DeserialiseCustomObject(bson, ref failed, null, version, isUpgraded);
                 case "System.Data.DataTable":
-                    return DeserialiseDataTable(bson, ref failed);
+                    return DeserialiseDataTable(bson, ref failed, null, version, isUpgraded);
                 case "System.DateTime":
                     return DeserialiseDateTime(bson, ref failed);
                 case "System.DateTimeOffset":
@@ -97,7 +104,7 @@ namespace BH.Engine.Serialiser
                 case "System.Drawing.Color":
                     return DeserialiseColor(bson, ref failed);
                 case "BH.oM.Base.FragmentSet":
-                    return DeserialiseFragmentSet(bson, ref failed);
+                    return DeserialiseFragmentSet(bson, ref failed, null, version, isUpgraded);
                 case "System.Guid":
                     return DeserialiseGuid(bson, ref failed);
                 case "System.Int16": // short
@@ -109,7 +116,7 @@ namespace BH.Engine.Serialiser
                 case "System.IntPtr":
                     return DeserialiseIntPtr(bson, ref failed);
                 case "System.Object":
-                    return IDeserialise(bson, ref failed);
+                    return IDeserialise(bson, ref failed, version, isUpgraded);
                 case "System.Reflection.MethodBase":
                 case "System.Reflection.MethodInfo":
                 case "System.Reflection.ConstructorInfo":
@@ -123,46 +130,46 @@ namespace BH.Engine.Serialiser
                 case "System.TimeSpan":
                     return DeserialiseTimeSpan(bson, ref failed);
                 case "System.Type":
-                    return DeserialiseType(bson, ref failed);
+                    return DeserialiseType(bson, ref failed, null, version, isUpgraded);
             }
 
             // Cover Sytem generic types
             switch (targetType.Name)
             {
                 case "Dictionary`2":
-                    return DeserialiseDictionary(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic);
+                    return DeserialiseDictionary(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic, version, isUpgraded);
                 case "HashSet`1":
-                    return DeserialiseHashSet(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic);
+                    return DeserialiseHashSet(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic, version, isUpgraded);
                 case "List`1":
-                    return DeserialiseList(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic);
+                    return DeserialiseList(bson, ref failed, EnsureNotNullAndClear(value as ICollection, targetType) as dynamic, version, isUpgraded);
                 case "IDictionary`2":
-                    return DeserialiseDictionary(bson, ref failed, CreateEmptyDictionary(targetType) as dynamic);
+                    return DeserialiseDictionary(bson, ref failed, CreateEmptyDictionary(targetType) as dynamic, version, isUpgraded);
                 case "IEnumerable`1":
                 case "IList`1":
                 case "IReadOnlyList`1":
-                    return DeserialiseList(bson, ref failed, CreateEmptyList(targetType) as dynamic);
+                    return DeserialiseList(bson, ref failed, CreateEmptyList(targetType) as dynamic, version, isUpgraded);
                 case "IComparable":
                 case "IComparable`1":
-                    return IDeserialise(bson, ref failed);
+                    return IDeserialise(bson, ref failed, version, isUpgraded);
                 case "Nullable`1":
-                    return DeserialiseNullable(bson, ref failed, targetType);
+                    return DeserialiseNullable(bson, ref failed, targetType, version, isUpgraded);
                 case "SortedDictionary`2":
-                    return DeserialiseSortedDictionary(bson, ref failed, CreateEmptyDictionary(targetType) as dynamic);
+                    return DeserialiseSortedDictionary(bson, ref failed, CreateEmptyDictionary(targetType) as dynamic, version, isUpgraded);
                 case "ReadOnlyCollection`1":
-                    return DeserialiseReadOnlyCollection(bson, ref failed, CreateEmptyList(targetType) as dynamic);
+                    return DeserialiseReadOnlyCollection(bson, ref failed, CreateEmptyList(targetType) as dynamic, version, isUpgraded);
                 case "Tuple`2":
                 case "Tuple`3":
                 case "Tuple`4":
                 case "Tuple`5":
-                    return DeserialiseTuple(bson, ref failed, targetType);
+                    return DeserialiseTuple(bson, ref failed, targetType, version, isUpgraded);
             }
 
             if (targetType.IsEnum)
-                return DeserialiseEnum(bson, ref failed, EnsureNotNull(value, targetType) as dynamic);
+                return DeserialiseEnum(bson, ref failed, EnsureNotNull(value, targetType) as dynamic, version, isUpgraded);
             else if (typeof(IObject).IsAssignableFrom(targetType) || (targetType.IsInterface && targetType.FullName.StartsWith("BH.")))
-                return DeserialiseIObject(bson, ref failed, value as dynamic);
+                return DeserialiseIObject(bson, ref failed, value as dynamic, version, isUpgraded);
             else if (typeof(Array).IsAssignableFrom(targetType))
-                return DeserialiseArray(bson, ref failed, CreateEmptyArray(targetType) as dynamic);
+                return DeserialiseArray(bson, ref failed, CreateEmptyArray(targetType) as dynamic, version, isUpgraded);
             else
             {
                 BH.Engine.Base.Compute.RecordError("Object of type " + targetType.ToString() + " cannot be deserialised.");
