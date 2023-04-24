@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static Dictionary<TK,TV> DeserialiseDictionary<TK,TV>(this BsonValue bson, ref bool failed, Dictionary<TK, TV> value)
+        public static Dictionary<TK,TV> DeserialiseDictionary<TK,TV>(this BsonValue bson, ref bool failed, Dictionary<TK, TV> value, string version, bool isUpgraded)
         {
             if (value == null)
                 value = new Dictionary<TK, TV>();
@@ -49,7 +49,7 @@ namespace BH.Engine.Serialiser
             {
                 foreach (BsonElement item in bson.AsBsonDocument)
                 {
-                    value[(TK)(object)(item.Name)] = (TV)item.Value.IDeserialise(typeof(TV), ref failed);
+                    value[(TK)(object)(item.Name)] = (TV)item.Value.IDeserialise(typeof(TV), ref failed, null, version, isUpgraded);
                 }
             }
             else if (typeof(TK) != typeof(string))
@@ -90,8 +90,8 @@ namespace BH.Engine.Serialiser
                         if (item.IsBsonDocument)
                         {
                             BsonDocument doc = item.AsBsonDocument;
-                            TK key = (TK)(doc["k"].IDeserialise(typeof(TK), ref failed));
-                            TV val = (TV)(doc["v"].IDeserialise(typeof(TV), ref failed));
+                            TK key = (TK)(doc["k"].IDeserialise(typeof(TK), ref failed, null, version, isUpgraded));
+                            TV val = (TV)(doc["v"].IDeserialise(typeof(TV), ref failed, null, version, isUpgraded));
                             if (key != null)
                                 value[key] = val;
                             else

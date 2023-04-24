@@ -35,14 +35,14 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static object DeserialiseNullable(this BsonValue bson, ref bool failed, Type targetType)
+        public static object DeserialiseNullable(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
             else
             {
                 Type itemType = targetType.GetGenericArguments()[0];
-                return IDeserialise(bson, targetType, ref failed);
+                return IDeserialise(bson, targetType, ref failed, null, version, isUpgraded);
             }
         }
 

@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static CustomObject DeserialiseCustomObject(this BsonValue bson, ref bool failed, CustomObject value = null)
+        public static CustomObject DeserialiseCustomObject(this BsonValue bson, ref bool failed, CustomObject value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -68,16 +68,16 @@ namespace BH.Engine.Serialiser
                         value.BHoM_Guid = element.Value.DeserialiseGuid(ref failed, value.BHoM_Guid);
                         break;
                     case "Tags":
-                        value.Tags = element.Value.DeserialiseHashSet(ref failed, value.Tags);
+                        value.Tags = element.Value.DeserialiseHashSet(ref failed, value.Tags, version, isUpgraded);
                         break;
                     case "Fragments":
-                        value.Fragments = element.Value.DeserialiseFragmentSet(ref failed, value.Fragments);
+                        value.Fragments = element.Value.DeserialiseFragmentSet(ref failed, value.Fragments, version, isUpgraded);
                         break;
                     case "CustomData":
-                        value.CustomData = element.Value.DeserialiseDictionary(ref failed, value.CustomData);
+                        value.CustomData = element.Value.DeserialiseDictionary(ref failed, value.CustomData, version, isUpgraded);
                         break;
                     default:
-                        value.CustomData[element.Name] = element.Value.IDeserialise(ref failed);
+                        value.CustomData[element.Name] = element.Value.IDeserialise(ref failed, version, isUpgraded);
                         break;
                 }
             }
