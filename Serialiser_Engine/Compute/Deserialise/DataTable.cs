@@ -39,7 +39,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static DataTable DeserialiseDataTable(this BsonValue bson, ref bool failed, DataTable value = null)
+        public static DataTable DeserialiseDataTable(this BsonValue bson, ref bool failed, DataTable value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -50,7 +50,7 @@ namespace BH.Engine.Serialiser
 
                 foreach (BsonDocument doc in bson.AsBsonArray.OfType<BsonDocument>())
                 {
-                    Dictionary<string, object> rowData = doc.DeserialiseDictionary(ref failed, new Dictionary<string, object>());
+                    Dictionary<string, object> rowData = doc.DeserialiseDictionary(ref failed, new Dictionary<string, object>(), version, isUpgraded);
                     if (!initialised)
                     {
                         foreach (var kvp in rowData)

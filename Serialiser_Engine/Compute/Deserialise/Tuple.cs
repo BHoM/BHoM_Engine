@@ -37,12 +37,12 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static object DeserialiseTuple(this BsonValue bson, ref bool failed, Type targetType)
+        public static object DeserialiseTuple(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
         {
             Type[] keys = targetType.GetGenericArguments();
             object tuple = Activator.CreateInstance(targetType, keys.Select(x => GetDefaultValue(x)).ToArray());
             if (tuple != null)
-                return DeserialiseTuple(bson, ref failed, tuple as dynamic);
+                return DeserialiseTuple(bson, ref failed, tuple as dynamic, version, isUpgraded);
             else
             {
                 failed = true;
@@ -54,7 +54,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        public static Tuple<T1, T2> DeserialiseTuple<T1, T2>(this BsonValue bson, ref bool failed, Tuple<T1, T2> value = null)
+        public static Tuple<T1, T2> DeserialiseTuple<T1, T2>(this BsonValue bson, ref bool failed, Tuple<T1, T2> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -69,8 +69,8 @@ namespace BH.Engine.Serialiser
                 else
                 {
                     return new Tuple<T1, T2>(
-                        (T1)array[0].IDeserialise(typeof(T1), ref failed, value.Item1),
-                        (T2)array[1].IDeserialise(typeof(T2), ref failed, value.Item2)
+                        (T1)array[0].IDeserialise(typeof(T1), ref failed, value.Item1, version, isUpgraded),
+                        (T2)array[1].IDeserialise(typeof(T2), ref failed, value.Item2, version, isUpgraded)
                     );
                 }
             }
@@ -84,7 +84,7 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static Tuple<T1, T2, T3> DeserialiseTuple<T1, T2, T3>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3> value = null)
+        public static Tuple<T1, T2, T3> DeserialiseTuple<T1, T2, T3>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -99,9 +99,9 @@ namespace BH.Engine.Serialiser
                 else
                 {
                     return new Tuple<T1, T2, T3>(
-                        (T1)array[0].IDeserialise(typeof(T1), ref failed, value.Item1),
-                        (T2)array[1].IDeserialise(typeof(T2), ref failed, value.Item2),
-                        (T3)array[2].IDeserialise(typeof(T3), ref failed, value.Item3)
+                        (T1)array[0].IDeserialise(typeof(T1), ref failed, value.Item1, version, isUpgraded),
+                        (T2)array[1].IDeserialise(typeof(T2), ref failed, value.Item2, version, isUpgraded),
+                        (T3)array[2].IDeserialise(typeof(T3), ref failed, value.Item3, version, isUpgraded)
                     );
                 }
             }
@@ -115,7 +115,7 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static Tuple<T1, T2, T3, T4> DeserialiseTuple<T1, T2, T3, T4>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4> value = null)
+        public static Tuple<T1, T2, T3, T4> DeserialiseTuple<T1, T2, T3, T4>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -130,10 +130,10 @@ namespace BH.Engine.Serialiser
                 else
                 {
                     return new Tuple<T1, T2, T3, T4>(
-                        (T1)array[0].IDeserialise(typeof(T1), ref failed, value.Item1),
-                        (T2)array[1].IDeserialise(typeof(T2), ref failed, value.Item2),
-                        (T3)array[2].IDeserialise(typeof(T3), ref failed, value.Item3),
-                        (T4)array[3].IDeserialise(typeof(T4), ref failed, value.Item4)
+                        (T1)array[0].IDeserialise(typeof(T1), ref failed, value.Item1, version, isUpgraded),
+                        (T2)array[1].IDeserialise(typeof(T2), ref failed, value.Item2, version, isUpgraded),
+                        (T3)array[2].IDeserialise(typeof(T3), ref failed, value.Item3, version, isUpgraded),
+                        (T4)array[3].IDeserialise(typeof(T4), ref failed, value.Item4, version, isUpgraded)
                     );
                 }
             }
@@ -147,7 +147,7 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static Tuple<T1, T2, T3, T4, T5> DeserialiseTuple<T1, T2, T3, T4, T5>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4, T5> value = null)
+        public static Tuple<T1, T2, T3, T4, T5> DeserialiseTuple<T1, T2, T3, T4, T5>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4, T5> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -162,11 +162,11 @@ namespace BH.Engine.Serialiser
                 else
                 {
                     return new Tuple<T1, T2, T3, T4, T5>(
-                        (T1)array[0].IDeserialise(typeof(T1), ref failed, value.Item1),
-                        (T2)array[1].IDeserialise(typeof(T2), ref failed, value.Item2),
-                        (T3)array[2].IDeserialise(typeof(T3), ref failed, value.Item3),
-                        (T4)array[3].IDeserialise(typeof(T4), ref failed, value.Item4),
-                        (T5)array[4].IDeserialise(typeof(T5), ref failed, value.Item5)
+                        (T1)array[0].IDeserialise(typeof(T1), ref failed, value.Item1, version, isUpgraded),
+                        (T2)array[1].IDeserialise(typeof(T2), ref failed, value.Item2, version, isUpgraded),
+                        (T3)array[2].IDeserialise(typeof(T3), ref failed, value.Item3, version, isUpgraded),
+                        (T4)array[3].IDeserialise(typeof(T4), ref failed, value.Item4, version, isUpgraded),
+                        (T5)array[4].IDeserialise(typeof(T5), ref failed, value.Item5, version, isUpgraded)
                     );
                 }
             }

@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static List<T> DeserialiseList<T>(this BsonValue bson, ref bool failed, List<T> value = null)
+        public static List<T> DeserialiseList<T>(this BsonValue bson, ref bool failed, List<T> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -50,7 +50,7 @@ namespace BH.Engine.Serialiser
                 value = new List<T>();
 
             foreach (BsonValue item in bson.AsBsonArray)
-                value.Add((T)item.IDeserialise(typeof(T), ref failed));
+                value.Add((T)item.IDeserialise(typeof(T), ref failed, null, version, isUpgraded));
 
             return value;
         }

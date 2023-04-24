@@ -62,7 +62,7 @@ namespace BH.Engine.Serialiser
         public static object FromBson(BsonDocument bson)
         {
             bool failed = false;
-            object result = Compute.IDeserialise(bson, ref failed);
+            object result = Compute.IDeserialise(bson, ref failed, "", false);
 
             if (failed)
             {

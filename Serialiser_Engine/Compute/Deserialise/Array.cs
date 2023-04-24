@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static T[] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[] value = null)
+        public static T[] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[] value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
             {
@@ -51,14 +51,14 @@ namespace BH.Engine.Serialiser
 
             List<T> values = new List<T>();
             foreach (BsonValue item in bson.AsBsonArray)
-                values.Add((T)item.IDeserialise(typeof(T), ref failed));
+                values.Add((T)item.IDeserialise(typeof(T), ref failed, null, version, isUpgraded));
 
             return values.ToArray();
         }
 
         /*******************************************/
 
-        public static T[,] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[,] value = null)
+        public static T[,] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[,] value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
             {
@@ -73,7 +73,7 @@ namespace BH.Engine.Serialiser
 
             List<T[]> values = new List<T[]>();
             foreach (BsonValue item in bson.AsBsonArray)
-                values.Add(item.DeserialiseArray(ref failed, new T[0]));
+                values.Add(item.DeserialiseArray(ref failed, new T[0], version, isUpgraded));
 
             int maxLength = values.Select(x => x.Length).Max();
             T[,] array = new T[values.Count, maxLength];
