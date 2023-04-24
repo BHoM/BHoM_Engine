@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static IImmutable DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType)
+        public static IImmutable DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -67,12 +67,14 @@ namespace BH.Engine.Serialiser
                 {
                     List<object> arguments = new List<object>();
                     foreach (var match in matches)
-                        arguments.Add(IDeserialise(match.Properties.First().Value, match.Parameter.ParameterType, ref failed));
+                        arguments.Add(IDeserialise(match.Properties.First().Value, match.Parameter.ParameterType, ref failed, null, version, isUpgraded));
                     IImmutable result = ctor.Invoke(arguments.ToArray()) as IImmutable;
 
                     if (result != null)
-                        return SetProperties(doc, ref failed, targetType, result) as IImmutable;
+                        return SetProperties(doc, ref failed, targetType, result, version, isUpgraded) as IImmutable;
                 }
+                else
+                    return DeserialiseDeprecate(doc, ref failed) as IImmutable;
             }
 
             return null;
