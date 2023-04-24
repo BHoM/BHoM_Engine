@@ -59,14 +59,14 @@ namespace BH.Engine.Serialiser
                     }
                     catch { }
                 }*/
-
+                failed = true;
                 Engine.Base.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
-                return DeserialiseCustomObject(doc, ref failed);
+                return DeserialiseCustomObject(doc, ref failed, null, "", true);
             }
             else
             {
                 failed = false;
-                return IDeserialise(newDoc, ref failed);
+                return IDeserialise(newDoc, ref failed, "", true);
             }
         }
 

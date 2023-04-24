@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static T DeserialiseEnum<T>(this BsonValue bson, ref bool failed, T value = default(T)) where T : Enum
+        public static T DeserialiseEnum<T>(this BsonValue bson, ref bool failed, T value, string version, bool isUpgraded) where T : Enum
         {
             if (bson.IsString)
                 value = BH.Engine.Base.Compute.ParseEnum<T>(bson.AsString);
