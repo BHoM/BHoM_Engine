@@ -41,6 +41,8 @@ namespace BH.Engine.Serialiser
                 return bson.AsInt32;
             else if (bson.IsInt64)
                 return (int)bson.AsInt64;
+            else if (bson.IsString && int.TryParse(bson.AsString, out int i))
+                return i;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an integer and received " + bson.ToString() + " instead.");

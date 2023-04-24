@@ -43,6 +43,8 @@ namespace BH.Engine.Serialiser
                 return bson.AsInt32;
             else if (bson.IsInt64)
                 return bson.AsInt64;
+            else if (bson.IsString && double.TryParse(bson.AsString, out double d))
+                return d;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a double and received " + bson.ToString() + " instead.");
