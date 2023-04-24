@@ -26,6 +26,7 @@ using MongoDB.Bson.IO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BH.Engine.Serialiser
@@ -47,18 +48,38 @@ namespace BH.Engine.Serialiser
             else if (bson.IsBsonDocument && typeof(TK) == typeof(string))
             {
                 foreach (BsonElement item in bson.AsBsonDocument)
+                {
                     value[(TK)(object)(item.Name)] = (TV)item.Value.IDeserialise(typeof(TV), ref failed);
+                }
             }
             else if (typeof(TK) != typeof(string))
             {
                 BsonArray array = null;
                 if (bson.IsBsonDocument)
-                    array = bson["_v"].AsBsonArray;
+                {
+                    if (bson.AsBsonDocument.Contains("_v"))
+                        array = bson["_v"].AsBsonArray;
+                    else
+                    {
+                        array = new BsonArray();
+                        foreach (var element in bson.AsBsonDocument.Elements)
+                        {
+                            if (element.Name.StartsWith("_"))
+                                continue;
+
+                            BsonDocument doc = new BsonDocument();
+                            doc["k"] = element.Name;
+                            doc["v"] = element.Value;
+                            array.Add(doc);
+                        }
+                    }
+                }
                 else
                     array = bson.AsBsonArray;
 
                 if (array == null)
                 {
+                    
                     BH.Engine.Base.Compute.RecordError("Expected to deserialise a dictionary and received " + bson.ToString() + " instead.");
                     failed = true;
                 }
