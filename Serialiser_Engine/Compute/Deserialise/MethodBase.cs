@@ -31,6 +31,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using BH.Engine.Versioning;
 
 namespace BH.Engine.Serialiser
 {
@@ -54,7 +55,7 @@ namespace BH.Engine.Serialiser
             BsonDocument doc = bson.AsBsonDocument;
             string typeName = doc["TypeName"].DeserialiseString(ref failed);
             string methodName = doc["MethodName"].DeserialiseString(ref failed);
-            string version = doc["_bhomVersion"].DeserialiseString(ref failed);
+            string version = doc.Version();
 
             BsonArray paramArray = doc["Parameters"].AsBsonArray;
             List<string> paramTypesJson = new List<string>();
@@ -63,19 +64,14 @@ namespace BH.Engine.Serialiser
 
             try
             {
-                MethodBase method = GetMethod(methodName, typeName, paramTypesJson);
+                MethodBase method = GetMethod(methodName, typeName, paramTypesJson, version, false);
 
                 if (method == null || method.IsDeprecated())
                 {
                     // Try to upgrade through versioning
-                    //BsonDocument oldDoc = new BsonDocument();
-                    //oldDoc["_t"] = "System.Reflection.MethodBase";
-                    //oldDoc["TypeName"] = typeName;
-                    //oldDoc["MethodName"] = methodName;
-                    //oldDoc["Parameters"] = new BsonArray(paramTypesJson);
                     BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc, version);
                     if (newDoc != null && newDoc.Contains("TypeName") && newDoc.Contains("MethodName") && newDoc.Contains("Parameters"))
-                        method = GetMethod(newDoc["MethodName"].AsString, newDoc["TypeName"].AsString, newDoc["Parameters"].AsBsonArray.Select(x => x.AsString).ToList());
+                        method = GetMethod(newDoc["MethodName"].AsString, newDoc["TypeName"].AsString, newDoc["Parameters"].AsBsonArray.Select(x => x.AsString).ToList(), version, true);
                 }
 
                 if (method == null)
@@ -94,37 +90,52 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
 
-        private static MethodBase GetMethod(string methodName, string typeName, List<string> paramTypesJson)
+        private static MethodBase GetMethod(string methodName, string typeName, List<string> paramTypesJson, string version, bool isUpgraded)
         {
-            List<Type> types = paramTypesJson.Select(x => Convert.FromJson(x)).Cast<Type>().ToList();
+            List<Type> types = new List<Type>();
+            bool failed = false;
+            foreach (string paramType in paramTypesJson)
+            {
+                BsonDocument paramTypeDoc;
+                if (BsonDocument.TryParse(paramType, out paramTypeDoc) && paramTypeDoc.Contains("Name"))
+                {
+                    Type t = DeserialiseType(paramTypeDoc, ref failed, null, version, isUpgraded);
+                    types.Add(t);
+                }
+                else
+                {
+                    Type t = DeserialiseType(paramType, ref failed, null, version, isUpgraded);
+                    types.Add(t);
+                }
+            }
 
             MethodBase method = null;
             BsonDocument typeDocument;
             if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
             {
                 typeName = typeDocument["Name"].AsString.Split(new char[] { ',' }).First();
-                foreach (Type type in Base.Create.AllTypes(typeName, true))
+                Type type = DeserialiseType(typeDocument, ref failed, null, version, isUpgraded);
+                if (type == null)
+                    return null;
+                method = BH.Engine.Reflection.Create.MethodBase(type, methodName, types.Select(x => x.ToText(true)).ToList()); // type overload
+                if (method == null)
                 {
-                    method = BH.Engine.Reflection.Create.MethodBase(type, methodName, types.Select(x => x.ToText(true)).ToList()); // type overload
-                    if (method == null)
+                    try
                     {
-                        try
+                        Type[] typesArray = types.ToArray();
+                        if (typesArray != null)
                         {
-                            Type[] typesArray = types.ToArray();
-                            if (typesArray != null)
-                            {
-                                if (methodName == ".ctor")
-                                    method = type.GetConstructor(typesArray);
-                                else
-                                    method = type.GetMethod(methodName, typesArray);
-                            }
+                            if (methodName == ".ctor")
+                                method = type.GetConstructor(typesArray);
+                            else
+                                method = type.GetMethod(methodName, typesArray);
                         }
-                        catch { }
                     }
-
-                    if (method != null)
-                        return method;
+                    catch { }
                 }
+
+                if (method != null)
+                    return method;
             }
 
             return method;
