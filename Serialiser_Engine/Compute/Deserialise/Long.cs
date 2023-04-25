@@ -41,6 +41,8 @@ namespace BH.Engine.Serialiser
                 return bson.AsInt64;
             else if (bson.IsInt32)
                 return bson.AsInt32;
+            else if (bson.IsString && long.TryParse(bson.AsString, out long i))
+                return i;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a long and received " + bson.ToString() + " instead.");
