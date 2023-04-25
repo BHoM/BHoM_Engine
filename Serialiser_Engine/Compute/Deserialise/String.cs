@@ -46,7 +46,15 @@ namespace BH.Engine.Serialiser
                 BsonDocument doc = bson.AsBsonDocument;
                 if (doc["_t"] == "System.String" && doc.Contains("_v"))
                     return doc["_v"].AsString;
-            } 
+            }
+            else if (bson.IsDouble)
+                return bson.AsDouble.ToString();
+            else if (bson.IsInt32)
+                return bson.AsInt32.ToString();
+            else if (bson.IsInt64)
+                return bson.AsInt64.ToString();
+            else if (bson.IsDecimal128)
+                return bson.AsDecimal.ToString();
 
             BH.Engine.Base.Compute.RecordError("Expected to deserialise a string and received " + bson.ToString() + " instead.");
             failed = true;
