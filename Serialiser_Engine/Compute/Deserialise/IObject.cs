@@ -87,19 +87,20 @@ namespace BH.Engine.Serialiser
                     {
                         if (!isUpgraded)
                         {
-                            bool upgradeFailed = false;
-                            IObject newObj = DeserialiseDeprecate(doc, ref upgradeFailed) as IObject;
-                            if (!upgradeFailed)
-                                return newObj;
+                            if (TryUpgrade(doc, version, out IObject upgraded))
+                            {
+                                return upgraded;
+                            }
                         }
 
                         if (value is IBHoMObject && !item.Name.StartsWith("_"))
                         {
-                            BH.Engine.Base.Compute.RecordNote($"Unable to find a proeprty named {item.Name}. Data stored in CustomData of the {type.Name}.");
+                            BH.Engine.Base.Compute.RecordNote($"Unable to find a property named {item.Name}. Data stored in CustomData of the {type.Name}.");
                             ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(ref failed, version, isUpgraded);
                         }
                         else
                         {
+                            BH.Engine.Base.Compute.RecordError($"Object of type {type.Name} contains data without corresponding properties. Custom object returned in its place.");
                             return DeserialiseCustomObject(doc, ref failed, null, version, true);
                         }
 
@@ -121,7 +122,7 @@ namespace BH.Engine.Serialiser
 
                             object propertyValue = item.Value.IDeserialise(prop.PropertyType, ref failed, prop.GetValue(value), version, isUpgraded);
 
-                            if (CanSetValueToProperty(prop, propertyValue))
+                            if (CanSetValueToProperty(prop.PropertyType, propertyValue))
                             {
                                 prop.SetValue(value, propertyValue);
                             }
@@ -152,12 +153,12 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static bool CanSetValueToProperty(PropertyInfo prop, object value)
+        private static bool CanSetValueToProperty(Type propType, object value)
         {
             if (value == null)
-                return !prop.PropertyType.IsValueType || Nullable.GetUnderlyingType(prop.PropertyType) != null;
+                return !propType.IsValueType || Nullable.GetUnderlyingType(propType) != null;
             else
-                return prop.PropertyType.IsAssignableFrom(value.GetType());
+                return propType.IsAssignableFrom(value.GetType());
         }
 
         /*******************************************/
