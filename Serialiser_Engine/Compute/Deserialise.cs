@@ -60,13 +60,6 @@ namespace BH.Engine.Serialiser
                     Type type = doc["_t"].DeserialiseType(ref failed, null, version, isUpgraded);
                     if (type == null)
                         return DeserialiseDeprecate(doc, ref failed) as IObject;
-                    //return DeserialiseCustomObject(doc, ref failed);
-                    //if (type == null)
-                    //{
-                    //    failed = true;
-                    //    BH.Engine.Base.Compute.RecordError("Failed to deserialise object of unknown type " + bson["_t"].AsString + ".");
-                    //    return null;
-                    //}
                     else
                         return IDeserialise(bson, type, ref failed, null, version, isUpgraded);
                 }
@@ -162,6 +155,8 @@ namespace BH.Engine.Serialiser
                 case "Tuple`4":
                 case "Tuple`5":
                     return DeserialiseTuple(bson, ref failed, targetType, version, isUpgraded);
+                case "Enum":
+                    return DeserialiseEnumTopLevel(bson, ref failed, value as Enum, version, isUpgraded);
             }
 
             if (targetType.IsEnum)
