@@ -42,7 +42,7 @@ namespace BH.Engine.Serialiser
                 value = BH.Engine.Base.Compute.ParseEnum<T>(bson.AsString);
             else if (bson.IsBsonDocument)
             {
-                Type type = BH.Engine.Base.Create.Type(bson["TypeName"].AsString);
+                Type type = DeserialiseType(bson["TypeName"], ref failed, null, version, isUpgraded);
                 if (type != typeof(T))
                 {
                     BH.Engine.Base.Compute.RecordError("The type of enum to deserialise doesn't match. Expected " + typeof(T).ToString() + " and got " + type.ToString() + " instead.");
@@ -58,9 +58,21 @@ namespace BH.Engine.Serialiser
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an enum and received " + bson.ToString() + " instead.");
                 failed = true;
             }
-                
 
             return value;
+        }
+
+        /*******************************************/
+
+        public static Enum DeserialiseEnumTopLevel(this BsonValue bson, ref bool failed, Enum value, string version, bool isUpgraded)
+        {
+            if (bson.IsBsonDocument)
+            {
+                Type type = DeserialiseType(bson["TypeName"], ref failed, null, version, isUpgraded);
+                return DeserialiseEnum(bson, ref failed, EnsureNotNull(value, type) as dynamic, version, isUpgraded);
+            }
+
+            return null;
         }
 
         /*******************************************/
