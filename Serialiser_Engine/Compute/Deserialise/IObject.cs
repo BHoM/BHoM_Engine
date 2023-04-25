@@ -85,46 +85,23 @@ namespace BH.Engine.Serialiser
 
                     if (prop == null)
                     {
-                        FieldInfo field = type.GetField(item.Name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-
-                        if (field == null)
+                        if (!isUpgraded)
                         {
-                            if (!isUpgraded)
+                            if (TryUpgrade(doc, version, out IObject upgraded))
                             {
-                                if (TryUpgrade(doc, version, out IObject upgraded))
-                                {
-                                    return upgraded;
-                                }
+                                return upgraded;
                             }
+                        }
 
-                            if (value is IBHoMObject && !item.Name.StartsWith("_"))
-                            {
-                                BH.Engine.Base.Compute.RecordNote($"Unable to find a property named {item.Name}. Data stored in CustomData of the {type.Name}.");
-                                ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(ref failed, version, isUpgraded);
-                            }
-                            else
-                            {
-                                BH.Engine.Base.Compute.RecordError($"Object of type {type.Name} contains data without corresponding properties. Custom object returned in its place.");
-                                return DeserialiseCustomObject(doc, ref failed, null, version, true);
-                            }
+                        if (value is IBHoMObject)
+                        {
+                            BH.Engine.Base.Compute.RecordWarning($"Unable to find a property named {item.Name}. Data stored in CustomData of the {type.Name}.");
+                            ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(ref failed, version, isUpgraded);
                         }
                         else
                         {
-                            object fieldValue = item.Value.IDeserialise(field.FieldType, ref failed, field.GetValue(value), version, isUpgraded);
-
-                            if (CanSetValueToProperty(field.FieldType, fieldValue))
-                            {
-                                field.SetValue(value, fieldValue);
-                            }
-                            else if (!isUpgraded)
-                            {
-                                return DeserialiseDeprecate(doc, ref failed) as IObject;
-                            }
-                            else
-                            {
-                                failed = true;
-                                return DeserialiseCustomObject(doc, ref failed, null, version, isUpgraded);
-                            }
+                            BH.Engine.Base.Compute.RecordError($"Unable to find a property named {item.Name} on object of type {type.Name}. CustomObject returned in its place.");
+                            return DeserialiseCustomObject(doc, ref failed, null, version, true);
                         }
 
                     }
@@ -136,7 +113,7 @@ namespace BH.Engine.Serialiser
                         {
                             if (!(value is IImmutable))
                             {
-                                BH.Engine.Base.Compute.RecordError("Property is not settable.");
+                                Base.Compute.RecordError("Property is not settable.");
                                 failed = true;
                             }
                         }
@@ -156,6 +133,7 @@ namespace BH.Engine.Serialiser
                             else
                             {
                                 failed = true;
+                                Base.Compute.RecordError($"Unable to set property {item.Name} to object of type {value?.GetType().Name ?? "uknown type"} due to a type missmatch. Expected {prop.PropertyType.Name} but serialised value was {propertyValue?.GetType().Name ?? "null"}.");
                                 return DeserialiseCustomObject(doc, ref failed, null, version, isUpgraded);
                             }
                         }
@@ -167,9 +145,14 @@ namespace BH.Engine.Serialiser
             catch (Exception e)
             {
                 if (!isUpgraded)
+                {
                     return DeserialiseDeprecate(doc, ref failed) as IObject;
+                }
                 else
+                {
+                    Engine.Base.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
                     return DeserialiseCustomObject(doc, ref failed, null, version, isUpgraded);
+                }
             }
             
         }
