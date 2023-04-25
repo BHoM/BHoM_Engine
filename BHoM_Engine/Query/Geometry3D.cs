@@ -21,9 +21,11 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Base
@@ -34,6 +36,10 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Queries a three-dimensional geometry out of an IObject, if available. " +
+            "This geometry may be used for downstream tasks such as graphical representation, volume determination, or others.")]
+        [Input("obj", "IObject of which the three-dimensional geometry should be calculated.")]
+        [Output("3dgeom", "Three-dimensional geometry of the input object.")]
         public static IGeometry IGeometry3D(this IObject obj)
         {
             if (obj == null)
@@ -51,6 +57,10 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Queries a three-dimensional geometry out of each value stored in a CustomObject's CustomData dictionary." +
+            "If multiple geometries are obtained, they are combined into a single CompositeGeometry.")]
+        [Input("obj", "IObject of which the three-dimensional geometry should be calculated.")]
+        [Output("3dgeom", "Three-dimensional geometry of the input object.")]
         public static IGeometry Geometry3D(this CustomObject obj)
         {
             if(obj == null)
