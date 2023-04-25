@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Versioning;
 using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
@@ -38,36 +39,41 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         public static object DeserialiseDeprecate(this BsonDocument doc, ref bool failed)
         {
-            BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc);
-
-            if (newDoc == null || newDoc.Equals(doc))
+            if (TryUpgrade(doc, doc.Version(), out object upgrade))
             {
-                /*string newType = newDoc["_t"].AsString;
-                if (newType.Contains("[["))
-                {
-                    // If the object is of a generic type, try one last time by ensuring that the assembly name is provided
-                    try
-                    {
-                        string baseType = newType.Split(new char[] { '[' }).First();
-                        List<Type> matchingTypes = BH.Engine.Base.Create.AllTypes(baseType, true);
-                        if (matchingTypes.Count == 1)
-                        {
-                            string assemblyName = matchingTypes.First().Assembly?.FullName;
-                            newDoc["_t"] += "," + assemblyName;
-                            return Convert.FromBson(newDoc);
-                        }
-                    }
-                    catch { }
-                }*/
+                failed = false;
+                return upgrade;
+            }
+            else
+            {
                 failed = true;
                 Engine.Base.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
                 return DeserialiseCustomObject(doc, ref failed, null, "", true);
             }
-            else
+            
+        }
+
+        /*******************************************/
+
+        private static bool TryUpgrade<T>(this BsonDocument doc, string version, out T upgraded) where T : class
+        {
+            if (string.IsNullOrEmpty(version))
+                version = doc.Version();
+
+            BsonDocument newDoc = Versioning.Convert.ToNewVersion(doc, version);
+
+            if (newDoc != null && !newDoc.Equals(doc))
             {
-                failed = false;
-                return IDeserialise(newDoc, ref failed, "", true);
+                bool failed = false;
+                upgraded = IDeserialise(newDoc, ref failed, "", true) as T;
+                return upgraded != null;
             }
+            else
+            { 
+                upgraded = null;
+                return false;
+            }
+        
         }
 
         /*******************************************/
