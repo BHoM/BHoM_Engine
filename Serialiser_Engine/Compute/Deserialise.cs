@@ -106,6 +106,8 @@ namespace BH.Engine.Serialiser
                     return DeserialiseInteger(bson, ref failed);
                 case "System.Int64": // long
                     return DeserialiseLong(bson, ref failed);
+                case "System.UInt32": // unsigned integer (uint)
+                    return DeserialiseUnsignedInteger(bson, ref failed);
                 case "System.IntPtr":
                     return DeserialiseIntPtr(bson, ref failed);
                 case "System.Object":
