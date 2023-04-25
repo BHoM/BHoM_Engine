@@ -45,7 +45,7 @@ namespace BH.Engine.Serialiser
                 return i;
             else
             {
-                BH.Engine.Base.Compute.RecordError("Expected to deserialise an integer and received " + bson.ToString() + " instead.");
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise an unsigned integer and received " + bson.ToString() + " instead.");
                 failed = true; 
                 return value;
             }
