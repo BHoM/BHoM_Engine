@@ -85,23 +85,46 @@ namespace BH.Engine.Serialiser
 
                     if (prop == null)
                     {
-                        if (!isUpgraded)
-                        {
-                            if (TryUpgrade(doc, version, out IObject upgraded))
-                            {
-                                return upgraded;
-                            }
-                        }
+                        FieldInfo field = type.GetField(item.Name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
-                        if (value is IBHoMObject && !item.Name.StartsWith("_"))
+                        if (field == null)
                         {
-                            BH.Engine.Base.Compute.RecordNote($"Unable to find a property named {item.Name}. Data stored in CustomData of the {type.Name}.");
-                            ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(ref failed, version, isUpgraded);
+                            if (!isUpgraded)
+                            {
+                                if (TryUpgrade(doc, version, out IObject upgraded))
+                                {
+                                    return upgraded;
+                                }
+                            }
+
+                            if (value is IBHoMObject && !item.Name.StartsWith("_"))
+                            {
+                                BH.Engine.Base.Compute.RecordNote($"Unable to find a property named {item.Name}. Data stored in CustomData of the {type.Name}.");
+                                ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(ref failed, version, isUpgraded);
+                            }
+                            else
+                            {
+                                BH.Engine.Base.Compute.RecordError($"Object of type {type.Name} contains data without corresponding properties. Custom object returned in its place.");
+                                return DeserialiseCustomObject(doc, ref failed, null, version, true);
+                            }
                         }
                         else
                         {
-                            BH.Engine.Base.Compute.RecordError($"Object of type {type.Name} contains data without corresponding properties. Custom object returned in its place.");
-                            return DeserialiseCustomObject(doc, ref failed, null, version, true);
+                            object fieldValue = item.Value.IDeserialise(field.FieldType, ref failed, field.GetValue(value), version, isUpgraded);
+
+                            if (CanSetValueToProperty(field.FieldType, fieldValue))
+                            {
+                                field.SetValue(value, fieldValue);
+                            }
+                            else if (!isUpgraded)
+                            {
+                                return DeserialiseDeprecate(doc, ref failed) as IObject;
+                            }
+                            else
+                            {
+                                failed = true;
+                                return DeserialiseCustomObject(doc, ref failed, null, version, isUpgraded);
+                            }
                         }
 
                     }
