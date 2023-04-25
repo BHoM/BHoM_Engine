@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static IImmutable DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
+        public static IObject DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -74,7 +74,7 @@ namespace BH.Engine.Serialiser
                         return SetProperties(doc, ref failed, targetType, result, version, isUpgraded) as IImmutable;
                 }
                 else
-                    return DeserialiseDeprecate(doc, ref failed) as IImmutable;
+                    return DeserialiseDeprecate(doc, ref failed) as IObject;
             }
 
             return null;
