@@ -54,32 +54,10 @@ namespace BH.Engine.Serialiser
             }
             else if (typeof(TK) != typeof(string))
             {
-                BsonArray array = null;
-                if (bson.IsBsonDocument)
-                {
-                    if (bson.AsBsonDocument.Contains("_v"))
-                        array = bson["_v"].AsBsonArray;
-                    else
-                    {
-                        array = new BsonArray();
-                        foreach (var element in bson.AsBsonDocument.Elements)
-                        {
-                            if (element.Name.StartsWith("_"))
-                                continue;
-
-                            BsonDocument doc = new BsonDocument();
-                            doc["k"] = element.Name;
-                            doc["v"] = element.Value;
-                            array.Add(doc);
-                        }
-                    }
-                }
-                else
-                    array = bson.AsBsonArray;
+                BsonArray array = DictionaryItemArray(bson);
 
                 if (array == null)
-                {
-                    
+                {           
                     BH.Engine.Base.Compute.RecordError("Expected to deserialise a dictionary and received " + bson.ToString() + " instead.");
                     failed = true;
                 }
@@ -105,11 +83,41 @@ namespace BH.Engine.Serialiser
             }
             else
             {
-                BH.Engine.Base.Compute.RecordError("Expected to deserialise a long and received " + bson.ToString() + " instead.");
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a dictionary and received " + bson.ToString() + " instead.");
                 failed = true;
             }
 
             return value;
+        }
+
+        /*******************************************/
+
+        private static BsonArray DictionaryItemArray(BsonValue bson)
+        {
+            if (bson.IsBsonDocument)
+            {
+                if (bson.AsBsonDocument.Contains("_v"))     //Case when dictionary is the top level object
+                    return bson["_v"].AsBsonArray;
+                else
+                {
+                    BsonArray array = new BsonArray();      //Older case that should no longer be used. Kept to support older formats of serialisation
+                    foreach (var element in bson.AsBsonDocument.Elements)
+                    {
+                        if (element.Name.StartsWith("_"))
+                            continue;
+
+                        BsonDocument doc = new BsonDocument();
+                        doc["k"] = element.Name;
+                        doc["v"] = element.Value;
+                        array.Add(doc);
+                    }
+                    return array;
+                }
+            }
+            else if (bson.IsBsonArray)
+                return bson.AsBsonArray;    //Non-top level serialisation
+
+            return null;
         }
 
         /*******************************************/
