@@ -41,7 +41,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static MethodBase DeserialiseMethodBase(this BsonValue bson, ref bool failed, MethodBase value = null)
+        private static MethodBase DeserialiseMethodBase(this BsonValue bson, ref bool failed, MethodBase value = null)
         {
             if (bson.IsBsonNull)
                 return null;

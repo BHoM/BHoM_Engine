@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static DateTime DeserialiseDateTime(this BsonValue bson, ref bool failed, DateTime value = default(DateTime))
+        private static DateTime DeserialiseDateTime(this BsonValue bson, ref bool failed, DateTime value = default(DateTime))
         {
             if (bson.IsValidDateTime)
                 return bson.ToUniversalTime();

@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static Dictionary<TK,TV> DeserialiseDictionary<TK,TV>(this BsonValue bson, ref bool failed, Dictionary<TK, TV> value, string version, bool isUpgraded)
+        private static Dictionary<TK,TV> DeserialiseDictionary<TK,TV>(this BsonValue bson, ref bool failed, Dictionary<TK, TV> value, string version, bool isUpgraded)
         {
             if (value == null)
                 value = new Dictionary<TK, TV>();

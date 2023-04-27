@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static IntPtr DeserialiseIntPtr(this BsonValue bson, ref bool failed, IntPtr value = default(IntPtr))
+        private static IntPtr DeserialiseIntPtr(this BsonValue bson, ref bool failed, IntPtr value = default(IntPtr))
         {
             if (bson.IsInt32)
                 return new IntPtr(bson.AsInt32);

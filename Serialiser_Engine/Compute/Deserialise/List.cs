@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static List<T> DeserialiseList<T>(this BsonValue bson, ref bool failed, List<T> value, string version, bool isUpgraded)
+        private static List<T> DeserialiseList<T>(this BsonValue bson, ref bool failed, List<T> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;

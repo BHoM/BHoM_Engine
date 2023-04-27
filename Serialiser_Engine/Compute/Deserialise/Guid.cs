@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static Guid DeserialiseGuid(this BsonValue bson, ref bool failed, Guid value = default(Guid))
+        private static Guid DeserialiseGuid(this BsonValue bson, ref bool failed, Guid value = default(Guid))
         {
             if (bson.IsGuid)
                 return bson.AsGuid;

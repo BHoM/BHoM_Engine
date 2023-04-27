@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static TimeSpan DeserialiseTimeSpan(this BsonValue bson, ref bool failed, TimeSpan value = default(TimeSpan))
+        private static TimeSpan DeserialiseTimeSpan(this BsonValue bson, ref bool failed, TimeSpan value = default(TimeSpan))
         {
             if (bson.IsString)
             {

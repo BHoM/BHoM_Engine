@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static float DeserialiseFloat(this BsonValue bson, ref bool failed, float value = 0)
+        private static float DeserialiseFloat(this BsonValue bson, ref bool failed, float value = 0)
         {
             if (bson.IsDouble)
                 return (float)bson.AsDouble;
