@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static HashSet<T> DeserialiseHashSet<T>(this BsonValue bson, ref bool failed, HashSet<T> value, string version, bool isUpgraded)
+        private static HashSet<T> DeserialiseHashSet<T>(this BsonValue bson, ref bool failed, HashSet<T> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;

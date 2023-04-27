@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static double DeserialiseDouble(this BsonValue bson, ref bool failed, double value = 0)
+        private static double DeserialiseDouble(this BsonValue bson, ref bool failed, double value = 0)
         {
             if (bson.IsDouble)
                 return bson.AsDouble;

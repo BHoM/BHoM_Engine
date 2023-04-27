@@ -37,7 +37,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static Bitmap DeserialiseBitmap(this BsonValue bson, ref bool failed, Bitmap value = null)
+        private static Bitmap DeserialiseBitmap(this BsonValue bson, ref bool failed, Bitmap value = null)
         {
             if (bson.IsBsonNull)
                 return null;

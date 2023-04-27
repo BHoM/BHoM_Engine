@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static IObject DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
+        private static IObject DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;

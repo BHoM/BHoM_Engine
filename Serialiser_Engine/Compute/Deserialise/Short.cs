@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static short DeserialiseShort(this BsonValue bson, ref bool failed, short value = 0)
+        private static short DeserialiseShort(this BsonValue bson, ref bool failed, short value = 0)
         {
             if (bson.IsInt32)
                 return (short)bson.AsInt32;
