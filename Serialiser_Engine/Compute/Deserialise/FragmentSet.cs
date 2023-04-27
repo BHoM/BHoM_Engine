@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static FragmentSet DeserialiseFragmentSet(this BsonValue bson, ref bool failed, FragmentSet value, string version, bool isUpgraded)
+        private static FragmentSet DeserialiseFragmentSet(this BsonValue bson, ref bool failed, FragmentSet value, string version, bool isUpgraded)
         {
             if (value == null)
                 value = new FragmentSet();

@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static CustomObject DeserialiseCustomObject(this BsonValue bson, ref bool failed, CustomObject value, string version, bool isUpgraded)
+        private static CustomObject DeserialiseCustomObject(this BsonValue bson, ref bool failed, CustomObject value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;

@@ -37,7 +37,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static object DeserialiseDeprecate(this BsonDocument doc, ref bool failed)
+        private static object DeserialiseDeprecate(this BsonDocument doc, ref bool failed)
         {
             if (TryUpgrade(doc, doc.Version(), out object upgrade))
             {

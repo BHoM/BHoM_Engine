@@ -37,7 +37,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static object DeserialiseTuple(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
+        private static object DeserialiseTuple(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
         {
             Type[] keys = targetType.GetGenericArguments();
             object tuple = Activator.CreateInstance(targetType, keys.Select(x => GetDefaultValue(x)).ToArray());
