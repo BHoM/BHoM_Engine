@@ -63,29 +63,52 @@ namespace BH.Engine.Serialiser
                         (parameter, props) => new { Parameter = parameter, Properties = props },
                         StringComparer.OrdinalIgnoreCase);
 
+                List<string> typeFailures = new List<string>();
                 if (matches.All(m => m.Properties.Count() == 1))
                 {
+                    bool propertyTypeMatches = true;
                     List<object> arguments = new List<object>();
                     foreach (var match in matches)
-                        arguments.Add(IDeserialise(match.Properties.First().Value, match.Parameter.ParameterType, ref failed, null, version, isUpgraded));
-                    IImmutable result = ctor.Invoke(arguments.ToArray()) as IImmutable;
+                    {
+                        object propertyValue = IDeserialise(match.Properties.First().Value, match.Parameter.ParameterType, ref failed, null, version, isUpgraded);
+                        if (CanSetValueToProperty(match.Parameter.ParameterType, propertyValue))
+                            arguments.Add(propertyValue);
+                        else
+                        {
+                            propertyTypeMatches = false;
+                            typeFailures.Add($"expected {match.Parameter.ParameterType.FullName} but got {propertyValue?.GetType().FullName ?? "null"}");
+                        }
+                    }
 
-                    if (result != null)
-                        return SetProperties(doc, ref failed, targetType, result, version, isUpgraded) as IImmutable;
+                    if (propertyTypeMatches)
+                    {
+                        IImmutable result = ctor.Invoke(arguments.ToArray()) as IImmutable;
+
+                        if (result != null)
+                            return SetProperties(doc, ref failed, targetType, result, version, isUpgraded) as IImmutable;
+                    }
+                }
+
+                if (!isUpgraded && TryUpgrade(doc, version, out IObject upgraded))
+                {
+                    return upgraded;
                 }
                 else
                 {
-                    if (!isUpgraded && TryUpgrade(doc, version, out IObject upgraded))
+                    string message = $"Failed to deserialise immutable object of type {targetType?.FullName ?? "null type"} due to";
+                    if (typeFailures.Count != 0)
                     {
-                        return upgraded;
-                    }
+                        message += $" the following parameter types failing: {string.Join(",", typeFailures)}";
+                    }   
                     else
                     {
-                        Base.Compute.RecordError($"Failed to deserialise immutable object of type {targetType?.FullName ?? "null type"} due to the following parameter(s) missing on the serialised document, required to be able to create the object: {string.Join(",", matches.Where(x => x.Properties.Count() != 1).Select(x => x.Parameter.Name))}.");
-                        failed = true;
-                        return DeserialiseCustomObject(bson, ref failed, null, version, isUpgraded);
+                        message+= $" the following parameter(s) missing on the serialised document, required to be able to create the object: {string.Join(",", matches.Where(x => x.Properties.Count() != 1).Select(x => x.Parameter.Name))}.";
                     }
+                    Base.Compute.RecordError(message);
+                    failed = true;
+                    return DeserialiseCustomObject(bson, ref failed, null, version, isUpgraded);
                 }
+
 
             }
 
