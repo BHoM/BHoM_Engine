@@ -74,7 +74,19 @@ namespace BH.Engine.Serialiser
                         return SetProperties(doc, ref failed, targetType, result, version, isUpgraded) as IImmutable;
                 }
                 else
-                    return DeserialiseDeprecate(doc, ref failed) as IObject;
+                {
+                    if (!isUpgraded && TryUpgrade(doc, version, out IObject upgraded))
+                    {
+                        return upgraded;
+                    }
+                    else
+                    {
+                        Base.Compute.RecordError($"Failed to deserialise immutable object of type {targetType?.FullName ?? "null type"} due to the following parameter(s) missing on the serialised document, required to be able to create the object: {string.Join(",", matches.Where(x => x.Properties.Count() != 1).Select(x => x.Parameter.Name))}.");
+                        failed = true;
+                        return DeserialiseCustomObject(bson, ref failed, null, version, isUpgraded);
+                    }
+                }
+
             }
 
             return null;
