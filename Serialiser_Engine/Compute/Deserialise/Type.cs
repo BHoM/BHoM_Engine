@@ -37,7 +37,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static Type DeserialiseType(this BsonValue bson, ref bool failed, Type value, string version, bool isUpgraded)
+        private static Type DeserialiseType(this BsonValue bson, ref bool failed, Type value, string version, bool isUpgraded)
         {
             // Handle the case where the type is represented as a string
             if (bson.IsBsonNull)

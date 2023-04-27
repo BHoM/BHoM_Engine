@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static T[] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[] value, string version, bool isUpgraded)
+        private static T[] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[] value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
             {
