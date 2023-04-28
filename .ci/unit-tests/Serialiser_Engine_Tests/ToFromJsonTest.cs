@@ -9,7 +9,7 @@ using NUnit.Framework;
 using System.Diagnostics;
 using Bogus.Bson;
 
-namespace BH.Tests.Engine.Base.Query
+namespace BH.Tests.Engine.Serialiser
 {
     public class ToFromJsonTest
     {

@@ -12,6 +12,8 @@
     <IsPackable>false</IsPackable>
 
     <Configurations>Debug;Release;Test</Configurations>
+
+    <RootNamespace>BH.Tests.Engine.Serialiser</RootNamespace>
   </PropertyGroup>
 
 
