@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static void Serialise(this short value, BsonDocumentWriter writer)
+        private static void Serialise(this short value, BsonDocumentWriter writer)
         {
             // TODO: is this right? will change type to Int32 after round trip
             writer.WriteInt32(value);

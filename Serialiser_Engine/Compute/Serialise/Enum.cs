@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static void Serialise(this Enum value, BsonDocumentWriter writer)
+        private static void Serialise(this Enum value, BsonDocumentWriter writer)
         {
             if (writer.SerializationDepth == 0)
             {
