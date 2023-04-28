@@ -148,7 +148,7 @@ namespace BH.Engine.Results
                 QuantityAttribute quantity = null;
                 OutputAttribute outputAtr = method.GetCustomAttribute<OutputAttribute>();
                 if (outputAtr != null)
-                    quantity = outputAtr.Classification as QuantityAttribute;
+                    quantity = outputAtr.Quantity as QuantityAttribute;
 
                 selectorsDict[method.Name] = new Tuple<Func<T, P>, QuantityAttribute>(func, quantity);
             }
