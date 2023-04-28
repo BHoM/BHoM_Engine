@@ -60,17 +60,8 @@ namespace BH.Engine.Serialiser
         /*******************************************/
 
         public static object FromBson(BsonDocument bson)
-        {
-            bool failed = false;
-            object result = Compute.IDeserialise(bson, ref failed, "", false);
-
-            if (failed)
-            {
-                //TODO: handle versioning here
-                return result;
-            }
-            else
-                return result;
+        {       
+            return Compute.IDeserialise(bson);
         }
 
 
