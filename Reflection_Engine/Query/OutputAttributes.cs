@@ -46,6 +46,14 @@ namespace BH.Engine.Reflection
             if (method.IsMultipleOutputs())
             {
                 Dictionary<int, MultiOutputAttribute> outputDefs = method.GetCustomAttributes<MultiOutputAttribute>().ToDictionary(x => x.Index);
+                Dictionary<int, InputClassificationAttribute> classificationAttributes = new Dictionary<int, InputClassificationAttribute>();
+                foreach (InputClassificationAttribute classificationAttribute in method.GetCustomAttributes<InputClassificationAttribute>())
+                {
+                    int index;
+                    if (int.TryParse(classificationAttribute.Name, out index))
+                        classificationAttributes[index] = classificationAttribute;
+                }
+
                 Type[] types = method.OutputType().GetGenericArguments();
 
                 List<OutputAttribute> outputs = new List<OutputAttribute>();
@@ -58,8 +66,14 @@ namespace BH.Engine.Reflection
                         if (types[i] != null)
                         {
                             desc += Environment.NewLine;
-                            QuantityAttribute quantity = outputDefs[i].Quantity;
-                            desc += types[i].UnderlyingType().Type.Description(quantity);
+                            InputClassificationAttribute classification = null;
+                            if (classificationAttributes.ContainsKey(i))
+                                classification = classificationAttributes[i];
+
+                            if (classification == null)
+                                classification = outputDefs[i].Quantity;
+
+                            desc += types[i].UnderlyingType().Type.Description(classification);
                         }
                         outputs.Add(new OutputAttribute(outputDefs[i].Name, desc));
                     }
@@ -71,7 +85,7 @@ namespace BH.Engine.Reflection
                             name += (nbSame + 1).ToString();
                         outputs.Add(new OutputAttribute(name, ""));
                     }
-                        
+
                 }
                 return outputs;
             }

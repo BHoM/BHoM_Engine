@@ -75,12 +75,14 @@ namespace BH.Engine.Reflection
             }
 
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
-            InputClassificationAttribute classification = null;
+            InputClassificationAttribute classification = parameter.Member.GetCustomAttributes<InputClassificationAttribute>().FirstOrDefault(x => x.Name == parameter.Name);
             string desc = "";
             if (inputDesc.Count() > 0)
             {
                 desc = inputDesc.First().Description + Environment.NewLine;
-                classification = inputDesc.First().Quantity;
+
+                if (classification == null)
+                    classification = inputDesc.First().Quantity;
             }
             else
             {

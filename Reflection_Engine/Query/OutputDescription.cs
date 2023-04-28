@@ -43,17 +43,17 @@ namespace BH.Engine.Reflection
                 return "";
 
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            QuantityAttribute quantity = null;
+            InputClassificationAttribute classification = method.GetCustomAttribute<InputClassificationAttribute>();
+
+            if (classification == null)
+                classification = attribute?.Quantity;
 
             string desc = "";
 
             if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
                 desc = attribute.Description + Environment.NewLine;
 
-            if (attribute != null)
-                quantity = attribute.Quantity;
-
-            desc += method.OutputType().Description(quantity);
+            desc += method.OutputType().Description(classification);
 
             return desc;
         }
