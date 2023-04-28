@@ -10,8 +10,11 @@ using System.Diagnostics;
 using Bogus.Bson;
 using System.Linq.Expressions;
 using BH.Engine.Test;
+using BH.oM.UnitTest.Results;
+using System.Windows.Documents;
+using BH.oM.Test.Results;
 
-namespace BH.Tests.Engine.Base.Query
+namespace BH.Tests.Engine.Serialiser
 {
     public class OldNewToJson
     {
@@ -151,16 +154,53 @@ namespace BH.Tests.Engine.Base.Query
             int success = 0;
             List<string> failureJson = new List<string>();
 
+
+
             for (int i = 0; i < newBack.Count; i++)
             {
-                if (oldBack[i].IsEqual(newBack[i]))
+                bool equal;
+                string errorMessage = "";
+                try
+                {
+                    var diffResult = BH.Engine.Test.Query.IsEqual(oldBack[i], newBack[i], null);
+
+                    if (equal = diffResult.Item1)
+                    {
+                        success++;
+                        continue;
+                    }
+                    TestResult testRes = new TestResult();
+
+                    for (int j = 0; j < diffResult.Item2.Count; j++)
+                    {
+                        testRes.Information.Add(new ComparisonDifference()
+                        {
+                            Property = diffResult.Item2[j],
+                            ReferenceValue = diffResult.Item3[j],
+                            RunValue = diffResult.Item4[j],
+                            Status = oM.Test.TestStatus.Error,
+                        });
+                    }
+                    testRes.Description = newBack[i]?.GetType().FullName ?? oldBack[i]?.GetType().FullName ?? "";
+                    testRes.Message = $"Old type: {oldBack[i]?.GetType().Name ?? ""}. New type: {newBack[i]?.GetType().Name ?? ""}";
+                    errorMessage = testRes.FullMessage();
+                }
+                catch (Exception)
+                {
+                    errorMessage = $"Compare crash for: {newBack[i]?.GetType().FullName ?? oldBack[i]?.GetType().FullName ?? ""}";
+                    equal = false;
+                }
+
+                if (equal)
                     success++;
                 else
                 {
-                    failureJson.Add(newBack[i].GetType().FullName);
+                    failureJson.Add(errorMessage);
                     failures++;
                 }
             }
+
+
 
             Console.WriteLine($"Equal: {success}, Failure: {failures}");
             foreach (string f in failureJson)
