@@ -16,15 +16,12 @@ using BH.oM.Test.Results;
 
 namespace BH.Tests.Engine.Serialiser
 {
-    public class OldNewToJson
+    public class OldNewToJson : BaseLoader
     {
 
         [Test]
         public void CompareNewAndOldToJson()
         {
-            BH.Engine.Base.Compute.LoadAllAssemblies();
-            //string regexFilter = $"^Revit_.*_20\\d\\d$";
-            //BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
 
             List<object> dummies = new List<object>();
             foreach (Type type in BH.Engine.Base.Query.BHoMTypeList())

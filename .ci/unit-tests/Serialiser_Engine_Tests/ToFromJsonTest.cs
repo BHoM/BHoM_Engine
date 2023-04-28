@@ -11,7 +11,7 @@ using Bogus.Bson;
 
 namespace BH.Tests.Engine.Serialiser
 {
-    public class ToFromJsonTest
+    public class ToFromJsonTest : BaseLoader
     {
         [Test]
         public void ToFromJson()
@@ -87,9 +87,6 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonAllTypes()
         {
-            BH.Engine.Base.Compute.LoadAllAssemblies();
-            //string regexFilter = $"^Revit_.*_20\\d\\d$";
-            //BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
 
             int pass = 0;
             int fail = 0;
