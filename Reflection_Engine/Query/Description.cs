@@ -80,7 +80,7 @@ namespace BH.Engine.Reflection
             if (inputDesc.Count() > 0)
             {
                 desc = inputDesc.First().Description + Environment.NewLine;
-                classification = inputDesc.First().Classification;
+                classification = inputDesc.First().Quantity;
             }
             else
             {
@@ -236,7 +236,11 @@ namespace BH.Engine.Reflection
         [Input("filePath", "File path attribute to be queried for description.")]
         public static string Description(this FilePathAttribute filePath)
         {
-            return "This is a file path.";
+            string description = "This is a file path.";
+            if (filePath.FileExtensions != null && filePath.FileExtensions.Length != 0)
+                description += $" It supports files with following extensions: {string.Join(", ", filePath.FileExtensions)}.";
+
+            return description;
         }
 
 
