@@ -12,5 +12,18 @@ namespace BH.Tests.Engine.Serialiser
         {
             return "C:\\Temp\\SerialiserTests";
         }
+
+        public static string TemporaryLogPath(string fileName, bool clear) 
+        {
+            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), fileName);
+            if (clear)
+            {
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+            return filePath;
+        }
     }
 }

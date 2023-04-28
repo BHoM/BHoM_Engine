@@ -37,11 +37,7 @@ namespace BH.Tests.Engine.Serialiser
 
             string type = "Objects";
 
-            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}.json");
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
+            string filePath = Helpers.TemporaryLogPath($"{type}.json", true);
 
             Stopwatch sw = Stopwatch.StartNew();
 
@@ -119,7 +115,7 @@ namespace BH.Tests.Engine.Serialiser
         {
             string type = "Objects";
 
-            string file = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}.json");
+            string file = Helpers.TemporaryLogPath($"{type}.json", false);
             string exceptions = "Grasshopper|Rhinoceros";
 
             IEnumerable<string> json = System.IO.File.ReadAllLines(file).Where(x => !string.IsNullOrWhiteSpace(x) && (exceptions.Length == 0 || !Regex.IsMatch(x, exceptions)));
@@ -128,12 +124,7 @@ namespace BH.Tests.Engine.Serialiser
             int fail = 0;
             List<string> errors = new List<string>();
 
-
-            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}Details.json");
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
+            string filePath = Helpers.TemporaryLogPath($"{type}Details.json", true);
 
             foreach (string line in json)
             {
@@ -198,11 +189,7 @@ namespace BH.Tests.Engine.Serialiser
 
             Stopwatch sw = Stopwatch.StartNew();
 
-            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}_OldNewCompare.json");
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
+            string filePath = Helpers.TemporaryLogPath($"{type}_OldNewCompare.json", true);
 
             foreach (string version in versions)
             {
@@ -266,14 +253,10 @@ namespace BH.Tests.Engine.Serialiser
         {
             string type = "Objects";
 
-            string file = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}_OldNewCompare.json");
+            string file = Helpers.TemporaryLogPath($"{type}_OldNewCompare.json", false);
             IEnumerable<string> json = System.IO.File.ReadAllLines(file).Where(x => !string.IsNullOrWhiteSpace(x));
 
-            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}_OldNewCompareDiff.json");
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
+            string filePath = Helpers.TemporaryLogPath($"{type}_OldNewCompareDiff.json", true);
 
             int pass = 0;
             int fail = 0;
