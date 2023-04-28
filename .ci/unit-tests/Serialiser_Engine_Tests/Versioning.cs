@@ -21,16 +21,26 @@ namespace BH.Tests.Engine.Serialiser
 {
     public class Versioning
     {
-        [Test]
-        public void VersioningFromJson()
+        [OneTimeSetUp]
+        public static void EnsureFolderExist()
         {
+            if (!Directory.Exists(Helpers.TemporaryLogFolder()))
+            {
+                Directory.CreateDirectory(Helpers.TemporaryLogFolder());
+            }
+        }
 
+        [OneTimeSetUp]
+        public static void EnsureAssembliesLoaded()
+        {
             BH.Engine.Base.Compute.LoadAllAssemblies();
-
-            //List<string> revitVersion = new List<string> { }
-
             string regexFilter = $"^Revit_.*_20\\d\\d$";
             BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
+        }
+
+        [Test]
+        public void A_VersioningFromJson()
+        {
 
             List<string> versions = new List<string> { "6.1", "6.0", "5.3", "5.2", "5.1", "5.0", "4.3", "4.2", "4.1", "4.0", "3.3" };
 
@@ -42,7 +52,7 @@ namespace BH.Tests.Engine.Serialiser
 
             string type = "Objects";
 
-            string filePath = System.IO.Path.Combine(m_tempFolderPath, $"{type}.json");
+            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}.json");
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
@@ -120,7 +130,7 @@ namespace BH.Tests.Engine.Serialiser
 
 
         [Test]
-        public void VersioningFromJsonFailures()
+        public void B_VersioningFromJsonFailures()
         {
             BH.Engine.Base.Compute.LoadAllAssemblies();
 
@@ -130,7 +140,7 @@ namespace BH.Tests.Engine.Serialiser
 
             string type = "Objects";
 
-            string file = System.IO.Path.Combine(m_tempFolderPath, $"{type}.json");
+            string file = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}.json");
             string exceptions = "Grasshopper|Rhinoceros";
 
             IEnumerable<string> json = System.IO.File.ReadAllLines(file).Where(x => !string.IsNullOrWhiteSpace(x) && (exceptions.Length == 0 || !Regex.IsMatch(x, exceptions)));
@@ -140,7 +150,7 @@ namespace BH.Tests.Engine.Serialiser
             List<string> errors = new List<string>();
 
 
-            string filePath = System.IO.Path.Combine(m_tempFolderPath, $"{type}Details.json");
+            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}Details.json");
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
@@ -195,7 +205,7 @@ namespace BH.Tests.Engine.Serialiser
         }
 
         [Test]
-        public void VersioningFromJsonCompareOldAndNew()
+        public void A_VersioningFromJsonCompareOldAndNew()
         {
 
             BH.Engine.Base.Compute.LoadAllAssemblies();
@@ -217,7 +227,7 @@ namespace BH.Tests.Engine.Serialiser
 
             Stopwatch sw = Stopwatch.StartNew();
 
-            string filePath = System.IO.Path.Combine(m_tempFolderPath, $"{type}_OldNewCompare.json");
+            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}_OldNewCompare.json");
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
@@ -281,7 +291,7 @@ namespace BH.Tests.Engine.Serialiser
         }
 
         [Test]
-        public void CheckFailuresNewVsOld()
+        public void B_CheckFailuresNewVsOld()
         {
             BH.Engine.Base.Compute.LoadAllAssemblies();
 
@@ -291,10 +301,10 @@ namespace BH.Tests.Engine.Serialiser
 
             string type = "Objects";
 
-            string file = System.IO.Path.Combine(m_tempFolderPath, $"{type}_OldNewCompare.json");
+            string file = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}_OldNewCompare.json");
             IEnumerable<string> json = System.IO.File.ReadAllLines(file).Where(x => !string.IsNullOrWhiteSpace(x));
 
-            string filePath = System.IO.Path.Combine(m_tempFolderPath, $"{type}_OldNewCompareDiff.json");
+            string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}_OldNewCompareDiff.json");
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
@@ -362,16 +372,9 @@ namespace BH.Tests.Engine.Serialiser
             
         }
 
-        [OneTimeSetUp]
-        public static void EnsureFolderExist()
-        { 
-            if(!Directory.Exists(m_tempFolderPath)) 
-            { 
-                Directory.CreateDirectory(m_tempFolderPath);
-            }
-        }
 
-        private static string m_tempFolderPath = "C:\\Temp\\Versioning";
+
+
     }
 
 
