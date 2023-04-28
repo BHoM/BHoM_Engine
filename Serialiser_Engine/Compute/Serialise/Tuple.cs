@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static void Serialise<T1, T2>(this Tuple<T1, T2> value, BsonDocumentWriter writer)
+        private static void Serialise<T1, T2>(this Tuple<T1, T2> value, BsonDocumentWriter writer)
         {
             if (value == null)
             {
@@ -53,7 +53,7 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static void Serialise<T1, T2, T3>(this Tuple<T1, T2, T3> value, BsonDocumentWriter writer)
+        private static void Serialise<T1, T2, T3>(this Tuple<T1, T2, T3> value, BsonDocumentWriter writer)
         {
             if (value == null)
             {
@@ -69,7 +69,7 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static void Serialise<T1, T2, T3, T4>(this Tuple<T1, T2, T3, T4> value, BsonDocumentWriter writer)
+        private static void Serialise<T1, T2, T3, T4>(this Tuple<T1, T2, T3, T4> value, BsonDocumentWriter writer)
         {
             if (value == null)
             {
@@ -86,7 +86,7 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static void Serialise<T1, T2, T3, T4, T5>(this Tuple<T1, T2, T3, T4, T5> value, BsonDocumentWriter writer)
+        private static void Serialise<T1, T2, T3, T4, T5>(this Tuple<T1, T2, T3, T4, T5> value, BsonDocumentWriter writer)
         {
             if (value == null)
             {

@@ -37,7 +37,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static void Serialise(this MethodBase value, BsonDocumentWriter writer)
+        private static void Serialise(this MethodBase value, BsonDocumentWriter writer)
         {
             if (value == null)
             {
