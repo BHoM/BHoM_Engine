@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Tests.Engine.Base.Query
+namespace BH.Tests.Engine.Serialiser
 {
     public static class AllTypesIObject
     {
