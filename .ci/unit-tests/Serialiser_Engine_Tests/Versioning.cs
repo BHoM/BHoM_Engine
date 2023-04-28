@@ -19,24 +19,9 @@ using ICSharpCode.Decompiler.TypeSystem;
 
 namespace BH.Tests.Engine.Serialiser
 {
-    public class Versioning
+    public class Versioning : BaseLoader
     {
-        [OneTimeSetUp]
-        public static void EnsureFolderExist()
-        {
-            if (!Directory.Exists(Helpers.TemporaryLogFolder()))
-            {
-                Directory.CreateDirectory(Helpers.TemporaryLogFolder());
-            }
-        }
 
-        [OneTimeSetUp]
-        public static void EnsureAssembliesLoaded()
-        {
-            BH.Engine.Base.Compute.LoadAllAssemblies();
-            string regexFilter = $"^Revit_.*_20\\d\\d$";
-            BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
-        }
 
         [Test]
         public void A_VersioningFromJson()
@@ -132,12 +117,6 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void B_VersioningFromJsonFailures()
         {
-            BH.Engine.Base.Compute.LoadAllAssemblies();
-
-
-            string regexFilter = $"^Revit_.*_20\\d\\d$";
-            BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
-
             string type = "Objects";
 
             string file = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}.json");
@@ -207,14 +186,6 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void A_VersioningFromJsonCompareOldAndNew()
         {
-
-            BH.Engine.Base.Compute.LoadAllAssemblies();
-
-            //List<string> revitVersion = new List<string> { }
-
-            string regexFilter = $"^Revit_.*_20\\d\\d$";
-            BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
-
             List<string> versions = new List<string> { "6.1", "6.0", "5.3", "5.2", "5.1", "5.0", "4.3", "4.2", "4.1", "4.0", "3.3" };
 
             //List<string> versions = new List<string> { "6.1" };
@@ -293,12 +264,6 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void B_CheckFailuresNewVsOld()
         {
-            BH.Engine.Base.Compute.LoadAllAssemblies();
-
-
-            string regexFilter = $"^Revit_.*_20\\d\\d$";
-            BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
-
             string type = "Objects";
 
             string file = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), $"{type}_OldNewCompare.json");
