@@ -11,8 +11,8 @@ using Bogus.Bson;
 using System.Linq.Expressions;
 using BH.Engine.Test;
 using BH.oM.UnitTest.Results;
-using System.Windows.Documents;
 using BH.oM.Test.Results;
+using System.IO;
 
 namespace BH.Tests.Engine.Serialiser
 {
@@ -20,7 +20,7 @@ namespace BH.Tests.Engine.Serialiser
     {
 
         [Test]
-        public void CompareNewAndOldToJson()
+        public void A_CompareNewAndOldToJson()
         {
 
             List<object> dummies = new List<object>();
@@ -153,6 +153,8 @@ namespace BH.Tests.Engine.Serialiser
 
 
 
+            List<string> failingTypes = new List<string>();
+
             for (int i = 0; i < newBack.Count; i++)
             {
                 bool equal;
@@ -192,12 +194,13 @@ namespace BH.Tests.Engine.Serialiser
                     success++;
                 else
                 {
+                    failingTypes.Add(newBack[i]?.GetType().FullName ?? oldBack[i]?.GetType().FullName ?? "");
                     failureJson.Add(errorMessage);
                     failures++;
                 }
             }
 
-
+            System.IO.File.WriteAllLines(Helpers.TemporaryLogPath($"ToFromJsonOldVsNew.json", true), failingTypes.Distinct());
 
             Console.WriteLine($"Equal: {success}, Failure: {failures}");
             foreach (string f in failureJson)
@@ -205,5 +208,65 @@ namespace BH.Tests.Engine.Serialiser
                 Console.WriteLine(f);
             }
         }
+
+        [Test]
+        public void B_CompareNewAndOldToJson()
+        {
+
+            string file = Helpers.TemporaryLogPath($"ToFromJsonOldVsNew.json", false);
+
+            List<TestResult> results = new List<TestResult>();
+
+            foreach (string line in File.ReadAllLines(file))
+            {
+                try
+                {
+                    Type type = BH.Engine.Base.Create.Type(line);
+                    object dummy = BH.Engine.Test.Compute.DummyObject(type);
+
+                    string jsonNew = dummy.ToJson();
+                    string jsonOld = dummy.ToOldJson();
+
+                    object newBack = BH.Engine.Serialiser.Convert.FromJson(jsonNew);
+                    object oldBack = BH.Engine.Serialiser.Convert.FromOldJson(jsonOld);
+
+                    var diffResult = BH.Engine.Test.Query.IsEqual(oldBack, newBack, null);
+
+                    if (diffResult.Item1)
+                    {
+                        continue;
+                    }
+
+                    if (BH.Engine.Test.Query.IsEqual(dummy, newBack, null).Item1)
+                    {
+                        continue;
+                    }
+
+                    TestResult testRes = new TestResult();
+
+                    for (int j = 0; j < diffResult.Item2.Count; j++)
+                    {
+                        testRes.Information.Add(new ComparisonDifference()
+                        {
+                            Property = diffResult.Item2[j],
+                            ReferenceValue = diffResult.Item3[j],
+                            RunValue = diffResult.Item4[j],
+                            Status = oM.Test.TestStatus.Error,
+                        });
+                    }
+                    testRes.Description = newBack?.GetType().FullName ?? oldBack?.GetType().FullName ?? "";
+                    testRes.Message = $"Old type: {oldBack?.GetType().Name ?? ""}. New type: {newBack?.GetType().Name ?? ""}";
+                    results.Add(testRes);
+                }
+                catch (Exception)
+                {
+
+                }
+
+            }
+
+            File.WriteAllLines(Helpers.TemporaryLogPath("ToFromJsonOldVsNewDetails.Json", true), results.Select(x => x.FullMessage()));
+        }
+
     }
 }
