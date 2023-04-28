@@ -9,7 +9,6 @@ using NUnit.Framework;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using BH.oM.Base;
-using BH.Test.Versioning;
 using BH.Engine.Test;
 using Microsoft.VisualBasic;
 using BH.oM.UnitTest.Results;
@@ -18,7 +17,7 @@ using Bogus;
 using System.IO;
 using ICSharpCode.Decompiler.TypeSystem;
 
-namespace BH.Tests.Engine.Base.Query
+namespace BH.Tests.Engine.Serialiser
 {
     public class Versioning
     {
