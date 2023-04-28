@@ -37,7 +37,17 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static object IDeserialise(this BsonValue bson, ref bool failed, string version, bool isUpgraded)
+        public static object IDeserialise(this BsonValue bson)
+        {
+            bool failed = false;
+            return IDeserialise(bson, ref failed, "", false);
+        }
+
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+
+        private static object IDeserialise(this BsonValue bson, ref bool failed, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -70,7 +80,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        public static object IDeserialise(this BsonValue bson, Type targetType, ref bool failed, object value, string version, bool isUpgraded)
+        private static object IDeserialise(this BsonValue bson, Type targetType, ref bool failed, object value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -177,7 +187,7 @@ namespace BH.Engine.Serialiser
 
 
         /*******************************************/
-        /**** Private Methods                   ****/
+        /**** Private Methods - Support         ****/
         /*******************************************/
 
         private static object EnsureNotNull(object value, Type targetType)
@@ -209,7 +219,7 @@ namespace BH.Engine.Serialiser
             Type itemType = targetType.GetGenericArguments()[0];
             Type listType = typeof(List<>);
             Type constructedListType = listType.MakeGenericType(itemType);
-            return Activator.CreateInstance(constructedListType);  
+            return Activator.CreateInstance(constructedListType);
         }
 
         /*******************************************/
