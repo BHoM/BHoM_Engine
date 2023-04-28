@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        public static void Serialise<T>(this IDictionary<string, T> value, BsonDocumentWriter writer)
+        private static void Serialise<T>(this IDictionary<string, T> value, BsonDocumentWriter writer)
         {
             if (value == null)
             {
@@ -54,7 +54,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        public static void Serialise<TK, TV>(this IDictionary<TK, TV> value, BsonDocumentWriter writer)
+        private static void Serialise<TK, TV>(this IDictionary<TK, TV> value, BsonDocumentWriter writer)
         {
             if (value == null)
             {

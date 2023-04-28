@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        public static void Serialise(this DateTime value, BsonDocumentWriter writer)
+        private static void Serialise(this DateTime value, BsonDocumentWriter writer)
         {
             // TODO: is this right? will lose precision after round trip
             var bsonDateTime = new BsonDateTime(BsonUtils.ToUniversalTime(value));
