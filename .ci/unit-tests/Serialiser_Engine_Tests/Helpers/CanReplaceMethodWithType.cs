@@ -27,7 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Test.Versioning
+namespace BH.Tests.Engine.Serialiser
 {
     public static partial class Helpers
     {
@@ -38,7 +38,7 @@ namespace BH.Test.Versioning
         public static bool CanReplaceMethodWithType(string json)
         {
             string customJson = json.Replace(" \"_t\" : \"System.Reflection.MethodBase\", ", "");
-            CustomObject customObj = Engine.Serialiser.Convert.FromJson(customJson) as CustomObject;
+            CustomObject customObj = BH.Engine.Serialiser.Convert.FromJson(customJson) as CustomObject;
             if (customObj == null || !customObj.CustomData.ContainsKey("TypeName") || !customObj.CustomData.ContainsKey("MethodName"))
                 return false;
 
@@ -65,7 +65,7 @@ namespace BH.Test.Versioning
         {
             if (m_TypeDic.Count == 0)
             {
-                m_TypeDic = Engine.Base.Query.BHoMTypeList()
+                m_TypeDic = BH.Engine.Base.Query.BHoMTypeList()
                     .GroupBy(x => x.Namespace.NameSpaceKey())
                     .ToDictionary(x => x.Key, x => x.ToList());
             }
