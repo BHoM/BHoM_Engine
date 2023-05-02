@@ -49,7 +49,11 @@ namespace BH.Engine.Reflection
             }
 
             DescriptionAttribute descriptionAttribute = member.GetCustomAttribute<DescriptionAttribute>();
-            InputClassificationAttribute classification = member.GetCustomAttribute<InputClassificationAttribute>();
+
+            // Classification attribute not queried for methods - in that case it is processed per input/output, not the method itself
+            InputClassificationAttribute classification = null;
+            if (!(member is MethodInfo))
+                classification = member.GetCustomAttribute<InputClassificationAttribute>();
 
             string desc = "";
             if (descriptionAttribute != null && !string.IsNullOrWhiteSpace(descriptionAttribute.Description))
