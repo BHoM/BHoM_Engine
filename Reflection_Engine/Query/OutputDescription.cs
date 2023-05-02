@@ -43,7 +43,7 @@ namespace BH.Engine.Reflection
                 return "";
 
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classification = method.GetCustomAttribute<InputClassificationAttribute>();
+            ClassificationAttribute classification = method.GetCustomAttribute<ClassificationAttribute>();
 
             if (classification == null)
                 classification = attribute?.Quantity;

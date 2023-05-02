@@ -51,9 +51,9 @@ namespace BH.Engine.Reflection
             DescriptionAttribute descriptionAttribute = member.GetCustomAttribute<DescriptionAttribute>();
 
             // Classification attribute not queried for methods - in that case it is processed per input/output, not the method itself
-            InputClassificationAttribute classification = null;
+            ClassificationAttribute classification = null;
             if (!(member is MethodInfo))
-                classification = member.GetCustomAttribute<InputClassificationAttribute>();
+                classification = member.GetCustomAttribute<ClassificationAttribute>();
 
             string desc = "";
             if (descriptionAttribute != null && !string.IsNullOrWhiteSpace(descriptionAttribute.Description))
@@ -79,7 +79,7 @@ namespace BH.Engine.Reflection
             }
 
             IEnumerable<InputAttribute> inputDesc = parameter.Member.GetCustomAttributes<InputAttribute>().Where(x => x.Name == parameter.Name);
-            InputClassificationAttribute classification = parameter.Member.GetCustomAttributes<InputClassificationAttribute>().FirstOrDefault(x => x.Name == parameter.Name);
+            ClassificationAttribute classification = parameter.Member.GetCustomAttributes<ClassificationAttribute>().FirstOrDefault(x => x.Name == parameter.Name);
             string desc = "";
             if (inputDesc.Count() > 0)
             {
@@ -127,7 +127,7 @@ namespace BH.Engine.Reflection
         /***************************************************/
 
         [Description("Return the custom description of a C# class")]
-        public static string Description(this Type type, InputClassificationAttribute classification)
+        public static string Description(this Type type, ClassificationAttribute classification)
         {
             if (type == null)
             {
@@ -207,7 +207,7 @@ namespace BH.Engine.Reflection
 
         [Description("Return the custom description of a classification attribute.")]
         [Input("classification", "Classification attribute to be queried for description.")]
-        public static string IDescription(this InputClassificationAttribute classification)
+        public static string IDescription(this ClassificationAttribute classification)
         {
             return Description(classification as dynamic);
         }
@@ -256,7 +256,7 @@ namespace BH.Engine.Reflection
 
         [Description("Fallback returning an empty string in case a type-specific Description method is missing for a given subtype of InputClassificationAttribute.")]
         [Input("classification", "Input classification attribute to be queried for description.")]
-        private static string Description(this InputClassificationAttribute classification)
+        private static string Description(this ClassificationAttribute classification)
         {
             return "";
         }
