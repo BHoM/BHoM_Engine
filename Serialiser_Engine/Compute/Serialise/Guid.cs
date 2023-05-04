@@ -36,9 +36,9 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this Guid value, BsonDocumentWriter writer)
+        private static void Serialise(this Guid value, BsonDocumentWriter writer, Type targetType)
         {
-            if (writer.SerializationDepth == 0)
+            if (targetType != typeof(Guid))
             {
                 var binaryData = new BsonBinaryData(value, GuidRepresentation.Standard);
                 writer.WriteBinaryData(binaryData);

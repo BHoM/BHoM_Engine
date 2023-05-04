@@ -39,7 +39,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this Type value, BsonDocumentWriter writer)
+        private static void Serialise(this Type value, BsonDocumentWriter writer, Type targetType)
         {
             writer.WriteStartDocument();
 
@@ -79,9 +79,9 @@ namespace BH.Engine.Serialiser
                         {
                             // T : IComparable<T> creates an infinite loop. Thankfully, that's the only case where a type constrained by itself even makes sense
                             if (constraint.Name == "IComparable`1" && constraint.GenericTypeArguments.FirstOrDefault() == value)
-                                typeof(IEnumerable).Serialise(writer);
+                                typeof(IEnumerable).Serialise(writer, typeof(Type));
                             else
-                                constraint.Serialise(writer);
+                                constraint.Serialise(writer, typeof(Type));
                         }
 
                         writer.WriteEndArray();
@@ -101,7 +101,7 @@ namespace BH.Engine.Serialiser
                     writer.WriteName("GenericArguments");
                     writer.WriteStartArray();
                     foreach (Type arg in generics)
-                        arg.Serialise(writer);
+                        arg.Serialise(writer, typeof(Type));
                     writer.WriteEndArray();
                 }
 

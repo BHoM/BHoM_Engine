@@ -37,7 +37,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this DataTable value, BsonDocumentWriter writer)
+        private static void Serialise(this DataTable value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -49,7 +49,7 @@ namespace BH.Engine.Serialiser
             foreach (DataRow dr in value.Rows)
             {
                 var dictionary = dr.Table.Columns.Cast<DataColumn>().ToDictionary(col => col.ColumnName, col => dr[col.ColumnName]);
-                dictionary.Serialise(writer);
+                dictionary.Serialise(writer, typeof(Dictionary<string, object>));
             }
             writer.WriteEndArray();
         }
