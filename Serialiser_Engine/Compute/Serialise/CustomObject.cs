@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this CustomObject value, BsonDocumentWriter writer)
+        private static void Serialise(this CustomObject value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -55,7 +55,7 @@ namespace BH.Engine.Serialiser
             foreach (KeyValuePair<string, object> kvp in data)
             {
                 writer.WriteName(kvp.Key);
-                ISerialise(kvp.Value, writer);
+                ISerialise(kvp.Value, writer, typeof(object));
             }
 
             if (value.Tags.Count > 0)
@@ -70,7 +70,7 @@ namespace BH.Engine.Serialiser
             if (value.Fragments.Count > 0)
             {
                 writer.WriteName("Fragments");
-                value.Fragments.Serialise(writer);
+                value.Fragments.Serialise(writer, typeof(FragmentSet));
             }
 
             writer.WriteName("BHoM_Guid");

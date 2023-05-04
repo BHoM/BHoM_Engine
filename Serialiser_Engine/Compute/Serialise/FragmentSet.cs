@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this FragmentSet value, BsonDocumentWriter writer)
+        private static void Serialise(this FragmentSet value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -44,7 +44,7 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
-            if (writer.SerializationDepth == 0)
+            if (targetType != typeof(FragmentSet))
             {
                 writer.WriteStartDocument();
 
@@ -56,10 +56,10 @@ namespace BH.Engine.Serialiser
 
             writer.WriteStartArray();
             foreach (IObject item in value)
-                item.Serialise(writer);
+                item.Serialise(writer, typeof(IObject));
             writer.WriteEndArray();
 
-            if (writer.SerializationDepth == 0)
+            if (targetType != typeof(FragmentSet))
             {
                 writer.AddVersion();
                 writer.WriteEndDocument();

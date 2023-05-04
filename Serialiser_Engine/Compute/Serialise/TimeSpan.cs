@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this TimeSpan value, BsonDocumentWriter writer)
+        private static void Serialise(this TimeSpan value, BsonDocumentWriter writer, Type targetType)
         {
             writer.WriteString(value.ToString());
         }

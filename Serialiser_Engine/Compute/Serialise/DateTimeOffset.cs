@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this DateTimeOffset value, BsonDocumentWriter writer)
+        private static void Serialise(this DateTimeOffset value, BsonDocumentWriter writer, Type targetType)
         {
             writer.WriteStartArray();
             writer.WriteInt64(value.Ticks);

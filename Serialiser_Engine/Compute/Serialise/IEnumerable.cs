@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        private static void Serialise<T>(this IEnumerable<T> value, BsonDocumentWriter writer)
+        private static void Serialise<T>(this IEnumerable<T> value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -44,7 +44,7 @@ namespace BH.Engine.Serialiser
 
             writer.WriteStartArray();
             foreach (T item in value)
-                ISerialise(item, writer);
+                ISerialise(item, writer, typeof(T));
             writer.WriteEndArray();
         }
 
