@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise<T1, T2>(this Tuple<T1, T2> value, BsonDocumentWriter writer)
+        private static void Serialise<T1, T2>(this Tuple<T1, T2> value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -47,8 +47,8 @@ namespace BH.Engine.Serialiser
             }
 
             writer.WriteStartArray();
-            value.Item1.ISerialise(writer);
-            value.Item2.ISerialise(writer);
+            value.Item1.ISerialise(writer, typeof(T1));
+            value.Item2.ISerialise(writer, typeof(T2));
             writer.WriteEndArray();
         }
 
@@ -62,9 +62,9 @@ namespace BH.Engine.Serialiser
             }
 
             writer.WriteStartArray();
-            value.Item1.ISerialise(writer);
-            value.Item2.ISerialise(writer);
-            value.Item3.ISerialise(writer);
+            value.Item1.ISerialise(writer, typeof(T1));
+            value.Item2.ISerialise(writer, typeof(T2));
+            value.Item3.ISerialise(writer, typeof(T3));
             writer.WriteEndArray();
         }
 
@@ -78,10 +78,10 @@ namespace BH.Engine.Serialiser
             }
 
             writer.WriteStartArray();
-            value.Item1.ISerialise(writer);
-            value.Item2.ISerialise(writer);
-            value.Item3.ISerialise(writer);
-            value.Item4.ISerialise(writer);
+            value.Item1.ISerialise(writer, typeof(T1));
+            value.Item2.ISerialise(writer, typeof(T2));
+            value.Item3.ISerialise(writer, typeof(T3));
+            value.Item4.ISerialise(writer, typeof(T4));
             writer.WriteEndArray();
         }
 
@@ -95,11 +95,11 @@ namespace BH.Engine.Serialiser
             }
 
             writer.WriteStartArray();
-            value.Item1.ISerialise(writer);
-            value.Item2.ISerialise(writer);
-            value.Item3.ISerialise(writer);
-            value.Item4.ISerialise(writer);
-            value.Item5.ISerialise(writer);
+            value.Item1.ISerialise(writer, typeof(T1));
+            value.Item2.ISerialise(writer, typeof(T2));
+            value.Item3.ISerialise(writer, typeof(T3));
+            value.Item4.ISerialise(writer, typeof(T4));
+            value.Item5.ISerialise(writer, typeof(T5));
             writer.WriteEndArray();
         }
 

@@ -35,9 +35,15 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this Enum value, BsonDocumentWriter writer)
+        private static void Serialise(this Enum value, BsonDocumentWriter writer, Type targetType)
         {
-            if (writer.SerializationDepth == 0)
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+
+            if (value.GetType() != targetType)
             {
                 writer.WriteStartDocument();
 
@@ -45,7 +51,7 @@ namespace BH.Engine.Serialiser
                 writer.WriteString("System.Enum");
 
                 writer.WriteName("TypeName");
-                Serialise(value.GetType(), writer);
+                Serialise(value.GetType(), writer, typeof(Type));
 
                 writer.WriteName("Value");
                 writer.WriteString(Enum.GetName(value.GetType(), value));

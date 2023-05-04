@@ -40,7 +40,19 @@ namespace BH.Engine.Serialiser
             if (value == null)
                 writer.WriteNull();
             else
-                Serialise(value as dynamic, writer);
+                Serialise(value as dynamic, writer, typeof(object));
+        }
+
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+
+        private static void ISerialise(this object value, BsonDocumentWriter writer, Type targetType)
+        {
+            if (value == null)
+                writer.WriteNull();
+            else
+                Serialise(value as dynamic, writer, targetType);
         }
 
 
@@ -48,7 +60,7 @@ namespace BH.Engine.Serialiser
         /**** Fallback Methods                  ****/
         /*******************************************/
 
-        private static void Serialise(this object value, BsonDocumentWriter writer)
+        private static void Serialise(this object value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
                 writer.WriteNull();

@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this IObject value, BsonDocumentWriter writer)
+        private static void Serialise(this IObject value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -51,7 +51,7 @@ namespace BH.Engine.Serialiser
             foreach (PropertyInfo prop in value.GetType().GetProperties())
             {
                 writer.WriteName(prop.Name);
-                ISerialise(prop.GetValue(value), writer);
+                ISerialise(prop.GetValue(value), writer, prop.PropertyType);
             }
             writer.WriteEndDocument();
         }

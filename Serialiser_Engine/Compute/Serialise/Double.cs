@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise(this double value, BsonDocumentWriter writer)
+        private static void Serialise(this double value, BsonDocumentWriter writer, Type targetType)
         {
             writer.WriteDouble(value);
         }
