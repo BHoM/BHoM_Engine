@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-        private static void Serialise<T>(this T[,] value, BsonDocumentWriter writer)
+        private static void Serialise<T>(this T[,] value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -51,7 +51,7 @@ namespace BH.Engine.Serialiser
             {
                 writer.WriteStartArray();
                 for (int j = 0; j < value.GetLength(1); j++)
-                    value[i, j].ISerialise(writer);
+                    value[i, j].ISerialise(writer, typeof(T));
                 writer.WriteEndArray();
             }
             writer.WriteEndArray();

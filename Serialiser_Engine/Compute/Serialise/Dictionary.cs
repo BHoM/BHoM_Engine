@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        private static void Serialise<T>(this IDictionary<string, T> value, BsonDocumentWriter writer)
+        private static void Serialise<T>(this IDictionary<string, T> value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -46,7 +46,7 @@ namespace BH.Engine.Serialiser
             foreach (var kvp in value)
             {
                 writer.WriteName(kvp.Key);
-                ISerialise(kvp.Value, writer);
+                ISerialise(kvp.Value, writer, typeof(T));
             }
             writer.WriteEndDocument();
 
@@ -54,7 +54,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static void Serialise<TK, TV>(this IDictionary<TK, TV> value, BsonDocumentWriter writer)
+        private static void Serialise<TK, TV>(this IDictionary<TK, TV> value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
             {
@@ -62,7 +62,7 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
-            if (writer.SerializationDepth == 0)
+            if (value.GetType() != targetType)
             {
                 writer.WriteStartDocument();
                 writer.WriteName("_t");
@@ -75,14 +75,14 @@ namespace BH.Engine.Serialiser
             {
                 writer.WriteStartDocument();
                 writer.WriteName("k");
-                ISerialise(kvp.Key, writer);
+                ISerialise(kvp.Key, writer, typeof(TK));
                 writer.WriteName("v");
-                ISerialise(kvp.Value, writer);
+                ISerialise(kvp.Value, writer, typeof(TV));
                 writer.WriteEndDocument();
             }
             writer.WriteEndArray();
 
-            if (writer.SerializationDepth == 0)
+            if (value.GetType() != targetType)
                 writer.WriteEndDocument();
         }
 
