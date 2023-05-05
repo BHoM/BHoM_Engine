@@ -37,9 +37,13 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         private static List<T> DeserialiseList<T>(this BsonValue bson, ref bool failed, List<T> value, string version, bool isUpgraded)
         {
-            if (bson.IsBsonNull)
-                return null;
-            else if (!bson.IsBsonArray)
+
+            BsonArray array;
+            if (bson.IsBsonArray)
+                array = bson.AsBsonArray;
+            else if (bson.IsBsonDocument)
+                array = bson.AsBsonDocument["_v"].AsBsonArray;
+            else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a List and received " + bson.ToString() + " instead.");
                 failed = true;
@@ -49,7 +53,7 @@ namespace BH.Engine.Serialiser
             if (value == null)
                 value = new List<T>();
 
-            foreach (BsonValue item in bson.AsBsonArray)
+            foreach (BsonValue item in array)
                 value.Add((T)item.IDeserialise(typeof(T), ref failed, null, version, isUpgraded));
 
             return value;

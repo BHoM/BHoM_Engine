@@ -42,10 +42,15 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
+            bool asDocument = CheckWriteAsDocument(value, writer, targetType);
+
             writer.WriteStartArray();
             foreach (T item in value)
                 ISerialise(item, writer, typeof(T));
             writer.WriteEndArray();
+
+            if (asDocument)
+                writer.WriteEndDocument();
         }
 
         /*******************************************/

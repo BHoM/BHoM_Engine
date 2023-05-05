@@ -43,8 +43,20 @@ namespace BH.Engine.Serialiser
                 writer.WriteNull();
                 return;
             }
+            bool asDocument = value.GetType() != targetType;
+
+            if (asDocument)
+            {
+                writer.WriteStartDocument();
+                writer.WriteName("_t");
+                writer.WriteString(value.GetType().FullName);
+                writer.WriteName("_v");
+            }
 
             writer.WriteString(value.ToString());
+
+            if(asDocument)
+                writer.WriteEndDocument();
         }
 
         /*******************************************/

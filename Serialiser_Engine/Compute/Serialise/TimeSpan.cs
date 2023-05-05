@@ -40,7 +40,20 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         private static void Serialise(this TimeSpan value, BsonDocumentWriter writer, Type targetType)
         {
+            bool asDocument = value.GetType() != targetType;
+
+            if (asDocument)
+            {
+                writer.WriteStartDocument();
+                writer.WriteName("_t");
+                writer.WriteString(value.GetType().FullName);
+                writer.WriteName("_v");
+            }
+
             writer.WriteString(value.ToString());
+
+            if (asDocument)
+                writer.WriteEndDocument();
         }
 
         /*******************************************/
