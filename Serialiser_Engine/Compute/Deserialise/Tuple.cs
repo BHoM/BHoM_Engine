@@ -39,10 +39,19 @@ namespace BH.Engine.Serialiser
 
         private static object DeserialiseTuple(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
         {
+            BsonValue value = bson;
+            if (bson.IsBsonDocument)
+            {
+                BsonDocument doc = bson.AsBsonDocument;
+                value = doc["_v"];
+                if (targetType == null)
+                    targetType = doc["_t"].DeserialiseType(ref failed, targetType, version, isUpgraded);
+            }
+            
             Type[] keys = targetType.GetGenericArguments();
             object tuple = Activator.CreateInstance(targetType, keys.Select(x => GetDefaultValue(x)).ToArray());
             if (tuple != null)
-                return DeserialiseTuple(bson, ref failed, tuple as dynamic, version, isUpgraded);
+                return DeserialiseTuple(value, ref failed, tuple as dynamic, version, isUpgraded);
             else
             {
                 failed = true;

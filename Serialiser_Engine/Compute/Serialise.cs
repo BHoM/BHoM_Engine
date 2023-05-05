@@ -77,6 +77,25 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
+        /**** Private Methods - Support         ****/
+        /*******************************************/
+
+        private static bool CheckWriteAsDocument(object value, BsonDocumentWriter writer, Type targetType)
+        {
+            bool asDocument = value.GetType() != targetType;
+
+            if (asDocument)
+            {
+                writer.WriteStartDocument();
+                writer.WriteName("_t");
+                writer.WriteString(value.GetType().FullName);
+                writer.WriteName("_v");
+            }
+            return asDocument;
+
+        }
+
+        /*******************************************/
     }
 }
 

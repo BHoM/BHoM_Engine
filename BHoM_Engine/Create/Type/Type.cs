@@ -58,13 +58,13 @@ namespace BH.Engine.Base
                 List<string> parts = name.Substring(idx2)
                     .Trim(new char[] { '[', ']' })
                     .Split(new string[] { "],[" }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(x => x.Split(new char[] { ',' }).First())
                     .ToList();
                 return GenericType(genericName, parts);
             }
 
+            string unQualifiedName = name.Contains(",") ? name.Split(',').First() : name;
             List<Type> types = null;
-            if (!Global.BHoMTypeDictionary.TryGetValue(name, out types))
+            if (!Global.BHoMTypeDictionary.TryGetValue(unQualifiedName, out types))
             {
                 Type type = System.Type.GetType(name);
                 if (type == null && name.EndsWith("&"))

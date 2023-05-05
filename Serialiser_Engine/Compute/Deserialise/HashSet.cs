@@ -39,9 +39,15 @@ namespace BH.Engine.Serialiser
         {
             if (bson.IsBsonNull)
                 return null;
-            else if (!bson.IsBsonArray)
+
+            BsonArray array;
+            if (bson.IsBsonArray)
+                array = bson.AsBsonArray;
+            else if (bson.IsBsonDocument)
+                array = bson.AsBsonDocument["_v"].AsBsonArray;
+            else
             {
-                BH.Engine.Base.Compute.RecordError("Expected to deserialise a List and received " + bson.ToString() + " instead.");
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a HashSet and received " + bson.ToString() + " instead.");
                 failed = true;
                 return value;
             }
@@ -49,7 +55,7 @@ namespace BH.Engine.Serialiser
             if (value == null)
                 value = new HashSet<T>();
 
-            foreach (BsonValue item in bson.AsBsonArray)
+            foreach (BsonValue item in array)
                 value.Add((T)item.IDeserialise(typeof(T), ref failed, null, version, isUpgraded));
 
             return value;
