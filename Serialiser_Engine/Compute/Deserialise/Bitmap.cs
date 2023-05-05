@@ -41,10 +41,17 @@ namespace BH.Engine.Serialiser
         {
             if (bson.IsBsonNull)
                 return null;
-            else if (bson.IsBsonBinaryData)
+
+            BsonBinaryData binaryData;
+
+
+            if (bson.IsBsonBinaryData)
             {
-                var stream = new MemoryStream(bson.AsBsonBinaryData.Bytes);
-                return new Bitmap(stream);
+                binaryData = bson.AsBsonBinaryData;
+            }
+            else if (bson.IsBsonDocument)
+            {
+                binaryData = bson["_v"].AsBsonBinaryData;
             }
             else
             {
@@ -52,6 +59,9 @@ namespace BH.Engine.Serialiser
                 failed = true;
                 return value;
             }
+
+            var stream = new MemoryStream(binaryData.Bytes);
+            return new Bitmap(stream);
         }
 
         /*******************************************/

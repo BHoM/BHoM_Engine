@@ -42,6 +42,8 @@ namespace BH.Engine.Serialiser
                 return null;
             else if (bson.IsString)
                 return new Regex(bson.AsString);
+            else if(bson.IsBsonDocument)
+                return new Regex(bson.AsBsonDocument["_v"].AsString);
             else 
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a regex and received " + bson.ToString() + " instead.");
