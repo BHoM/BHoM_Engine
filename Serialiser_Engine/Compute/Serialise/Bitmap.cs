@@ -46,12 +46,17 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
+            bool asDocument = CheckWriteAsDocument(value, writer, targetType);
+
             var stream = new MemoryStream();
             value.Save(stream, value.RawFormat); // Will work for most formats: bmp, png, jepg, tiff but not all
             var bytes = stream.ToArray();
             BsonBinaryData data = new BsonBinaryData(bytes);
 
             writer.WriteBinaryData(data);
+
+            if (asDocument)
+                writer.WriteEndDocument();
         }
 
         /*******************************************/
