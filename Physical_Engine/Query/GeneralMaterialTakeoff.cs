@@ -157,7 +157,7 @@ namespace BH.Engine.Physical
         [Input("construction", "The physical IConstruction object to extract the general material takeoff from.")]
         [Input("area", "The area on where the construction is applied.", typeof(Area))]
         [Output("genTakeoff", "The GeneralMaterialTakeoff for the IConstruction, made of up the volume, area and mass and materiality of the construction.")]
-        public static GeneralMaterialTakeoff GeneralMaterialTakeoff(Construction construction, double area)
+        public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this Construction construction, double area)
         {
             if (construction == null)
             {
