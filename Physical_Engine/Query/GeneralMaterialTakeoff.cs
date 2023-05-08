@@ -43,7 +43,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the general material takeoff from the ISurface object. The takeoff will contain materials and volumes, mass and areas from the surface itself, as well as takeoffs from any openings, such as doors and windows.")]
         [Input("surface", "The physical surface object to extract the general material takeoff from.")]
-        [Output("volTakeoff", "The general material takeoff based on buildup of the surface object as well as any of its inner objects, such as doors and windows.")]
+        [Output("genTakeoff", "The general material takeoff based on buildup of the surface object as well as any of its inner objects, such as doors and windows.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this ISurface surface)
         {
             if (surface == null)
@@ -87,7 +87,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the volumetric material takeoff from the Void object. This will always return an empty takeoff as a void represent an area of no materiality.")]
         [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
-        [Output("volTakeoff", "The volumetric material takeoff for the opening. For a void this will alwys be an empty Material Takeoff.")]
+        [Output("genTakeoff", "The volumetric material takeoff for the opening. For a void this will alwys be an empty Material Takeoff.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this BH.oM.Physical.Elements.Void opening)
         {
             //Voids represent empty space, hence returning a completely empty composition
@@ -98,7 +98,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the volumetric material takeoff from the Window.")]
         [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
-        [Output("volTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
+        [Output("genTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this Window opening)
         {
             if (opening == null)
@@ -126,7 +126,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the volumetric material takeoff from the Door.")]
         [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
-        [Output("volTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
+        [Output("genTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this Door opening)
         {
             if (opening == null)
@@ -156,7 +156,7 @@ namespace BH.Engine.Physical
         [Description("Gets the GeneralMaterialTakeoff takeoff from the IConstruction given an area.")]
         [Input("construction", "The physical IConstruction object to extract the general material takeoff from.")]
         [Input("area", "The area on where the construction is applied.", typeof(Area))]
-        [Output("volTakeoff", "The GeneralMaterialTakeoff for the IConstruction, made of up the volume, area and mass and materiality of the construction.")]
+        [Output("genTakeoff", "The GeneralMaterialTakeoff for the IConstruction, made of up the volume, area and mass and materiality of the construction.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(Construction construction, double area)
         {
             if (construction == null)
@@ -189,7 +189,7 @@ namespace BH.Engine.Physical
 
         [Description("Gets the volumetric material takeoff from the IOpening.")]
         [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
-        [Output("volTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
+        [Output("genTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
         public static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this IOpening opening)
         {
             return GeneralMaterialTakeoff(opening as dynamic);
@@ -200,7 +200,7 @@ namespace BH.Engine.Physical
         [Description("Gets the GeneralMaterialTakeoff takeoff from the IConstruction given an area.")]
         [Input("construction", "The physical IConstruction object to extract the general material takeoff from.")]
         [Input("area", "The area on where the construction is applied.", typeof(Area))]
-        [Output("volTakeoff", "The GeneralMaterialTakeoff for the IConstruction, made of up the volume, area and mass and materiality of the construction.")]
+        [Output("genTakeoff", "The GeneralMaterialTakeoff for the IConstruction, made of up the volume, area and mass and materiality of the construction.")]
         public static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this IConstruction construction, double area)
         {
             return GeneralMaterialTakeoff(construction as dynamic, area);
