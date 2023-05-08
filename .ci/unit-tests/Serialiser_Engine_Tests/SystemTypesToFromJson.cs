@@ -25,6 +25,7 @@ using BH.oM.Structure.Elements;
 using NUnit.Framework;
 using Shouldly;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -216,25 +217,16 @@ namespace BH.Tests.Engine.Serialiser
 
         /***************************************************/
 
-        [Test]
-        public void ToFromJsonListOfBitMapObjectProperty()
-        {
-            List<Bitmap> bitmaps = new List<Bitmap>();
-            for (int i = 0; i < 3; i++)
-            {
-                bitmaps.Add(RandomBitmap());
-            }
-            ToFromJsonCusomDataProperty(bitmaps);
-        }
-
-        /***************************************************/
-
         private void ToFromJsonCusomDataProperty<T>(T value)
         {
-            string key = typeof(T).Name;
+            string keyItem = "item";
+            string keyList = "list";
+            string keyGenList = "genList";
 
             CustomObject custom = new CustomObject();
-            custom.CustomData[key] = value;
+            custom.CustomData[keyItem] = value;
+            custom.CustomData[keyList] = new List<object> { value };
+            custom.CustomData[keyGenList] = new List<T> { value };
 
             string json = BH.Engine.Serialiser.Convert.ToJson(custom);
 
@@ -242,15 +234,63 @@ namespace BH.Tests.Engine.Serialiser
 
             retCustom.ShouldNotBeNull();
             retCustom.CustomData.ShouldNotBeNull();
-            retCustom.CustomData.ShouldContainKey(key);
-            object retValue = retCustom.CustomData[key];
+            retCustom.CustomData.ShouldContainKey(keyItem);
+            object retValue = retCustom.CustomData[keyItem];
             retValue.ShouldNotBeNull();
 
             retValue.ShouldBeOfType(typeof(T));
 
             T retOffset = (T)retValue;
 
-            retOffset.ShouldBeEquivalentTo(value);
+            EquivalentCheckList(retOffset, value);
+
+            retCustom.CustomData.ShouldContainKey(keyList);
+            object listVal = retCustom.CustomData[keyList];
+            listVal.ShouldNotBeNull();
+
+            listVal.ShouldBeOfType(typeof(List<object>));
+
+            List<object> retList = (List<object>)listVal;
+            retList.Count.ShouldBe(1);
+            EquivalentCheckList(retList[0], value);
+
+
+            retCustom.CustomData.ShouldContainKey(keyGenList);
+            object genListVal = retCustom.CustomData[keyGenList];
+            genListVal.ShouldNotBeNull();
+
+            genListVal.ShouldBeOfType(typeof(List<T>));
+
+            List<T> retGenList = (List<T>)genListVal;
+            retGenList.Count.ShouldBe(1);
+            EquivalentCheckList(retGenList[0], value);
+        }
+
+        /***************************************************/
+
+        public static void EquivalentCheckList(object val, object refVal)
+        {
+            if (refVal == null)
+                return;
+
+            val.ShouldBeOfType(refVal.GetType());
+
+            if ((refVal is IEnumerable) && !(refVal is string))
+            {
+                List<object> valEnum = ((IEnumerable)val).Cast<object>().ToList();
+                List<object> refEnumerable = ((IEnumerable)refVal).Cast<object>().ToList();
+
+                valEnum.Count.ShouldBe(refEnumerable.Count);
+                for (int i = 0; i < valEnum.Count; i++)
+                {
+                    EquivalentCheckList(valEnum[i], refEnumerable[i]);
+                }
+
+            }
+            else
+            {
+                val.ShouldBeEquivalentTo(refVal);
+            }
         }
 
         /***************************************************/
