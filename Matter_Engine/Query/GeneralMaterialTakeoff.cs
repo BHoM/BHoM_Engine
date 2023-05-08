@@ -40,9 +40,9 @@ namespace BH.Engine.Matter
         /***************************************************/
 
         [Description("Gets the unique Materials along with their volumes defining an object's make-up.")]
-        [Input("elementM", "The element to get the VolumetricMaterialTakeoff from.")]
-        [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns it. If false, the VolumetricMaterialTakeoff returned will be calculated, independant of fragment attached.")]
-        [Output("volumetricMaterialTakeoff", "The kind of matter the element is composed of and in which volumes.")]
+        [Input("elementM", "The element to get the GeneralMaterialTakeoff from.")]
+        [Input("checkForTakeoffFragment", "If true and the provided element is a BHoMObject, the incoming item is checked if it has a VolumetricMaterialTakeoff fragment attached, and if so, returns a GeneralMaterialTakeoff based on it. If false, the GeneralMaterialTakeoff returned will be calculated, independant of fragment attached.")]
+        [Output("generalMaterialTakeoff", "The kind of matter the element is composed of and in which quantities.")]
         public static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this IElementM elementM, bool checkForTakeoffFragment = true)
         {
             if (elementM == null)
