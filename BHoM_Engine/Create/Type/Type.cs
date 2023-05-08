@@ -49,18 +49,9 @@ namespace BH.Engine.Base
             }
 
             if (name.Contains('<'))
-                return GenericType(name, silent);
+                return GenericTypeAngleBrackets(name, silent);
             else if (name.Contains('`') && name.Contains("[["))
-            {
-                int idx = name.IndexOf('`');
-                int idx2 = name.IndexOf('[');
-                string genericName = name.Substring(0, idx2);
-                List<string> parts = name.Substring(idx2)
-                    .Trim(new char[] { '[', ']' })
-                    .Split(new string[] { "],[" }, StringSplitOptions.RemoveEmptyEntries)
-                    .ToList();
-                return GenericType(genericName, parts);
-            }
+                return GenericTypeSquareBrackets(name, silent);
 
             string unQualifiedName = name.Contains(",") ? name.Split(',').First() : name;
             List<Type> types = null;
@@ -74,7 +65,6 @@ namespace BH.Engine.Base
                         type = type.MakeByRefType();
                 }
                     
-
                 if (type == null && !silent)
                     Compute.RecordError($"A type corresponding to {name} cannot be found.");
 
