@@ -61,6 +61,7 @@ namespace BH.Engine.Matter
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
             // -VolumetricMaterialTakeoff
+            //- GeneralMaterialTakeoff
             //This method first checks if the VolumetricMaterialTakeoff method can be found and run, and if so uses it.
             //If not, it falls back to running the MaterialComposition and SolidVolume methods and gets the VolumetricMaterialTakeoff from them.
 
@@ -69,6 +70,10 @@ namespace BH.Engine.Matter
                 return matTakeoff;
             else
             {
+                GeneralMaterialTakeoff generalMaterialTakeoff;
+                if (TryGetGeneralMaterialTakeoff(elementM, out generalMaterialTakeoff))
+                    return Create.VolumetricMaterialTakeoff(generalMaterialTakeoff);
+
                 MaterialComposition matComp;
                 double volume;
                 if (TryGetMaterialComposition(elementM, out matComp) && TryGetSolidVolume(elementM, out volume))
