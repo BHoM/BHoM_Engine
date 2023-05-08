@@ -88,6 +88,22 @@ namespace BH.Engine.Matter
         }
 
         /***************************************************/
+
+        [Description("Creates a VolumetricMaterialTakeoff based on the materials in the provided GeneralMaterialTakeoff, collection only volumes.")]
+        [Input("generalMaterialTakeoff", "The GeneralMaterialTakeoff to be used to create the VolumetricMaterialTakeoff. Materials and volumes of the GeneralMaterialTakeoff will be assigned to the takeoff.")]
+        [Output("volumetricMaterialTakeoff", "A VolumetricMaterialTakeoff composed of the Materials adn Volumes in the provided GeneralMaterialTakeoff.")]
+        public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(GeneralMaterialTakeoff generalMaterialTakeoff)
+        {
+            if (generalMaterialTakeoff == null)
+            {
+                Base.Compute.RecordError($"Cannot create a {nameof(VolumetricMaterialTakeoff)} from a null {nameof(GeneralMaterialTakeoff)}.");
+                return null;
+            }
+
+            return new VolumetricMaterialTakeoff(generalMaterialTakeoff.MaterialTakeoffItems.Select(x => x.Material), generalMaterialTakeoff.MaterialTakeoffItems.Select(x => x.Volume));
+        }
+
+        /***************************************************/
     }
 }
 
