@@ -59,6 +59,7 @@ namespace BH.Engine.Matter
             //IElementMs should implement one of the following:
             // -SolidVolume and MaterialComposition or
             // -VolumetricMaterialTakeoff
+            //- GeneralMaterialTakeoff
             //This method first checks if the SolidVolume method can be found and run, and if so uses it.
             //If not, it falls back to running the VolumetricMaterialTakeoff method and gets the SolidVolume from it.
             double volume;
@@ -69,6 +70,8 @@ namespace BH.Engine.Matter
                 VolumetricMaterialTakeoff takeoff;
                 if (TryGetVolumetricMaterialTakeoff(elementM, out takeoff))
                     return takeoff.SolidVolume();
+                else if (TryGetGeneralMaterialTakeoff(elementM, out GeneralMaterialTakeoff generalTakeoff))
+                    return generalTakeoff.SolidVolume();
                 else
                 {
                     Base.Compute.RecordError($"The provided element of type {elementM.GetType()} does not implement SolidVolume or VolumetricMaterialTakeoff methods. The volume could not be extracted.");
@@ -91,6 +94,22 @@ namespace BH.Engine.Matter
             }
 
             return volumetricMaterialTakeoff.Volumes.Sum();
+        }
+
+        /******************************************/
+
+        [Description("Returns the total solid volume of the provided GeneralMaterialTakeoff.")]
+        [Input("generalMaterialTakeoff", "The GeneralMaterialTakeoff to get the total SolidVolume from.")]
+        [Output("volume", "The total volumetric amount of matter in the GeneralMaterialTakeoff.", typeof(Volume))]
+        public static double SolidVolume(this GeneralMaterialTakeoff generalMaterialTakeoff)
+        {
+            if (generalMaterialTakeoff == null)
+            {
+                Base.Compute.RecordError("Connat query the solid volume from a null GeneralMaterialTakeoff.");
+                return double.NaN;
+            }
+
+            return generalMaterialTakeoff.MaterialTakeoffItems.Sum(x => x.Volume);
         }
 
         /***************************************************/
