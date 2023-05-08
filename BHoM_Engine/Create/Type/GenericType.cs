@@ -47,6 +47,57 @@ namespace BH.Engine.Base
                 return null;
             }
 
+            if (name.Contains("<"))
+                return GenericTypeAngleBrackets(name, silent);
+            else if (name.Contains('`') && name.Contains("[["))
+                return GenericTypeSquareBrackets(name, silent);
+            else   //No split chars found, return null and error as type is not generic
+            {
+                Compute.RecordError("Provided string is not a generic type.");
+                return null;
+            }
+        }
+
+        /***************************************************/
+
+        
+
+        [Description("Creates a generic BHoM type that matches the given name.")]
+        [Input("name", "Name to be searched for among all BHoM generic types.")]
+        [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Output("type", "BHoM generic type that matches the given name.")]
+        public static Type GenericType(string name, List<string> arguments, bool silent = false)
+        {
+            Type typeDefinition = Type(name);
+            if (typeDefinition == null)
+                return null;
+
+            try
+            {
+                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());    //Call to Type(x) will recursively call this method for inner generic types
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Creates a generic BHoM type that matches the given name.")]
+        [Input("name", "Name to be searched for among all BHoM generic types.")]
+        [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Output("type", "BHoM generic type that matches the given name.")]
+        public static Type GenericTypeAngleBrackets(string name, bool silent = false)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Compute.RecordError("Cannot create a type from a null string.");
+                return null;
+            }
+
             //Looping through the string finding generic argument start and end
             int counter = 0;
             List<int> argsSplit = new List<int>();
@@ -86,7 +137,7 @@ namespace BH.Engine.Base
                 //Generic arguments will be defined between each split char
                 //Starting point at position of char + 1, length is difference between the position of split chars - 1
                 //Trim to remove starting and trailing whitespace
-                arguments.Add(name.Substring(argsSplit[i] + 1, argsSplit[i + 1] - argsSplit[i] - 1).Trim());    
+                arguments.Add(name.Substring(argsSplit[i] + 1, argsSplit[i + 1] - argsSplit[i] - 1).Trim());
             }
             //Main type definition as string up until the first split char (first '<').
             //Number of generic arguments will be 1 less than the number of argsSplit count
@@ -99,23 +150,72 @@ namespace BH.Engine.Base
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
         [Output("type", "BHoM generic type that matches the given name.")]
-        public static Type GenericType(string name, List<string> arguments, bool silent = false)
+        private static Type GenericTypeSquareBrackets(string name, bool silent = false)
         {
-            Type typeDefinition = Type(name);
-            if (typeDefinition == null)
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Compute.RecordError("Cannot create a type from a null string.");
                 return null;
+            }
 
-            try
+            //Looping through the string finding generic argument start and end
+            int nameEnd = -1;
+            List<int> argsStarts = new List<int>();
+            List<int> argsEnd = new List<int>();
+            int genericCounter = 0; //Counter of how deep into the generic hiearchy the loop currently is. For checking generics of generics
+            char[] charArr = name.ToCharArray();
+            for (int i = 0; i < charArr.Length; i++)
             {
-                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());    //Call to Type(x) will recursively call this method for inner generic types
+                char c = charArr[i];
+                if (c == '[' && charArr[i + 1] == '[')   //Generic start char
+                {
+                    if (genericCounter == 0)    //If starting generic bracket, add as first splitpoint for the string
+                    {
+                        nameEnd = i;
+                        argsStarts.Add(i + 2);
+                    }
+                    genericCounter++;   //Increment the generic counter
+                    i++;
+                }
+                else if (c == ']' && charArr[i + 1] == ']')  //Generic end char
+                {
+                    genericCounter--;   //Reduce the generic counter
+                    if (genericCounter == 0)    //If counter is 0, closing bracket should correspond to the first generic and split point added
+                        argsEnd.Add(i);
+                    i++;
+                }
+                else if (genericCounter == 1 && c == ']' && charArr[i + 1] == ',' && charArr[i + 2] == '[')   //If in the first level of generic heirachy, check for commas to add as additional splitting
+                {
+                    argsEnd.Add(i);
+                    argsStarts.Add(i + 3);
+                    i += 2;
+                }
             }
-            catch
+
+            if (argsStarts.Count == 0 || argsStarts.Count != argsEnd.Count)   //No split chars found, return null and error as type is not generic
             {
+                Compute.RecordError("Provided string is not a generic type.");
                 return null;
             }
+
+            List<string> arguments = new List<string>();
+
+            for (int i = 0; i < argsStarts.Count; i++)
+            {
+                //Generic arguments will be defined between each split char
+                //Starting point at position of char + 3, length is difference between the position of split chars - 1
+                //Trim to remove starting and trailing whitespace
+                arguments.Add(name.Substring(argsStarts[i], argsEnd[i] - argsStarts[i]).Trim());
+            }
+            string mainName = name.Substring(0, nameEnd);
+            //Main type definition as string up until the first split char (first '<').
+            //Number of generic arguments will be 1 less than the number of argsSplit count
+            return GenericType(mainName, arguments, silent);
         }
 
         /***************************************************/
+
+       
     }
 }
 
