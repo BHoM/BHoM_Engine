@@ -128,6 +128,28 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
+        [Description("Creates a MaterialComposition based on the volumes normalised to 1 and materials in the provided Material.")]
+        [Input("generalMaterialTakeoff", "The GeneralMaterialTakeoff to be used to create the MaterialComposition. Materials from the GeneralMaterialTakeoff will be used with corresponing normalised volumes, ensuring the total of all ratios equates to 1.")]
+        [Output("materialComposition", "A MaterialComposition composed of the Materials in the provided GeneralMaterialTakeoff and ratios as its normalised volumes.")]
+        public static MaterialComposition MaterialComposition(GeneralMaterialTakeoff generalMaterialTakeoff)
+        {
+            if (generalMaterialTakeoff == null)
+            {
+                Base.Compute.RecordError($"Cannot create a {nameof(MaterialComposition)} from a null {nameof(VolumetricMaterialTakeoff)}.");
+                return null;
+            }
+            if (generalMaterialTakeoff.MaterialTakeoffItems == null)
+            {
+                Base.Compute.RecordError($"Cannot create a {nameof(MaterialComposition)} from a {nameof(VolumetricMaterialTakeoff)} with null {nameof(generalMaterialTakeoff.MaterialTakeoffItems)}.");
+                return null;
+            }
+
+            double totalVolume = generalMaterialTakeoff.MaterialTakeoffItems.Sum(x => x.Volume);
+
+            return new MaterialComposition(generalMaterialTakeoff.MaterialTakeoffItems.Select(x => x.Material), generalMaterialTakeoff.MaterialTakeoffItems.Select(x => x.Volume / totalVolume));
+        }
+
+        /***************************************************/
     }
 }
 
