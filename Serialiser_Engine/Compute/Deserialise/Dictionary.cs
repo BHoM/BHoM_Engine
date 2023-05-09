@@ -49,7 +49,8 @@ namespace BH.Engine.Serialiser
             {
                 foreach (BsonElement item in bson.AsBsonDocument)
                 {
-                    value[(TK)(object)(item.Name)] = (TV)item.Value.IDeserialise(typeof(TV), ref failed, null, version, isUpgraded);
+                    if(item.Name != "_t" && item.Name != "_bhomVersion")
+                        value[(TK)(object)(item.Name)] = (TV)item.Value.IDeserialise(typeof(TV), ref failed, null, version, isUpgraded);
                 }
             }
             else if (typeof(TK) != typeof(string))
