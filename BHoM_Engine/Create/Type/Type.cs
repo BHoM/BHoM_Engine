@@ -57,7 +57,11 @@ namespace BH.Engine.Base
             List<Type> types = null;
             if (!Global.BHoMTypeDictionary.TryGetValue(unQualifiedName, out types))
             {
-                Type type = System.Type.GetType(name);
+                Type type;
+                if (m_ExplicitSystemTypes.TryGetValue(unQualifiedName, out type))   //Handling of some specific System Types that do not work without assembly qualified name
+                    return type;
+
+                type = System.Type.GetType(name);
                 if (type == null && name.EndsWith("&"))
                 {
                     type = Type(name.TrimEnd(new char[] { '&' }), true);
@@ -85,6 +89,15 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        private static Dictionary<string, Type> m_ExplicitSystemTypes = new Dictionary<string, Type>
+        {
+            ["System.Drawing.Color"] = typeof(System.Drawing.Color),
+            ["System.Text.RegularExpressions.Regex"] = typeof(System.Text.RegularExpressions.Regex),
+            ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap)
+        };
+
+        /*******************************************/
     }
 }
 
