@@ -38,12 +38,12 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         private static Regex DeserialiseRegex(this BsonValue bson, ref bool failed, Regex value = null)
         {
+            bson = ExtractValue(bson);
+
             if (bson.IsBsonNull)
                 return null;
             else if (bson.IsString)
                 return new Regex(bson.AsString);
-            else if(bson.IsBsonDocument)
-                return new Regex(bson.AsBsonDocument["_v"].AsString);
             else 
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a regex and received " + bson.ToString() + " instead.");

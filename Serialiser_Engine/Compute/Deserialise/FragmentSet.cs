@@ -50,7 +50,9 @@ namespace BH.Engine.Serialiser
             else if (bson.IsBsonDocument)
             {
                 BsonDocument doc = bson.AsBsonDocument;
-                if (doc.Contains("_Items"))
+                if (doc.Contains("_v"))
+                    array = doc["_v"].AsBsonArray;
+                else if (doc.Contains("_Items"))
                     array = doc["_Items"].AsBsonArray;
             }
 
