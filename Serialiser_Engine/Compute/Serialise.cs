@@ -80,7 +80,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods - Support         ****/
         /*******************************************/
 
-        private static bool CheckWriteAsDocument(object value, BsonDocumentWriter writer, Type targetType)
+        private static void WriteAsDocumentIfUnmatchingType(object value, BsonDocumentWriter writer, Type targetType, Action action)
         {
             bool asDocument = value.GetType() != targetType;
 
@@ -91,7 +91,11 @@ namespace BH.Engine.Serialiser
                 writer.WriteString(value.GetType().FullName);
                 writer.WriteName("_v");
             }
-            return asDocument;
+
+            action.Invoke();
+
+            if (asDocument)
+                writer.WriteEndDocument();
 
         }
 
