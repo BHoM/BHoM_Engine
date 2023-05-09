@@ -38,25 +38,16 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
+
         private static void Serialise(this DateTimeOffset value, BsonDocumentWriter writer, Type targetType)
         {
-            bool asDocument = value.GetType() != targetType;
-
-            if(asDocument)
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
             {
-                writer.WriteStartDocument();
-                writer.WriteName("_t");
-                writer.WriteString(value.GetType().FullName);
-                writer.WriteName("_v");
-            }    
-
-            writer.WriteStartArray();
-            writer.WriteInt64(value.Ticks);
-            writer.WriteInt32((int)Math.Round(value.Offset.TotalMinutes));
-            writer.WriteEndArray();
-
-            if(asDocument)
-                writer.WriteEndDocument();
+                writer.WriteStartArray();
+                writer.WriteInt64(value.Ticks);
+                writer.WriteInt32((int)Math.Round(value.Offset.TotalMinutes));
+                writer.WriteEndArray();
+            });
         }
 
         /*******************************************/

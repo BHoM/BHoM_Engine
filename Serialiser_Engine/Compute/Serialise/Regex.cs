@@ -36,6 +36,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
+
         private static void Serialise(this Regex value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
@@ -43,20 +44,11 @@ namespace BH.Engine.Serialiser
                 writer.WriteNull();
                 return;
             }
-            bool asDocument = value.GetType() != targetType;
 
-            if (asDocument)
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
             {
-                writer.WriteStartDocument();
-                writer.WriteName("_t");
-                writer.WriteString(value.GetType().FullName);
-                writer.WriteName("_v");
-            }
-
-            writer.WriteString(value.ToString());
-
-            if(asDocument)
-                writer.WriteEndDocument();
+                writer.WriteString(value.ToString());
+            });
         }
 
         /*******************************************/
