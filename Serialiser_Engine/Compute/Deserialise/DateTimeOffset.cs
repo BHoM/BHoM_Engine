@@ -37,14 +37,11 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         private static DateTimeOffset DeserialiseDateTimeOffset(this BsonValue bson, ref bool failed, DateTimeOffset value = default(DateTimeOffset))
         {
+            bson = ExtractValue(bson);
             BsonArray array;
             if (bson.IsBsonArray)
             {
                 array = bson.AsBsonArray;
-            }
-            else if (bson.IsBsonDocument)
-            {
-                array = bson.AsBsonDocument["_v"].AsBsonArray;
             }
             else
             {
