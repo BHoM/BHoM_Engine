@@ -38,6 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
+
         private static void Serialise(this Bitmap value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
@@ -46,17 +47,15 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
-            bool asDocument = CheckWriteAsDocument(value, writer, targetType);
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
+            {
+                var stream = new MemoryStream();
+                value.Save(stream, value.RawFormat); // Will work for most formats: bmp, png, jepg, tiff but not all
+                var bytes = stream.ToArray();
+                BsonBinaryData data = new BsonBinaryData(bytes);
 
-            var stream = new MemoryStream();
-            value.Save(stream, value.RawFormat); // Will work for most formats: bmp, png, jepg, tiff but not all
-            var bytes = stream.ToArray();
-            BsonBinaryData data = new BsonBinaryData(bytes);
-
-            writer.WriteBinaryData(data);
-
-            if (asDocument)
-                writer.WriteEndDocument();
+                writer.WriteBinaryData(data);
+            });
         }
 
         /*******************************************/

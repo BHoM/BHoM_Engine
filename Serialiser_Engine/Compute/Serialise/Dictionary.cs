@@ -20,9 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace BH.Engine.Serialiser
@@ -62,28 +64,20 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
-            if (value.GetType() != targetType)
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
             {
-                writer.WriteStartDocument();
-                writer.WriteName("_t");
-                writer.WriteString(value.GetType().FullName);
-                writer.WriteName("_v");
-            }
-            
-            writer.WriteStartArray();
-            foreach (var kvp in value)
-            {
-                writer.WriteStartDocument();
-                writer.WriteName("k");
-                ISerialise(kvp.Key, writer, typeof(TK));
-                writer.WriteName("v");
-                ISerialise(kvp.Value, writer, typeof(TV));
-                writer.WriteEndDocument();
-            }
-            writer.WriteEndArray();
-
-            if (value.GetType() != targetType)
-                writer.WriteEndDocument();
+                writer.WriteStartArray();
+                foreach (var kvp in value)
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteName("k");
+                    ISerialise(kvp.Key, writer, typeof(TK));
+                    writer.WriteName("v");
+                    ISerialise(kvp.Value, writer, typeof(TV));
+                    writer.WriteEndDocument();
+                }
+                writer.WriteEndArray();
+            });
         }
 
         /*******************************************/

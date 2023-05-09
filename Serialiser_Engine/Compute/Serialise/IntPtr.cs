@@ -35,24 +35,16 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
+
         private static void Serialise(this IntPtr value, BsonDocumentWriter writer, Type targetType)
         {
-            bool asDocument = value.GetType() != targetType;
-
-            if (asDocument)
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () => 
             {
-                writer.WriteStartDocument();
-                writer.WriteName("_t");
-                writer.WriteString(value.GetType().FullName);
-                writer.WriteName("_v");
-            }
-
-            writer.WriteInt64(value.ToInt64());
-
-            if (asDocument)
-                writer.WriteEndDocument();
+                writer.WriteInt64(value.ToInt64());
+            });
         }
 
         /*******************************************/
+
     }
 }
