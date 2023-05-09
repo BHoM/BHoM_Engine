@@ -255,6 +255,22 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
+
+        private static BsonValue ExtractValue(BsonValue bson)
+        {
+            if (bson != null && bson.IsBsonDocument)
+            {
+                BsonDocument doc = bson.AsBsonDocument;
+                if (doc.Contains("_v"))
+                    return doc["_v"];
+                else
+                    BH.Engine.Base.Compute.RecordError($"BsonDocument does not contain expected _v: {bson.ToString()}");
+            }
+
+            return bson;
+        }
+
+        /*******************************************/
     }
 }
 

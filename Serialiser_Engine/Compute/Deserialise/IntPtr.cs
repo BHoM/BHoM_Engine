@@ -37,14 +37,12 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         private static IntPtr DeserialiseIntPtr(this BsonValue bson, ref bool failed, IntPtr value = default(IntPtr))
         {
-            BsonValue innerBson = bson;
-            if (bson.IsBsonDocument)
-                innerBson = bson.AsBsonDocument["_v"];
+            bson = ExtractValue(bson);
 
-            if (innerBson.IsInt32)
-                return new IntPtr(innerBson.AsInt32);
+            if (bson.IsInt32)
+                return new IntPtr(bson.AsInt32);
             else if (bson.IsInt64)
-                return new IntPtr(innerBson.AsInt64);
+                return new IntPtr(bson.AsInt64);
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an IntPtr and received " + bson.ToString() + " instead.");
