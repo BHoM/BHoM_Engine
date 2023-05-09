@@ -45,6 +45,11 @@ namespace BH.Engine.Serialiser
             }
 
             writer.WriteStartDocument();
+            if (value.GetType() != targetType)
+            {
+                writer.WriteName("_t");
+                writer.WriteString(value.GetType().FullName);
+            }
             foreach (var kvp in value)
             {
                 writer.WriteName(kvp.Key);
