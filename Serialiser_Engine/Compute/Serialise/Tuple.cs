@@ -38,6 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
+
         private static void Serialise<T1, T2>(this Tuple<T1, T2> value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
@@ -46,18 +47,17 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
-            bool asDocument = CheckWriteAsDocument(value, writer, targetType);
-
-            writer.WriteStartArray();
-            value.Item1.ISerialise(writer, typeof(T1));
-            value.Item2.ISerialise(writer, typeof(T2));
-            writer.WriteEndArray();
-
-            if (asDocument)
-                writer.WriteEndDocument();
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
+            {
+                writer.WriteStartArray();
+                value.Item1.ISerialise(writer, typeof(T1));
+                value.Item2.ISerialise(writer, typeof(T2));
+                writer.WriteEndArray();
+            });
         }
 
         /*******************************************/
+
         private static void Serialise<T1, T2, T3>(this Tuple<T1, T2, T3> value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
@@ -66,19 +66,18 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
-            bool asDocument = CheckWriteAsDocument(value, writer, targetType);
-
-            writer.WriteStartArray();
-            value.Item1.ISerialise(writer, typeof(T1));
-            value.Item2.ISerialise(writer, typeof(T2));
-            value.Item3.ISerialise(writer, typeof(T3));
-            writer.WriteEndArray();
-
-            if (asDocument)
-                writer.WriteEndDocument();
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
+            {
+                writer.WriteStartArray();
+                value.Item1.ISerialise(writer, typeof(T1));
+                value.Item2.ISerialise(writer, typeof(T2));
+                value.Item3.ISerialise(writer, typeof(T3));
+                writer.WriteEndArray();
+            });
         }
 
         /*******************************************/
+
         private static void Serialise<T1, T2, T3, T4>(this Tuple<T1, T2, T3, T4> value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
@@ -87,20 +86,19 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
-            bool asDocument = CheckWriteAsDocument(value, writer, targetType);
-
-            writer.WriteStartArray();
-            value.Item1.ISerialise(writer, typeof(T1));
-            value.Item2.ISerialise(writer, typeof(T2));
-            value.Item3.ISerialise(writer, typeof(T3));
-            value.Item4.ISerialise(writer, typeof(T4));
-            writer.WriteEndArray();
-
-            if (asDocument)
-                writer.WriteEndDocument();
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
+            {
+                writer.WriteStartArray();
+                value.Item1.ISerialise(writer, typeof(T1));
+                value.Item2.ISerialise(writer, typeof(T2));
+                value.Item3.ISerialise(writer, typeof(T3));
+                value.Item4.ISerialise(writer, typeof(T4));
+                writer.WriteEndArray();
+            });
         }
 
         /*******************************************/
+
         private static void Serialise<T1, T2, T3, T4, T5>(this Tuple<T1, T2, T3, T4, T5> value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
@@ -109,18 +107,16 @@ namespace BH.Engine.Serialiser
                 return;
             }
 
-            bool asDocument = CheckWriteAsDocument(value, writer, targetType);
-
-            writer.WriteStartArray();
-            value.Item1.ISerialise(writer, typeof(T1));
-            value.Item2.ISerialise(writer, typeof(T2));
-            value.Item3.ISerialise(writer, typeof(T3));
-            value.Item4.ISerialise(writer, typeof(T4));
-            value.Item5.ISerialise(writer, typeof(T5));
-            writer.WriteEndArray();
-
-            if (asDocument)
-                writer.WriteEndDocument();
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
+            {
+                writer.WriteStartArray();
+                value.Item1.ISerialise(writer, typeof(T1));
+                value.Item2.ISerialise(writer, typeof(T2));
+                value.Item3.ISerialise(writer, typeof(T3));
+                value.Item4.ISerialise(writer, typeof(T4));
+                value.Item5.ISerialise(writer, typeof(T5));
+                writer.WriteEndArray();
+            });
         }
 
         /*******************************************/
