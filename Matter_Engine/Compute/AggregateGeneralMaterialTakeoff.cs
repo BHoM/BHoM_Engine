@@ -127,7 +127,7 @@ namespace BH.Engine.Matter
                         takeoffItem.VolumetricFlowRate += current.VolumetricFlowRate;
                     }
                     else
-                        takeoffItem = current;
+                        takeoffItem = current.ShallowClone();
 
                     hashedTakeoffItems[hash] = takeoffItem;
                 }
