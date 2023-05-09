@@ -115,7 +115,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonDateTimeOffsetObjectProperty()
         {
-            ToFromJsonCusomDataProperty(DateTimeOffset.UtcNow);
+            ToFromJsonCustomDataProperty(DateTimeOffset.UtcNow);
         }
 
 
@@ -124,7 +124,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonTimeSpanObjectProperty()
         {
-            ToFromJsonCusomDataProperty(TimeSpan.FromSeconds(43543));
+            ToFromJsonCustomDataProperty(TimeSpan.FromSeconds(43543));
         }
 
 
@@ -133,22 +133,100 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonRegexObjectProperty()
         {
-            ToFromJsonCusomDataProperty(new Regex("/d*"));
+            ToFromJsonCustomDataProperty(new Regex("/d*"));
         }
         /***************************************************/
 
         [Test]
         public void ToFromJsonIntPtrObjectProperty()
         {
-            ToFromJsonCusomDataProperty(new IntPtr(34234));
+            ToFromJsonCustomDataProperty(new IntPtr(34234));
         }
 
         /***************************************************/
 
         [Test]
+        public void ToFromJsonGuidProperty()
+        {
+            ToFromJsonCustomDataProperty(new Guid("E5DD4655-3A14-47E2-A19C-A042EE62EF42"));
+        }
+
+        /***************************************************/
+
+        [Test]
+        public void ToFromJsonDictionary()
+        {
+            Dictionary<string, double> dict = new Dictionary<string, double>()
+            {
+                ["test1"] = 4,
+                ["test2"] = 5
+            };
+
+            string json = BH.Engine.Serialiser.Convert.ToJson(dict);
+            object ret = BH.Engine.Serialiser.Convert.FromJson(json);
+        }
+
+        /***************************************************/
+
+        [Test]
+        public void ToFromJsonDictionaryAsProperty()
+        {
+            Dictionary<string, double> dict = new Dictionary<string, double>()
+            {
+                ["test1"] = 4,
+                ["test2"] = 5
+            };
+
+            ToFromJsonCustomDataProperty(dict);
+        }
+
+        /***************************************************/
+
+        [Test]
+        public void ToFromJsonReadOnlyCollectionAsProperty()
+        {
+            ToFromJsonCustomDataProperty(new ReadOnlyCollection<int>(new List<int> { 5, 6, 7 }));
+        }
+
+        /***************************************************/
+
+        [Test]
+        public void ToFromJsonSortedDictionary()
+        {
+            SortedDictionary<double, double> dict = new SortedDictionary<double, double>();
+
+            dict.Add(432.3, 21312);
+            dict.Add(342.2, 12312);
+
+            string json = BH.Engine.Serialiser.Convert.ToJson(dict);
+            object ret = BH.Engine.Serialiser.Convert.FromJson(json);
+
+            CheckDictionary(ret, dict);
+        }
+
+        /***************************************************/
+
+        [Test]
+        public void ToFromJsonSortedDictionaryAsProperty()
+        {
+            SortedDictionary<double, double> dict = new SortedDictionary<double, double>();
+
+            dict.Add(432.3, 21312);
+            dict.Add(342.2, 12312);
+
+            ToFromJsonCustomDataProperty(dict);
+        }
+
+        [Test]
+        public void ToFromJsonArrayAsProperty()
+        {
+            ToFromJsonCustomDataProperty(new int[] { 6, 7, 8 });
+        }
+
+        [Test]
         public void ToFromJsonTuple2Property()
         {
-            ToFromJsonCusomDataProperty(new Tuple<int, string>(5, "test"));
+            ToFromJsonCustomDataProperty(new Tuple<int, string>(5, "test"));
         }
 
         /***************************************************/
@@ -156,7 +234,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonTuple3Property()
         {
-            ToFromJsonCusomDataProperty(new Tuple<int, string, double>(5, "test", 234.2));
+            ToFromJsonCustomDataProperty(new Tuple<int, string, double>(5, "test", 234.2));
         }
 
         /***************************************************/
@@ -164,7 +242,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonTuple4Property()
         {
-            ToFromJsonCusomDataProperty(new Tuple<int, string, double, string>(5, "test", 423.3, "asd"));
+            ToFromJsonCustomDataProperty(new Tuple<int, string, double, string>(5, "test", 423.3, "asd"));
         }
 
         /***************************************************/
@@ -172,7 +250,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonTuple5Property()
         {
-            ToFromJsonCusomDataProperty(new Tuple<int, string, double, double, double>(5, "test", 34534.3, 0.423, 0.2432));
+            ToFromJsonCustomDataProperty(new Tuple<int, string, double, double, double>(5, "test", 34534.3, 0.423, 0.2432));
         }
 
         /***************************************************/
@@ -180,7 +258,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonTuple5OtherSystemTypesProperty()
         {
-            ToFromJsonCusomDataProperty(new Tuple<DateTimeOffset, TimeSpan, Regex, IntPtr, System.Drawing.Color>(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(43543), new Regex("/d*"), new IntPtr(982374), System.Drawing.Color.FromArgb(3)));
+            ToFromJsonCustomDataProperty(new Tuple<DateTimeOffset, TimeSpan, Regex, IntPtr, System.Drawing.Color>(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(43543), new Regex("/d*"), new IntPtr(982374), System.Drawing.Color.FromArgb(3)));
         }
 
         /***************************************************/
@@ -188,7 +266,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonHashSetObjectProperty()
         {
-            ToFromJsonCusomDataProperty(new HashSet<int>(new List<int> { 5, 6, 7 }));
+            ToFromJsonCustomDataProperty(new HashSet<int>(new List<int> { 5, 6, 7 }));
         }
 
         /***************************************************/
@@ -196,7 +274,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonListObjectProperty()
         {
-            ToFromJsonCusomDataProperty(new List<Node> { new Node(), new Node() });
+            ToFromJsonCustomDataProperty(new List<Node> { new Node(), new Node() });
         }
 
         /***************************************************/
@@ -204,7 +282,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonReadOnlyCollectionObjectProperty()
         {
-            ToFromJsonCusomDataProperty(new ReadOnlyCollection<Node>(new List<Node> { new Node(), new Node() }));
+            ToFromJsonCustomDataProperty(new ReadOnlyCollection<Node>(new List<Node> { new Node(), new Node() }));
         }
 
         /***************************************************/
@@ -212,21 +290,40 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonBitMapObjectProperty()
         {
-            ToFromJsonCusomDataProperty(RandomBitmap());       
+            ToFromJsonCustomDataProperty(RandomBitmap());       
         }
 
         /***************************************************/
 
-        private void ToFromJsonCusomDataProperty<T>(T value)
+        private void ToFromJsonCustomDataProperty<T>(T value)
         {
             string keyItem = "item";
             string keyList = "list";
             string keyGenList = "genList";
 
+            string keyDict1 = "dict1";
+            string keyDict2 = "dict2";
+            string keyDict3 = "dict3";
+            string keyDict4 = "dict4";
+            string keyDict5 = "dict5";
+
             CustomObject custom = new CustomObject();
             custom.CustomData[keyItem] = value;
             custom.CustomData[keyList] = new List<object> { value };
             custom.CustomData[keyGenList] = new List<T> { value };
+
+
+            var dict1 = new Dictionary<string, object> { { "key", value } };
+            var dict2 = new Dictionary<decimal, object> { { 4.4m, value } };
+            var dict3 = new Dictionary<string, T> { { "key", value } };
+            var dict4 = new Dictionary<T, string> { { value, "key" } };
+            var dict5 = new Dictionary<object, object> { { value, value } };
+
+            custom.CustomData[keyDict1] = dict1;
+            custom.CustomData[keyDict2] = dict2;
+            custom.CustomData[keyDict3] = dict3;
+            custom.CustomData[keyDict4] = dict4;
+            custom.CustomData[keyDict5] = dict5;
 
             string json = BH.Engine.Serialiser.Convert.ToJson(custom);
 
@@ -264,6 +361,35 @@ namespace BH.Tests.Engine.Serialiser
             List<T> retGenList = (List<T>)genListVal;
             retGenList.Count.ShouldBe(1);
             EquivalentCheckList(retGenList[0], value);
+
+            CheckDictionary(retCustom, keyDict1, dict1);
+            CheckDictionary(retCustom, keyDict2, dict2);
+            CheckDictionary(retCustom, keyDict3, dict3);
+            CheckDictionary(retCustom, keyDict4, dict4);
+            CheckDictionary(retCustom, keyDict5, dict5);
+        }
+
+        /***************************************************/
+
+        private void CheckDictionary<T1, T2>(CustomObject retCustom, string key, IDictionary<T1, T2> val)
+        {
+            retCustom.CustomData.ShouldContainKey(key);
+            object dictVal = retCustom.CustomData[key];
+            CheckDictionary(dictVal, val);
+        }
+
+        /***************************************************/
+
+        private void CheckDictionary<T1, T2>(object dictVal, IDictionary<T1, T2> val)
+        {
+            dictVal.ShouldNotBeNull();
+
+            dictVal.ShouldBeOfType(val.GetType());
+
+            IDictionary<T1, T2> retDict = (IDictionary<T1, T2>)dictVal;
+            retDict.Count.ShouldBe(val.Count);
+            EquivalentCheckList(retDict.Keys.ToArray()[0], val.Keys.ToArray()[0]);
+            EquivalentCheckList(retDict.Values.ToArray()[0], val.Values.ToArray()[0]);
         }
 
         /***************************************************/
@@ -305,7 +431,7 @@ namespace BH.Tests.Engine.Serialiser
             // 3. Generate RGB noise and write it to the bitmap's buffer.
             // Note that we are assuming that data.Stride == 3 * data.Width for simplicity/brevity here.
             byte[] noise = new byte[data.Width * data.Height * 3];
-            new Random().NextBytes(noise);
+            new Random(3).NextBytes(noise);
             Marshal.Copy(noise, 0, data.Scan0, noise.Length);
 
             bitmap.UnlockBits(data);
