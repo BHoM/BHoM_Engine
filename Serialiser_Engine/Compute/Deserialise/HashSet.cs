@@ -40,11 +40,11 @@ namespace BH.Engine.Serialiser
             if (bson.IsBsonNull)
                 return null;
 
+            bson = ExtractValue(bson);
+
             BsonArray array;
             if (bson.IsBsonArray)
                 array = bson.AsBsonArray;
-            else if (bson.IsBsonDocument)
-                array = bson.AsBsonDocument["_v"].AsBsonArray;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a HashSet and received " + bson.ToString() + " instead.");

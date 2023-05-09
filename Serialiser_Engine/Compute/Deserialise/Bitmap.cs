@@ -44,14 +44,11 @@ namespace BH.Engine.Serialiser
 
             BsonBinaryData binaryData;
 
+            bson = ExtractValue(bson);
 
             if (bson.IsBsonBinaryData)
             {
                 binaryData = bson.AsBsonBinaryData;
-            }
-            else if (bson.IsBsonDocument)
-            {
-                binaryData = bson["_v"].AsBsonBinaryData;
             }
             else
             {
