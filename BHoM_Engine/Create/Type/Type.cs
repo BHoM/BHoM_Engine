@@ -94,7 +94,8 @@ namespace BH.Engine.Base
         {
             ["System.Drawing.Color"] = typeof(System.Drawing.Color),
             ["System.Text.RegularExpressions.Regex"] = typeof(System.Text.RegularExpressions.Regex),
-            ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap)
+            ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap),
+            ["System.Collections.Generic.SortedDictionary`2"] = typeof(System.Collections.Generic.SortedDictionary<,>)
         };
 
         /*******************************************/
