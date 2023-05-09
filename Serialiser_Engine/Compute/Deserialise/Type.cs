@@ -44,12 +44,7 @@ namespace BH.Engine.Serialiser
                 return null;
             else if (bson.IsString)
             {
-                Type type;
-
-                if (m_ExplicitSystemTypes.TryGetValue(bson.AsString, out type))
-                    return type;
-
-                type = BH.Engine.Base.Create.Type(bson.AsString, true);
+                Type type = BH.Engine.Base.Create.Type(bson.AsString, true);
                 if (type != null)
                     return type;
                 else
@@ -175,13 +170,6 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static Dictionary<string, Type> m_ExplicitSystemTypes = new Dictionary<string, Type>
-        {
-            ["System.Drawing.Color"] = typeof(System.Drawing.Color),
-            ["System.Text.RegularExpressions.Regex"] = typeof(System.Text.RegularExpressions.Regex),
-            ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap)
-        };
 
-        /*******************************************/
     }
 }
