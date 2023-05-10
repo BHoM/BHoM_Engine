@@ -48,6 +48,11 @@
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Graphics_oM">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Graphics_oM.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Structure_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Structure_oM.dll</HintPath>
       <Private>True</Private>
