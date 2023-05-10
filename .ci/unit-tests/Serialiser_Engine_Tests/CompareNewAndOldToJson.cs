@@ -13,9 +13,11 @@ using BH.Engine.Test;
 using BH.oM.UnitTest.Results;
 using BH.oM.Test.Results;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace BH.Tests.Engine.Serialiser
 {
+    [Ignore("Ignoring NUnit versioning tests as only relevant for debugging until old serialisation is removed. Test kept for debugging purposes.")]
     public class OldNewToJson : BaseLoader
     {
 
@@ -31,7 +33,7 @@ namespace BH.Tests.Engine.Serialiser
                 try
                 {
                     object dummy = BH.Engine.Test.Compute.DummyObject(type);
-                    if(dummy != null)
+                    if (dummy != null)
                         dummies.Add(dummy);
                 }
                 catch { }
@@ -56,7 +58,7 @@ namespace BH.Tests.Engine.Serialiser
                 {
                     jsonNew = dummy.ToJson();
 
-               }
+                }
                 catch (Exception)
                 {
                     jsonNew = "";
@@ -267,6 +269,7 @@ namespace BH.Tests.Engine.Serialiser
 
             File.WriteAllLines(Helpers.TemporaryLogPath("ToFromJsonOldVsNewDetails.Json", true), results.Select(x => x.FullMessage()));
         }
+
 
     }
 }
