@@ -44,14 +44,16 @@ namespace BH.Engine.Serialiser
                 writer.WriteNull();
                 return;
             }
-
-            writer.WriteStartArray();
-            foreach (DataRow dr in value.Rows)
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
             {
-                var dictionary = dr.Table.Columns.Cast<DataColumn>().ToDictionary(col => col.ColumnName, col => dr[col.ColumnName]);
-                dictionary.Serialise(writer, typeof(Dictionary<string, object>));
-            }
-            writer.WriteEndArray();
+                writer.WriteStartArray();
+                foreach (DataRow dr in value.Rows)
+                {
+                    var dictionary = dr.Table.Columns.Cast<DataColumn>().ToDictionary(col => col.ColumnName, col => dr[col.ColumnName]);
+                    dictionary.Serialise(writer, typeof(Dictionary<string, object>));
+                }
+                writer.WriteEndArray();
+            });
         }
 
         /*******************************************/

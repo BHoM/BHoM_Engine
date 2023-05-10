@@ -41,6 +41,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         private static DataTable DeserialiseDataTable(this BsonValue bson, ref bool failed, DataTable value, string version, bool isUpgraded)
         {
+            bson = ExtractValue(bson);
             if (bson.IsBsonNull)
                 return null;
             else if (bson.IsBsonArray)
