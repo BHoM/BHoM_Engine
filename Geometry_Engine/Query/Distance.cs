@@ -188,6 +188,13 @@ namespace BH.Engine.Geometry
             return point.Distance(curve.ClosestPoint(point));
         }
 
+        /***************************************************/
+
+        public static double DistanceAlongVector(this Point pnt1, Point pnt2, Vector vector)
+        {
+            Vector pointVector = pnt2 - pnt1;
+            return Math.Abs(pointVector.DotProduct(vector.Normalise()));
+        }
 
         /***************************************************/
         /****       Public Methods - Curve/Curve        ****/
