@@ -23,8 +23,8 @@ namespace BH.Tests.Engine.Serialiser
         public static void EnsureAssembliesLoaded()
         {
             BH.Engine.Base.Compute.LoadAllAssemblies();
-            string regexFilter = $"^Revit_.*_20\\d\\d$";
-            BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
+            //string regexFilter = $"^Revit_.*_20\\d\\d$";
+            //BH.Engine.Base.Compute.LoadAllAssemblies("", regexFilter);
         }
     }
 }
