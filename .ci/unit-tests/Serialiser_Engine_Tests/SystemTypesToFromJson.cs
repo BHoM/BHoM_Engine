@@ -23,7 +23,7 @@
 using BH.oM.Base;
 using BH.oM.Structure.Elements;
 using NUnit.Framework;
-using Shouldly;
+using FluentAssertions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,16 +58,16 @@ namespace BH.Tests.Engine.Serialiser
 
             CustomObject retObj = BH.Engine.Serialiser.Convert.FromJson(json) as CustomObject;
 
-            retObj.ShouldNotBeNull();
+            retObj.Should().NotBeNull();
 
-            retObj.CustomData.ShouldNotBeNull();
-            retObj.CustomData.ShouldContainKey("single");
-            retObj.CustomData["single"].ShouldBeEquivalentTo(BarFEAType.Axial);
-            retObj.CustomData.ShouldContainKey("list");
+            retObj.CustomData.Should().NotBeNull();
+            retObj.CustomData.Should().ContainKey("single");
+            retObj.CustomData["single"].Should().Be(BarFEAType.Axial);
+            retObj.CustomData.Should().ContainKey("list");
             List<object> retList = retObj.CustomData["list"] as List<object>;
-            retList.ShouldNotBeNull();
-            retList.ShouldContain(BarFEAType.Axial);
-            retList.ShouldContain(BH.oM.Structure.Loads.CaseType.Envelope);
+            retList.Should().NotBeNull();
+            retList.Should().Contain(BarFEAType.Axial);
+            retList.Should().Contain(BH.oM.Structure.Loads.CaseType.Envelope);
         }
 
         [Test]
@@ -78,13 +78,13 @@ namespace BH.Tests.Engine.Serialiser
             string json = BH.Engine.Serialiser.Convert.ToJson(color);
             object retObj = BH.Engine.Serialiser.Convert.FromJson(json);
 
-            retObj.ShouldBeOfType(typeof(System.Drawing.Color));
+            retObj.Should().BeOfType(typeof(System.Drawing.Color));
 
             System.Drawing.Color retColor = (System.Drawing.Color)retObj;
-            retColor.A.ShouldBeEquivalentTo(color.A);
-            retColor.R.ShouldBeEquivalentTo(color.R);
-            retColor.G.ShouldBeEquivalentTo(color.G);
-            retColor.B.ShouldBeEquivalentTo(color.B);
+            retColor.A.Should().Be(color.A);
+            retColor.R.Should().Be(color.R);
+            retColor.G.Should().Be(color.G);
+            retColor.B.Should().Be(color.B);
         }
 
         [Test]
@@ -97,19 +97,19 @@ namespace BH.Tests.Engine.Serialiser
             string json = BH.Engine.Serialiser.Convert.ToJson(custom);
             CustomObject retObj = BH.Engine.Serialiser.Convert.FromJson(json) as CustomObject;
 
-            retObj.ShouldNotBeNull();
-            retObj.CustomData.ShouldNotBeNull();
-            retObj.CustomData.ShouldContainKey("Colour");
+            retObj.Should().NotBeNull();
+            retObj.CustomData.Should().NotBeNull();
+            retObj.CustomData.Should().ContainKey("Colour");
             object retColObj = retObj.CustomData["Colour"];
-            retColObj.ShouldNotBeNull();
+            retColObj.Should().NotBeNull();
 
-            retColObj.ShouldBeOfType(typeof(System.Drawing.Color));
+            retColObj.Should().BeOfType(typeof(System.Drawing.Color));
 
             System.Drawing.Color retColor = (System.Drawing.Color)retColObj;
-            retColor.A.ShouldBeEquivalentTo(color.A);
-            retColor.R.ShouldBeEquivalentTo(color.R);
-            retColor.G.ShouldBeEquivalentTo(color.G);
-            retColor.B.ShouldBeEquivalentTo(color.B);
+            retColor.A.Should().Be(color.A);
+            retColor.R.Should().Be(color.R);
+            retColor.G.Should().Be(color.G);
+            retColor.B.Should().Be(color.B);
         }
 
         [Test]
@@ -298,7 +298,7 @@ namespace BH.Tests.Engine.Serialiser
         [Test]
         public void ToFromJsonBitMapObjectProperty()
         {
-            ToFromJsonCustomDataProperty(RandomBitmap());       
+            ToFromJsonCustomDataProperty(RandomBitmap(1));       
         }
 
         /***************************************************/
@@ -337,37 +337,37 @@ namespace BH.Tests.Engine.Serialiser
 
             CustomObject retCustom = BH.Engine.Serialiser.Convert.FromJson(json) as CustomObject;
 
-            retCustom.ShouldNotBeNull();
-            retCustom.CustomData.ShouldNotBeNull();
-            retCustom.CustomData.ShouldContainKey(keyItem);
+            retCustom.Should().NotBeNull();
+            retCustom.CustomData.Should().NotBeNull();
+            retCustom.CustomData.Should().ContainKey(keyItem);
             object retValue = retCustom.CustomData[keyItem];
-            retValue.ShouldNotBeNull();
+            retValue.Should().NotBeNull();
 
-            retValue.ShouldBeOfType(typeof(T));
+            retValue.Should().BeOfType(typeof(T));
 
             T retOffset = (T)retValue;
 
             EquivalentCheckList(retOffset, value);
 
-            retCustom.CustomData.ShouldContainKey(keyList);
+            retCustom.CustomData.Should().ContainKey(keyList);
             object listVal = retCustom.CustomData[keyList];
-            listVal.ShouldNotBeNull();
+            listVal.Should().NotBeNull();
 
-            listVal.ShouldBeOfType(typeof(List<object>));
+            listVal.Should().BeOfType(typeof(List<object>));
 
             List<object> retList = (List<object>)listVal;
-            retList.Count.ShouldBe(1);
+            retList.Count.Should().Be(1);
             EquivalentCheckList(retList[0], value);
 
 
-            retCustom.CustomData.ShouldContainKey(keyGenList);
+            retCustom.CustomData.Should().ContainKey(keyGenList);
             object genListVal = retCustom.CustomData[keyGenList];
-            genListVal.ShouldNotBeNull();
+            genListVal.Should().NotBeNull();
 
-            genListVal.ShouldBeOfType(typeof(List<T>));
+            genListVal.Should().BeOfType(typeof(List<T>));
 
             List<T> retGenList = (List<T>)genListVal;
-            retGenList.Count.ShouldBe(1);
+            retGenList.Count.Should().Be(1);
             EquivalentCheckList(retGenList[0], value);
 
             CheckDictionary(retCustom, keyDict1, dict1);
@@ -381,7 +381,7 @@ namespace BH.Tests.Engine.Serialiser
 
         private void CheckDictionary<T1, T2>(CustomObject retCustom, string key, IDictionary<T1, T2> val)
         {
-            retCustom.CustomData.ShouldContainKey(key);
+            retCustom.CustomData.Should().ContainKey(key);
             object dictVal = retCustom.CustomData[key];
             CheckDictionary(dictVal, val);
         }
@@ -390,12 +390,12 @@ namespace BH.Tests.Engine.Serialiser
 
         private void CheckDictionary<T1, T2>(object dictVal, IDictionary<T1, T2> val)
         {
-            dictVal.ShouldNotBeNull();
+            dictVal.Should().NotBeNull();
 
-            dictVal.ShouldBeOfType(val.GetType());
+            dictVal.Should().BeOfType(val.GetType());
 
             IDictionary<T1, T2> retDict = (IDictionary<T1, T2>)dictVal;
-            retDict.Count.ShouldBe(val.Count);
+            retDict.Count.Should().Be(val.Count);
             EquivalentCheckList(retDict.Keys.ToArray()[0], val.Keys.ToArray()[0]);
             EquivalentCheckList(retDict.Values.ToArray()[0], val.Values.ToArray()[0]);
         }
@@ -407,29 +407,34 @@ namespace BH.Tests.Engine.Serialiser
             if (refVal == null)
                 return;
 
-            val.ShouldBeOfType(refVal.GetType());
+            val.Should().BeOfType(refVal.GetType());
 
             if ((refVal is IEnumerable) && !(refVal is string))
             {
                 List<object> valEnum = ((IEnumerable)val).Cast<object>().ToList();
                 List<object> refEnumerable = ((IEnumerable)refVal).Cast<object>().ToList();
 
-                valEnum.Count.ShouldBe(refEnumerable.Count);
+                valEnum.Count.Should().Be(refEnumerable.Count);
                 for (int i = 0; i < valEnum.Count; i++)
                 {
                     EquivalentCheckList(valEnum[i], refEnumerable[i]);
                 }
-
+            }
+            else if (val is Bitmap)
+            {
+                Bitmap bitMap1 = (Bitmap)val;
+                Bitmap bitMap2 = (Bitmap)refVal;
+                bitMap1.Should().BeEquivalentTo(bitMap2, options => options.Excluding(o => o.Palette.Flags));   //Flags are randomly populated, hence need to exclude from comparison
             }
             else
             {
-                val.ShouldBeEquivalentTo(refVal);
+                val.Should().BeEquivalentTo(refVal);
             }
         }
 
         /***************************************************/
 
-        private static Bitmap RandomBitmap()
+        private static Bitmap RandomBitmap(int index)
         {
             Bitmap bitmap = new Bitmap(80, 20, PixelFormat.Format24bppRgb);
 
@@ -439,7 +444,7 @@ namespace BH.Tests.Engine.Serialiser
             // 3. Generate RGB noise and write it to the bitmap's buffer.
             // Note that we are assuming that data.Stride == 3 * data.Width for simplicity/brevity here.
             byte[] noise = new byte[data.Width * data.Height * 3];
-            new Random(3).NextBytes(noise);
+            new Random(index).NextBytes(noise);
             Marshal.Copy(noise, 0, data.Scan0, noise.Length);
 
             bitmap.UnlockBits(data);
