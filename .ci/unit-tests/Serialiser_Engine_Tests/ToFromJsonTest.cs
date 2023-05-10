@@ -8,9 +8,12 @@ using BH.Engine.Serialiser;
 using NUnit.Framework;
 using System.Diagnostics;
 using Bogus.Bson;
+using BH.oM.Base;
+using BH.oM.Graphics;
 
 namespace BH.Tests.Engine.Serialiser
 {
+    [Ignore("Ignoring NUnit versioning tests as overlapping with centralised check Serialisation. Test kept for debugging purposes.")]
     public class ToFromJsonTest : BaseLoader
     {
         [Test]
@@ -126,5 +129,7 @@ namespace BH.Tests.Engine.Serialiser
             }
         }
 
+
     }
 }
+

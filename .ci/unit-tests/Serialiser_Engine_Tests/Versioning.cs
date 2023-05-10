@@ -19,6 +19,7 @@ using ICSharpCode.Decompiler.TypeSystem;
 
 namespace BH.Tests.Engine.Serialiser
 {
+    [Ignore("Ignoring NUnit versioning tests as overlapping with centralised check Versioning. Test kept for debugging purposes.")]
     public class Versioning : BaseLoader
     {
 
@@ -44,7 +45,7 @@ namespace BH.Tests.Engine.Serialiser
             foreach (string  version in versions)
             {
                 string file = $@"C:\ProgramData\BHoM\Datasets\TestSets\Versioning\{version}\{type}.json";
-                string exceptions = "Grasshopper|Rhinoceros";
+                string exceptions = "Grasshopper|Rhinoceros|\"_t\" : \"Autodesk.Revit|BH.Revit";
 
                 IEnumerable<string> json = System.IO.File.ReadAllLines(file).Where(x => !string.IsNullOrWhiteSpace(x) && (exceptions.Length == 0 || !Regex.IsMatch(x, exceptions)));
 
@@ -60,7 +61,7 @@ namespace BH.Tests.Engine.Serialiser
                     {
                         BH.Engine.Base.Compute.ClearCurrentEvents();
                         object obj = BH.Engine.Serialiser.Convert.FromJson(line);
-                        if ((obj == null || obj is CustomObject))
+                        if ((obj == null || obj is CustomObject) || BH.Engine.Base.Query.CurrentEvents().Any(x => x.Type == oM.Base.Debugging.EventType.Error))
                         {
                             bool detected = BH.Engine.Base.Query.CurrentEvents().Any(x => x.Message.StartsWith("No upgrade for"));
 
@@ -161,15 +162,16 @@ namespace BH.Tests.Engine.Serialiser
                     fail++;
                 }
 
-                if (!success)
-                {
-                    messages.Add(line);
+
+                messages.Add(success ? "PASS:" : "FAIL:");
+                messages.Add("");
+                messages.Add(line);
                     messages.Add("");
                     messages.AddRange(BH.Engine.Base.Query.CurrentEvents().Select(x => x.Message));
                     messages.Add("");
                     messages.Add("");
                     File.AppendAllLines(filePath, messages);
-                }
+                
             }
 
         }

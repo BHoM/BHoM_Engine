@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace BH.Tests.Engine.Serialiser
 {
+    [Ignore("Ignoring NUnit versioning tests as no 100% clear action for every single class to be IObject. Usefull to be able to get this information out, but not required to be run automatically. Test kept for debugging purposes.")]
     public class AllTypesIObject : BaseLoader
     {
         [Test]
