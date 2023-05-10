@@ -272,6 +272,14 @@ namespace BH.Tests.Engine.Serialiser
         /***************************************************/
 
         [Test]
+        public void ToFromJson2dArrayProperty()
+        {
+            ToFromJsonCustomDataProperty(new double[,] { { 4.3, 4.4 }, { 7.6, 2.2 } });
+        }
+
+        /***************************************************/
+
+        [Test]
         public void ToFromJsonListObjectProperty()
         {
             ToFromJsonCustomDataProperty(new List<Node> { new Node(), new Node() });

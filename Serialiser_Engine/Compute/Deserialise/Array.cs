@@ -61,6 +61,7 @@ namespace BH.Engine.Serialiser
 
         public static T[,] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[,] value, string version, bool isUpgraded)
         {
+            bson = ExtractValue(bson);
             if (bson.IsBsonNull)
             {
                 return null;
