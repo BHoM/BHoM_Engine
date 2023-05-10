@@ -34,6 +34,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace BH.Tests.Engine.Serialiser
 {
@@ -299,6 +300,21 @@ namespace BH.Tests.Engine.Serialiser
         public void ToFromJsonBitMapObjectProperty()
         {
             ToFromJsonCustomDataProperty(RandomBitmap(1));       
+        }
+
+        /***************************************************/
+
+        [Test]
+        public void ToFromJsonDataTableProperty()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("col1", typeof(double));
+            table.Columns.Add("col2", typeof(string));
+
+            table.Rows.Add(4.2, "test");
+            table.Rows.Add(1.2, "sdgfljksdfh");
+            table.Rows.Add(2.00, "i");
+            ToFromJsonCustomDataProperty(table);
         }
 
         /***************************************************/
