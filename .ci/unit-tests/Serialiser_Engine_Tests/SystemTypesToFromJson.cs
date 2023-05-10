@@ -319,6 +319,14 @@ namespace BH.Tests.Engine.Serialiser
 
         /***************************************************/
 
+        [Test]
+        public void ToFromJsonDateTimeProperty()
+        {
+            ToFromJsonCustomDataProperty(System.DateTime.Parse("2023-05-10 14:40:52.531").ToUniversalTime());
+        }
+
+        /***************************************************/
+
         private void ToFromJsonCustomDataProperty<T>(T value)
         {
             string keyItem = "item";
