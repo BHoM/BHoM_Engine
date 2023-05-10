@@ -45,16 +45,18 @@ namespace BH.Engine.Serialiser
                 writer.WriteNull();
                 return;
             }
-
-            writer.WriteStartArray();
-            for (int i = 0; i < value.GetLength(0); i++)
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
             {
                 writer.WriteStartArray();
-                for (int j = 0; j < value.GetLength(1); j++)
-                    value[i, j].ISerialise(writer, typeof(T));
+                for (int i = 0; i < value.GetLength(0); i++)
+                {
+                    writer.WriteStartArray();
+                    for (int j = 0; j < value.GetLength(1); j++)
+                        value[i, j].ISerialise(writer, typeof(T));
+                    writer.WriteEndArray();
+                }
                 writer.WriteEndArray();
-            }
-            writer.WriteEndArray();
+            });
         }
 
         /*******************************************/
