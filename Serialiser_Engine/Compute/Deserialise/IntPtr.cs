@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static IntPtr DeserialiseIntPtr(this BsonValue bson, ref bool failed, IntPtr value = default(IntPtr))
         {
             bson = ExtractValue(bson);

@@ -34,8 +34,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static Regex DeserialiseRegex(this BsonValue bson, ref bool failed, Regex value = null)
         {
             bson = ExtractValue(bson);
@@ -50,8 +51,6 @@ namespace BH.Engine.Serialiser
                 failed = true;
                 return value;
             } 
-
-            
         }
 
         /*******************************************/

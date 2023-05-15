@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static void Serialise(this short value, BsonDocumentWriter writer, Type targetType)
         {
             // TODO: is this right? will change type to Int32 after round trip

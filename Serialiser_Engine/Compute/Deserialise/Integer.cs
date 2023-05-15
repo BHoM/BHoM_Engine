@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static int DeserialiseInteger(this BsonValue bson, ref bool failed, int value = 0)
         {
             if (bson.IsInt32)

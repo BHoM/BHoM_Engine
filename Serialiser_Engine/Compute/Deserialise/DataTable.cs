@@ -37,8 +37,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static DataTable DeserialiseDataTable(this BsonValue bson, ref bool failed, DataTable value, string version, bool isUpgraded)
         {
             bson = ExtractValue(bson);
