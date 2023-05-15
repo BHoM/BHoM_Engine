@@ -105,7 +105,7 @@ namespace BH.Engine.Serialiser
                 case "System.Double":
                     return DeserialiseDouble(bson, ref failed);
                 case "System.Drawing.Color":
-                    return DeserialiseColor(bson, ref failed);
+                    return DeserialiseColour(bson, ref failed);
                 case "BH.oM.Base.FragmentSet":
                     return DeserialiseFragmentSet(bson, ref failed, null, version, isUpgraded);
                 case "System.Guid":
