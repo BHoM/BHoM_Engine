@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static float DeserialiseFloat(this BsonValue bson, ref bool failed, float value = 0)
         {
             if (bson.IsDouble)

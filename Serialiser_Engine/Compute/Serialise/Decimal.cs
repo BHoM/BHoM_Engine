@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static void Serialise(this decimal value, BsonDocumentWriter writer, Type targetType)
         {
             writer.WriteDecimal128(value);

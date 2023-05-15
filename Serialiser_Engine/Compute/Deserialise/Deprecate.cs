@@ -35,8 +35,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static object DeserialiseDeprecate(this BsonDocument doc, ref bool failed, string version)
         {
             if (string.IsNullOrEmpty(version))
@@ -79,7 +80,6 @@ namespace BH.Engine.Serialiser
                 upgraded = null;
                 return false;
             }
-        
         }
 
         /*******************************************/

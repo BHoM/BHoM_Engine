@@ -36,8 +36,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static IObject DeserialiseIObject(this BsonValue bson, ref bool failed, IObject value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
@@ -67,9 +68,6 @@ namespace BH.Engine.Serialiser
             return SetProperties(doc, ref failed, type, value, version, isUpgraded);
         }
 
-
-        /*******************************************/
-        /**** Private Methods                   ****/
         /*******************************************/
 
         private static IObject SetProperties(this BsonDocument doc, ref bool failed, Type type, IObject value, string version, bool isUpgraded)

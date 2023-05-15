@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
 
         private static void Serialise(this Bitmap value, BsonDocumentWriter writer, Type targetType)

@@ -53,7 +53,7 @@ namespace BH.Engine.Base
                 return GenericTypeSquareBrackets(name, silent);
             else   //No split chars found, return null and error as type is not generic
             {
-                Compute.RecordError("Provided string is not a generic type.");
+                Compute.RecordError($"Provided string is not a generic type. Provided string was: {name}.");
                 return null;
             }
         }
@@ -215,7 +215,6 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-       
     }
 }
 

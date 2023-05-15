@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static TimeSpan DeserialiseTimeSpan(this BsonValue bson, ref bool failed, TimeSpan value = default(TimeSpan))
         {
             bson = ExtractValue(bson);
