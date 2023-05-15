@@ -33,7 +33,7 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
 
         private static T DeserialiseEnum<T>(this BsonValue bson, ref bool failed, T value, string version, bool isUpgraded) where T : Enum

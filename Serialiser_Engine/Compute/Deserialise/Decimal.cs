@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static decimal DeserialiseDecimal(this BsonValue bson, ref bool failed, decimal value = 0)
         {
             if (bson.IsDecimal128)

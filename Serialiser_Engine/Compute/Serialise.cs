@@ -103,5 +103,3 @@ namespace BH.Engine.Serialiser
     }
 }
 
-
-

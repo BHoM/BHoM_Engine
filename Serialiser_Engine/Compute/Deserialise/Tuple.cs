@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
 
         private static object DeserialiseTuple(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
@@ -60,10 +60,9 @@ namespace BH.Engine.Serialiser
             }
         }
 
-
         /*******************************************/
 
-        public static Tuple<T1, T2> DeserialiseTuple<T1, T2>(this BsonValue bson, ref bool failed, Tuple<T1, T2> value, string version, bool isUpgraded)
+        private static Tuple<T1, T2> DeserialiseTuple<T1, T2>(this BsonValue bson, ref bool failed, Tuple<T1, T2> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -93,7 +92,8 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static Tuple<T1, T2, T3> DeserialiseTuple<T1, T2, T3>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3> value, string version, bool isUpgraded)
+        
+        private static Tuple<T1, T2, T3> DeserialiseTuple<T1, T2, T3>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -124,7 +124,8 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static Tuple<T1, T2, T3, T4> DeserialiseTuple<T1, T2, T3, T4>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4> value, string version, bool isUpgraded)
+        
+        private static Tuple<T1, T2, T3, T4> DeserialiseTuple<T1, T2, T3, T4>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -156,7 +157,8 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-        public static Tuple<T1, T2, T3, T4, T5> DeserialiseTuple<T1, T2, T3, T4, T5>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4, T5> value, string version, bool isUpgraded)
+        
+        private static Tuple<T1, T2, T3, T4, T5> DeserialiseTuple<T1, T2, T3, T4, T5>(this BsonValue bson, ref bool failed, Tuple<T1, T2, T3, T4, T5> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;

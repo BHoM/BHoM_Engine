@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
 
         private static void Serialise(this FragmentSet value, BsonDocumentWriter writer, Type targetType)

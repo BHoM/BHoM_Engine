@@ -39,8 +39,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static MethodBase DeserialiseMethodBase(this BsonValue bson, ref bool failed, MethodBase value = null)
         {
             if (bson.IsBsonNull)
@@ -85,9 +86,6 @@ namespace BH.Engine.Serialiser
             }
         }
 
-
-        /*******************************************/
-        /**** Private Methods                   ****/
         /*******************************************/
 
         private static MethodBase GetMethod(string methodName, string typeName, List<string> paramTypesJson, string version, bool isUpgraded)

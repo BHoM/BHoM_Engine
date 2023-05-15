@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static Guid DeserialiseGuid(this BsonValue bson, ref bool failed, Guid value = default(Guid))
         {
             if (bson.IsGuid)
