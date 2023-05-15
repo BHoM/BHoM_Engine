@@ -34,8 +34,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static void Serialise(this DateTime value, BsonDocumentWriter writer, Type targetType)
         {
             // TODO: is this right? will lose precision after round trip

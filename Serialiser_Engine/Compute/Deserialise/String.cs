@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static string DeserialiseString(this BsonValue bson, ref bool failed, string value = "")
         {
             if (bson.IsBsonNull)

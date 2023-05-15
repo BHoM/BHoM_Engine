@@ -35,9 +35,10 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
-        private static Color DeserialiseColor(this BsonValue bson, ref bool failed, Color value = default(Color))
+        
+        private static Color DeserialiseColour(this BsonValue bson, ref bool failed, Color value = default(Color))
         {
             if (bson.IsBsonDocument)
             {

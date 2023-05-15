@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static long DeserialiseLong(this BsonValue bson, ref bool failed, long value = 0)
         {
             if (bson.IsInt64)

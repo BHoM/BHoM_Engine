@@ -34,8 +34,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static void Serialise(this Guid value, BsonDocumentWriter writer, Type targetType)
         {
             if (targetType != typeof(Guid))

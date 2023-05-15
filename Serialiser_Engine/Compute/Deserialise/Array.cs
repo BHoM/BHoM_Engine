@@ -34,8 +34,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static T[] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[] value, string version, bool isUpgraded)
         {
             bson = ExtractValue(bson);

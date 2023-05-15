@@ -37,8 +37,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static void Serialise(this Type value, BsonDocumentWriter writer, Type targetType)
         {
             writer.WriteStartDocument();
@@ -93,7 +94,6 @@ namespace BH.Engine.Serialiser
                     writer.WriteString(value.AssemblyQualifiedName);
                 else
                     writer.WriteString(""); //TODO: is that even possible?
-
 
                 // Add additional information for generic types
                 if (generics.Length > 0)

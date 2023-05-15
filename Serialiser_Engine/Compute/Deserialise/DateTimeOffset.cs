@@ -33,8 +33,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static DateTimeOffset DeserialiseDateTimeOffset(this BsonValue bson, ref bool failed, DateTimeOffset value = default(DateTimeOffset))
         {
             bson = ExtractValue(bson);
@@ -58,7 +59,6 @@ namespace BH.Engine.Serialiser
             }
 
             return new DateTimeOffset(array[0].ToInt64(), new TimeSpan(TimeSpan.TicksPerMinute * array[1].ToInt64()));
-
         }
 
         /*******************************************/

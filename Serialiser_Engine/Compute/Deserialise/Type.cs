@@ -35,8 +35,9 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
+        
         private static Type DeserialiseType(this BsonValue bson, ref bool failed, Type value, string version, bool isUpgraded)
         {
             // Handle the case where the type is represented as a string
@@ -49,7 +50,6 @@ namespace BH.Engine.Serialiser
                     return type;
                 else
                 {
-                    
                     if (!isUpgraded)
                     {
                         BsonDocument doc = new BsonDocument();
@@ -80,7 +80,6 @@ namespace BH.Engine.Serialiser
 
             // Handle the case where the type is stored as a BsonDocument
             string fullName = "";
-            //string version = "";
             List<Type> genericTypes = new List<Type>();
             List<Type> constraints = new List<Type>();
 
@@ -138,9 +137,6 @@ namespace BH.Engine.Serialiser
             }
         }
 
-
-        /*******************************************/
-        /**** Private Methods                   ****/
         /*******************************************/
 
         private static Type GetTypeFromName(string fullName)
@@ -169,7 +165,6 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-
 
     }
 }

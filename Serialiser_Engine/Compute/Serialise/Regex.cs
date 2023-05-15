@@ -34,7 +34,7 @@ namespace BH.Engine.Serialiser
     {
 
         /*******************************************/
-        /**** Public Methods                    ****/
+        /**** Private Methods                   ****/
         /*******************************************/
 
         private static void Serialise(this Regex value, BsonDocumentWriter writer, Type targetType)
