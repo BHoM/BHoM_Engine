@@ -90,7 +90,7 @@ namespace BH.Engine.Base
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
         [Output("type", "BHoM generic type that matches the given name.")]
-        public static Type GenericTypeAngleBrackets(string name, bool silent = false)
+        private static Type GenericTypeAngleBrackets(string name, bool silent = false)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
