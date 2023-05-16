@@ -64,7 +64,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        public static Enum DeserialiseEnumTopLevel(this BsonValue bson, ref bool failed, Enum value, string version, bool isUpgraded)
+        private static Enum DeserialiseEnumTopLevel(this BsonValue bson, ref bool failed, Enum value, string version, bool isUpgraded)
         {
             if (bson.IsBsonDocument)
             {
