@@ -1,22 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
     <FileVersion>6.2.0.0</FileVersion>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <ImplicitUsings>enable</ImplicitUsings>
-	<UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
-
     <Configurations>Debug;Release;Test</Configurations>
-
     <RootNamespace>BH.Tests.Engine.Serialiser</RootNamespace>
   </PropertyGroup>
 
-
+	<PropertyGroup Condition="'$(Configuration)'!='Test'">
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Test'">
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+	
 	<ItemGroup>
     <PackageReference Include="AutoBogus" Version="2.13.1" />
     <PackageReference Include="FluentAssertions" Version="6.11.0" />
