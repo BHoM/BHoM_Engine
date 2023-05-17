@@ -47,7 +47,7 @@ namespace BH.Tests.Engine.Serialiser
 
 
         [Test]
-        public void ToFromJsonListEnums()
+        public void SystemTypesToFromJsonListEnums()
         {
             CustomObject custom = new CustomObject();
             List<object> enums = new List<object> { BarFEAType.Axial, BH.oM.Structure.Loads.CaseType.Envelope };
@@ -72,7 +72,7 @@ namespace BH.Tests.Engine.Serialiser
         }
 
         [Test]
-        public void ToFromJsonColor()
+        public void SystemTypesToFromJsonColor()
         {
             System.Drawing.Color color = System.Drawing.Color.Turquoise;
 
@@ -89,7 +89,7 @@ namespace BH.Tests.Engine.Serialiser
         }
 
         [Test]
-        public void ToFromJsonColorObjectProperty()
+        public void SystemTypesToFromJsonColorObjectProperty()
         {
             CustomObject custom = new CustomObject();
             System.Drawing.Color color = System.Drawing.Color.Turquoise;
@@ -114,48 +114,48 @@ namespace BH.Tests.Engine.Serialiser
         }
 
         [Test]
-        public void ToFromJsonDateTimeOffsetObjectProperty()
+        public void SystemTypesToFromJsonDateTimeOffsetObjectProperty()
         {
-            ToFromJsonCustomDataProperty(DateTimeOffset.UtcNow);
+            SystemTypesToFromJsonCustomDataProperty(DateTimeOffset.UtcNow);
         }
 
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonTimeSpanObjectProperty()
+        public void SystemTypesToFromJsonTimeSpanObjectProperty()
         {
-            ToFromJsonCustomDataProperty(TimeSpan.FromSeconds(43543));
+            SystemTypesToFromJsonCustomDataProperty(TimeSpan.FromSeconds(43543));
         }
 
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonRegexObjectProperty()
+        public void SystemTypesToFromJsonRegexObjectProperty()
         {
-            ToFromJsonCustomDataProperty(new Regex("/d*"));
+            SystemTypesToFromJsonCustomDataProperty(new Regex("/d*"));
         }
         /***************************************************/
 
         [Test]
-        public void ToFromJsonIntPtrObjectProperty()
+        public void SystemTypesToFromJsonIntPtrObjectProperty()
         {
-            ToFromJsonCustomDataProperty(new IntPtr(34234));
-        }
-
-        /***************************************************/
-
-        [Test]
-        public void ToFromJsonGuidProperty()
-        {
-            ToFromJsonCustomDataProperty(new Guid("E5DD4655-3A14-47E2-A19C-A042EE62EF42"));
+            SystemTypesToFromJsonCustomDataProperty(new IntPtr(34234));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonDictionary()
+        public void SystemTypesToFromJsonGuidProperty()
+        {
+            SystemTypesToFromJsonCustomDataProperty(new Guid("E5DD4655-3A14-47E2-A19C-A042EE62EF42"));
+        }
+
+        /***************************************************/
+
+        [Test]
+        public void SystemTypesToFromJsonDictionary()
         {
             Dictionary<string, double> dict = new Dictionary<string, double>()
             {
@@ -170,7 +170,7 @@ namespace BH.Tests.Engine.Serialiser
         /***************************************************/
 
         [Test]
-        public void ToFromJsonDictionaryAsProperty()
+        public void SystemTypesToFromJsonDictionaryAsProperty()
         {
             Dictionary<string, double> dict = new Dictionary<string, double>()
             {
@@ -178,21 +178,21 @@ namespace BH.Tests.Engine.Serialiser
                 ["test2"] = 5
             };
 
-            ToFromJsonCustomDataProperty(dict);
+            SystemTypesToFromJsonCustomDataProperty(dict);
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonReadOnlyCollectionAsProperty()
+        public void SystemTypesToFromJsonReadOnlyCollectionAsProperty()
         {
-            ToFromJsonCustomDataProperty(new ReadOnlyCollection<int>(new List<int> { 5, 6, 7 }));
+            SystemTypesToFromJsonCustomDataProperty(new ReadOnlyCollection<int>(new List<int> { 5, 6, 7 }));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonSortedDictionary()
+        public void SystemTypesToFromJsonSortedDictionary()
         {
             SortedDictionary<double, double> dict = new SortedDictionary<double, double>();
 
@@ -208,104 +208,104 @@ namespace BH.Tests.Engine.Serialiser
         /***************************************************/
 
         [Test]
-        public void ToFromJsonSortedDictionaryAsProperty()
+        public void SystemTypesToFromJsonSortedDictionaryAsProperty()
         {
             SortedDictionary<double, double> dict = new SortedDictionary<double, double>();
 
             dict.Add(432.3, 21312);
             dict.Add(342.2, 12312);
 
-            ToFromJsonCustomDataProperty(dict);
+            SystemTypesToFromJsonCustomDataProperty(dict);
         }
 
         [Test]
-        public void ToFromJsonArrayAsProperty()
+        public void SystemTypesToFromJsonArrayAsProperty()
         {
-            ToFromJsonCustomDataProperty(new int[] { 6, 7, 8 });
+            SystemTypesToFromJsonCustomDataProperty(new int[] { 6, 7, 8 });
         }
 
         [Test]
-        public void ToFromJsonTuple2Property()
+        public void SystemTypesToFromJsonTuple2Property()
         {
-            ToFromJsonCustomDataProperty(new Tuple<int, string>(5, "test"));
+            SystemTypesToFromJsonCustomDataProperty(new Tuple<int, string>(5, "test"));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonTuple3Property()
+        public void SystemTypesToFromJsonTuple3Property()
         {
-            ToFromJsonCustomDataProperty(new Tuple<int, string, double>(5, "test", 234.2));
+            SystemTypesToFromJsonCustomDataProperty(new Tuple<int, string, double>(5, "test", 234.2));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonTuple4Property()
+        public void SystemTypesToFromJsonTuple4Property()
         {
-            ToFromJsonCustomDataProperty(new Tuple<int, string, double, string>(5, "test", 423.3, "asd"));
+            SystemTypesToFromJsonCustomDataProperty(new Tuple<int, string, double, string>(5, "test", 423.3, "asd"));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonTuple5Property()
+        public void SystemTypesToFromJsonTuple5Property()
         {
-            ToFromJsonCustomDataProperty(new Tuple<int, string, double, double, double>(5, "test", 34534.3, 0.423, 0.2432));
+            SystemTypesToFromJsonCustomDataProperty(new Tuple<int, string, double, double, double>(5, "test", 34534.3, 0.423, 0.2432));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonTuple5OtherSystemTypesProperty()
+        public void SystemTypesToFromJsonTuple5OtherSystemTypesProperty()
         {
-            ToFromJsonCustomDataProperty(new Tuple<DateTimeOffset, TimeSpan, Regex, IntPtr, System.Drawing.Color>(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(43543), new Regex("/d*"), new IntPtr(982374), System.Drawing.Color.FromArgb(3)));
+            SystemTypesToFromJsonCustomDataProperty(new Tuple<DateTimeOffset, TimeSpan, Regex, IntPtr, System.Drawing.Color>(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(43543), new Regex("/d*"), new IntPtr(982374), System.Drawing.Color.FromArgb(3)));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonHashSetObjectProperty()
+        public void SystemTypesToFromJsonHashSetObjectProperty()
         {
-            ToFromJsonCustomDataProperty(new HashSet<int>(new List<int> { 5, 6, 7 }));
+            SystemTypesToFromJsonCustomDataProperty(new HashSet<int>(new List<int> { 5, 6, 7 }));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJson2dArrayProperty()
+        public void SystemTypesToFromJson2dArrayProperty()
         {
-            ToFromJsonCustomDataProperty(new double[,] { { 4.3, 4.4 }, { 7.6, 2.2 } });
+            SystemTypesToFromJsonCustomDataProperty(new double[,] { { 4.3, 4.4 }, { 7.6, 2.2 } });
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonListObjectProperty()
+        public void SystemTypesToFromJsonListObjectProperty()
         {
-            ToFromJsonCustomDataProperty(new List<Node> { new Node(), new Node() });
+            SystemTypesToFromJsonCustomDataProperty(new List<Node> { new Node(), new Node() });
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonReadOnlyCollectionObjectProperty()
+        public void SystemTypesToFromJsonReadOnlyCollectionObjectProperty()
         {
-            ToFromJsonCustomDataProperty(new ReadOnlyCollection<Node>(new List<Node> { new Node(), new Node() }));
+            SystemTypesToFromJsonCustomDataProperty(new ReadOnlyCollection<Node>(new List<Node> { new Node(), new Node() }));
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonBitMapObjectProperty()
+        public void SystemTypesToFromJsonBitMapObjectProperty()
         {
-            ToFromJsonCustomDataProperty(RandomBitmap(1));       
+            SystemTypesToFromJsonCustomDataProperty(RandomBitmap(1));       
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonDataTableProperty()
+        public void SystemTypesToFromJsonDataTableProperty()
         {
             DataTable table = new DataTable();
             table.Columns.Add("col1", typeof(double));
@@ -314,20 +314,20 @@ namespace BH.Tests.Engine.Serialiser
             table.Rows.Add(4.2, "test");
             table.Rows.Add(1.2, "sdgfljksdfh");
             table.Rows.Add(2.00, "i");
-            ToFromJsonCustomDataProperty(table);
+            SystemTypesToFromJsonCustomDataProperty(table);
         }
 
         /***************************************************/
 
         [Test]
-        public void ToFromJsonDateTimeProperty()
+        public void SystemTypesToFromJsonDateTimeProperty()
         {
-            ToFromJsonCustomDataProperty(System.DateTime.Parse("2023-05-10 14:40:52.531").ToUniversalTime());
+            SystemTypesToFromJsonCustomDataProperty(System.DateTime.Parse("2023-05-10 14:40:52.531").ToUniversalTime());
         }
 
         /***************************************************/
 
-        private void ToFromJsonCustomDataProperty<T>(T value)
+        private void SystemTypesToFromJsonCustomDataProperty<T>(T value)
         {
             string keyItem = "item";
             string keyList = "list";
