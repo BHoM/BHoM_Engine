@@ -68,13 +68,13 @@ namespace BH.Engine.Base
         [Output("type", "BHoM generic type that matches the given name.")]
         public static Type GenericType(string name, List<string> arguments, bool silent = false)
         {
-            Type typeDefinition = Type(name);
+            Type typeDefinition = Type(name, silent);
             if (typeDefinition == null)
                 return null;
 
             try
             {
-                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x)).ToArray());    //Call to Type(x) will recursively call this method for inner generic types
+                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x, silent)).ToArray());    //Call to Type(x) will recursively call this method for inner generic types
             }
             catch
             {
