@@ -50,14 +50,23 @@ namespace BH.Engine.Serialiser
             }
             else
             {
-                failed = true;
-                Engine.Base.Compute.RecordWarning($"The type {doc["_t"]} from version {(string.IsNullOrEmpty(version) ? "unknown" : version )} is unknown -> data returned as custom objects.");
-                CustomObject customObj = DeserialiseCustomObject(doc, ref failed, null, "", true);
-                customObj.CustomData["_t"] = doc["_t"];
-                customObj.CustomData["_bhomVersion"] = version;
-                return customObj;
+                return DeserialiseDeprecatedCustomObject(doc, ref failed, version);
             }
             
+        }
+
+        /*******************************************/
+
+        private static CustomObject DeserialiseDeprecatedCustomObject(this BsonDocument doc, ref bool failed, string version, bool raiseError = true)
+        {
+            if(raiseError)
+                Engine.Base.Compute.RecordError($"The type {doc["_t"]} from version {(string.IsNullOrEmpty(version) ? "unknown" : version)} is unknown -> data returned as custom objects.");
+
+            failed = true;
+            CustomObject customObj = DeserialiseCustomObject(doc, ref failed, null, "", true);
+            customObj.CustomData["_t"] = doc["_t"];
+            customObj.CustomData["_bhomVersion"] = version;
+            return customObj;
         }
 
         /*******************************************/
