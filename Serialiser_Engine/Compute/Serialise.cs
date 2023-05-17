@@ -25,7 +25,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
-
+using System.ComponentModel;
 
 namespace BH.Engine.Serialiser
 {
@@ -35,6 +35,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
+        [Description("Used to support ToJson, not recomended to be used in isolation.")]
         public static void ISerialise(this object value, BsonDocumentWriter writer)
         {
             if (value == null)
