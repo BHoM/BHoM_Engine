@@ -107,7 +107,7 @@ namespace BH.Engine.Serialiser
                     }
                     Base.Compute.RecordError(message);
                     failed = true;
-                    return DeserialiseCustomObject(bson, ref failed, null, version, isUpgraded);
+                    return DeserialiseDeprecatedCustomObject(doc, ref failed, version);
                 }
             }
 

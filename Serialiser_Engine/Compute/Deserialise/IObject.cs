@@ -99,7 +99,7 @@ namespace BH.Engine.Serialiser
                         else
                         {
                             BH.Engine.Base.Compute.RecordError($"Unable to find a property named {item.Name} on object of type {type.Name}. CustomObject returned in its place.");
-                            return DeserialiseCustomObject(doc, ref failed, null, version, true);
+                            return DeserialiseDeprecatedCustomObject(doc, ref failed, version, false);
                         }
 
                     }
@@ -117,8 +117,18 @@ namespace BH.Engine.Serialiser
                         }
                         else
                         {
-
                             object propertyValue = item.Value.IDeserialise(prop.PropertyType, ref failed, prop.GetValue(value), version, isUpgraded);
+
+                            if (failed)
+                            {
+                                if (!isUpgraded && TryUpgrade(doc, version, out IObject upgraded))
+                                    return upgraded;
+                                else
+                                {
+                                    Base.Compute.RecordError($"Failed to deserialise property {item.Name} for obejct of type {value?.GetType().Name ?? "uknown type"}. Custom object returned in its place.");
+                                    return DeserialiseDeprecatedCustomObject(doc, ref failed, version, false);
+                                }
+                            }
 
                             if (CanSetValueToProperty(prop.PropertyType, propertyValue))
                             {
@@ -132,7 +142,7 @@ namespace BH.Engine.Serialiser
                             {
                                 failed = true;
                                 Base.Compute.RecordError($"Unable to set property {item.Name} to object of type {value?.GetType().Name ?? "uknown type"} due to a type missmatch. Expected {prop.PropertyType.Name} but serialised value was {propertyValue?.GetType().Name ?? "null"}.");
-                                return DeserialiseCustomObject(doc, ref failed, null, version, isUpgraded);
+                                return DeserialiseDeprecatedCustomObject(doc, ref failed, version, false);
                             }
                         }
                     }
@@ -148,8 +158,7 @@ namespace BH.Engine.Serialiser
                 }
                 else
                 {
-                    Engine.Base.Compute.RecordWarning("The type " + doc["_t"] + " is unknown -> data returned as custom objects.");
-                    return DeserialiseCustomObject(doc, ref failed, null, version, isUpgraded);
+                    return DeserialiseDeprecatedCustomObject(doc, ref failed, version);
                 }
             }
             
