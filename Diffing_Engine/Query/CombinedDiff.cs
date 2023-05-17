@@ -52,13 +52,13 @@ namespace BH.Engine.Diffing
                 return diff;
 
             return new Diff(
-                diff.AddedObjects != null ? diff.AddedObjects.Concat(toAdd.AddedObjects ?? new List<object>()) : toAdd.AddedObjects ?? new List<object>(),
-                diff.RemovedObjects != null ? diff.RemovedObjects.Concat(toAdd.RemovedObjects ?? new List<object>()) : toAdd.RemovedObjects ?? new List<object>(),
-                diff.ModifiedObjects != null ? diff.ModifiedObjects.Concat(toAdd.ModifiedObjects ?? new List<object>()) : toAdd.ModifiedObjects ?? new List<object>(),
+                diff.AddedObjects != null ? diff.AddedObjects.Concat(toAdd.AddedObjects ?? new List<object>()).ToList() : toAdd.AddedObjects ?? new List<object>(),
+                diff.RemovedObjects != null ? diff.RemovedObjects.Concat(toAdd.RemovedObjects ?? new List<object>()).ToList() : toAdd.RemovedObjects ?? new List<object>(),
+                diff.ModifiedObjects != null ? diff.ModifiedObjects.Concat(toAdd.ModifiedObjects ?? new List<object>()).ToList() : toAdd.ModifiedObjects ?? new List<object>(),
                 diff?.DiffingConfig ?? new DiffingConfig(),
-                diff.ModifiedObjectsDifferences != null ? diff.ModifiedObjectsDifferences.Concat(toAdd.ModifiedObjectsDifferences ?? new List<ObjectDifferences>())
+                diff.ModifiedObjectsDifferences != null ? diff.ModifiedObjectsDifferences.Concat(toAdd.ModifiedObjectsDifferences ?? new List<ObjectDifferences>()).ToList()
                         : toAdd.ModifiedObjectsDifferences ?? new List<ObjectDifferences>(),
-                diff.UnchangedObjects != null ? diff.UnchangedObjects.Concat(toAdd.UnchangedObjects ?? new List<object>()) : toAdd.UnchangedObjects ?? new List<object>()
+                diff.UnchangedObjects != null ? diff.UnchangedObjects.Concat(toAdd.UnchangedObjects ?? new List<object>()).ToList() : toAdd.UnchangedObjects ?? new List<object>()
                 );
         }
     }
