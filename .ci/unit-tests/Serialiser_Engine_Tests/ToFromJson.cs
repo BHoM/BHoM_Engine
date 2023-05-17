@@ -36,10 +36,10 @@ using BH.oM.Graphics;
 namespace BH.Tests.Engine.Serialiser
 {
     [Ignore("Ignoring NUnit versioning tests as overlapping with centralised check Serialisation. Test kept for debugging purposes.")]
-    public class ToFromJsonTest : BaseLoader
+    public class ToFromJson : BaseLoader
     {
         [Test]
-        public void ToFromJson()
+        public void ToFromJsonSpeedTest()
         {
             List<object> bars = new List<object>();
             for (int i = 0; i < 800; i++)

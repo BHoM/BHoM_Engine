@@ -34,7 +34,7 @@ namespace BH.Tests.Engine.Serialiser
     public class AllTypesIObject : BaseLoader
     {
         [Test]
-        public static void CheckAllTypes()
+        public static void CheckAllTypesIObject()
         {
             List<Type> allTypes = BH.Engine.Base.Query.AllTypeList().Where(x => x.Namespace.StartsWith("BH.oM") || x.Namespace.StartsWith("BH.Revit.oM")).Where(x => !x.IsEnum).ToList();
 
