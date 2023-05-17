@@ -28,6 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using BH.Engine.Versioning;
+using System.ComponentModel;
 
 namespace BH.Engine.Serialiser
 {
@@ -37,6 +38,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
+        [Description("Used to support FromJson, not recomended to be used in isolation.")]
         public static object IDeserialise(this BsonValue bson)
         {
             bool failed = false;
