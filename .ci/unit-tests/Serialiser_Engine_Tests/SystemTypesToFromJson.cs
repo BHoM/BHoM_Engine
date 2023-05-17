@@ -426,7 +426,7 @@ namespace BH.Tests.Engine.Serialiser
 
         /***************************************************/
 
-        public static void EquivalentCheckList(object val, object refVal)
+        private static void EquivalentCheckList(object val, object refVal)
         {
             if (refVal == null)
                 return;
