@@ -44,10 +44,19 @@ namespace BH.Tests.Engine.Serialiser
     [Ignore("Ignoring NUnit versioning tests as overlapping with centralised check Versioning. Test kept for debugging purposes.")]
     public class Versioning : BaseLoader
     {
-
+        [Test]
+        public void A_ObjectFromJsonVersioning()
+        {
+            A_FromJsonVersioning("Objects");
+        }
 
         [Test]
-        public void A_VersioningFromJson()
+        public void A_MethodsFromJsonVersioning()
+        {
+            A_FromJsonVersioning("Methods");
+        }
+
+        private void A_FromJsonVersioning(string type)
         {
 
             List<string> versions = new List<string> { "6.1", "6.0", "5.3", "5.2", "5.1", "5.0", "4.3", "4.2", "4.1", "4.0", "3.3" };
@@ -57,8 +66,6 @@ namespace BH.Tests.Engine.Serialiser
             Dictionary<string, int> failures = new Dictionary<string, int>();
             Dictionary<string, List<string>> jsonErrors = new Dictionary<string, List<string>>();
             Dictionary<string, List<string>> jsonSuccess = new Dictionary<string, List<string>>();
-
-            string type = "Objects";
 
             string filePath = Helpers.TemporaryLogPath($"{type}.json", true);
 
@@ -132,11 +139,20 @@ namespace BH.Tests.Engine.Serialiser
 
         }
 
+        [Test]
+        public void B_FromJsonObjectFailuresVersioning()
+        {
+            B_FromJsonFailuresVersioning("Objects");
+        }
 
         [Test]
-        public void B_VersioningFromJsonFailures()
+        public void B_FromJsonMethodsFailuresVersioning()
         {
-            string type = "Objects";
+            B_FromJsonFailuresVersioning("Methods");
+        }
+
+        private void B_FromJsonFailuresVersioning(string type)
+        {
 
             string file = Helpers.TemporaryLogPath($"{type}.json", false);
             string exceptions = "Grasshopper|Rhinoceros";
@@ -188,18 +204,18 @@ namespace BH.Tests.Engine.Serialiser
                 messages.Add(success ? "PASS:" : "FAIL:");
                 messages.Add("");
                 messages.Add(line);
-                    messages.Add("");
-                    messages.AddRange(BH.Engine.Base.Query.CurrentEvents().Select(x => x.Message));
-                    messages.Add("");
-                    messages.Add("");
-                    File.AppendAllLines(filePath, messages);
-                
+                messages.Add("");
+                messages.AddRange(BH.Engine.Base.Query.CurrentEvents().Select(x => x.Message));
+                messages.Add("");
+                messages.Add("");
+                File.AppendAllLines(filePath, messages);
+
             }
 
         }
 
         [Test]
-        public void A_VersioningFromJsonCompareOldAndNew()
+        public void A_FromJsonCompareOldAndNewVersioning()
         {
             List<string> versions = new List<string> { "6.1", "6.0", "5.3", "5.2", "5.1", "5.0", "4.3", "4.2", "4.1", "4.0", "3.3" };
 
@@ -273,7 +289,7 @@ namespace BH.Tests.Engine.Serialiser
         }
 
         [Test]
-        public void B_CheckFailuresNewVsOld()
+        public void B_CheckFailuresNewVsOldVersioning()
         {
             string type = "Objects";
 

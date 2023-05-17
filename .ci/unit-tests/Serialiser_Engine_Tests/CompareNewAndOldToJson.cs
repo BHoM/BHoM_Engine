@@ -40,7 +40,7 @@ using System.Text.RegularExpressions;
 namespace BH.Tests.Engine.Serialiser
 {
     [Ignore("Ignoring NUnit versioning tests as only relevant for debugging until old serialisation is removed. Test kept for debugging purposes.")]
-    public class OldNewToJson : BaseLoader
+    public class CompareNewAndOldToJson : BaseLoader
     {
 
         [Test]
@@ -234,7 +234,7 @@ namespace BH.Tests.Engine.Serialiser
         }
 
         [Test]
-        public void B_CompareNewAndOldToJson()
+        public void B_FailuresCompareNewAndOldToJson()
         {
 
             string file = Helpers.TemporaryLogPath($"ToFromJsonOldVsNew.json", false);
