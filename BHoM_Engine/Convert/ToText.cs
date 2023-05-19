@@ -85,7 +85,7 @@ namespace BH.Engine.Base
         [Input("maxChars", "Maximum number of characters to use. Any remaining will be represented with '...'.")]
         [Input("includeParamPaths", "If true, the path/namespace will be provided.")]
         [Output("Text representation.")]
-        public static string ToText(this MethodBase method, bool includeHidden, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false)
+        public static string ToText(this MethodBase method, double includeHidden, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false)
         {
             if (method == null)
                 return "null";
