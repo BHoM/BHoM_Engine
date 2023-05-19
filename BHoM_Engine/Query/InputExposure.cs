@@ -28,7 +28,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
