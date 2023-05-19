@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Base.Attributes;
+using BH.oM.Base.Attributes.Enums;
 
 namespace BH.Engine.Base
 {
@@ -84,8 +85,11 @@ namespace BH.Engine.Base
         [Input("maxParams", "Maximum number of parameter to write. Any remaining will be represented with '...'.")]
         [Input("maxChars", "Maximum number of characters to use. Any remaining will be represented with '...'.")]
         [Input("includeParamPaths", "If true, the path/namespace will be provided.")]
+        [Input("includeHidden", "If true, hidden inputs to the method (set using UIExposure.Hidden) will be included if the maxParams and maxChars allow.")]
+        [Input("hiddenStart", "Symbol used to separate hidden input parameters from required input parameters. Usually '{'.")]
+        [Input("hiddenEnd", "Symbol used for the end of separation of hidden input parameters from required input parameters. Usually '}'.")]
         [Output("Text representation.")]
-        public static string ToText(this MethodBase method, double includeHidden, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false)
+        public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false, bool includeHidden = true, string hiddenStart = "{", string hiddenEnd = "}")
         {
             if (method == null)
                 return "null";
@@ -98,6 +102,7 @@ namespace BH.Engine.Base
             try
             {
                 ParameterInfo[] parameters = method.GetParameters();
+                Dictionary<string, UIExposure> parameterExposure = method.InputExposure();
 
                 string paramText = "";
                 if (parameters.Length > 0)
@@ -107,6 +112,14 @@ namespace BH.Engine.Base
                     {
                         string singleParamText = includeParamNames ?
                             parameters[i].ParameterType.ToText(includeParamPaths) + " " + parameters[i].Name : parameters[i].ParameterType.ToText(includeParamPaths);
+
+                        if (parameterExposure.ContainsKey(parameters[i].Name) && parameterExposure[parameters[i].Name] == UIExposure.Hidden)
+                        {
+                            if (includeHidden)
+                                singleParamText = $"{hiddenStart}{singleParamText}{hiddenEnd}";
+                            else
+                                singleParamText = "";
+                        }
 
                         if (i == 0)
                         {
