@@ -89,6 +89,7 @@ namespace BH.Engine.Base
         [Input("hiddenStart", "Symbol used to separate hidden input parameters from required input parameters. Usually '{'.")]
         [Input("hiddenEnd", "Symbol used for the end of separation of hidden input parameters from required input parameters. Usually '}'.")]
         [Output("Text representation.")]
+        [PreviousVersion("6.2", "BH.Engine.Base.Convert.ToText(System.Reflection.MethodBase, System.Boolean, System.String, System.String, System.String, System.Boolean, System.Boolean, System.Int32, System.Int32, System.Boolean)")]
         public static string ToText(this MethodBase method, bool includePath = false, string paramStart = "(", string paramSeparator = ", ", string paramEnd = ")", bool removeIForInterface = true, bool includeParamNames = true, int maxParams = 5, int maxChars = 40, bool includeParamPaths = false, bool includeHidden = true, string hiddenStart = "{", string hiddenEnd = "}")
         {
             if (method == null)
