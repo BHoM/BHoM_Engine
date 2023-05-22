@@ -40,9 +40,9 @@ namespace BH.Engine.Geometry
         [Output("angle", "The smallest possible angle between 2 vectors regardless of their directions.", typeof(Angle))]
         public static double AcuteAngle(this Vector vector1, Vector vector2)
         {
-            double angle1 = vector1.Angle(vector2);
-            double angle2 = vector1.Angle(vector2.Reverse());
-            return Math.Min(angle1, angle2);
+            return Math.Acos(
+                Math.Abs(vector1.DotProduct(vector2))
+                / (vector1.Length() * vector2.Length()));
         }
 
         /***************************************************/

@@ -32,11 +32,11 @@ namespace BH.Engine.Base
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Returns a sequence of doubles, beginning from a start value, increments by a step value, and stops before or at an end value.")]
+        [Description("Returns a sequence of doubles, beginning from a start value, increments by a step value, and stops before or at an end value. The last item in the sequence may not be the end value.")]
         [Input("start", "The starting value for the new sequence of doubles.")]
         [Input("end", "The ending value for the new sequence of doubles.")]
         [Input("step", "The difference between consecutive values the new sequence of doubles.")]
-        [Output("sequence", "A sequence of doubles, beginning from a start value, increments by a step value, and stops before a end value.")]
+        [Output("sequence", "A sequence of doubles, beginning from a start value, increments by a step value, and stops before or at an end value. The last item in the sequence may not be the end value.")]
         public static List<double> BoundedRange(double start, double end, double step)
         {
             List<double> result = new List<double>();
