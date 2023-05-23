@@ -58,7 +58,7 @@ namespace BH.Engine.Serialiser
             Type type = doc["_t"].DeserialiseType(ref failed, null, version, isUpgraded);
             if (type == null)
             {
-                return DeserialiseDeprecate(doc, ref failed, version) as IObject;
+                return DeserialiseDeprecate(doc, ref failed, version, isUpgraded) as IObject;
             }
             if (typeof(IImmutable).IsAssignableFrom(type))
                 return bson.DeserialiseImmutable(ref failed, type, version, isUpgraded);
@@ -136,7 +136,7 @@ namespace BH.Engine.Serialiser
                             }
                             else if (!isUpgraded)
                             {
-                                return DeserialiseDeprecate(doc, ref failed, version) as IObject;
+                                return DeserialiseDeprecate(doc, ref failed, version, isUpgraded) as IObject;
                             }
                             else
                             {
@@ -154,7 +154,7 @@ namespace BH.Engine.Serialiser
             {
                 if (!isUpgraded)
                 {
-                    return DeserialiseDeprecate(doc, ref failed, version) as IObject;
+                    return DeserialiseDeprecate(doc, ref failed, version, isUpgraded) as IObject;
                 }
                 else
                 {
