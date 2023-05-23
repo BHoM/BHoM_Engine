@@ -23,13 +23,14 @@
 using BH.oM.Base;
 using BH.Engine.Base;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace BH.Tests.Engine.Base.Query.Objects
 {
     // Must be unpackable
     public class Container<T> : BHoMObject, IContainer
     {
-        public T? SomeObject { get; set; }
+        public T SomeObject { get; set; }
         public IEnumerable<T> ListOfObjects { get; set; } = new List<T>();
         public IEnumerable<IEnumerable<T>> ListOfLists { get; set; } = new List<List<T>>();
     }

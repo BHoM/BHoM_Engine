@@ -27,6 +27,8 @@ using BH.Tests.Engine.Base.Query.Objects;
 using NUnit.Framework;
 using AutoBogus;
 using Shouldly;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Tests.Engine.Base.Query
 {
