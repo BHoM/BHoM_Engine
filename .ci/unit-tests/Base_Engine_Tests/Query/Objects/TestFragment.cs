@@ -28,6 +28,6 @@ namespace BH.Tests.Engine.Base.Query.Objects
 {
     public class TestFragment : IFragment
     {
-        public object? SomeObject { get; set; }
+        public object SomeObject { get; set; }
     }
 }
