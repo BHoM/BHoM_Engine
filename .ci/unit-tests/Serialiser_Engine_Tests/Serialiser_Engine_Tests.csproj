@@ -84,7 +84,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y" />
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)FluentAssertions.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y" />
   </Target>
 
 </Project>
