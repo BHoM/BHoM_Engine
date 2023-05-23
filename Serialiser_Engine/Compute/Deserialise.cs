@@ -71,7 +71,7 @@ namespace BH.Engine.Serialiser
                         version = docVersion;
                     Type type = doc["_t"].DeserialiseType(ref failed, null, version, isUpgraded);
                     if (type == null)
-                        return DeserialiseDeprecate(doc, ref failed, version) as IObject;
+                        return DeserialiseDeprecate(doc, ref failed, version, isUpgraded) as IObject;
                     else
                         return IDeserialise(bson, type, ref failed, null, version, isUpgraded);
                 }
