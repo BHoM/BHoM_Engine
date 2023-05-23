@@ -33,10 +33,11 @@ namespace BH.Tests.Engine.Base.Query
 {
     public class Geometry : NUnitTest
     {
+        private static ConcreteSection concreteSection = (ConcreteSection)BH.Engine.Base.Create.RandomObject(typeof(ConcreteSection));
+
         [Test]
         public static void CrossSectionGeometry3D()
         {
-            ConcreteSection concreteSection = (ConcreteSection)BH.Engine.Base.Create.RandomObject(typeof(ConcreteSection));
             var geom = BH.Engine.Structure.Query.Geometry(concreteSection);
             geom.ShouldNotBeNull();
         }
@@ -44,7 +45,6 @@ namespace BH.Tests.Engine.Base.Query
         [Test]
         public static void CrossSectionIGeometryExtensionMethodNotNull()
         {
-            ConcreteSection concreteSection = (ConcreteSection)BH.Engine.Base.Create.RandomObject(typeof(ConcreteSection));
             var geom = BH.Engine.Base.Query.IGeometry(concreteSection);
             geom.ShouldNotBeNull();
         }
@@ -53,7 +53,6 @@ namespace BH.Tests.Engine.Base.Query
         [Description("Calls an IGeometry extension method and another extension method. Useful to very that the matching lookup works when multiple delegates are stored.")]
         public static void MultipleGeometryExtensionMethodNotNull()
         {
-            ConcreteSection concreteSection = (ConcreteSection)BH.Engine.Base.Create.RandomObject(typeof(ConcreteSection));
             var geom = BH.Engine.Base.Query.IGeometry(concreteSection);
             geom.ShouldNotBeNull();
 
