@@ -39,7 +39,10 @@ namespace BH.Engine.Reflection
         public static void CopyPropertiesByName(this object sourceObj, object targetObj)
         {
             if (sourceObj == null || targetObj == null)
+            {
+                Base.Compute.RecordError("Can't copy properties because at least one input object is null.");
                 return;
+            }
 
             Type targetType = targetObj.GetType();
             Type sourceType = sourceObj.GetType();

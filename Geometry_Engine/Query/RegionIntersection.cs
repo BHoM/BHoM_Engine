@@ -20,15 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using System;
+using BH.oM.Geometry;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using BH.oM.Quantities.Attributes;
-using BH.oM.Geometry.CoordinateSystem;
 
 namespace BH.Engine.Geometry
 {
@@ -39,71 +34,36 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Find segments of a line lying inside the region defined by a polyline.")]
+        [Input("region", "A polyline defining a closed region that the input line potentially intersects.")]
         [Input("line", "A line to check for intersections with a region defined by the input polylines.")]
-        [Input("pLine", "A polyline defining a closed region that the input line potentially intersects.")]
-        [Input("tolerance", "Minimum length required of new intersection lines.")]
-        [Output("intersections", "Segments of the input line that lie inside the region defined by the input polyline.")]
-        public static List<Line> RegionIntersection(this Polyline region, Line line, double minLineLength = Tolerance.Distance, bool acceptOnEdge = true)
+        [Input("minLineLength", "Minimum length required of new intersection lines.")]
+        [Input("acceptOnEdge", "Whether a point lying on the region's perimeter is considered contained by that region.")]
+        [Input("tolerance", "Numerical tolerance for the operation.")]
+        [Output("intersectionLines", "Segments of the input line that lie inside the region defined by the input polyline.")]
+        public static List<Line> RegionIntersection(this Polyline region, Line line, double minLineLength = Tolerance.Distance, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
         {
-            List<Line> intersections = new List<Line>();
+            List<Point> intPnts = region.ILineIntersections(line, true, tolerance);
+            intPnts.Add(line.Start);
+            intPnts.Add(line.End);
 
-            if (!line.IsInRange(region.Bounds()))
-                return intersections;
+            intPnts = intPnts.CullDuplicates(tolerance);
+            intPnts = intPnts.SortCollinear(tolerance);
+            List<Line> intersectionLines = new List<Line>();
 
-            if (region.IsContaining(line))
-                return new List<Line> { line };
-
-            List<Point> intersectionPnts = region.LineIntersections(line);
-            if (!intersectionPnts.Any())
-                return intersections;
-
-            List<double> pointParameters = intersectionPnts.Select(x => line.ParameterAtPoint(x)).ToList();
-
-            List<Tuple<Point, double>> sortedPointParamPairs = intersectionPnts
-                .Zip(pointParameters, (point, param) => Tuple.Create( point, param ))
-                .OrderBy(x => x.Item2)
-                .Select(x => x).ToList();
-
-            Point startPnt = line.PointAtParameter(0);
-            if (region.IsContaining(new List<Point> { startPnt }))
+            for (int i = 0; i < intPnts.Count - 1; i++)
             {
-                Point intPnt = sortedPointParamPairs.First().Item1;
-                if (intPnt.Distance(startPnt) > minLineLength)
+                Point pnt1 = intPnts[i];
+                Point pnt2 = intPnts[i + 1];
+                Point midPnt = (pnt1 + pnt2) / 2;
+                bool midPntContained = region.IIsContaining(new List<Point> { midPnt }, acceptOnEdge, tolerance);
+
+                if (midPntContained && pnt1.Distance(pnt2) >= minLineLength)
                 {
-                    intersections.Add(new Line() { Start = startPnt, End = intPnt });
+                    intersectionLines.Add(new Line { Start = pnt1, End = pnt2 });
                 }
             }
 
-            Point endPnt = line.PointAtParameter(1);
-            if (region.IsContaining(new List<Point> { endPnt }))
-            {
-                Point intPnt = sortedPointParamPairs.Last().Item1;
-                if (intPnt.Distance(endPnt) > minLineLength)
-                {
-                    intersections.Add(new Line() { Start = intPnt, End = endPnt });
-                }
-            }
-
-            for (int i = 0; i < (sortedPointParamPairs.Count - 1); i++)
-            {
-                Tuple<Point, double> entry1 = sortedPointParamPairs[i];
-                Tuple<Point, double> entry2 = sortedPointParamPairs[i + 1];
-                Point point1 = entry1.Item1;
-                Point point2 = entry2.Item1;
-
-                if (point1.Distance(point2) < minLineLength)
-                    continue;
-
-                double averageParam = (entry1.Item2 + entry2.Item2) / 2;
-                List<Point> midPoints = new List<Point> { line.PointAtParameter(averageParam) };
-
-                if (region.IsContaining(midPoints, acceptOnEdge))
-                {
-                    intersections.Add(new Line() { Start = point1, End = point2 });
-                }
-            }
-
-            return intersections;
+            return intersectionLines;
         }
 
         /***************************************************/
