@@ -40,8 +40,7 @@ namespace BH.Engine.Library
         /***************************************************/
 
         [Description("Gets all user folder paths stored by the Library Settings.")]
-        [FolderPath("paths")]
-        [Output("paths", "The list of user paths.")]
+        [Output("paths", "The list of user paths.", typeof (FolderPathAttribute))]
         public static List<string> UserPaths()
         {
             return LibrarySettings()?.UserLibraryPaths?.ToList() ?? new List<string>();
