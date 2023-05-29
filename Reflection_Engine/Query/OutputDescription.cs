@@ -43,17 +43,14 @@ namespace BH.Engine.Reflection
                 return "";
 
             OutputAttribute attribute = method.GetCustomAttribute<OutputAttribute>();
-            InputClassificationAttribute classificationAttribute = null;
+            ClassificationAttribute classification = attribute?.Classification;
 
             string desc = "";
 
             if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Description))
                 desc = attribute.Description + Environment.NewLine;
 
-            if (attribute != null)
-                classificationAttribute = attribute.Classification;
-
-            desc += method.OutputType().Description(classificationAttribute);
+            desc += method.OutputType().Description(classification);
 
             return desc;
         }
