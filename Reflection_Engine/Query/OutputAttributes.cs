@@ -58,7 +58,7 @@ namespace BH.Engine.Reflection
                         if (types[i] != null)
                         {
                             desc += Environment.NewLine;
-                            InputClassificationAttribute classification = outputDefs[i].Classification;
+                            ClassificationAttribute classification = outputDefs[i].Classification;
                             desc += types[i].UnderlyingType().Type.Description(classification);
                         }
                         outputs.Add(new OutputAttribute(outputDefs[i].Name, desc));
@@ -71,7 +71,7 @@ namespace BH.Engine.Reflection
                             name += (nbSame + 1).ToString();
                         outputs.Add(new OutputAttribute(name, ""));
                     }
-                        
+
                 }
                 return outputs;
             }
