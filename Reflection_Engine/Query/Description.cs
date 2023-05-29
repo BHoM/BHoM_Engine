@@ -86,7 +86,7 @@ namespace BH.Engine.Reflection
                 desc = inputDesc.First().Description + Environment.NewLine;
 
                 if (classification == null)
-                    classification = inputDesc.First().Quantity;
+                    classification = inputDesc.First().Classification;
             }
             else
             {

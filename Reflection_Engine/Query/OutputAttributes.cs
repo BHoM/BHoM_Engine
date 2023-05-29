@@ -46,14 +46,6 @@ namespace BH.Engine.Reflection
             if (method.IsMultipleOutputs())
             {
                 Dictionary<int, MultiOutputAttribute> outputDefs = method.GetCustomAttributes<MultiOutputAttribute>().ToDictionary(x => x.Index);
-                Dictionary<int, ClassificationAttribute> classificationAttributes = new Dictionary<int, ClassificationAttribute>();
-                foreach (ClassificationAttribute classificationAttribute in method.GetCustomAttributes<ClassificationAttribute>())
-                {
-                    int index;
-                    if (int.TryParse(classificationAttribute.Name, out index))
-                        classificationAttributes[index] = classificationAttribute;
-                }
-
                 Type[] types = method.OutputType().GetGenericArguments();
 
                 List<OutputAttribute> outputs = new List<OutputAttribute>();
@@ -66,13 +58,7 @@ namespace BH.Engine.Reflection
                         if (types[i] != null)
                         {
                             desc += Environment.NewLine;
-                            ClassificationAttribute classification = null;
-                            if (classificationAttributes.ContainsKey(i))
-                                classification = classificationAttributes[i];
-
-                            if (classification == null)
-                                classification = outputDefs[i].Quantity;
-
+                            ClassificationAttribute classification = outputDefs[i].Classification;
                             desc += types[i].UnderlyingType().Type.Description(classification);
                         }
                         outputs.Add(new OutputAttribute(outputDefs[i].Name, desc));

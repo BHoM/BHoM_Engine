@@ -43,16 +43,12 @@ namespace BH.Engine.Geometry
         [FolderPath("folderPath")]
         [Input("folderPath", "Folder path input.")]
         [MultiOutput(0,"length", "Length output.", typeof(Length))]
-        [FilePath(1)]
-        [MultiOutput(1, "filePath", "File path output.")]
-        [FilePath(2, new string[] { "exe", "bat", "png" })]
-        [MultiOutput(2, "filePathWithExtension", "File path input with file extension output.")]
-        [FolderPath(3)]
-        [MultiOutput(3, "folderPath", "Folder path output.")]
+        [MultiOutput(1, "filePath", "File path output.", typeof (FilePathAttribute))]
+        [MultiOutput(2, "folderPath", "Folder path output.", typeof(FolderPathAttribute))]
 
-        public static Output<double, string, string, string> TestMethodToDelete(double length, string filePath, string filePathWithExtension, string folderPath)
+        public static Output<double, string, string> TestMethodToDelete(double length, string filePath, string filePathWithExtension, string folderPath)
         {
-            return new Output<double, string, string, string>();
+            return new Output<double, string, string>();
         }
 
         /***************************************************/
