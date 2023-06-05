@@ -125,7 +125,7 @@ namespace BH.Engine.Serialiser
                                     return upgraded;
                                 else
                                 {
-                                    Base.Compute.RecordError($"Failed to deserialise property {item.Name} for object of type {value?.GetType().Name ?? "uknown type"}. Custom object returned in its place.");
+                                    Base.Compute.RecordError($"Failed to deserialise property {item.Name} for object of type {value?.GetType().Name ?? "unknown type"}. Custom object returned in its place.");
                                     return DeserialiseDeprecatedCustomObject(doc, ref failed, version, false);
                                 }
                             }
