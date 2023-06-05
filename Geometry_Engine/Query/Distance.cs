@@ -190,9 +190,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double DistanceAlongVector(this Point pnt1, Point pnt2, Vector vector)
+        [Description("Computes the distance between 2 points along the direction of an input vector.")]
+        [Input("point1", "A point to computer the distance from.")]
+        [Input("point2", "A point to computer the distance to.")]
+        [Input("vector", "A vector along which the point distance will be computed.")]
+        [Output("distance", "The distance between 2 points along the direction of an input vector.")]
+        public static double DistanceAlongVector(this Point point1, Point point2, Vector vector)
         {
-            Vector pointVector = pnt2 - pnt1;
+            Vector pointVector = point2 - point1;
             return Math.Abs(pointVector.DotProduct(vector.Normalise()));
         }
 
