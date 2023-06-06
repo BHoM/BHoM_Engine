@@ -35,7 +35,7 @@ namespace BH.Engine.Base
         [Description("Generates wiki url given provided page.")]
         [Input("page", "The page for the url.")]
         [Output("url", "Fully qualified url for BHoM wiki documentation.")]
-        public static string GetWikiURL(string page = null)
+        public static string GetDocumentationURL(string page = null)
         {
             string url = "https://bhom.xyz/documentation";
 
