@@ -32,9 +32,9 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Generates wiki url given provided page.")]
-        [Input("page", "The page for the url.")]
-        [Output("url", "Fully qualified url for BHoM wiki documentation.")]
+        [Description("Generates the wiki URL for a provided page.")]
+        [Input("page", "An optional page on the documentation to link to. If no page is provided, the root documentation URL is returned.")]
+        [Output("url", "Fully qualified URL for BHoM wiki documentation.")]
         public static string GetDocumentationURL(string page = null)
         {
             string url = "https://bhom.xyz/documentation";
@@ -46,6 +46,5 @@ namespace BH.Engine.Base
 
             return url;
         }
-
     }
 }
