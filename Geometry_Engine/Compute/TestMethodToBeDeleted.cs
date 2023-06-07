@@ -42,11 +42,13 @@ namespace BH.Engine.Geometry
         [Input("filePathWithExtension", "File path input with file extension input.")]
         [FolderPath("folderPath")]
         [Input("folderPath", "Folder path input.")]
+        [Input("oneLineFilePath", "Folder path input declared in a single line.", typeof(FilePathAttribute))]
+        [Input("oneLineFolderPath", "Folder path input declared in a single line.", typeof(FolderPathAttribute))]
         [MultiOutput(0,"length", "Length output.", typeof(Length))]
         [MultiOutput(1, "filePath", "File path output.", typeof (FilePathAttribute))]
         [MultiOutput(2, "folderPath", "Folder path output.", typeof(FolderPathAttribute))]
 
-        public static Output<double, string, string> TestMethodToBeDeleted(double length, string filePath, string filePathWithExtension, string folderPath)
+        public static Output<double, string, string> TestMethodToBeDeleted(double length, string filePath, string filePathWithExtension, string folderPath, string oneLineFilePath, string oneLineFolderPath)
         {
             return new Output<double, string, string>();
         }
