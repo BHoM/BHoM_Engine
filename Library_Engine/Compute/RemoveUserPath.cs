@@ -36,8 +36,7 @@ namespace BH.Engine.Library
         /***************************************************/
 
         [Description("Removes a custom folder path from the User libraries accessed by the Library_Engine.")]
-        [FolderPath("customPath")]
-        [Input("customPath", "Path to folder to be excluded from the custom libraries.")]
+        [Input("customPath", "Path to folder to be excluded from the custom libraries.", typeof(FolderPathAttribute))]
         [Input("refreshLibraries", "If true, all loaded libraries will be refreshed and reloaded, making use of the provided LibrarySettings object.")]
         [Output("success", "Returns true of the settings was successfully updated.")]
         public static bool RemoveUserPath(string customPath, bool refreshLibraries = true)
