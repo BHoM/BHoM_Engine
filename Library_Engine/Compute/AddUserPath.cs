@@ -36,8 +36,7 @@ namespace BH.Engine.Library
         /***************************************************/
 
         [Description("Adds a custom folderpath to the User libraries accessed by the Library_Engine.")]
-        [FolderPath("customPath")]
-        [Input("customPath", "Path to folder containing user libraries to be added.")]
+        [Input("customPath", "Path to folder containing user libraries to be added.", typeof(FolderPathAttribute))]
         [Input("refreshLibraries", "If true, all loaded libraries will be refreshed and reloaded, making use of the provided LibrarySettings object.")]
         [Output("sucess", "Returns true if the settings was successfully updated.")]
         public static bool AddUserPath(string customPath, bool refreshLibraries = true)
