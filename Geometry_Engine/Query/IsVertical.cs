@@ -24,6 +24,7 @@ using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using System;
 using System.ComponentModel;
+using BH.oM.Base.Attributes.Enums;
 
 namespace BH.Engine.Geometry
 {
