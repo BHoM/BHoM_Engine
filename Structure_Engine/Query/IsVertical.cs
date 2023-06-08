@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
 
 
         [Description("Checks if a Bar is vertical. A Bar is vertical if its projected length to the horizontal plane is less than 0.0001, i.e. a tolerance of 0.1mm on verticality. \n" +
-                     "For general structural conventions please see  documentation.")]
+                     "For general structural conventions please see the documentation.")]
         [Input("bar", "The Bar to check for verticality.")]
         [Output("result", "Returns true if the Bar is vertical.")]
         [DocumentationURL("https://bhom.xyz/documentation/Conventions/BHoM-Structural-Conventions/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
