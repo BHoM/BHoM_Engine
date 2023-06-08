@@ -37,12 +37,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("This method is largely replaced by the Compute.ShearAreaPolyline() Method. \n" +
-                     "Calculates the Shear area from a list of IntegrationSlices, based on the integral found https://github.com/BHoM/documentation/wiki/Shear-Area-Derivation \n" +
+                     "Calculates the Shear area from a list of IntegrationSlices, based on the integral found in the documentation. \n" +
                      "To use this method for a closed set of Curves, first call Geometry.Create.IntegrationSlices() to generate the slices.")]
         [Input("slices", "The list of integration slices used to calculate the shear area. To generate the integration slices from as set of closed curves first call Geometry.Create.IntegrationSlices().")]
         [Input("momentOfInertia", "The moment of inertia around the axis orthogonal to the one being used to generate the slices.", typeof(SecondMomentOfArea))]
         [Input("centroid", "The centroid of the curves along the axis used to generate the slices.", typeof(Length))]
         [Output("shearArea", "The shear area calculated based on the slices.", typeof(Area))]
+        [DocumentationURL("https://bhom.xyz/documentation/Conventions/Shear-Area-Derivation/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
         public static double ShearArea(List<IntegrationSlice> slices, double momentOfInertia, double centroid)
         {
             double sy = 0;
