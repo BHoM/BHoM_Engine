@@ -40,6 +40,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [DocumentationURL("https://bhom.xyz/documentation/Conventions/Shear-Area-Derivation/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
         [Description("Calculates the the exact shear area of a simplified boundary of a section.")]
         [Input("pLine", "The Polyline should have the upper side along the x-axis and the rest of the lines should be definable as /n" +
                         "a function of x apart for vertical segments. The last line segment should be the upper one /n" +
@@ -132,7 +133,7 @@ namespace BH.Engine.Structure
 
             double byay2 = Math.Pow(byay, 2);
 
-            // Formula derivation outlined in https://github.com/BHoM/documentation/wiki/Shear-Area-Derivation
+            // Formula derivation linked in DocumentationURL
             double A =
                     -(
                         20 * Math.Pow(axbx, 2) *
