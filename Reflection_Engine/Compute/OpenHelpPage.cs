@@ -55,10 +55,10 @@ namespace BH.Engine.Reflection
 
         public static void OpenHelpPage(Type type)
         {
-            string url = "https://bhom.xyz";
+            string url = Base.Query.BHoMWebsiteURL();
             if (type != null)
             {
-                url = BH.Engine.Reflection.Query.Url(type) ?? url;
+                url = Query.Url(type) ?? url;
             }
 
             System.Diagnostics.Process.Start(url);
@@ -68,10 +68,10 @@ namespace BH.Engine.Reflection
 
         public static void OpenHelpPage(MethodBase method)
         {
-            string url = "https://bhom.xyz";
+            string url = Base.Query.BHoMWebsiteURL();
             if (method != null)
             {
-                url = BH.Engine.Reflection.Query.Url(method) ?? url;
+                url = Query.Url(method) ?? url;
             }
 
             System.Diagnostics.Process.Start(url);
