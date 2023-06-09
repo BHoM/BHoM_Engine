@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         [Output("url", "Fully qualified URL for BHoM website.")]
         public static string BHoMWebsiteURL()
         {
-
             return "https://bhom.xyz/";
         }
     }
