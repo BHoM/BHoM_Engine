@@ -119,17 +119,6 @@ namespace BH.Engine.Serialiser
                         {
                             object propertyValue = item.Value.IDeserialise(prop.PropertyType, ref failed, prop.GetValue(value), version, isUpgraded);
 
-                            if (failed)
-                            {
-                                if (!isUpgraded && TryUpgrade(doc, version, out IObject upgraded))
-                                    return upgraded;
-                                else
-                                {
-                                    Base.Compute.RecordError($"Failed to deserialise property {item.Name} for object of type {value?.GetType().Name ?? "unknown type"}. Custom object returned in its place.");
-                                    return DeserialiseDeprecatedCustomObject(doc, ref failed, version, false);
-                                }
-                            }
-
                             if (CanSetValueToProperty(prop.PropertyType, propertyValue))
                             {
                                 prop.SetValue(value, propertyValue);
