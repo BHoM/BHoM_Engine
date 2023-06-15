@@ -37,7 +37,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static T[] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[] value, string version, bool isUpgraded)
+        private static T[] DeserialiseArray<T>(this BsonValue bson, T[] value, string version, bool isUpgraded)
         {
             bson = ExtractValue(bson);
             if (bson.IsBsonNull)
@@ -47,20 +47,19 @@ namespace BH.Engine.Serialiser
             else if (!bson.IsBsonArray)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an array and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 
             List<T> values = new List<T>();
             foreach (BsonValue item in bson.AsBsonArray)
-                values.Add((T)item.IDeserialise(typeof(T), ref failed, null, version, isUpgraded));
+                values.Add((T)item.IDeserialise(typeof(T), null, version, isUpgraded));
 
             return values.ToArray();
         }
 
         /*******************************************/
 
-        private static T[,] DeserialiseArray<T>(this BsonValue bson, ref bool failed, T[,] value, string version, bool isUpgraded)
+        private static T[,] DeserialiseArray<T>(this BsonValue bson, T[,] value, string version, bool isUpgraded)
         {
             bson = ExtractValue(bson);
             if (bson.IsBsonNull)
@@ -70,13 +69,12 @@ namespace BH.Engine.Serialiser
             else if (!bson.IsBsonArray)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an array and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 
             List<T[]> values = new List<T[]>();
             foreach (BsonValue item in bson.AsBsonArray)
-                values.Add(item.DeserialiseArray(ref failed, new T[0], version, isUpgraded));
+                values.Add(item.DeserialiseArray(new T[0], version, isUpgraded));
 
             int maxLength = values.Select(x => x.Length).Max();
             T[,] array = new T[values.Count, maxLength];

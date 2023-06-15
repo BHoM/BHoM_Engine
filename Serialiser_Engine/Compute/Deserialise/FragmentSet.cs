@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static FragmentSet DeserialiseFragmentSet(this BsonValue bson, ref bool failed, FragmentSet value, string version, bool isUpgraded)
+        private static FragmentSet DeserialiseFragmentSet(this BsonValue bson, FragmentSet value, string version, bool isUpgraded)
         {
             if (value == null)
                 value = new FragmentSet();
@@ -61,7 +61,7 @@ namespace BH.Engine.Serialiser
             {
                 foreach (BsonValue item in array)
                 {
-                    IFragment fragment = item.IDeserialise(ref failed, version, isUpgraded) as IFragment;
+                    IFragment fragment = item.IDeserialise(version, isUpgraded) as IFragment;
                     if (fragment != null)
                         value.Add(fragment);
                 }
@@ -69,7 +69,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a FragmentSet and received " + bson.ToString() + " instead.");
-                failed = true;
             }
 
             return value;

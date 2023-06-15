@@ -36,14 +36,13 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static bool DeserialiseBoolean(this BsonValue bson, ref bool failed, bool value = false)
+        private static bool DeserialiseBoolean(this BsonValue bson, bool value = false)
         {
             if (bson.IsBoolean)
                 return bson.AsBoolean;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a bool and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
         }

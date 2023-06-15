@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
 
-        private static Dictionary<TK,TV> DeserialiseDictionary<TK,TV>(this BsonValue bson, ref bool failed, Dictionary<TK, TV> value, string version, bool isUpgraded)
+        private static Dictionary<TK,TV> DeserialiseDictionary<TK,TV>(this BsonValue bson, Dictionary<TK, TV> value, string version, bool isUpgraded)
         {
             if (value == null)
                 value = new Dictionary<TK, TV>();
@@ -50,7 +50,7 @@ namespace BH.Engine.Serialiser
                 foreach (BsonElement item in bson.AsBsonDocument)
                 {
                     if(item.Name != "_t" && item.Name != "_bhomVersion")
-                        value[(TK)(object)(item.Name)] = (TV)item.Value.IDeserialise(typeof(TV), ref failed, null, version, isUpgraded);
+                        value[(TK)(object)(item.Name)] = (TV)item.Value.IDeserialise(typeof(TV), null, version, isUpgraded);
                 }
             }
             else if (typeof(TK) != typeof(string))
@@ -60,7 +60,6 @@ namespace BH.Engine.Serialiser
                 if (array == null)
                 {           
                     BH.Engine.Base.Compute.RecordError("Expected to deserialise a dictionary and received " + bson.ToString() + " instead.");
-                    failed = true;
                 }
                 else
                 {
@@ -69,14 +68,13 @@ namespace BH.Engine.Serialiser
                         if (item.IsBsonDocument)
                         {
                             BsonDocument doc = item.AsBsonDocument;
-                            TK key = (TK)(doc["k"].IDeserialise(typeof(TK), ref failed, null, version, isUpgraded));
-                            TV val = (TV)(doc["v"].IDeserialise(typeof(TV), ref failed, null, version, isUpgraded));
+                            TK key = (TK)(doc["k"].IDeserialise(typeof(TK), null, version, isUpgraded));
+                            TV val = (TV)(doc["v"].IDeserialise(typeof(TV), null, version, isUpgraded));
                             if (key != null)
                                 value[key] = val;
                             else
                             {
                                 BH.Engine.Base.Compute.RecordError("Cannot assign a null key to a dictionary.");
-                                failed = true;
                             }
                         }
                     }
@@ -85,7 +83,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a dictionary and received " + bson.ToString() + " instead.");
-                failed = true;
             }
 
             return value;

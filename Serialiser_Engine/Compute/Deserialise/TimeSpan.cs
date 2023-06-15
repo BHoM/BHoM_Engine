@@ -36,20 +36,18 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static TimeSpan DeserialiseTimeSpan(this BsonValue bson, ref bool failed, TimeSpan value = default(TimeSpan))
+        private static TimeSpan DeserialiseTimeSpan(this BsonValue bson, TimeSpan value = default(TimeSpan))
         {
             bson = ExtractValue(bson);
 
             if (!bson.IsString)
             { 
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a timespan and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 
             if (!TimeSpan.TryParse(bson.AsString, out value))
             {
-                failed = true;
                 BH.Engine.Base.Compute.RecordError("Failed to convert " + bson.AsString + " to a TimeSpan.");
             }
             return value;

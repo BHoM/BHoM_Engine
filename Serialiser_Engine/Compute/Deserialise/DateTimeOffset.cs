@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static DateTimeOffset DeserialiseDateTimeOffset(this BsonValue bson, ref bool failed, DateTimeOffset value = default(DateTimeOffset))
+        private static DateTimeOffset DeserialiseDateTimeOffset(this BsonValue bson, DateTimeOffset value = default(DateTimeOffset))
         {
             bson = ExtractValue(bson);
             BsonArray array;
@@ -47,14 +47,12 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a DateTimeOffset and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 
             if (array.Count != 2)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a DateTimeOffset and received " + bson.ToString() + " instead. This should be represented with an array of two values.");
-                failed = true;
                 return value;
             }
 

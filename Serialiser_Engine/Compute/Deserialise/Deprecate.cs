@@ -38,32 +38,30 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static object DeserialiseDeprecate(this BsonDocument doc, ref bool failed, string version, bool isUpgraded)
+        private static object DeserialiseDeprecate(this BsonDocument doc, string version, bool isUpgraded)
         {
             if (string.IsNullOrEmpty(version))
                 version = doc.Version();
 
             if (!isUpgraded && TryUpgrade(doc, version, out object upgrade))
             {
-                failed = false;
                 return upgrade;
             }
             else
             {
-                return DeserialiseDeprecatedCustomObject(doc, ref failed, version);
+                return DeserialiseDeprecatedCustomObject(doc, version);
             }
             
         }
 
         /*******************************************/
 
-        private static CustomObject DeserialiseDeprecatedCustomObject(this BsonDocument doc, ref bool failed, string version, bool raiseError = true)
+        private static CustomObject DeserialiseDeprecatedCustomObject(this BsonDocument doc, string version, bool raiseError = true)
         {
             if(raiseError)
                 Engine.Base.Compute.RecordError($"The type {doc["_t"]} from version {(string.IsNullOrEmpty(version) ? "unknown" : version)} is unknown -> data returned as custom objects.");
 
-            failed = true;
-            CustomObject customObj = DeserialiseCustomObject(doc, ref failed, null, "", true);
+            CustomObject customObj = DeserialiseCustomObject(doc, null, "", true);
             customObj.CustomData["_t"] = doc["_t"];
             customObj.CustomData["_bhomVersion"] = version;
             return customObj;
@@ -80,8 +78,7 @@ namespace BH.Engine.Serialiser
 
             if (newDoc != null && !newDoc.Equals(doc))
             {
-                bool failed = false;
-                upgraded = IDeserialise(newDoc, ref failed, "", true) as T;
+                upgraded = IDeserialise(newDoc, "", true) as T;
                 return upgraded != null;
             }
             else

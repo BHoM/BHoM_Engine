@@ -39,14 +39,13 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static IObject DeserialiseIObject(this BsonValue bson, ref bool failed, IObject value, string version, bool isUpgraded)
+        private static IObject DeserialiseIObject(this BsonValue bson, IObject value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
             else if (!bson.IsBsonDocument)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an IObject and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 
@@ -55,22 +54,22 @@ namespace BH.Engine.Serialiser
             if (!string.IsNullOrEmpty(docVersion))
                 version = docVersion;
 
-            Type type = doc["_t"].DeserialiseType(ref failed, null, version, isUpgraded);
+            Type type = doc["_t"].DeserialiseType(null, version, isUpgraded);
             if (type == null)
             {
-                return DeserialiseDeprecate(doc, ref failed, version, isUpgraded) as IObject;
+                return DeserialiseDeprecate(doc, version, isUpgraded) as IObject;
             }
             if (typeof(IImmutable).IsAssignableFrom(type))
-                return bson.DeserialiseImmutable(ref failed, type, version, isUpgraded);
+                return bson.DeserialiseImmutable(type, version, isUpgraded);
             else if (value == null || value.GetType() != type)
                 value = Activator.CreateInstance(type) as IObject;
 
-            return SetProperties(doc, ref failed, type, value, version, isUpgraded);
+            return SetProperties(doc, type, value, version, isUpgraded);
         }
 
         /*******************************************/
 
-        private static IObject SetProperties(this BsonDocument doc, ref bool failed, Type type, IObject value, string version, bool isUpgraded)
+        private static IObject SetProperties(this BsonDocument doc, Type type, IObject value, string version, bool isUpgraded)
         {
             try
             {
@@ -94,17 +93,17 @@ namespace BH.Engine.Serialiser
                         if (value is IBHoMObject)
                         {
                             BH.Engine.Base.Compute.RecordWarning($"Unable to find a property named {item.Name}. Data stored in CustomData of the {type.Name}.");
-                            ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(ref failed, version, isUpgraded);
+                            ((IBHoMObject)value).CustomData[item.Name] = item.Value.IDeserialise(version, isUpgraded);
                         }
                         else
                         {
                             BH.Engine.Base.Compute.RecordError($"Unable to find a property named {item.Name} on object of type {type.Name}. CustomObject returned in its place.");
-                            return DeserialiseDeprecatedCustomObject(doc, ref failed, version, false);
+                            return DeserialiseDeprecatedCustomObject(doc, version, false);
                         }
 
                     }
                     else if (item.Name == "CustomData" && value is IBHoMObject)
-                        ((IBHoMObject)value).CustomData = item.Value.DeserialiseDictionary(ref failed, ((IBHoMObject)value).CustomData, version, isUpgraded);
+                        ((IBHoMObject)value).CustomData = item.Value.DeserialiseDictionary(((IBHoMObject)value).CustomData, version, isUpgraded);
                     else
                     {
                         if (!prop.CanWrite)
@@ -112,12 +111,11 @@ namespace BH.Engine.Serialiser
                             if (!(value is IImmutable))
                             {
                                 Base.Compute.RecordError("Property is not settable.");
-                                failed = true;
                             }
                         }
                         else
                         {
-                            object propertyValue = item.Value.IDeserialise(prop.PropertyType, ref failed, prop.GetValue(value), version, isUpgraded);
+                            object propertyValue = item.Value.IDeserialise(prop.PropertyType, prop.GetValue(value), version, isUpgraded);
 
                             if (CanSetValueToProperty(prop.PropertyType, propertyValue))
                             {
@@ -125,13 +123,12 @@ namespace BH.Engine.Serialiser
                             }
                             else if (!isUpgraded)
                             {
-                                return DeserialiseDeprecate(doc, ref failed, version, isUpgraded) as IObject;
+                                return DeserialiseDeprecate(doc, version, isUpgraded) as IObject;
                             }
                             else
                             {
-                                failed = true;
                                 Base.Compute.RecordError($"Unable to set property {item.Name} to object of type {value?.GetType().Name ?? "uknown type"} due to a type missmatch. Expected {prop.PropertyType.Name} but serialised value was {propertyValue?.GetType().Name ?? "null"}.");
-                                return DeserialiseDeprecatedCustomObject(doc, ref failed, version, false);
+                                return DeserialiseDeprecatedCustomObject(doc, version, false);
                             }
                         }
                     }
@@ -143,11 +140,11 @@ namespace BH.Engine.Serialiser
             {
                 if (!isUpgraded)
                 {
-                    return DeserialiseDeprecate(doc, ref failed, version, isUpgraded) as IObject;
+                    return DeserialiseDeprecate(doc, version, isUpgraded) as IObject;
                 }
                 else
                 {
-                    return DeserialiseDeprecatedCustomObject(doc, ref failed, version);
+                    return DeserialiseDeprecatedCustomObject(doc, version);
                 }
             }
             
