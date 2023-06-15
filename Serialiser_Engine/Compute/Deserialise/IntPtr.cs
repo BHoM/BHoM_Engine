@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static IntPtr DeserialiseIntPtr(this BsonValue bson, ref bool failed, IntPtr value = default(IntPtr))
+        private static IntPtr DeserialiseIntPtr(this BsonValue bson, IntPtr value = default(IntPtr))
         {
             bson = ExtractValue(bson);
 
@@ -47,7 +47,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an IntPtr and received " + bson.ToString() + " instead.");
-                failed = true; 
                 return value;
             }
         }

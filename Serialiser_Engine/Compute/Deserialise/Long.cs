@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static long DeserialiseLong(this BsonValue bson, ref bool failed, long value = 0)
+        private static long DeserialiseLong(this BsonValue bson, long value = 0)
         {
             if (bson.IsInt64)
                 return bson.AsInt64;
@@ -47,7 +47,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a long and received " + bson.ToString() + " instead.");
-                failed = true; 
                 return value;
             }
         }

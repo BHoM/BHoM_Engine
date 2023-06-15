@@ -37,7 +37,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static Regex DeserialiseRegex(this BsonValue bson, ref bool failed, Regex value = null)
+        private static Regex DeserialiseRegex(this BsonValue bson, Regex value = null)
         {
             bson = ExtractValue(bson);
 
@@ -48,7 +48,6 @@ namespace BH.Engine.Serialiser
             else 
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a regex and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             } 
         }

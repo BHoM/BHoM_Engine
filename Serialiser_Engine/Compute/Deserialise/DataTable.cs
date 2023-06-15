@@ -40,7 +40,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static DataTable DeserialiseDataTable(this BsonValue bson, ref bool failed, DataTable value, string version, bool isUpgraded)
+        private static DataTable DeserialiseDataTable(this BsonValue bson, DataTable value, string version, bool isUpgraded)
         {
             bson = ExtractValue(bson);
             if (bson.IsBsonNull)
@@ -52,7 +52,7 @@ namespace BH.Engine.Serialiser
 
                 foreach (BsonDocument doc in bson.AsBsonArray.OfType<BsonDocument>())
                 {
-                    Dictionary<string, object> rowData = doc.DeserialiseDictionary(ref failed, new Dictionary<string, object>(), version, isUpgraded);
+                    Dictionary<string, object> rowData = doc.DeserialiseDictionary(new Dictionary<string, object>(), version, isUpgraded);
                     if (!initialised)
                     {
                         foreach (var kvp in rowData)
@@ -76,7 +76,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a data table and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
         }

@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static Bitmap DeserialiseBitmap(this BsonValue bson, ref bool failed, Bitmap value = null)
+        private static Bitmap DeserialiseBitmap(this BsonValue bson, Bitmap value = null)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -54,7 +54,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a bitmap and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 

@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static Color DeserialiseColour(this BsonValue bson, ref bool failed, Color value = default(Color))
+        private static Color DeserialiseColour(this BsonValue bson, Color value = default(Color))
         {
             if (bson.IsBsonDocument)
             {
@@ -48,7 +48,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a color and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
         }

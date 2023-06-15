@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static Guid DeserialiseGuid(this BsonValue bson, ref bool failed, Guid value = default(Guid))
+        private static Guid DeserialiseGuid(this BsonValue bson, Guid value = default(Guid))
         {
             if (bson.IsGuid)
                 return bson.AsGuid;
@@ -45,7 +45,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a Guid and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
         }

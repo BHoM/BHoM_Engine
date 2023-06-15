@@ -36,17 +36,16 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
 
-        private static T DeserialiseEnum<T>(this BsonValue bson, ref bool failed, T value, string version, bool isUpgraded) where T : Enum
+        private static T DeserialiseEnum<T>(this BsonValue bson, T value, string version, bool isUpgraded) where T : Enum
         {
             if (bson.IsString)
                 value = BH.Engine.Base.Compute.ParseEnum<T>(bson.AsString);
             else if (bson.IsBsonDocument)
             {
-                Type type = DeserialiseType(bson["TypeName"], ref failed, null, version, isUpgraded);
+                Type type = DeserialiseType(bson["TypeName"], null, version, isUpgraded);
                 if (type != typeof(T))
                 {
                     BH.Engine.Base.Compute.RecordError("The type of enum to deserialise doesn't match. Expected " + typeof(T).ToString() + " and got " + type.ToString() + " instead.");
-                    failed = true;
                 }
                 else
                     value = BH.Engine.Base.Compute.ParseEnum<T>(bson["Value"].AsString);
@@ -56,7 +55,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an enum and received " + bson.ToString() + " instead.");
-                failed = true;
             }
 
             return value;
@@ -64,12 +62,12 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static Enum DeserialiseEnumTopLevel(this BsonValue bson, ref bool failed, Enum value, string version, bool isUpgraded)
+        private static Enum DeserialiseEnumTopLevel(this BsonValue bson, Enum value, string version, bool isUpgraded)
         {
             if (bson.IsBsonDocument)
             {
-                Type type = DeserialiseType(bson["TypeName"], ref failed, null, version, isUpgraded);
-                return DeserialiseEnum(bson, ref failed, EnsureNotNull(value, type) as dynamic, version, isUpgraded);
+                Type type = DeserialiseType(bson["TypeName"], null, version, isUpgraded);
+                return DeserialiseEnum(bson, EnsureNotNull(value, type) as dynamic, version, isUpgraded);
             }
 
             return null;

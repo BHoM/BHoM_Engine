@@ -36,14 +36,13 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static short DeserialiseShort(this BsonValue bson, ref bool failed, short value = 0)
+        private static short DeserialiseShort(this BsonValue bson, short value = 0)
         {
             if (bson.IsInt32)
                 return (short)bson.AsInt32;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a short and received " + bson.ToString() + " instead.");
-                failed = true; 
                 return value;
             }
         }

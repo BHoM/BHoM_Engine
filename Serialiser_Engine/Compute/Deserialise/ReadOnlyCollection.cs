@@ -37,9 +37,9 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static ReadOnlyCollection<T> DeserialiseReadOnlyCollection<T>(this BsonValue bson, ref bool failed, List<T> value, string version, bool isUpgraded)
+        private static ReadOnlyCollection<T> DeserialiseReadOnlyCollection<T>(this BsonValue bson, List<T> value, string version, bool isUpgraded)
         {
-            return new ReadOnlyCollection<T>(DeserialiseList<T>(bson, ref failed, value, version, isUpgraded));
+            return new ReadOnlyCollection<T>(DeserialiseList<T>(bson, value, version, isUpgraded));
         }
 
         /*******************************************/

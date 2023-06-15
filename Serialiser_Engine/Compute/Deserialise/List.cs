@@ -36,14 +36,13 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static List<T> DeserialiseList<T>(this BsonValue bson, ref bool failed, List<T> value, string version, bool isUpgraded)
+        private static List<T> DeserialiseList<T>(this BsonValue bson, List<T> value, string version, bool isUpgraded)
         {
             bson = ExtractValue(bson);
 
             if (!bson.IsBsonArray)
             { 
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a List and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 
@@ -51,7 +50,7 @@ namespace BH.Engine.Serialiser
                 value = new List<T>();
 
             foreach (BsonValue item in bson.AsBsonArray)
-                value.Add((T)item.IDeserialise(typeof(T), ref failed, null, version, isUpgraded));
+                value.Add((T)item.IDeserialise(typeof(T), null, version, isUpgraded));
 
             return value;
         }
