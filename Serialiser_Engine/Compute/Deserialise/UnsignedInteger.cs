@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static uint DeserialiseUnsignedInteger(this BsonValue bson, ref bool failed, uint value = 0)
+        private static uint DeserialiseUnsignedInteger(this BsonValue bson, uint value = 0)
         {
             if (bson.IsInt32)
                 return (uint)bson.AsInt32;
@@ -47,7 +47,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an unsigned integer and received " + bson.ToString() + " instead.");
-                failed = true; 
                 return value;
             }
         }

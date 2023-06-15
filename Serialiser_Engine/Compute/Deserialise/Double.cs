@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static double DeserialiseDouble(this BsonValue bson, ref bool failed, double value = 0)
+        private static double DeserialiseDouble(this BsonValue bson, double value = 0)
         {
             if (bson.IsDouble)
                 return bson.AsDouble;
@@ -49,7 +49,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a double and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
         }

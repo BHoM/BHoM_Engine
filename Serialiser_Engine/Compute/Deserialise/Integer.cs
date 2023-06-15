@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static int DeserialiseInteger(this BsonValue bson, ref bool failed, int value = 0)
+        private static int DeserialiseInteger(this BsonValue bson, int value = 0)
         {
             if (bson.IsInt32)
                 return bson.AsInt32;
@@ -47,7 +47,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an integer and received " + bson.ToString() + " instead.");
-                failed = true; 
                 return value;
             }
         }

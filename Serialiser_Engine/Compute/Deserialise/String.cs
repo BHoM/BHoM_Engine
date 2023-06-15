@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static string DeserialiseString(this BsonValue bson, ref bool failed, string value = "")
+        private static string DeserialiseString(this BsonValue bson, string value = "")
         {
             if (bson.IsBsonNull)
                 return null;
@@ -58,7 +58,6 @@ namespace BH.Engine.Serialiser
                 return bson.AsDecimal.ToString();
 
             BH.Engine.Base.Compute.RecordError("Expected to deserialise a string and received " + bson.ToString() + " instead.");
-            failed = true;
             return value;
         }
 

@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static HashSet<T> DeserialiseHashSet<T>(this BsonValue bson, ref bool failed, HashSet<T> value, string version, bool isUpgraded)
+        private static HashSet<T> DeserialiseHashSet<T>(this BsonValue bson, HashSet<T> value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
@@ -49,7 +49,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a HashSet and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 
@@ -57,7 +56,7 @@ namespace BH.Engine.Serialiser
                 value = new HashSet<T>();
 
             foreach (BsonValue item in array)
-                value.Add((T)item.IDeserialise(typeof(T), ref failed, null, version, isUpgraded));
+                value.Add((T)item.IDeserialise(typeof(T), null, version, isUpgraded));
 
             return value;
         }

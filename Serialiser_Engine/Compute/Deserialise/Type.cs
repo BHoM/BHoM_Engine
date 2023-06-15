@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static Type DeserialiseType(this BsonValue bson, ref bool failed, Type value, string version, bool isUpgraded)
+        private static Type DeserialiseType(this BsonValue bson, Type value, string version, bool isUpgraded)
         {
             // Handle the case where the type is represented as a string
             if (bson.IsBsonNull)
@@ -63,7 +63,6 @@ namespace BH.Engine.Serialiser
                         return type;
                     else
                     {
-                        failed = true;
                         BH.Engine.Base.Compute.RecordError("Failed to convert the string into a type: " + bson.AsString);
                         return value;
                     }
@@ -73,7 +72,6 @@ namespace BH.Engine.Serialiser
             // Then, if the bson is not a docuemnt, return an error
             if (!bson.IsBsonDocument)
             {
-                failed = true;
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a type and received " + bson.ToString() + " instead.");
                 return value;
             }
@@ -90,16 +88,16 @@ namespace BH.Engine.Serialiser
                 switch (name)
                 {
                     case "Name":
-                        fullName = element.Value.DeserialiseString(ref failed);
+                        fullName = element.Value.DeserialiseString();
                         break;
                     case "_bhomVersion":
-                        version = element.Value.DeserialiseString(ref failed);
+                        version = element.Value.DeserialiseString();
                         break;
                     case "GenericArguments":
-                        genericTypes = element.Value.DeserialiseList(ref failed, genericTypes, version, isUpgraded);
+                        genericTypes = element.Value.DeserialiseList(genericTypes, version, isUpgraded);
                         break;
                     case "Constraints":
-                        constraints = element.Value.DeserialiseList(ref failed, constraints, version, isUpgraded);
+                        constraints = element.Value.DeserialiseList(constraints, version, isUpgraded);
                         break;
                 }
             }

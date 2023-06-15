@@ -36,7 +36,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static decimal DeserialiseDecimal(this BsonValue bson, ref bool failed, decimal value = 0)
+        private static decimal DeserialiseDecimal(this BsonValue bson, decimal value = 0)
         {
             if (bson.IsDecimal128)
                 return bson.AsDecimal;
@@ -45,7 +45,6 @@ namespace BH.Engine.Serialiser
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a decimal and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
         }

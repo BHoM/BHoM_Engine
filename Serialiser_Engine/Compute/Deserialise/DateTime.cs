@@ -36,14 +36,13 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static DateTime DeserialiseDateTime(this BsonValue bson, ref bool failed, DateTime value = default(DateTime))
+        private static DateTime DeserialiseDateTime(this BsonValue bson, DateTime value = default(DateTime))
         {
             if (bson.IsValidDateTime)
                 return bson.ToUniversalTime();
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a date and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
         }

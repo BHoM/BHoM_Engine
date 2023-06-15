@@ -42,26 +42,25 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static MethodBase DeserialiseMethodBase(this BsonValue bson, ref bool failed, MethodBase value = null)
+        private static MethodBase DeserialiseMethodBase(this BsonValue bson, MethodBase value = null)
         {
             if (bson.IsBsonNull)
                 return null;
             else if (!bson.IsBsonDocument)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a MethodBase and received " + bson.ToString() + " instead.");
-                failed = true;
                 return value;
             }
 
             BsonDocument doc = bson.AsBsonDocument;
-            string typeName = doc["TypeName"].DeserialiseString(ref failed);
-            string methodName = doc["MethodName"].DeserialiseString(ref failed);
+            string typeName = doc["TypeName"].DeserialiseString();
+            string methodName = doc["MethodName"].DeserialiseString();
             string version = doc.Version();
 
             BsonArray paramArray = doc["Parameters"].AsBsonArray;
             List<string> paramTypesJson = new List<string>();
             foreach (var element in paramArray)
-                paramTypesJson.Add(element.DeserialiseString(ref failed));
+                paramTypesJson.Add(element.DeserialiseString());
 
             try
             {
@@ -91,18 +90,17 @@ namespace BH.Engine.Serialiser
         private static MethodBase GetMethod(string methodName, string typeName, List<string> paramTypesJson, string version, bool isUpgraded)
         {
             List<Type> types = new List<Type>();
-            bool failed = false;
             foreach (string paramType in paramTypesJson)
             {
                 BsonDocument paramTypeDoc;
                 if (BsonDocument.TryParse(paramType, out paramTypeDoc) && paramTypeDoc.Contains("Name"))
                 {
-                    Type t = DeserialiseType(paramTypeDoc, ref failed, null, version, isUpgraded);
+                    Type t = DeserialiseType(paramTypeDoc, null, version, isUpgraded);
                     types.Add(t);
                 }
                 else
                 {
-                    Type t = DeserialiseType(paramType, ref failed, null, version, isUpgraded);
+                    Type t = DeserialiseType(paramType, null, version, isUpgraded);
                     types.Add(t);
                 }
             }
@@ -112,7 +110,7 @@ namespace BH.Engine.Serialiser
             if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
             {
                 typeName = typeDocument["Name"].AsString.Split(new char[] { ',' }).First();
-                Type type = DeserialiseType(typeDocument, ref failed, null, version, isUpgraded);
+                Type type = DeserialiseType(typeDocument, null, version, isUpgraded);
                 if (type == null)
                     return null;
                 method = BH.Engine.Reflection.Create.MethodBase(type, methodName, types.Select(x => x.ToText(true)).ToList()); // type overload

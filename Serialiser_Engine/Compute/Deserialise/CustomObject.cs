@@ -36,14 +36,13 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static CustomObject DeserialiseCustomObject(this BsonValue bson, ref bool failed, CustomObject value, string version, bool isUpgraded)
+        private static CustomObject DeserialiseCustomObject(this BsonValue bson, CustomObject value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
             else if (!bson.IsBsonDocument)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a Custom object and received " + bson.ToString() + " instead.");
-                failed = true;
                 return new CustomObject();
             }
 
@@ -63,22 +62,22 @@ namespace BH.Engine.Serialiser
                         // ignore
                         break;
                     case "Name":
-                        value.Name = element.Value.DeserialiseString(ref failed, value.Name);
+                        value.Name = element.Value.DeserialiseString(value.Name);
                         break;
                     case "BHoM_Guid":
-                        value.BHoM_Guid = element.Value.DeserialiseGuid(ref failed, value.BHoM_Guid);
+                        value.BHoM_Guid = element.Value.DeserialiseGuid(value.BHoM_Guid);
                         break;
                     case "Tags":
-                        value.Tags = element.Value.DeserialiseHashSet(ref failed, value.Tags, version, isUpgraded);
+                        value.Tags = element.Value.DeserialiseHashSet(value.Tags, version, isUpgraded);
                         break;
                     case "Fragments":
-                        value.Fragments = element.Value.DeserialiseFragmentSet(ref failed, value.Fragments, version, isUpgraded);
+                        value.Fragments = element.Value.DeserialiseFragmentSet(value.Fragments, version, isUpgraded);
                         break;
                     case "CustomData":
-                        value.CustomData = element.Value.DeserialiseDictionary(ref failed, value.CustomData, version, isUpgraded);
+                        value.CustomData = element.Value.DeserialiseDictionary(value.CustomData, version, isUpgraded);
                         break;
                     default:
-                        value.CustomData[element.Name] = element.Value.IDeserialise(ref failed, version, isUpgraded);
+                        value.CustomData[element.Name] = element.Value.IDeserialise(version, isUpgraded);
                         break;
                 }
             }

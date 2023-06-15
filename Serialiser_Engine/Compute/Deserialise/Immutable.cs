@@ -39,14 +39,13 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static IObject DeserialiseImmutable(this BsonValue bson, ref bool failed, Type targetType, string version, bool isUpgraded)
+        private static IObject DeserialiseImmutable(this BsonValue bson, Type targetType, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
             else if (!bson.IsBsonDocument)
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise an Immutable object and received " + bson.ToString() + " instead.");
-                failed = true;
                 return null;
             }
 
@@ -71,7 +70,7 @@ namespace BH.Engine.Serialiser
                     List<object> arguments = new List<object>();
                     foreach (var match in matches)
                     {
-                        object propertyValue = IDeserialise(match.Properties.First().Value, match.Parameter.ParameterType, ref failed, null, version, isUpgraded);
+                        object propertyValue = IDeserialise(match.Properties.First().Value, match.Parameter.ParameterType, null, version, isUpgraded);
                         if (CanSetValueToProperty(match.Parameter.ParameterType, propertyValue))
                             arguments.Add(propertyValue);
                         else
@@ -86,7 +85,7 @@ namespace BH.Engine.Serialiser
                         IImmutable result = ctor.Invoke(arguments.ToArray()) as IImmutable;
 
                         if (result != null)
-                            return SetProperties(doc, ref failed, targetType, result, version, isUpgraded) as IImmutable;
+                            return SetProperties(doc, targetType, result, version, isUpgraded) as IImmutable;
                     }
                 }
 
@@ -106,8 +105,7 @@ namespace BH.Engine.Serialiser
                         message+= $" the following parameter(s) missing on the serialised document, required to be able to create the object: {string.Join(",", matches.Where(x => x.Properties.Count() != 1).Select(x => x.Parameter.Name))}.";
                     }
                     Base.Compute.RecordError(message);
-                    failed = true;
-                    return DeserialiseDeprecatedCustomObject(doc, ref failed, version);
+                    return DeserialiseDeprecatedCustomObject(doc, version);
                 }
             }
 

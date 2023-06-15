@@ -36,14 +36,13 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static float DeserialiseFloat(this BsonValue bson, ref bool failed, float value = 0)
+        private static float DeserialiseFloat(this BsonValue bson, float value = 0)
         {
             if (bson.IsDouble)
                 return (float)bson.AsDouble;
             else
             {
                 BH.Engine.Base.Compute.RecordError("Expected to deserialise a float and received " + bson.ToString() + " instead.");
-                failed = true; 
                 return value;
             }
         }
