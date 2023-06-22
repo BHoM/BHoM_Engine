@@ -20,13 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
+using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
+using System;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -186,6 +184,19 @@ namespace BH.Engine.Geometry
         public static double Distance(this Point point, PolyCurve curve)
         {
             return point.Distance(curve.ClosestPoint(point));
+        }
+
+        /***************************************************/
+
+        [Description("Computes the distance between 2 points along the direction of an input vector.")]
+        [Input("point1", "A point to computer the distance from.")]
+        [Input("point2", "A point to computer the distance to.")]
+        [Input("vector", "A vector along which the point distance will be computed.")]
+        [Output("distance", "The distance between 2 points along the direction of an input vector.")]
+        public static double DistanceAlongVector(this Point point1, Point point2, Vector vector)
+        {
+            Vector pointVector = point2 - point1;
+            return Math.Abs(pointVector.DotProduct(vector.Normalise()));
         }
 
 
