@@ -9,7 +9,7 @@
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<RootNamespace>BH.Engine.Serialiser</RootNamespace>
-    <FileVersion>6.2.0.0</FileVersion>
+    <FileVersion>6.3.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
