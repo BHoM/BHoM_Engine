@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -38,7 +38,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.Structure.Create.ElogatedCircularVoidHollowCore(System.Double, System.Double, System.Double, System.Double, BH.oM.Structure.MaterialFragments.Concrete, System.String)")]
         [Description("Creates a HollowCore surface property with elongated circular voids.")]
         [InputFromProperty("thickness")]
         [Input("holeHeight", "Height of the voided elongated circular holes.", typeof(Length))]
