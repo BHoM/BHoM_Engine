@@ -20,12 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using MongoDB.Bson;
-using System.Collections.Generic;
+using System;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Serialiser
 {
@@ -65,15 +63,29 @@ namespace BH.Engine.Serialiser
 
         }
 
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-        public static bool IsValidJsonArray(this string jsonArray)
+        //Json Array is automatically checked during checking IsValidJson, so no need to expose this.
+        private static bool IsValidJsonArray(this string jsonArray)
         {
             if (!jsonArray.StartsWith("[") || !jsonArray.EndsWith("]"))
             {
                 return false;
             }
 
-            BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonArray);
+            BsonArray array = new BsonArray();
+            try
+            {
+                array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonArray);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+
 
             foreach (BsonValue value in array)
             {
@@ -81,20 +93,6 @@ namespace BH.Engine.Serialiser
             }
 
             return true;
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static string TrimEnd(this string input, string suffixToRemove)
-        {
-            if (input != null && suffixToRemove != null && input.EndsWith(suffixToRemove))
-            {
-                return input.Substring(0, input.Length - suffixToRemove.Length);
-            }
-            else return input;
         }
 
         /***************************************************/
