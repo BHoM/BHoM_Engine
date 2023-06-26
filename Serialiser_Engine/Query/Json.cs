@@ -21,9 +21,8 @@
  */
 
 using BH.oM.Base.Attributes;
-using MongoDB.Bson;
-using System;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Serialiser
 {
@@ -33,69 +32,23 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                            ****/
         /***************************************************/
 
+        //Based on code from https://github.com/prototypejs/prototype/blob/560bb59414fc9343ce85429b91b1e1b82fdc6812/src/prototype/lang/string.js#L699
         [Description("Checks if a string is a valid Json")]
         [Input("string", "String to check.")]
         [Output("validity", "True if string is a json, false otherwise.")]
-        public static bool IsValidJson(this string json)
+        public static bool IsValidJson(this string str)
         {
-            if (json == "")
-            {
-                return false;
-            }
-            else if (json.StartsWith("{"))
-            {
-                BsonDocument document;
-                if (BsonDocument.TryParse(json, out document))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (json.StartsWith("["))
-            {
 
-                return IsValidJsonArray(json);
-            }
-            return true;
+            if (string.IsNullOrWhiteSpace(str))
+                return false;
+
+            str = Regex.Replace(str, @"\\(?:[""\\\/bfnrt]|u[0-9a-fA-F]{4})", "@");
+            str = Regex.Replace(str, @"""[^""\\\n\r]*""|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?", "]");
+            str = Regex.Replace(str, @"(?:^|:|,)(?:\s*\[)+", "");
+
+            return Regex.IsMatch(str, @"^[\],:{}\s]*$");
 
         }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        //Json Array is automatically checked during checking IsValidJson, so no need to expose this.
-        private static bool IsValidJsonArray(this string jsonArray)
-        {
-            if (!jsonArray.StartsWith("[") || !jsonArray.EndsWith("]"))
-            {
-                return false;
-            }
-
-            BsonArray array = new BsonArray();
-            try
-            {
-                array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonArray);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-
-
-            foreach (BsonValue value in array)
-            {
-                if (!value.ToString().IsValidJson()) { return false; }
-            }
-
-            return true;
-        }
-
-        /***************************************************/
 
     }
 }
