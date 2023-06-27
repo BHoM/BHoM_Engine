@@ -32,7 +32,8 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //Based on code from https://github.com/prototypejs/prototype/blob/560bb59414fc9343ce85429b91b1e1b82fdc6812/src/prototype/lang/string.js#L699
+        //JSON validation based on code from https://github.com/prototypejs/prototype/blob/560bb59414fc9343ce85429b91b1e1b82fdc6812/src/prototype/lang/string.js#L699
+        
         [Description("Checks if a string is a valid Json")]
         [Input("string", "String to check.")]
         [Output("validity", "True if string is a json, false otherwise.")]
@@ -41,6 +42,7 @@ namespace BH.Engine.Serialiser
 
             if (string.IsNullOrWhiteSpace(str))
                 return false;
+            else if (str.HasTrailingCommas()) return false;
 
             str = Regex.Replace(str, @"\\(?:[""\\\/bfnrt]|u[0-9a-fA-F]{4})", "@");
             str = Regex.Replace(str, @"""[^""\\\n\r]*""|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?", "]");
@@ -48,6 +50,12 @@ namespace BH.Engine.Serialiser
 
             return Regex.IsMatch(str, @"^[\],:{}\s]*$");
 
+        }
+
+        //JSON checking trailing coomas regex based on: https://stackoverflow.com/questions/34344328/json-remove-trailing-comma-from-last-object
+        private static bool HasTrailingCommas(this string str)
+        {
+            return Regex.IsMatch(str, @"\,(?!\s*?[\{\[\""\w])");
         }
 
     }
