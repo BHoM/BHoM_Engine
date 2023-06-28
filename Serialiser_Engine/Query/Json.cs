@@ -33,7 +33,7 @@ namespace BH.Engine.Serialiser
         /***************************************************/
 
         
-        [Description("Checks if a string is a valid Json")]
+        [Description("Checks if a string is a valid JSON format.")]
         [Input("string", "String to check.")]
         [Output("validity", "True if string is a json, false otherwise.")]
         public static bool IsValidJson(this string str)
