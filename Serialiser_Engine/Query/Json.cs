@@ -55,7 +55,6 @@ namespace BH.Engine.Serialiser
         {
             return Regex.IsMatch(str, @"\,(?!\s*?[\{\[\""\w])");
         }
-
     }
 }
 
