@@ -32,7 +32,6 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //JSON validation based on code from https://github.com/prototypejs/prototype/blob/560bb59414fc9343ce85429b91b1e1b82fdc6812/src/prototype/lang/string.js#L699
         
         [Description("Checks if a string is a valid Json")]
         [Input("string", "String to check.")]
