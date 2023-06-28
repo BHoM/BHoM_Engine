@@ -50,9 +50,9 @@ namespace BH.Engine.Serialiser
 
         }
 
-        //JSON checking trailing coomas regex based on: https://stackoverflow.com/questions/34344328/json-remove-trailing-comma-from-last-object
         private static bool HasTrailingCommas(this string str)
         {
+            //JSON checking trailing commas regex based on: https://stackoverflow.com/questions/34344328/json-remove-trailing-comma-from-last-object
             return Regex.IsMatch(str, @"\,(?!\s*?[\{\[\""\w])");
         }
     }
