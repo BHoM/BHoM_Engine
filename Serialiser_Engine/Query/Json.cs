@@ -39,9 +39,8 @@ namespace BH.Engine.Serialiser
         public static bool IsValidJson(this string str)
         {
             //JSON validation based on code from https://github.com/prototypejs/prototype/blob/560bb59414fc9343ce85429b91b1e1b82fdc6812/src/prototype/lang/string.js#L699
-            if (string.IsNullOrWhiteSpace(str))
+            if (string.IsNullOrWhiteSpace(str) || str.HasTrailingCommas())
                 return false;
-            else if (str.HasTrailingCommas()) return false;
 
             str = Regex.Replace(str, @"\\(?:[""\\\/bfnrt]|u[0-9a-fA-F]{4})", "@");
             str = Regex.Replace(str, @"""[^""\\\n\r]*""|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?", "]");
