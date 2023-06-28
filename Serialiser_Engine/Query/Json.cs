@@ -21,6 +21,8 @@
  */
 
 using BH.oM.Base.Attributes;
+using MongoDB.Bson;
+using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 
@@ -38,16 +40,49 @@ namespace BH.Engine.Serialiser
         [Output("validity", "True if string is a valid JSON format, false otherwise.")]
         public static bool IsValidJson(this string str)
         {
-            //JSON validation based on code from https://github.com/prototypejs/prototype/blob/560bb59414fc9343ce85429b91b1e1b82fdc6812/src/prototype/lang/string.js#L699
-            if (string.IsNullOrWhiteSpace(str) || str.HasTrailingCommas())
+
+            if (str == "" || str.HasTrailingCommas())
+            {
                 return false;
+            }
+            else if (str.StartsWith("["))
+            {
 
-            str = Regex.Replace(str, @"\\(?:[""\\\/bfnrt]|u[0-9a-fA-F]{4})", "@");
-            str = Regex.Replace(str, @"""[^""\\\n\r]*""|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?", "]");
-            str = Regex.Replace(str, @"(?:^|:|,)(?:\s*\[)+", "");
+                return str.IsJsonArray();
+            }
+            else if (str.StartsWith("{"))
+            {
+                BsonDocument document;
+                return (BsonDocument.TryParse(str, out document));
+            }
+            else
+            {
+                bool matched = Regex.IsMatch(str, "[[]{}]");
+                if (!Regex.IsMatch(str, "[[]{}]")) return IsValidJson("[" + str + "]");
+            }
 
-            return Regex.IsMatch(str, @"^[\],:{}\s]*$");
+            return false;
 
+        }
+
+        public static bool IsJsonArray(this string jsonArray)
+        {
+            if (!jsonArray.StartsWith("[") || !jsonArray.EndsWith("]"))
+            {
+                return false;
+            }
+
+            BsonArray array = new BsonArray();
+            try
+            {
+                array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonArray);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static bool HasTrailingCommas(this string str)
