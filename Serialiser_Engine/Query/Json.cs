@@ -38,6 +38,7 @@ namespace BH.Engine.Serialiser
         [Output("validity", "True if string is a valid JSON format, false otherwise.")]
         public static bool IsValidJson(this string str)
         {
+            //JSON validation based on code from https://github.com/prototypejs/prototype/blob/560bb59414fc9343ce85429b91b1e1b82fdc6812/src/prototype/lang/string.js#L699
 
             if (string.IsNullOrWhiteSpace(str))
                 return false;
