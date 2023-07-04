@@ -46,13 +46,13 @@ namespace BH.Engine.Security
 
             Point cameraLocation = cameraDevice.EyePosition;
             Point targetLocation = cameraDevice.TargetPosition;
-            double radius = targetLocation.Distance(cameraLocation);
-            double horizontal = cameraDevice.HorizontalFieldOfView;
-            double angle = Math.Asin(horizontal / (2 * radius)) * 2;
+            double coneRadius = targetLocation.Distance(cameraLocation);
+            double coneArcLength = cameraDevice.HorizontalFieldOfView;
+            double coneAngle = Math.Asin(coneArcLength / (2 * coneRadius)) * 2;
 
-            Vector direction = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
-            Vector startPointDir = direction.Rotate(-angle / 2, Vector.ZAxis);
-            Vector endPointDir = direction.Rotate(angle / 2, Vector.ZAxis);
+            Vector viewDirection = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
+            Vector startPointDir = viewDirection.Rotate(-coneAngle / 2, Vector.ZAxis);
+            Vector endPointDir = viewDirection.Rotate(coneAngle / 2, Vector.ZAxis);
             Point startPoint = cameraLocation + startPointDir;
             Point endPoint = cameraLocation + endPointDir;
 
