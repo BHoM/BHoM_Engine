@@ -48,7 +48,7 @@ namespace BH.Engine.Security
             Point targetLocation = cameraDevice.TargetPosition;
             double radius = targetLocation.Distance(cameraLocation);
             double horizontal = cameraDevice.HorizontalFieldOfView;
-            double angle = Math.Atan(horizontal / radius);
+            double angle = Math.Asin(horizontal / (2 * radius)) * 2;
 
             Vector direction = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
             Vector startPointDir = direction.Rotate(-angle / 2, Vector.ZAxis);
