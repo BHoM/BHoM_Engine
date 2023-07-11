@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.oM.Facade.SectionProperties;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Facade
 {
@@ -75,11 +76,10 @@ namespace BH.Engine.Facade
             {
                 GeneralMaterialTakeoff openingTakeoff = opening.GeneralMaterialTakeoff();
                 if (openingTakeoff == null)
-                    return null;
+                    continue;
 
                 takeoffs.Add(openingTakeoff);
                 openingAreas += opening.Area();
-
             }
 
             foreach (FrameEdge edge in panel.ExternalEdges)
@@ -92,7 +92,6 @@ namespace BH.Engine.Facade
         }
 
         /***************************************************/
-
 
         [Description("Gets the volumetric material takeoff from the Opening.")]
         [Input("opening", "The facade opening object to extract the general material takeoff from.")]
@@ -130,7 +129,6 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
-
         [Description("Gets the general material takeoff from the FrameEdge.")]
         [Input("edge", "The frame edge to extract the general material takeoff from.")]
         [Output("genTakeoff", "The general material takeoff for the FrameEdge.")]
@@ -165,11 +163,25 @@ namespace BH.Engine.Facade
         /***************************************************/
 
         [Description("Gets the volumetric material takeoff from the IOpening.")]
-        [Input("opening", "The physical opening object to extract the volumetric material takeoff from.")]
-        [Output("genTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
+        [Input("opening", "The physical opening object to extract the general material takeoff from.")]
+        [Output("genTakeoff", "The general material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
         public static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this IOpening opening)
         {
             return GeneralMaterialTakeoff(opening as dynamic);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods - Fallbacks               ****/
+        /***************************************************/
+
+        [Description("Gets the volumetric material takeoff from the object.")]
+        [Input("obj", "The object to extract the material takeoff from.")]
+        [Output("genTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
+        public static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this object obj)
+        {
+            Base.Compute.RecordWarning("General Material Takeoff for object of type " + obj.GetType().Name + " is not implemented.");
+            return null;
         }
 
         /***************************************************/
