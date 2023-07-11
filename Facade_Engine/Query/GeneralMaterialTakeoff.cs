@@ -178,7 +178,7 @@ namespace BH.Engine.Facade
         [Description("Gets the volumetric material takeoff from the object.")]
         [Input("obj", "The object to extract the material takeoff from.")]
         [Output("genTakeoff", "The volumetric material takeoff for the opening, made of up the volume and materiality of the construction and surface area.")]
-        public static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this object obj)
+        public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this object obj)
         {
             Base.Compute.RecordError("General Material Takeoff for object of type " + obj.GetType().Name + " is not implemented.");
             return null;
