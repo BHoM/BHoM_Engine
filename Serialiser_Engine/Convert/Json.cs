@@ -29,6 +29,7 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections;
 using BH.oM.Base;
+using BH.Engine.Base;
 
 namespace BH.Engine.Serialiser
 {
@@ -63,11 +64,13 @@ namespace BH.Engine.Serialiser
         [Output("obj", "Object recovered from the Json string")]
         public static object FromJson(string json)
         {
-            if (json == "")
-            {
+            if (string.IsNullOrWhiteSpace(json))
                 return null;
-            }
-            else if (json.StartsWith("{"))
+
+            // Trim the json to remove any trailing or initial whitespace/newline (#3109).
+            json = json.Trim();
+
+            if (json.StartsWith("{"))
             {
                 BsonDocument document;
                 if (BsonDocument.TryParse(json, out document))
@@ -87,7 +90,6 @@ namespace BH.Engine.Serialiser
 
                 return FromJsonArray(json);
             }
-
             else
             {
                 // Could we do something when a string is not a valid json?
