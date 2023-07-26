@@ -45,6 +45,12 @@ namespace BH.Engine.Facade
 
         public static double AllowableDeflection(double mullionLength, BuildingCode code)
         {
+            if (mullionLength <= 0)
+            {
+                BH.Engine.Base.Compute.RecordError("Mullion length needs to be a positive number.");
+                return double.NaN;
+            }
+
             if (code == BuildingCode.BSEN19902002)
             {
                 if (mullionLength < 3)
