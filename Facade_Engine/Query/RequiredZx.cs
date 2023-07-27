@@ -78,9 +78,14 @@ namespace BH.Engine.Facade
                 double mMax = linearLoadWithFactor * Math.Pow(length, 2) / 8;
                 return mMax / yieldStress;
             }
+            else if (supportType == SupportType.FixFix)
+            {
+                double mMax = linearLoadWithFactor * Math.Pow(length, 2) / 12;
+                return mMax / yieldStress;
+            }
             else
             {
-                BH.Engine.Base.Compute.RecordError("Only pin-pin support type is supported in required Zx calculation.");
+                BH.Engine.Base.Compute.RecordError("Support type not supported.");
                 return double.NaN;
             }
         }

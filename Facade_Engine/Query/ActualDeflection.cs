@@ -73,8 +73,13 @@ namespace BH.Engine.Facade
 
             if (supportType == SupportType.PinPin)
                 return 5 * linearLoad * Math.Pow(length, 4) / (384 * youngsModulus * momentOfInertia);
-            else
+            else if (supportType == SupportType.FixFix)
                 return linearLoad * Math.Pow(length, 4) / (384 * youngsModulus * momentOfInertia);
+            else
+            {
+                BH.Engine.Base.Compute.RecordError("Support type not supported.");
+                return double.NaN;
+            }
         }
     }
 }
