@@ -106,7 +106,7 @@ namespace BH.Engine.Facade
 
         private static double YoungsModulus(this Bar bar)
         {
-            IIsotropic material = bar?.SectionProperty?.Material?.Fragments?.FirstOrDefault(x => x is IIsotropic) as IIsotropic;
+            IIsotropic material = bar?.SectionProperty?.Material as IIsotropic;
             if (material == null)
                 return double.NaN;
             else
@@ -115,10 +115,10 @@ namespace BH.Engine.Facade
 
         private static SupportType SupportType(this BH.oM.Structure.Elements.Bar bar)
         {
-            bool isStartFix = IsFix(bar?.StartNode?.Support);
-            bool isStartPin = IsPin(bar?.StartNode?.Support);
-            bool isEndFix = IsFix(bar?.EndNode?.Support);
-            bool isEndPin = IsPin(bar?.EndNode?.Support);
+            bool isStartFix = IsFix(bar?.Release?.StartRelease);
+            bool isStartPin = IsPin(bar?.Release?.StartRelease);
+            bool isEndFix = IsFix(bar?.Release?.EndRelease);
+            bool isEndPin = IsPin(bar?.Release?.EndRelease);
 
             if (isStartFix && isEndFix)
                 return oM.Facade.Enums.SupportType.FixFix;
