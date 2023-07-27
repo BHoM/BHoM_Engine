@@ -65,6 +65,7 @@ namespace BH.Engine.Facade
 
             double linearLoad = tributaryWidth * windLoad;
 
+            //TODO: add check against unsupported code
             double linearLoadWithFactor;
             if (buildingCode == BuildingCode.BSEN19902002)
                 linearLoadWithFactor = linearLoad * 1.5;
