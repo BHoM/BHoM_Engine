@@ -61,12 +61,17 @@ namespace BH.Engine.Facade
                 else
                     return mullionLength / 250;
             }
-            else
+            else if ((code == BuildingCode.ASCE705) || (code == BuildingCode.ASCE710) || (code == BuildingCode.ASCE716))
             {
                 if (mullionLength < 13.5 * 3.048)
                     return mullionLength / 175;
                 else
                     return mullionLength / 240 + 0.25 * 0.0254;
+            }
+            else
+            {
+                BH.Engine.Base.Compute.RecordError("Code not supported.");
+                return double.NaN;
             }
         }
     }
