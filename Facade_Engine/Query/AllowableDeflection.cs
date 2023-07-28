@@ -51,7 +51,6 @@ namespace BH.Engine.Facade
                 return double.NaN;
             }
 
-            //TODO: add check against unsupported code
             if (code == BuildingCode.BSEN19902002)
             {
                 if (mullionLength < 3)

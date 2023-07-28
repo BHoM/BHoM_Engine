@@ -33,6 +33,12 @@ using BH.Engine.Spatial;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
+using BH.oM.Structure.Elements;
+using BH.oM.Structure.MaterialFragments;
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Facade.Enums;
+using BH.oM.Quantities.Attributes;
+using Mono.Cecil.Cil;
 
 namespace BH.Engine.Facade
 {
@@ -44,9 +50,62 @@ namespace BH.Engine.Facade
 
 
         /***************************************************/
+
+        public static bool PlasticModulusCheck(Bar bar, double windLoad, double tributaryWidth, BuildingCode buildingCode)
+        {
+            if (bar == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot check a null bar.");
+                return false;
+            }
+
+            SupportType supportType = bar.SupportType();
+            if (supportType == oM.Facade.Enums.SupportType.Undefined)
+            {
+                BH.Engine.Base.Compute.RecordError("Undefined support type.");
+                return false;
+            }
+
+            double yieldStress = bar.YieldStress();
+            if (double.IsNaN(yieldStress) || yieldStress == 0)
+            {
+                // no yield stress error
+                return false;
+            }
+
+            double plasticModulus = bar.PlasticModulus();
+            if (double.IsNaN(plasticModulus) || plasticModulus == 0)
+            {
+                // no plastic modulus error
+                return false;
+            }
+
+            double requiredZx = Query.RequiredZx(supportType, windLoad, tributaryWidth, bar.Length(), yieldStress, buildingCode);
+            if (double.IsNaN(requiredZx))
+            {
+                BH.Engine.Base.Compute.RecordError("Check could not be executed.");
+                return false;
+            }
+
+            return plasticModulus >= requiredZx;
+        }
+
+
+        private static double PlasticModulus(this Bar bar)
+        {
+            ISectionProperty property = bar?.SectionProperty;
+            if (property == null)
+                return double.NaN;
+            else
+                return property.Wplz;
+        }
+
+        private static double YieldStress(this Bar bar)
+        {
+            BH.Engine.Base.Compute.RecordWarning("Default value for aluminium used.");
+            // Value for Aluminium σ_y from https://www.engineeringtoolbox.com/young-modulus-d_417.html.
+            return 9.5e+7; 
+        }
+
     }
 }
-
-
-
-

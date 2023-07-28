@@ -65,7 +65,7 @@ namespace BH.Engine.Facade
 
             double linearLoad = tributaryWidth * windLoad;
 
-            //TODO: add check against unsupported code
+
             double linearLoadWithFactor;
             if (buildingCode == BuildingCode.BSEN19902002)
                 linearLoadWithFactor = linearLoad * 1.5;
@@ -77,6 +77,11 @@ namespace BH.Engine.Facade
             if (supportType == SupportType.PinPin)
             {
                 double mMax = linearLoadWithFactor * Math.Pow(length, 2) / 8;
+                return mMax / yieldStress;
+            }
+            else if (supportType == SupportType.FixPin)
+            {
+                double mMax = linearLoadWithFactor * Math.Pow(length, 2) / 12;
                 return mMax / yieldStress;
             }
             else if (supportType == SupportType.FixFix)
