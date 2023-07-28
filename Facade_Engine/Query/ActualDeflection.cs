@@ -20,20 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
-using BH.oM.Facade.Elements;
-using BH.oM.Facade.SectionProperties;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Analytical.Elements;
-using BH.oM.Physical.FramingProperties;
-using BH.Engine.Geometry;
-
-using System.Collections.Generic;
-using BH.oM.Base.Attributes;
-using System.ComponentModel;
 using BH.oM.Facade.Enums;
+using System;
 
 namespace BH.Engine.Facade
 {
@@ -77,10 +65,12 @@ namespace BH.Engine.Facade
                 return linearLoad * Math.Pow(length, 4) / (384 * youngsModulus * momentOfInertia);
             else
             {
-                BH.Engine.Base.Compute.RecordError("Support type not supported.");
+                BH.Engine.Base.Compute.RecordError("Support type not supported in deflection check calculations.");
                 return double.NaN;
             }
         }
+
+        /***************************************************/
     }
 }
 

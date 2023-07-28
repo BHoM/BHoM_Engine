@@ -20,20 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
-using BH.oM.Facade.Elements;
-using BH.oM.Facade.SectionProperties;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Analytical.Elements;
-using BH.oM.Physical.FramingProperties;
-using BH.Engine.Geometry;
-
-using System.Collections.Generic;
-using BH.oM.Base.Attributes;
-using System.ComponentModel;
 using BH.oM.Facade.Enums;
+using System;
 
 namespace BH.Engine.Facade
 {
@@ -69,10 +57,15 @@ namespace BH.Engine.Facade
             double linearLoadWithFactor;
             if (buildingCode == BuildingCode.BSEN19902002)
                 linearLoadWithFactor = linearLoad * 1.5;
-            else if (buildingCode== BuildingCode.ASCE705)
+            else if (buildingCode == BuildingCode.ASCE705)
                 linearLoadWithFactor = linearLoad * 1.65;
-            else
+            else if (buildingCode == BuildingCode.ASCE710 || buildingCode == BuildingCode.ASCE716)
                 linearLoadWithFactor = 0.6 * linearLoad * 1.65;
+            else
+            {
+                BH.Engine.Base.Compute.RecordError("Building code not supported in plastic modulus check calculations.");
+                return double.NaN;
+            }
 
             if (supportType == SupportType.PinPin || supportType == SupportType.PinSlide)
             {
@@ -86,10 +79,12 @@ namespace BH.Engine.Facade
             }
             else
             {
-                BH.Engine.Base.Compute.RecordError("Support type not supported.");
+                BH.Engine.Base.Compute.RecordError("Support type not supported in plastic modulus check calculations.");
                 return double.NaN;
             }
         }
+
+        /***************************************************/
     }
 }
 
