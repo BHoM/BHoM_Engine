@@ -56,7 +56,7 @@ namespace BH.Engine.Facade
                 if (mullionLength < 3)
                     return mullionLength / 200;
                 else if (mullionLength <= 7.5)
-                    return mullionLength / 300;
+                    return mullionLength / 300 + 0.005;
                 else
                     return mullionLength / 250;
             }
