@@ -20,25 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Analytical.Elements;
-using BH.oM.Facade.Elements;
-using BH.oM.Facade.SectionProperties;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
-using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.oM.Structure.MaterialFragments;
-using BH.oM.Structure.SectionProperties;
 using BH.oM.Facade.Enums;
-using BH.oM.Quantities.Attributes;
-using Mono.Cecil.Cil;
+using BH.oM.Structure.Elements;
+using BH.oM.Structure.SectionProperties;
 
 namespace BH.Engine.Facade
 {
@@ -46,9 +32,6 @@ namespace BH.Engine.Facade
     {
         /***************************************************/
         /****          Public Methods                   ****/
-        /***************************************************/
-
-
         /***************************************************/
 
         public static bool PlasticModulusCheck(Bar bar, double windLoad, double tributaryWidth, BuildingCode buildingCode)
@@ -62,34 +45,38 @@ namespace BH.Engine.Facade
             SupportType supportType = bar.SupportType();
             if (supportType == oM.Facade.Enums.SupportType.Undefined)
             {
-                BH.Engine.Base.Compute.RecordError("Undefined support type.");
+                BH.Engine.Base.Compute.RecordError("Plastic modulus check could not be executed because of undefined support type.");
                 return false;
             }
 
             double yieldStress = bar.YieldStress();
             if (double.IsNaN(yieldStress) || yieldStress == 0)
             {
-                // no yield stress error
+                BH.Engine.Base.Compute.RecordError("Yield stress of a bar could not be found in its properties.");
                 return false;
             }
 
             double plasticModulus = bar.PlasticModulus();
             if (double.IsNaN(plasticModulus) || plasticModulus == 0)
             {
-                // no plastic modulus error
+                BH.Engine.Base.Compute.RecordError("Plastic modulus of a bar could not be found in its properties.");
                 return false;
             }
 
             double requiredZx = Query.RequiredZx(supportType, windLoad, tributaryWidth, bar.Length(), yieldStress, buildingCode);
             if (double.IsNaN(requiredZx))
             {
-                BH.Engine.Base.Compute.RecordError("Check could not be executed.");
+                BH.Engine.Base.Compute.RecordError("Plastic modulus check could not be executed.");
                 return false;
             }
 
             return plasticModulus >= requiredZx;
         }
 
+
+        /***************************************************/
+        /****          Private Methods                  ****/
+        /***************************************************/
 
         private static double PlasticModulus(this Bar bar)
         {
@@ -100,11 +87,14 @@ namespace BH.Engine.Facade
                 return property.Wply;
         }
 
+        /***************************************************/
+
         private static double YieldStress(this Bar bar)
         {
             BH.Engine.Base.Compute.RecordWarning("Default value for aluminium equal to 140MPa has been used.");
             return 140e+6; 
         }
 
+        /***************************************************/
     }
 }

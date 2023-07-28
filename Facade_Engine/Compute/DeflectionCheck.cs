@@ -57,35 +57,35 @@ namespace BH.Engine.Facade
             double allowableDeflection = Query.AllowableDeflection(bar.Length(), buildingCode);
             if (double.IsNaN(allowableDeflection))
             {
-                BH.Engine.Base.Compute.RecordError("Check could not be executed.");
+                BH.Engine.Base.Compute.RecordError("Deflection check could not be executed.");
                 return false;
             }
 
             SupportType supportType = bar.SupportType();
             if (supportType == oM.Facade.Enums.SupportType.Undefined)
             {
-                // undefined support error
+                BH.Engine.Base.Compute.RecordError("Deflection check could not be executed because of undefined support type.");
                 return false;
             }
 
             double momentOfInertia = bar.MomentOfInertia();
             if (double.IsNaN(momentOfInertia) || momentOfInertia == 0)
             {
-                // no moment of inertia error
+                BH.Engine.Base.Compute.RecordError("Moment of inertia of a bar could not be found in its properties.");
                 return false;
             }
 
             double youngsModulus = bar.YoungsModulus();
             if (double.IsNaN(youngsModulus) || youngsModulus == 0)
             {
-                // no youngs modulus error
+                BH.Engine.Base.Compute.RecordError("Young's modulus of a bar could not be found in its properties.");
                 return false;
             }
 
             double actualDeflection = Query.ActualDeflection(supportType, windLoad, tributaryWidth, bar.Length(), momentOfInertia, youngsModulus);
             if (double.IsNaN(actualDeflection))
             {
-                // error
+                BH.Engine.Base.Compute.RecordError("Deflection check could not be executed.");
                 return false;
             }
 
