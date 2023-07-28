@@ -53,7 +53,7 @@ namespace BH.Engine.Facade
             SupportType supportType = bar.SupportType();
             if (supportType == oM.Facade.Enums.SupportType.Undefined)
             {
-                BH.Engine.Base.Compute.RecordError("Deflection check could not be executed because of undefined support type.");
+                BH.Engine.Base.Compute.RecordError("Deflection check could not be executed because of unsupported support type.");
                 return false;
             }
 

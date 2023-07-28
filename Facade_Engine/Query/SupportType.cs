@@ -20,23 +20,8 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Dimensional;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BH.oM.Analytical.Elements;
-using BH.oM.Facade.Elements;
-using BH.oM.Facade.SectionProperties;
-using BH.Engine.Geometry;
-using BH.Engine.Spatial;
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
-using System.ComponentModel;
 using BH.oM.Facade.Enums;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.SectionProperties;
-using BH.oM.Structure.MaterialFragments;
 
 namespace BH.Engine.Facade
 {
@@ -74,17 +59,12 @@ namespace BH.Engine.Facade
         {
             if (support == null)
             {
-                // Fill in
-                BH.Engine.Base.Compute.RecordError("");
+                BH.Engine.Base.Compute.RecordError("Support condition information is missing.");
                 return false;
             }
 
             if (!IsFullStiffness(support))
-            {
-                // Fill in - weird stiffness error
-                BH.Engine.Base.Compute.RecordError("");
                 return false;
-            }
 
             return support.TranslationX == oM.Structure.Constraints.DOFType.Fixed
                 && support.TranslationY == oM.Structure.Constraints.DOFType.Fixed
@@ -100,17 +80,12 @@ namespace BH.Engine.Facade
         {
             if (support == null)
             {
-                // Fill in
-                BH.Engine.Base.Compute.RecordError("");
+                BH.Engine.Base.Compute.RecordError("Support condition information is missing.");
                 return false;
             }
 
             if (!IsFullStiffness(support))
-            {
-                // Fill in - weird stiffness error
-                BH.Engine.Base.Compute.RecordError("");
                 return false;
-            }
 
             // Rotation around own self (x) not relevant for this exercise
             return support.TranslationX == oM.Structure.Constraints.DOFType.Fixed
@@ -126,17 +101,12 @@ namespace BH.Engine.Facade
         {
             if (support == null)
             {
-                // Fill in
-                BH.Engine.Base.Compute.RecordError("");
+                BH.Engine.Base.Compute.RecordError("Support condition information is missing.");
                 return false;
             }
 
             if (!IsFullStiffness(support))
-            {
-                // Fill in - weird stiffness error
-                BH.Engine.Base.Compute.RecordError("");
                 return false;
-            }
 
             // Rotation around own self (x) not relevant for this exercise
             return support.TranslationX == oM.Structure.Constraints.DOFType.Free
