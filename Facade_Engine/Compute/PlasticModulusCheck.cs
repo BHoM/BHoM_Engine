@@ -97,14 +97,13 @@ namespace BH.Engine.Facade
             if (property == null)
                 return double.NaN;
             else
-                return property.Wplz;
+                return property.Wply;
         }
 
         private static double YieldStress(this Bar bar)
         {
-            BH.Engine.Base.Compute.RecordWarning("Default value for aluminium used.");
-            // Value for Aluminium σ_y from https://www.engineeringtoolbox.com/young-modulus-d_417.html.
-            return 9.5e+7; 
+            BH.Engine.Base.Compute.RecordWarning("Default value for aluminium equal to 140MPa has been used.");
+            return 140e+6; 
         }
 
     }
