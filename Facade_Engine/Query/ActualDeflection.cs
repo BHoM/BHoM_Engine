@@ -71,7 +71,7 @@ namespace BH.Engine.Facade
 
             double linearLoad = tributaryWidth * windLoad;
 
-            if ((supportType == SupportType.PinPin) || (supportType == SupportType.FixPin))
+            if (supportType == SupportType.PinPin || supportType == SupportType.PinSlide)
                 return 5 * linearLoad * Math.Pow(length, 4) / (384 * youngsModulus * momentOfInertia);
             else if (supportType == SupportType.FixFix)
                 return linearLoad * Math.Pow(length, 4) / (384 * youngsModulus * momentOfInertia);

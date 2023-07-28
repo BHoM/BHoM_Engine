@@ -113,19 +113,21 @@ namespace BH.Engine.Facade
                 return material.YoungsModulus;
         }
 
-        private static SupportType SupportType(this BH.oM.Structure.Elements.Bar bar)
+        private static SupportType SupportType(this Bar bar)
         {
             bool isStartFix = IsFix(bar?.Release?.StartRelease);
             bool isStartPin = IsPin(bar?.Release?.StartRelease);
+            bool isStartSlide = IsSlide(bar?.Release?.StartRelease);
             bool isEndFix = IsFix(bar?.Release?.EndRelease);
             bool isEndPin = IsPin(bar?.Release?.EndRelease);
+            bool isEndSlide = IsSlide(bar?.Release?.EndRelease);
 
             if (isStartFix && isEndFix)
                 return oM.Facade.Enums.SupportType.FixFix;
             else if (isStartPin && isEndPin)
                 return oM.Facade.Enums.SupportType.PinPin;
-            else if ((isStartFix && isEndPin) || (isStartPin && isEndFix))
-                return oM.Facade.Enums.SupportType.FixPin;
+            else if ((isStartSlide && isEndPin) || (isStartPin && isEndSlide))
+                return oM.Facade.Enums.SupportType.PinSlide;
             else
                 return oM.Facade.Enums.SupportType.Undefined;
         }
@@ -170,10 +172,34 @@ namespace BH.Engine.Facade
                 return false;
             }
 
+            // Rotation around own self (x) not relevant for this exercise
             return support.TranslationX == oM.Structure.Constraints.DOFType.Fixed
                 && support.TranslationY == oM.Structure.Constraints.DOFType.Fixed
                 && support.TranslationZ == oM.Structure.Constraints.DOFType.Fixed
-                && support.RotationX == oM.Structure.Constraints.DOFType.Free
+                && support.RotationY == oM.Structure.Constraints.DOFType.Free
+                && support.RotationZ == oM.Structure.Constraints.DOFType.Free;
+        }
+
+        private static bool IsSlide(BH.oM.Structure.Constraints.Constraint6DOF support)
+        {
+            if (support == null)
+            {
+                // Fill in
+                BH.Engine.Base.Compute.RecordError("");
+                return false;
+            }
+
+            if (!IsFullStiffness(support))
+            {
+                // Fill in - weird stiffness error
+                BH.Engine.Base.Compute.RecordError("");
+                return false;
+            }
+
+            // Rotation around own self (x) not relevant for this exercise
+            return support.TranslationX == oM.Structure.Constraints.DOFType.Free
+                && support.TranslationY == oM.Structure.Constraints.DOFType.Fixed
+                && support.TranslationZ == oM.Structure.Constraints.DOFType.Fixed
                 && support.RotationY == oM.Structure.Constraints.DOFType.Free
                 && support.RotationZ == oM.Structure.Constraints.DOFType.Free;
         }

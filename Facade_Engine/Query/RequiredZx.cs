@@ -74,14 +74,9 @@ namespace BH.Engine.Facade
             else
                 linearLoadWithFactor = 0.6 * linearLoad * 1.65;
 
-            if (supportType == SupportType.PinPin)
+            if (supportType == SupportType.PinPin || supportType == SupportType.PinSlide)
             {
                 double mMax = linearLoadWithFactor * Math.Pow(length, 2) / 8;
-                return mMax / yieldStress;
-            }
-            else if (supportType == SupportType.FixPin)
-            {
-                double mMax = linearLoadWithFactor * Math.Pow(length, 2) / 12;
                 return mMax / yieldStress;
             }
             else if (supportType == SupportType.FixFix)
