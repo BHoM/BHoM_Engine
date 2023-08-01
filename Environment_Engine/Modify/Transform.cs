@@ -37,20 +37,20 @@ namespace BH.Engine.Environment
 
         [Description("Transforms the Space's perimeter and location point by the transform matrix. Only rigid body transformations are supported.")]
         [Input("space", "Space to transform.")]
-        [Input("transform", "Transform matrix.")]
+        [Input("matrix", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("space", "Modified Space with unchanged properties, but transformed perimeter and location point.")]
-        public static Space Transform(this Space space, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        public static Space Transform(this Space space, TransformMatrix matrix, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!matrix.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
                 return null;
             }
 
             Space result = space.ShallowClone();
-            result.Perimeter = result.Perimeter.ITransform(transform);
-            result.Location = result.Location.Transform(transform);
+            result.Perimeter = result.Perimeter.ITransform(matrix);
+            result.Location = result.Location.Transform(matrix);
             return result;
         }
 
