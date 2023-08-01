@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Counts the number of rows in the matrix that contain at least on non-zero value.")]
+        [Description("Counts the number of rows in the matrix that contain at least one non-zero value.")]
         [Input("matrix","The matrix to evaluate.")]
         [Input("tolerance", "Tolerance to be used to determine if the value is zero. A value of the matrix that has a magnitude less than this tolerance will be deemed as a zero value.")]
         [Output("count", "The number of non-zero rows of the matrix.")]
