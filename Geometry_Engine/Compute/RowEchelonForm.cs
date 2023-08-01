@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         [Description("Computes and returns the (Reduced) Row Echelon Form of the provided 2D double array (matrix).")]
         [Input("imatrix", "The matrix, as a 2D double array to compute the (reduced) row echelon form of.")]
-        [Input("reduced", "If true the returned matrix will have a reduced echelon form. If false, the matrix well have a row echelon form.")]
+        [Input("reduced", "If true the returned matrix will have a reduced echelon form. If false, the matrix will have a row echelon form.")]
         [Input("tolerance", "Numerical tolerance used to determine if a value in the matrix is 0. For more information on the relationship between the numerical and geometrical tolerance in Row Echelon Form calculation, see " + nameof(REFTolerance) + " method.")]
         [Output("ref", "The provided matrix in (reduced) row echelon form.")]
         public static double[,] RowEchelonForm(this double[,] imatrix, bool reduced = true, double tolerance = Tolerance.Distance)
