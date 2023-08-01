@@ -40,6 +40,7 @@ namespace BH.Engine.Environment
         [Input("matrix", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("space", "Modified Space with unchanged properties, but transformed perimeter and location point.")]
+        [PreviousInputNames("matrix", "transform")]
         public static Space Transform(this Space space, TransformMatrix matrix, double tolerance = Tolerance.Distance)
         {
             if (!matrix.IsRigidTransformation(tolerance))
