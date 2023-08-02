@@ -136,7 +136,7 @@ namespace BH.Engine.Geometry
             Point avg = ctrlPts.Average();
             Vector normal = new Vector();
 
-            //Get out normal, from cross products between vectors from the average point to adjecent controlpoints on the curve
+            //Get out normal, from cross products between vectors from the average point to adjacent control points on the curve
             for (int i = 0; i < ctrlPts.Count - 1; i++)
                 normal += (ctrlPts[i] - avg).CrossProduct(ctrlPts[i + 1] - avg);
 
