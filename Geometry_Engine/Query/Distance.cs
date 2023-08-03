@@ -52,7 +52,7 @@ namespace BH.Engine.Geometry
 
         [Description("Computes and returns the Euclidean square distance between two points, that is the sum of the squares of the differences of each component.")]
         [Input("a", "First Point for square distance computation.")]
-        [Input("b", "Second Point for  square distance computation.")]
+        [Input("b", "Second Point for square distance computation.")]
         [Output("sqDist", "The square distance between the two points.")]
         public static double SquareDistance(this Point a, Point b)
         {
@@ -123,7 +123,7 @@ namespace BH.Engine.Geometry
         [Description("Computes and returns the square distance between the Point and the closest point on the Line.")]
         [Input("point", "Point for square distance computation.")]
         [Input("line", "Line for square distance computation.")]
-        [Input("infiniteSegment", "If true, distance will be computed to the closest point on the infinite line. If false, the distance will be compated to the closest point on the finite line segment.")]
+        [Input("infiniteSegment", "If true, distance will be computed to the closest point on the infinite line. If false, the distance will be computed to the closest point on the finite line segment.")]
         [Output("dist", "The Euclidean distance between the Point and the Line.", typeof(Length))]
         public static double SquareDistance(this Point point, Line line, bool infiniteSegment = false)
         {
