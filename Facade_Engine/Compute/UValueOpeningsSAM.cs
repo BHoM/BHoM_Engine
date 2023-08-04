@@ -49,6 +49,12 @@ namespace BH.Engine.Facade
         [Output("effectiveUValue", "Effective total U-value result of opening calculated using SAM.")]
         public static OverallUValue UValueOpeningsSAM(this List<Opening> openings)
         {
+            if (!openings.PsiValuesMatch())
+            {
+                BH.Engine.Base.Compute.RecordError("Openings have PsiValues at adjacent edges that do not match. SAM UValue method requires matching PsiValues at adjacent edges to work correctly.");
+                return null;
+            }
+
             double uValueProduct = 0;
             double totalArea = 0;
             foreach (Opening opening in openings)
