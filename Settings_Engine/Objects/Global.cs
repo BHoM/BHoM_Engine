@@ -34,6 +34,7 @@ namespace BH.Engine.Settings
         /****     Internal properties - collections     ****/
         /***************************************************/
         internal static ConcurrentDictionary<Type, ISettings> BHoMSettings { get; set; } = new ConcurrentDictionary<Type, ISettings>();
+        internal static ConcurrentDictionary<Type, string> BHoMSettingsFilePaths { get; set; } = new ConcurrentDictionary<Type, string>(); //Store where settings came from for saving on shut down
     }
 }
 
