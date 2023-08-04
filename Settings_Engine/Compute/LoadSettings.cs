@@ -38,7 +38,9 @@ namespace BH.Engine.Settings
                 try
                 {
                     ISettings settings = BH.Engine.Serialiser.Convert.FromJson(contents) as ISettings;
-                    Global.BHoMSettings.TryAdd(settings.GetType(), settings);
+                    Type type = settings.GetType();
+                    Global.BHoMSettings[type] = settings;
+                    Global.BHoMSettingsFilePaths[type] = file;
                 }
                 catch (Exception ex)
                 {
