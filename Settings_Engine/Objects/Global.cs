@@ -26,7 +26,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Settings
 {
     internal static class Global
     {

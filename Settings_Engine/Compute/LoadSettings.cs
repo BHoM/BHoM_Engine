@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Settings
 {
     public static partial class Compute
     {
