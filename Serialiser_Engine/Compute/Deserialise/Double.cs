@@ -25,6 +25,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace BH.Engine.Serialiser
@@ -44,7 +45,7 @@ namespace BH.Engine.Serialiser
                 return bson.AsInt32;
             else if (bson.IsInt64)
                 return bson.AsInt64;
-            else if (bson.IsString && double.TryParse(bson.AsString, out double d))
+            else if (bson.IsString && double.TryParse(bson.AsString, NumberStyles.Any, CultureInfo.InvariantCulture, out double d))
                 return d;
             else
             {
