@@ -25,6 +25,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace BH.Engine.Serialiser
@@ -49,13 +50,13 @@ namespace BH.Engine.Serialiser
                     return doc["_v"].AsString;
             }
             else if (bson.IsDouble)
-                return bson.AsDouble.ToString();
+                return bson.AsDouble.ToString("", CultureInfo.InvariantCulture);
             else if (bson.IsInt32)
                 return bson.AsInt32.ToString();
             else if (bson.IsInt64)
                 return bson.AsInt64.ToString();
             else if (bson.IsDecimal128)
-                return bson.AsDecimal.ToString();
+                return bson.AsDecimal.ToString("", CultureInfo.InvariantCulture);
 
             BH.Engine.Base.Compute.RecordError("Expected to deserialise a string and received " + bson.ToString() + " instead.");
             return value;
