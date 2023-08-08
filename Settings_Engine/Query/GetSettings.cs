@@ -41,7 +41,30 @@ namespace BH.Engine.Settings
             if (!Global.BHoMSettings.TryGetValue(type, out settings))
             {
                 BH.Engine.Base.Compute.RecordWarning($"Could not find settings of type {type} loaded in memory. Returning a default instance of the settings object instead.");
-                return Activator.CreateInstance(type);
+                ISettings obj = null;
+                try
+                {
+                    var activator = Activator.CreateInstance(type);
+
+                    try
+                    {
+                        obj = activator as ISettings;
+                    }
+                    catch(Exception ex)
+                    {
+                        BH.Engine.Base.Compute.RecordError(ex, $"Could not cast object of type {activator.GetType()} to an ISettings object. Settings not saved in memory.");
+                        return activator;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    BH.Engine.Base.Compute.RecordError(ex, $"Could not create instance of object of type {type}.");
+                    return null;
+                }
+
+                Global.BHoMSettings[type] = obj;
+
+                return obj;
             }
 
             return settings;
