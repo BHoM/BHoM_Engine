@@ -32,6 +32,7 @@ using System.ComponentModel;
 using BH.oM.Facade.Elements;
 using BH.oM.Facade.Fragments;
 using BH.Engine.Base;
+using System.Linq;
 
 namespace BH.Engine.Facade
 {
@@ -48,7 +49,7 @@ namespace BH.Engine.Facade
         {
             for (int i = 0; i < openings.Count; i++)
             {
-                List<Opening> otherOpenings = openings;
+                List<Opening> otherOpenings = openings.ToList();
                 otherOpenings.RemoveAt(i);
 
                 Opening o = openings[i];
