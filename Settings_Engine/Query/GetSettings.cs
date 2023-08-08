@@ -48,7 +48,7 @@ namespace BH.Engine.Settings
 
                     try
                     {
-                        obj = activator as ISettings;
+                        obj = (ISettings)activator;
                     }
                     catch(Exception ex)
                     {
