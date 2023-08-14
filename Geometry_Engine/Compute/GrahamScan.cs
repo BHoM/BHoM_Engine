@@ -36,9 +36,61 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Sorting out the boundry point of a set of points.")]
+        [Input("Set of Points", "X.")]
+        [Output("Boundry points", ".")]
+        public static List<Point> GrahamScan(List<Point> pts)
+        {
+            pts = pts.OrderBy(pt => pt.Y).ToList();
+            pts = pts.OrderBy(pt => Math.Atan2(pt.Y - pts[0].Y, pt.X - pts[0].X)).ToList();
+
+            List<Point> selPts = new List<Point>();
+
+            while (pts.Count > 0)
+            {
+                GrahamScanInt(ref pts, ref selPts);
+            };
+
+            pts = selPts;
+
+            selPts.Add(selPts[0]);
+
+            return selPts;
+        }
+
+        private static List<Point> GrahamScanInt(ref List<Point> pts, ref List<Point> selPts)
+        {
+            if (pts.Count > 0)
+            {
+                var pt = pts[0];
+
+                if (selPts.Count <= 1)
+                {
+                    selPts.Add(pt);
+                    pts.RemoveAt(0);
+                }
+                else
+                {
+                    var pt1 = selPts[selPts.Count - 1];
+                    var pt2 = selPts[selPts.Count - 2];
+                    Vector dir1 = pt1 - pt2;
+                    Vector dir2 = pt - pt1;
+                    var cross = Engine.Geometry.Query.CrossProduct(dir1, dir2);
 
 
-        /***************************************************/
+                    if (cross.Z < 0)
+                    {
+                        selPts.RemoveAt(selPts.Count - 1);
+                    }
+                    else
+                    {
+                        selPts.Add(pt);
+                        pts.RemoveAt(0);
+                    }
+                }
+            }
+            return selPts;
+        }
     }
 }
 
