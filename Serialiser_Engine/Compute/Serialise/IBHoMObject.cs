@@ -57,7 +57,7 @@ namespace BH.Engine.Serialiser
                     continue; //Don't write out null or empty properties if they're part of the base IBHoMObject properties
 
                 writer.WriteName(prop.Name);
-                ISerialise(prop.GetValue(value), writer, prop.PropertyType);
+                ISerialise(propertyValue, writer, prop.PropertyType);
             }
             writer.WriteEndDocument();
         }
