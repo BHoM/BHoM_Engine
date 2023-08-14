@@ -104,6 +104,16 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+        /**** Private Fallback Methods                  ****/
+        /***************************************************/
+
+        private static List<ICurve> InternalEdges(this object surface)
+        {
+            Base.Compute.RecordError($"InternalEdges is not implemented for objects of type: {surface.GetType().Name}.");
+            return null;
+        }
+
+        /***************************************************/
     }
 }
 
