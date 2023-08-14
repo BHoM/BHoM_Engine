@@ -77,7 +77,7 @@ namespace BH.Engine.Environment
             if (connectedSpaceName == null)
                 connectedSpaceName = "auto" + Guid.NewGuid().ToString();
 
-            List<Panel> panels = surfaces.Select(x => x.Panel(connectedSpaceName, angleTolerance, panelType)).ToList();
+            List<Panel> panels = surfaces.Select(x => x.Panel(connectedSpaceName, angleTolerance, panelType)).Where(x => x != null).ToList();
 
             if (panelType == PanelType.Undefined)
             {
@@ -97,6 +97,11 @@ namespace BH.Engine.Environment
         [Output("panel", "An Environment Panels representing a closed space generated from the provided Brep geometry")]
         public static Panel Panel(this ISurface surface, string connectedSpaceName = null, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, PanelType panelType = PanelType.Undefined)
         {
+            if(surface.GetType() == typeof(NurbsSurface))
+            {
+                BH.Engine.Base.Compute.RecordError($"Creating Environmental Panels from surfaces of type NurbsSurface is not supported. Please extract the geometry manually and assign to panels using other create methods.");
+                return null;
+            }
 
             if (connectedSpaceName == null)
                 connectedSpaceName = Guid.NewGuid().ToString();
@@ -116,9 +121,16 @@ namespace BH.Engine.Environment
                 });
             }
 
+            var externalEdges = surface.IExternalEdges();
+            if(externalEdges == null)
+            {
+                BH.Engine.Base.Compute.RecordWarning($"Surface could not query external edges for surface being converted to panel with space name {connectedSpaceName}. Surface was of type {surface.GetType().Name}.");
+                externalEdges = new List<ICurve>();
+            }
+
            return new Panel
                 {
-                    ExternalEdges = surface.IExternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList().Join().ToEdges(),
+                    ExternalEdges = externalEdges.Select(x => x.ICollapseToPolyline(angleTolerance)).ToList().Join().ToEdges(),
                     ConnectedSpaces = new List<string> { connectedSpaceName },
                     Openings = openings,
                     Type = panelType,
