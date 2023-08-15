@@ -9,6 +9,9 @@ using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SurfaceProperties;
+using BH.Engine.Base;
+
+
 
 namespace BH.Engine.Structure
 {
@@ -18,26 +21,31 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a structural PadFoundation from its fundamental parts and a basis.")]
+        [Description("Creates a PadFoundation from its fundamental parts and a basis.")]
         [Input("profile", "The section profile defining the edges of the pad. All section constants are derived based on the dimensions of this.")]
         [InputFromProperty("property")]
         [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
-        public static PadFoundation PadFoundation(List<Edge> topSurface, ISurfaceProperty property, Basis orientation)
+        public static PadFoundation PadFoundation(List<Edge> topSurface, ISurfaceProperty property = null, Basis orientation = null)
         {
+            if (topSurface.IsNullOrEmpty() || topSurface.Any(x => x.IsNull()))
+                return null;
+
+            if (orientation == null)
+                orientation = new Basis(new Vector() { X = 1 }, new Vector() { Y = 1 }, new Vector() { Z = 1 });
+
             return new PadFoundation() { TopSurface = topSurface, Property = property, Orientation = orientation };
         }
 
         /***************************************************/
 
-        [Description("Creates a structural Panel from its fundamental parts and an local orientation vector.")]
+        [Description("Creates a PadFoundation from its fundamental parts and a basis.")]
         [Input("width", "The width of the PadFoundation aligned with Global X.")]
         [Input("length", "The length of the PadFoundation aligned with Global Y.")]
         [InputFromProperty("property")]
         [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
         public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness, Basis orientation)
         {
-            return null;
-            //PadFoundation(Spatial.Create.RectangleProfile(length, width).Edges, thickness, orientation);
+            return PadFoundation(Spatial.Create.RectangleProfile(length, width).Edges.Cast<Edge>().ToList(), thickness, orientation);
         }
     }
 }
