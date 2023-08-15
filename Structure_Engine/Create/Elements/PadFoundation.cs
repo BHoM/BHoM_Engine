@@ -10,7 +10,7 @@ using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Base;
-
+using BH.Engine.Geometry;
 
 
 namespace BH.Engine.Structure
@@ -45,7 +45,9 @@ namespace BH.Engine.Structure
         [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
         public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness, Basis orientation)
         {
-            return PadFoundation(Spatial.Create.RectangleProfile(length, width).Edges.Cast<Edge>().ToList(), thickness, orientation);
+            List<Edge> edges = Spatial.Create.RectangleProfile(length, width).Edges.Select(x => new Edge() { Curve = x }).ToList();
+
+            return PadFoundation(edges, thickness, orientation);
         }
     }
 }
