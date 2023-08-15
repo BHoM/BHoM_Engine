@@ -21,7 +21,6 @@
  */
 
 using BH.Engine.Geometry;
-using BH.oM.Geometry;
 using BH.oM.Structure.Constraints;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Fragments;
@@ -33,7 +32,6 @@ using BH.oM.Structure.SectionProperties.Reinforcement;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.Reinforcement;
 using BH.oM.Base.Attributes;
-using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -577,7 +575,7 @@ namespace BH.Engine.Structure
             else if (checkAnalysisVectors)
             {
                 if (timber.YoungsModulus == null)
-                { 
+                {
                     ErrorMessage(methodName, $"{nameof(timber.YoungsModulus)} of the {typeof(T).Name}", string.IsNullOrEmpty(msg) ? $"Call the {nameof(Modify.SetAnalysisParameters)} method to initialise the analysis vectors of the {typeof(T).Name}." : msg);
                     return true;
                 }
@@ -592,6 +590,85 @@ namespace BH.Engine.Structure
                     return true;
                 }
             }
+
+            return false;
+        }
+
+        [Description("Checks if a PadFoundation is null and outputs relevant error message.")]
+        [Input("padFoundation", "The PadFoundation to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PadFoundation is null.")]
+        public static bool IsNull(this PadFoundation padFoundation, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (padFoundation == null)
+            {
+                ErrorMessage(methodName, "PadFoundation", msg);
+                return true;
+            }
+            else if (padFoundation.TopSurface == null)
+            {
+                ErrorMessage(methodName, " Edges", msg);
+                return true;
+            }
+            else if (padFoundation.TopSurface.Count == 0)
+            {
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the PadFoundation Edges count is 0. {msg}");
+                return true;
+            }
+            else if (padFoundation.TopSurface.Any(x => x.IsNull($"The Edges are owned by a Panel. {msg}", methodName)))
+            {
+                if (!string.IsNullOrEmpty(msg))
+                    Base.Compute.RecordError(msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a PileGroup is null and outputs relevant error message.")]
+        [Input("PileGroup", "The PileGroup to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PileGroup is null.")]
+        public static bool IsNull(this PileGroup pileGroup, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (pileGroup == null)
+            {
+                ErrorMessage(methodName, "PileGroup", msg);
+                return true;
+            }
+            else if (pileGroup.PileLength == 0)
+            {
+                ErrorMessage(methodName, "PileGroup", msg);
+                return true;
+            }
+            else if (pileGroup.PileLayout == null)
+            {
+                ErrorMessage(methodName, "PileGroup", msg);
+                return true;
+            }
+
+
+            return false;
+        }
+
+        [Description("Checks if a PileFoundation is null and outputs relevant error message.")]
+        [Input("pileFoundation", "The PileFoundation to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PileFoundation is null.")]
+        public static bool IsNull(this PileFoundation pileFoundation, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (pileFoundation == null)
+            {
+                ErrorMessage(methodName, "PileGroup", msg);
+                return true;
+            }
+            else if (pileFoundation.PileCap.IsNull())
+                return true;
+            else if (pileFoundation.PileGroups.Any(x => x.IsNull()))
+                return true;
 
             return false;
         }

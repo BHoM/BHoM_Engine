@@ -19,9 +19,9 @@ namespace BH.Engine.Structure
         [Description("Creates a structural PileFoundation from a pile cap and pile groups.")]
         [Input("pileCap", "The pile cap defining the outer edge of the PileFoundation and location in 3D.")]
         [Input("coordinates", "Groups of piles contained within the outline of the pile cap.")]
-        public static PileFoundation PileFoundation(PadFoundation pileCap, List<PileGroup> pileGroups )
+        public static PileFoundation PileFoundation(PadFoundation pileCap, List<PileGroup> pileGroups)
         {
-            return new PileFoundation() { PileCap = pileCap, PileGroups = pileGroups};
+            return new PileFoundation() { PileCap = pileCap, PileGroups = pileGroups };
         }
 
         /***************************************************/

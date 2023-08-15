@@ -44,23 +44,14 @@ namespace BH.Engine.Structure
         [Output("volTakeoff", "The volumetric material takeoff based on buildup of the PileFoundation object.")]
         public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this PileFoundation pileFoundation)
         {
-            if (pileFoundation == null)
-            {
-                Base.Compute.RecordError($"Cannot query the {nameof(VolumetricMaterialTakeoff)} of a null {nameof(PileFoundation)}.");
+            if (pileFoundation.IsNull())
                 return null;
-            }
 
-            if (pileFoundation.PileCap == null)
-            {
-                BH.Engine.Base.Compute.RecordError($"Cannot query the {nameof(VolumetricMaterialTakeoff)} ould not be queried as no {nameof(PadFoundation)} has been assigned to the {nameof(PileFoundation)}.");
+            if (pileFoundation.PileCap.Property.IsNull() || pileFoundation.PileCap.Property.Material.IsNull())
                 return null;
-            }
 
-            if (pileFoundation.PileGroups == null || !pileFoundation.PileGroups.Any())
-            {
-                Base.Compute.RecordError($"The {nameof(VolumetricMaterialTakeoff)} could not be queried as no {nameof(PileGroup)} has been assigned to the {nameof(PileFoundation)}.");
+            if (pileFoundation.PileGroups.Any(x => x.PileSection.IsNull()) || pileFoundation.PileGroups.Any(x => x.PileSection.Material.IsNull()))
                 return null;
-            }
 
             List<VolumetricMaterialTakeoff> takeoffs = new List<VolumetricMaterialTakeoff>();
 

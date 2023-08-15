@@ -21,9 +21,9 @@ namespace BH.Engine.Structure
         [Input("pileLength", "The length of the piles within the group.")]
         [InputFromProperty("sectionProperty")]
         [Input("pileLayout", "Pile Layout defining the position of the piles about the World Origin.")]
-        public static PileGroup PileGroup(double pileLength, ISectionProperty pileSection, ExplicitLayout pileLayout )
+        public static PileGroup PileGroup(double pileLength, ISectionProperty pileSection, ExplicitLayout pileLayout)
         {
-            return new PileGroup() { PileLength = pileLength, PileSection = pileSection, PileLayout = pileLayout};
+            return new PileGroup() { PileLength = pileLength, PileSection = pileSection, PileLayout = pileLayout };
         }
 
         /***************************************************/

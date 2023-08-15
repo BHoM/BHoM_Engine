@@ -48,11 +48,8 @@ namespace BH.Engine.Structure
         [Output("padFoundation", "A new PadFoundation with TopSurface matching the provided edges.")]
         public static PadFoundation SetOutlineElements1D(this PadFoundation padFoundation, IEnumerable<IElement1D> edges)
         {
-            if (padFoundation == null || edges == null || !edges.Any())
-            {
-                Base.Compute.RecordError("The PadFoundation or List<Edges> are null or the list of edges are empty. The original PadFoundation will be returned.");
+            if (padFoundation.IsNull())
                 return padFoundation;
-            }
 
             List<Edge> externalEdges = edges.Cast<Edge>().ToList();
 
