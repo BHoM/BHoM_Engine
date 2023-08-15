@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Geometry
@@ -36,24 +37,63 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Sorting out the boundry point of a set of points.")]
-        [Input("Set of Points", "X.")]
-        [Output("Boundry points", ".")]
+        [Description("Implements the GrahamScan algorithim to determine the convex hull of a list of points.")]
+        [Input("pts", "The points to determine the convex hull.")]
+        [Output("c", "The convex hull of the point list.")]
         public static List<Point> GrahamScan(List<Point> pts)
         {
-            pts = pts.OrderBy(pt => pt.Y).ToList();
-            pts = pts.OrderBy(pt => Math.Atan2(pt.Y - pts[0].Y, pt.X - pts[0].X)).ToList();
+            if (pts.IsNullOrEmpty())
+            {
+                Base.Compute.RecordError("The point list is null or empty.");
+                return null;
+            }
 
-            List<Point> selPts = new List<Point>();
+            // Find the point with the lowest Y coordination
+            IOrderedEnumerable<Point> orderedPts = pts.OrderBy(pt => pt.Y);
 
+            Point p = pts.First();
+
+            // Check if there is more than one point with the lowest Y
+            if (Math.Abs(p.Y - pts[1].Y) < Tolerance.MicroDistance)
+            {
+                // Get points with lowest Y coordinate and select the point with the lowest X
+                pts = orderedPts.ThenBy(x => x.X).ToList();
+                p = pts.First();
+            }
+            else
+                pts = orderedPts.ToList();
+
+            // Remove the P from the list of points
+            pts.Remove(p);
+
+            // Sort by the increasing order of the angle the point and P make with the x-axis
+            pts = pts.OrderBy(pt => Math.Atan2(pt.Y - p.Y, pt.X - p.X)).ToList(); // TODO: If several points have the same angle - break ties by increasing distance
+
+            // Group by angle between P and the points
+            IEnumerable<IGrouping<double,Point>> groupedPts = pts.GroupBy(pt => Math.Atan2(pt.Y - p.Y, pt.X - p.X));
+
+            // Add to the start of selPts as it has been removed from pts
+            List<Point> selPts = new List<Point>() { p };
+
+            bool duplicateAngle = false;
+
+            // Check for points that have the same angle 
+            if (groupedPts.Where(grp => grp.Count() > 1).Any())
+            {
+                // For each group, sort by distance from P and select the furthest point
+                pts = groupedPts.Select(g => new { s = g.OrderByDescending(i => i.Distance(p)) }).Select(x => x.s.First()).ToList();
+                duplicateAngle = true;
+            }
+
+            // Iterate through the algorithim
             while (pts.Count > 0)
             {
                 GrahamScanInt(ref pts, ref selPts);
             };
 
-            pts = selPts;
-
-            selPts.Add(selPts[0]);
+            // Due to the grouping, it is necessary to add the first point to close the polyline
+            if (duplicateAngle)
+                selPts.Add(selPts.First());
 
             return selPts;
         }
@@ -62,29 +102,31 @@ namespace BH.Engine.Geometry
         {
             if (pts.Count > 0)
             {
-                var pt = pts[0];
+                // Update the reference as the method moves along the curve
+                var p = pts[0];
 
+                // Add the next point along, needs a minimum of two points to begin (the third coming from p)
                 if (selPts.Count <= 1)
                 {
-                    selPts.Add(pt);
+                    selPts.Add(p);
                     pts.RemoveAt(0);
                 }
                 else
                 {
-                    var pt1 = selPts[selPts.Count - 1];
-                    var pt2 = selPts[selPts.Count - 2];
+                    Point pt1 = selPts[selPts.Count - 1];
+                    Point pt2 = selPts[selPts.Count - 2];
                     Vector dir1 = pt1 - pt2;
-                    Vector dir2 = pt - pt1;
-                    var cross = Engine.Geometry.Query.CrossProduct(dir1, dir2);
+                    Vector dir2 = p - pt1;
 
-
-                    if (cross.Z < 0)
+                    if (Query.CrossProduct(dir1, dir2).Z < 0)
                     {
+                        // Less than zero, therefore clockwise and the point is within the boundary
                         selPts.RemoveAt(selPts.Count - 1);
                     }
                     else
                     {
-                        selPts.Add(pt);
+                        // Greater than zero, therefore anticlockwise - so point is not within the boundary
+                        selPts.Add(p);
                         pts.RemoveAt(0);
                     }
                 }
