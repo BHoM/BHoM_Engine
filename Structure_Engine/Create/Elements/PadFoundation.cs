@@ -22,7 +22,7 @@ namespace BH.Engine.Structure
         [Input("profile", "The section profile defining the edges of the pad. All section constants are derived based on the dimensions of this.")]
         [InputFromProperty("property")]
         [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
-        public static PadFoundation PadFoundation(IProfile topSurface, ISurfaceProperty property, Basis orientation)
+        public static PadFoundation PadFoundation(List<Edge> topSurface, ISurfaceProperty property, Basis orientation)
         {
             return new PadFoundation() { TopSurface = topSurface, Property = property, Orientation = orientation };
         }
@@ -36,7 +36,8 @@ namespace BH.Engine.Structure
         [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
         public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness, Basis orientation)
         {
-            return PadFoundation(Engine.Spatial.Create.RectangleProfile(length, width), thickness, orientation);
+            return null;
+                //PadFoundation(Spatial.Create.RectangleProfile(length, width).Edges, thickness, orientation);
         }
     }
 }
