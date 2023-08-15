@@ -249,6 +249,33 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        /***************************************************/
+
+        [Description("Transforms the PadFoundation's edges, openings and basis by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("padFoundation", "PadFoundation to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified PadFoundation with unchanged properties, but transformed edges and basis.")]
+        public static PadFoundation Transform(this PadFoundation padFoundation, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            if (padFoundation == null)
+            {
+                Base.Compute.RecordError("Could not transform the PadFoundation because it was null.");
+                return null;
+            }
+
+            if (!transform.IsRigidTransformation(tolerance))
+            {
+                Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            PadFoundation result = padFoundation.ShallowClone();
+            result.Orientation = result.Orientation.Transform(transform);
+
+            return result;
+        }
     }
 }
 

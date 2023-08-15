@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -22,14 +22,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using BH.oM.Base.Attributes;
-using System.ComponentModel;
-
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.Engine.Geometry;
+
 
 namespace BH.Engine.Structure
 {
@@ -39,33 +41,21 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Evaluates if the two Edges Supports and Releases are equal with the Support and Release comparers.")]
-        [Input("element", "A Structural Edge to compare the properties of with another Structure Edge.")]
-        [Input("other", "The Structural Edge to compare with the other Structure Edge.")]
-        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
+        [Description("Returns the outline 1D elements of a PadFoundation.")]
+        [Input("padFoundation", "The PadFoundation to find the outline elements for.")]
+        [Output("outlineElements", "A collection of outline 1D elements.")]
+        public static List<IElement1D> OutlineElements1D(this PadFoundation padFoundation)
         {
-            return element.IsNull() && other.IsNull() ? false :
-                new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
-                   new Constraint6DOFComparer().Equals(element.Support, other.Support);
-        }
+            if (padFoundation == null)
+            {
+                Base.Compute.RecordError("Cannot query the outline 1D elements of a null PadFoundation.");
+                return new List<IElement1D>();
+            }
 
-        /***************************************************/
-
-        [Description("Evaluates if the two PadFoundation Properties are equal with the Property comparers.")]
-        [Input("element", "A PadFoundation to compare the properties of with another PadFoudation.")]
-        [Input("other", "The PadFoundation to compare with the other PadFoundation.")]
-        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool HasMergeablePropertiesWith(this PadFoundation element, PadFoundation other)
-        {
-            return element.IsNull() && other.IsNull() ? false :
-                new SurfacePropertyComparer().Equals(element.Property, other.Property);
+            return padFoundation.Edges().Cast<IElement1D>().ToList();
         }
 
         /***************************************************/
 
     }
 }
-
-
-
