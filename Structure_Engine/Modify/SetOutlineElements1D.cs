@@ -23,43 +23,40 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Base.Attributes;
 using System.ComponentModel;
-
+using BH.oM.Base.Attributes;
+using BH.oM.Dimensional;
+using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.Engine.Geometry;
+using BH.Engine.Base;
+
 
 namespace BH.Engine.Structure
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Evaluates if the two Edges Supports and Releases are equal with the Support and Release comparers.")]
-        [Input("element", "A Structural Edge to compare the properties of with another Structure Edge.")]
-        [Input("other", "The Structural Edge to compare with the other Structure Edge.")]
-        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
+        [Description("Sets the Outline Element1Ds of a PadFoundation, i.e. the ExternalBoundary. Method required for all IElement2Ds.\n" +
+                     "The provided edges all need to be ICurves and should form a closed loop. No checking for planarity is made by the method.\n" +
+                     "The Method will return a new PadFoundation with the provided edges as the TopSurface.")]
+        [Input("padFoundation", "The PadFoundation to update the ExternalEdge of.")]
+        [Input("edges", "A list of IElement1Ds which all should be of a type of ICurve.")]
+        [Output("padFoundation", "A new PadFoundation with TopSurface matching the provided edges.")]
+        public static PadFoundation SetOutlineElements1D(this PadFoundation padFoundation, IEnumerable<IElement1D> edges)
         {
-            return element.IsNull() && other.IsNull() ? false :
-                new Constraint4DOFComparer().Equals(element.Release, other.Release) &&
-                   new Constraint6DOFComparer().Equals(element.Support, other.Support);
-        }
+            if (padFoundation == null || edges == null || !edges.Any())
+            {
+                Base.Compute.RecordError("The PadFoundation or List<Edges> are null or the list of edges are empty. The original PadFoundation will be returned.");
+                return padFoundation;
+            }
 
-        /***************************************************/
+            List<Edge> externalEdges = edges.Cast<Edge>().ToList();
 
-        [Description("Evaluates if the two PadFoundation Properties are equal with the Property comparers.")]
-        [Input("element", "A PadFoundation to compare the properties of with another PadFoudation.")]
-        [Input("other", "The PadFoundation to compare with the other PadFoundation.")]
-        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool HasMergeablePropertiesWith(this PadFoundation element, PadFoundation other)
-        {
-            return element.IsNull() && other.IsNull() ? false :
-                new SurfacePropertyComparer().Equals(element.Property, other.Property);
+            return Create.PadFoundation(externalEdges, padFoundation.Property, padFoundation.Orientation);
         }
 
         /***************************************************/
