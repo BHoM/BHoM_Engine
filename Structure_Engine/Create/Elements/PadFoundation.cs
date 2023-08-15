@@ -37,7 +37,7 @@ namespace BH.Engine.Structure
         public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness, Basis orientation)
         {
             return null;
-                //PadFoundation(Spatial.Create.RectangleProfile(length, width).Edges, thickness, orientation);
+            //PadFoundation(Spatial.Create.RectangleProfile(length, width).Edges, thickness, orientation);
         }
     }
 }
