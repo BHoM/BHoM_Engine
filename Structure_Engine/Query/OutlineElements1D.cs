@@ -52,7 +52,7 @@ namespace BH.Engine.Structure
                 return new List<IElement1D>();
             }
 
-            return padFoundation.Edges().Cast<IElement1D>().ToList();
+            return padFoundation.TopSurface.Cast<IElement1D>().ToList();
         }
 
         /***************************************************/
