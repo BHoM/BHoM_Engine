@@ -8,7 +8,6 @@ using BH.oM.Base.Attributes;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
-using BH.oM.Spatial.Layouts;
 
 namespace BH.Engine.Structure
 {
