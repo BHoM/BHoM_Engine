@@ -53,11 +53,33 @@ namespace BH.Engine.Serialiser
             foreach (PropertyInfo prop in value.GetType().GetProperties())
             {
                 var propertyValue = prop.GetValue(value);
-                if ((propertyValue == null || string.IsNullOrEmpty(propertyValue.ToString())) && m_PropertyNamesToIgnore.Contains(prop.Name))
-                    continue; //Don't write out null or empty properties if they're part of the base IBHoMObject properties
+                bool include = true;
 
-                writer.WriteName(prop.Name);
-                ISerialise(propertyValue, writer, prop.PropertyType);
+                switch (prop.Name)
+                {
+                    case "Name":
+                        include = !string.IsNullOrEmpty(propertyValue.ToString()); //If string is not null or empty - include the property
+                        break;
+                    case "Fragments":
+                        include = ((FragmentSet)propertyValue).Count > 0; //If fragment count is greater than 0, include it
+                        break;
+                    case "Tags":
+                        include = ((HashSet<string>)propertyValue).Count > 0; //As with fragments
+                        break;
+                    case "CustomData":
+                        include = ((Dictionary<string, object>)propertyValue).Count > 0;
+                        break;
+                    case "BHoM_Guid":
+                        include = !string.IsNullOrEmpty(propertyValue.ToString());
+                        break;
+                }
+
+                if(include)
+                {
+                    writer.WriteName(prop.Name);
+                    ISerialise(propertyValue, writer, prop.PropertyType);
+                }
+                
             }
             writer.WriteEndDocument();
         }
