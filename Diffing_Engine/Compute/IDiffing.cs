@@ -181,7 +181,7 @@ namespace BH.Engine.Diffing
             diff = null;
 
             bool nullOrEmpty_pastObjects = !pastObjects?.Any() ?? true;
-            bool nullOrEmpty_followingObjs = !pastObjects?.Any() ?? true;
+            bool nullOrEmpty_followingObjs = !followingObjs?.Any() ?? true;
 
             pastObjects = nullOrEmpty_pastObjects ? new List<object>() : pastObjects;
             followingObjs = nullOrEmpty_followingObjs ? new List<object>() : followingObjs;
