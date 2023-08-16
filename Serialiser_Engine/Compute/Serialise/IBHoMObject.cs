@@ -84,8 +84,5 @@ namespace BH.Engine.Serialiser
             writer.WriteEndDocument();
         }
 
-        /*******************************************/
-
-        private static List<string> m_PropertyNamesToIgnore = typeof(IBHoMObject).GetProperties().Select(x => x.Name).ToList(); //Storing here so that if serialising collections of IBHoMObjects, we don't have query the properties every time
     }
 }
