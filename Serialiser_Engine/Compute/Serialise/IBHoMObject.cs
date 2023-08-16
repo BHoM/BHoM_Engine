@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using MongoDB.Bson.IO;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -52,32 +53,28 @@ namespace BH.Engine.Serialiser
 
             foreach (PropertyInfo prop in value.GetType().GetProperties())
             {
-                var propertyValue = prop.GetValue(value);
                 bool include = true;
 
                 switch (prop.Name)
                 {
                     case "Name":
-                        include = !string.IsNullOrEmpty(propertyValue.ToString()); //If string is not null or empty - include the property
+                        include = !string.IsNullOrEmpty(value.Name);
                         break;
                     case "Fragments":
-                        include = ((FragmentSet)propertyValue).Count > 0; //If fragment count is greater than 0, include it
+                        include = (value.Fragments != null && value.Fragments.Count > 0);
                         break;
                     case "Tags":
-                        include = ((HashSet<string>)propertyValue).Count > 0; //As with fragments
+                        include = (value.Tags != null && value.Tags.Count > 0);
                         break;
                     case "CustomData":
-                        include = ((Dictionary<string, object>)propertyValue).Count > 0;
-                        break;
-                    case "BHoM_Guid":
-                        include = !string.IsNullOrEmpty(propertyValue.ToString());
+                        include = (value.CustomData != null && value.CustomData.Count > 0);
                         break;
                 }
 
                 if(include)
                 {
                     writer.WriteName(prop.Name);
-                    ISerialise(propertyValue, writer, prop.PropertyType);
+                    ISerialise(prop.GetValue(value), writer, prop.PropertyType);
                 }
                 
             }
