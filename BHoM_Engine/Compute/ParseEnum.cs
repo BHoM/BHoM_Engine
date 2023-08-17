@@ -51,14 +51,16 @@ namespace BH.Engine.Base
 
         /*******************************************/
 
+        [PreviousVersion("6.3", "BH.Engine.Base.Compute.ParseEnum(System.Type, System.String)")]
         [Description("Converts a string into its corresponding enum of type enumType")]
         [Input("enumType", "Type of enum to be created")]
         [Input("value", "String representation of the enum to be created")]
+        [Input("ignoreCase", "Define whether the case of the input string is important. Defaults to false, signifying the string must match the enum value exactly with correct capitalisation.")]
         [Output("Enum of type enumType with a value matching the input string")]
-        public static object ParseEnum(Type enumType, string value)
+        public static object ParseEnum(Type enumType, string value, bool ignoreCase = false)
         {
             if (Enum.IsDefined(enumType, value))
-                return Enum.Parse(enumType, value);
+                return Enum.Parse(enumType, value, ignoreCase);
             else
             {
                 return Enum.GetValues(enumType).OfType<Enum>()
@@ -74,6 +76,21 @@ namespace BH.Engine.Base
         }
 
         /*******************************************/
+
+        [Description("Parse an integer value to its corresponding enum of the supplied type.")]
+        [Input("enumType", "Type of enum to be created.")]
+        [Input("value", "Integer value to convert to the enum object.")]
+        [Output("Enum of type enumType with a value matching the input value.")]
+        public static object ParseEnum(Type enumType, int value)
+        {
+            if (Enum.IsDefined(enumType, value))
+                return Enum.ToObject(enumType, value);
+            else
+            {
+                BH.Engine.Base.Compute.RecordError($"Value {value} does not exist within the enum of type {enumType.Name}.");
+                return null;
+            }
+        }
     }
 }
 
