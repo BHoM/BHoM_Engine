@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace BH.Engine.Settings
 {
@@ -41,7 +42,7 @@ namespace BH.Engine.Settings
             if (string.IsNullOrEmpty(settingsFolder))
                 settingsFolder = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Settings"); //Defaults to C:/ProgramData/BHoM/Settings if no folder is provided
 
-            if (Global.BHoMSettingsLoaded[settingsFolder] && !forceLoad)
+            if (Global.BHoMSettingsLoaded.Contains(settingsFolder) && !forceLoad)
                 return; //Settings from this folder have already been loaded, and we're not force loading them, so don't waste time reloading them
 
             var settingsFiles = Directory.EnumerateFiles(settingsFolder, "*.json", SearchOption.AllDirectories);
@@ -74,7 +75,7 @@ namespace BH.Engine.Settings
                 }
             }
 
-            Global.BHoMSettingsLoaded[settingsFolder] = true;
+            Global.BHoMSettingsLoaded.Add(settingsFolder);
         }
     }
 }
