@@ -37,6 +37,8 @@ namespace BH.Engine.Settings
         [Output("settings", "The requested settings if they exist in memory. If they don't exist, a default is returned instead.")]
         public static object GetSettings(Type type)
         {
+            Compute.LoadSettings(); //Just in case - load up the defaults
+
             ISettings settings = null;
             if (!Global.BHoMSettings.TryGetValue(type, out settings))
             {
