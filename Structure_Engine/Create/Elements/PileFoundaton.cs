@@ -9,6 +9,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 
 
 namespace BH.Engine.Structure
@@ -40,8 +41,9 @@ namespace BH.Engine.Structure
 
             foreach (PileGroup pileGroup in pileGroups)
             {
-                pts.AddRange(pileGroup.PileLayout.Points);
+                pts.AddRange(pileGroup.PileLayout.IPointLayout(null));
             }
+
 
             pts.Add(pts.First());
 

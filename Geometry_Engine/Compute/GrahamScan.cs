@@ -37,36 +37,41 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Implements the GrahamScan algorithim to determine the convex hull of a list of points contained within the XY Plane.")]
+        [Description("Implements the GrahamScan algorithm to determine the convex hull of a list of points contained within the XY Plane.")]
         [Input("pts", "The points to determine the convex hull contained within the XY Plane.")]
         [Output("c", "The convex hull of the point list.")]
-        public static List<Point> GrahamScan(List<Point> pts)
+        public static List<Point> GrahamScan(List<Point> pts, double tolerance = Tolerance.MicroDistance)
         {
             if (pts.IsNullOrEmpty())
             {
                 Base.Compute.RecordError("The point list is null or empty.");
                 return pts;
             }
+            if (pts.Count < 3)
+            {
+                Base.Compute.RecordError("The point list must be greater than three to determine the Convex Hull.");
+                return pts;
+            }
 
             // Check that the points are all wihtin the same plane 
-            Plane plane = pts.FitPlane(Tolerance.MicroDistance);
+            Plane plane = pts.FitPlane(tolerance);
             if (!Query.IsInPlane(pts, Plane.XY))
             {
                 Base.Compute.RecordError("The point list needs to be within the XY Plane.");
                 return pts;
             }
 
-            // Find the point with the lowest Y coordination
+            // Find the point with the lowest Y coordinate
             IOrderedEnumerable<Point> orderedPts = pts.OrderBy(pt => pt.Y);
 
-            Point p = pts.First();
+            Point p = orderedPts.First();
 
             // Check if there is more than one point with the lowest Y
-            if (Math.Abs(p.Y - pts[1].Y) < Tolerance.MicroDistance)
+            if (Math.Abs(p.Y - ((Point)orderedPts.IItem(1)).Y) < tolerance)
             {
                 // Get points with lowest Y coordinate and select the point with the lowest X
                 pts = orderedPts.ThenBy(x => x.X).ToList();
-                p = pts.First();
+                p = orderedPts.First();
             }
             else
                 pts = orderedPts.ToList();
@@ -75,10 +80,10 @@ namespace BH.Engine.Geometry
             pts.Remove(p);
 
             // Sort by the increasing order of the angle the point and P make with the x-axis
-            pts = pts.OrderBy(pt => Math.Atan2(pt.Y - p.Y, pt.X - p.X)).ToList(); // TODO: If several points have the same angle - break ties by increasing distance
+            pts = pts.OrderBy(pt => Create.Vector(p, pt).DotProduct(Vector.XAxis) / Create.Vector(p, pt).Length()).ToList();
 
             // Group by angle between P and the points
-            IEnumerable<IGrouping<double,Point>> groupedPts = pts.GroupBy(pt => Math.Atan2(pt.Y - p.Y, pt.X - p.X));
+            IEnumerable<IGrouping<double, Point>> groupedPts = pts.GroupBy(pt => Create.Vector(p,pt).DotProduct(Vector.XAxis)/Create.Vector(p, pt).Length());
 
             // Add to the start of selPts as it has been removed from pts
             List<Point> selPts = new List<Point>() { p };
@@ -96,7 +101,7 @@ namespace BH.Engine.Geometry
             // Iterate through the algorithim
             while (pts.Count > 0)
             {
-                GrahamScanInt(ref pts, ref selPts);
+                GrahamScanSolver(ref pts, ref selPts);
             };
 
             // Due to the grouping, it is necessary to add the first point to close the polyline
@@ -106,7 +111,7 @@ namespace BH.Engine.Geometry
             return selPts;
         }
 
-        private static List<Point> GrahamScanInt(ref List<Point> pts, ref List<Point> selPts)
+        private static List<Point> GrahamScanSolver(ref List<Point> pts, ref List<Point> selPts)
         {
             if (pts.Count > 0)
             {
