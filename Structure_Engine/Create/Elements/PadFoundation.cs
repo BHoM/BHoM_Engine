@@ -22,18 +22,18 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a PadFoundation from its fundamental parts and a basis.")]
-        [Input("profile", "The section profile defining the edges of the pad. All section constants are derived based on the dimensions of this.")]
+        [Input("topSurface", "The section profile defining the edges of the pad. All section constants are derived based on the dimensions of this.")]
         [InputFromProperty("property")]
-        [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
+        [Input("orientation", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
         public static PadFoundation PadFoundation(List<Edge> topSurface, ISurfaceProperty property = null, Basis orientation = null)
         {
             if (topSurface.IsNullOrEmpty() || topSurface.Any(x => x.IsNull()))
                 return null;
 
             if (orientation == null)
-                orientation = new Basis(new Vector() { X = 1 }, new Vector() { Y = 1 }, new Vector() { Z = 1 });
+                orientation = new Basis(Vector.XAxis, Vector.YAxis, Vector.ZAxis);
 
-            return new PadFoundation() { TopSurface = topSurface, Property = property, Orientation = orientation };
+            return new PadFoundation() { TopOutline = topSurface, Property = property, Orientation = orientation };
         }
 
         /***************************************************/

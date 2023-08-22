@@ -47,9 +47,9 @@ namespace BH.Engine.Structure
         public static List<IElement1D> OutlineElements1D(this PadFoundation padFoundation)
         {
             if (padFoundation.IsNull())
-                return new List<IElement1D>();
+                return null;
 
-            return padFoundation.TopSurface.Cast<IElement1D>().ToList();
+            return padFoundation.TopOutline.Cast<IElement1D>().ToList();
         }
 
         /***************************************************/
