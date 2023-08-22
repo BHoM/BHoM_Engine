@@ -26,7 +26,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Convert
+    public static partial class Modify
     {
         /***************************************************/
         /****               Public Methods              ****/
@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         [Description("Returns the projection of a point on the XY plane. This shorthand method should run quicker than BH.Engine.Geometry.Project(this Point, Plane) in performance-sensitive applications.")]
         [Input("pnt", "A point to project onto the XY plane.")]
         [Output("pntOnXY", "Projection of the input point on the XY plane.")]
-        public static Point ToXY(this Point pnt)
+        public static Point ProjectToXY(this Point pnt)
         {
             return new Point { X = pnt.X, Y = pnt.Y, Z = 0 };
         }
