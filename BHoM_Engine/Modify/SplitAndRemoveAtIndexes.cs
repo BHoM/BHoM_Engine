@@ -20,10 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Base
 {
@@ -37,7 +37,7 @@ namespace BH.Engine.Base
         [Input("items", "A list of items to split at one or more indexes.")]
         [Input("indexes", "Indexes of items to remove.")]
         [Output("lists", "Sublists of consecutive items that remain after items at input indexes have been removed.")]
-        public static List<List<T>> SplitAndRemoveAtIndexes<T>(this List<T> items, List<int> indexes)
+        public static List<List<T>> RemoveAndSplitAtIndexes<T>(this List<T> items, List<int> indexes)
         {
             int startIndex = 0;
             indexes.Add(items.Count);
