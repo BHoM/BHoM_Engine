@@ -37,15 +37,23 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Implements the GrahamScan algorithim to determine the convex hull of a list of points.")]
-        [Input("pts", "The points to determine the convex hull.")]
+        [Description("Implements the GrahamScan algorithim to determine the convex hull of a list of points contained within the XY Plane.")]
+        [Input("pts", "The points to determine the convex hull contained within the XY Plane.")]
         [Output("c", "The convex hull of the point list.")]
         public static List<Point> GrahamScan(List<Point> pts)
         {
             if (pts.IsNullOrEmpty())
             {
                 Base.Compute.RecordError("The point list is null or empty.");
-                return null;
+                return pts;
+            }
+
+            // Check that the points are all wihtin the same plane 
+            Plane plane = pts.FitPlane(Tolerance.MicroDistance);
+            if (!Query.IsInPlane(pts, Plane.XY))
+            {
+                Base.Compute.RecordError("The point list needs to be within the XY Plane.");
+                return pts;
             }
 
             // Find the point with the lowest Y coordination
