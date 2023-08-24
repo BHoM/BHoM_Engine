@@ -43,7 +43,7 @@ namespace BH.Engine.Settings
             if (string.IsNullOrEmpty(settingsFolder))
                 settingsFolder = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Settings"); //Defaults to C:/ProgramData/BHoM/Settings if no folder is provided
 
-            string fullSettingsLoadedKey = $"{settingsFolder}/{fileFilter}";
+            string fullSettingsLoadedKey = $"{settingsFolder}/{fileFilter}"; //Construct a unique key for this folder + filter to determine whether settings have already been loaded from this folder for this file type.
 
             if (Global.BHoMSettingsLoaded.Contains(fullSettingsLoadedKey) && !forceLoad)
                 return; //Settings from this folder have already been loaded, and we're not force loading them, so don't waste time reloading them
