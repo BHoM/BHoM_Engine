@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
     <FileVersion>6.3.0.0</FileVersion>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
@@ -11,6 +10,14 @@
     <Configurations>Debug;Release;Test</Configurations>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RootNamespace>BH.Tests.Engine.Base</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'!='Test'">
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Test'">
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
