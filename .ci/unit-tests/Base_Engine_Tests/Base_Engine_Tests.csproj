@@ -46,7 +46,9 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NUnit_Engine">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\NUnit_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\NUnit_Engine.dll</HintPath>
+      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Structure_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Structure_oM.dll</HintPath>
