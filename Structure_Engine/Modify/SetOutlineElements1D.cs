@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
 
             List<Edge> externalEdges = edges.Cast<Edge>().ToList();
 
-            return Create.PadFoundation(externalEdges, padFoundation.Property, padFoundation.Orientation);
+            return Create.PadFoundation(externalEdges, padFoundation.Property, padFoundation.OrientationAngle);
         }
 
         /***************************************************/

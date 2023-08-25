@@ -90,6 +90,16 @@ namespace BH.Engine.Structure
             return new CompositeGeometry() { Elements = lines };
         }
 
+        [Description("Gets the geometry of a RigidLink as a list of lines between the primary node and the secondary nodes. Method required for automatic display in UI packages.")]
+        [Input("link", "RigidLink to get the line geometry from.")]
+        [Output("lines", "The geometry of the RigidLink as a list of primary-secondary lines.")]
+        public static IGeometry Geometry(this PadFoundation pad)
+        {
+            List<IGeometry> lines = pad.TopOutline.Select(x => x.Geometry()).ToList();
+
+            return new CompositeGeometry() { Elements = lines };
+        }
+
 
         /***************************************************/
         /**** Public Methods - Interface                ****/

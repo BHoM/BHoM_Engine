@@ -50,18 +50,17 @@ namespace BH.Engine.Structure
             if (pileFoundation.PileCap.Property.IsNull() || pileFoundation.PileCap.Property.Material.IsNull())
                 return null;
 
-            if (pileFoundation.PileGroups.Any(x => x.PileSection.IsNull()) || pileFoundation.PileGroups.Any(x => x.PileSection.Material.IsNull()))
+            if (pileFoundation.Piles.Any(x => x.Section.IsNull()) || pileFoundation.Piles.Any(x => x.Section.Material.IsNull()))
                 return null;
 
             List<VolumetricMaterialTakeoff> takeoffs = new List<VolumetricMaterialTakeoff>();
 
-            foreach (PileGroup pileGroup in pileFoundation.PileGroups)
+            foreach (Pile pile in pileFoundation.Piles)
             {
-                Node start = (Node)pileGroup.PileLayout.Points.First();
-                Bar pile = new Bar() { StartNode = start, EndNode = (Node)start.Translate(new Vector() { Z = -pileGroup.PileLength }), SectionProperty = pileGroup.PileSection };
+                Bar bar = new Bar() { StartNode = pile.TopNode, EndNode = pile.BottomNode, SectionProperty = pile.Section };
 
-                for(int i = 0; i < pileGroup.PileLayout.Points.Count; i++)
-                    takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(pile));
+                // Can just use VolumetricMaterialTakeOff for a Pile here
+                takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(bar));
             }
 
             takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(pileFoundation.PileCap));

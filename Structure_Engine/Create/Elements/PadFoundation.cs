@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Base;
 using BH.Engine.Geometry;
+using BH.Engine.Spatial;
 
 
 namespace BH.Engine.Structure
@@ -21,33 +23,35 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a PadFoundation from its fundamental parts and a basis.")]
-        [Input("topSurface", "The section profile defining the edges of the pad. All section constants are derived based on the dimensions of this.")]
+        [Description("Creates a PadFoundation from an outline, property and orientation angle.")]
+        [Input("topSurface", "The outer edges of the pad. All section constants are derived based on the dimensions of this.")]
         [InputFromProperty("property")]
-        [Input("orientation", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
-        public static PadFoundation PadFoundation(List<Edge> topSurface, ISurfaceProperty property = null, Basis orientation = null)
+        [Input("orientationAngle", "The rotation to be applied the local X of the PadFoundation about the normal of the PadFoundation. This does not affect the geometry but can be used to define prinicpal directions for reinforcement.")]
+        [Output("padFoundation", "The created PadFoundation with the property and orientation applied.")]
+        public static PadFoundation PadFoundation(List<Edge> topOutline, ISurfaceProperty property = null, double orientationAngle = 0)
         {
-            if (topSurface.IsNullOrEmpty() || topSurface.Any(x => x.IsNull()))
+            if (topOutline.IsNullOrEmpty() || topOutline.Any(x => x.IsNull()))
                 return null;
 
-            if (orientation == null)
-                orientation = new Basis(Vector.XAxis, Vector.YAxis, Vector.ZAxis);
-
-            return new PadFoundation() { TopOutline = topSurface, Property = property, Orientation = orientation };
+            return new PadFoundation() { TopOutline = topOutline, Property = property, OrientationAngle = orientationAngle };
         }
 
         /***************************************************/
 
-        [Description("Creates a PadFoundation from its fundamental parts and a basis.")]
+        [Description("Creates a rectangular PadFoundation and transforms it to the coordinate system provided.")]
         [Input("width", "The width of the PadFoundation aligned with Global X.")]
         [Input("length", "The length of the PadFoundation aligned with Global Y.")]
         [InputFromProperty("property")]
-        [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the PadFoundation.")]
-        public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness, Basis orientation)
+        [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the PadFoundation to which the PadFoundation is mapped to.")]
+        [Input("orientationAngle", "The rotation to be applied the local X of the PadFoundation about the normal of the PadFoundation. This does not affect the geometry but can be used to define prinicpal directions for reinforcement.")]
+        [Output("padFoundation", "The created PadFoundation with a rectangular outline mapped to the coordinate system provided.")]
+        public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness, Cartesian coordinateSystem, double orientationAngle)
         {
             List<Edge> edges = Spatial.Create.RectangleProfile(length, width).Edges.Select(x => new Edge() { Curve = x }).ToList();
 
-            return PadFoundation(edges, thickness, orientation);
+            edges.Select(x => x.Orient(new Cartesian(), coordinateSystem));
+
+            return PadFoundation(edges, thickness, orientationAngle);
         }
     }
 }

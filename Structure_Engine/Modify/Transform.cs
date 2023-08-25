@@ -272,7 +272,7 @@ namespace BH.Engine.Structure
             }
 
             PadFoundation result = padFoundation.ShallowClone();
-            result.Orientation = result.Orientation.Transform(transform);
+            result = result.Transform(transform);
 
             return result;
         }
