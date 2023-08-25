@@ -606,17 +606,17 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "PadFoundation", msg);
                 return true;
             }
-            else if (padFoundation.TopSurface == null)
+            else if (padFoundation.TopOutline == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (padFoundation.TopSurface.Count == 0)
+            else if (padFoundation.TopOutline.Count == 0)
             {
                 Base.Compute.RecordError($"Cannot evaluate {methodName} because the PadFoundation Edges count is 0. {msg}");
                 return true;
             }
-            else if (padFoundation.TopSurface.Any(x => x.IsNull($"The Edges are owned by a Panel. {msg}", methodName)))
+            else if (padFoundation.TopOutline.Any(x => x.IsNull($"The Edges are owned by a Panel. {msg}", methodName)))
             {
                 if (!string.IsNullOrEmpty(msg))
                     Base.Compute.RecordError(msg);
@@ -626,29 +626,20 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [Description("Checks if a PileGroup is null and outputs relevant error message.")]
+        [Description("Checks if a Pile is null and outputs relevant error message.")]
         [Input("PileGroup", "The PileGroup to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the PileGroup is null.")]
-        public static bool IsNull(this PileGroup pileGroup, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Pile pile, [CallerMemberName] string methodName = "Method", string msg = "")
         {
-            if (pileGroup == null)
+            if (pile == null)
             {
                 ErrorMessage(methodName, "PileGroup", msg);
                 return true;
             }
-            else if (pileGroup.PileLength == 0)
-            {
-                ErrorMessage(methodName, "PileGroup", msg);
+            else if (pile.TopNode.IsNull("The Node (StartNode) is owned by a Pile.", methodName) || pile.BottomNode.IsNull("The Node (EndNode) is owned by a Pile.", methodName))
                 return true;
-            }
-            else if (pileGroup.PileLayout == null)
-            {
-                ErrorMessage(methodName, "PileGroup", msg);
-                return true;
-            }
-
 
             return false;
         }
@@ -667,7 +658,7 @@ namespace BH.Engine.Structure
             }
             else if (pileFoundation.PileCap.IsNull())
                 return true;
-            else if (pileFoundation.PileGroups.Any(x => x.IsNull()))
+            else if (pileFoundation.Piles.Any(x => x.IsNull()))
                 return true;
 
             return false;
