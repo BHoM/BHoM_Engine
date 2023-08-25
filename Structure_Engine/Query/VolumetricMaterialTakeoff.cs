@@ -24,12 +24,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Dimensional;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.oM.Base.Attributes;
-using BH.oM.Geometry;
 using BH.oM.Physical.Materials;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.MaterialFragments;
 
 namespace BH.Engine.Structure
 {
@@ -55,19 +56,61 @@ namespace BH.Engine.Structure
 
             List<VolumetricMaterialTakeoff> takeoffs = new List<VolumetricMaterialTakeoff>();
 
-            foreach (Pile pile in pileFoundation.Piles)
-            {
-                Bar bar = new Bar() { StartNode = pile.TopNode, EndNode = pile.BottomNode, SectionProperty = pile.Section };
-
-                // Can just use VolumetricMaterialTakeOff for a Pile here
-                takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(bar));
-            }
-
             takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(pileFoundation.PileCap));
+            foreach(IElementM pile in pileFoundation.Piles)
+            {
+                takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(pile));
+            }
+            takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff((IElementM)pileFoundation.Piles));
 
             return Matter.Compute.AggregateVolumetricMaterialTakeoff(takeoffs);
         }
 
         /***************************************************/
+
+        [Description("Gets the volumetric material takeoff from the Pile object.")]
+        [Input("pile", "The PileFoundation object to extract the volumetric material takeoff from.")]
+        [Output("volTakeoff", "The volumetric material takeoff based on buildup of the Pile object.")]
+        public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this Pile pile)
+        {
+            if (pile.IsNull())
+                return null;
+
+            if (pile.Section.IsNull() || pile.Section.Material.IsNull())
+                return null;
+
+            IMaterialFragment structMaterial = pile.Section.Material;
+
+            Material physMaterial = new Material() { Density = structMaterial.Density, Name = structMaterial.Name };
+
+            VolumetricMaterialTakeoff takeOff = Matter.Create.VolumetricMaterialTakeoff(new List<Material>() { physMaterial }, new List<double>() { pile.Section.Area*pile.Length() });
+
+            return takeOff;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the volumetric material takeoff from the PadFoundation object.")]
+        [Input("padfoundation", "The PadFoundation object to extract the volumetric material takeoff from.")]
+        [Output("volTakeoff", "The volumetric material takeoff based on buildup of the PadFoundation object.")]
+        public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this PadFoundation padFoundation)
+        {
+            if (padFoundation.IsNull())
+                return null;
+
+            if (padFoundation.Property.IsNull() || padFoundation.Property.Material.IsNull())
+                return null;
+
+            IMaterialFragment structMaterial = padFoundation.Property.Material;
+
+            Material physMaterial = new Material() { Density = structMaterial.Density, Name = structMaterial.Name};
+
+            VolumetricMaterialTakeoff takeOff  = Matter.Create.VolumetricMaterialTakeoff(new List<Material>() { physMaterial}, new List<double>() { padFoundation.SolidVolume() });
+
+            return takeOff;
+        }
+
+        /***************************************************/
+
     }
 }
