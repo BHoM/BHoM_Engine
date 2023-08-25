@@ -90,16 +90,13 @@ namespace BH.Engine.Structure
             return new CompositeGeometry() { Elements = lines };
         }
 
-        [Description("Gets the geometry of a RigidLink as a list of lines between the primary node and the secondary nodes. Method required for automatic display in UI packages.")]
-        [Input("link", "RigidLink to get the line geometry from.")]
-        [Output("lines", "The geometry of the RigidLink as a list of primary-secondary lines.")]
-        public static IGeometry Geometry(this PadFoundation pad)
+        [Description("Gets the geometry of a Pile as a single line. Method required for automatic display in UI packages.")]
+        [Input("pile", "Pile to get the line geometry from.")]
+        [Output("line", "The line defining the Pile.")]
+        public static IGeometry Geometry(this Pile pile)
         {
-            List<IGeometry> lines = pad.TopOutline.Select(x => x.Geometry()).ToList();
-
-            return new CompositeGeometry() { Elements = lines };
+            return new  Line() { Start = pile.TopNode.Position, End = pile.BottomNode.Position };
         }
-
 
         /***************************************************/
         /**** Public Methods - Interface                ****/

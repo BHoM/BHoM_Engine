@@ -21,19 +21,19 @@
  */
 
 
-using BH.oM.Structure.SurfaceProperties;
+using BH.oM.Structure.SectionProperties;
 using System.Collections.Generic;
 using System;
 
 namespace BH.Engine.Structure
 {
-    public class SurfacePropertyComparer : IEqualityComparer<ISurfaceProperty>
+    public class SectionPropertyComparer : IEqualityComparer<ISectionProperty>
     {
         /***************************************************/
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public bool Equals(ISurfaceProperty property1, ISurfaceProperty property2)
+        public bool Equals(ISectionProperty property1, ISectionProperty property2)
         {
             //Check whether the compared objects reference the same data.
             if (Object.ReferenceEquals(property1, property2))
@@ -43,27 +43,12 @@ namespace BH.Engine.Structure
             if (Object.ReferenceEquals(property1, null) || Object.ReferenceEquals(property2, null))
                 return false;
 
-            // Currently implemented for the IsMergeableProperties
-            if (property1 is ConstantThickness && property2 is ConstantThickness)
-            {
-                ConstantThickness prop1 = (ConstantThickness)property1;
-                ConstantThickness prop2 = (ConstantThickness)property2;
-
-                if (prop1.Name == prop2.Name &&
-                    prop1.Material.Equals(prop2.Material) &&
-                    prop1.PanelType == prop2.PanelType &&
-                    prop1.Thickness == prop2.Thickness)
-                    return true;
-                else
-                    return false;
-            }
-
             return false;
         }
 
         /***************************************************/
 
-        public int GetHashCode(ISurfaceProperty obj)
+        public int GetHashCode(ISectionProperty obj)
         {
             //Check whether the object is null
             if (Object.ReferenceEquals(obj, null)) return 0;
