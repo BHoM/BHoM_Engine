@@ -65,28 +65,27 @@ namespace BH.Engine.Geometry
             IOrderedEnumerable<Point> orderedPts = pts.OrderBy(pt => pt.Y);
 
             Point p = orderedPts.First();
+            pts = orderedPts.ToList();
 
             // Check if there is more than one point with the lowest Y
-            if (Math.Abs(p.Y - ((Point)orderedPts.IItem(1)).Y) < tolerance)
+            if (Math.Abs(p.Y - pts[1].Y) < tolerance)
             {
                 // Get points with lowest Y coordinate and select the point with the lowest X
                 pts = orderedPts.ThenBy(x => x.X).ToList();
-                p = orderedPts.First();
+                p = pts.First();
             }
-            else
-                pts = orderedPts.ToList();
 
             // Remove the P from the list of points
             pts.Remove(p);
 
-            // Sort by the increasing order of the angle the point and P make with the x-axis
-            pts = pts.OrderBy(pt => Create.Vector(p, pt).DotProduct(Vector.XAxis) / Create.Vector(p, pt).Length()).ToList();
+            // Calculate the angles between p and each pt
+            List<double> angles = pts.Select(pt => pt - p).Select(v => v.DotProduct(Vector.XAxis) / v.Length()).ToList();
+
+            // Combine both lists, sort by angle and then extract the points
+            pts = pts.Zip(angles, (a, b) => new { pt = a, angle = b }).OrderBy(c => c.angle).Select(x => x.pt).Reverse().ToList();
 
             // Group by angle between P and the points
-            IEnumerable<IGrouping<double, Point>> groupedPts = pts.GroupBy(pt => Create.Vector(p,pt).DotProduct(Vector.XAxis)/Create.Vector(p, pt).Length());
-
-            // Add to the start of selPts as it has been removed from pts
-            List<Point> selPts = new List<Point>() { p };
+            IEnumerable <IGrouping<double, Point>> groupedPts = pts.GroupBy(pt => Create.Vector(p,pt).DotProduct(Vector.XAxis)/Create.Vector(p, pt).Length());
 
             bool duplicateAngle = false;
 
@@ -97,6 +96,9 @@ namespace BH.Engine.Geometry
                 pts = groupedPts.Select(g => new { s = g.OrderByDescending(i => i.Distance(p)) }).Select(x => x.s.First()).ToList();
                 duplicateAngle = true;
             }
+
+            // Add to the start of selPts as it has been removed from pts
+            List<Point> selPts = new List<Point>() { p };
 
             // Iterate through the algorithim
             while (pts.Count > 0)
