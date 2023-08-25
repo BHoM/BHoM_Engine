@@ -33,7 +33,7 @@ namespace BH.Engine.Base
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Removes list items at given indexes, then returns the remaining objects as sublists of consecutive items.")]
+        [Description("Removes list items at given indexes, then returns the remaining objects as non-empty sublists of consecutive items.")]
         [Input("items", "A list of items to split at one or more indexes.")]
         [Input("indexes", "Indexes of items to remove.")]
         [Output("lists", "Sublists of consecutive items that remain after items at input indexes have been removed.")]
@@ -45,8 +45,14 @@ namespace BH.Engine.Base
 
             foreach (int i in indexes)
             {
+                if (i < 0 || i > items.Count)
+                    continue;
+
                 List<T> subList = items.Skip(startIndex).Take(i - startIndex).ToList();
-                result.Add(subList);
+
+                if (subList.Any())
+                    result.Add(subList);
+
                 startIndex = i + 1;
             }
 
