@@ -90,7 +90,7 @@ namespace BH.Engine.Environment
                 Point centre = o.Polyline().Centroid(centroidTolerance);
                 if (centre != null)
                 {
-                    Panel panel = clonedPanels.PanelsContainingPoint(centre, false, containingTolerance).FirstOrDefault();
+                    Panel panel = clonedPanels.PanelsContainingPoint(centre, false, containingTolerance).Item1.FirstOrDefault();
                     if (panel != null)
                     {
                         if (panel.Openings == null) panel.Openings = new List<Opening>();
