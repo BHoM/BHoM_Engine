@@ -6,6 +6,7 @@
     <FileVersion>6.3.0.0</FileVersion>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <RootNamespace>BH.Engine.Settings</RootNamespace>
+    <OutputPath>..\Build\</OutputPath>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
