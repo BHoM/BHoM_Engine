@@ -87,14 +87,11 @@ namespace BH.Engine.Geometry
             // Group by angle between P and the points
             IEnumerable <IGrouping<double, Point>> groupedPts = pts.GroupBy(pt => Create.Vector(p,pt).DotProduct(Vector.XAxis)/Create.Vector(p, pt).Length());
 
-            bool duplicateAngle = false;
-
             // Check for points that have the same angle 
             if (groupedPts.Where(grp => grp.Count() > 1).Any())
             {
                 // For each group, sort by distance from P and select the furthest point
                 pts = groupedPts.Select(g => new { s = g.OrderByDescending(i => i.Distance(p)) }).Select(x => x.s.First()).ToList();
-                duplicateAngle = true;
             }
 
             // Add to the start of selPts as it has been removed from pts
@@ -105,10 +102,6 @@ namespace BH.Engine.Geometry
             {
                 GrahamScanSolver(ref pts, ref selPts);
             };
-
-            // Due to the grouping, it is necessary to add the first point to close the polyline
-            if (duplicateAngle)
-                selPts.Add(selPts.First());
 
             return selPts;
         }
