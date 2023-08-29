@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
                 Engine.Base.Compute.RecordWarning("The areaElement has a PanelRebarIntent, which will not be included in the MaterialComposition. Please account for replacement of concrete volume with reinforcement externally.");
 
             ReinforcementDensity reinfDensity = areaElement.FindFragment<ReinforcementDensity>();
-            
+
             return areaElement.Property.IMaterialComposition(reinfDensity);
         }
 
@@ -163,7 +163,7 @@ namespace BH.Engine.Structure
 
             if (property.Layers.Any(x => x.Material == null)) //cull any null layers, raise a warning.            
                 Base.Compute.RecordWarning("At least one Material in a Layered surface property was null. VolumePerArea excludes this layer, assuming it is void space.");
-            
+
             IEnumerable<Layer> solidLayers = property.Layers.Where(x => x.Material != null); //filter to only layers which are solid.
             return Matter.Create.MaterialComposition(solidLayers.Select(x => Physical.Create.Material(x.Material)), solidLayers.Select(x => x.Thickness));
         }
@@ -241,7 +241,7 @@ namespace BH.Engine.Structure
                     Physical.Create.Material(reinforcementDensity.Material)
                     },
                     new List<double>() { slabVolume, deckVolume, rebarVolume }
-                    ) ;
+                    );
             }
 
             return Matter.Create.MaterialComposition(
@@ -316,10 +316,10 @@ namespace BH.Engine.Structure
 
         private static MaterialComposition MaterialComposition(this IMaterialFragment baseMaterial, ReinforcementDensity reinforcementDensity)
         {
-            if(reinforcementDensity.Material == null || reinforcementDensity.Material.Density == 0 || reinforcementDensity.Density == 0)
+            if (reinforcementDensity.Material == null || reinforcementDensity.Material.Density == 0 || reinforcementDensity.Density == 0)
                 return (MaterialComposition)Physical.Create.Material(baseMaterial);
-      
-            if(reinforcementDensity.Material.Density < 0)
+
+            if (reinforcementDensity.Material.Density < 0)
                 Engine.Base.Compute.RecordWarning("The Density of the Material of the ReinforcementDensity is less than 0. Please check the data to ensure its validity. Care should be taken using the MaterialComposition.");
 
             if (reinforcementDensity.Density < 0)

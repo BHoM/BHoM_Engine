@@ -20,7 +20,7 @@ namespace BH.Engine.Structure
 
         [Description("Creates a structural Pile. This object can be used with a PileFoundation or as a standalone foundation.")]
         [Input("line", "The definining geometry for the pile.")]
-        [InputFromProperty("sectionProperty")]
+        [InputFromProperty("pileSection")]
         [InputFromProperty("orientationAngle")]
         [Output("pile", "The created Pile with a centreline matching the provided geometrical Line.")]
         public static Pile Pile(Line line, ISectionProperty pileSection = null, double orientationAngle = 0)
@@ -33,7 +33,7 @@ namespace BH.Engine.Structure
         [Description("Creates a structural Pile. This object can be used with a PileFoundation or as a standalone foundation.")]
         [Input("topNode", "The node at the top of the pile.")]
         [Input("bottomNode", "The node at the bottom of the pile.")]
-        [InputFromProperty("sectionProperty")]
+        [InputFromProperty("pileSection")]
         [InputFromProperty("orientationAngle")]
         [Output("pile", "The created Pile with a centreline defined by the provided nodes.")]
         public static Pile Pile(Node topNode, Node bottomNode, ISectionProperty pileSection = null, double orientationAngle = 0)

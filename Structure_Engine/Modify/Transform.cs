@@ -64,7 +64,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        
+
         [Description("Transforms the Bar's nodes and orientation by the transform matrix. Only rigid body transformations are supported.")]
         [Input("bar", "Bar to transform.")]
         [Input("transform", "Transform matrix.")]
@@ -93,7 +93,7 @@ namespace BH.Engine.Structure
             Bar result = bar.ShallowClone();
             result.StartNode = result.StartNode.Transform(transform, tolerance);
             result.EndNode = result.EndNode.Transform(transform, tolerance);
-            
+
             Vector normalBefore = new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position }.ElementNormal(bar.OrientationAngle);
             Vector normalAfter = normalBefore.Transform(transform);
             result.OrientationAngle = normalAfter.OrientationAngleLinear(new Line { Start = result.StartNode.Position, End = result.EndNode.Position });
@@ -250,7 +250,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        /***************************************************/
 
         [Description("Transforms the PadFoundation's edges, openings and basis by the transform matrix. Only rigid body transformations are supported.")]
         [Input("padFoundation", "PadFoundation to transform.")]
@@ -272,10 +271,22 @@ namespace BH.Engine.Structure
             }
 
             PadFoundation result = padFoundation.ShallowClone();
-            result = result.Transform(transform);
+
+            List<Edge> edges = new List<Edge>();
+            foreach (Edge edge in result.TopOutline)
+            {
+                Edge clone = edge.ShallowClone();
+                clone.Curve = clone.Curve.ITransform(transform);
+                edges.Add(clone);
+            }
+
+            result.TopOutline = edges;
 
             return result;
         }
+
+        /***************************************************/
+
     }
 }
 

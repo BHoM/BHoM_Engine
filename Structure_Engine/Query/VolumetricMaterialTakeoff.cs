@@ -90,7 +90,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the volumetric material takeoff from the PadFoundation object.")]
-        [Input("padfoundation", "The PadFoundation object to extract the volumetric material takeoff from.")]
+        [Input("padFoundation", "The PadFoundation object to extract the volumetric material takeoff from.")]
         [Output("volTakeoff", "The volumetric material takeoff based on buildup of the PadFoundation object.")]
         public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this PadFoundation padFoundation)
         {
