@@ -47,9 +47,10 @@ namespace BH.Engine.Structure
                 pts.Add(pile.TopNode.Position);
             }
 
-            pts.Add(pts.First());
+            List<Point> convexHull = Geometry.Compute.GrahamScan(pts);
+            convexHull.Add(convexHull[0]);
 
-            List<Edge> edges = new List<Edge>() { new Edge() { Curve = Geometry.Create.Polyline(Geometry.Compute.GrahamScan(pts)).Offset(offset) } };
+            List<Edge> edges = new List<Edge>() { new Edge() { Curve = Geometry.Create.Polyline(convexHull).Offset(offset) } };
 
             return new PileFoundation() { PileCap = PadFoundation(edges, property, orientationAngle), Piles = piles };
         }
