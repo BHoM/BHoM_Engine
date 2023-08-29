@@ -34,11 +34,11 @@ namespace BH.Engine.Structure
 
         [Description("Creates a structural PileFoundation from the piles, an offset and the PileCap properties using the GrahamScan method to determine the pile cap outline.")]
         [Input("piles", "One or more Piles used to define the outline of the PileCap.")]
-        [InputFromProperty("property")]
         [Input("offset", "The offset from the centre of the piles to the edge of the PileCap.")]
+        [InputFromProperty("property")]
         [InputFromProperty("orientationAngle")]
         [Output("pileFoundation", "The created PileFoundation containing the dervied pile cap and pile elements.")]
-        public static PileFoundation PileFoundation(List<Pile> piles, ConstantThickness property, double offset, double orientationAngle)
+        public static PileFoundation PileFoundation(List<Pile> piles, double offset, ConstantThickness property = null, double orientationAngle = 0)
         {
             List<Point> pts = new List<Point>();
 

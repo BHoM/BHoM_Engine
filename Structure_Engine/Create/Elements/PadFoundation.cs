@@ -45,8 +45,11 @@ namespace BH.Engine.Structure
         [Input("coordinateSystem", "The Cartesian coordinate system to control the position and orientation of the PadFoundation to which the PadFoundation is mapped to.")]
         [Input("orientationAngle", "The rotation to be applied the local X of the PadFoundation about the normal of the PadFoundation. This does not affect the geometry but can be used to define prinicpal directions for reinforcement.")]
         [Output("padFoundation", "The created PadFoundation with a rectangular outline mapped to the coordinate system provided.")]
-        public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness, Cartesian coordinateSystem, double orientationAngle)
+        public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness = null, Cartesian coordinateSystem = null, double orientationAngle = 0)
         {
+            if (coordinateSystem == null)
+                coordinateSystem = Geometry.Create.CartesianCoordinateSystem(Point.Origin, Vector.XAxis, Vector.YAxis);
+
             List<Edge> edges = Spatial.Create.RectangleProfile(length, width).Edges.Select(x => new Edge() { Curve = x }).ToList();
 
             edges.Select(x => x.Orient(Geometry.Create.CartesianCoordinateSystem(Point.Origin, Vector.XAxis, Vector.YAxis), coordinateSystem));
