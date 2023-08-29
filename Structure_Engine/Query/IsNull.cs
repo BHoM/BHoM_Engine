@@ -627,7 +627,7 @@ namespace BH.Engine.Structure
         }
 
         [Description("Checks if a Pile is null and outputs relevant error message.")]
-        [Input("PileGroup", "The PileGroup to test for null.")]
+        [Input("pile", "The Pile to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the PileGroup is null.")]
