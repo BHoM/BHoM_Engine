@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a rectangular PadFoundation and transforms it to the coordinate system provided.")]
+        [Description("Creates a rectangular PadFoundation and orients it to the coordinate system provided.")]
         [Input("width", "The width of the PadFoundation aligned with Global X.")]
         [Input("length", "The length of the PadFoundation aligned with Global Y.")]
         [InputFromProperty("property")]
@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
         {
             List<Edge> edges = Spatial.Create.RectangleProfile(length, width).Edges.Select(x => new Edge() { Curve = x }).ToList();
 
-            edges.Select(x => x.Orient(new Cartesian(), coordinateSystem));
+            edges.Select(x => x.Orient(Geometry.Create.CartesianCoordinateSystem(Point.Origin,Vector.XAxis,Vector.YAxis), coordinateSystem));
 
             return PadFoundation(edges, thickness, orientationAngle);
         }

@@ -57,11 +57,10 @@ namespace BH.Engine.Structure
             List<VolumetricMaterialTakeoff> takeoffs = new List<VolumetricMaterialTakeoff>();
 
             takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(pileFoundation.PileCap));
-            foreach(IElementM pile in pileFoundation.Piles)
+            foreach(Pile pile in pileFoundation.Piles)
             {
-                takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(pile));
+                takeoffs.Add(VolumetricMaterialTakeoff(pile));
             }
-            takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff((IElementM)pileFoundation.Piles));
 
             return Matter.Compute.AggregateVolumetricMaterialTakeoff(takeoffs);
         }
