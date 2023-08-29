@@ -95,7 +95,7 @@ namespace BH.Engine.Structure
         [Output("line", "The line defining the Pile.")]
         public static IGeometry Geometry(this Pile pile)
         {
-            return new  Line() { Start = pile.TopNode.Position, End = pile.BottomNode.Position };
+            return new Line() { Start = pile.TopNode.Position, End = pile.BottomNode.Position };
         }
 
         /***************************************************/

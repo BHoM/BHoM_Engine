@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;
 using BH.Engine.Geometry;
 
@@ -39,7 +40,8 @@ namespace BH.Engine.Geometry
 
         [Description("Implements the GrahamScan algorithm to determine the convex hull of a list of points contained within the XY Plane.")]
         [Input("pts", "The points to determine the convex hull contained within the XY Plane.")]
-        [Output("c", "The convex hull of the point list.")]
+        [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
+        [Output("c", "The convex hull of the point list, no repeat points are returned.")]
         public static List<Point> GrahamScan(List<Point> pts, double tolerance = Tolerance.MicroDistance)
         {
             if (pts.IsNullOrEmpty())
@@ -85,13 +87,13 @@ namespace BH.Engine.Geometry
             pts = pts.Zip(angles, (a, b) => new { pt = a, angle = b }).OrderBy(c => c.angle).Select(x => x.pt).Reverse().ToList();
 
             // Group by angle between P and the points
-            IEnumerable <IGrouping<double, Point>> groupedPts = pts.GroupBy(pt => Create.Vector(p,pt).DotProduct(Vector.XAxis)/Create.Vector(p, pt).Length());
+            IEnumerable<IGrouping<double, Point>> groupedPts = pts.GroupBy(pt => Create.Vector(p, pt).DotProduct(Vector.XAxis) / Create.Vector(p, pt).Length());
 
             // Check for points that have the same angle 
             if (groupedPts.Where(grp => grp.Count() > 1).Any())
             {
                 // For each group, sort by distance from P and select the furthest point
-                pts = groupedPts.Select(g => new { s = g.OrderByDescending(i => i.Distance(p)) }).Select(x => x.s.First()).ToList();
+                pts = groupedPts.Select(g => g.OrderByDescending(i => i.SquareDistance(p)).First()).ToList();
             }
 
             // Add to the start of selPts as it has been removed from pts

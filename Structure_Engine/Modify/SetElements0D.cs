@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         [Input("bar", "The Bar to set the IElement0Ds to.")]
         [Input("newElements0D", "The new IElement0Ds of the Bar. Should be a list of length two, containing exactly two structural Nodes or Geometrical Points. \n" +
                                 "Points will assigin default end properties to the Bar, i.e. Fixed releases, no support.")]
-        [Output("bar","The bar with updated Nodes.")]
+        [Output("bar", "The bar with updated Nodes.")]
         public static Bar SetElements0D(this Bar bar, List<IElement0D> newElements0D)
         {
             if (newElements0D.Count != 2)

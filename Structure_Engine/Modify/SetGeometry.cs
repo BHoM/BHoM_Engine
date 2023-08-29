@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         /******************************************/
 
         [Description("Modifies the geometry of a Pile to be the provided curve. The Piles other properties are unaffected.")]
-        [Input("element1D", "The Pile to modify the geomerty of.")]
+        [Input("pile", "The Pile to modify the geomerty of.")]
         [Input("curve", "The new geometry curve for the Pile. Note a Pile is defined by the TopNode and BottomNode, the start and the end of the curve will be used.")]
         [Output("element1D", "A IElement1D with the properties of 'element1D' and the location of 'curve'.")]
         public static Pile SetGeometry(this Pile pile, ICurve curve)
