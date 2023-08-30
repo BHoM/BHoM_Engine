@@ -50,9 +50,7 @@ namespace BH.Engine.Serialiser
                 value = new List<T>();
 
             foreach (BsonValue item in bson.AsBsonArray)
-            {
                 value.Add((T)item.IDeserialise(typeof(T), null, version, isUpgraded));
-            }
 
             return value;
         }
@@ -73,9 +71,7 @@ namespace BH.Engine.Serialiser
                 value = new List<List<T>>();
 
             foreach (BsonValue item in bson.AsBsonArray)
-            {
-                value.Add((List<T>)item.IDeserialise(typeof(List<T>), null, version, isUpgraded));
-            }
+                value.Add((List<T>)item.DeserialiseList(new List<T>(), version, isUpgraded));
 
             return value;
         }
