@@ -28,8 +28,8 @@ using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
-using BH.Engine.Geometry;
 using BH.Engine.Base;
+using BH.Engine.Geometry;
 
 
 namespace BH.Engine.Structure
@@ -46,14 +46,18 @@ namespace BH.Engine.Structure
         [Input("padFoundation", "The PadFoundation to update the ExternalEdge of.")]
         [Input("edges", "A list of IElement1Ds which all should be of a type of ICurve.")]
         [Output("padFoundation", "A new PadFoundation with TopSurface matching the provided edges.")]
-        public static PadFoundation SetOutlineElements1D(this PadFoundation padFoundation, IEnumerable<IElement1D> edges)
+        public static PadFoundation SetOutlineElements1D(this PadFoundation padFoundation, IEnumerable<IElement1D> curves)
         {
             if (padFoundation.IsNull())
                 return padFoundation;
 
-            List<Edge> externalEdges = edges.Cast<Edge>().ToList();
+            if(curves.IsNullOrEmpty())
+            {
+                Base.Compute.RecordError("The list of IElement1D is null or empty.");
+                return padFoundation;
+            }
 
-            return Create.PadFoundation(externalEdges, padFoundation.Property, padFoundation.OrientationAngle);
+            return Create.PadFoundation(Geometry.Compute.Join(curves.Cast<PolyCurve>().ToList())[0], padFoundation.Property, padFoundation.OrientationAngle);
         }
 
         /***************************************************/

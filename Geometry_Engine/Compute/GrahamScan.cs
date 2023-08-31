@@ -45,6 +45,13 @@ namespace BH.Engine.Geometry
         [Output("c", "The convex hull of the point list, no repeat points are returned.")]
         public static List<Point> GrahamScan(List<Point> points, double tolerance = Tolerance.MacroDistance)
         {
+            if(points.IsNullOrEmpty())
+            {
+                Base.Compute.RecordError("The point list is either null or empty.");
+                return points;
+            }
+
+            
             List<Point> pts = points.ShallowClone();
 
             pts.CullDuplicates(tolerance);

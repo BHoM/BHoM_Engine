@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using BH.oM.Base.Attributes;
 using BH.oM.Structure.Elements;
 using System.ComponentModel;
+using BH.Engine.Structure;
 
 namespace BH.Engine.Analytical
 {
@@ -39,7 +40,7 @@ namespace BH.Engine.Analytical
         [Output("element0Ds", "The list of Elements0D of the Pile, i.e. the StartNode and EndNode.")]
         public static List<IElement0D> Elements0D(this Pile pile)
         {
-            return new List<IElement0D> { pile.TopNode, pile.BottomNode };
+            return pile.IsNull() ? null : new List<IElement0D> { pile.TopNode, pile.BottomNode };
         }
 
         /******************************************/

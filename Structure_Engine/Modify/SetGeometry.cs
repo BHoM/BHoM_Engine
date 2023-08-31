@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Output("element1D", "A IElement1D with the properties of 'element1D' and the location of 'curve'.")]
         public static Pile SetGeometry(this Pile pile, ICurve curve)
         {
-            if (pile.IsNull())
+            if (pile.IsNull() || curve.IsNull())
                 return null;
 
             Pile clone = pile.DeepClone();

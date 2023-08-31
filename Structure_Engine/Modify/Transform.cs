@@ -258,11 +258,11 @@ namespace BH.Engine.Structure
         [Output("transformed", "Modified PadFoundation with unchanged properties, but transformed edges and basis.")]
         public static PadFoundation Transform(this PadFoundation padFoundation, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (padFoundation == null)
-            {
-                Base.Compute.RecordError("Could not transform the PadFoundation because it was null.");
-                return null;
-            }
+            if (padFoundation.IsNull())
+                return padFoundation;
+
+            if (transform.IsNull())
+                return padFoundation;
 
             if (!transform.IsRigidTransformation(tolerance))
             {
@@ -272,15 +272,7 @@ namespace BH.Engine.Structure
 
             PadFoundation result = padFoundation.ShallowClone();
 
-            List<Edge> edges = new List<Edge>();
-            foreach (Edge edge in result.TopOutline)
-            {
-                Edge clone = edge.ShallowClone();
-                clone.Curve = clone.Curve.ITransform(transform);
-                edges.Add(clone);
-            }
-
-            result.TopOutline = edges;
+            result.TopOutline = result.TopOutline.Transform(transform);
 
             return result;
         }

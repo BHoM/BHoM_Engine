@@ -611,17 +611,8 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (padFoundation.TopOutline.Count == 0)
-            {
-                Base.Compute.RecordError($"Cannot evaluate {methodName} because the PadFoundation Edges count is 0. {msg}");
+            else if (padFoundation.TopOutline.IsNull())
                 return true;
-            }
-            else if (padFoundation.TopOutline.Any(x => x.IsNull($"The Edges are owned by a Panel. {msg}", methodName)))
-            {
-                if (!string.IsNullOrEmpty(msg))
-                    Base.Compute.RecordError(msg);
-                return true;
-            }
 
             return false;
         }
