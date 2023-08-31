@@ -90,13 +90,26 @@ namespace BH.Engine.Structure
             return new CompositeGeometry() { Elements = lines };
         }
 
+        /***************************************************/
+
         [Description("Gets the geometry of a Pile as a single line. Method required for automatic display in UI packages.")]
         [Input("pile", "Pile to get the line geometry from.")]
         [Output("line", "The line defining the Pile.")]
         public static IGeometry Geometry(this Pile pile)
         {
-            return new Line() { Start = pile.TopNode.Position, End = pile.BottomNode.Position };
+            return pile.IsNull() ? null : new Line() { Start = pile.TopNode.Position, End = pile.BottomNode.Position };
         }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a PadFoundation as a single curve. Method required for automatic display in UI packages.")]
+        [Input("padFoundation", "Pile to get the line geometry from.")]
+        [Output("curve", "The curve defining the PadFoundation.")]
+        public static IGeometry Geometry(this PadFoundation padFoundation)
+        {
+            return padFoundation.IsNull() ? null : padFoundation.TopOutline;
+        }
+
 
         /***************************************************/
         /**** Public Methods - Interface                ****/

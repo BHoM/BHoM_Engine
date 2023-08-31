@@ -19,18 +19,6 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a structural Pile. This object can be used with a PileFoundation or as a standalone foundation.")]
-        [Input("line", "The definining geometry for the pile.")]
-        [InputFromProperty("pileSection")]
-        [InputFromProperty("orientationAngle")]
-        [Output("pile", "The created Pile with a centreline matching the provided geometrical Line.")]
-        public static Pile Pile(Line line, ISectionProperty pileSection = null, double orientationAngle = 0)
-        {
-            return new Pile() { TopNode = (Node)line.Start, BottomNode = (Node)line.End, Section = pileSection, OrientationAngle = orientationAngle };
-        }
-
-        /***************************************************/
-
-        [Description("Creates a structural Pile. This object can be used with a PileFoundation or as a standalone foundation.")]
         [Input("topNode", "The node at the top of the pile.")]
         [Input("bottomNode", "The node at the bottom of the pile.")]
         [InputFromProperty("pileSection")]
@@ -38,7 +26,19 @@ namespace BH.Engine.Structure
         [Output("pile", "The created Pile with a centreline defined by the provided nodes.")]
         public static Pile Pile(Node topNode, Node bottomNode, ISectionProperty pileSection = null, double orientationAngle = 0)
         {
-            return new Pile() { TopNode = topNode, BottomNode = bottomNode, Section = pileSection, OrientationAngle = orientationAngle };
+            return topNode.IsNull() || bottomNode.IsNull() ? null : new Pile() { TopNode = topNode, BottomNode = bottomNode, Section = pileSection, OrientationAngle = orientationAngle };
+        }
+
+        /***************************************************/
+
+        [Description("Creates a structural Pile. This object can be used with a PileFoundation or as a standalone foundation.")]
+        [Input("line", "The definining geometry for the pile.")]
+        [InputFromProperty("pileSection")]
+        [InputFromProperty("orientationAngle")]
+        [Output("pile", "The created Pile with a centreline matching the provided geometrical Line.")]
+        public static Pile Pile(Line line, ISectionProperty pileSection = null, double orientationAngle = 0)
+        {
+            return Pile((Node)line.Start, (Node)line.End, pileSection, orientationAngle);
         }
 
         /***************************************************/

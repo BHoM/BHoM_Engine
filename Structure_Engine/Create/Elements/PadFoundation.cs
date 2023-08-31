@@ -9,6 +9,7 @@ using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.MaterialFragments;
 using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Base;
 using BH.Engine.Geometry;
@@ -24,16 +25,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a PadFoundation from an outline, property and orientation angle.")]
-        [Input("topOutline", "The outer edges of the pad. All section constants are derived based on the dimensions of this.")]
+        [Input("topOutline", "The outer edge of the pad. All section constants are derived based on the dimensions of this.")]
         [InputFromProperty("thickness")]
         [Input("orientationAngle", "The rotation to be applied the local X of the PadFoundation about the normal of the PadFoundation. This does not affect the geometry but can be used to define prinicpal directions for reinforcement.")]
         [Output("padFoundation", "The created PadFoundation with the property and orientation applied.")]
-        public static PadFoundation PadFoundation(List<Edge> topOutline, ISurfaceProperty thickness = null, double orientationAngle = 0)
+        public static PadFoundation PadFoundation(PolyCurve topOutline, ISurfaceProperty thickness = null, double orientationAngle = 0)
         {
-            if (topOutline.IsNullOrEmpty() || topOutline.Any(x => x.IsNull()))
-                return null;
-
-            return new PadFoundation() { TopOutline = topOutline, Property = thickness, OrientationAngle = orientationAngle };
+            return topOutline.IsNull() ? null : new PadFoundation() { TopOutline = topOutline, Property = thickness, OrientationAngle = orientationAngle };
         }
 
         /***************************************************/
@@ -47,14 +45,14 @@ namespace BH.Engine.Structure
         [Output("padFoundation", "The created PadFoundation with a rectangular outline mapped to the coordinate system provided.")]
         public static PadFoundation PadFoundation(double width, double length, ConstantThickness thickness = null, Cartesian coordinateSystem = null, double orientationAngle = 0)
         {
+            PolyCurve topOutline = Spatial.Create.RectangleProfile(length, width).Edges.ToList().IJoin()[0];
+
             if (coordinateSystem == null)
-                coordinateSystem = Geometry.Create.CartesianCoordinateSystem(Point.Origin, Vector.XAxis, Vector.YAxis);
+                coordinateSystem = new Cartesian();
+            else
+                topOutline.Orient(new Cartesian(), coordinateSystem);
 
-            List<Edge> edges = Spatial.Create.RectangleProfile(length, width).Edges.Select(x => new Edge() { Curve = x }).ToList();
-
-            edges.Select(x => x.Orient(Geometry.Create.CartesianCoordinateSystem(Point.Origin, Vector.XAxis, Vector.YAxis), coordinateSystem));
-
-            return PadFoundation(edges, thickness, orientationAngle);
+            return PadFoundation(topOutline, thickness, orientationAngle);
         }
     }
 }

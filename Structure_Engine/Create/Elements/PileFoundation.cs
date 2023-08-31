@@ -9,6 +9,7 @@ using BH.oM.Geometry;
 using BH.oM.Spatial.Layouts;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SurfaceProperties;
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 
@@ -27,6 +28,18 @@ namespace BH.Engine.Structure
         [Output("pileFoundation", "The created PileFoundation containing the pile cap and pile elements.")]
         public static PileFoundation PileFoundation(PadFoundation pileCap, List<Pile> piles)
         {
+            if (piles.IsNullOrEmpty())
+            {
+                Base.Compute.RecordError("The pile list is null or empty.");
+                return null;
+            }
+
+            if (piles.Any(x => x.IsNull()))
+                return null;
+
+            if (pileCap.IsNull())
+                return null;
+
             return new PileFoundation() { PileCap = pileCap, Piles = piles };
         }
 
@@ -38,7 +51,7 @@ namespace BH.Engine.Structure
         [InputFromProperty("property")]
         [InputFromProperty("orientationAngle")]
         [Output("pileFoundation", "The created PileFoundation containing the dervied pile cap and pile elements.")]
-        public static PileFoundation PileFoundation(List<Pile> piles, double offset, ConstantThickness property = null, double orientationAngle = 0)
+        public static PileFoundation PileFoundation(List<Pile> piles, double offset = 0, ConstantThickness property = null, double orientationAngle = 0)
         {
             List<Point> pts = new List<Point>();
 
@@ -50,9 +63,7 @@ namespace BH.Engine.Structure
             List<Point> convexHull = Geometry.Compute.GrahamScan(pts);
             convexHull.Add(convexHull[0]);
 
-            List<Edge> edges = new List<Edge>() { new Edge() { Curve = Geometry.Create.Polyline(convexHull).Offset(offset) } };
-
-            return new PileFoundation() { PileCap = PadFoundation(edges, property, orientationAngle), Piles = piles };
+            return PileFoundation(PadFoundation((PolyCurve)Geometry.Create.Polyline(convexHull).Offset(offset), property, orientationAngle), piles);
         }
 
         /***************************************************/
