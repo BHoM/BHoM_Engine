@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;
 using BH.Engine.Geometry;
@@ -38,36 +39,52 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Implements the GrahamScan algorithm to determine the convex hull of a list of points contained within the XY Plane.")]
-        [Input("pts", "The points to determine the convex hull contained within the XY Plane.")]
+        [Description("Implements the GrahamScan algorithm to determine the convex hull of a list of points contained within a single Plane.")]
+        [Input("points", "The points to determine the convex hull contained within a single Plane.")]
         [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
         [Output("c", "The convex hull of the point list, no repeat points are returned.")]
-        public static List<Point> GrahamScan(List<Point> pts, double tolerance = Tolerance.MicroDistance)
+        public static List<Point> GrahamScan(List<Point> points, double tolerance = Tolerance.MacroDistance)
         {
+            List<Point> pts = points.ShallowClone();
+
+            pts.CullDuplicates(tolerance);
+
             if (pts.IsNullOrEmpty())
             {
                 Base.Compute.RecordError("The point list is null or empty.");
                 return pts;
             }
+
             if (pts.Count < 3)
             {
-                Base.Compute.RecordError("The point list must be greater than three to determine the Convex Hull.");
+                Base.Compute.RecordError("The point list (excluding duplicates) must be greater than three to determine the Convex Hull.");
                 return pts;
             }
 
             // Check that the points are all wihtin the same plane 
             Plane plane = pts.FitPlane(tolerance);
-            if (!Query.IsInPlane(pts, Plane.XY))
+            if (!Query.IsInPlane(pts, plane, tolerance))
             {
-                Base.Compute.RecordError("The point list needs to be within the XY Plane.");
-                return pts;
+                pts.Select(x => x.Project(plane));
+                Base.Compute.RecordWarning("The points needs to be within a single Plane. They have been projected to the plane that fits the points.");
+            }
+
+            Cartesian origin = new Cartesian();
+            Cartesian cartesian = null;
+
+            // Check if the points are located in the XY plane, otherwise map them to XY 
+            if(plane != Plane.XY)
+            {
+                Vector locY = pts.FitLine(tolerance).Direction();
+                cartesian = Create.CartesianCoordinateSystem(pts.Average(), locY.CrossProduct(plane.Normal), locY);
+                pts = pts.Select(x => x.Orient(cartesian, origin)).ToList();
             }
 
             // Find the point with the lowest Y coordinate
             IOrderedEnumerable<Point> orderedPts = pts.OrderBy(pt => pt.Y);
 
-            Point p = orderedPts.First();
             pts = orderedPts.ToList();
+            Point p = pts[0];
 
             // Check if there is more than one point with the lowest Y
             if (Math.Abs(p.Y - pts[1].Y) < tolerance)
@@ -105,10 +122,18 @@ namespace BH.Engine.Geometry
                 GrahamScanSolver(ref pts, ref selPts);
             };
 
+            // Remap the points to their original orientation
+            if (plane != Plane.XY)
+            {
+                selPts = selPts.Select(x => x.Orient(origin, cartesian)).ToList();
+            }
+
             return selPts;
         }
 
-        private static List<Point> GrahamScanSolver(ref List<Point> pts, ref List<Point> selPts)
+        [Description("Take the first point from pts (p), and the last two points from selPts to determine if the three points form an anticlockwise turn. If the turn is anticlockwise, p is added to selPts, otherwise the " +
+            "last selPts is removed. This method is used iteratively to determine the convex hull of a point list.")]
+        private static void GrahamScanSolver(ref List<Point> pts, ref List<Point> selPts)
         {
             if (pts.Count > 0)
             {
@@ -141,7 +166,6 @@ namespace BH.Engine.Geometry
                     }
                 }
             }
-            return selPts;
         }
     }
 }
