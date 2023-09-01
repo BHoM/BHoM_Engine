@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
-        [Description("A simplified method of sorting a list of points based on how close a given point is to the previous point. Based on the TSP but simpler and non-globally-optimal in the general case.")]
+        [Description("A simplified method of sorting a list of points based on how close a given point is to the previous point. Based on the Travelling Salesperson Problem (TSP) but simpler and non-globally-optimal in the general case.")]
         [Input("points", "The list of points which to sort")]
         [Output("sortedPoints", "The sorted list of points")]
         public static List<Point> ShortestPath(List<Point> points)
