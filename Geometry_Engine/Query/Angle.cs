@@ -87,7 +87,7 @@ namespace BH.Engine.Geometry
         [Input("a", "First vector to compute the angle for.")]
         [Input("b", "Second vector to compute the angle for.")]
         [Input("normal", "Normal vector to define the sign of the angle.")]
-        [Output("angle", "Singed angle between two vectors.")]
+        [Output("angle", "Signed angle between two vectors.")]
         public static double SignedAngle(this Vector a, Vector b, Vector normal) // use normal vector to define the sign of the angle
         {
             double angle = Angle(a, b);
@@ -105,9 +105,9 @@ namespace BH.Engine.Geometry
         [Input("line1", "First line to compute the angle for.")]
         [Input("line2", "Second line to compute the angle for.")]
         [Input("normal", "Normal vector to define the sign of the angle.")]
-        [Output("angle", "Singed angle between two lines.")]
+        [Output("angle", "Signed angle between two lines.")]
 
-        public static double SingedAngle(this Line line1, Line line2, Vector normal)
+        public static double SignedAngle(this Line line1, Line line2, Vector normal)
         {
             if (line1 == null || line2 == null || normal == null)
             {
