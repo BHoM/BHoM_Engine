@@ -33,7 +33,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using BH.oM.Physical.Materials;
-using BH.Engine.Spatial;
+using BH.oM.Dimensional;
 using BH.oM.Structure.Fragments;
 using BH.Engine.Base;
 
@@ -251,6 +251,42 @@ namespace BH.Engine.Structure
                 },
                 new List<double>() { slabVolume, deckVolume }
                 );
+        }
+
+        /***************************************************/
+
+        [Description("Returns a Pile's homogeneous MaterialComposition.")]
+        [Input("pile", "The Pile to get material from.")]
+        [Output("materialComposition", "The kind of matter the Pile is composed of.")]
+        public static MaterialComposition MaterialComposition(this Pile pile)
+        {
+            if (pile.IsNull())
+                return null;
+
+            if (pile.Section.IsNull() || pile.Section.Material.IsNull())
+                return null;
+
+            return pile.Section.IMaterialComposition();
+        }
+
+        /***************************************************/
+
+        [Description("Returns a PileFoundation's homogeneous MaterialComposition.")]
+        [Input("pileFoundation", "The PileFoundation to get material from.")]
+        [Output("materialComposition", "The kind of matter the Pile is composed of.")]
+        public static MaterialComposition MaterialComposition(this PileFoundation pileFoundation)
+        {
+            if (pileFoundation.IsNull())
+                return null;
+
+            MaterialComposition pileCap = pileFoundation.PileCap.MaterialComposition();
+            List<MaterialComposition> piles = pileFoundation.Piles.Select(x => x.MaterialComposition()).ToList();
+
+            List<IElementM> elements = new List<IElementM>();
+            elements.Add(pileFoundation.PileCap);
+            elements.AddRange(pileFoundation.Piles);
+
+            return Matter.Compute.AggregateMaterialComposition(elements);
         }
 
         /***************************************************/
