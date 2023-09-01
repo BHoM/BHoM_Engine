@@ -25,7 +25,6 @@ using BH.oM.Structure.Elements;
 using BH.oM.Structure.SectionProperties;
 using System.Collections.Generic;
 using System.Linq;
-
 using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
@@ -108,6 +107,18 @@ namespace BH.Engine.Structure
         public static IGeometry Geometry(this PadFoundation padFoundation)
         {
             return padFoundation.IsNull() ? null : padFoundation.TopOutline;
+        }
+
+        [Description("Gets the geometry of a PileFoundation as a single curve. Method required for automatic display in UI packages.")]
+        [Input("pileFoundation", "PileFoundation to get the line geometry from.")]
+        [Output("curve", "The curve defining the PadFoundation.")]
+        public static IGeometry Geometry(this PileFoundation pileFoundation)
+        {
+            List<IGeometry> geometry = new List<IGeometry>();
+            geometry.Add(pileFoundation.PileCap.Geometry());
+            geometry.AddRange(pileFoundation.Piles.Select(x => x.Geometry()));
+
+            return Engine.Geometry.Create.CompositeGeometry(geometry);
         }
 
 
