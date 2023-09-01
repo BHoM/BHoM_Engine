@@ -250,7 +250,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-
         [Description("Transforms the PadFoundation's edges, openings and basis by the transform matrix. Only rigid body transformations are supported.")]
         [Input("padFoundation", "PadFoundation to transform.")]
         [Input("transform", "Transform matrix.")]
@@ -274,7 +273,35 @@ namespace BH.Engine.Structure
 
             result.TopOutline = result.TopOutline.Transform(transform);
 
+            // Local orientation for the panel
+
             return result;
+        }
+
+        /***************************************************/
+
+        [Description("Transforms the XX's edges, openings and basis by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("XX", "XX to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified XX with unchanged properties, but transformed edges and basis.")]
+        public static Pile Transform(this Pile XX, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            // Transform for Pile and Node
+            return null;
+        }
+
+        /***************************************************/
+
+        [Description("Transforms the XX's edges, openings and basis by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("XX", "XX to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified XX with unchanged properties, but transformed edges and basis.")]
+        public static PileFoundation Transform(this PileFoundation XX, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            // Transform for Pile and Node
+            return null;
         }
 
         /***************************************************/

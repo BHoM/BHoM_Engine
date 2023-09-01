@@ -47,6 +47,11 @@ namespace BH.Engine.Structure
             if (pile.IsNull() || curve.IsNull())
                 return null;
 
+            if(!curve.IIsLinear())
+            {
+                Base.Compute.RecordWarning("The curve provided is not linear, note the start and points will be used to define the line.");
+            }
+
             Pile clone = pile.DeepClone();
             clone.TopNode.Position = curve.IStartPoint();
             clone.BottomNode.Position = curve.IEndPoint();

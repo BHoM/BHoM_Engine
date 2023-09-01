@@ -57,7 +57,7 @@ namespace BH.Engine.Structure
             List<VolumetricMaterialTakeoff> takeoffs = new List<VolumetricMaterialTakeoff>();
 
             takeoffs.Add(Matter.Query.IVolumetricMaterialTakeoff(pileFoundation.PileCap));
-            foreach(Pile pile in pileFoundation.Piles)
+            foreach (Pile pile in pileFoundation.Piles)
             {
                 takeoffs.Add(VolumetricMaterialTakeoff(pile));
             }
@@ -82,7 +82,7 @@ namespace BH.Engine.Structure
 
             Material physMaterial = new Material() { Density = structMaterial.Density, Name = structMaterial.Name };
 
-            VolumetricMaterialTakeoff takeOff = Matter.Create.VolumetricMaterialTakeoff(new List<Material>() { physMaterial }, new List<double>() { pile.Section.Area*pile.Length() });
+            VolumetricMaterialTakeoff takeOff = Matter.Create.VolumetricMaterialTakeoff(new List<Material>() { physMaterial }, new List<double>() { pile.Section.Area * pile.Length() });
 
             return takeOff;
         }
@@ -102,9 +102,9 @@ namespace BH.Engine.Structure
 
             IMaterialFragment structMaterial = padFoundation.Property.Material;
 
-            Material physMaterial = new Material() { Density = structMaterial.Density, Name = structMaterial.Name};
+            Material physMaterial = new Material() { Density = structMaterial.Density, Name = structMaterial.Name };
 
-            VolumetricMaterialTakeoff takeOff  = Matter.Create.VolumetricMaterialTakeoff(new List<Material>() { physMaterial}, new List<double>() { padFoundation.SolidVolume() });
+            VolumetricMaterialTakeoff takeOff = Matter.Create.VolumetricMaterialTakeoff(new List<Material>() { physMaterial }, new List<double>() { padFoundation.SolidVolume() });
 
             return takeOff;
         }
