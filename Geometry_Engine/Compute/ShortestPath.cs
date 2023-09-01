@@ -55,7 +55,6 @@ namespace BH.Engine.Geometry
             }
 
             return sortedPoints;
-
         }
     }
 }
