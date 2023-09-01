@@ -37,9 +37,12 @@ namespace BH.Engine.Geometry
         [Output("sortedPoints", "The sorted list of points.")]
         public static List<Point> ShortestPath(List<Point> points)
         {
+            if (points == null || points.Count == 0) 
+                return null;
+
             List<Point> sortedPoints = new List<Point>();
 
-            List<Point> ringPoints = points;
+            List<Point> ringPoints = points.ToList();
 
             sortedPoints.Add(ringPoints[0]);
             ringPoints.RemoveAt(0);
