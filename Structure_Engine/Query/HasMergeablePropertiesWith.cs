@@ -52,30 +52,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Evaluates if the two PadFoundation Properties are equal with the Property comparers.")]
-        [Input("element", "A PadFoundation to compare the properties of with another PadFoudation.")]
-        [Input("other", "The PadFoundation to compare with the other PadFoundation.")]
-        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool HasMergeablePropertiesWith(this PadFoundation element, PadFoundation other)
-        {
-            return element.IsNull() && other.IsNull() ? false :
-                new SurfacePropertyComparer().Equals(element.Property, other.Property);
-        }
-
-        /***************************************************/
-
-        [Description("Evaluates if the two PadFoundation Properties are equal with the Property comparers.")]
-        [Input("element", "A PadFoundation to compare the properties of with another PadFoudation.")]
-        [Input("other", "The PadFoundation to compare with the other PadFoundation.")]
-        [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
-        public static bool HasMergeablePropertiesWith(this Pile element, Pile other)
-        {
-            return element.IsNull() && other.IsNull() ? false :
-                new SectionPropertyComparer().Equals(element.Section, other.Section);
-        }
-
-        /***************************************************/
-
     }
 }
 
