@@ -47,11 +47,11 @@ namespace BH.Engine.Geometry
             while (ringPoints.Count > 0)
             {
                 Point np = Query.ClosestPoint(sortedPoints.Last(), ringPoints);
-                sortedPoints.Add(np);
-                ringPoints.Remove(np);
-               
                 if (np == null)
                     break;
+
+                sortedPoints.Add(np);
+                ringPoints.Remove(np);     
             }
 
             return sortedPoints;
