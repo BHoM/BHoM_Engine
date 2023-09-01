@@ -51,7 +51,8 @@ namespace BH.Engine.Geometry
                 sortedPoints.Add(np);
                 ringPoints.Remove(np);
                
-                if (np == null) break;
+                if (np == null)
+                    break;
             }
 
             return sortedPoints;
