@@ -80,22 +80,7 @@ namespace BH.Engine.Serialiser
 
         private static bool IsNestedList(this BsonValue bson)
         {
-            int nest = 0;
-
-            while(bson.IsBsonArray)
-            {
-                nest++;
-                try
-                {
-                    bson = bson[0];
-                }
-                catch
-                {
-                    break;
-                }
-            }
-
-            return nest > 1;
+            return bson.IsBsonArray && bson.AsBsonArray.Count > 0 && bson.AsBsonArray[0].IsBsonArray;
         }
     }
 }
