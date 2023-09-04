@@ -85,7 +85,14 @@ namespace BH.Engine.Serialiser
             while(bson.IsBsonArray)
             {
                 nest++;
-                bson = bson[0];
+                try
+                {
+                    bson = bson[0];
+                }
+                catch
+                {
+                    break;
+                }
             }
 
             return nest > 1;
