@@ -57,7 +57,9 @@ namespace BH.Engine.Structure
                 return padFoundation;
             }
 
-            return Create.PadFoundation(Geometry.Compute.Join(curves.Cast<PolyCurve>().ToList())[0], padFoundation.Property, padFoundation.OrientationAngle);
+            PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
+
+            return Create.PadFoundation(curve, padFoundation.Property, padFoundation.OrientationAngle);
         }
 
         /***************************************************/
