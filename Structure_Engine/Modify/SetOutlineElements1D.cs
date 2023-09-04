@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
                      "The provided edges all need to be ICurves and should form a closed loop. No checking for planarity is made by the method.\n" +
                      "The Method will return a new PadFoundation with the provided edges as the TopSurface.")]
         [Input("padFoundation", "The PadFoundation to update the ExternalEdge of.")]
-        [Input("edges", "A list of IElement1Ds which all should be of a type of ICurve.")]
+        [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
         [Output("padFoundation", "A new PadFoundation with TopSurface matching the provided edges.")]
         public static PadFoundation SetOutlineElements1D(this PadFoundation padFoundation, IEnumerable<IElement1D> curves)
         {

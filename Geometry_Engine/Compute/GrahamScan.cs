@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Implements the GrahamScan algorithm to determine the convex hull of a list of points contained within a single Plane.")]
-        [Input("points", "The points to determine the convex hull contained within a single Plane.")]
+        [Input("pts", "The points to determine the convex hull contained within a single Plane.")]
         [Input("tolerance", "Geometrical tolerance to be used in the method.", typeof(Length))]
         [Output("c", "The convex hull of the point list, no repeat points are returned.")]
         public static List<Point> GrahamScan(List<Point> pts, double tolerance = Tolerance.Distance)
