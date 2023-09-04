@@ -40,9 +40,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Modifies a collection of Panels and sets their type to be slab on grade or internal floor if they are the lowest panel in the space. If the panel has one connected space then it is deemed to be a slab on grade panel, otherwise it is an internal floor panel")]
-        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space")]
-        [Output("panelsAsSpace", "BHoM Environment panels representing a closed space where the slab on grade or internal floor panels have had their type set")]
+        [Description("Modifies a collection of Panels and sets their type to be slab on grade or internal floor if they are the lowest panel in the space. If the panel has one connected space then it is deemed to be a slab on grade panel, otherwise it is an internal floor panel.")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a closed space.")]
+        [Output("panelsAsSpace", "BHoM Environment panels representing a closed space where the slab on grade or internal floor panels have had their type set.")]
         [PreviousVersion("6.3", "BH.Engine.Environment.Modify.SetFloorPanels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
         public static List<Panel> SetFloorPanels(this List<Panel> panelsAsSpace, PanelType internalFloorType = PanelType.FloorInternal, PanelType externalGrounding = PanelType.SlabOnGrade)
         {
