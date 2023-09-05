@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.6.33801.468
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33927.289
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BHoM_Engine", "BHoM_Engine\BHoM_Engine.csproj", "{AEAF161D-8206-40B8-93A7-67ABEBF2EE19}"
 EndProject
@@ -53,7 +53,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structure_Engine", "Structu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Versioning_Engine", "Versioning_Engine\Versioning_Engine.csproj", "{28D7ABDA-43DC-4A63-8C5F-D3B137E0CD21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settings_Engine", "Settings_Engine\Settings_Engine.csproj", "{EFCA10EB-D1A0-48B6-8E2D-07986B2AE171}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Settings_Engine", "Settings_Engine\Settings_Engine.csproj", "{EFCA10EB-D1A0-48B6-8E2D-07986B2AE171}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ground_Engine", "Ground_Engine\Ground_Engine.csproj", "{708A2924-9C63-47F1-927C-F0302E43FEA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -165,6 +167,10 @@ Global
 		{EFCA10EB-D1A0-48B6-8E2D-07986B2AE171}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFCA10EB-D1A0-48B6-8E2D-07986B2AE171}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFCA10EB-D1A0-48B6-8E2D-07986B2AE171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{708A2924-9C63-47F1-927C-F0302E43FEA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{708A2924-9C63-47F1-927C-F0302E43FEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{708A2924-9C63-47F1-927C-F0302E43FEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{708A2924-9C63-47F1-927C-F0302E43FEA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
