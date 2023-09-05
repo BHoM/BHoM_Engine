@@ -38,36 +38,13 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a single Environment Panel with the provided opening. Opening is added to the provided panel regardless of geometric association")]
-        [Input("panel", "A single Environment Panel to add the opening to")]
-        [Input("opening", "The Environment Opening to add to the panel")]
-        [Output("panel", "A modified Environment Panel with the provided opening added")]
-        public static Panel AddOpening(this Panel panel, Opening opening)
-        {
-            if(panel == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot add an opening to a null panel.");
-                return panel;
-            }
-
-            if(opening == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot add a null opening to a panel.");
-                return panel;
-            }
-
-            Panel clone = panel.DeepClone<Panel>();
-            if (clone.Openings == null) clone.Openings = new List<Opening>();
-            clone.Openings.Add(opening);
-            return clone;
-        }
-
         [Description("Returns a list of Environment Panel with the provided openings added. Openings are added to the panels which contain them geometrically.")]
-        [Input("panels", "A collection of Environment Panels to add the opening to")]
-        [Input("openings", "A collection of Environment Openings to add to the panels")]
-        [Input("centroidTolerance", "Set the tolerance for obtaining the centroid of openings, default is set to BH.oM.Geometry.Tolerance.Distance")]
-        [Input("containingTolerance", "Set the tolerance for determining geometric association of openings to panels, default is set to BH.oM.Geometry.Tolerance.Distance")]
-        [Output("panels", "A collection of modified Environment Panels with the provided openings added")]
+        [Input("panels", "A collection of Environment Panels to add the opening to.")]
+        [Input("openings", "A collection of Environment Openings to add to the panels.")]
+        [Input("centroidTolerance", "Set the tolerance for obtaining the centroid of openings, default is set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Input("containingTolerance", "Set the tolerance for determining geometric association of openings to panels, default is set to BH.oM.Geometry.Tolerance.Distance.")]
+        [Output("panels", "A collection of modified Environment Panels with the provided openings added.")]
+        [PreviousVersion("6.3", "BH.Engine.Environment.Compute.AddOpening(BH.oM.Environment.Elements.Panel, BH.oM.Environment.Elements.Opening).")]
         public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings, double centroidTolerance = BH.oM.Geometry.Tolerance.Distance, double containingTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panels == null)
