@@ -44,7 +44,7 @@ namespace BH.Engine.Environment
         [Input("centroidTolerance", "Set the tolerance for obtaining the centroid of openings, default is set to BH.oM.Geometry.Tolerance.Distance.")]
         [Input("containingTolerance", "Set the tolerance for determining geometric association of openings to panels, default is set to BH.oM.Geometry.Tolerance.Distance.")]
         [Output("panels", "A collection of modified Environment Panels with the provided openings added.")]
-        [PreviousVersion("6.3", "BH.Engine.Environment.Modify.AddOpening(BH.oM.Environment.Elements.Panel, BH.oM.Environment.Elements.Opening).")]
+        [PreviousVersion("6.3", "BH.Engine.Environment.Modify.AddOpening(BH.oM.Environment.Elements.Panel, BH.oM.Environment.Elements.Opening)")]
         public static List<Panel> AddOpenings(this List<Panel> panels, List<Opening> openings, double centroidTolerance = BH.oM.Geometry.Tolerance.Distance, double containingTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panels == null)
