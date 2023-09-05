@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
         [Output("c", "The convex hull of the point list, no repeat points are returned.")]
         public static List<Point> GrahamScan(List<Point> pts, double tolerance = Tolerance.Distance)
         {
-            if(pts.IsNullOrEmpty())
+            if (pts.IsNullOrEmpty())
             {
                 Base.Compute.RecordError("The point list is either null or empty.");
                 return pts;
