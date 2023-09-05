@@ -20,14 +20,44 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.Engine.Base;
-using System.Collections;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using BH.oM.Geometry;
+using System.Linq;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
 
-namespace BH.Tests.Engine.Base.Query.Objects
+namespace BH.Engine.Geometry
 {
-    public class TestFragment : IFragment
+    public static partial class Compute
     {
-        public object SomeObject { get; set; }
+        [Description("A simplified method of sorting a list of points based on how close a given point is to the previous point. Based on the Travelling Salesperson Problem (TSP) but simpler and non-globally-optimal in the general case.")]
+        [Input("points", "The list of points which to sort.")]
+        [Output("sortedPoints", "The sorted list of points.")]
+        public static List<Point> ShortestPath(List<Point> points)
+        {
+            if (points == null || points.Count == 0) 
+                return null;
+
+            List<Point> sortedPoints = new List<Point>();
+
+            List<Point> ringPoints = points.ToList();
+
+            sortedPoints.Add(ringPoints[0]);
+            ringPoints.RemoveAt(0);
+
+            while (ringPoints.Count > 0)
+            {
+                Point np = Query.ClosestPoint(sortedPoints.Last(), ringPoints);
+                if (np == null)
+                    break;
+
+                sortedPoints.Add(np);
+                ringPoints.Remove(np);     
+            }
+
+            return sortedPoints;
+        }
     }
 }

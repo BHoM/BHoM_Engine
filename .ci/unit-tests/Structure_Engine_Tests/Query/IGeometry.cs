@@ -20,14 +20,24 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
+using NUnit.Framework;
+using BH.oM.Structure.SectionProperties;
 using BH.Engine.Base;
-using System.Collections;
+using BH.oM.Geometry;
+using Shouldly;
+using BH.oM.Test.NUnit;
+using System.Reflection;
 
-namespace BH.Tests.Engine.Base.Query.Objects
+namespace BH.Tests.Engine.Structure.Query
 {
-    public class TestFragment : IFragment
+    public class IGeometryTests : NUnitTest
     {
-        public object SomeObject { get; set; }
+        [Test]
+        public void ConcreteSection()
+        {
+            ConcreteSection concreteSection = (ConcreteSection)Create.RandomObject(typeof(ConcreteSection));
+            IGeometry geom = concreteSection.IGeometry();
+            geom.ShouldNotBeNull();
+        }
     }
 }

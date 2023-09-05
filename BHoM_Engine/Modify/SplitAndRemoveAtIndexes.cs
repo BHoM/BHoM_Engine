@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -20,23 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using System;
-using System.Collections.Concurrent;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
-using System.Reflection;
+using System.ComponentModel;
+using System.Linq;
 
-namespace BH.Engine.Settings
+namespace BH.Engine.Base
 {
-    internal static class Global
+    public static partial class Modify
     {
         /***************************************************/
-        /****     Internal properties - collections     ****/
+        /****               Public Methods              ****/
         /***************************************************/
-        internal static ConcurrentDictionary<Type, ISettings> BHoMSettings { get; set; } = new ConcurrentDictionary<Type, ISettings>();
-        internal static ConcurrentDictionary<Type, string> BHoMSettingsFilePaths { get; set; } = new ConcurrentDictionary<Type, string>(); //Store where settings came from for saving on shut down
-        internal static ConcurrentBag<string> BHoMSettingsLoaded { get; set; } = new ConcurrentBag<string>(); //Store whether a file path has been loaded or not
+
+        [Description("Removes list items at given indexes, then returns the remaining objects as non-empty sublists of consecutive items.")]
+        [Input("items", "A list of items to split at one or more indexes.")]
+        [Input("indexes", "Indexes of items to remove.")]
+        [Output("lists", "Sublists of consecutive items that remain after items at input indexes have been removed.")]
+        public static List<List<T>> RemoveAndSplitAtIndexes<T>(this List<T> items, List<int> indexes)
+        {
+            int startIndex = 0;
+            indexes.Add(items.Count);
+            List<List<T>> result = new List<List<T>>();
+
+            foreach (int i in indexes)
+            {
+                if (i < 0 || i > items.Count)
+                    continue;
+
+                List<T> subList = items.Skip(startIndex).Take(i - startIndex).ToList();
+
+                if (subList.Any())
+                    result.Add(subList);
+
+                startIndex = i + 1;
+            }
+
+            return result;
+        }
+
+        /***************************************************/
     }
 }
-
-

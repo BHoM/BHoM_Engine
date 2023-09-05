@@ -35,6 +35,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Data;
+using System.Linq;
 
 namespace BH.Tests.Engine.Serialiser
 {

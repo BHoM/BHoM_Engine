@@ -20,14 +20,31 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.Engine.Base;
-using System.Collections;
+using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
+using System;
+using System.ComponentModel;
 
-namespace BH.Tests.Engine.Base.Query.Objects
+namespace BH.Engine.Geometry
 {
-    public class TestFragment : IFragment
+    public static partial class Query
     {
-        public object SomeObject { get; set; }
+        /***************************************************/
+        /****               Public Methods              ****/
+        /***************************************************/
+
+        [Description("Get the smallest possible angle between 2 vectors regardless of their directions.")]
+        [Input("vector1", "The first vector.")]
+        [Input("vector2", "The second vector.")]
+        [Output("angle", "The smallest possible angle between 2 vectors regardless of their directions.", typeof(Angle))]
+        public static double AcuteAngle(this Vector vector1, Vector vector2)
+        {
+            return Math.Acos(
+                Math.Abs(vector1.DotProduct(vector2))
+                / (vector1.Length() * vector2.Length()));
+        }
+
+        /***************************************************/
     }
 }

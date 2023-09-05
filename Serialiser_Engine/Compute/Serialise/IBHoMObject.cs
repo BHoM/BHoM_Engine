@@ -21,10 +21,12 @@
  */
 
 using BH.oM.Base;
-using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace BH.Engine.Serialiser
@@ -35,52 +37,49 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Private Methods                   ****/
         /*******************************************/
-        
-        private static List<T> DeserialiseList<T>(this BsonValue bson, List<T> value, string version, bool isUpgraded)
+
+        private static void Serialise(this IBHoMObject value, BsonDocumentWriter writer, Type targetType)
         {
-            bson = ExtractValue(bson);
-
-            if (!bson.IsBsonArray)
-            { 
-                BH.Engine.Base.Compute.RecordError("Expected to deserialise a List and received " + bson.ToString() + " instead.");
-                return value;
-            }
-
             if (value == null)
-                value = new List<T>();
-
-            foreach (BsonValue item in bson.AsBsonArray)
-                value.Add((T)item.IDeserialise(typeof(T), null, version, isUpgraded));
-
-            return value;
-        }
-
-        /*******************************************/
-
-        private static List<List<T>> DeserialiseNestedList<T>(this BsonValue bson, List<List<T>> value, string version, bool isUpgraded)
-        {
-            bson = ExtractValue(bson);
-
-            if (!bson.IsBsonArray)
             {
-                BH.Engine.Base.Compute.RecordError("Expected to deserialise a List and received " + bson.ToString() + " instead.");
-                return value;
+                writer.WriteNull();
+                return;
             }
 
-            if (value == null)
-                value = new List<List<T>>();
+            writer.WriteStartDocument();
 
-            foreach (BsonValue item in bson.AsBsonArray)
-                value.Add((List<T>)item.DeserialiseList(new List<T>(), version, isUpgraded));
+            writer.WriteName("_t");
+            writer.WriteString(value.GetType().FullName);
 
-            return value;
+            foreach (PropertyInfo prop in value.GetType().GetProperties())
+            {
+                bool include = true;
+
+                switch (prop.Name)
+                {
+                    case "Name":
+                        include = !string.IsNullOrEmpty(value.Name);
+                        break;
+                    case "Fragments":
+                        include = (value.Fragments != null && value.Fragments.Count > 0);
+                        break;
+                    case "Tags":
+                        include = (value.Tags != null && value.Tags.Count > 0);
+                        break;
+                    case "CustomData":
+                        include = (value.CustomData != null && value.CustomData.Count > 0);
+                        break;
+                }
+
+                if(include)
+                {
+                    writer.WriteName(prop.Name);
+                    ISerialise(prop.GetValue(value), writer, prop.PropertyType);
+                }
+                
+            }
+            writer.WriteEndDocument();
         }
 
-        /*******************************************/
-
-        private static bool IsNestedList(this BsonValue bson)
-        {
-            return bson.IsBsonArray && bson.AsBsonArray.Count > 0 && bson.AsBsonArray[0].IsBsonArray;
-        }
     }
 }

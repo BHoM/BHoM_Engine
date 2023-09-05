@@ -21,15 +21,18 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Test.NUnit;
 using BH.Engine.Base;
 using BH.Tests.Engine.Base.Query.Objects;
 using NUnit.Framework;
 using AutoBogus;
 using Shouldly;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Tests.Engine.Base.Query
 {
-    public class UnpackTests
+    public class UnpackTests : NUnitTest
     {
         /// <summary>
         /// The static constructor is called only once at the test class initialisation, before everything else.

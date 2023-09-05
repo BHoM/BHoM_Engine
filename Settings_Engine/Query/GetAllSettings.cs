@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -21,13 +21,22 @@
  */
 
 using BH.oM.Base;
-using BH.Engine.Base;
-using System.Collections;
+using BH.oM.Base.Attributes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
 
-namespace BH.Tests.Engine.Base.Query.Objects
+namespace BH.Engine.Settings
 {
-    public class TestFragment : IFragment
+    public static partial class Query
     {
-        public object SomeObject { get; set; }
+        [Description("Obtain all the loaded ISettings objects currently in memory.")]
+        [Output("settings", "All the loaded ISettings objects currently available.")]
+        public static List<ISettings> GetAllSettings()
+        {
+            return Global.BHoMSettings.Values.ToList();
+        }
     }
 }

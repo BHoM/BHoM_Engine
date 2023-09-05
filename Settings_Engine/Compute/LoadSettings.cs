@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace BH.Engine.Settings
 {
@@ -35,12 +36,19 @@ namespace BH.Engine.Settings
     {
         [Description("Load all the JSON settings stored within the provided folder into memory. If no folder is provided, the default folder of %ProgramData%/BHoM/Settings is used instead. All JSON files are scraped within the directory (including subdirectories) and deserialised to ISettings objects.")]
         [Input("settingsFolder", "Optional input to determine where to load settings from. Defaults to %ProgramData%/BHoM/Settings if no folder is provided.")]
-        public static void LoadSettings(string settingsFolder = null)
+        [Input("fileFilter", "Optional input to filter which types of files to load settings from. Defaults to all JSON (.json) files within the provided folder.")]
+        [Input("forceLoad", "Optional input to determine whether settings should be loaded even if they have already been loaded. If true, and settings have previously been loaded, then settings will be reloaded from the provided folder path.")]
+        public static void LoadSettings(string settingsFolder = null, string fileFilter = "*.json", bool forceLoad = false)
         {
             if (string.IsNullOrEmpty(settingsFolder))
                 settingsFolder = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Settings"); //Defaults to C:/ProgramData/BHoM/Settings if no folder is provided
 
-            var settingsFiles = Directory.EnumerateFiles(settingsFolder, "*.json", SearchOption.AllDirectories);
+            string fullSettingsLoadedKey = $"{settingsFolder}/{fileFilter}"; //Construct a unique key for this folder + filter to determine whether settings have already been loaded from this folder for this file type.
+
+            if (Global.BHoMSettingsLoaded.Contains(fullSettingsLoadedKey) && !forceLoad)
+                return; //Settings from this folder have already been loaded, and we're not force loading them, so don't waste time reloading them
+
+            var settingsFiles = Directory.EnumerateFiles(settingsFolder, fileFilter, SearchOption.AllDirectories);
 
             foreach (var file in settingsFiles)
             {
@@ -69,6 +77,8 @@ namespace BH.Engine.Settings
                     BH.Engine.Base.Compute.RecordWarning(ex, $"Cannot deserialise the contents of {file} to an ISettings object.");
                 }
             }
+
+            Global.BHoMSettingsLoaded.Add(fullSettingsLoadedKey);
         }
     }
 }

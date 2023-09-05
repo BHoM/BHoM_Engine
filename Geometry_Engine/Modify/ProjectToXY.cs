@@ -20,14 +20,26 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.Engine.Base;
-using System.Collections;
+using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using System.ComponentModel;
 
-namespace BH.Tests.Engine.Base.Query.Objects
+namespace BH.Engine.Geometry
 {
-    public class TestFragment : IFragment
+    public static partial class Modify
     {
-        public object SomeObject { get; set; }
+        /***************************************************/
+        /****               Public Methods              ****/
+        /***************************************************/
+
+        [Description("Returns the projection of a point on the XY plane. This shorthand method should run quicker than BH.Engine.Geometry.Project(this Point, Plane) in performance-sensitive applications.")]
+        [Input("pnt", "A point to project onto the XY plane.")]
+        [Output("pntOnXY", "Projection of the input point on the XY plane.")]
+        public static Point ProjectToXY(this Point pnt)
+        {
+            return new Point { X = pnt.X, Y = pnt.Y, Z = 0 };
+        }
+
+        /***************************************************/
     }
 }

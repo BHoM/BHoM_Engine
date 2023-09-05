@@ -1,16 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
     <FileVersion>6.3.0.0</FileVersion>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
-
     <Configurations>Debug;Release;Test</Configurations>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RootNamespace>BH.Tests.Engine.Base</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'!='Test'">
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Test'">
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +43,11 @@
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="NUnit_Engine">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\NUnit_Engine.dll</HintPath>
+      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Structure_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Structure_oM.dll</HintPath>
       <Private>True</Private>
@@ -46,7 +56,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)*Bogus.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)System.Data.DataSetExtensions.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)Microsoft.VisualStudio.*.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)Microsoft.TestPlatform.*.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)testhost.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)NuGet.Frameworks.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)System.Reflection.Metadata.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)Newtonsoft.Json.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)nunit.framework.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)DiffEngine.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)System.Management.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)EmptyFiles.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)Shouldly.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y" />
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)*Bogus.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)System.Data.DataSetExtensions.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)Microsoft.VisualStudio.*.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)Microsoft.TestPlatform.*.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)testhost.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)NuGet.Frameworks.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)System.Reflection.Metadata.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)Newtonsoft.Json.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)nunit.framework.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)DiffEngine.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)System.Management.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)EmptyFiles.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)Shouldly.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y" />
   </Target>
 
 </Project>
