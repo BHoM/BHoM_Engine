@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
             if (pile.IsNull() || curve.IsNull())
                 return null;
 
-            if(!curve.IIsLinear())
+            if (!curve.IIsLinear())
             {
                 Base.Compute.RecordWarning("The curve provided is not linear, note the start and points will be used to define the line.");
             }

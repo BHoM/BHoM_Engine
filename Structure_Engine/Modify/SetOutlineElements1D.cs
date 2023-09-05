@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
             if (padFoundation.IsNull())
                 return padFoundation;
 
-            if(curves.IsNullOrEmpty())
+            if (curves.IsNullOrEmpty())
             {
                 Base.Compute.RecordError("The list of IElement1D is null or empty.");
                 return padFoundation;
