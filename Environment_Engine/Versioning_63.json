@@ -1,7 +1,7 @@
 {
 
   "MessageForDeleted": {
-    "BH.Engine.Environment.Modify.SplitPanelsByGeometry(BH.oM.Environment.Elements.Panel, System.Collections.Generic.List<BH.oM.Geometry.Polyline>)": "Method has been removed due to lack of use and confusing UX"
+    "BH.Engine.Environment.Modify.SplitPanelByGeometry(BH.oM.Environment.Elements.Panel, System.Collections.Generic.List<BH.oM.Geometry.Polyline>)": "Method has been removed due to lack of use and confusing UX"
   }
 
 }
