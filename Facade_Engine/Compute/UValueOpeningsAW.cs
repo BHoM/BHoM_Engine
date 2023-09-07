@@ -44,7 +44,7 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
         
-        [Description("Returns effective U-Value of a collection of openings calculated using the Area Weighting Method. Requires center of opening U-value, frame U-value and edge U-value as OpeningConstruction and FrameEdgeProperty fragments.")]
+        [Description("Returns effective U-Value of a collection of openings calculated using the Area Weighting Method. Requires center of opening U-value, frame U-value and edge U-value as OpeningConstruction and FrameEdgeProperty fragments. Openings identified as type CurtainWallSpandrel will use 10 in. edge zone per NFRC 100.")]
         [Input("openings", "Openings to find U-value for.")]
         [Output("effectiveUValue", "Effective total U-value result of openings calculated using CAM.")]
         public static OverallUValue UValueOpeningsAW(this List<Opening> openings)
@@ -62,7 +62,6 @@ namespace BH.Engine.Facade
                 Base.Compute.RecordError("Openings have a total calculated area of 0. Ensure Openings are valid with associated edges defining their geometry and try again.");
                 return null;
             }
-
             double effectiveUValue = uValueProduct / totalArea;
             OverallUValue result = new OverallUValue(effectiveUValue, openings.Select(x => x.BHoM_Guid as IComparable).ToList());
             return result;

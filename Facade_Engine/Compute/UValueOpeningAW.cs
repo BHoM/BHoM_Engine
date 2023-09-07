@@ -54,6 +54,20 @@ namespace BH.Engine.Facade
                 Base.Compute.RecordError($"U-Value can not be calculated for null opening.");
                 return null;
             }
+            if (opening.Type == OpeningType.Hole)
+            {
+                Base.Compute.RecordError($"U-Value can not be calculated for opening type Hole.");
+                return null;
+            }
+            if (opening.Type == OpeningType.CurtainWallSpandrel)
+            {
+                return opening.UValueSpandrelAW();
+            }
+            if (opening.Type != OpeningType.CurtainWallVision || opening.Type != OpeningType.Window)
+            {
+                Base.Compute.RecordError($"Opening does not have valid OpneingType assigned. U-value calculation methods for vision opening have been applied.");
+            }
+
 
             List<IFragment> glassUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassCentre));
             List<IFragment> glassEdgeUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassEdge));
