@@ -63,9 +63,9 @@ namespace BH.Engine.Facade
             {
                 return opening.UValueSpandrelAW();
             }
-            if (opening.Type != OpeningType.CurtainWallVision || opening.Type != OpeningType.Window)
+            if (opening.Type != OpeningType.CurtainWallVision && opening.Type != OpeningType.Window)
             {
-                Base.Compute.RecordError($"Opening does not have valid OpneingType assigned. U-value calculation methods for vision opening have been applied.");
+                Base.Compute.RecordWarning($"Opening does not have valid OpneingType assigned. U-value calculation methods for vision opening have been applied.");
             }
 
 
