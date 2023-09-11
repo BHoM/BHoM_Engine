@@ -32,6 +32,7 @@ using BH.oM.Geometry;
 using BH.Engine.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Environment.Elements;
+using BH.oM.Base;
 
 namespace BH.Engine.Environment
 {
@@ -45,9 +46,10 @@ namespace BH.Engine.Environment
         [Input("spaces", "A collection of Environment Spaces to set the type for.")]
         [Input("searchPoints", "A collection of points to search. The points should be contained by the space geometry.")]
         [Input("spaceType", "The space type to assign.")]
-        [Output("spaces", "A collection of modified Environment Spaces with assigned space types.")]
+        [MultiOutput(0, "spaces", "A collection of modified Environment Spaces with assigned space types.")]
+        [MultiOutput(1, "spacesNotAssigned", "Spaces which were not assigned the space type because they did not contain any of the search points.")]
         [PreviousVersion("6.3", "BH.Engine.Environment.Compute.AssignSpaceTypeByPoint(System.Collections.Generic.List<BH.oM.Environment.Elements.Space>, System.Collections.Generic.List<BH.oM.Geometry.Point>, System.String, System.Boolean)")]
-        public static List<Space> AssignSpaceTypeByPoint(this List<Space> spaces, List<Point> searchPoints, SpaceType spaceType)
+        public static Output<List<Space>, List<Space>> AssignSpaceTypeByPoint(this List<Space> spaces, List<Point> searchPoints, SpaceType spaceType)
         {
             List<Space> returnSpaces = new List<Space>();
             for (int x = 0; x < searchPoints.Count; x++)
@@ -59,7 +61,14 @@ namespace BH.Engine.Environment
                 update.SpaceType = spaceType;
                 returnSpaces.Add(update);
             }
-            return returnSpaces;
+
+            List<Space> spacesNotModified = spaces.Where(x => !returnSpaces.Contains(x)).ToList();
+
+            return new Output<List<Space>, List<Space>>()
+            {
+                Item1 = returnSpaces,
+                Item2 = spacesNotModified,
+            };
         }
     }
 }
