@@ -38,7 +38,8 @@ namespace BH.Engine.Settings
         [Input("settingsFolder", "Optional input to determine where to load settings from. Defaults to %ProgramData%/BHoM/Settings if no folder is provided.")]
         [Input("fileFilter", "Optional input to filter which types of files to load settings from. Defaults to all JSON (.json) files within the provided folder.")]
         [Input("forceLoad", "Optional input to determine whether settings should be loaded even if they have already been loaded. If true, and settings have previously been loaded, then settings will be reloaded from the provided folder path.")]
-        public static void LoadSettings(string settingsFolder = null, string fileFilter = "*.json", bool forceLoad = false)
+        [Input("searchAllDirectories", "Optional input to determine whether settings should be loaded from the given directory AND all sub-directories (if they exist). Defaults to false, meaning only settings file in the given directory will be loaded.")]
+        public static void LoadSettings(string settingsFolder = null, string fileFilter = "*.json", bool forceLoad = false, bool searchAllDirectories = false)
         {
             if (string.IsNullOrEmpty(settingsFolder))
                 settingsFolder = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Settings"); //Defaults to C:/ProgramData/BHoM/Settings if no folder is provided
@@ -48,7 +49,8 @@ namespace BH.Engine.Settings
             if (Global.BHoMSettingsLoaded.Contains(fullSettingsLoadedKey) && !forceLoad)
                 return; //Settings from this folder have already been loaded, and we're not force loading them, so don't waste time reloading them
 
-            var settingsFiles = Directory.EnumerateFiles(settingsFolder, fileFilter, SearchOption.AllDirectories);
+            var searchOption = (searchAllDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+            var settingsFiles = Directory.EnumerateFiles(settingsFolder, fileFilter, searchOption);
 
             foreach (var file in settingsFiles)
             {
