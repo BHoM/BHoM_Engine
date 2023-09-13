@@ -135,7 +135,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curve / points           ****/
         /***************************************************/
 
-        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Description("Checks if the collection of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
         [Input("curve", "The Arc to check if it is containing all of the provided points. If the Arc is not closed, i.e. not a Circle, the method will return false.")]
         [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
         [Input("acceptOnEdge", "If true, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
@@ -150,7 +150,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Description("Checks if the collection of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
         [Input("curve", "The Circle to check if it is containing all of the provided points.")]
         [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
         [Input("acceptOnEdge", "If true, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
@@ -169,7 +169,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Description("Checks if the collection of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
         [Input("curve", "The Ellipse to check if it is containing all of the provided points.")]
         [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
         [Input("acceptOnEdge", "If true, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
@@ -315,7 +315,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [PreviousInputNames("curve","curve1")]
-        [Description("Checks if the colleciton of Points are all contained within the curve. For a Line this will always return false.")]
+        [Description("Checks if the collection of Points are all contained within the curve. For a Line this will always return false.")]
         [Input("curve", "The Line to check. For a Line this methods will always return false.")]
         [Input("points", "The points to check. For a line this method will always return false.")]
         [Input("acceptOnEdge", "Not used by this method. A Line is not an enclosed region, hence even points that are on the curve will be deemed to be outside.")]
@@ -328,7 +328,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Description("Checks if the collection of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
         [Input("curve", "The Polyline to check if it is containing all of the provided points. If the Polyline is not closed or planar, the method will return false.")]
         [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
         [Input("acceptOnEdge", "If true and the curve is closed, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
@@ -452,7 +452,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Description("Checks if the collection of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
         [Input("curve", "The PolyCurve to check if it is containing all of the provided points. If the PolyCurve is not closed or planar, the method will return false.")]
         [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
         [Input("acceptOnEdge", "If true and the curve is closed, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
@@ -713,7 +713,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
-        [Description("Checks if the colleciton of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Description("Checks if the collection of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
         [Input("curve", "The PolyCurve to check if it is containing all of the provided points. If the PolyCurve is not closed or planar, the method will return false.")]
         [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
         [Input("acceptOnEdge", "If true and the curve is closed, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
