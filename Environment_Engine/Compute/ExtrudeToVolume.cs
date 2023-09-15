@@ -36,8 +36,6 @@ using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 using BH.oM.Analytical.Elements;
-using ICSharpCode.Decompiler.CSharp.Syntax;
-using ICSharpCode.Decompiler.IL.ControlFlow;
 
 namespace BH.Engine.Environment
 {
