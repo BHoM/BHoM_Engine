@@ -39,38 +39,25 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a Geology or its defining properties are null and outputs relevant error message.")]
-        [Input("geology", "The Geology to test for null.")]
+        [Description("Checks if a Strata or its defining properties are null and outputs relevant error message.")]
+        [Input("strata", "The Strata to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the Geology or its defining properties are null.")]
-        public static bool IsNull(this Geology geology, string msg = "", [CallerMemberName] string methodName = "Method")
+        [Output("isNull", "True if the Strata or its defining properties are null.")]
+        public static bool IsNull(this Strata strata, string msg = "", [CallerMemberName] string methodName = "Method")
         {
-            // Check the strata lists 
-            if(geology.StrataTop.IsNullOrEmpty() || geology.StrataBottom.IsNullOrEmpty())
+            if(strata == null)
             {
-                ErrorMessage(methodName, geology.GetType().ToString(), "The StrataTop and/or the StataBottom lists are empty or null. " + msg);
-                return true;
-            }
-            else if(geology.StrataBottom.Count != geology.StrataTop.Count)
-            {
-                ErrorMessage(methodName, geology.GetType().ToString(), "The StrataTop and StrataBotom do not have equal list lengths." + msg);
-                return true;
+                if (strata.LogDescription.Trim() == "")
+                {
+                    Base.Compute.RecordError("The Stata object is null.");
+                    return true;
+                }
             }
             
-            if(geology.LogDescription.IsNullOrEmpty() || geology.Legend.IsNullOrEmpty() || geology.ObservedGeology.IsNullOrEmpty())
+            if (strata.LogDescription.Trim() == "")
             {
-                ErrorMessage(methodName, geology.GetType().ToString(), "The LogDescription, Legend and ObservedGeology are empty or null." + msg);
-                return true;
-            }
-            else if (geology.LogDescription.Count != geology.Legend.Count || geology.LogDescription.Count != geology.InterpretedGeology.Count)
-            {
-                ErrorMessage(methodName, geology.GetType().ToString(), "The LogDescription, Legend and InterpretedGeology do not have equal list lengths." + msg);
-                return true;
-            }
-            else if(geology.StrataTop.Count != geology.LogDescription.Count)
-            {
-                ErrorMessage(methodName, geology.GetType().ToString(), "The strata depths and log parameters do not have equal list lengths." + msg);
+                Base.Compute.RecordError("The LogDescription is empty.");
                 return true;
             }
 

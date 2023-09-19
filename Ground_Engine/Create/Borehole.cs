@@ -28,6 +28,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Ground;
+using BH.Engine.Base;
 
 namespace BH.Engine.Ground
 {
@@ -41,11 +42,11 @@ namespace BH.Engine.Ground
         [Input("id", "Location identifier for the borehole unique to the project (LOCA_ID).")]
         [Input("top", "The top of the borehole within the coordinate system provided (LOCA_NATE, LOCA_NATEN, LOCA_GL).")]
         [Input("bottom", "The bottom of the borehole within the coordinate system provided (LOCA_ETRV, LOCA_NTRV, LOCA_FDEP).")]
-        [Input("geology", "An object containing the strata, geology units and descriptions of the ground.")]
+        [Input("strata", "A list of strata objects containing geology units and descriptions of the ground.")]
         [Input("properties", "A list of properties related to the borehole.")]
         [Input("coordinateSystem", "The coordinate system referenced by the top and bottom point. (LOCA_GREF, LOCA_NATD).")]
         [Output("borehole", "The created Borehole defined by a coordinate system, start point and end point based on the AGS schema.")]
-        public static Borehole Borehole(string id, Point top, Point bottom, Geology geology, List<IBoreholeProperties> properties, Cartesian coordinateSystem)
+        public static Borehole Borehole(string id, Point top, Point bottom, List<Strata> strata, List<IBoreholeProperties> properties, Cartesian coordinateSystem)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -58,7 +59,13 @@ namespace BH.Engine.Ground
                 return null;
             }
 
-            if (geology.IsNull())
+            if (strata.IsNullOrEmpty())
+            {
+                Base.Compute.RecordError("The list of strata is null or empty.");
+                return null;
+            }
+
+            if (strata.Any(x => x.IsNull()))
                 return null;
 
             if(!properties.Any() || properties == null)
@@ -67,7 +74,7 @@ namespace BH.Engine.Ground
                 return null;
             }
 
-            return new Borehole() { Id = id, Top = top, Bottom = bottom, Geology = geology, BoreholeProperties = properties, CoordinateSystem = coordinateSystem };
+            return new Borehole() { Id = id, Top = top, Bottom = bottom, Strata = strata, BoreholeProperties = properties, CoordinateSystem = coordinateSystem };
 
         }
 

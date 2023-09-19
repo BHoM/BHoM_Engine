@@ -39,40 +39,41 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Geology element based on its strata, descriptions and optional geological properties.")]
-        [Input("remarks", "General remarks for the investigation (GEOL_REF).")]
-        [Input("lexiconCode", "BGS Lexicon code for the strata (GEOL_BGS).")]
-        [Input("strataName", "Geological formation or strata name.")]
-        [Input("Files", "Associated file reference including instructions and photographs (FILE_FSET).")]
-        [Output("reference", "References to associated files, storage links or previous boreholes.")]
-        public static GeologicalReference GeologicalReference(string remarks, string lexiconCode, string strataName, List<string> Files = null)
+        [Description("Creates a Geology element based on its strata, descriptions and optional geological properties. The lists must be of equal length.")]
+        [Input("strataTop", "Depth to the top of the strata based on the datum provided on the Borehole (GEOL_TOP).")]
+        [Input("strataBottom", "Depth to the bottom of the strata based on the datum provided on the Borehole (GEOL_BOT).")]
+        [Input("logDescription", "General descriptions for each strata (GEOL_DESC).")]
+        [Input("legend", "Legend codes summarising the LogDescription (GEOL_LEG).")]
+        [Input("observedGeology", "Observed geologies expressed as a GeologicalUnit (GEOL_GEOL).")]
+        [Input("interpretedGeology", "Interpreted geologies expressed as an EngineeringMaterial (GEOL_GEO2).")]
+        [Input("optionalInterpretedGeology", "The optional interpreted geology expressed as an EngineeringMaterial(GEOL_GEO3).")]
+        [Input("blankGeology", "The geology to use where blank spaces occur in the observedGeology parameter..")]
+        [Output("geology", "Geology object containing information for each strata including descriptions, legend codes and optional geological properties.")]
+        public static Strata Strata(double top, double bottom, string logDescription, int legend,
+            string observedGeology, string interpretedGeology = null, string optionalInterpretedGeology = null, string blankGeology = "")
         {
-            if(remarks.IsNullOrEmpty())
+            if (logDescription.Trim() == "")
             {
-                Base.Compute.RecordError("The remarks input is null or empty.");
-                return null;
-            }
-            else if (lexiconCode.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The lexicon code is null or empty.");
-                return null;
-            }
-            else if (strataName.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The strata name is null or empty.");
+                Base.Compute.RecordError("The LogDescription is empty.");
                 return null;
             }
 
-            GeologicalReference reference = new GeologicalReference()
+            if (!blankGeology.Trim().IsNullOrEmpty())
             {
-                Remarks = remarks,
-                LexiconCode = lexiconCode,
-                Files = Files
+                if (observedGeology.Trim().IsNullOrEmpty())
+                    observedGeology = blankGeology;
+            }
+
+            return new Strata()
+            {
+                Top = top,
+                Bottom = bottom,
+                LogDescription = logDescription,
+                Legend = legend,
+                ObservedGeology = observedGeology,
+                InterpretedGeology = interpretedGeology,
+                OptionalInterpretedGeology = optionalInterpretedGeology
             };
-
-            reference.Name = strataName;
-
-            return reference;
         }
 
         /***************************************************/
