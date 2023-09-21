@@ -46,7 +46,7 @@ namespace BH.Engine.Ground
         [Input("properties", "A list of properties related to the borehole.")]
         [Input("coordinateSystem", "The coordinate system referenced by the top and bottom point. (LOCA_GREF, LOCA_NATD).")]
         [Output("borehole", "The created Borehole defined by a coordinate system, start point and end point based on the AGS schema.")]
-        public static Borehole Borehole(string id, Point top, Point bottom, List<Strata> strata, List<IBoreholeProperties> properties, Cartesian coordinateSystem)
+        public static Borehole Borehole(string id, Point top, Point bottom, List<Stratum> strata, List<IBoreholeProperty> properties, Cartesian coordinateSystem)
         {
             if (string.IsNullOrWhiteSpace(id))
             {

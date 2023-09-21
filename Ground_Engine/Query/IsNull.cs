@@ -44,7 +44,7 @@ namespace BH.Engine.Ground
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Strata or its defining properties are null.")]
-        public static bool IsNull(this Strata strata, string msg = "", [CallerMemberName] string methodName = "Method")
+        public static bool IsNull(this Stratum strata, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if(strata == null)
             {
@@ -64,12 +64,12 @@ namespace BH.Engine.Ground
             return false;
         }
 
-        [Description("Checks if a IGeologyProperty is null and outputs relevant error message.")]
+        [Description("Checks if a IStratumProperties is null and outputs relevant error message.")]
         [Input("property", "The IGeologyProperty to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the Geology or its defining properties are null.")]
-        public static bool IsNull(this IGeologicalProperties property, string msg = "", [CallerMemberName] string methodName = "Method")
+        public static bool IsNull(this IStratumProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if(property == null)
             {
