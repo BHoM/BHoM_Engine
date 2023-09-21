@@ -46,7 +46,7 @@ namespace BH.Engine.Ground
         [Input("originalReference", "Original job reference (LOCA_ORJO).")]
         [Input("originalCompany", "Originating company (LOCA_ORCO).")]
         [Output("boreholeReference", "Associated file reference including instructions and photographs (FILE_FSET).")]
-        public static BoreholeReference BoreholeReference(List<string> file = null, string url = "", string originalId = "", string originalReference = "", string originalCompany = "")
+        public static BoreholeReference BoreholeReference(string file = null, string url = "", string originalId = "", string originalReference = "", string originalCompany = "")
         {
             return new BoreholeReference()
             {

@@ -45,7 +45,7 @@ namespace BH.Engine.Ground
         [Input("strataName", "Geological formation or strata name.")]
         [Input("Files", "Associated file reference including instructions and photographs (FILE_FSET).")]
         [Output("reference", "References to associated files, storage links or previous boreholes.")]
-        public static StratumReference StratumReference(string remarks, string lexiconCode, string strataName, List<string> Files = null)
+        public static StratumReference StratumReference(string remarks, string lexiconCode, string strataName, string files = null)
         {
             if(remarks.IsNullOrEmpty())
             {
@@ -67,7 +67,7 @@ namespace BH.Engine.Ground
             {
                 Remarks = remarks,
                 LexiconCode = lexiconCode,
-                Files = Files
+                Files = files
             };
 
             reference.Name = strataName;

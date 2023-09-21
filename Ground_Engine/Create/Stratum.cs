@@ -49,9 +49,15 @@ namespace BH.Engine.Ground
         [Input("optionalInterpretedGeology", "The optional interpreted geology expressed as an EngineeringMaterial(GEOL_GEO3).")]
         [Input("blankGeology", "The geology to use where blank spaces occur in the observedGeology parameter..")]
         [Output("geology", "Stratum object containing information for each strata including descriptions, legend codes and optional geological properties.")]
-        public static Stratum Stratum(double top, double bottom, string logDescription, int legend,
+        public static Stratum Stratum(string id, double top, double bottom, string logDescription, string legend,
             string observedGeology, string interpretedGeology = null, string optionalInterpretedGeology = null, string blankGeology = "")
         {
+            if(id == "")
+            {
+                Base.Compute.RecordError("The id identifying the borehole is empty. The strata will not be referenced to a borehole.");
+                return null;
+            }
+
             if (logDescription.Trim() == "")
             {
                 Base.Compute.RecordError("The LogDescription is empty.");
@@ -66,6 +72,7 @@ namespace BH.Engine.Ground
 
             return new Stratum()
             {
+                Id = id,
                 Top = top,
                 Bottom = bottom,
                 LogDescription = logDescription,
