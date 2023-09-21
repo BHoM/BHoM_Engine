@@ -25,6 +25,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace BH.Engine.Serialiser
@@ -40,7 +41,7 @@ namespace BH.Engine.Serialiser
         {
             if (bson.IsDecimal128)
                 return bson.AsDecimal;
-            else if(bson.IsString && decimal.TryParse(bson.AsString, out decimal d))
+            else if(bson.IsString && decimal.TryParse(bson.AsString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal d))
                 return d;
             else
             {

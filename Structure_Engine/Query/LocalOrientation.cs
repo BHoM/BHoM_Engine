@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Get the Vector basis system descibring the local axis orientation of the Panel in the global coordinate system where the z-axis is the normal of the panel and the x and y axes are the directions of the local in-plane axes.")]
-        [Input("panel", "The Panel to extract the local orientation from from.")]
+        [Input("panel", "The Panel to extract the local orientation from.")]
         [Output("orienation", "The local orientation of the Panel as a vector Basis.")]
         public static Basis LocalOrientation(this Panel panel)
         {
@@ -58,6 +58,16 @@ namespace BH.Engine.Structure
         public static List<Basis> LocalOrientations(this FEMesh mesh)
         {
             return mesh.IsNull() ? null : mesh.Faces.Select(x => x.LocalOrientation(mesh)).ToList();
+        }
+
+        [Description("Get the Vector basis system descibring the local axis orientation of the PadFoundation in the global coordinate system where the z-axis is the normal of the PadFoundation and the x and y axes are the directions of the local in-plane axes.")]
+        [Input("padFoundation", "The PadFoundation to extract the local orientation from.")]
+        [Output("orienation", "The local orientation of the padFoundation as a vector Basis.")]
+        public static Basis LocalOrientation(this PadFoundation padFoundation)
+        {
+            Vector normal = padFoundation.IsNull() ? null : Spatial.Query.Normal(padFoundation);
+
+            return normal != null ? LocalOrientation(normal, padFoundation.OrientationAngle) : null;
         }
 
         /***************************************************/

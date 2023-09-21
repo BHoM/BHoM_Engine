@@ -1,0 +1,5 @@
+﻿{
+  "MessageForDeleted": {
+      "BH.Engine.Base.Modify.ISetGeometry(BH.oM.Base.IBHoMObject, BH.oM.Geometry.IGeometry)" : "This method has been removed as it was providing noise to component searches, and regularly provided inaccurate results. Please raise an issue at https://github.com/BHoM/BHoM_Engine if you feel this method should be reinstated.",
+    }
+}

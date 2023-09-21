@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Output("area", "The area of the FEMesh.", typeof(Area))]
         public static double Area(this FEMesh mesh)
         {
-            return mesh.IsNull() ? 0 : Analytical.Query.Geometry(mesh).Area();
+            return mesh.IsNull() ? 0 : mesh.Area();
         }
 
         /***************************************************/

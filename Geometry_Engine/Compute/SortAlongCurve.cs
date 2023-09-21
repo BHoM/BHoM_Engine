@@ -209,6 +209,9 @@ namespace BH.Engine.Geometry
             else if (tmpResult.Count == 1)
                 return tmpResult;
 
+            // For a close polyline there will be a duplicate point which needs to be removed
+            if (curve.IsClosed())
+                tmpResult = tmpResult.Distinct().ToList();
 
             List<Point> subPoints = new List<Point>();
 

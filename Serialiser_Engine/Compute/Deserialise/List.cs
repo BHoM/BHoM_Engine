@@ -56,5 +56,31 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
+
+        private static List<List<T>> DeserialiseNestedList<T>(this BsonValue bson, List<List<T>> value, string version, bool isUpgraded)
+        {
+            bson = ExtractValue(bson);
+
+            if (!bson.IsBsonArray)
+            {
+                BH.Engine.Base.Compute.RecordError("Expected to deserialise a List and received " + bson.ToString() + " instead.");
+                return value;
+            }
+
+            if (value == null)
+                value = new List<List<T>>();
+
+            foreach (BsonValue item in bson.AsBsonArray)
+                value.Add((List<T>)item.DeserialiseList(new List<T>(), version, isUpgraded));
+
+            return value;
+        }
+
+        /*******************************************/
+
+        private static bool IsNestedList(this BsonValue bson)
+        {
+            return bson.IsBsonArray && bson.AsBsonArray.Count > 0 && bson.AsBsonArray[0].IsBsonArray;
+        }
     }
 }

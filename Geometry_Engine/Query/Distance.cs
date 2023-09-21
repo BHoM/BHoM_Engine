@@ -20,13 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
+using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
+using System;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -52,7 +50,7 @@ namespace BH.Engine.Geometry
 
         [Description("Computes and returns the Euclidean square distance between two points, that is the sum of the squares of the differences of each component.")]
         [Input("a", "First Point for square distance computation.")]
-        [Input("b", "Second Point for  square distance computation.")]
+        [Input("b", "Second Point for square distance computation.")]
         [Output("sqDist", "The square distance between the two points.")]
         public static double SquareDistance(this Point a, Point b)
         {
@@ -123,7 +121,7 @@ namespace BH.Engine.Geometry
         [Description("Computes and returns the square distance between the Point and the closest point on the Line.")]
         [Input("point", "Point for square distance computation.")]
         [Input("line", "Line for square distance computation.")]
-        [Input("infiniteSegment", "If true, distance will be computed to the closest point on the infinite line. If false, the distance will be compated to the closest point on the finite line segment.")]
+        [Input("infiniteSegment", "If true, distance will be computed to the closest point on the infinite line. If false, the distance will be computed to the closest point on the finite line segment.")]
         [Output("dist", "The Euclidean distance between the Point and the Line.", typeof(Length))]
         public static double SquareDistance(this Point point, Line line, bool infiniteSegment = false)
         {
@@ -188,6 +186,18 @@ namespace BH.Engine.Geometry
             return point.Distance(curve.ClosestPoint(point));
         }
 
+        /***************************************************/
+
+        [Description("Computes the distance between 2 points along the direction of an input vector.")]
+        [Input("point1", "A point to computer the distance from.")]
+        [Input("point2", "A point to computer the distance to.")]
+        [Input("vector", "A vector along which the point distance will be computed.")]
+        [Output("distance", "The distance between 2 points along the direction of an input vector.")]
+        public static double DistanceAlongVector(this Point point1, Point point2, Vector vector)
+        {
+            Vector pointVector = point2 - point1;
+            return Math.Abs(pointVector.DotProduct(vector.Normalise()));
+        }
 
         /***************************************************/
         /****       Public Methods - Curve/Curve        ****/

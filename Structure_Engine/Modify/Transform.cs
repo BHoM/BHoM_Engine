@@ -64,7 +64,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        
+
         [Description("Transforms the Bar's nodes and orientation by the transform matrix. Only rigid body transformations are supported.")]
         [Input("bar", "Bar to transform.")]
         [Input("transform", "Transform matrix.")]
@@ -93,7 +93,7 @@ namespace BH.Engine.Structure
             Bar result = bar.ShallowClone();
             result.StartNode = result.StartNode.Transform(transform, tolerance);
             result.EndNode = result.EndNode.Transform(transform, tolerance);
-            
+
             Vector normalBefore = new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position }.ElementNormal(bar.OrientationAngle);
             Vector normalAfter = normalBefore.Transform(transform);
             result.OrientationAngle = normalAfter.OrientationAngleLinear(new Line { Start = result.StartNode.Position, End = result.EndNode.Position });
@@ -249,6 +249,102 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Transforms the PadFoundation's edges, openings and basis by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("padFoundation", "PadFoundation to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified PadFoundation with unchanged properties, but transformed edges and basis.")]
+        public static PadFoundation Transform(this PadFoundation padFoundation, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            if (padFoundation.IsNull())
+                return padFoundation;
+
+            if (transform.IsNull())
+                return padFoundation;
+
+            if (!transform.IsRigidTransformation(tolerance))
+            {
+                Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            PadFoundation result = padFoundation.ShallowClone();
+
+            result.TopOutline = result.TopOutline.Transform(transform);
+
+            Basis orientation = padFoundation.LocalOrientation()?.Transform(transform);
+            if (orientation != null)
+                result.OrientationAngle = orientation.Z.OrientationAngleAreaElement(orientation.X);
+            else
+                BH.Engine.Base.Compute.RecordWarning("Local orientation of the PadFoundation could not be transformed. Please note that the orientation of the resultant panel may be incorrect.");
+
+            return result;
+        }
+
+        /***************************************************/
+
+        [Description("Transforms the Pile by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("pile", "Pile to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified Pile with unchanged properties, but transformed.")]
+        public static Pile Transform(this Pile pile, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            if (pile.IsNull())
+                return pile;
+
+            if (transform.IsNull())
+                return pile;
+
+            if (!transform.IsRigidTransformation(tolerance))
+            {
+                Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            Pile result = pile.ShallowClone();
+            result.TopNode = result.TopNode.Transform(transform, tolerance);
+            result.BottomNode = result.BottomNode.Transform(transform, tolerance);
+
+            Vector normalBefore = new Line { Start = pile.TopNode.Position, End = pile.BottomNode.Position }.ElementNormal(pile.OrientationAngle);
+            Vector normalAfter = normalBefore.Transform(transform);
+            result.OrientationAngle = normalAfter.OrientationAngleLinear(new Line { Start = result.TopNode.Position, End = result.BottomNode.Position });
+
+            return result;
+        }
+
+        /***************************************************/
+
+        [Description("Transforms the PileFoundation by the transform matrix. Only rigid body transformations are supported.")]
+        [Input("pileFoundation", "PileFoundation to transform.")]
+        [Input("transform", "Transform matrix.")]
+        [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
+        [Output("transformed", "Modified PileFoundation with unchanged properties, but transformed.")]
+        public static PileFoundation Transform(this PileFoundation pileFoundation, TransformMatrix transform, double tolerance = Tolerance.Distance)
+        {
+            if (pileFoundation.IsNull())
+                return pileFoundation;
+
+            if (transform.IsNull())
+                return pileFoundation;
+
+            if (!transform.IsRigidTransformation(tolerance))
+            {
+                Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                return null;
+            }
+
+            PileFoundation result = pileFoundation.ShallowClone();
+
+            result.PileCap = result.PileCap.Transform(transform, tolerance);
+            result.Piles = result.Piles.Select(x => x.Transform(transform, tolerance)).ToList();
+
+            return result;
+        }
+
+        /***************************************************/
+
     }
 }
 

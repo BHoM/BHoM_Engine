@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -20,46 +20,23 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using System.Linq;
-using System.Collections.Generic;
-
-using BH.oM.Environment.Elements;
-
-using BH.Engine.Geometry;
-
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
 
-using BH.Engine.Base;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Settings
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods - Curves                   ****/
-        /***************************************************/
-
-        [Description("Split an Environment Panel by assigning new geometry with the original core data. Returns one panel per geometry provided")]
-        [Input("panel", "An Environment Panel to split")]
-        [Input("polylines", "Geometry polylines to split the panel by - one panel per polyline will be returned")]
-        [Output("panels", "A collection of Environment Panels split into the geometry parts provided")]
-        public static List<Panel> SplitPanelByGeometry(this Panel panel, List<Polyline> polylines)
+        [Description("Obtain all the loaded ISettings objects currently in memory.")]
+        [Output("settings", "All the loaded ISettings objects currently available.")]
+        public static List<ISettings> GetAllSettings()
         {
-            List<Panel> panels = new List<Panel>();
-
-            foreach (Polyline p in polylines)
-            {
-                Panel pan = panel.ShallowClone();
-                pan.ExternalEdges = p.ToEdges();
-                panels.Add(pan);
-            }
-
-            return panels;
+            return Global.BHoMSettings.Values.ToList();
         }
     }
 }
-
-
-

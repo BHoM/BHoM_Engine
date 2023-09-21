@@ -26,6 +26,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure.Elements;
+using System.Linq;
 using System.Collections.Generic;
 using System;
 using BH.oM.Physical.Materials;
@@ -79,6 +80,30 @@ namespace BH.Engine.Structure
             double thickness = areaElement.Property.IVolumePerArea();
 
             return area * thickness;
+        }
+
+        /***************************************************/
+
+        [Description("Returns a Pile's solid volume based on its Section area and the CentreLine length.")]
+        [Input("pile", "The Pile to get the volume from.")]
+        [Output("volume", "The Pile solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this Pile pile)
+        {
+            if (pile.IsNull())
+                return 0;
+
+            if (pile.Section.IsNull())
+                return 0;
+
+            return pile.Section.ISolidVolume(pile.Length());
+        }
+
+        [Description("Returns a PileFoundation's solid volume based on the PileCap and Piles volumes.")]
+        [Input("pileFoundation", "The PileFoundation to get the volume from.")]
+        [Output("volume", "The PileFoundation solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this PileFoundation pileFoundation)
+        {
+            return pileFoundation.IsNull() ? 0 : pileFoundation.PileCap.SolidVolume() + pileFoundation.Piles.Select(x => x.SolidVolume()).Sum();
         }
 
         /***************************************************/

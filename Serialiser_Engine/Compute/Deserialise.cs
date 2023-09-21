@@ -53,7 +53,12 @@ namespace BH.Engine.Serialiser
             if (bson.IsBsonNull)
                 return null;
             else if (bson.IsBsonArray)
-                return bson.DeserialiseList(new List<object>(), version, isUpgraded);
+            {
+                if (IsNestedList(bson))
+                    return bson.DeserialiseNestedList(new List<List<object>>(), version, isUpgraded);
+                else
+                    return bson.DeserialiseList(new List<object>(), version, isUpgraded);
+            }
             else if (bson.IsBsonDocument)
             {
                 BsonDocument doc = bson.AsBsonDocument;

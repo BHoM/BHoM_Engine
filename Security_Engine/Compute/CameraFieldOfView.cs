@@ -116,7 +116,7 @@ namespace BH.Engine.Security
                 Line line = BH.Engine.Geometry.Create.Line(cameraLocation, point);
                 rayLines.Add(line);
             }
-            rayLines = rayLines.OrderBy(x => x.SingedAngle(rayLines[0], Vector.ZAxis)).ToList();
+            rayLines = rayLines.OrderBy(x => x.SignedAngle(rayLines[0], Vector.ZAxis)).ToList();
 
             //split ray lines and find visible line
             List<Tuple<Line, Polyline>> linesDict = new List<Tuple<Line, Polyline>>();

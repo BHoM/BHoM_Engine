@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
             }
             foreach (Edge edge in edges)
             {
-                ICurve curve = Analytical.Query.Geometry(edge);
+                ICurve curve = edge.Curve;
                 points.AddRange(Geometry.Convert.IToPolyline(curve).ControlPoints);
             }
             int count = points.Distinct().Count();

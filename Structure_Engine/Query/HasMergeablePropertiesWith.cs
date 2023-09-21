@@ -40,8 +40,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Evaluates if the two Edges Supports and Releases are equal with the Support and Release comparers.")]
-        [Input("element", "An Structure Edge to compare the properties of with an other Structure Edge.")]
-        [Input("other", "The Structure Edge to compare with the other Structure Edge.")]
+        [Input("element", "A Structural Edge to compare the properties of with another Structure Edge.")]
+        [Input("other", "The Structural Edge to compare with the other Structure Edge.")]
         [Output("equal", "True if the Objects non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool HasMergeablePropertiesWith(this Edge element, Edge other)
         {

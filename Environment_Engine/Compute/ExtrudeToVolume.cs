@@ -41,7 +41,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
-        [Description("Takes a region with a Floor Perimieter and creates a collection of Environment Panels which represent the closed volume of the region. The name of the region becomes the connected space for the panels.")]
+        [Description("Takes a region with a Floor Perimeter and creates a collection of Environment Panels which represent the closed volume of the region. The name of the region becomes the connected space for the panels.")]
         [Input("region", "A region with a floor perimeter to extrude into a collection of panels.")]
         [Input("height", "The height of the region, as a double, to calculate the ceiling level of the region. This will be used as the Z value of the perimeter + the given height.")]
         [Input("tolerance", "The degree of tolerance on the angle calculation for collapsing the regions perimeter to a polyline. Default is equal to BH.oM.Geometry.Tolerance.Angle.")]
@@ -56,7 +56,7 @@ namespace BH.Engine.Environment
             return floor.ExtrudeToVolume(region.Name, height);
         }
 
-        [Description("Takes a polyline perimieter and creates a collection of Environment Panels which represent the closed volume of a space.")]
+        [Description("Takes a polyline perimeter and creates a collection of Environment Panels which represent the closed volume of a space.")]
         [Input("pLine", "A polyline perimeter to extrude into a collection of panels.")]
         [Input("connectingSpaceName", "The name of the space the panels will enclose.")]
         [Input("height", "The height of the space, as a double, to calculate the ceiling level of the room. This will be used as the Z value of the perimeter + the given height.")]
@@ -66,12 +66,20 @@ namespace BH.Engine.Environment
             if (pLine == null)
                 return new List<Panel>();
 
+            List<Point> floorPoints = pLine.ControlPoints;
+            List<Point> checkPoints = floorPoints.CullDuplicates();
+
+            if (floorPoints.Count != (checkPoints.Count + 1))
+            {
+                BH.Engine.Base.Compute.RecordError("The polyline has duplicate control points and cannot be extruded to a volume.");
+                return new List<Panel>();
+            }                     
+
             List<Panel> panels = new List<Panel>();
 
             Panel floorPanel = new Panel { ExternalEdges = pLine.ToEdges(), Type = PanelType.Floor };
             panels.Add(floorPanel);
-
-            List<Point> floorPoints = pLine.ControlPoints;
+            
             List<Point> roofPoints = new List<Point>();
             foreach (Point p in floorPoints)
                 roofPoints.Add(new Point { X = p.X, Y = p.Y, Z = p.Z + height });
