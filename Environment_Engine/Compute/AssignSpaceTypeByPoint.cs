@@ -48,7 +48,6 @@ namespace BH.Engine.Environment
         [Input("spaceType", "The space type to assign.")]
         [MultiOutput(0, "spaces", "A collection of modified Environment Spaces with assigned space types.")]
         [MultiOutput(1, "spacesNotAssigned", "Spaces which were not assigned the space type because they did not contain any of the search points.")]
-        [PreviousVersion("6.3", "BH.Engine.Environment.Compute.AssignSpaceTypeByPoint(System.Collections.Generic.List<BH.oM.Environment.Elements.Space>, System.Collections.Generic.List<BH.oM.Geometry.Point>, System.String, System.Boolean)")]
         public static Output<List<Space>, List<Space>> AssignSpaceTypeByPoint(this List<Space> spaces, List<Point> searchPoints, SpaceType spaceType)
         {
             List<Space> returnSpaces = new List<Space>();
