@@ -29,6 +29,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Ground;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;
+using BH.Engine.Geometry;
 
 
 namespace BH.Engine.Ground
@@ -39,6 +40,34 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Checks if a Borehole or its defining properties are null and outputs relevant error message.")]
+        [Input("borehole", "The Borehole to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Borehole or its defining properties are null.")]
+        public static bool IsNull(this Borehole borehole, string msg = "", [CallerMemberName] string methodName = "Method")
+        {
+            if (borehole == null)
+            {
+                Base.Compute.RecordError("The borehole is null.");
+                return true;
+            }
+
+            if(borehole.Id == "")
+            {
+                Base.Compute.RecordError("The borehole does not contain an ID.");
+                return true;
+            }
+
+            if (borehole.Top == null || borehole.Bottom == null)
+            {
+                Base.Compute.RecordError("The top or bottom of the Borehole is null.");
+                return true;
+            }
+
+            return false;
+        }
+
         [Description("Checks if a Strata or its defining properties are null and outputs relevant error message.")]
         [Input("strata", "The Strata to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -48,11 +77,8 @@ namespace BH.Engine.Ground
         {
             if(strata == null)
             {
-                if (strata.LogDescription.Trim() == "")
-                {
-                    Base.Compute.RecordError("The Stata object is null.");
+                    Base.Compute.RecordError("The stratum is null.");
                     return true;
-                }
             }
             
             if (strata.LogDescription.Trim() == "")
