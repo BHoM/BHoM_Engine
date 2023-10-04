@@ -117,7 +117,7 @@ namespace BH.Engine.Environment
             if (cloned.OpeningConstruction != null)
                 BH.Engine.Base.Compute.RecordWarning(string.Format("The construction for the opening with GUID {0} was not null and will be replaced with a generic construction", cloned.BHoM_Guid));
             else
-                BH.Engine.Base.Compute.RecordNote(string.Format("The construction for the opening with GUID {0} was automatically assigned a generic construction", cloned.BHoM_Guid));
+                BH.Engine.Base.Compute.RecordNote(string.Format("The construction for the opening with GUID {0} was automatically assigned a generic window construction", cloned.BHoM_Guid));
 
             switch (cloned.Type)
             {
