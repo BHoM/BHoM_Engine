@@ -20,12 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Concurrent;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BH.Engine.Base
 {
@@ -60,6 +58,39 @@ namespace BH.Engine.Base
         {
             if(TryRunExtensionMethod(target, methodName, parameters, out object result))
                 return result;
+            else
+                return null;
+        }
+
+        /***************************************************/
+
+        [Description("Asynchronously runs an extension method accepting a single argument based on a provided object and method name.\n" +
+                     "Finds the method via reflection the first time it is run, then compiles it to a function and stores it for subsequent calls.")]
+        [Input("target", "The object to find and run the extension method for.")]
+        [Input("methodName", "The name of the method to be run.")]
+        [Output("result", "The result of the method execution. If no method was found, null is returned.")]
+        public static async Task<object> RunExtensionMethodAsync(object target, string methodName)
+        {
+            Output<bool, object> result = await TryRunExtensionMethodAsync(target, methodName);
+            if (result.Item1)
+                return result.Item2;
+            else
+                return null;
+        }
+
+        /***************************************************/
+
+        [Description("Asynchronously runs an extension method accepting multiple arguments based on a provided main object and method name and additional arguments.\n" +
+                     "Finds the method via reflection the first time it is run, then compiles it to a function and stores it for subsequent calls.")]
+        [Input("target", "The first of the argument of the method to find and run the extention method for.")]
+        [Input("methodName", "The name of the method to be run.")]
+        [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
+        [Output("result", "The result of the method execution. If no method was found, null is returned.")]
+        public static async Task<object> RunExtensionMethodAsync(object target, string methodName, object[] parameters)
+        {
+            Output<bool, object> result = await TryRunExtensionMethodAsync(target, methodName, parameters);
+            if (result.Item1)
+                return result.Item2;
             else
                 return null;
         }

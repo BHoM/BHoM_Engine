@@ -20,19 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base.Debugging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BH.Engine.Base
 {
@@ -70,21 +66,98 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        [Description("Looks for an extension method applicable to the input object with the provided `methodName` and, if found, invokes it asynchronously.\n" +
+            "Extension methods are searched using Reflection through all BHoM assemblies.\n" +
+            "If no method is found, this returns `false`, and the `result` is null.")]
+        [Input("obj", "Object whose extension method is to be found, and to which the method will be applied in order to obtain the result.")]
+        [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
+        [Output("First output: true if a method was found and an invocation was attempted. False otherwise." +
+                "\nSecond output: result of the call if an attempt was made.")]
+        public static async Task<Output<bool, object>> TryRunExtensionMethodAsync(this object obj, string methodName)
+        {
+            return await TryRunExtensionMethodAsync(methodName, new object[] { obj });
+        }
+
+        /***************************************************/
+
+        [Description("Looks for an extension method applicable to the input object with the provided `methodName` and  and, if found, invokes it asynchronously.\n" +
+            "Extension methods are searched using Reflection through all BHoM assemblies.\n" +
+            "If no method is found, this returns `false`, and the `result` is null.")]
+        [Input("obj", "Object whose extension method is to be found, and to which the method will be applied in order to obtain the result.")]
+        [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
+        [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
+        [Output("First output: true if a method was found and an invocation was attempted. False otherwise." +
+                "\nSecond output: result of the call if an attempt was made.")]
+        public static async Task<Output<bool, object>> TryRunExtensionMethodAsync(this object obj, string methodName, object[] parameters)
+        {
+            return await TryRunExtensionMethodAsync(methodName, new object[] { obj }.Concat(parameters).ToArray());
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
         [Description("Runs the requested method and returns the result. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         private static bool TryRunExtensionMethod(string methodName, object[] parameters, out object result)
         {
-            if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
+            Func<object[], object> func = ExtensionMethodToRun(methodName, parameters);
+
+            // Try calling the method
+            try
             {
+                if (func == null)
+                {
+                    result = null;
+                    return false;
+                }
+                else
+                {
+                    result = func(parameters);
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Base.Compute.RecordError($"Failed to run {methodName} extension method.\nError: {e.Message}");
                 result = null;
                 return false;
             }
+        }
+
+        /***************************************************/
+
+        [Description("Asynchronously runs the requested method and returns the result. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
+        private static async Task<Output<bool, object>> TryRunExtensionMethodAsync(string methodName, object[] parameters)
+        {
+            Func<object[], object> func = ExtensionMethodToRun(methodName, parameters) as Func<object[], object>;
+
+            // Try calling the method
+            try
+            {
+                if (func == null)
+                    return new Output<bool, object> { Item1 = false, Item2 = null };
+                else
+                    return new Output<bool, object> { Item1 = true, Item2 = await (func(parameters) as dynamic) };
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Base.Compute.RecordError($"Failed to run {methodName} extension method.\nError: {e.Message}");
+                return new Output<bool, object> { Item1 = false, Item2 = null };
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Finds an extension method with given name and parameters. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
+        private static Func<object[], object> ExtensionMethodToRun(string methodName, object[] parameters)
+        {
+            if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
+                return null;
 
             //Construct key used to store/extract method
             string key = methodName + string.Join("", parameters.Select(x => x.GetType().ToString()));
-            
+
             // If the method has been called before, use the previously compiled function
             Func<object[], object> func;
             if (FunctionPreviouslyCompiled(key))
@@ -110,7 +183,7 @@ namespace BH.Engine.Base
                         {
                             //Check that the parameter has a default value.
                             //This should always be true, based on the logic of the ExtensionMethodToCall but additional check here for saftey
-                            if (parameterInfo[i].HasDefaultValue)   
+                            if (parameterInfo[i].HasDefaultValue)
                             {
                                 defaultArgs.Add(parameterInfo[i].DefaultValue); //Add the argument to be used when calling the function
                             }
@@ -128,30 +201,11 @@ namespace BH.Engine.Base
                     else
                         func = methodFunc;  //Provided parameter count matches the parameters of the method -> set func to the compiled function of the method
                 }
-                    
+
                 StoreCompiledFunction(key, func);
             }
 
-            // Try calling the method
-            try
-            {
-                if (func == null)
-                {
-                    result = null;
-                    return false;
-                }
-                else
-                {
-                    result = func(parameters);
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                BH.Engine.Base.Compute.RecordError($"Failed to run {methodName} extension method.\nError: {e.Message}");
-                result = null;
-                return false;
-            }
+            return func;
         }
 
         /***************************************************/
