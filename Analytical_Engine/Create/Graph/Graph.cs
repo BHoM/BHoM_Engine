@@ -128,7 +128,7 @@ namespace BH.Engine.Analytical
             if (entities == null)
                 entities = new List<IElement0D>();
 
-            if (!entities.All(e => e is IBHoMObject && e is IGeometry))
+            if (!entities.All(e => e is IBHoMObject))
             {
                 Base.Compute.RecordError("All entities must be of type IBHoMObject and IGeometry.");
                 return null;
