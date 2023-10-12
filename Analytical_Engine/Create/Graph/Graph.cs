@@ -66,7 +66,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        
+
         [Description("Create a graph from a collection of IBHoMObjects, a collection of IRelations, property names and decimal places to determine unique graph entities.")]
         [Input("entities", "Optional collection of IBHoMOBjects to use as Graph entities. Entities can include DependencyFragments to determine the Graph Relations.")]
         [Input("relations", "Optional collection of IRelations to use as Graph Relations. Relations can include sub Graphs containing the entities to be used in the Graph.")]
@@ -91,24 +91,24 @@ namespace BH.Engine.Analytical
             m_MatchedObjects = Query.UniqueEntitiesReplacementMap(clonedEntities, comparisonConfig);
 
             //convert dependency fragments attached to entities and add to relations
-            clonedEntities.ForEach(ent => clonedRelations.AddRange(ent.ToRelation())); 
+            clonedEntities.ForEach(ent => clonedRelations.AddRange(ent.ToRelation()));
 
             //add to graph
             graph.Relations.AddRange(clonedRelations);
 
             //add unique objects
-            foreach (KeyValuePair< Guid, IBHoMObject> kvp in m_MatchedObjects)
+            foreach (KeyValuePair<Guid, IBHoMObject> kvp in m_MatchedObjects)
             {
- 
+
                 if (!graph.Entities.ContainsKey(kvp.Value.BHoM_Guid))
                     graph.Entities.Add(kvp.Value.BHoM_Guid, kvp.Value);
-                
+
             }
             graph = graph.UniqueEntities(m_MatchedObjects);
 
             graph.UniqueEntityNames();
 
-            if(graph.Relations.Count == 0)
+            if (graph.Relations.Count == 0)
                 Base.Compute.RecordWarning("No Relations have been defined for this graph.");
 
             return graph;
@@ -129,6 +129,12 @@ namespace BH.Engine.Analytical
             if (entities == null)
                 entities = new List<IElement0D>();
 
+            if (!entities.All(e => e is IBHoMObject && e is IGeometry))
+            {
+                Base.Compute.RecordError("All entities must be of type IBHoMObject and IGeometry.");
+                return null;
+            }
+
             List<IElement0D> entitiesCloned = entities.DeepClone();
 
             List<IRelation> relations = new List<IRelation>();
@@ -145,9 +151,18 @@ namespace BH.Engine.Analytical
                 };
                 relations.AddRange(RelationsToAdd(relation, relationDirection));
             }
+
             Graph graph = new Graph();
-            
-            entitiesCloned.ForEach(n => graph.Entities.Add(((IBHoMObject)n).BHoM_Guid, ((IBHoMObject)n)));
+
+            entitiesCloned.ForEach(n =>
+            {
+                if (!graph.Entities.ContainsKey(((IBHoMObject)n).BHoM_Guid))
+                {
+                    graph.Entities.Add(((IBHoMObject)n).BHoM_Guid, ((IBHoMObject)n));
+                }
+
+            });
+
             graph.Relations = relations;
             graph.UniqueEntityNames();
 
@@ -173,7 +188,7 @@ namespace BH.Engine.Analytical
             {
                 Point p = Geometry.Create.RandomPoint(m_Rnd, boundingBox);
                 IElement0D entity = prototypeEntity.ClonePositionGuid(p);
-                
+
                 if (!ToCloseToAny(entities, entity, tolerance))
                     entities.Add(entity);
 
@@ -253,7 +268,7 @@ namespace BH.Engine.Analytical
                                 Target = c.BHoM_Guid
                             };
                             graph.Relations.AddRange(RelationsToAdd(relation, relationDirection));
-                                
+
                         }
                     }
                 }
@@ -275,7 +290,7 @@ namespace BH.Engine.Analytical
                 entity = prototypeEntity.ClonePositionGuid(point);
                 entities.Add(entity);
             }
-                
+
             return entity;
         }
 
@@ -285,7 +300,7 @@ namespace BH.Engine.Analytical
         {
             element0D = element0D.DeepClone();
             element0D = element0D.ISetGeometry(position);
-            ((IBHoMObject)element0D).BHoM_Guid = Guid.NewGuid();
+            //((IBHoMObject)element0D).BHoM_Guid = Guid.NewGuid();
             return element0D;
         }
 
