@@ -99,7 +99,6 @@ namespace BH.Engine.Analytical
             //add unique objects
             foreach (KeyValuePair<Guid, IBHoMObject> kvp in m_MatchedObjects)
             {
-
                 if (!graph.Entities.ContainsKey(kvp.Value.BHoM_Guid))
                     graph.Entities.Add(kvp.Value.BHoM_Guid, kvp.Value);
 
