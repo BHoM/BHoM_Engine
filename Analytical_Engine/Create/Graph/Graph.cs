@@ -159,7 +159,6 @@ namespace BH.Engine.Analytical
                 {
                     graph.Entities.Add(((IBHoMObject)n).BHoM_Guid, ((IBHoMObject)n));
                 }
-
             });
 
             graph.Relations = relations;
