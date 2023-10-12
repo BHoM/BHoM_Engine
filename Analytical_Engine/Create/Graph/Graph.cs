@@ -300,7 +300,7 @@ namespace BH.Engine.Analytical
         {
             element0D = element0D.DeepClone();
             element0D = element0D.ISetGeometry(position);
-            //((IBHoMObject)element0D).BHoM_Guid = Guid.NewGuid();
+            ((IBHoMObject)element0D).BHoM_Guid = Guid.NewGuid();
             return element0D;
         }
 
