@@ -147,7 +147,7 @@ namespace BH.Engine.Environment
         [Input("elements", "The elements being checked to see if they are contained within the bounds of the 3D volume.")]
         [Input("acceptOnEdges", "Decide whether to allow the element's point to sit on the edge of the space, default false.")]
         [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
-        public static List<bool> IsContaining(this Space space, double spaceHeight, List<IElement> elements, bool acceptOnEdges = false)
+        public static List<bool> IsContaining(this Space space, double spaceHeight, List<IElement> elements, bool acceptOnEdges = false, bool acceptPartialContainment = false)
         {
             List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
             List<List<Point>> pointLists = new List<List<Point>>();
@@ -156,7 +156,7 @@ namespace BH.Engine.Environment
                 List<Point> points = elem.IControlPoints();
                 pointLists.Add(points);
             }
-            return panelsFromSpace.IsContaining(pointLists, acceptOnEdges);
+            return panelsFromSpace.IsContaining(pointLists, acceptOnEdges, acceptPartialContainment);
         }
 
 
