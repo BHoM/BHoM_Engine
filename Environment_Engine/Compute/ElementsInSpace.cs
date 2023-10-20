@@ -45,13 +45,13 @@ namespace BH.Engine.Environment
         [Description("Gets the elements that lie within the provided space.")]
         [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
         [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
-        [Input("elements", "The point-based elements being checked to see if they are contained within the bounds of the 3D volume.")]
+        [Input("elements", "The elements being checked to see if they are contained within the bounds of the 3D volume.")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the space, default false.")]
         [Output("elements", "The elements from the provided elements that are within the space.")]
-        public static List<IElement0D> ElementsInSpace(this Space space, double spaceHeight, List<IElement0D> elements,  bool acceptOnEdges = false)
+        public static List<IElement> ElementsInSpace(this Space space, double spaceHeight, List<IElement> elements,  bool acceptOnEdges = false)
         {
             if (space == null)
-                return new List<IElement0D>();
+                return new List<IElement>();
 
             List<bool> isContaining = space.IsContaining(spaceHeight, elements, acceptOnEdges);
 
@@ -64,70 +64,6 @@ namespace BH.Engine.Environment
                 .Select(item => item.elem)
                 .ToList();
         }
-
-        [Description("Gets the elements that lie within the provided space.")]
-        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
-        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
-        [Input("elements", "The point-based elements being checked to see if they are contained within the bounds of the 3D volume.")]
-        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the space, default false.")]
-        [Output("elements", "The elements from the provided elements that are within the space.")]
-        public static List<IElement1D> ElementsInSpace(this Space space, double spaceHeight, List<IElement1D> elements, bool acceptOnEdges = false)
-        {
-            if (space == null)
-                return new List<IElement1D>();
-
-            List<bool> isContaining = space.IsContaining(spaceHeight, elements, acceptOnEdges);
-
-            return elements
-                .Zip(isContaining, (elem, inSpace) => new {
-                    elem,
-                    inSpace,
-                })
-                .Where(item => item.inSpace)
-                .Select(item => item.elem)
-                .ToList();
-        }
-
-        [Description("Gets the elements that lie within the provided space.")]
-        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
-        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
-        [Input("elements", "The point-based elements being checked to see if they are contained within the bounds of the 3D volume.")]
-        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the space, default false.")]
-        [Output("elements", "The elements from the provided elements that are within the space.")]
-        public static List<IElement2D> ElementsInSpace(this Space space, double spaceHeight, List<IElement2D> elements, bool acceptOnEdges = false)
-        {
-            if (space == null)
-                return new List<IElement2D>();
-
-            List<bool> isContaining = space.IsContaining(spaceHeight, elements, acceptOnEdges);
-
-            return elements
-                .Zip(isContaining, (elem, inSpace) => new {
-                    elem,
-                    inSpace,
-                })
-                .Where(item => item.inSpace)
-                .Select(item => item.elem)
-                .ToList();
-        }
-
-        /******************************************/
-        /**** Public Methods - Interfaces      ****/
-        /******************************************/
-
-        [Description("Gets the elements that lie within the provided space.")]
-        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
-        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
-        [Input("elements", "The point-based elements being checked to see if they are contained within the bounds of the 3D volume.")]
-        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the space, default false.")]
-        [Output("elements", "The elements from the provided elements that are within the space.")]
-        public static List<IElement> ElementsInSpace(this Space space, double spaceHeight, List<IElement> elements, bool acceptOnEdges = false)
-        {
-            return ElementsInSpace(space, spaceHeight, elements as dynamic, );
-        }
-
-        /******************************************/
-
     }
 }
 

@@ -144,52 +144,20 @@ namespace BH.Engine.Environment
         [Description("Defines whether an Environment Space contains a provided Element.")]
         [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided element.")]
         [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
-        [Input("elements", "The point-based elements being checked to see if they are contained within the bounds of the 3D volume.")]
+        [Input("elements", "The elements being checked to see if they are contained within the bounds of the 3D volume.")]
         [Input("acceptOnEdges", "Decide whether to allow the element's point to sit on the edge of the space, default false.")]
         [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
-        public static List<bool> IsContaining(this Space space, double spaceHeight, List<IElement0D> elements, bool acceptOnEdges = false)
-        {
-            List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
-            List<Point> points = elements.Select(x => x.IGeometry()).ToList();
-            return panelsFromSpace.IsContaining(points, acceptOnEdges);
-        }
-
-        [Description("Defines whether an Environment Space contains a provided Element.")]
-        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided element.")]
-        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
-        [Input("elements", "The linear elements being checked to see if they are contained within the bounds of the 3D volume.")]
-        [Input("acceptOnEdges", "Decide whether to allow the element's point to sit on the edge of the space, default false.")]
-        [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
-        public static List<bool> IsContaining(this Space space, double spaceHeight, List<IElement1D> elements, bool acceptOnEdges = false)
+        public static List<bool> IsContaining(this Space space, double spaceHeight, List<IElement> elements, bool acceptOnEdges = false)
         {
             List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
             List<List<Point>> pointLists = new List<List<Point>>();
             foreach (IElement elem in elements)
             {
-                List<Point> points = elem.ControlPoints();
+                List<Point> points = elem.IControlPoints();
                 pointLists.Add(points);
             }
             return panelsFromSpace.IsContaining(pointLists, acceptOnEdges);
         }
-
-        [Description("Defines whether an Environment Space contains a provided Element.")]
-        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided element.")]
-        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
-        [Input("elements", "The area-based elements being checked to see if they are contained within the bounds of the 3D volume.")]
-        [Input("acceptOnEdges", "Decide whether to allow the element's point to sit on the edge of the space, default false.")]
-        [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
-        public static List<bool> IsContaining(this Space space, double spaceHeight, List<IElement2D> elements, bool acceptOnEdges = false)
-        {
-            List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
-            List<List<Point>> pointLists = new List<List<Point>>();
-            foreach (IElement2D elem in elements)
-            {
-                List<Point> points = elem.ControlPoints();
-                pointLists.Add(points);
-            }
-            return panelsFromSpace.IsContaining(pointLists, acceptOnEdges);
-        }
-
 
 
         /***************************************************/
