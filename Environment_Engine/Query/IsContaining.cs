@@ -20,23 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
+using BH.Engine.Spatial;
+using BH.oM.Base.Attributes;
+using BH.oM.Dimensional;
+using BH.oM.Environment.Elements;
+using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment;
-using BH.oM.Environment.Elements;
-using BH.oM.Base;
-
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
-using BH.oM.Base.Attributes;
 using System.ComponentModel;
-using BH.oM.Dimensional;
-using BH.Engine.Spatial;
+using System.Linq;
 
 namespace BH.Engine.Environment
 {
@@ -90,7 +83,7 @@ namespace BH.Engine.Environment
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not")]
         public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            if(panels == null)
+            if (panels == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
                 return false;
@@ -174,14 +167,15 @@ namespace BH.Engine.Environment
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
         private static bool IsContaining(this List<Panel> panels, List<Plane> planes, BoundingBox boundingBox, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, true, tolerance))
-                return false;
-
+            //Return if point is null even without checking boundingBox.IsContaining(point)
             if (point == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the point is null.");
                 return false;
             }
+
+            if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, true, tolerance))
+                return false;
 
             //We need to check one line that starts in the point and end outside the bounding box
             Vector vector = new Vector() { X = 1, Y = 0, Z = 0 };
@@ -262,12 +256,12 @@ namespace BH.Engine.Environment
             List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            List<bool> areContained =  new List<bool>();
+            List<bool> areContained = new List<bool>();
 
             foreach (List<Point> pts in pointLists)
             {
                 bool isContained = false;
-                if(acceptPartialContainment)
+                if (acceptPartialContainment)
                     isContained = pts.Any(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges));
                 else
                     isContained = pts.All(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges));
