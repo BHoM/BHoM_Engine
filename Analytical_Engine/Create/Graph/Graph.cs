@@ -149,9 +149,10 @@ namespace BH.Engine.Analytical
 
             entitiesCloned.ForEach(n =>
             {
-                if (!graph.Entities.ContainsKey(((IBHoMObject)n).BHoM_Guid))
+                var bo = (IBHoMObject)n;
+                if (bo != null && !graph.Entities.ContainsKey(bo.BHoM_Guid))
                 {
-                    graph.Entities.Add(((IBHoMObject)n).BHoM_Guid, ((IBHoMObject)n));
+                    graph.Entities.Add(bo.BHoM_Guid, bo);
                 }
             });
 
