@@ -128,12 +128,6 @@ namespace BH.Engine.Analytical
             if (entities == null)
                 entities = new List<IElement0D>();
 
-            if (!entities.All(e => e is IBHoMObject))
-            {
-                Base.Compute.RecordError("All entities must be of type IBHoMObject and IGeometry.");
-                return null;
-            }
-
             List<IElement0D> entitiesCloned = entities.DeepClone();
 
             List<IRelation> relations = new List<IRelation>();
