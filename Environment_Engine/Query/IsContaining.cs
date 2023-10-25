@@ -273,7 +273,3 @@ namespace BH.Engine.Environment
         }
     }
 }
-
-
-
-
