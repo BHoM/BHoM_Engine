@@ -20,21 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Geometry;
+using BH.Engine.Spatial;
+using BH.oM.Base.Attributes;
+using BH.oM.Dimensional;
+using BH.oM.Environment.Elements;
+using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Environment;
-using BH.oM.Environment.Elements;
-using BH.oM.Base;
-
-using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
-using BH.oM.Base.Attributes;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Environment
 {
@@ -88,15 +83,9 @@ namespace BH.Engine.Environment
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not")]
         public static bool IsContaining(this List<Panel> panels, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            if(panels == null)
+            if (panels == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
-                return false;
-            }
-
-            if(point == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot query is a collection of panels contains a point if the point is null.");
                 return false;
             }
 
@@ -106,6 +95,85 @@ namespace BH.Engine.Environment
 
             List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
+
+            return IsContaining(panels, planes, boundingBox, point, acceptOnEdges);
+        }
+
+        [Description("Defines whether a collection of Environment Panels contains each of a provided list of points.")]
+        [Input("panels", "A collection of Environment Panels to check with.")]
+        [Input("points", "The points to check to see if each point is contained within the bounds of the panels.")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
+        [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
+        public static List<bool> IsContaining(this List<Panel> panels, List<Point> points, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        {
+            if (panels == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
+                return new List<bool>() { false };
+            }
+
+            List<Plane> planes = new List<Plane>();
+            foreach (Panel be in panels)
+                planes.Add(be.Polyline().IControlPoints().FitPlane(tolerance));
+
+            List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
+            BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
+
+            return points.Select(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges)).ToList();
+        }
+
+        [Description("Defines whether an Environment Space contains each of a provided list of points.")]
+        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
+        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
+        [Input("points", "The points being checked to see if it is contained within the bounds of the 3D volume.")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the space, default false.")]
+        [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
+        public static List<bool> IsContaining(this Space space, double spaceHeight, List<Point> points, bool acceptOnEdges = false)
+        {
+            List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
+            return panelsFromSpace.IsContaining(points, acceptOnEdges);
+        }
+
+        [Description("Defines whether an Environment Space contains a provided Element.")]
+        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided element.")]
+        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
+        [Input("elements", "The elements being checked to see if they are contained within the bounds of the 3D volume.")]
+        [Input("acceptOnEdges", "Decide whether to allow the element's point to sit on the edge of the space, default false.")]
+        [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
+        public static List<bool> IsContaining(this Space space, double spaceHeight, List<IElement> elements, bool acceptOnEdges = false, bool acceptPartialContainment = false)
+        {
+            List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
+            List<List<Point>> pointLists = new List<List<Point>>();
+
+            foreach (IElement elem in elements)
+            {
+                List<Point> points = elem.IControlPoints();
+                pointLists.Add(points);
+            }
+            return panelsFromSpace.IsContaining(pointLists, acceptOnEdges, acceptPartialContainment);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Defines whether a point lies within a collection of panels using their primitive planes and bounds.")]
+        [Input("panels", "A collection of Environment Panels to check with.")]
+        [Input("planes", "Planes corresponding to each panel for intersection calculations.")]
+        [Input("boundingBox", "The bounding box of the collection of panels.")]
+        [Input("point", "The point to check to see if it is contained within the bounds of the panels.")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
+        [Input("tolerance", "Distance tolerance to use to determine intersections.")]
+        [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
+        private static bool IsContaining(this List<Panel> panels, List<Plane> planes, BoundingBox boundingBox, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        {
+            //Return if point is null even without checking boundingBox.IsContaining(point)
+            if (point == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the point is null.");
+                return false;
+            }
 
             if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, true, tolerance))
                 return false;
@@ -168,20 +236,40 @@ namespace BH.Engine.Environment
             return isContained; //If the number of intersections is odd the point is outsde the space
         }
 
-        [Description("Defines whether an Environment Space contains a provided point.")]
-        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
-        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
-        [Input("points", "The points being checked to see if it is contained within the bounds of the 3D volume.")]
-        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the space, default false.")]
-        [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
-        public static List<bool> IsContaining(this Space space, double spaceHeight, List<Point> points, bool acceptOnEdges = false)
+        [Description("Defines whether a collection of Environment Panels contains each of a provided list of list of points.")]
+        [Input("panels", "A collection of Environment Panels to check with.")]
+        [Input("pointLists", "The List of Lists of points to check to see if each List of points are contained within the bounds of the panels.")]
+        [Input("acceptOnEdges", "Decide whether to allow the points to sit on the edge of the panel, default false.")]
+        [Input("acceptPartialContainment", "Decide whether to allow some of the points to sit outside the panels as long as at least one is within them.")]
+        [Output("isContaining", "True if the points of each sublist are contained within the bounds of the panels, false if it is not for each sublist of points provided.")]
+        private static List<bool> IsContaining(this List<Panel> panels, List<List<Point>> pointLists, bool acceptOnEdges = false, bool acceptPartialContainment = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
-            return points.Select(x => panelsFromSpace.IsContaining(x, acceptOnEdges)).ToList();
+            if (panels == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
+                return new List<bool>() { false };
+            }
+
+            List<Plane> planes = new List<Plane>();
+            foreach (Panel be in panels)
+                planes.Add(be.Polyline().IControlPoints().FitPlane(tolerance));
+
+            List<Point> ctrPoints = panels.SelectMany(x => x.Polyline().IControlPoints()).ToList();
+            BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
+
+            List<bool> areContained = new List<bool>();
+
+            foreach (List<Point> pts in pointLists)
+            {
+                bool isContained = false;
+                if (acceptPartialContainment)
+                    isContained = pts.Any(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges));
+                else
+                    isContained = pts.All(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges));
+                areContained.Add(isContained);
+            }
+
+            return areContained;
         }
     }
 }
-
-
-
-
