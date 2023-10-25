@@ -144,6 +144,7 @@ namespace BH.Engine.Environment
         {
             List<Panel> panelsFromSpace = space.ExtrudeToVolume(spaceHeight);
             List<List<Point>> pointLists = new List<List<Point>>();
+
             foreach (IElement elem in elements)
             {
                 List<Point> points = elem.IControlPoints();
@@ -241,7 +242,7 @@ namespace BH.Engine.Environment
         [Input("acceptOnEdges", "Decide whether to allow the points to sit on the edge of the panel, default false.")]
         [Input("acceptPartialContainment", "Decide whether to allow some of the points to sit outside the panels as long as at least one is within them.")]
         [Output("isContaining", "True if the points of each sublist are contained within the bounds of the panels, false if it is not for each sublist of points provided.")]
-        public static List<bool> IsContaining(this List<Panel> panels, List<List<Point>> pointLists, bool acceptOnEdges = false, bool acceptPartialContainment = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        private static List<bool> IsContaining(this List<Panel> panels, List<List<Point>> pointLists, bool acceptOnEdges = false, bool acceptPartialContainment = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panels == null)
             {

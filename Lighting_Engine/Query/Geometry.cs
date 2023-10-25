@@ -51,6 +51,3 @@ namespace BH.Engine.Lighting
         }
     }
 }
-
-
-
