@@ -41,7 +41,7 @@ namespace BH.Engine.Physical
         [Input("location", "PlanarSurface defining the top face of the PadFoundation.")]
         [Input("construction", "Construction of the PadFoundation, containing its thickness and Material.")]
         [Input("name", "The name of the PadFoundation, default empty string.")]
-        [Output("padFoundation", "The created physical padFoundation.")]
+        [Output("padFoundation", "The created physical PadFoundation.")]
         public static PadFoundation PadFoundation(PlanarSurface location, IConstruction construction, string name = "")
         {
             return location.IsNull() || construction.IsNull() ? null : new PadFoundation { Location = location, Construction = construction, Name = name };
