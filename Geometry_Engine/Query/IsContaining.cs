@@ -745,15 +745,14 @@ namespace BH.Engine.Geometry
         [Input("panels", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
         [Input("points", "The points to check to see if it is contained within the bounds of the panels.")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
-        [Input("acceptPartialContainment", "Decide whether to allow some of the points to sit outside the panels as long as at least one is within them.")]
         [Input("tolerance", "Distance tolerance to use to determine intersections.")]
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
-        public static bool IsContaining(this List<Polyline> panels, List<Point> points, bool acceptPartialContainment = false, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        public static List<bool> IsContaining(this List<Polyline> panels, List<Point> points, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if (panels == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
-                return false;
+                return new List<bool>() { false };
             }
 
             List<Plane> planes = new List<Plane>();
@@ -763,10 +762,7 @@ namespace BH.Engine.Geometry
             List<Point> ctrPoints = panels.SelectMany(x => x.IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            if (acceptPartialContainment)
-                return points.Any(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges));
-            else
-                return points.All(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges));
+            return points.Select(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges)).ToList();
         }
 
         /***************************************************/
