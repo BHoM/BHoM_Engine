@@ -40,7 +40,7 @@ namespace BH.Engine.Physical
         [Description("Creates a physical PadFoundation element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.PadFoundation.")]
         [Input("location", "PlanarSurface defining the top face of the PadFoundation.")]
         [Input("construction", "Construction of the PadFoundation, containing its thickness and Material.")]
-        [Input("name", "The name of the Pile, default empty string.")]
+        [Input("name", "The name of the PadFoundation, default empty string.")]
         [Output("padFoundation", "The created physical padFoundation.")]
         public static PadFoundation PadFoundation(PlanarSurface location, IConstruction construction, string name = "")
         {
