@@ -34,9 +34,8 @@ using System.ComponentModel;
 
 using BH.oM.Analytical.Elements;
 using BH.oM.Dimensional;
-using BH.Engine.Analytical;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Analytical
 {
     public static partial class Compute
     {
