@@ -42,7 +42,7 @@ namespace BH.Engine.Physical
         [Description("Creates a physical PileFoundation element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.PileFoundation.")]
         [Input("pileCap", "PadFoundation defining the pile cap and the extents of Piles.")]
         [Input("piles", "Collection of Pile elements defining the piles belonging to the created PadFoundation.")]
-        [Input("name", "The name of the Pile, default empty string.")]
+        [Input("name", "The name of the PileFoundation, default empty string.")]
         [Output("pileFoundation", "The created physical PileFoundation.")]
         public static PileFoundation PileFoundation(PadFoundation pileCap, List<Pile> piles, string name = "")
         {
