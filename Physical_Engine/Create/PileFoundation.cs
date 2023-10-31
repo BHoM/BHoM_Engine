@@ -21,10 +21,13 @@
  */
 
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
 using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using BH.oM.Physical.Constructions;
 using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
-using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
 
@@ -36,14 +39,14 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical Pile element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.Pile.")]
-        [Input("location", "The centre line geometry of the Pile.")]
-        [Input("property", "The property of the Pile, containing its profile, orientation and materiality.")]
+        [Description("Creates a physical PileFoundation element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.PileFoundation.")]
+        [Input("pileCap", "PadFoundation defining the pile cap and the extents of Piles.")]
+        [Input("piles", "Construction of the PadFoundation, containing its thickness and Material.")]
         [Input("name", "The name of the Pile, default empty string.")]
-        [Output("pile", "The created physical Pile.")]
-        public static Pile Pile(ICurve location, IFramingElementProperty property, string name = "")
+        [Output("pileFoundation", "The created physical PileFoundation.")]
+        public static PileFoundation PileFoundation(PadFoundation pileCap, List<Pile> piles, string name = "")
         {
-            return location.IsNull() || property.IsNull() ? null : new Pile { Location = location, Property = property, Name = name };
+            return pileCap.IsNull() || piles == null || piles.Any(x => x.IsNull()) ? null : new PileFoundation { PileCap = pileCap, Piles = piles, Name = name };
         }
 
         /***************************************************/

@@ -22,9 +22,10 @@
 
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using BH.oM.Physical.Constructions;
 using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
-using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
 
@@ -36,14 +37,14 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical Pile element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.Pile.")]
-        [Input("location", "The centre line geometry of the Pile.")]
-        [Input("property", "The property of the Pile, containing its profile, orientation and materiality.")]
+        [Description("Creates a physical PadFoundation element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.PadFoundation.")]
+        [Input("location", "PlanarSurface defining the top face of the PadFoundation.")]
+        [Input("construction", "Construction of the PadFoundation, containing its thickness and Material.")]
         [Input("name", "The name of the Pile, default empty string.")]
-        [Output("pile", "The created physical Pile.")]
-        public static Pile Pile(ICurve location, IFramingElementProperty property, string name = "")
+        [Output("padFoundation", "The created physical padFoundation.")]
+        public static PadFoundation PadFoundation(PlanarSurface location, IConstruction construction, string name = "")
         {
-            return location.IsNull() || property.IsNull() ? null : new Pile { Location = location, Property = property, Name = name };
+            return location.IsNull() || construction.IsNull() ? null : new PadFoundation { Location = location, Construction = construction, Name = name };
         }
 
         /***************************************************/
