@@ -128,8 +128,8 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Returns an IOpening's solid volume based on thickness and area.")]
-        [Input("opening", "the window to get the volume from.")]
-        [Output("volume", "The window's solid material volume.", typeof(Volume))]
+        [Input("opening", "the IOpening to get the volume from.")]
+        [Output("volume", "The solid volume of the IOpening.", typeof(Volume))]
         public static double SolidVolume(this IOpening opening)
         {
             VolumetricMaterialTakeoff takeoff = opening.IVolumetricMaterialTakeoff();

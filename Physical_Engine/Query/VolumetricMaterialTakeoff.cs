@@ -183,7 +183,7 @@ namespace BH.Engine.Physical
             MaterialComposition comp = construction.IMaterialComposition();
             if (comp == null)
                 return null;
-            if(comp.Materials.Count == 0)
+            if (comp.Materials.Count == 0)
                 return new VolumetricMaterialTakeoff(new List<Material>(), new List<double>());
             return Matter.Create.VolumetricMaterialTakeoff(construction.IMaterialComposition(), construction.IThickness() * area);
         }

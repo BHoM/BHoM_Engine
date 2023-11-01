@@ -43,7 +43,7 @@ namespace BH.Engine.Physical
         [Output("curves", "The curves defining the external boundery of the ISurface.")]
         public static List<IElement1D> OutlineElements1D(this oM.Physical.Elements.ISurface surface)
         {
-            if(surface == null)
+            if (surface == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null surface.");
                 return new List<IElement1D>();
@@ -66,7 +66,7 @@ namespace BH.Engine.Physical
         [Output("curves", "The curves defining the external boundery of the IOpening.")]
         public static List<IElement1D> OutlineElements1D(this IOpening opening)
         {
-            if(opening == null)
+            if (opening == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null opening.");
                 return new List<IElement1D>();

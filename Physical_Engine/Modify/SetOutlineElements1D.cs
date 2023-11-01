@@ -47,7 +47,7 @@ namespace BH.Engine.Physical
         [Output("surface", "The ISurface with new location surface.")]
         public static oM.Physical.Elements.ISurface SetOutlineElements1D(this oM.Physical.Elements.ISurface surface, List<IElement1D> outlineElements1D)
         {
-            if(surface == null)
+            if (surface == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null surface.");
                 return null;
@@ -67,7 +67,7 @@ namespace BH.Engine.Physical
         [Output("opening", "The IOpening with new location surface.")]
         public static IOpening SetOutlineElements1D(this IOpening opening, List<IElement1D> outlineElements1D)
         {
-            if(opening == null)
+            if (opening == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null opening.");
                 return null;
