@@ -59,6 +59,39 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Gets the geometry of a Pile as a single line. Method required for automatic display in UI packages.")]
+        [Input("pile", "Pile to get the line geometry from.")]
+        [Output("curve", "The curve defining the Pile.")]
+        public static IGeometry Geometry(this Pile pile)
+        {
+            return pile.IsNull() ? null : pile.Location;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a PadFoundation as a single curve. Method required for automatic display in UI packages.")]
+        [Input("padFoundation", "Pile to get the line geometry from.")]
+        [Output("surface", "The surface defining the PadFoundation.")]
+        public static IGeometry Geometry(this PadFoundation padFoundation)
+        {
+            return padFoundation.IsNull() ? null : padFoundation.Location;
+        }
+
+        [Description("Gets the geometry of a PileFoundation as a surface representing the pile cap and curves representing the piles. Method required for automatic display in UI packages.")]
+        [Input("pileFoundation", "PileFoundation to get the geometry from.")]
+        [Output("geometry", "The geometry defining the PadFoundation.")]
+        public static IGeometry Geometry(this PileFoundation pileFoundation)
+        {
+            List<IGeometry> geometry = new List<IGeometry>();
+            geometry.Add(pileFoundation.PileCap.Geometry());
+            geometry.AddRange(pileFoundation.Piles.Select(x => x.Geometry()));
+
+            return Engine.Geometry.Create.CompositeGeometry(geometry);
+        }
+
+
+        /***************************************************/
+
 
     }
 }
