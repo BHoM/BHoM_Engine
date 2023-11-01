@@ -802,61 +802,59 @@ namespace BH.Engine.Geometry
                 return false;
             }
 
+            if (planes.Any(x => x == null))
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot query if a provided plane is null.");
+                return false;
+            }
+
             if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, true, tolerance))
                 return false;
 
-            //We need to check one line that starts in the point and end outside the bounding box
-            Vector vector = new Vector() { X = 1, Y = 0, Z = 0 };
-            //Use a length longer than the longest side in the bounding box. Change to infinite line?
-            Line line = new Line() { Start = point, End = point.Translate(vector * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
-
+            Vector rVec;
             bool isInPlane = false;
             do
             {
+                int seed = 1;
+                 rVec = BH.Engine.Geometry.Create.RandomVector(seed); 
+                
                 isInPlane = false;
                 foreach (Plane p in planes)
-                    isInPlane = isInPlane || line.IsInPlane(p);
+                    isInPlane = isInPlane || rVec.IsInPlane(p, tolerance);
 
                 if (isInPlane)
                 {
-                    Vector v = new Vector() { X = 0.5, Y = 0.5, Z = 0.5 };
-                    line = new Line() { Start = point, End = point.Translate(v * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
+                    seed += 1;
                 }
             }
             while (isInPlane);
+
+            //Use a length longer than the longest side in the bounding box. Change to infinite line?
+            Line line = new Line() { Start = point, End = point.Translate(rVec * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
 
             //Check intersections
             List<Point> intersectPoints = new List<Point>();
 
             for (int x = 0; x < planes.Count; x++)
             {
-                if (planes[x] != null)
-                {
-                    if ((BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], false, tolerance)) == null)
-                        continue;
+                Point intPt = PlaneIntersection(line, planes[x], true, tolerance);
+                if (intPt == null)
+                    continue;
+                Polyline pLine = closedVolume[x];
 
-                    List<Point> intersectingPoints = new List<oM.Geometry.Point>();
-                    intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], true, tolerance));
-                    Polyline pLine = closedVolume[x];
-
-                    if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, tolerance))
-                        intersectPoints.AddRange(intersectingPoints);
-                }
+                if  (BH.Engine.Geometry.Query.IsContaining(boundingBox, intPt, true, tolerance) && BH.Engine.Geometry.Query.IsContaining(pLine, new List<Point> { intPt }, false, tolerance))
+                    intersectPoints.Add(intPt);
             }
 
-            bool isContained = !((intersectPoints.CullDuplicates().Count % 2) == 0);
+            bool isContained = intersectPoints.CullDuplicates().Count % 2 != 0;
 
             if (!isContained && acceptOnEdges)
             {
                 //Check the edges in case the point is on the edge of the BE
                 foreach (Polyline p in closedVolume)
                 {
-                    List<Line> subParts = p.ISubParts() as List<Line>;
-                    foreach (Line l in subParts)
-                    {
-                        if (l.IsOnCurve(point))
-                            isContained = true;
-                    }
+                    if (point.IsOnCurve(p, tolerance))
+                        isContained = true;
                 }
             }
 
