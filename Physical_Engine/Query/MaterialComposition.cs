@@ -131,6 +131,23 @@ namespace BH.Engine.Physical
             return explicitBulk.MaterialComposition;
         }
 
+        /***************************************************/
+
+        [Description("Gets all the Materials a PadFoundation is composed of and in which ratios.")]
+        [Input("padFoundation", "The PadFoundation to get the MaterialComposition from.")]
+        [Output("materialComposition", "The kind of matter the PadFoundation is composed of and in which ratios.")]
+        public static MaterialComposition MaterialComposition(this PadFoundation padFoundation)
+        {
+            if (padFoundation.IsNull())
+                return null;
+
+            VolumetricMaterialTakeoff takeoff = padFoundation.IVolumetricMaterialTakeoff();
+            if (takeoff == null)
+                return null;
+
+            return Matter.Create.MaterialComposition(takeoff);
+        }
+
         /******************************************************/
         /**** IConstruction Methods                        ****/
         /******************************************************/

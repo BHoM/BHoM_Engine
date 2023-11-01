@@ -125,6 +125,8 @@ namespace BH.Engine.Physical
             return solidVolume;
         }
 
+        /***************************************************/
+
         [Description("Returns an IOpening's solid volume based on thickness and area.")]
         [Input("opening", "the window to get the volume from.")]
         [Output("volume", "The window's solid material volume.", typeof(Volume))]
@@ -136,7 +138,25 @@ namespace BH.Engine.Physical
 
             return takeoff.SolidVolume();
         }
-        
+
         /***************************************************/
+
+        [Description("Returns the solid volume of a PadFoundation based on the thickness and area.")]
+        [Input("padFoundation", "The PadFoundation to get the volume from.")]
+        [Output("volume", "The PadFoundation solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this PadFoundation padFoundation)
+        {
+            if (padFoundation.IsNull())
+                return double.NaN;
+
+            VolumetricMaterialTakeoff takeoff = padFoundation.IVolumetricMaterialTakeoff();
+            if (takeoff == null)
+                return double.NaN;
+
+            return takeoff.SolidVolume();
+        }
+
+        /***************************************************/
+
     }
 }

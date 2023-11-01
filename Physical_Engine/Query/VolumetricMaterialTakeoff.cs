@@ -150,6 +150,19 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+
+        [Description("Gets the volumetric material takeoff from a PadFoundation.")]
+        [Input("padFoundation", "The physical PadFoundation object to extract the volumetric material takeoff from.")]
+        [Output("volTakeoff", "The volumetric material takeoff for the PadFoundation, made of up the volume and materiality of the construction and surface area.")]
+        public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this PadFoundation padFoundation)
+        {
+            if (padFoundation.IsNull())
+                return null;
+
+            return TakeOff(padFoundation.Location.IArea(), padFoundation.Construction);
+        }
+
+        /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
