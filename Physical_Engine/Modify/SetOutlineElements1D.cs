@@ -81,6 +81,22 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Set the location surface of a PadFoundation as a PlanarSurface by providing a list of IElements1D.")]
+        [Input("padFoundation", "The PadFoundation to set the location surface of.")]
+        [Input("outlineElements1D", "One dimensional elements defining the external boundery geometry, PadFoundation has no edge properties and all IElements1D will be treated as their geometry. They must be closed and planar.")]
+        [Output("padFoundation", "The PadFoundation with new location surface.")]
+        public static PadFoundation SetOutlineElements1D(this PadFoundation padFoundation, List<IElement1D> outlineElements1D)
+        {
+            if (padFoundation.IsNull())
+                return null;
+
+            PadFoundation clone = padFoundation.ShallowClone();
+            ICurve outline = Geometry.Compute.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList()).Single();
+            clone.Location = Geometry.Create.PlanarSurface(outline);
+            return clone;
+        }
+
+        /***************************************************/
     }
 }
 

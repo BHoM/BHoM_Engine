@@ -84,6 +84,21 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Gets the external outline elements of a PadFoundation.")]
+        [Input("padFoundation", "The PadFoundation to get the external outline elements from.")]
+        [Output("curves", "The curves defining the external boundery of the PadFoundation.")]
+        public static List<IElement1D> OutlineElements1D(this PadFoundation padFoundation)
+        {
+            if (padFoundation.IsNull())
+                return null;
+
+            PlanarSurface surface = padFoundation.Location;
+
+            return surface.ExternalBoundary.ISubParts().ToList<IElement1D>();
+        }
+
+        /***************************************************/
+
 
     }
 }
