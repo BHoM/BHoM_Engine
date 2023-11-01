@@ -720,9 +720,7 @@ namespace BH.Engine.Geometry
         [Input("tolerance", "Distance tolerance to use to determine intersections.")]
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
         public static bool IsContaining(this List<Polyline> panels, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
-        {
-            bool isContained = false;
-            
+        {         
             if (panels == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
@@ -740,7 +738,7 @@ namespace BH.Engine.Geometry
 
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            return isContained = IsContaining(panels, planes, boundingBox, point, acceptOnEdges);
+            return IsContaining(panels, planes, boundingBox, point, acceptOnEdges);
         }
 
         /***************************************************/
