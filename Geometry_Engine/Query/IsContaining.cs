@@ -714,14 +714,14 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Checks if a point lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
-        [Input("panels", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
+        [Input("closedVolume", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
         [Input("point", "The point to check to see if it is contained within the bounds of the panels.")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
         [Input("tolerance", "Distance tolerance to use to determine intersections.")]
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
-        public static bool IsContaining(this List<Polyline> panels, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        public static bool IsContaining(this List<Polyline> closedVolume, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {         
-            if (panels == null)
+            if (closedVolume == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
                 return false;
@@ -729,7 +729,7 @@ namespace BH.Engine.Geometry
 
             List<Point> ctrPoints = new List<Point>();
             List<Plane> planes = new List<Plane>();
-            foreach (Polyline be in panels)
+            foreach (Polyline be in closedVolume)
             {
                 List <Point> srfPts = be.IControlPoints();
                 planes.Add(srfPts.FitPlane(tolerance));
@@ -738,20 +738,20 @@ namespace BH.Engine.Geometry
 
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            return IsContaining(panels, planes, boundingBox, point, acceptOnEdges);
+            return IsContaining(closedVolume, planes, boundingBox, point, acceptOnEdges);
         }
 
         /***************************************************/
 
         [Description("Checks if a list of points lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
-        [Input("panels", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
+        [Input("closedVolume", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
         [Input("points", "The points to check to see if it is contained within the bounds of the panels.")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
         [Input("tolerance", "Distance tolerance to use to determine intersections.")]
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
-        public static List<bool> IsContaining(this List<Polyline> panels, List<Point> points, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        public static List<bool> IsContaining(this List<Polyline> closedVolume, List<Point> points, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            if (panels == null)
+            if (closedVolume == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
                 return new List<bool>() { false };
@@ -759,7 +759,7 @@ namespace BH.Engine.Geometry
 
             List<Point> ctrPoints = new List<Point>();
             List<Plane> planes = new List<Plane>();
-            foreach (Polyline be in panels)
+            foreach (Polyline be in closedVolume)
             {
                 List<Point> srfPts = be.IControlPoints();
                 planes.Add(srfPts.FitPlane(tolerance));
@@ -768,20 +768,20 @@ namespace BH.Engine.Geometry
 
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
-            return points.Select(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges)).ToList();
+            return points.Select(point => IsContaining(closedVolume, planes, boundingBox, point, acceptOnEdges)).ToList();
         }
 
         /***************************************************/
 
         [Description("Checks if a point lies within a collection of polylines describing a closed volume contains each of a provided list of list of points.")]
-        [Input("panels", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
+        [Input("closedVolume", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
         [Input("pointLists", "The List of Lists of points to check to see if each List of points are contained within the bounds of the panels.")]
         [Input("acceptOnEdges", "Decide whether to allow the points to sit on the edge of the panel, default false.")]
         [Input("acceptPartialContainment", "Decide whether to allow some of the points to sit outside the panels as long as at least one is within them.")]
         [Output("isContaining", "True if the points of each sublist are contained within the bounds of the panels, false if it is not for each sublist of points provided.")]
-        public static List<bool> IsContaining(this List<Polyline> panels, List<List<Point>> pointLists, bool acceptOnEdges = false, bool acceptPartialContainment = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        public static List<bool> IsContaining(this List<Polyline> closedVolume, List<List<Point>> pointLists, bool acceptOnEdges = false, bool acceptPartialContainment = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
-            if (panels == null)
+            if (closedVolume == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
                 return new List<bool>() { false };
@@ -789,7 +789,7 @@ namespace BH.Engine.Geometry
 
             List<Point> ctrPoints = new List<Point>();
             List<Plane> planes = new List<Plane>();
-            foreach (Polyline be in panels)
+            foreach (Polyline be in closedVolume)
             {
                 List<Point> srfPts = be.IControlPoints();
                 planes.Add(srfPts.FitPlane(tolerance));
@@ -804,9 +804,9 @@ namespace BH.Engine.Geometry
             {
                 bool isContained = false;
                 if (acceptPartialContainment)
-                    isContained = pts.Any(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges));
+                    isContained = pts.Any(point => IsContaining(closedVolume, planes, boundingBox, point, acceptOnEdges));
                 else
-                    isContained = pts.All(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges));
+                    isContained = pts.All(point => IsContaining(closedVolume, planes, boundingBox, point, acceptOnEdges));
                 areContained.Add(isContained);
             }
 
@@ -818,14 +818,14 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Checks if a point lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
-        [Input("panels", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
+        [Input("closedVolume", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
         [Input("planes", "Planes corresponding to each panel for intersection calculations.")]
         [Input("boundingBox", "The bounding box of the collection of panels.")]
         [Input("point", "The point to check to see if it is contained within the bounds of the panels.")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
         [Input("tolerance", "Distance tolerance to use to determine intersections.")]
         [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
-        private static bool IsContaining(this List<Polyline> panels, List<Plane> planes, BoundingBox boundingBox, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        private static bool IsContaining(this List<Polyline> closedVolume, List<Plane> planes, BoundingBox boundingBox, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             //Return if point is null even without checking boundingBox.IsContaining(point)
             if (point == null)
@@ -869,7 +869,7 @@ namespace BH.Engine.Geometry
 
                     List<Point> intersectingPoints = new List<oM.Geometry.Point>();
                     intersectingPoints.Add(BH.Engine.Geometry.Query.PlaneIntersection(line, planes[x], true, tolerance));
-                    Polyline pLine = panels[x];
+                    Polyline pLine = closedVolume[x];
 
                     if (intersectingPoints != null && BH.Engine.Geometry.Query.IsContaining(pLine, intersectingPoints, true, tolerance))
                         intersectPoints.AddRange(intersectingPoints);
@@ -881,7 +881,7 @@ namespace BH.Engine.Geometry
             if (!isContained && acceptOnEdges)
             {
                 //Check the edges in case the point is on the edge of the BE
-                foreach (Polyline p in panels)
+                foreach (Polyline p in closedVolume)
                 {
                     List<Line> subParts = p.ISubParts() as List<Line>;
                     foreach (Line l in subParts)
