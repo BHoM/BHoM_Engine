@@ -713,37 +713,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Closed Volume Polylines  ****/
         /***************************************************/
 
-        [Description("Checks if a point lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
-        [Input("closedVolume", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
-        [Input("point", "The point to check to see if it is contained within the bounds of the panels.")]
-        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
-        [Input("tolerance", "Distance tolerance to use to determine intersections.")]
-        [Output("isContaining", "True if the point is contained within the bounds of the panels, false if it is not for each point provided.")]
-        public static bool IsContaining(this List<Polyline> closedVolume, Point point, bool acceptOnEdges = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
-        {         
-            if (closedVolume == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
-                return false;
-            }
-
-            List<Point> ctrPoints = new List<Point>();
-            List<Plane> planes = new List<Plane>();
-            foreach (Polyline be in closedVolume)
-            {
-                List <Point> srfPts = be.IControlPoints();
-                planes.Add(srfPts.FitPlane(tolerance));
-                ctrPoints.AddRange(srfPts);
-            }
-
-            BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
-
-            return IsContaining(closedVolume, planes, boundingBox, point, acceptOnEdges);
-        }
-
-        /***************************************************/
-
-        [Description("Checks if a list of points lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
+        [Description("Checks if each of the provided points lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
         [Input("closedVolume", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
         [Input("points", "The points to check to see if it is contained within the bounds of the panels.")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]

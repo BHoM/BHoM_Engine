@@ -94,7 +94,7 @@ namespace BH.Engine.Environment
             foreach (Panel be in panels)
                 polylines.Add(be.Polyline());
 
-            return Engine.Geometry.Query.IsContaining(polylines, point, acceptOnEdges, tolerance);
+            return Engine.Geometry.Query.IsContaining(polylines, new List<Point> (){ point }, acceptOnEdges, tolerance).First();
         }
 
         [Description("Defines whether a collection of Environment Panels contains each of a provided list of points.")]
