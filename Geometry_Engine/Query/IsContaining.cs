@@ -729,11 +729,15 @@ namespace BH.Engine.Geometry
                 return false;
             }
 
+            List<Point> ctrPoints = new List<Point>();
             List<Plane> planes = new List<Plane>();
             foreach (Polyline be in panels)
-                planes.Add(be.IControlPoints().FitPlane(tolerance));
+            {
+                List <Point> srfPts = be.IControlPoints();
+                planes.Add(srfPts.FitPlane(tolerance));
+                ctrPoints.AddRange(srfPts);
+            }
 
-            List<Point> ctrPoints = panels.SelectMany(x => x.IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
             return isContained = IsContaining(panels, planes, boundingBox, point, acceptOnEdges);
@@ -755,11 +759,15 @@ namespace BH.Engine.Geometry
                 return new List<bool>() { false };
             }
 
+            List<Point> ctrPoints = new List<Point>();
             List<Plane> planes = new List<Plane>();
             foreach (Polyline be in panels)
-                planes.Add(be.IControlPoints().FitPlane(tolerance));
+            {
+                List<Point> srfPts = be.IControlPoints();
+                planes.Add(srfPts.FitPlane(tolerance));
+                ctrPoints.AddRange(srfPts);
+            }
 
-            List<Point> ctrPoints = panels.SelectMany(x => x.IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
             return points.Select(point => IsContaining(panels, planes, boundingBox, point, acceptOnEdges)).ToList();
@@ -781,11 +789,15 @@ namespace BH.Engine.Geometry
                 return new List<bool>() { false };
             }
 
+            List<Point> ctrPoints = new List<Point>();
             List<Plane> planes = new List<Plane>();
             foreach (Polyline be in panels)
-                planes.Add(be.IControlPoints().FitPlane(tolerance));
+            {
+                List<Point> srfPts = be.IControlPoints();
+                planes.Add(srfPts.FitPlane(tolerance));
+                ctrPoints.AddRange(srfPts);
+            }
 
-            List<Point> ctrPoints = panels.SelectMany(x => x.IControlPoints()).ToList();
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
 
             List<bool> areContained = new List<bool>();
