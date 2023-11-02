@@ -47,7 +47,7 @@ namespace BH.Engine.Physical
         [Input("piles", "The Piles to check if they are located within the extents of the PadFoundation.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Piles are deemed to be on the edge of the PadFoundation if they are within this distance from the curve.", typeof(Length))]
         [Output("withinPileCap", "True if all Piles are contained within the boundary and depth of the PileCap. False if one or more Piles are not.")]
-        public static bool WithinPileCap(this PadFoundation padFoundation, List<Pile> piles, double tolerance = Tolerance.MicroDistance)
+        public static bool IsWithinPileCap(this PadFoundation padFoundation, List<Pile> piles, double tolerance = Tolerance.MicroDistance)
         {
             if (padFoundation.IsNull())
                 return false;
