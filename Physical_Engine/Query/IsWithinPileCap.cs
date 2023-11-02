@@ -53,14 +53,14 @@ namespace BH.Engine.Physical
                 return false;
             else if (piles == null)
             {
-                Base.Compute.RecordWarning("The list of Piles are null, the method will return false.");
+                Base.Compute.RecordError("The list of Piles are null, the method will return false.");
                 return false;
             }
             else if (piles.Any(x => x.IsNull()))
                 return false;
 
             // Get the top of the piles
-            List<Point> tops = piles.Select(p => p.Location.IControlPoints().OrderBy(pt => pt.Z).First()).ToList();
+            List<Point> tops = piles.Select(p => p.Location.IControlPoints().OrderBy(pt => pt.Z).Reverse().First()).ToList();
 
             // Project all points to top surface of the pad
             Plane padTop = new Plane() { Normal = padFoundation.Location.Normal(), Origin = padFoundation.Location.Centroid() };
@@ -68,7 +68,7 @@ namespace BH.Engine.Physical
 
             // Get the thickness of the PadFoundation to compare against Z coordinates of the pile tops
             double maxZ = padFoundation.Location.Centroid().Z;
-            double minZ = maxZ - padFoundation.Construction.Thickness();
+            double minZ = maxZ - padFoundation.Construction.IThickness();
 
             ICurve topOutline = padFoundation.Location.ExternalBoundary;
 
