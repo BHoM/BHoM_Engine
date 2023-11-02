@@ -158,5 +158,26 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Returns the solid volume of a PileFoundation based on the Piles and pile cap.")]
+        [Input("pileFoundation", "The PileFoundation to get the volume from.")]
+        [Output("volume", "The PileFoundation solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this PileFoundation pileFoundation)
+        {
+            if (pileFoundation.IsNull())
+                return double.NaN;
+
+            VolumetricMaterialTakeoff pileCapTakeOff = pileFoundation.PileCap.IVolumetricMaterialTakeoff();
+            if (pileCapTakeOff == null)
+                return double.NaN;
+
+            List<VolumetricMaterialTakeoff> pilesTakeOff = pileFoundation.Piles.Select(x => x.IVolumetricMaterialTakeoff()).ToList();
+            if (pileCapTakeOff == null)
+                return double.NaN;
+
+            return pileCapTakeOff.SolidVolume() - pileFoundation.PileCap.EmbedVolume(pileFoundation.Piles.ToList()) + pilesTakeOff.Sum(x => x.SolidVolume());
+        }
+
+        /***************************************************/
+
     }
 }

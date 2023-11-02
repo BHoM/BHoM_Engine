@@ -163,6 +163,32 @@ namespace BH.Engine.Physical
         }
 
         /***************************************************/
+
+        [Description("Gets the volumetric material takeoff from a Pile.")]
+        [Input("pile", "The physical Pile object to extract the volumetric material takeoff from.")]
+        [Output("volTakeoff", "The volumetric material takeoff for the Pile, made of up the volume and materiality of the section and location.")]
+        public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this Pile pile)
+        {
+            if (pile.IsNull())
+                return null;
+
+            return Matter.Create.VolumetricMaterialTakeoff(pile.MaterialComposition(), pile.SolidVolume());
+        }
+
+        /***************************************************/
+
+        [Description("Gets the volumetric material takeoff from a PileFoundation.")]
+        [Input("pileFoundation", "The physical PileFoundation object to extract the volumetric material takeoff from.")]
+        [Output("volTakeoff", "The volumetric material takeoff for the PileFoundation, made of up the volume and materiality of the section and location.")]
+        public static VolumetricMaterialTakeoff VolumetricMaterialTakeoff(this PileFoundation pileFoundation)
+        {
+            if (pileFoundation.IsNull())
+                return null;
+
+            return Matter.Create.VolumetricMaterialTakeoff(pileFoundation.MaterialComposition(), pileFoundation.SolidVolume());
+        }
+
+        /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
