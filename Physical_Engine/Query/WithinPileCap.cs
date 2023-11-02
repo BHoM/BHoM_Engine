@@ -28,6 +28,8 @@ using BH.oM.Physical.Reinforcement;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
+using BH.oM.Physical.FramingProperties;
+using BH.Engine.Spatial;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 
@@ -39,7 +41,8 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether the Piles are within the extents defined by the PadFoundation (both depth and extents). Piles located on the boundary are accepted within tolerance.")]
+        [Description("Determines whether the Piles are within the extents defined by the PadFoundation (both depth and extents). Piles located on the boundary are accepted within tolerance" +
+            "if their profile does not intersect with the pad foundation boundary.")]
         [Input("padFoundation", "The PadFoundation that defines the extents for the Piles to be located.")]
         [Input("piles", "The Piles to check if they are located within the extents of the PadFoundation.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Piles are deemed to be on the edge of the PadFoundation if they are within this distance from the curve.", typeof(Length))]
@@ -59,25 +62,43 @@ namespace BH.Engine.Physical
             // Get the top of the piles
             List<Point> tops = piles.Select(p => p.Location.IControlPoints().OrderBy(pt => pt.Z).First()).ToList();
 
-            // Project all points to top surface
+            // Project all points to top surface of the pad
             Plane padTop = new Plane() { Normal = padFoundation.Location.Normal(), Origin = padFoundation.Location.Centroid() };
             List<Point> pTops = tops.Select(x => x.Project(padTop)).ToList(); //project points only used for IsContaining
 
-            // Get the thickness of the PadFoundation
+            // Get the thickness of the PadFoundation to compare against Z coordinates of the pile tops
             double maxZ = padFoundation.Location.Centroid().Z;
             double minZ = maxZ - padFoundation.Construction.Thickness();
 
-            if(padFoundation.Location.ExternalBoundary.IIsContaining(pTops,true,tolerance))
+            ICurve topOutline = padFoundation.Location.ExternalBoundary;
+
+            // Check if all piles are within the curve of the pad
+            if(topOutline.IIsContaining(pTops,true,tolerance))
             {
+                // Check if the piles are within the depth of the pad
                 if(tops.Any(pt => pt.Z > maxZ || pt.Z < minZ))
                 {
-                    Base.Compute.RecordError("One or more the Piles is not located within the depth of the PileCap.");
+                    Base.Compute.RecordError("One or more the Piles tops is not located within the depth of the PileCap.");
                     return false;
+                }
+                else
+                {
+                    // Check if the profile pushes the pile outside the curve of the pad
+                    for(int i = 0; i < pTops.Count; i++)
+                    {
+                        ConstantFramingProperty property = (ConstantFramingProperty)piles[i].Property;
+                        ICurve profile = property.Profile.Edges[0].ITranslate(Engine.Geometry.Create.Vector(pTops[i])).IRotate(pTops[i],Vector.ZAxis,property.OrientationAngle);
+                        if(profile.ICurveIntersections(topOutline).Count > 0)
+                        {
+                            Base.Compute.RecordError("One or more the Pile profiles is located outside the edge of the pile cap.");
+                            return false;
+                        }
+                    }
                 }
             }
             else
             {
-                Base.Compute.RecordError("One or more the Piles is located outside the extents of the PileCap.");
+                Base.Compute.RecordError("One or more the Piles centre points is located outside the extents of the PileCap.");
                 return false;
             }
 
