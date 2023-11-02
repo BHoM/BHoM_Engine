@@ -128,6 +128,29 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Evaluates if the two PadFoundation non-geometrical data is equal to the point that they could be merged into one object.")]
+        [Input("element", "An PadFoundation to compare the properties of with an other PadFoundation.")]
+        [Input("other", "The PadFoundation to compare with the other PadFoundation.")]
+        [Output("equal", "True if the PadFoundation non-geometrical property is equal to the point that they could be merged into one object.")]
+        public static bool HasMergeablePropertiesWith(this PadFoundation element, PadFoundation other)
+        {
+            if (element.IsNull() || other.IsNull())
+                return false; //If either is null, then it can probably can't have its properties merged
+
+            if (element.Construction == other.Construction)
+                return true;
+
+            if (element.Construction.IsNull() || other.Construction.IsNull())
+                return false;
+
+            if (element.Construction.Name != other.Construction.Name)
+                return false;
+
+            return !Diffing.Query.DifferentProperties(element.Construction, other.Construction, new ComparisonConfig())?.Any() ?? true;
+        }
+
+        /***************************************************/
+
     }
 }
 
