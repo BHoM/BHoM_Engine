@@ -93,7 +93,7 @@ namespace BH.Engine.Analytical
         public static List<bool> IsContaining(this IRegion region, double regionHeight, List<Point> points, bool acceptOnEdges = false)
         {
             List<Polyline> panelsFromSpace = region.ExtrudeToVolume(regionHeight);
-            return panelsFromSpace.IsContaining(points, acceptOnEdges);
+            return panelsFromSpace.IsContaining(points, acceptOnEdges, Tolerance.Distance);
         }
 
         [Description("Defines whether an Environment Space contains a provided Element.")]

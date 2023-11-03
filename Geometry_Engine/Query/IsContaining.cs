@@ -29,7 +29,6 @@ using System.ComponentModel;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Base;
 using BH.oM.Geometry.CoordinateSystem;
-using System.Numerics;
 
 namespace BH.Engine.Geometry
 {
