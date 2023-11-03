@@ -832,29 +832,40 @@ namespace BH.Engine.Geometry
             if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, true, tolerance))
                 return false;
 
+            List<Line> uniqueEdges = UniqueSegments(closedVolume, tolerance);
+            double rayLength = (boundingBox.Max - boundingBox.Min).Length() + 1;
             Vector rVec;
-            bool isInPlane = false;
+            Line line = null;
+            bool isValid = false;
+            int seed = 1;
             do
             {
-                int seed = 1;
-                rVec = BH.Engine.Geometry.Create.RandomVector(seed).Normalise();
-                isInPlane = planes.Any(p => rVec.IsInPlane(p, tolerance));
-                if (isInPlane)
+                rVec = Create.RandomVector(seed).Normalise();
+                isValid = planes.All(p => !rVec.IsInPlane(p, tolerance));
+
+                if (isValid)
+                {
+                    line = new Line { Start = point, End = point + rVec * rayLength };
+                    isValid = uniqueEdges.All(x => line.LineIntersection(x, false, tolerance) == null);
+                }
+
+                if (!isValid)
                     seed++;
             }
-            while (isInPlane);
+            while (!isValid);
 
             //Use a length longer than the longest side in the bounding box. Change to infinite line?
-            Line line = new Line() { Start = point, End = point.Translate(rVec * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
+            //Line line = new Line() { Start = point, End = point.Translate(rVec * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
 
             //Check intersections
             List<Point> intersectPoints = new List<Point>();
 
             for (int x = 0; x < planes.Count; x++)
             {
-                Point intPt = PlaneIntersection(line, planes[x], true, tolerance);
+                Point intPt = PlaneIntersection(line, planes[x], false, tolerance);
                 if (intPt == null)
                     continue;
+
                 Polyline pLine = closedVolume[x];
 
                 if  (BH.Engine.Geometry.Query.IsContaining(boundingBox, intPt, true, tolerance) && BH.Engine.Geometry.Query.IsContaining(pLine, new List<Point> { intPt }, false, tolerance))
@@ -865,11 +876,32 @@ namespace BH.Engine.Geometry
 
             if (!isContained && acceptOnEdges)
             {
-                isContained = closedVolume.Any(p => point.IsOnCurve(p, tolerance));
+                isContained = uniqueEdges.Any(p => point.IsOnCurve(p, tolerance));
             }
 
             return isContained; //If the number of intersections is odd the point is outsde the space
         }
+
+        public static List<Line> UniqueSegments(this List<Polyline> outlines, double tolerance)
+        {
+            double sqTol = tolerance * tolerance;
+            List<Line> lines = new List<Line>();
+            foreach (Line line in outlines.SelectMany(x => x.SubParts()))
+            {
+                if (lines.All(x => !x.IsEqual(line)))
+                    lines.Add(line);
+            }
+
+            return lines;
+        }
+
+        public static bool IsSimilar(this Line line1, Line line2, double squareTolerance)
+        {
+            return (line1.Start.SquareDistance(line2.Start) <= squareTolerance || line1.Start.SquareDistance(line2.End) <= squareTolerance)
+                && (line1.End.SquareDistance(line2.Start) <= squareTolerance && line1.End.SquareDistance(line2.End) <= squareTolerance);
+        }
+
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
