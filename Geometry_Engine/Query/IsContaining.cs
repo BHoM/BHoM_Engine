@@ -29,6 +29,7 @@ using System.ComponentModel;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Base;
 using BH.oM.Geometry.CoordinateSystem;
+using System.Numerics;
 
 namespace BH.Engine.Geometry
 {
@@ -727,7 +728,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Checks if a list of points lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
+        [Description("Checks if each of a list of points lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
         [Input("closedVolume", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
         [Input("points", "The points to check to see if it is contained within the bounds of the panels.")]
         [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
@@ -737,6 +738,25 @@ namespace BH.Engine.Geometry
         {           
             List<List<Point>> pointLists = points.Select(x => new List<Point>() { x }).ToList();
             return IsContaining(closedVolume, pointLists, acceptOnEdges, false, tolerance);
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a list of points lies within a collection of polylines describing a closed volume using their primitive planes and bounds.")]
+        [Input("closedVolume", "A collection of Polylines outlining each of the faces of the closed volume to check with.")]
+        [Input("points", "The points to check to see if it is contained within the bounds of the panels.")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the panel, default false.")]
+        [Input("acceptPartialContainment", "Decide whether to allow some of the points to sit outside the panels as long as at least one is within them.")]
+        [Input("tolerance", "Distance tolerance to use to determine intersections.")]
+        [Output("isContaining", "True if the points are contained within the bounds of the panels, false if they are not.")]
+        public static bool IsContaining(this List<Polyline> closedVolume, List<Point> points, bool acceptOnEdges = false, bool acceptPartialContainment = false, double tolerance = BH.oM.Geometry.Tolerance.Distance)
+        {
+            List<List<Point>> pointLists = points.Select(x => new List<Point>() { x }).ToList();
+            List<bool> ptContained = IsContaining(closedVolume, pointLists, acceptOnEdges, false, tolerance);
+            if (acceptPartialContainment)
+                return ptContained.Any(x => x);
+            else
+                return ptContained.All(x => x);
         }
 
         /***************************************************/
@@ -760,7 +780,9 @@ namespace BH.Engine.Geometry
             foreach (Polyline be in closedVolume)
             {
                 List<Point> srfPts = be.IControlPoints();
-                planes.Add(srfPts.FitPlane(tolerance));
+                Plane fitPlane = srfPts.FitPlane(tolerance);
+                if (fitPlane != null)
+                    planes.Add(fitPlane);
                 ctrPoints.AddRange(srfPts);
             }
 
