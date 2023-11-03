@@ -838,16 +838,10 @@ namespace BH.Engine.Geometry
             do
             {
                 int seed = 1;
-                 rVec = BH.Engine.Geometry.Create.RandomVector(seed); 
-                
-                isInPlane = false;
-                foreach (Plane p in planes)
-                    isInPlane = isInPlane || rVec.IsInPlane(p, tolerance);
-
+                rVec = BH.Engine.Geometry.Create.RandomVector(seed).Normalise();
+                isInPlane = planes.Any(p => rVec.IsInPlane(p, tolerance));
                 if (isInPlane)
-                {
-                    seed += 1;
-                }
+                    seed++;
             }
             while (isInPlane);
 
@@ -872,12 +866,7 @@ namespace BH.Engine.Geometry
 
             if (!isContained && acceptOnEdges)
             {
-                //Check the edges in case the point is on the edge of the BE
-                foreach (Polyline p in closedVolume)
-                {
-                    if (point.IsOnCurve(p, tolerance))
-                        isContained = true;
-                }
+                isContained = closedVolume.Any(p => point.IsOnCurve(p, tolerance));
             }
 
             return isContained; //If the number of intersections is odd the point is outsde the space
