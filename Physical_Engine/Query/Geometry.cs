@@ -24,6 +24,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
@@ -59,18 +60,8 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Pile as a single line. Method required for automatic display in UI packages.")]
-        [Input("pile", "Pile to get the line geometry from.")]
-        [Output("curve", "The curve defining the Pile.")]
-        public static IGeometry Geometry(this Pile pile)
-        {
-            return pile.IsNull() ? null : pile.Location;
-        }
-
-        /***************************************************/
-
-        [Description("Gets the geometry of a PadFoundation as a single curve. Method required for automatic display in UI packages.")]
-        [Input("padFoundation", "Pile to get the line geometry from.")]
+        [Description("Gets the geometry of a PadFoundation as a surface. Method required for automatic display in UI packages.")]
+        [Input("padFoundation", "PadFoundation to get the surface geometry from.")]
         [Output("surface", "The surface defining the PadFoundation.")]
         public static IGeometry Geometry(this PadFoundation padFoundation)
         {
@@ -83,8 +74,20 @@ namespace BH.Engine.Physical
         public static IGeometry Geometry(this PileFoundation pileFoundation)
         {
             List<IGeometry> geometry = new List<IGeometry>();
-            geometry.Add(pileFoundation.PileCap.Geometry());
-            geometry.AddRange(pileFoundation.Piles.Select(x => x.Geometry()));
+            IGeometry pileCapGeometry = pileFoundation.PileCap.Geometry();
+            if(!pileCapGeometry.IsNull())
+                geometry.Add(pileCapGeometry);
+            else
+                Base.Compute.RecordWarning("Null geometry for the pile cap was excluded.");
+
+            List<ICurve> pileGeometry = pileFoundation.Piles.Select(x => x.Geometry()).ToList();
+            foreach(ICurve curve in pileGeometry)
+            {
+                if (!curve.IsNull())
+                    geometry.Add(curve);
+                else
+                    Base.Compute.RecordWarning("Null geometry for the Piles were excluded.");
+            }
 
             return Engine.Geometry.Create.CompositeGeometry(geometry);
         }

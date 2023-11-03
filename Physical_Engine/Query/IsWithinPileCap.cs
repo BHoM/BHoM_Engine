@@ -31,6 +31,7 @@ using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.Engine.Spatial;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Physical
@@ -47,23 +48,25 @@ namespace BH.Engine.Physical
         [Input("piles", "The Piles to check if they are located within the extents of the PadFoundation.")]
         [Input("tolerance", "Distance tolerance to be used in the method. Piles are deemed to be on the edge of the PadFoundation if they are within this distance from the curve.", typeof(Length))]
         [Output("withinPileCap", "True if all Piles are contained within the boundary and depth of the PileCap. False if one or more Piles are not.")]
-        public static bool IsWithinPileCap(this PadFoundation padFoundation, List<Pile> piles, double tolerance = Tolerance.MicroDistance)
+        public static bool IsWithinPileCap(this PadFoundation padFoundation, List<Pile> piles, double tolerance = Tolerance.Distance)
         {
             if (padFoundation.IsNull())
                 return false;
-            else if (piles == null)
-            {
-                Base.Compute.RecordError("The list of Piles are null, the method will return false.");
+            else if (piles.IsNullOrEmpty())
                 return false;
-            }
             else if (piles.Any(x => x.IsNull()))
                 return false;
+            else if (padFoundation.Construction.IThickness() == 0)
+            {
+                Base.Compute.RecordError("The PadFoundation does not contain a thickness, the method will return false.");
+                return false;
+            }
 
             // Get the top of the piles
-            List<Point> tops = piles.Select(p => p.Location.IControlPoints().OrderBy(pt => pt.Z).Reverse().First()).ToList();
+            List<Point> tops = piles.Select(p => p.Location.IControlPoints().OrderBy(pt => pt.Z).Last()).ToList();
 
             // Project all points to top surface of the pad
-            Plane padTop = new Plane() { Normal = padFoundation.Location.Normal(), Origin = padFoundation.Location.Centroid() };
+            Plane padTop = padFoundation.Location.FitPlane();
             List<Point> pTops = tops.Select(x => x.Project(padTop)).ToList(); //project points only used for IsContaining
 
             // Get the thickness of the PadFoundation to compare against Z coordinates of the pile tops
@@ -73,10 +76,10 @@ namespace BH.Engine.Physical
             ICurve topOutline = padFoundation.Location.ExternalBoundary;
 
             // Check if all piles are within the curve of the pad
-            if(topOutline.IIsContaining(pTops,true,tolerance))
+            if (topOutline.IIsContaining(pTops, true, tolerance))
             {
                 // Check if the piles are within the depth of the pad
-                if(tops.Any(pt => pt.Z > maxZ || pt.Z < minZ))
+                if (tops.Any(pt => pt.Z > maxZ || pt.Z < minZ))
                 {
                     Base.Compute.RecordError("One or more the Piles tops is not located within the depth of the PileCap.");
                     return false;
@@ -84,11 +87,11 @@ namespace BH.Engine.Physical
                 else
                 {
                     // Check if the profile pushes the pile outside the curve of the pad
-                    for(int i = 0; i < pTops.Count; i++)
+                    for (int i = 0; i < pTops.Count; i++)
                     {
                         ConstantFramingProperty property = (ConstantFramingProperty)piles[i].Property;
-                        ICurve profile = property.Profile.Edges[0].ITranslate(Engine.Geometry.Create.Vector(pTops[i])).IRotate(pTops[i],Vector.ZAxis,property.OrientationAngle);
-                        if(profile.ICurveIntersections(topOutline).Count > 0)
+                        ICurve profile = property.Profile.Edges[0].ITranslate(Engine.Geometry.Create.Vector(pTops[i])).IRotate(pTops[i], Vector.ZAxis, property.OrientationAngle);
+                        if (profile.ICurveIntersections(topOutline).Count > 0)
                         {
                             Base.Compute.RecordError("One or more the Pile profiles is located outside the edge of the pile cap.");
                             return false;

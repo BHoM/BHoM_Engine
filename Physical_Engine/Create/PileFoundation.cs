@@ -46,13 +46,9 @@ namespace BH.Engine.Physical
         [Output("pileFoundation", "The created physical PileFoundation.")]
         public static PileFoundation PileFoundation(PadFoundation pileCap, List<Pile> piles, string name = "")
         {
-            PileFoundation pileFoundation = null;
-            if (!pileCap.IsNull() && !(piles == null) && !piles.Any(x => x.IsNull()) && pileCap.IsWithinPileCap(piles))
-                pileFoundation = new PileFoundation(pileCap, piles.AsReadOnly());
-            else
-                return null;
-
-            pileFoundation.Name = name;
+            PileFoundation pileFoundation = !pileCap.IsWithinPileCap(piles) ? null : new PileFoundation(pileCap, piles.AsReadOnly());
+            if (pileFoundation != null)
+                pileFoundation.Name = name;
 
             return pileFoundation;
         }

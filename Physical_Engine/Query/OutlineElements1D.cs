@@ -94,7 +94,7 @@ namespace BH.Engine.Physical
 
             PlanarSurface surface = padFoundation.Location;
 
-            return surface.ExternalBoundary.ISubParts().ToList<IElement1D>();
+            return padFoundation.Location?.ExternalBoundary?.ISubParts()?.ToList<IElement1D>();
         }
 
         /***************************************************/

@@ -30,9 +30,9 @@ using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.Engine.Spatial;
+using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.Engine.Base;
-using BH.Engine.Geometry;
 
 namespace BH.Engine.Physical
 {
@@ -51,11 +51,8 @@ namespace BH.Engine.Physical
         {
             if (padFoundation.IsNull())
                 return 0;
-            else if (piles == null)
-            {
-                Base.Compute.RecordError("The list of Piles are null, the method will return 0.");
+            else if (piles.IsNullOrEmpty())
                 return 0;
-            }
             else if (piles.Any(x => x.IsNull()))
                 return 0;
 
@@ -66,21 +63,27 @@ namespace BH.Engine.Physical
             }
 
             // Get the top of the piles
-            List<Point> tops = piles.Select(p => p.Location.IControlPoints().OrderBy(pt => pt.Z).First()).ToList();
+            List<Point> tops = piles.Select(p => p.Location.IControlPoints().OrderBy(pt => pt.Z).Last()).ToList();
 
-            // Offset the surface for the padfoundation
-            PlanarSurface bottom = padFoundation.Location.Translate(new Vector() { Z = -padFoundation.Construction.IThickness() });
+            Plane bottom = padFoundation.Location.FitPlane();
+            if (bottom.Normal.Z < 0)
+                bottom.Normal *= -1;
+
+            bottom.Origin -= bottom.Normal * padFoundation.Construction.IThickness();
 
             double embedVolume = 0;
 
             //For each pile, get the intersection with the bottom surface, get the line extending in to the pile cap and calculate the solid volume
             for (int i = 0; i < tops.Count; i++)
             {
-                Point pileIntersect = bottom.ClosestPoint(tops[i]);
-                ICurve split = piles[i].Location.ISplitAtPoints(new List<Point>() { pileIntersect })[0];
                 Pile embedPile = piles[i].ShallowClone();
-                embedPile = (Pile)embedPile.SetGeometry(split);
-                embedVolume += embedPile.SolidVolume();
+                Point top = tops[i];
+                Point projected = top.Project(bottom);
+                if (top.Z > projected.Z)
+                {
+                    embedPile = (Pile)embedPile.SetGeometry(new Line { Start = projected, End = top });
+                    embedVolume += embedPile.SolidVolume();
+                }
             }
 
             return embedVolume;
