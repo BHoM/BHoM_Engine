@@ -43,7 +43,7 @@ namespace BH.Engine.Serialiser
             else
             {
                 Type itemType = targetType.GetGenericArguments()[0];
-                return IDeserialise(bson, targetType, null, version, isUpgraded);
+                return IDeserialise(bson, itemType, null, version, isUpgraded);
             }
         }
 
