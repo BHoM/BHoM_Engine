@@ -878,23 +878,23 @@ namespace BH.Engine.Geometry
             return isContained; //If the number of intersections is odd the point is outsde the space
         }
 
-        public static List<Line> UniqueSegments(this List<Polyline> outlines, double tolerance)
+        private static List<Line> UniqueSegments(this List<Polyline> outlines, double tolerance)
         {
             double sqTol = tolerance * tolerance;
             List<Line> lines = new List<Line>();
             foreach (Line line in outlines.SelectMany(x => x.SubParts()))
             {
-                if (lines.All(x => !x.IsEqual(line)))
+                if (lines.All(x => !x.IsSimilar(line, tolerance)))
                     lines.Add(line);
             }
 
             return lines;
         }
 
-        public static bool IsSimilar(this Line line1, Line line2, double squareTolerance)
+        private static bool IsSimilar(this Line line1, Line line2, double squareTolerance)
         {
             return (line1.Start.SquareDistance(line2.Start) <= squareTolerance || line1.Start.SquareDistance(line2.End) <= squareTolerance)
-                && (line1.End.SquareDistance(line2.Start) <= squareTolerance && line1.End.SquareDistance(line2.End) <= squareTolerance);
+                && (line1.End.SquareDistance(line2.Start) <= squareTolerance || line1.End.SquareDistance(line2.End) <= squareTolerance);
         }
 
         /***************************************************/
