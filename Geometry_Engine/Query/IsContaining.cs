@@ -770,7 +770,7 @@ namespace BH.Engine.Geometry
         {
             if (closedVolume == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query if a collection of panels contains a point if the panels are null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query if a collection of polylines contains a point if the polylines are null.");
                 return new List<bool>() { false };
             }
 
@@ -783,6 +783,12 @@ namespace BH.Engine.Geometry
                 if (fitPlane != null)
                     planes.Add(fitPlane);
                 ctrPoints.AddRange(srfPts);
+            }
+
+            if (ctrPoints == null || ctrPoints.Count == 0)
+            {
+                BH.Engine.Base.Compute.RecordError("Polylines provided had no control points, indicating missing or corrupt geometry.");
+                return new List<bool>() { false };
             }
 
             BoundingBox boundingBox = BH.Engine.Geometry.Query.Bounds(ctrPoints);
