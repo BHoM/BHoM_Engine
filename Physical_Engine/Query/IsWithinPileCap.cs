@@ -90,7 +90,10 @@ namespace BH.Engine.Physical
                     for (int i = 0; i < pTops.Count; i++)
                     {
                         ConstantFramingProperty property = (ConstantFramingProperty)piles[i].Property;
-                        ICurve profile = property.Profile.Edges[0].ITranslate(Engine.Geometry.Create.Vector(pTops[i])).IRotate(pTops[i], Vector.ZAxis, property.OrientationAngle);
+                        ICurve profile = Engine.Geometry.Compute.IJoin(property.Profile.Edges.ToList()).OrderBy(c => c.Length()).Last()
+                            .ITranslate(Engine.Geometry.Create.Vector(pTops[i])).IRotate(pTops[i], Vector.ZAxis, property.OrientationAngle);
+                        
+                        
                         if (profile.ICurveIntersections(topOutline).Count > 0)
                         {
                             Base.Compute.RecordError("One or more the Pile profiles is located outside the edge of the pile cap.");
