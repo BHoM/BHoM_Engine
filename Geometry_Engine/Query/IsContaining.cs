@@ -829,12 +829,6 @@ namespace BH.Engine.Geometry
                 return false;
             }
 
-            if (planes.Any(x => x == null))
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot query if a provided plane is null.");
-                return false;
-            }
-
             if (!BH.Engine.Geometry.Query.IsContaining(boundingBox, point, true, tolerance))
                 return false;
 
