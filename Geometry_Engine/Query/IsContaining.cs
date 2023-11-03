@@ -846,16 +846,12 @@ namespace BH.Engine.Geometry
                 if (isValid)
                 {
                     line = new Line { Start = point, End = point + rVec * rayLength };
-                    isValid = uniqueEdges.All(x => line.LineIntersection(x, false, tolerance) == null);
                 }
 
                 if (!isValid)
                     seed++;
             }
             while (!isValid);
-
-            //Use a length longer than the longest side in the bounding box. Change to infinite line?
-            //Line line = new Line() { Start = point, End = point.Translate(rVec * (((boundingBox.Max - boundingBox.Min).Length()) * 10)) };
 
             //Check intersections
             List<Point> intersectPoints = new List<Point>();
@@ -900,8 +896,6 @@ namespace BH.Engine.Geometry
             return (line1.Start.SquareDistance(line2.Start) <= squareTolerance || line1.Start.SquareDistance(line2.End) <= squareTolerance)
                 && (line1.End.SquareDistance(line2.Start) <= squareTolerance && line1.End.SquareDistance(line2.End) <= squareTolerance);
         }
-
-
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
