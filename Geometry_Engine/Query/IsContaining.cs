@@ -833,6 +833,10 @@ namespace BH.Engine.Geometry
                 return false;
 
             List<Line> uniqueEdges = UniqueSegments(closedVolume, tolerance);
+
+            if (uniqueEdges.Any(p => point.IsOnCurve(p, tolerance)))
+                return acceptOnEdges;
+            
             double rayLength = (boundingBox.Max - boundingBox.Min).Length() + 1;
             Vector rVec;
             Line line = null;
@@ -869,11 +873,6 @@ namespace BH.Engine.Geometry
             }
 
             bool isContained = intersectPoints.CullDuplicates().Count % 2 != 0;
-
-            if (!isContained && acceptOnEdges)
-            {
-                isContained = uniqueEdges.Any(p => point.IsOnCurve(p, tolerance));
-            }
 
             return isContained; //If the number of intersections is odd the point is outsde the space
         }
