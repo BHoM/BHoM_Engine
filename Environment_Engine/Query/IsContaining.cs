@@ -22,6 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
+using BH.Engine.Analytical;
 using BH.oM.Analytical.Elements;
 using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
@@ -115,6 +116,18 @@ namespace BH.Engine.Environment
                 polylines.Add(be.Polyline());
 
             return Engine.Geometry.Query.IsContaining(polylines, points, acceptOnEdges, tolerance);
+        }
+
+
+        [Description("Defines whether an Environment Space contains a provided point.")]
+        [Input("space", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
+        [Input("spaceHeight", "The height of the space.", typeof(BH.oM.Quantities.Attributes.Length))]
+        [Input("points", "The points being checked to see if it is contained within the bounds of the 3D volume.")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the space, default false.")]
+        [Output("isContaining", "True if the point is contained within the space, false if it is not.")]
+        public static List<bool> IsContaining(this Space space, double spaceHeight, List<Point> points, bool acceptOnEdges = false)
+        {
+            return BH.Engine.Analytical.Query.IsContaining(space, spaceHeight, points, acceptOnEdges);
         }
     }
 }
