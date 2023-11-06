@@ -149,7 +149,7 @@ namespace BH.Engine.Physical
         /***************************************************/
 
         [Description("Gets all the Materials a PileFoundation is composed of and in which ratios.")]
-        [Input("padFoundation", "The PadFoundation to get the MaterialComposition from.")]
+        [Input("pileFoundation", "The PadFoundation to get the MaterialComposition from.")]
         [Output("materialComposition", "The kind of matter the PadFoundation is composed of and in which ratios.")]
         public static MaterialComposition MaterialComposition(this PileFoundation pileFoundation)
         {

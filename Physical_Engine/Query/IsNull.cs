@@ -44,8 +44,8 @@ namespace BH.Engine.Physical
 
         [Description("Checks if a Reinforcement is null and outputs relevant error message.")]
         [Input("reinforcement", "The Reinforcement to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the Reinforcement or its defining properties are null.")]
         public static bool IsNull(this Reinforcement reinforcement, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -72,8 +72,8 @@ namespace BH.Engine.Physical
 
         [Description("Checks if a ShapeCode is null and outputs relevant error message.")]
         [Input("shapeCode", "The ShapeCode to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the ShapeCode or its defining properties are null.")]
         public static bool IsNull(this IShapeCode shapeCode, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -90,8 +90,8 @@ namespace BH.Engine.Physical
 
         [Description("Checks if a IFramingElementProperty is null and outputs relevant error message.")]
         [Input("property", "The IFramingElementProperty to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the IFramingElementProperty or its defining properties are null.")]
         public static bool IsNull(this IFramingElementProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -108,8 +108,8 @@ namespace BH.Engine.Physical
 
         [Description("Checks if a IConstruction is null and outputs relevant error message.")]
         [Input("construction", "The IConstruction to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the IConstruction or its defining properties are null.")]
         public static bool IsNull(this IConstruction construction, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -126,8 +126,8 @@ namespace BH.Engine.Physical
 
         [Description("Checks if a Pile is null and outputs relevant error message.")]
         [Input("pile", "The Pile to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the Pile or its defining properties are null.")]
         public static bool IsNull(this Pile pile, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -154,8 +154,8 @@ namespace BH.Engine.Physical
 
         [Description("Checks if a PadFoundation is null and outputs relevant error message.")]
         [Input("padFoundation", "The PadFoundation to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the PadFoundation or its defining properties are null.")]
         public static bool IsNull(this PadFoundation padFoundation, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -183,8 +183,8 @@ namespace BH.Engine.Physical
 
         [Description("Checks if a PileFoundation is null and outputs relevant error message.")]
         [Input("pileFoundation", "The PileFoundation to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the PileFoundation or its defining properties are null.")]
         public static bool IsNull(this PileFoundation pileFoundation, string msg = "", [CallerMemberName] string methodName = "Method")
         {

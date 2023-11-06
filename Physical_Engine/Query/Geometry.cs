@@ -37,8 +37,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the centreline geometry from the framing element")]
-        [Output("CL", "The centre line curve of the framing element")]
+        [Description("Gets the centreline geometry from the framing element.")]
+        [Input("framingElement", "FramingElement to get the defining geometry from.")]
+        [Output("CL", "The centre line curve of the framing element.")]
         public static ICurve Geometry(this IFramingElement framingElement)
         {
             return framingElement?.Location;
@@ -46,8 +47,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets the defining surface geometry from the ISurface, the elements physical extents are further defined by its Offset")]
-        [Output("surface", "The defining location surface geometry of the ISurface with its openings represented")]
+        [Description("Gets the defining surface geometry from the ISurface, the elements physical extents are further defined by its Offset.")]
+        [Input("surface", "Surface to get the defining geometry from.")]
+        [Output("surface", "The defining location surface geometry of the ISurface with its openings represented.")]
         public static oM.Geometry.ISurface Geometry(this oM.Physical.Elements.ISurface surface)
         {
             ICurve exBound = (surface?.Location as PlanarSurface)?.ExternalBoundary;
