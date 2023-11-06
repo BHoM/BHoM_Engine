@@ -809,6 +809,34 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+        /**** Public Methods - Interfaces               ****/
+        /***************************************************/
+
+        [Description("Checks if the collection of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
+        [Input("curve", "The PolyCurve to check if it is containing all of the provided points. If the PolyCurve is not closed or planar, the method will return false.")]
+        [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
+        [Input("acceptOnEdge", "If true and the curve is closed, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
+        public static bool IIsContaining(this ICurve curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            return IsContaining(curve as dynamic, points, acceptOnEdge, tolerance);
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a curve is contained within another the curve. The curves need to be co-planar for the method to be able to return true.")]
+        [Input("curve1", "The curve to check if it is containing the second curve. Needs to be closed and coplanar with the second curve.")]
+        [Input("curve2", "The curve to check if it is contained within the the first curve. Needs to be coplanar with the first curve.")]
+        [Input("acceptOnEdge", "If true, a the inner curve is allowed to touch the outer curve within tolerance. If false, all points of the second curve needs to be fully inside the first curve and are not allowed to be within tolerance distance from the first curve.")]
+        [Input("tolerance", "Distance tolerance to be used in the method. Points on the second are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
+        [Output("isContaining", "Returns true if the second curve is inside the first curve.")]
+        public static bool IIsContaining(this ICurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
+        {
+            return IsContaining(curve1 as dynamic, curve2 as dynamic, acceptOnEdge, tolerance);
+        }
+
+        /***************************************************/
         /**** Private Methods - Closed Volume Polylines ****/
         /***************************************************/
 
@@ -836,7 +864,7 @@ namespace BH.Engine.Geometry
 
             if (uniqueEdges.Any(p => point.IsOnCurve(p, tolerance)))
                 return acceptOnEdges;
-            
+
             double rayLength = (boundingBox.Max - boundingBox.Min).Length() + 1;
             Vector rVec;
             Line line = null;
@@ -868,11 +896,11 @@ namespace BH.Engine.Geometry
 
                 Polyline pLine = closedVolume[x];
 
-                if  (BH.Engine.Geometry.Query.IsContaining(boundingBox, intPt, true, tolerance) && BH.Engine.Geometry.Query.IsContaining(pLine, new List<Point> { intPt }, false, tolerance))
+                if (BH.Engine.Geometry.Query.IsContaining(boundingBox, intPt, true, tolerance) && BH.Engine.Geometry.Query.IsContaining(pLine, new List<Point> { intPt }, false, tolerance))
                     intersectPoints.Add(intPt);
             }
 
-            bool isContained = intersectPoints.CullDuplicates().Count % 2 != 0;
+            bool isContained = intersectPoints.CullDuplicates(tolerance).Count % 2 != 0;
 
             return isContained; //If the number of intersections is odd the point is outsde the space
         }
@@ -883,7 +911,7 @@ namespace BH.Engine.Geometry
             List<Line> lines = new List<Line>();
             foreach (Line line in outlines.SelectMany(x => x.SubParts()))
             {
-                if (lines.All(x => !x.IsSimilar(line, tolerance)))
+                if (lines.All(x => !x.IsSimilar(line, sqTol)))
                     lines.Add(line);
             }
 
@@ -895,35 +923,6 @@ namespace BH.Engine.Geometry
             return (line1.Start.SquareDistance(line2.Start) <= squareTolerance || line1.Start.SquareDistance(line2.End) <= squareTolerance)
                 && (line1.End.SquareDistance(line2.Start) <= squareTolerance || line1.End.SquareDistance(line2.End) <= squareTolerance);
         }
-
-        /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
-
-        [Description("Checks if the collection of Points are all contained within the curve. If a single Point is outside the curve, the method will return false. Points not in the plane of the curve are deemed to be outside.")]
-        [Input("curve", "The PolyCurve to check if it is containing all of the provided points. If the PolyCurve is not closed or planar, the method will return false.")]
-        [Input("points", "The points to check if they are all contained within the curve. If a single point is outside the curve or not in the plane of the curve the method will return false.")]
-        [Input("acceptOnEdge", "If true and the curve is closed, points that are within the tolerance distance away from the curve are demmed to be inside it. If false, only points that are inside and not within tolerance distance away from the curve are deemed to be inside.")]
-        [Input("tolerance", "Distance tolerance to be used in the method. Points are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
-        [Output("isContaining", "Returns true if all of the provided points are inside the curve.")]
-        public static bool IIsContaining(this ICurve curve, List<Point> points, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
-        {
-            return IsContaining(curve as dynamic, points, acceptOnEdge, tolerance);
-        }
-
-        /***************************************************/
-
-        [Description("Checks if a curve is contained within another the curve. The curves need to be co-planar for the method to be able to return true.")]
-        [Input("curve1", "The curve to check if it is containing the second curve. Needs to be closed and coplanar with the second curve.")]
-        [Input("curve2", "The curve to check if it is contained within the the first curve. Needs to be coplanar with the first curve.")]
-        [Input("acceptOnEdge", "If true, a the inner curve is allowed to touch the outer curve within tolerance. If false, all points of the second curve needs to be fully inside the first curve and are not allowed to be within tolerance distance from the first curve.")]
-        [Input("tolerance", "Distance tolerance to be used in the method. Points on the second are deemed to be on the edge of the curve if they are within this distance from the curve.", typeof(Length))]
-        [Output("isContaining", "Returns true if the second curve is inside the first curve.")]
-        public static bool IIsContaining(this ICurve curve1, ICurve curve2, bool acceptOnEdge = true, double tolerance = Tolerance.Distance)
-        {
-            return IsContaining(curve1 as dynamic, curve2 as dynamic, acceptOnEdge, tolerance);
-        }
-
 
         /***************************************************/
         /**** Private Fallback Methods                  ****/
