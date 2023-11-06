@@ -69,23 +69,23 @@ namespace BH.Engine.Physical
             Plane padTop = padFoundation.Location.FitPlane();
             List<Point> pTops = tops.Select(x => x.Project(padTop)).ToList(); //project points only used for IsContaining
 
-            // Get the thickness of the PadFoundation to compare against Z coordinates of the pile tops
-            double maxZ = padFoundation.Location.Centroid().Z;
-            double minZ = maxZ - padFoundation.Construction.IThickness();
+
+            // Get the thickness of the PadFoundation to compare against the distance coordinates of the pile tops
+            double padThickness = padFoundation.Construction.IThickness();
+            for (int i = 0; i < tops.Count; i++)
+            {
+                if (tops[i].Distance(pTops[i]) + tolerance > padThickness)
+                {
+                    Base.Compute.RecordError("One or more the Piles tops is not located within the depth of the PileCap.");
+                    return false;
+                }
+            }
 
             ICurve topOutline = padFoundation.Location.ExternalBoundary;
 
             // Check if all piles are within the curve of the pad
             if (topOutline.IIsContaining(pTops, true, tolerance))
             {
-                // Check if the piles are within the depth of the pad
-                if (tops.Any(pt => pt.Z > maxZ || pt.Z < minZ))
-                {
-                    Base.Compute.RecordError("One or more the Piles tops is not located within the depth of the PileCap.");
-                    return false;
-                }
-                else
-                {
                     // Check if the profile pushes the pile outside the curve of the pad
                     for (int i = 0; i < pTops.Count; i++)
                     {
@@ -100,7 +100,6 @@ namespace BH.Engine.Physical
                             return false;
                         }
                     }
-                }
             }
             else
             {
