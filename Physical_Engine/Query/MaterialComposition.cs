@@ -158,8 +158,8 @@ namespace BH.Engine.Physical
 
             VolumetricMaterialTakeoff pileCapTakeoff = pileFoundation.PileCap.IVolumetricMaterialTakeoff();
             List<VolumetricMaterialTakeoff> allTakeOff = pileFoundation.Piles.Select(x => x.IVolumetricMaterialTakeoff()).ToList();
-            
-            if(pileCapTakeoff != null)
+
+            if (pileCapTakeoff != null)
                 allTakeOff.Add(pileCapTakeoff);
 
             VolumetricMaterialTakeoff takeOff = Matter.Compute.AggregateVolumetricMaterialTakeoff(allTakeOff);

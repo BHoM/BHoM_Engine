@@ -39,7 +39,7 @@ namespace BH.Engine.Physical
         [Output("element1D", "The IFramingElement with modified location curve.")]
         public static IFramingElement SetGeometry(this IFramingElement framingElement, ICurve curve)
         {
-            if(framingElement == null)
+            if (framingElement == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null framing element.");
                 return null;

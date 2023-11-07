@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using BH.Engine.Base;  
+using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Physical.Constructions;
@@ -136,7 +136,7 @@ namespace BH.Engine.Physical
                 ErrorMessage(methodName, "Pile", msg);
                 return true;
             }
-            else if(pile.Location == null)
+            else if (pile.Location == null)
             {
                 ErrorMessage(methodName, "Pile Location", msg);
                 return true;
@@ -200,7 +200,7 @@ namespace BH.Engine.Physical
             }
             else if (pileFoundation.Piles.IsNullOrEmpty())
                 return true;
-            else if(pileFoundation.Piles.Any(x => x.IsNull()))
+            else if (pileFoundation.Piles.Any(x => x.IsNull()))
             {
                 ErrorMessage(methodName, "PileFoundation Piles", "At least one Pile is null." + msg);
             }

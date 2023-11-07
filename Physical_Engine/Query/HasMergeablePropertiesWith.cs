@@ -48,7 +48,7 @@ namespace BH.Engine.Physical
         [Output("equal", "True if the IFramingElements' non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool HasMergeablePropertiesWith(this IFramingElement element, IFramingElement other)
         {
-            if(element == null || other == null)
+            if (element == null || other == null)
                 return false; //If either is null, then it can probably can't have its properties merged
 
             if (element.GetType() != other.GetType())
@@ -81,7 +81,7 @@ namespace BH.Engine.Physical
 
             return !Diffing.Query.DifferentProperties(element.Property, other.Property, new ComparisonConfig())?.Any() ?? true;
         }
-        
+
 
         /***************************************************/
 

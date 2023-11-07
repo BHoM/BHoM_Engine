@@ -77,13 +77,13 @@ namespace BH.Engine.Physical
         {
             List<IGeometry> geometry = new List<IGeometry>();
             IGeometry pileCapGeometry = pileFoundation.PileCap.Geometry();
-            if(pileCapGeometry != null)
+            if (pileCapGeometry != null)
                 geometry.Add(pileCapGeometry);
             else
                 Base.Compute.RecordWarning("Null geometry for the pile cap was excluded.");
 
             List<ICurve> pileGeometry = pileFoundation.Piles.Select(x => x.Geometry()).ToList();
-            foreach(ICurve curve in pileGeometry)
+            foreach (ICurve curve in pileGeometry)
             {
                 if (curve != null)
                     geometry.Add(curve);

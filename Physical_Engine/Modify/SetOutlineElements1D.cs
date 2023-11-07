@@ -93,7 +93,7 @@ namespace BH.Engine.Physical
             PadFoundation clone = padFoundation.ShallowClone();
             List<PolyCurve> outline = Geometry.Compute.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList());
 
-            if(outline.Count ==1)
+            if (outline.Count == 1)
                 clone.Location = Geometry.Create.PlanarSurface(outline.Single());
             else
             {
