@@ -31,6 +31,8 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Dimensional;
+using BH.Engine.Spatial;
 using System.ComponentModel;
 
 namespace BH.Engine.Analytical
@@ -80,6 +82,40 @@ namespace BH.Engine.Analytical
                 Item1 = results,
                 Item2 = notContained,
             };
+        }
+
+        [Description("Defines whether an Environment Space contains each of a provided list of points.")]
+        [Input("region", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided point.")]
+        [Input("regionHeight", "The height of the region.", typeof(BH.oM.Quantities.Attributes.Length))]
+        [Input("points", "The points being checked to see if it is contained within the bounds of the 3D volume.")]
+        [Input("acceptOnEdges", "Decide whether to allow the point to sit on the edge of the region, default false.")]
+        [Output("isContaining", "True if the point is contained within the region, false if it is not.")]
+        public static List<bool> IsContaining(this IRegion region, double regionHeight, List<Point> points, bool acceptOnEdges = false)
+        {
+            List<Polyline> panelsFromSpace = region.ExtrudeToVolume(regionHeight);
+            return panelsFromSpace.IsContaining(points, acceptOnEdges, Tolerance.Distance);
+        }
+
+        [Description("Defines whether an Environment Space contains a provided Element.")]
+        [Input("region", "An Environment Space object defining a perimeter to build a 3D volume from and check if the volume contains the provided element.")]
+        [Input("regionHeight", "The height of the region.", typeof(BH.oM.Quantities.Attributes.Length))]
+        [Input("elements", "The elements being checked to see if they are contained within the bounds of the 3D volume.")]
+        [Input("acceptOnEdges", "Decide whether to allow the element's point to sit on the edge of the region, default false.")]
+        [Input("acceptPartialContainment", "Decide whether to count elements overlapping the region as contained.")]
+        [Output("isContaining", "True if the point is contained within the region, false if it is not.")]
+        public static List<bool> IsContaining(this IRegion region, double regionHeight, List<IElement> elements, bool acceptOnEdges = false, bool acceptPartialContainment = false)
+        {
+            List<Polyline> polylines = region.ExtrudeToVolume(regionHeight);
+
+            List<List<Point>> pointLists = new List<List<Point>>();
+
+            foreach (IElement elem in elements)
+            {
+                List<Point> points = elem.IControlPoints();
+                pointLists.Add(points);
+            }
+
+            return BH.Engine.Geometry.Query.IsContaining(polylines, pointLists, acceptOnEdges, acceptPartialContainment);
         }
     }
 }

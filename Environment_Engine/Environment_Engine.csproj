@@ -16,6 +16,7 @@
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
   <ItemGroup>
+    <ProjectReference Include="..\Analytical_Engine\Analytical_Engine.csproj" />
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
     <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
     <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj" />
