@@ -58,7 +58,8 @@ namespace BH.Engine.Physical
                 return false;
             else if (padFoundation.Construction.IThickness() == 0)
             {
-                Base.Compute.RecordError("The PadFoundation does not contain a thickness, the method will return false.");
+                Base.Compute.RecordError("The PadFoundation is not assigned a thickness (within the Construction), the method will return false as it cannot determine the thickness" +
+                    "of the pad.");
                 return false;
             }
 
@@ -86,20 +87,31 @@ namespace BH.Engine.Physical
             // Check if all piles are within the curve of the pad
             if (topOutline.IIsContaining(pTops, true, tolerance))
             {
-                    // Check if the profile pushes the pile outside the curve of the pad
-                    for (int i = 0; i < pTops.Count; i++)
+                // Check if the profile pushes the pile outside the curve of the pad
+                for (int i = 0; i < pTops.Count; i++)
+                {
+                    ConstantFramingProperty property = (ConstantFramingProperty)piles[i].Property;
+                    if (property.Profile == null)
                     {
-                        ConstantFramingProperty property = (ConstantFramingProperty)piles[i].Property;
-                        ICurve profile = Engine.Geometry.Compute.IJoin(property.Profile.Edges.ToList()).OrderBy(c => c.Length()).Last()
-                            .ITranslate(Engine.Geometry.Create.Vector(pTops[i])).IRotate(pTops[i], Vector.ZAxis, property.OrientationAngle);
-                        
-                        
-                        if (profile.ICurveIntersections(topOutline).Count > 0)
+                        Base.Compute.RecordWarning("One or more Piles do not have a Profile assigned.");
+                        continue;
+                    }
+                    List<ICurve> profile = property.Profile.Edges.ToList();
+
+                    foreach (ICurve curve in profile)
+                    {
+                        ICurve transformedCurve;
+
+                        // because the profile will be in the XY plane
+                        transformedCurve = curve.ITranslate(Engine.Geometry.Create.Vector(pTops[i])).IRotate(pTops[i], Vector.ZAxis, property.OrientationAngle + Math.PI / 2);
+
+                        if (transformedCurve.ICurveIntersections(topOutline).Count > 0)
                         {
                             Base.Compute.RecordError("One or more the Pile profiles is located outside the edge of the pile cap.");
                             return false;
                         }
                     }
+                }
             }
             else
             {

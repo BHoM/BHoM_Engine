@@ -81,7 +81,7 @@ namespace BH.Engine.Physical
                 Point projected = top.Project(bottom);
                 if (top.Z > projected.Z)
                 {
-                    embedPile = (Pile)embedPile.SetGeometry(new Line { Start = projected, End = top });
+                    embedPile.Location = new Line { Start = projected, End = top };
                     embedVolume += embedPile.SolidVolume();
                 }
             }

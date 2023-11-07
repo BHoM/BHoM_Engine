@@ -67,7 +67,7 @@ namespace BH.Engine.Physical
         [Output("surface", "The surface defining the PadFoundation.")]
         public static IGeometry Geometry(this PadFoundation padFoundation)
         {
-            return padFoundation.IsNull() ? null : padFoundation.Location;
+            return padFoundation?.Location;
         }
 
         [Description("Gets the geometry of a PileFoundation as a surface representing the pile cap and curves representing the piles. Method required for automatic display in UI packages.")]
@@ -77,7 +77,7 @@ namespace BH.Engine.Physical
         {
             List<IGeometry> geometry = new List<IGeometry>();
             IGeometry pileCapGeometry = pileFoundation.PileCap.Geometry();
-            if(!pileCapGeometry.IsNull())
+            if(pileCapGeometry != null)
                 geometry.Add(pileCapGeometry);
             else
                 Base.Compute.RecordWarning("Null geometry for the pile cap was excluded.");
@@ -85,7 +85,7 @@ namespace BH.Engine.Physical
             List<ICurve> pileGeometry = pileFoundation.Piles.Select(x => x.Geometry()).ToList();
             foreach(ICurve curve in pileGeometry)
             {
-                if (!curve.IsNull())
+                if (curve != null)
                     geometry.Add(curve);
                 else
                     Base.Compute.RecordWarning("Null geometry for the Piles were excluded.");

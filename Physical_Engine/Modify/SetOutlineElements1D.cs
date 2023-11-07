@@ -91,8 +91,17 @@ namespace BH.Engine.Physical
                 return null;
 
             PadFoundation clone = padFoundation.ShallowClone();
-            ICurve outline = Geometry.Compute.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList()).Single();
-            clone.Location = Geometry.Create.PlanarSurface(outline);
+            List<PolyCurve> outline = Geometry.Compute.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList());
+
+            if(outline.Count ==1)
+                clone.Location = Geometry.Create.PlanarSurface(outline.Single());
+            else
+            {
+                Base.Compute.RecordError("More than one curve has been provided, a null will be returned.");
+                return null;
+            }
+
+
             return clone;
         }
 
