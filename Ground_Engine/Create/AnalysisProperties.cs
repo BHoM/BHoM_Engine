@@ -43,18 +43,18 @@ namespace BH.Engine.Ground
         [Input("totalOrDissolved", "Whether the specimen is total or dissolved (ERES_TORD).")]
         [Input("accreditingBody", "Accrediting body and reference number (when appropriate) (ERES_CRED).")]
         [Input("labName", "Name of testing labratory or organisation (ERES_LAB).")]
-        [Input("percentageRemoved", "Percentage of material removed (ERES_PERP).")]
-        [Input("sizeRemoved", "Size of material removed prior to test. Value represents lowest sized material removed (ERES_SIZE).")]
+        [Input("percentageRemoved", "Percentage of material removed (ERES_PERP). If no value is assigned, the default value will be 0.")]
+        [Input("sizeRemoved", "Size of material removed prior to test. Value represents lowest sized material removed (ERES_SIZE). If no value is assigned, the default value will be 0.")]
         [Input("instrumentReference", "Instrument reference number or identifier (ERES_IREF).")]
-        [Input("leachateDate", "Leachate preperation date and time (ERES_LDTM).")]
+        [Input("leachateDate", "Leachate preperation date and time (ERES_LDTM). If no value is assigned, the default value will be 1/1/0001 12:00:00 AM.")]
         [Input("leachateMethod", "Leachate preperation method (ERES_LMTH).")]
-        [Input("diluationFactor", "Dilution factor (ERES_DIL).")]
+        [Input("diluationFactor", "Dilution factor (ERES_DIL). If no value is assigned, the default value will be 0.")]
         [Input("basis", "Basis (ERES_BAS).")]
         [Input("location", "Analysis location (ERES_LOCN).")]
         [Output("analysisProperties", "Properties related to the analysis undertaken on the contaminant.")]
-        public static AnalysisProperties AnalysisProperties(string totalOrDissolved, string accreditingBody, string labName, 
-            double percentageRemoved, double sizeRemoved, string instrumentReference, DateTime leachateDate, string leachateMethod,
-            int diluationFactor, string basis, string location)
+        public static AnalysisProperties AnalysisProperties(string totalOrDissolved = "", string accreditingBody = "", string labName = "", 
+            double percentageRemoved = 0, double sizeRemoved = 0, string instrumentReference = "", DateTime leachateDate = default(DateTime), string leachateMethod = "",
+            int diluationFactor = 0, string basis = "", string location = "")
         {
             if(totalOrDissolved.IsNullOrEmpty())
             {

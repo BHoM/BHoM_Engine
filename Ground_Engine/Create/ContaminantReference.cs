@@ -42,11 +42,11 @@ namespace BH.Engine.Ground
         [Description("Creates an object containing the reference properties for a contaminant sample.")]
         [Input("reference", "Reference for the contaminant sample (SAMP_REF).")]
         [Input("id", "Unique identifier for the contaminant sample (SAMP_ID).")]
-        [Input("receiptDate", "Receipt date at the labratory for the contaminant sample (ERES_RDAT).")]
+        [Input("receiptDate", "Receipt date at the labratory for the contaminant sample (ERES_RDAT). If no value is assigned, the default value will be 1/1/0001 12:00:00 AM.")]
         [Input("batchCode", "Batch code for the contaminant sample (ERES_SGRP).")]
         [Input("files", "Associated file reference including instructions and photographs (FILE_FSET).")]
         [Output("contaminantReference", "Reference properties related to the contaminant sample.")]
-        public static ContaminantReference ContaminantReference(string reference, string id, DateTime receiptDate, string batchCode, string files)
+        public static ContaminantReference ContaminantReference(string reference = "", string id = "", DateTime receiptDate = default(DateTime), string batchCode = "", string files = "")
         {
             if(reference.IsNullOrEmpty())
             {

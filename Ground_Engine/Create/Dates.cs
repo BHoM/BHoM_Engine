@@ -39,11 +39,11 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Dates object with properties that can be added to a Borehole object. ")]
-        [Input("startDate", "Start date of the activity (LOCA_STAR).")]
-        [Input("endDate", "End date of the activity (LOCA_ENDD).")]
+        [Description("Creates a Dates object with properties that can be added to a Borehole object.")]
+        [Input("startDate", "Start date of the activity (LOCA_STAR). If no value is assigned, the default value will be 1/1/0001 12:00:00 AM.")]
+        [Input("endDate", "End date of the activity (LOCA_ENDD). If no value is assigned, the default value will be 1/1/0001 12:00:00 AM.")]
         [Output("Dates", "Dates for the start and end of the borehole activity.")]
-        public static Dates Dates(DateTime startDate, DateTime endDate)
+        public static Dates Dates(DateTime startDate = default(DateTime), DateTime endDate = default(DateTime) )
         {
             return new Dates()
             {

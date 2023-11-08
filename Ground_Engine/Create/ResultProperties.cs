@@ -45,7 +45,7 @@ namespace BH.Engine.Ground
         [Input("detectFlag", "Detect flag (ERES_DETF).")]
         [Input("organic", "Is the contaminant sample organic (ERES_ORG).")]
         [Output("resultProperties", "Result properties related to the contaminant sample.")]
-        public static ResultProperties ResultProperties(string type, bool reportable, string detectFlag, bool organic)
+        public static ResultProperties ResultProperties(bool organic, bool reportable, bool detectFlag, string type = "" )
         {
             if (type.IsNullOrEmpty())
             {

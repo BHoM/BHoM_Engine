@@ -46,7 +46,7 @@ namespace BH.Engine.Ground
         [Input("purpose", "Purpose of the activity (LOCA_PURP).")]
         [Input("termination", "Reason for activity termination.")]
         [Output("methodology", "Methodology for the borehole, remarks and comments (e.g. for termination).")]
-        public static Methodology Methodology(string type, string status, string remarks, string purpose, string termination)
+        public static Methodology Methodology(string type = "", string status = "", string remarks = "", string purpose = "", string termination = "")
         {
             return new Methodology()
             {

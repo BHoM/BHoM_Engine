@@ -40,13 +40,13 @@ namespace BH.Engine.Ground
         /***************************************************/
 
         [Description("Creates an object containing the detection properties for a contaminant sample.")]
-        [Input("detectionLimit", "Reporting detection limit (ERES_RDLM).")]
-        [Input("methodDetectionLimit", "Method detection limit (ERES_MDLM).")]
-        [Input("quantificationLimit", "Quanification limit (ERES_QLM).")]
-        [Input("TICProbability", "Tentatively Identified Compound (TIC) probability (ERES_TICP).")]
-        [Input("TICRetention", "Tentatively Identified Compound (ERES_TICT) retention time.")]
-        [Output("detectionProperties", "Detection properties related to the contaminant sample.")]
-        public static DetectionProperties DetectionProperties(double detectionLimit, double methodDetectionLimit, double quantificationLimit, double TICProbability, double TICRetention)
+        [Input("detectionLimit", "Reporting detection limit (ERES_RDLM). If no value is assigned, the default value will be 0.")]
+        [Input("methodDetectionLimit", "Method detection limit (ERES_MDLM). If no value is assigned, the default value will be 0.")]
+        [Input("quantificationLimit", "Quanification limit (ERES_QLM). If no value is assigned, the default value will be 0.")]
+        [Input("TICProbability", "Tentatively Identified Compound (TIC) probability (ERES_TICP). If no value is assigned, the default value will be 0.")]
+        [Input("TICRetention", "Tentatively Identified Compound (ERES_TICT) retention time. If no value is assigned, the default value will be 0.")]
+        [Output("detectionProperties", "Detection properties related to the contaminant sample. If no value is assigned, the default value will be 0.")]
+        public static DetectionProperties DetectionProperties(double detectionLimit = 0, double methodDetectionLimit = 0, double quantificationLimit = 0, double TICProbability = 0, double TICRetention = 0)
         {
             if(TICProbability < 0)
             {

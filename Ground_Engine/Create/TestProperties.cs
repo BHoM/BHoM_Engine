@@ -46,13 +46,13 @@ namespace BH.Engine.Ground
         [Input("runType", "Run type description, i.e. initial or reanalysis (ERES_RTYP).")]
         [Input("testMatrix", "Labratory test matrix (ERES_MATX).")]
         [Input("method", "Test method (ERES_METH).")]
-        [Input("analysisDate", "Analysis time and date for the contaminant sample (ERES_DTIM).")]
+        [Input("analysisDate", "Analysis time and date for the contaminant sample (ERES_DTIM). If no value is assigned, the default value will be 1/1/0001 12:00:00 AM.")]
         [Input("description", "Description of the specimen from the contaminant sample(SPEC_DESC).")]
         [Input("remarks", "Remarks about the test or specimen from the contaminant sample (ERES_REM).")]
         [Input("testStatus", "The status of the test (TEST_STAT).")]
         [Output("testProperties", "Test properties related to the contaminant sample.")]
-        public static TestProperties TestProperties(string testName, string labTestName, string reference, string runType, string testMatrix, string method, DateTime analysisDate,
-            string description, string remarks, string testStatus)
+        public static TestProperties TestProperties(string testName = "", string labTestName = "", string reference = "", string runType = "", string testMatrix = "", 
+            string method = "", DateTime analysisDate = default(DateTime), string description = "", string remarks = "", string testStatus = "")
         {
             if (testName.IsNullOrEmpty())
             {
