@@ -47,7 +47,7 @@ namespace BH.Engine.Ground
         [Input("type", "The type of sample (SAMP_TYPE).")]
         [Input("properties", "A list of different properties including references, tests, analysis, results and detection..")]
         [Output("contaminantSample", "The created ContaminantSample defined by its chemical code, depth and quantity based on the AGS schema.")]
-        public static ContaminantSample ContaminantSample(string id, double top, string chemical, string name, double result, SampleType type, List<IContaminantProperty> properties)
+        public static ContaminantSample ContaminantSample(string id, double top, string chemical, string name, double result, string type, List<IContaminantProperty> properties = null)
         {
             if (string.IsNullOrWhiteSpace(chemical))
             {
