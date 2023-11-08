@@ -38,43 +38,24 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Borehole object containing the start, end, geology and a number of optional parameters. The coordinate system the points are provided in is included.")]
+        [Description("Creates a ContaminantSample object containing the chemical code, the depth, quantity and properties related to the sample.")]
         [Input("id", "Location identifier for the borehole unique to the project (LOCA_ID).")]
-        [Input("top", "The top of the borehole within the coordinate system provided (LOCA_NATE, LOCA_NATEN, LOCA_GL).")]
-        [Input("bottom", "The bottom of the borehole within the coordinate system provided (LOCA_ETRV, LOCA_NTRV, LOCA_FDEP).")]
-        [Input("strata", "A list of strata objects containing geology units and descriptions of the ground.")]
-        [Input("properties", "A list of properties related to the borehole.")]
-        [Input("coordinateSystem", "The coordinate system referenced by the top and bottom point. (LOCA_GREF, LOCA_NATD).")]
-        [Output("borehole", "The created Borehole defined by a coordinate system, start point and end point based on the AGS schema.")]
-        public static Borehole Borehole(string id, Point top, Point bottom, List<Stratum> strata, List<IBoreholeProperty> properties, List<ContaminantSample> contaminants, Cartesian coordinateSystem)
+        [Input("top", "Depth to the top of the sample, measured from the top of the borehole (SAMP_TOP).")]
+        [Input("chemical", "Chemical code for the contaminant (ERES_CODE).")]
+        [Input("name", "The name of the chemical (ERES_NAME).")]
+        [Input("result", "The amount of the chemical present (ERES_RVAL).")]
+        [Input("type", "The type of sample (SAMP_TYPE).")]
+        [Input("properties", "A list of different properties including references, tests, analysis, results and detection..")]
+        [Output("contaminantSample", "The created ContaminantSample defined by its chemical code, depth and quantity based on the AGS schema.")]
+        public static ContaminantSample ContaminantSample(string id, double top, string chemical, string name, double result, SampleType type, List<IContaminantProperty> properties)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrWhiteSpace(chemical))
             {
-                Base.Compute.RecordError("The id is null or whitespace.");
-                return null;
-            }
-            if(top == null || bottom == null)
-            {
-                Base.Compute.RecordError("The top or bottom point is null.");
+                Compute.RecordError("The chemical name is null or whitespace.");
                 return null;
             }
 
-            if (strata.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The list of strata is null or empty.");
-                return null;
-            }
-
-            if (strata.Any(x => x.IsNull()))
-                return null;
-
-            if(!properties.Any() || properties == null)
-            {
-                Base.Compute.RecordError("The list of properties are null or empty.");
-                return null;
-            }
-
-            return new Borehole() { Id = id, Top = top, Bottom = bottom, Strata = strata, BoreholeProperties = properties,ContaminantSamples = contaminants, CoordinateSystem = coordinateSystem };
+            return new ContaminantSample() {Id = id, Top = top, Chemical = chemical, Name = name, Result = result, Type = type, ContaminantProperties = properties};
 
         }
 
