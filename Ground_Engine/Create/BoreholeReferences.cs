@@ -40,16 +40,20 @@ namespace BH.Engine.Ground
         /***************************************************/
 
         [Description("Creates a BoreholeReference object with properties that can be added to a Borehole object. ")]
+        [Input("startDate", "Start date of the activity (LOCA_STAR). If no value is assigned, the default value will be 1/1/0001 12:00:00 AM.")]
+        [Input("endDate", "End date of the activity (LOCA_ENDD). If no value is assigned, the default value will be 1/1/0001 12:00:00 AM.")]
         [Input("file", "Associated file reference including instructions and photographs (FILE_FSET).")]
         [Input("url", "Link to storage of borehole data.")]
         [Input("originalId", "Original hole id (LOCA_ORID).")]
         [Input("originalReference", "Original job reference (LOCA_ORJO).")]
         [Input("originalCompany", "Originating company (LOCA_ORCO).")]
         [Output("boreholeReference", "Associated file reference including instructions and photographs (FILE_FSET).")]
-        public static BoreholeReference BoreholeReference(string file = "", string url = "", string originalId = "", string originalReference = "", string originalCompany = "")
+        public static BoreholeReference BoreholeReference(DateTime startDate = default(DateTime), DateTime endDate = default(DateTime), string file = "", string url = "", string originalId = "", string originalReference = "", string originalCompany = "")
         {
             return new BoreholeReference()
             {
+                StartDate = startDate,
+                EndDate = endDate,
                 File = file,
                 URL = url,
                 OriginalId = originalId,

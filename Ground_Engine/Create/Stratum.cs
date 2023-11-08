@@ -50,7 +50,7 @@ namespace BH.Engine.Ground
         [Input("blankGeology", "The geology to use where blank spaces occur in the observedGeology parameter..")]
         [Output("geology", "Stratum object containing information for each strata including descriptions, legend codes and optional geological properties.")]
         public static Stratum Stratum(string id, double top, double bottom, string logDescription, string legend,
-            string observedGeology, string interpretedGeology = null, string optionalInterpretedGeology = null, string blankGeology = "")
+            string observedGeology, string interpretedGeology = "", string optionalInterpretedGeology = "", string blankGeology = "", List<IStratumProperty> stratumProperties = null)
         {
             if(id == "")
             {
@@ -79,7 +79,8 @@ namespace BH.Engine.Ground
                 Legend = legend,
                 ObservedGeology = observedGeology,
                 InterpretedGeology = interpretedGeology,
-                OptionalInterpretedGeology = optionalInterpretedGeology
+                OptionalInterpretedGeology = optionalInterpretedGeology,
+                Properties = stratumProperties
             };
         }
 
