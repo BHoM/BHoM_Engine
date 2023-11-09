@@ -58,7 +58,7 @@ namespace BH.Engine.Physical
                 return false;
             else if (padFoundation.Construction.IThickness() == 0)
             {
-                Base.Compute.RecordError("The PadFoundation is not assigned a thickness (within the Construction), the method will return false as it cannot determine the thickness" +
+                Base.Compute.RecordError("The PadFoundation does not have thickness assigned (within the Construction), therefore piles are considered as outside of the pile cap." +
                     "of the pad.");
                 return false;
             }
@@ -77,7 +77,7 @@ namespace BH.Engine.Physical
             {
                 if (tops[i].Distance(pTops[i]) + tolerance > padThickness)
                 {
-                    Base.Compute.RecordError("One or more the Piles tops is not located within the depth of the PileCap.");
+                    Base.Compute.RecordError("One or more of the Piles tops is not located within the depth of the PileCap.");
                     return false;
                 }
             }
@@ -107,7 +107,7 @@ namespace BH.Engine.Physical
 
                         if (transformedCurve.ICurveIntersections(topOutline).Count > 0)
                         {
-                            Base.Compute.RecordError("One or more the Pile profiles is located outside the edge of the pile cap.");
+                            Base.Compute.RecordError("One or more of the Pile profiles is located outside the edge of the pile cap.");
                             return false;
                         }
                     }
@@ -115,7 +115,7 @@ namespace BH.Engine.Physical
             }
             else
             {
-                Base.Compute.RecordError("One or more the Piles centre points is located outside the extents of the PileCap.");
+                Base.Compute.RecordError("One or more of the Piles centre points is located outside the extents of the PileCap.");
                 return false;
             }
 
