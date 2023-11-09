@@ -131,6 +131,42 @@ namespace BH.Engine.Physical
             return explicitBulk.MaterialComposition;
         }
 
+        /***************************************************/
+
+        [Description("Gets all the Materials a PadFoundation is composed of and in which ratios.")]
+        [Input("padFoundation", "The PadFoundation to get the MaterialComposition from.")]
+        [Output("materialComposition", "The kind of matter the PadFoundation is composed of and in which ratios.")]
+        public static MaterialComposition MaterialComposition(this PadFoundation padFoundation)
+        {
+            if (padFoundation.IsNull())
+                return null;
+
+            VolumetricMaterialTakeoff takeoff = padFoundation.IVolumetricMaterialTakeoff();
+
+            return takeoff == null ? null : Matter.Create.MaterialComposition(takeoff);
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the Materials a PileFoundation is composed of and in which ratios.")]
+        [Input("pileFoundation", "The PadFoundation to get the MaterialComposition from.")]
+        [Output("materialComposition", "The kind of matter the PadFoundation is composed of and in which ratios.")]
+        public static MaterialComposition MaterialComposition(this PileFoundation pileFoundation)
+        {
+            if (pileFoundation.IsNull())
+                return null;
+
+            VolumetricMaterialTakeoff pileCapTakeoff = pileFoundation.PileCap.IVolumetricMaterialTakeoff();
+            List<VolumetricMaterialTakeoff> allTakeOff = pileFoundation.Piles.Select(x => x.IVolumetricMaterialTakeoff()).ToList();
+
+            if (pileCapTakeoff != null)
+                allTakeOff.Add(pileCapTakeoff);
+
+            VolumetricMaterialTakeoff takeOff = Matter.Compute.AggregateVolumetricMaterialTakeoff(allTakeOff);
+
+            return takeOff == null ? null : Matter.Create.MaterialComposition(takeOff);
+        }
+
         /******************************************************/
         /**** IConstruction Methods                        ****/
         /******************************************************/

@@ -47,7 +47,7 @@ namespace BH.Engine.Physical
         [Output("surface", "The ISurface with new location surface.")]
         public static oM.Physical.Elements.ISurface SetOutlineElements1D(this oM.Physical.Elements.ISurface surface, List<IElement1D> outlineElements1D)
         {
-            if(surface == null)
+            if (surface == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null surface.");
                 return null;
@@ -67,7 +67,7 @@ namespace BH.Engine.Physical
         [Output("opening", "The IOpening with new location surface.")]
         public static IOpening SetOutlineElements1D(this IOpening opening, List<IElement1D> outlineElements1D)
         {
-            if(opening == null)
+            if (opening == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null opening.");
                 return null;
@@ -81,6 +81,31 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
+        [Description("Set the location surface of a PadFoundation as a PlanarSurface by providing a list of IElements1D.")]
+        [Input("padFoundation", "The PadFoundation to set the location surface of.")]
+        [Input("outlineElements1D", "One dimensional elements defining the external boundery geometry, PadFoundation has no edge properties and all IElements1D will be treated as their geometry. They must be closed and planar.")]
+        [Output("padFoundation", "The PadFoundation with new location surface.")]
+        public static PadFoundation SetOutlineElements1D(this PadFoundation padFoundation, List<IElement1D> outlineElements1D)
+        {
+            if (padFoundation.IsNull())
+                return null;
+
+            PadFoundation clone = padFoundation.ShallowClone();
+            List<PolyCurve> outline = Geometry.Compute.IJoin(outlineElements1D.Select(x => x.IGeometry()).ToList());
+
+            if (outline.Count == 1)
+                clone.Location = Geometry.Create.PlanarSurface(outline.Single());
+            else
+            {
+                Base.Compute.RecordError("More than one curve has been provided, a null will be returned.");
+                return null;
+            }
+
+
+            return clone;
+        }
+
+        /***************************************************/
     }
 }
 

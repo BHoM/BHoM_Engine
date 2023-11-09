@@ -20,38 +20,40 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base.Attributes;
 using System.ComponentModel;
-using BH.oM.Physical.Elements;
+using System.Collections.Generic;
+using System.Linq;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
-using BH.Engine.Base;
+using BH.oM.Physical.Constructions;
+using BH.oM.Physical.Elements;
+using BH.oM.Physical.FramingProperties;
+using BH.Engine.Geometry;
+
 
 namespace BH.Engine.Physical
 {
-    public static partial class Modify
+    public static partial class Create
     {
-
+        /***************************************************/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Replaces the location curve of the IFramingElement with the provided curve.")]
-        [Input("framingElement", "The framingElement to modify the location curve of.")]
-        [Input("curve", "The new location of the IFramingElement as a ICurve.")]
-        [Output("element1D", "The IFramingElement with modified location curve.")]
-        public static IFramingElement SetGeometry(this IFramingElement framingElement, ICurve curve)
+        [Description("Creates a physical PileFoundation element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.PileFoundation.")]
+        [Input("pileCap", "PadFoundation defining the pile cap and the extents of Piles.")]
+        [Input("piles", "Collection of Pile elements defining the piles belonging to the created PadFoundation.")]
+        [Input("name", "The name of the PileFoundation, default empty string.")]
+        [Output("pileFoundation", "The created physical PileFoundation.")]
+        public static PileFoundation PileFoundation(PadFoundation pileCap, List<Pile> piles, string name = "")
         {
-            if (framingElement == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null framing element.");
-                return null;
-            }
+            PileFoundation pileFoundation = !pileCap.IsWithinPileCap(piles) ? null : new PileFoundation(pileCap, piles.AsReadOnly());
+            if (pileFoundation != null)
+                pileFoundation.Name = name;
 
-            IFramingElement clone = framingElement.ShallowClone();
-            clone.Location = curve.DeepClone();
-            return clone;
+            return pileFoundation;
         }
 
         /***************************************************/
-
     }
 }
 

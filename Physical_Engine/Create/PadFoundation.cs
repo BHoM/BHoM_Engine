@@ -20,38 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base.Attributes;
 using System.ComponentModel;
-using BH.oM.Physical.Elements;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
-using BH.Engine.Base;
+using BH.oM.Physical.Constructions;
+using BH.oM.Physical.Elements;
+using BH.oM.Physical.FramingProperties;
+using BH.Engine.Geometry;
+
 
 namespace BH.Engine.Physical
 {
-    public static partial class Modify
+    public static partial class Create
     {
-
+        /***************************************************/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Replaces the location curve of the IFramingElement with the provided curve.")]
-        [Input("framingElement", "The framingElement to modify the location curve of.")]
-        [Input("curve", "The new location of the IFramingElement as a ICurve.")]
-        [Output("element1D", "The IFramingElement with modified location curve.")]
-        public static IFramingElement SetGeometry(this IFramingElement framingElement, ICurve curve)
+        [Description("Creates a physical PadFoundation element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.PadFoundation.")]
+        [Input("location", "PlanarSurface defining the top face of the PadFoundation.")]
+        [Input("construction", "Construction of the PadFoundation, containing its thickness and Material.")]
+        [Input("name", "The name of the PadFoundation, default empty string.")]
+        [Output("padFoundation", "The created physical PadFoundation.")]
+        public static PadFoundation PadFoundation(PlanarSurface location, IConstruction construction, string name = "")
         {
-            if (framingElement == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot set the geometry of a null framing element.");
-                return null;
-            }
-
-            IFramingElement clone = framingElement.ShallowClone();
-            clone.Location = curve.DeepClone();
-            return clone;
+            return location.IsNull() || construction.IsNull() ? null : new PadFoundation { Location = location, Construction = construction, Name = name };
         }
 
         /***************************************************/
-
     }
 }
 
