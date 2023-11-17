@@ -47,12 +47,6 @@ namespace BH.Engine.Ground
         [Output("resultProperties", "Result properties related to the contaminant sample.")]
         public static ResultProperties ResultProperties(bool organic, bool reportable, bool detectFlag, string type = "" )
         {
-            if (type.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The type input is null or empty.");
-                return null;
-            }
-
             return new ResultProperties() { Type = type, Reportable = reportable, DetectFlag = detectFlag, Organic = organic };
         }
 

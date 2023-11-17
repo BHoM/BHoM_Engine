@@ -54,12 +54,6 @@ namespace BH.Engine.Ground
         public static TestProperties TestProperties(string testName = "", string labTestName = "", string reference = "", string runType = "", string testMatrix = "", 
             string method = "", DateTime analysisDate = default(DateTime), string description = "", string remarks = "", string testStatus = "")
         {
-            if (testName.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The type input is null or empty.");
-                return null;
-            }
-
             return new TestProperties() { Name = testName, LabTestName = labTestName, Reference = reference, RunType = runType, TestMatrix = testMatrix, Method = method, AnalysisDate = analysisDate,
             Description = description, Remarks = remarks, TestStatus = testStatus};
         }

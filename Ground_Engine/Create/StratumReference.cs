@@ -47,22 +47,6 @@ namespace BH.Engine.Ground
         [Output("reference", "References to associated files, storage links or previous boreholes.")]
         public static StratumReference StratumReference(string remarks = "", string lexiconCode = "", string strataName = "", string files = "")
         {
-            if(remarks.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The remarks input is null or empty.");
-                return null;
-            }
-            else if (lexiconCode.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The lexicon code is null or empty.");
-                return null;
-            }
-            else if (strataName.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The strata name is null or empty.");
-                return null;
-            }
-
             StratumReference reference = new StratumReference()
             {
                 Remarks = remarks,

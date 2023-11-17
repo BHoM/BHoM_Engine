@@ -56,12 +56,6 @@ namespace BH.Engine.Ground
             double percentageRemoved = 0, double sizeRemoved = 0, string instrumentReference = "", DateTime leachateDate = default(DateTime), string leachateMethod = "",
             int diluationFactor = 0, string basis = "", string location = "")
         {
-            if(totalOrDissolved.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The remarks input is null or empty.");
-                return null;
-            }
-
             return new AnalysisProperties() { TotalOrDissolved = totalOrDissolved, AccreditingBody = accreditingBody, LabName = labName, PercentageRemoved =percentageRemoved,
             SizeRemoved = sizeRemoved, InstrumentReference = instrumentReference, LeachateDate = leachateDate, LeachateMethod = leachateMethod, DilutionFactor = diluationFactor, 
             Basis = basis, Location = location};

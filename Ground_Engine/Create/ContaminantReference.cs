@@ -48,12 +48,6 @@ namespace BH.Engine.Ground
         [Output("contaminantReference", "Reference properties related to the contaminant sample.")]
         public static ContaminantReference ContaminantReference(string reference = "", string id = "", DateTime receiptDate = default(DateTime), string batchCode = "", string files = "")
         {
-            if(reference.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The remarks input is null or empty.");
-                return null;
-            }
-
             return new ContaminantReference() { Reference = reference, Id = id, ReceiptDate = receiptDate, BatchCode = batchCode, Files = files };
         }
 
