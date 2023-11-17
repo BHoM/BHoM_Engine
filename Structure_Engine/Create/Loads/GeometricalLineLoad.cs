@@ -57,6 +57,33 @@ namespace BH.Engine.Structure
             };
         }
 
+        [Description("Creates a GeometricalLineLoad with a constant force across the length of the Line.")]
+        [InputFromProperty("location")]
+        [InputFromProperty("loadcase")]
+        [Input("force", "The force to be applied to the full length of the Line.", typeof(BH.oM.Quantities.Attributes.Force))]
+        [Input("name", "The name of the created load.")]
+        [Output("geoLineLoad", "The created GeometricalLineLoad.")]
+        public static GeometricalLineLoad GeometricalLineLoad(Line location, Loadcase loadcase, Vector moment = null, Vector force = null, IEnumerable<Panel> panel = null, string name = "")
+        {
+
+            BHoMGroup<IAreaElement> objects = new BHoMGroup<IAreaElement>();
+            objects.Elements.AddRange(panel);
+
+
+            return new GeometricalLineLoad
+            {
+                Location = location,
+                Loadcase = loadcase,
+                ForceA = (force is null) ? new Vector() : force,
+                ForceB = (force is null) ? new Vector() : force,
+                MomentA = (moment is null) ? new Vector() : moment,
+                MomentB = (moment is null) ? new Vector() : moment,
+                Name = name,
+                Objects = (panel.Count() == 0)||(panel is null) ? null : objects
+
+            };
+        }
+
         /***************************************************/
         /**** Public Methods - ToBeRemoved               ****/
         /***************************************************/
