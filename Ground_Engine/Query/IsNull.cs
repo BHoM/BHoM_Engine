@@ -90,11 +90,27 @@ namespace BH.Engine.Ground
             return false;
         }
 
-        [Description("Checks if a IStratumProperties is null and outputs relevant error message.")]
-        [Input("property", "The IGeologyProperty to test for null.")]
+        [Description("Checks if a IBoreholeProperty is null and outputs relevant error message.")]
+        [Input("property", "The IBoreholeProperty to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the Geology or its defining properties are null.")]
+        [Output("isNull", "True if the IBoreholeProperty or its defining properties are null.")]
+        public static bool IsNull(this IBoreholeProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
+        {
+            if (property == null)
+            {
+                ErrorMessage(methodName, property.GetType().ToString(), msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a IStratumProperties is null and outputs relevant error message.")]
+        [Input("property", "The IStratumProperties to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the IStratumProperties or its defining properties are null.")]
         public static bool IsNull(this IStratumProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if(property == null)
@@ -106,11 +122,43 @@ namespace BH.Engine.Ground
             return false;
         }
 
-            /***************************************************/
-            /**** Private Methods                           ****/
-            /***************************************************/
+        [Description("Checks if a IContaminantProperty is null and outputs relevant error message.")]
+        [Input("property", "The IContaminantProperty to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the IContaminantProperty or its defining properties are null.")]
+        public static bool IsNull(this IContaminantProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
+        {
+            if (property == null)
+            {
+                ErrorMessage(methodName, property.GetType().ToString(), msg);
+                return true;
+            }
 
-            private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
+            return false;
+        }
+
+        [Description("Checks if a Limit is null and outputs relevant error message.")]
+        [Input("property", "The Limit to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Limit or its defining properties are null.")]
+        public static bool IsNull(this Limit limit, string msg = "", [CallerMemberName] string methodName = "Method")
+        {
+            if (limit == null)
+            {
+                ErrorMessage(methodName, limit.GetType().ToString(), msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void ErrorMessage(string methodName = "Method", string type = "type", string msg = "")
         {
             Base.Compute.RecordError($"Cannot evaluate {methodName} because the {type} is null. {msg}");
         }
