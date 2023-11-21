@@ -39,26 +39,34 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Location object with properties that can be added to a Borehole object.")]
-        [Input("method", "Method of location (LOCA_LOCM).")]
-        [Input("subDivision", "Site location sub division(within project) code or description(LOCA_LOCA).")]
-        [Input("phase", "Investigation phase grouping code or description(LOCA_CLST).")]
-        [Input("alignment", "Alignment identifier(LOCA_ALID).")]
-        [Input("offset", "Offset from the alignment (LOCA_OFFS).")]
-        [Input("chainage", "Chainage relating to the project (LOCA_CNGE).")]
-        [Input("algorithm", "Reference to details of algorithm used to calculate local grid reference, local ground levels or chainage (LOCA_TRAN.")]
-        [Output("location", "Details for the location of the borehole including project references, phasing and location algorithms.")]
-        public static Location Location(string method = "", string subDivision = "", string phase = "", string alignment = "", double offset = 0, string chainage = "", string algorithm = "")
+        [Description("Creates a Limit object to compare against results.")]
+        [Input("value", "The value of the limit.")]
+        [Input("name", "The name of the limit (this can refer to the parameter to be compared against).")]
+        [Input("author", "The author of the limit.")]
+        [Input("reference", "Any references for the limit (e.g. a design code).")]
+        [Input("maxima", "Is the limit a maxima? True if a maxima, false if a minima.")]
+        [Output("limit", "The limit object to compare against results.")]
+        public static Limit Limit(double value, string name, string author = "", string reference = "", bool maxima = true)
         {
-            return new Location()
+            if (double.IsNaN(value))
             {
-                Method = method,
-                SubDivision = subDivision,
-                Phase = phase,
-                Alignment = alignment,
-                Offset = offset,
-                Chainage = chainage,
-                Algorithm = algorithm
+                Base.Compute.RecordError("The value for the limit must be a number.");
+                return null;
+            }
+
+            if(name == "")
+            {
+                Base.Compute.RecordError("The name for the limit cannot be empty");
+                return null;
+            }
+
+            return new Limit()
+            {
+                Value = value,
+                Name = name,
+                Author = author,
+                Reference = reference,
+                Maxima = maxima,
             };
         }
 
