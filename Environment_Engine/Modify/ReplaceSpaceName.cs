@@ -38,7 +38,7 @@ namespace BH.Engine.Environment
         [Input("oldSpaceNames", "The old space names to replace for the panel.")]
         [Input("newSpaceNames", "The replacement space names for the panel.")]
         [Output("panel", "The panel with updated space names if the panel contained the old space name.")]
-        public static List<Panel> ReplaceSpaceName(this List<Panel> panels, List<string> oldSpaceNames, List<string> newSpaceNames)
+        public static List<Panel> ReplaceConnectedSpaceName(this List<Panel> panels, List<string> oldSpaceNames, List<string> newSpaceNames)
         {
             if (panels == null)
                 return panels;
