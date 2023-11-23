@@ -44,7 +44,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("playingArea", "Polyline to be used for defining edge of performance or playing area.")]
         [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
         [Output("results", "Collection of Cvalue results.")]
-        [DocumentationURL("https://bhom.xyz/documentation/Conventions/BHoM-View-quality-conventions/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
+        [DocumentationURL("https://bhom.xyz/documentation/BHoM_Engine/Humans_Engine/ViewQuality/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
         public static List<Cvalue> CvalueAnalysis(this Audience audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
             if (audience == null || settings == null || playingArea == null)
@@ -65,7 +65,7 @@ namespace BH.Engine.Humans.ViewQuality
         [Input("playingArea", "Polyline to be used for defining edge of performance or playing area.")]
         [Input("focalPoint", "Point defining a single focal point used by all spectators. Used only when CvalueFocalMethodEnum is SinglePoint.")]
         [Output("results", "Collection of Cvalue results.")]
-        [DocumentationURL("https://bhom.xyz/documentation/Conventions/BHoM-View-quality-conventions/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
+        [DocumentationURL("https://bhom.xyz/documentation/BHoM_Engine/Humans_Engine/ViewQuality/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
         public static List<List<Cvalue>> CvalueAnalysis(this List<Audience> audience, CvalueSettings settings, Polyline playingArea, Point focalPoint = null)
         {
             if (audience == null || settings == null || playingArea == null)
