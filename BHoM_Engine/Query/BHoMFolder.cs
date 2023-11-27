@@ -22,6 +22,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using BH.oM.Base.Attributes;
 
@@ -35,7 +37,7 @@ namespace BH.Engine.Base
 
         public static string BHoMFolder()
         {
-            return @"C:\ProgramData\BHoM\Assemblies";
+            return System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData) + @"\BHoM\Assemblies";
         }
 
 
