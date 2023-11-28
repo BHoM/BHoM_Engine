@@ -69,17 +69,22 @@ namespace BH.Engine.Structure
             BHoMGroup<IAreaElement> objects = new BHoMGroup<IAreaElement>();
             objects.Elements.AddRange(panels);
 
+            if(force == null)
+                force = new Vector();
+            
+            if(moment == null)
+                moment = new Vector();
+
             return new GeometricalLineLoad
             {
                 Location = location,
                 Loadcase = loadcase,
-                ForceA = (force is null) ? new Vector() : force,
-                ForceB = (force is null) ? new Vector() : force,
-                MomentA = (moment is null) ? new Vector() : moment,
-                MomentB = (moment is null) ? new Vector() : moment,
+                ForceA = force,
+                ForceB = force,
+                MomentA = moment,
+                MomentB = moment,
                 Name = name,
-                Objects = (panels.Count() == 0)||(panels is null) ? null : objects
-
+                Objects = (panels == null || panels.Count() == 0) ? null : objects
             };
         }
 
