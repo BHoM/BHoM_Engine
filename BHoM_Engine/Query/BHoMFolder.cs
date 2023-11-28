@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Base
@@ -32,11 +33,59 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Returns the folder path for the top level assemblies directory, for example for the C: drive it will return C:\\ProgramData\\BHoM\\Assemblies")]
         public static string BHoMFolder()
         {
             return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Assemblies");
         }
 
+        /***************************************************/
+
+        [Description("Returns the folder path for the top level datasets directory, for example for the C: drive it will return C:\\ProgramData\\BHoM\\Datasets")]
+        public static string BHoMFolderDatasets()
+        {
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Datasets");
+        }
+
+        /***************************************************/
+
+        [Description("Returns the folder path for the top level extensions directory, for example for the C: drive it will return C:\\ProgramData\\BHoM\\Extensions")]
+        public static string BHoMFolderExtensions()
+        {
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Extensions");
+        }
+
+        /***************************************************/
+
+        [Description("Returns the folder path for the top level logs directory, for example for the C: drive it will return C:\\ProgramData\\BHoM\\Logs")]
+        public static string BHoMFolderLogs()
+        {
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Logs");
+        }
+
+        /***************************************************/
+
+        [Description("Returns the folder path for the top level resources directory, for example for the C: drive it will return C:\\ProgramData\\BHoM\\Resources")]
+        public static string BHoMFolderResources()
+        {
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Resources");
+        }
+
+        /***************************************************/
+
+        [Description("Returns the folder path for the top level settings directory, for example for the C: drive it will return C:\\ProgramData\\BHoM\\Settings")]
+        public static string BHoMFolderSettings()
+        {
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Settings");
+        }
+
+        /***************************************************/
+
+        [Description("Returns the folder path for the top level upgrades directory, which houses sub-directories for upgraders for different BHoM versions. For example for the C: drive it will return C:\\ProgramData\\BHoM\\Upgrades")]
+        public static string BHoMFolderUpgrades()
+        {
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "BHoM", "Upgrades");
+        }
 
         /***************************************************/
     }

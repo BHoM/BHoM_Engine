@@ -170,7 +170,7 @@ namespace BH.Engine.Versioning
             string processFile =  upgraderName + "\\" + upgraderName + ".exe";
             if (!File.Exists(processFile))
             {
-                processFile = Path.Combine(@"C:\ProgramData\BHoM\Upgrades", processFile);
+                processFile = Path.Combine(BH.Engine.Base.Query.BHoMFolderUpgrades(), processFile);
 
                 if (!File.Exists(processFile))
                 {
