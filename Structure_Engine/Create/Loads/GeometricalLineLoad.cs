@@ -61,8 +61,8 @@ namespace BH.Engine.Structure
         [InputFromProperty("location")]
         [InputFromProperty("loadcase")]
         [Input("force", "The force to be applied to the full length of the Line.", typeof(BH.oM.Quantities.Attributes.Force))]
-        [Input("name", "The name of the created load.")]
         [Input("panels", "The Panels to apply the GeometricalLineLoad to.")]
+        [Input("name", "The name of the created load.")]
         [Output("geoLineLoad", "The created GeometricalLineLoad.")]
         public static GeometricalLineLoad GeometricalLineLoad(Line location, Loadcase loadcase, Vector moment = null, Vector force = null, IEnumerable<Panel> panels = null, string name = "")
         {
