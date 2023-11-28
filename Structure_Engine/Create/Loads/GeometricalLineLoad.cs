@@ -66,7 +66,6 @@ namespace BH.Engine.Structure
         [Output("geoLineLoad", "The created GeometricalLineLoad.")]
         public static GeometricalLineLoad GeometricalLineLoad(Line location, Loadcase loadcase, Vector moment = null, Vector force = null, IEnumerable<Panel> panels = null, string name = "")
         {
-
             BHoMGroup<IAreaElement> objects = new BHoMGroup<IAreaElement>();
             objects.Elements.AddRange(panels);
 
