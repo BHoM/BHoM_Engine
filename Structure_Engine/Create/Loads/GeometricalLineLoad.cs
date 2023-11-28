@@ -70,7 +70,6 @@ namespace BH.Engine.Structure
             BHoMGroup<IAreaElement> objects = new BHoMGroup<IAreaElement>();
             objects.Elements.AddRange(panels);
 
-
             return new GeometricalLineLoad
             {
                 Location = location,
