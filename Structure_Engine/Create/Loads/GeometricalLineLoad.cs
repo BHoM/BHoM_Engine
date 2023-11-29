@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
                 MomentA = moment,
                 MomentB = moment,
                 Name = name,
-                Objects = group;
+                Objects = group
             };
         }
 
