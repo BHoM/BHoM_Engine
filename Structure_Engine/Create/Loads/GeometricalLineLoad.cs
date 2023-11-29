@@ -61,10 +61,11 @@ namespace BH.Engine.Structure
         [InputFromProperty("location")]
         [InputFromProperty("loadcase")]
         [Input("force", "The force to be applied to the full length of the Line.", typeof(BH.oM.Quantities.Attributes.Force))]
-        [Input("panels", "The Panels to apply the GeometricalLineLoad to.")]
+        [Input("moment", "The momentto be applied to the full length of the Line.", typeof(BH.oM.Quantities.Attributes.Moment))]
+        [Input("objects", "The IAreaElement (i.e. Panels or FEMesh) to apply the GeometricalLineLoad to.")]
         [Input("name", "The name of the created load.")]
         [Output("geoLineLoad", "The created GeometricalLineLoad.")]
-        public static GeometricalLineLoad GeometricalLineLoad(Line location, Loadcase loadcase, Vector moment = null, Vector force = null, IEnumerable<Panel> panels = null, string name = "")
+        public static GeometricalLineLoad GeometricalLineLoad(Line location, Loadcase loadcase, Vector force= null, Vector moment= null, IEnumerable<IAreaElement> objects = null, string name = "")
         {
             BHoMGroup<IAreaElement> objects = new BHoMGroup<IAreaElement>();
             objects.Elements.AddRange(panels);
