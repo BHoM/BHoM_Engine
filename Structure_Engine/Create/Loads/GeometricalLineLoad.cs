@@ -88,7 +88,7 @@ namespace BH.Engine.Structure
                 MomentA = moment,
                 MomentB = moment,
                 Name = name,
-                Objects = (panels == null || panels.Count() == 0) ? null : objects
+                Objects = group;
             };
         }
 
