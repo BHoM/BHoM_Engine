@@ -53,26 +53,6 @@ namespace BH.Engine.Ground
                 Compute.RecordError("The id is null or whitespace.");
                 return null;
             }
-            //if(top == null || bottom == null)
-            //{
-            //    Base.Compute.RecordError("The top or bottom point is null.");
-            //    return null;
-            //}
-
-            //if (strata.IsNullOrEmpty())
-            //{
-            //    Base.Compute.RecordError("The list of strata is null or empty.");
-            //    return null;
-            //}
-
-            //if (strata.Any(x => x.IsNull()))
-            //    return null;
-
-            //if(!properties.Any() || properties == null)
-            //{
-            //    Base.Compute.RecordError("The list of properties are null or empty.");
-            //    return null;
-            //}
 
             return new Borehole() { Id = id, Top = top, Bottom = bottom, Strata = strata, BoreholeProperties = properties,ContaminantSamples = contaminants, CoordinateSystem = coordinateSystem };
 
