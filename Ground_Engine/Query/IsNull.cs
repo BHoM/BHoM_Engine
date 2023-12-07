@@ -53,7 +53,7 @@ namespace BH.Engine.Ground
                 return true;
             }
 
-            if(borehole.Id == "")
+            if (borehole.Id == "")
             {
                 Base.Compute.RecordError("The borehole does not contain an ID.");
                 return true;
@@ -75,12 +75,12 @@ namespace BH.Engine.Ground
         [Output("isNull", "True if the Strata or its defining properties are null.")]
         public static bool IsNull(this Stratum strata, string msg = "", [CallerMemberName] string methodName = "Method")
         {
-            if(strata == null)
+            if (strata == null)
             {
-                    Base.Compute.RecordError("The stratum is null.");
-                    return true;
+                Base.Compute.RecordError("The stratum is null.");
+                return true;
             }
-            
+
             if (strata.LogDescription.Trim() == "")
             {
                 Base.Compute.RecordError("The LogDescription is empty.");
@@ -113,7 +113,7 @@ namespace BH.Engine.Ground
         [Output("isNull", "True if the IStratumProperties or its defining properties are null.")]
         public static bool IsNull(this IStratumProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
         {
-            if(property == null)
+            if (property == null)
             {
                 ErrorMessage(methodName, property.GetType().ToString(), msg);
                 return true;
