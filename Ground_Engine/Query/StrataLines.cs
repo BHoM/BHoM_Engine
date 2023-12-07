@@ -47,7 +47,7 @@ namespace BH.Engine.Ground
         public static List<Line> StrataLines(this Borehole borehole)
         {
             // Null checks
-            if (borehole.IsNull())
+            if (Query.IsValid(borehole))
                 return null;
 
             Vector direction = Geometry.Create.Vector(borehole.Top, borehole.Bottom).Normalise();
