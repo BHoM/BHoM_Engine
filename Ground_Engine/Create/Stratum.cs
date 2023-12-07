@@ -40,6 +40,7 @@ namespace BH.Engine.Ground
         /***************************************************/
 
         [Description("Creates a Stratum element based on its strata, descriptions and optional geological properties. The lists must be of equal length.")]
+        [Input("id", "Location identifier for the borehole unique to the project (LOCA_ID).")]
         [Input("top", "Depth to the top of the strata based on the datum provided on the Borehole (GEOL_TOP).")]
         [Input("bottom", "Depth to the bottom of the strata based on the datum provided on the Borehole (GEOL_BOT).")]
         [Input("logDescription", "General descriptions for each strata (GEOL_DESC).")]
