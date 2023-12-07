@@ -42,8 +42,8 @@ namespace BH.Engine.Ground
 
         [Description("Checks if a Borehole or its defining properties are valid and outputs relevant error message.")]
         [Input("borehole", "The Borehole to test for validity.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the Borehole or its defining properties are valid.")]
         public static bool IsValid(this Borehole borehole, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -70,8 +70,8 @@ namespace BH.Engine.Ground
 
         [Description("Checks if a Strata or its defining properties are valid and outputs relevant error message.")]
         [Input("strata", "The Strata to test for validity.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the Strata or its defining properties are valid.")]
         public static bool IsValid(this Stratum strata, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -92,8 +92,8 @@ namespace BH.Engine.Ground
 
         [Description("Checks if a IBoreholeProperty is valid and outputs relevant error message.")]
         [Input("property", "The IBoreholeProperty to test for validity.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the IBoreholeProperty or its defining properties are valid.")]
         public static bool IsValid(this IBoreholeProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -108,8 +108,8 @@ namespace BH.Engine.Ground
 
         [Description("Checks if a IStratumProperties is valid and outputs relevant error message.")]
         [Input("property", "The IStratumProperties to test for validity.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the IStratumProperties or its defining properties are valid.")]
         public static bool IsValid(this IStratumProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
         {
@@ -124,8 +124,8 @@ namespace BH.Engine.Ground
 
         [Description("Checks if a IContaminantProperty is valid and outputs relevant error message.")]
         [Input("property", "The IContaminantProperty to test for validity.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the IContaminantProperty or its defining properties are valid.")]
         public static bool IsValid(this IContaminantProperty property, string msg = "", [CallerMemberName] string methodName = "Method")
         {

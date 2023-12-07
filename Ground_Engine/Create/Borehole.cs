@@ -42,9 +42,10 @@ namespace BH.Engine.Ground
         [Input("id", "Location identifier for the borehole unique to the project (LOCA_ID).")]
         [Input("top", "The top of the borehole within the coordinate system provided (LOCA_NATE, LOCA_NATEN, LOCA_GL).")]
         [Input("bottom", "The bottom of the borehole within the coordinate system provided (LOCA_ETRV, LOCA_NTRV, LOCA_FDEP).")]
-        [Input("strata", "A list of strata objects containing geology units and descriptions of the ground.")]
         [Input("properties", "A list of properties related to the borehole.")]
         [Input("coordinateSystem", "The coordinate system referenced by the top and bottom point. (LOCA_GREF, LOCA_NATD).")]
+        [Input("strata", "A list of strata objects containing geology units and descriptions of the ground.")]
+        [Input("contaminants", "A list of contaminant sample objects.")]
         [Output("borehole", "The created Borehole defined by a coordinate system, start point and end point based on the AGS schema.")]
         public static Borehole Borehole(string id, Point top = null, Point bottom = null, Cartesian coordinateSystem = null, List<IBoreholeProperty> properties = null, List<Stratum> strata = null, List<ContaminantSample> contaminants = null)
         {

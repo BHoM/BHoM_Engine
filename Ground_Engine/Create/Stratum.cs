@@ -40,17 +40,18 @@ namespace BH.Engine.Ground
         /***************************************************/
 
         [Description("Creates a Stratum element based on its strata, descriptions and optional geological properties. The lists must be of equal length.")]
-        [Input("strataTop", "Depth to the top of the strata based on the datum provided on the Borehole (GEOL_TOP).")]
-        [Input("strataBottom", "Depth to the bottom of the strata based on the datum provided on the Borehole (GEOL_BOT).")]
+        [Input("top", "Depth to the top of the strata based on the datum provided on the Borehole (GEOL_TOP).")]
+        [Input("bottom", "Depth to the bottom of the strata based on the datum provided on the Borehole (GEOL_BOT).")]
         [Input("logDescription", "General descriptions for each strata (GEOL_DESC).")]
         [Input("legend", "Legend codes summarising the LogDescription (GEOL_LEG).")]
         [Input("observedGeology", "Observed geologies expressed as a GeologicalUnit (GEOL_GEOL).")]
         [Input("interpretedGeology", "Interpreted geologies expressed as an EngineeringMaterial (GEOL_GEO2).")]
         [Input("optionalInterpretedGeology", "The optional interpreted geology expressed as an EngineeringMaterial(GEOL_GEO3).")]
-        [Input("blankGeology", "The geology to use where blank spaces occur in the observedGeology parameter..")]
-        [Output("geology", "Stratum object containing information for each strata including descriptions, legend codes and optional geological properties.")]
+        [Input("blankGeology", "The geology to use where blank spaces occur in the observedGeology parameter.")]
+        [Input("properties", "A list of properties related to the borehole.")]
+        [Output("stratum", "Stratum object containing information for each strata including descriptions, legend codes and optional geological properties.")]
         public static Stratum Stratum(string id, double top, double bottom, string logDescription, string legend,
-            string observedGeology, string interpretedGeology = "", string optionalInterpretedGeology = "", string blankGeology = "", List<IStratumProperty> stratumProperties = null)
+            string observedGeology, string interpretedGeology = "", string optionalInterpretedGeology = "", string blankGeology = "", List<IStratumProperty> properties = null)
         {
             if(id == "")
             {
@@ -80,7 +81,7 @@ namespace BH.Engine.Ground
                 ObservedGeology = observedGeology,
                 InterpretedGeology = interpretedGeology,
                 OptionalInterpretedGeology = optionalInterpretedGeology,
-                Properties = stratumProperties
+                Properties = properties
             };
         }
 
