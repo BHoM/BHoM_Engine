@@ -212,6 +212,7 @@ namespace BH.Engine.Security
         /***************************************************/
 
         [Description("Create visible line from rayline passing through obstacles.")]
+        [Input("rayLine", "Line to split and make visible.")]
         [Input("obstacles", "Polyline objects that are needed to create visible line.")]
         [Input("tolerance", "Distance tolerance for the method.")]
         [Output("visibleLine", "Line that is visible for the camera view.")]

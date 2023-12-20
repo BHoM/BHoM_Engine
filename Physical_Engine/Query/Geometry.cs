@@ -24,6 +24,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
@@ -36,8 +37,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the centreline geometry from the framing element")]
-        [Output("CL", "The centre line curve of the framing element")]
+        [Description("Gets the centreline geometry from the framing element.")]
+        [Input("framingElement", "FramingElement to get the defining geometry from.")]
+        [Output("CL", "The centre line curve of the framing element.")]
         public static ICurve Geometry(this IFramingElement framingElement)
         {
             return framingElement?.Location;
@@ -45,8 +47,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Gets the defining surface geometry from the ISurface, the elements physical extents are further defined by its Offset")]
-        [Output("surface", "The defining location surface geometry of the ISurface with its openings represented")]
+        [Description("Gets the defining surface geometry from the ISurface, the elements physical extents are further defined by its Offset.")]
+        [Input("surface", "Surface to get the defining geometry from.")]
+        [Output("surface", "The defining location surface geometry of the ISurface with its openings represented.")]
         public static oM.Geometry.ISurface Geometry(this oM.Physical.Elements.ISurface surface)
         {
             ICurve exBound = (surface?.Location as PlanarSurface)?.ExternalBoundary;
@@ -56,6 +59,41 @@ namespace BH.Engine.Physical
             List<ICurve> inBound = surface?.Openings?.Select(o => (o?.Location as PlanarSurface)?.ExternalBoundary).Where(x => x != null).ToList();
             return Engine.Geometry.Create.PlanarSurface(exBound, inBound);
         }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a PadFoundation as a surface. Method required for automatic display in UI packages.")]
+        [Input("padFoundation", "PadFoundation to get the surface geometry from.")]
+        [Output("surface", "The surface defining the PadFoundation.")]
+        public static IGeometry Geometry(this PadFoundation padFoundation)
+        {
+            return padFoundation?.Location;
+        }
+
+        [Description("Gets the geometry of a PileFoundation as a surface representing the pile cap and curves representing the piles. Method required for automatic display in UI packages.")]
+        [Input("pileFoundation", "PileFoundation to get the geometry from.")]
+        [Output("geometry", "The geometry defining the PadFoundation.")]
+        public static IGeometry Geometry(this PileFoundation pileFoundation)
+        {
+            List<IGeometry> geometry = new List<IGeometry>();
+            IGeometry pileCapGeometry = pileFoundation.PileCap.Geometry();
+            if (pileCapGeometry != null)
+                geometry.Add(pileCapGeometry);
+            else
+                Base.Compute.RecordWarning("Null geometry for the pile cap was excluded.");
+
+            List<ICurve> pileGeometry = pileFoundation.Piles.Select(x => x.Geometry()).ToList();
+            foreach (ICurve curve in pileGeometry)
+            {
+                if (curve != null)
+                    geometry.Add(curve);
+                else
+                    Base.Compute.RecordWarning("Null geometry for the Piles were excluded.");
+            }
+
+            return Engine.Geometry.Create.CompositeGeometry(geometry);
+        }
+
 
         /***************************************************/
 

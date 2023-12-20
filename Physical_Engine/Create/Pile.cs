@@ -25,6 +25,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Physical.Elements;
 using BH.oM.Physical.FramingProperties;
 using BH.oM.Geometry;
+using BH.Engine.Geometry;
 
 
 namespace BH.Engine.Physical
@@ -35,14 +36,14 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a physical Pile element. To generate elements compatible with structural packages, have a look at the Bar class")]
-        [Input("location", "The centre line geometry of the Pile")]
-        [Input("property", "The property of the pile, containing its profile, orientation and materiality")]
-        [Input("name", "The name of the pile, default empty string")]
-        [Output("Pile", "The created physical Pile")]
+        [Description("Creates a physical Pile element. To generate elements compatible with structural packages refer to BH.oM.Structure.Elements.Pile.")]
+        [Input("location", "The centre line geometry of the Pile.")]
+        [Input("property", "The property of the Pile, containing its profile, orientation and materiality.")]
+        [Input("name", "The name of the Pile, default empty string.")]
+        [Output("pile", "The created physical Pile.")]
         public static Pile Pile(ICurve location, IFramingElementProperty property, string name = "")
         {
-            return new Pile { Location = location, Property = property, Name = name };
+            return location.IsNull() || property.IsNull() ? null : new Pile { Location = location, Property = property, Name = name };
         }
 
         /***************************************************/

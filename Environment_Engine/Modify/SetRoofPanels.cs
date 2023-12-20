@@ -46,7 +46,6 @@ namespace BH.Engine.Environment
         [Input("ceilingType", "The panel type to define internal ceiling panels, defined as panels on the horizontal tilt with 2 connected spaces. Defaults to 'ceiling'.")]
         [Input("internalFloorType", "The panel type to define internal floors. Defaults to 'FloorInternal'.")]
         [Output("panelsAsSpace", "BHoM Environment panels representing a closed space where the roof or ceiling panels have had their type set.")]
-        [PreviousVersion("6.3", "BH.Engine.Environment.Modify.SetRoofPanels(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)")]
         public static List<Panel> SetRoofPanels(this List<Panel> panelsAsSpace, PanelType roofType = PanelType.Roof, PanelType ceilingType = PanelType.Ceiling, PanelType internalFloorType = PanelType.FloorInternal)
         {
             List<Panel> clones = new List<Panel>(panelsAsSpace.Select(x => x.DeepClone<Panel>()).ToList());

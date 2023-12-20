@@ -52,7 +52,7 @@ namespace BH.Engine.Library
 
         private static void ExtractCoreDatasetNames()
         {
-            string refFile = @"C:\ProgramData\BHoM\Settings\IncludedDatasets.txt";
+            string refFile = Path.Combine(BH.Engine.Base.Query.BHoMFolderSettings(), "IncludedDatasets.txt");
 
             if (File.Exists(refFile))
                 m_CoreDatasetNames = new HashSet<string>(File.ReadAllLines(refFile));

@@ -1,25 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>6.0.0.0</AssemblyVersion>
+    <AssemblyVersion>7.0.0.0</AssemblyVersion>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <Version>5.0.0</Version>
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Environment</RootNamespace>
-    <FileVersion>6.3.0.0</FileVersion>
+    <FileVersion>7.0.0.0</FileVersion>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
   </PropertyGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
-
   <ItemGroup>
+    <ProjectReference Include="..\Analytical_Engine\Analytical_Engine.csproj" />
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
     <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
     <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj" />
@@ -30,7 +27,6 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
     <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="Analytical_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Analytical_oM.dll</HintPath>
@@ -83,5 +79,4 @@
       <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
-
 </Project>

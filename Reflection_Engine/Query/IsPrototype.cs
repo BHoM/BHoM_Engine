@@ -56,7 +56,7 @@ namespace BH.Engine.Reflection
 
         private static void ExtractCoreAssemblyPaths()
         {
-            string refFile = @"C:\ProgramData\BHoM\Settings\IncludedDLLs.txt";
+            string refFile = Path.Combine(BH.Engine.Base.Query.BHoMFolderSettings(), "IncludedDLLs.txt");
 
             if (File.Exists(refFile))
                 m_CoreAssemblyPaths = new HashSet<string>(File.ReadAllLines(refFile).Select(x => System.IO.Path.GetFileName(x)));

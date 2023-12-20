@@ -19,7 +19,6 @@
         <dependency id="NETStandard.Library" version="2.0.3" />
         <dependency id="Microsoft.Windows.Compatibility" version="5.0.2" />
         <dependency id="Microsoft.CSharp" version="4.7.0" />
-        <dependency id="NETStandard.Library" version="2.0.3" />
         <dependency id="MongoDB.Bson" version="2.18.0" />
         <dependency id="Mono.Reflection" version="2.0.0" />
         <dependency id="CompareNETObjects" version="4.67.0" />

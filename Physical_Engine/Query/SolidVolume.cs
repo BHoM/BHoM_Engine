@@ -125,9 +125,11 @@ namespace BH.Engine.Physical
             return solidVolume;
         }
 
+        /***************************************************/
+
         [Description("Returns an IOpening's solid volume based on thickness and area.")]
-        [Input("opening", "the window to get the volume from.")]
-        [Output("volume", "The window's solid material volume.", typeof(Volume))]
+        [Input("opening", "the IOpening to get the volume from.")]
+        [Output("volume", "The solid volume of the IOpening.", typeof(Volume))]
         public static double SolidVolume(this IOpening opening)
         {
             VolumetricMaterialTakeoff takeoff = opening.IVolumetricMaterialTakeoff();
@@ -136,7 +138,46 @@ namespace BH.Engine.Physical
 
             return takeoff.SolidVolume();
         }
-        
+
         /***************************************************/
+
+        [Description("Returns the solid volume of a PadFoundation based on the thickness and area.")]
+        [Input("padFoundation", "The PadFoundation to get the volume from.")]
+        [Output("volume", "The PadFoundation solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this PadFoundation padFoundation)
+        {
+            if (padFoundation.IsNull())
+                return double.NaN;
+
+            VolumetricMaterialTakeoff takeoff = padFoundation.IVolumetricMaterialTakeoff();
+            if (takeoff == null)
+                return double.NaN;
+
+            return takeoff.SolidVolume();
+        }
+
+        /***************************************************/
+
+        [Description("Returns the solid volume of a PileFoundation based on the Piles and pile cap.")]
+        [Input("pileFoundation", "The PileFoundation to get the volume from.")]
+        [Output("volume", "The PileFoundation solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this PileFoundation pileFoundation)
+        {
+            if (pileFoundation.IsNull())
+                return double.NaN;
+
+            VolumetricMaterialTakeoff pileCapTakeOff = pileFoundation.PileCap.IVolumetricMaterialTakeoff();
+            if (pileCapTakeOff == null)
+                return double.NaN;
+
+            List<VolumetricMaterialTakeoff> pilesTakeOff = pileFoundation.Piles.Select(x => x.IVolumetricMaterialTakeoff()).ToList();
+            if (pileCapTakeOff == null)
+                return double.NaN;
+
+            return pileCapTakeOff.SolidVolume() - pileFoundation.PileCap.EmbedVolume(pileFoundation.Piles.ToList()) + pilesTakeOff.Sum(x => x.SolidVolume());
+        }
+
+        /***************************************************/
+
     }
 }

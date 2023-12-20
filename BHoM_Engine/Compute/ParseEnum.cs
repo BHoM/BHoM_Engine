@@ -51,7 +51,6 @@ namespace BH.Engine.Base
 
         /*******************************************/
 
-        [PreviousVersion("6.3", "BH.Engine.Base.Compute.ParseEnum(System.Type, System.String)")]
         [Description("Converts a string into its corresponding enum of type enumType")]
         [Input("enumType", "Type of enum to be created")]
         [Input("value", "String representation of the enum to be created")]

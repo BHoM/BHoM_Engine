@@ -48,7 +48,7 @@ namespace BH.Engine.Physical
         [Output("equal", "True if the IFramingElements' non-geometrical property is equal to the point that they could be merged into one object.")]
         public static bool HasMergeablePropertiesWith(this IFramingElement element, IFramingElement other)
         {
-            if(element == null || other == null)
+            if (element == null || other == null)
                 return false; //If either is null, then it can probably can't have its properties merged
 
             if (element.GetType() != other.GetType())
@@ -81,7 +81,7 @@ namespace BH.Engine.Physical
 
             return !Diffing.Query.DifferentProperties(element.Property, other.Property, new ComparisonConfig())?.Any() ?? true;
         }
-        
+
 
         /***************************************************/
 
@@ -124,6 +124,29 @@ namespace BH.Engine.Physical
                 return false; //If either is null, then it can probably can't have its properties merged
 
             return element.GetType() == other.GetType();
+        }
+
+        /***************************************************/
+
+        [Description("Evaluates if the two PadFoundation non-geometrical data is equal to the point that they could be merged into one object.")]
+        [Input("element", "An PadFoundation to compare the properties of with an other PadFoundation.")]
+        [Input("other", "The PadFoundation to compare with the other PadFoundation.")]
+        [Output("equal", "True if the PadFoundation non-geometrical property is equal to the point that they could be merged into one object.")]
+        public static bool HasMergeablePropertiesWith(this PadFoundation element, PadFoundation other)
+        {
+            if (element.IsNull() || other.IsNull())
+                return false; //If either is null, then it can probably can't have its properties merged
+
+            if (element.Construction == other.Construction)
+                return true;
+
+            if (element.Construction.IsNull() || other.Construction.IsNull())
+                return false;
+
+            if (element.Construction.Name != other.Construction.Name)
+                return false;
+
+            return !Diffing.Query.DifferentProperties(element.Construction, other.Construction, new ComparisonConfig())?.Any() ?? true;
         }
 
         /***************************************************/

@@ -109,9 +109,9 @@ namespace BH.Engine.Structure
             return padFoundation.IsNull() ? null : padFoundation.TopOutline;
         }
 
-        [Description("Gets the geometry of a PileFoundation as a single curve. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a PileFoundation. Method required for automatic display in UI packages.")]
         [Input("pileFoundation", "PileFoundation to get the line geometry from.")]
-        [Output("curve", "The curve defining the PadFoundation.")]
+        [Output("curve", "The geometry defining the PadFoundation.")]
         public static IGeometry Geometry(this PileFoundation pileFoundation)
         {
             List<IGeometry> geometry = new List<IGeometry>();

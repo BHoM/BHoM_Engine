@@ -302,7 +302,7 @@ namespace BH.Engine.Library
         /**** Private Fields                            ****/
         /***************************************************/
 
-        private static readonly string m_sourceFolder = @"C:\ProgramData\BHoM\Datasets";
+        private static readonly string m_sourceFolder = BH.Engine.Base.Query.BHoMFolderDatasets();
 
         private static Dictionary<string, Dataset> m_datasets = new Dictionary<string, Dataset>();
         private static Dictionary<string, List<Tuple<BH.oM.Base.Debugging.EventType, string>>> m_deserialisationEvents = new Dictionary<string, List<Tuple<oM.Base.Debugging.EventType, string>>>();
