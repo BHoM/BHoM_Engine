@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
         [Description("Evaluates whether a line is vertical from its start- and endpoints projected 2d-distance")]
         [Input("line", "The line to determine the verticality of")]
         [Output("isVertical", "If it is vertical, as defined in the wiki.")]
-        [DocumentationURL("https://bhom.xyz/documentation/Conventions/BHoM-Structural-Conventions/", DocumentationType.Documentation)]
+        [DocumentationURL("https://bhom.xyz/documentation/BHoM_oM/Structure_oM/BHoM-Structural-Conventions/", DocumentationType.Documentation)]
         public static bool IsVertical(this Line line)
         {
             return IsVertical(line.Start, line.End);
