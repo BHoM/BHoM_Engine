@@ -101,7 +101,12 @@ namespace BH.Engine.Structure
 
             ISectionProperty section;
 
-            if (convertedProps.ContainsKey(property))
+            if (property == null)
+            {
+                Engine.Base.Compute.RecordError("One or more properties is null. Please make sure all of the inputs have a value.");
+                return new List<Bar>();
+            }
+            else if (convertedProps.ContainsKey(property))
             {
                 section = convertedProps[property] as ISectionProperty;
             }
