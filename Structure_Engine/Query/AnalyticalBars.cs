@@ -93,6 +93,12 @@ namespace BH.Engine.Structure
                 return new List<Bar>();
             }
 
+            if (property == null)
+            {
+                Engine.Base.Compute.RecordError("The Constant Framing Property is null and as such, analytical bars cannot be constructed. Please ensure all of the inputs have a valid value to calculate the analytical bars.");
+                return new List<Bar>();
+            }
+
             bool isLinear = centreLine.IIsLinear();
             Plane curvePlane = null;
 
