@@ -103,7 +103,7 @@ namespace BH.Engine.Structure
 
             if (property == null)
             {
-                Engine.Base.Compute.RecordError("One or more properties is null. Please make sure all of the inputs have a value.");
+                Engine.Base.Compute.RecordError("One or more properties are null. Please make sure all of the inputs have a value.");
                 return new List<Bar>();
             }
             else if (convertedProps.ContainsKey(property))
