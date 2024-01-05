@@ -93,6 +93,12 @@ namespace BH.Engine.Structure
                 return new List<Bar>();
             }
 
+            if (property == null)
+            {
+                Engine.Base.Compute.RecordError("One or more properties are null. Please make sure all of the inputs have a value.");
+                return new List<Bar>();
+            }
+
             bool isLinear = centreLine.IIsLinear();
             Plane curvePlane = null;
 
@@ -101,12 +107,7 @@ namespace BH.Engine.Structure
 
             ISectionProperty section;
 
-            if (property == null)
-            {
-                Engine.Base.Compute.RecordError("One or more properties are null. Please make sure all of the inputs have a value.");
-                return new List<Bar>();
-            }
-            else if (convertedProps.ContainsKey(property))
+            if (convertedProps.ContainsKey(property))
             {
                 section = convertedProps[property] as ISectionProperty;
             }
