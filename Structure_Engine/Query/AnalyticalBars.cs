@@ -95,7 +95,7 @@ namespace BH.Engine.Structure
 
             if (property == null)
             {
-                Engine.Base.Compute.RecordError("One or more properties are null. Please make sure all of the inputs have a value.");
+                Engine.Base.Compute.RecordError("The Constant Framing Property is null and as such, analytical bars cannot be constructed. Please ensure all of the inputs have a valid value to calculate the analytical bars.");
                 return new List<Bar>();
             }
 
