@@ -245,7 +245,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Transform(this Mesh mesh, TransformMatrix transform)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Transform(transform)).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Transform(transform)).ToList(), Faces = mesh.Faces.ToList() };
         }
 
 

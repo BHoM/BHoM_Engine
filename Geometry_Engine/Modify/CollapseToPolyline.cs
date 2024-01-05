@@ -58,7 +58,7 @@ namespace BH.Engine.Geometry
 
         public static Polyline CollapseToPolyline(this Polyline curve, double angleTolerance, int maxSegmentCount = 100)
         {
-            return curve.DeepClone();
+            return new Polyline { ControlPoints = curve.ControlPoints.ToList() };
         }
 
         /***************************************************/
@@ -158,7 +158,7 @@ namespace BH.Engine.Geometry
 
         private static List<Point> CollapseToPolylineVertices(this Polyline curve, double angleTolerance, int maxSegmentCount = 100)
         {
-            return curve.ControlPoints.Select(p => p.DeepClone()).ToList();
+            return curve.ControlPoints.ToList();
         }
 
         /***************************************************/

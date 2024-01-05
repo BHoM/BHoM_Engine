@@ -64,14 +64,14 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            return new List<Line> { line.DeepClone(), refLine.DeepClone() };
+            return new List<Line> { line, refLine };
         }
 
         /***************************************************/
 
         public static List<Line> BooleanUnion(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
-            List<Line> result = lines.Select(l => l.DeepClone()).ToList();
+            List<Line> result = lines.ToList();
             bool union;
             do
             {

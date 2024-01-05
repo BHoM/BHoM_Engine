@@ -88,10 +88,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Returns the BoundingBox of the BoundingBox as a clone of the provided box.")]
+        [Description("Returns the BoundingBox of the BoundingBox (itself).")]
         public static BoundingBox Bounds(this BoundingBox boundingBox)
         {
-            return boundingBox == null ? null : boundingBox.DeepClone();
+            return boundingBox == null ? null : boundingBox;
         }
 
 

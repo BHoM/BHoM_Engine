@@ -45,7 +45,7 @@ namespace BH.Engine.Geometry
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
             if (refLine.Length() <= tolerance)
-                return new List<Line> { line.DeepClone() };
+                return new List<Line> { line };
 
             if (line.IsCollinear(refLine, tolerance))
             {
@@ -69,14 +69,14 @@ namespace BH.Engine.Geometry
                     Point aRPt = refLine.ControlPoints().Average();
 
                     if (aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol)
-                        splitLine = new List<Line> { line.DeepClone() };
+                        splitLine = new List<Line> { line };
                     else
                         splitLine = new List<Line>();
                 }
 
                 return splitLine;
             }
-            return new List<Line> { line.DeepClone() };
+            return new List<Line> { line };
         }
 
         /***************************************************/
@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
 
             foreach (Line line in lines)
             {
-                List<Line> splitLine = new List<Line> { line.DeepClone() };
+                List<Line> splitLine = new List<Line> { line };
                 int k = 0;
                 bool split = false;
                 do

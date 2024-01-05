@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
             if (!surface.Capped)
             {
                 edges.Add(curve);
-                ICurve other = curve.DeepClone();
+                ICurve other = curve;
                 edges.Add(other.ITranslate(direction));
             }
 

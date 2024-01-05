@@ -103,7 +103,7 @@ namespace BH.Engine.Geometry
         public static ICurve Project(this Circle circle, Plane p)
         {
             if (circle.Normal.IsParallel(p.Normal) != 0)
-                return new Circle { Centre = circle.Centre.Project(p), Normal = circle.Normal.DeepClone(), Radius = circle.Radius };
+                return new Circle { Centre = circle.Centre.Project(p), Normal = circle.Normal, Radius = circle.Radius };
 
             Vector axis1 = p.Normal.CrossProduct(circle.Normal);
             Vector axis2 = axis1.CrossProduct(p.Normal);
@@ -210,7 +210,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Project(this Mesh mesh, Plane p)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Project(p)).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Project(p)).ToList(), Faces = mesh.Faces.ToList() };
         }
 
         /***************************************************/

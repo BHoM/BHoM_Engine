@@ -88,8 +88,8 @@ namespace BH.Engine.Geometry
 
         public static bool IsCoplanar(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-            List<Point> cPts = curve1.DeepClone().ControlPoints;
-            cPts.AddRange(curve2.DeepClone().ControlPoints);
+            List<Point> cPts = curve1.ControlPoints;
+            cPts.AddRange(curve2.ControlPoints);
             return cPts.IsCoplanar(tolerance);
         }
 

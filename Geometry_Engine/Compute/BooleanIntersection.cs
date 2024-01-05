@@ -95,7 +95,7 @@ namespace BH.Engine.Geometry
                     double sqTol = tolerance * tolerance;
                     Point aPt = splitLine[0].ControlPoints().Average();
                     Point aRPt = refLine.ControlPoints().Average();
-                    return aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol ? null : line.DeepClone();
+                    return aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol ? null : line;
                 }
             }
 
@@ -136,7 +136,7 @@ namespace BH.Engine.Geometry
             if (lines[0].Length() <= tolerance)
                 return null;
 
-            Line result = lines[0].DeepClone();
+            Line result = lines[0];
             for (int i = 1; i < lines.Count; i++)
             {
                 result = result.BooleanIntersection(lines[i], tolerance);

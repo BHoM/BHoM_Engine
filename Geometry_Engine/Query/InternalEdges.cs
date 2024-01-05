@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
             List<ICurve> edges = new List<ICurve>();
             if (surface.Capped)
             {
-                edges.Add(curve.DeepClone());
+                edges.Add(curve);
                 edges.Add(surface.Curve.ITranslate(surface.Direction));
             }
 

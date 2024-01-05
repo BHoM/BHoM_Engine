@@ -198,7 +198,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Mirror(this Mesh mesh, Plane p)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Mirror(p)).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Mirror(p)).ToList(), Faces = mesh.Faces.ToList() };
         }
 
         /***************************************************/

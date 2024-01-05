@@ -44,14 +44,14 @@ namespace BH.Engine.Geometry
                 {
                     if (l.IsCollinear(ll[0], tolerance))
                     {
-                        ll.Add(l.DeepClone());
+                        ll.Add(l);
                         collinear = true;
                         break;
                     }
                 }
 
                 if (!collinear)
-                    lineClusters.Add(new List<Line> { l.DeepClone() });
+                    lineClusters.Add(new List<Line> { l });
             }
 
             return lineClusters;
