@@ -52,14 +52,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static Polyline ToPolyline(Line curve)
+        public static Polyline ToPolyline(this Line curve)
         {
             return new Polyline { ControlPoints = new List<Point> { curve.Start, curve.End } };
         }
 
         /***************************************************/
 
-        public static Polyline ToPolyline(Polyline curve)
+        public static Polyline ToPolyline(this Polyline curve)
         {
             return curve;
         }
@@ -69,7 +69,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        public static Polyline IToPolyline(ICurve curve)
+        public static Polyline IToPolyline(this ICurve curve)
         {
             return ToPolyline(curve as dynamic);
         }
@@ -79,7 +79,7 @@ namespace BH.Engine.Geometry
         /**** Private Fallback Methods                  ****/
         /***************************************************/
 
-        private static Polyline ToPolyline(ICurve curve)
+        private static Polyline ToPolyline(this ICurve curve)
         {
             Base.Compute.RecordError($"ToPolyline is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
