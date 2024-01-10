@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
             {
                 dir2 = (cc[i] - cc[i - 1]).Normalise();
                 double signedAngle = dir1.SignedAngle(dir2, normal);
-                dir1 = dir2.DeepClone();
+                dir1 = dir2;
 
                 if (Math.PI - Math.Abs(signedAngle) <= Tolerance.Angle)
                 {

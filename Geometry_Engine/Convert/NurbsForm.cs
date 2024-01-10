@@ -150,7 +150,7 @@ namespace BH.Engine.Geometry
 
         public static NurbsCurve ToNurbsCurve(this NurbsCurve curve)
         {
-            return curve.DeepClone();
+            return curve;
         }
 
         /***************************************************/

@@ -179,7 +179,7 @@ namespace BH.Engine.Geometry
                         area -= arcArea;
                 }
 
-                sPt = ePt.DeepClone();
+                sPt = ePt;
             }
 
             return Math.Abs(area);

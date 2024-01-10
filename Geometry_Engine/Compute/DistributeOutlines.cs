@@ -79,8 +79,8 @@ namespace BH.Engine.Geometry
                     outlinesByType.Add(new Tuple<Polyline, bool>(o, true));
             }
 
-            List<Polyline> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1.DeepClone()).ToList();
-            List<Polyline> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1.DeepClone()).ToList();
+            List<Polyline> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1).ToList();
+            List<Polyline> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1).ToList();
             return panelOutlines.DistributeOpenings(panelOpenings, tolerance);
         }
 
@@ -127,8 +127,8 @@ namespace BH.Engine.Geometry
                 if (!assigned)
                     outlinesByType.Add(new Tuple<ICurve, bool>(o, true));
             }
-            List<ICurve> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1.DeepClone()).ToList();
-            List<ICurve> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1.DeepClone()).ToList();
+            List<ICurve> panelOutlines = outlinesByType.Where(x => x.Item2 == true).Select(x => x.Item1).ToList();
+            List<ICurve> panelOpenings = outlinesByType.Where(x => x.Item2 == false).Select(x => x.Item1).ToList();
             return panelOutlines.DistributeOpenings(panelOpenings, tolerance);
         }
 

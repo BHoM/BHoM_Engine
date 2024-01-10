@@ -36,7 +36,7 @@ namespace BH.Engine.Geometry
 
         public static List<Point> SortCollinear(this List<Point> points, double tolerance = Tolerance.Distance)
         {
-            List<Point> cPoints = points.Select(p => p.DeepClone()).ToList();
+            List<Point> cPoints = points.ToList();
             for (int i = 1; i < cPoints.Count; i++)
             {
                 if (Math.Abs(cPoints[0].X - cPoints[i].X) > tolerance)

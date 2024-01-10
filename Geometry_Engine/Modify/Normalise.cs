@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
             double d = Math.Sqrt(x * x + y * y + z * z);
 
             if (d == 0)
-                return vector.DeepClone();
+                return vector;
 
             return new Vector { X = x / d, Y = y / d, Z = z / d };
         }
