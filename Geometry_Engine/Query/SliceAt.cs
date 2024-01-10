@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IntegrationSlice SliceAt(IList<ICurve> edges, double location, double width, Plane p, double tolerance = Tolerance.Distance)
+        public static IntegrationSlice SliceAt(this IList<ICurve> edges, double location, double width, Plane p, double tolerance = Tolerance.Distance)
         {
             List<Point> y = new List<Point>();
             double length = 0;
