@@ -164,7 +164,7 @@ namespace BH.Engine.Structure
             {
                 Basis orientation;
                 Vector[] loads = BarForceVectors(bar, forceVec, momentVec, barPointForce.Axis, barPointForce.Projected, out orientation);
-                Point point = bar.StartNode.Position;
+                Point point = bar.Start.Position;
                 Vector tan = bar.Tangent(true);
                 point += tan * barPointForce.DistanceFromA;
 
@@ -753,7 +753,7 @@ namespace BH.Engine.Structure
                 orientation = null;
                 if (isProjected)
                 {
-                    Point startPos = bar.StartNode.Position;
+                    Point startPos = bar.Start.Position;
                     Vector tan = bar.Tangent();
 
                     Vector tanUnit = tan.Normalise();

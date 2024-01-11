@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static List<ICurve> PlotBarForce(List<Bar> bars, List<BarForce> forces, Type adapterIdType, double scaleFactor = 1.0, object loadCase = null, bool fx = true, bool fy = true, bool fz = true, bool mx = true, bool my = true, bool mz = true)
+        public static List<ICurve> PlotBarForce(this List<Bar> bars, List<BarForce> forces, Type adapterIdType, double scaleFactor = 1.0, object loadCase = null, bool fx = true, bool fy = true, bool fz = true, bool mx = true, bool my = true, bool mz = true)
         {
             if (adapterIdType == null)
             {
@@ -92,7 +92,7 @@ namespace BH.Engine.Structure
 
             scaleFactor /= 1000;
 
-            List<Point> basePoints = forces.Select(x => bar.StartNode.Position + tan * x.Position).ToList();
+            List<Point> basePoints = forces.Select(x => bar.Start.Position + tan * x.Position).ToList();
 
             List<ICurve> plots = new List<ICurve>();
 

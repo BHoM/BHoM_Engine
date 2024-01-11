@@ -56,8 +56,8 @@ namespace BH.Engine.Structure
             return line.IsNull() ? null : new Bar
             {
                 Name = name,
-                StartNode = (Node)line.Start,
-                EndNode = (Node)line.End,
+                Start = (Node)line.Start,
+                End = (Node)line.End,
                 SectionProperty = sectionProperty,
                 Release = release == null ? BarReleaseFixFix() : release,
                 FEAType = feaType,

@@ -42,8 +42,8 @@ namespace BH.Engine.Structure
         /***************************************************/
         [Description("Maps a TaperedProfile to a series of sequential Bars by interpolating the profiles at the startNode and endNode of each bar using a polynomial defined by the interpolationOrder. " +
             "For nonlinear profiles a concave profile is achieved by setting the larger profile at the smallest position. To achieve a convex profile, the larger profile must be at the largest position.")]
-        [Input("section", "The section containing the TaperedProfile to be mapped to the series of Bars.")]
         [Input("bars", "The Bars in sequential order for the TaperedProfile to be mapped to.")]
+        [Input("section", "The section containing the TaperedProfile to be mapped to the series of Bars.")]
         [Output("bars", "The Bars with interpolated SectionProperties based on the TaperedProfile provided.")]
         public static List<Bar> MapTaperedProfile(List<Bar> bars, IGeometricalSection section)
         {
@@ -119,8 +119,8 @@ namespace BH.Engine.Structure
             //For each bar interpolate the profiles as necessary and create a TaperedProfile 
             foreach (Bar bar in bars)
             {
-                double startPosition = centreline.ParameterAtPoint(bar.StartNode.Position);
-                double endPosition = centreline.ParameterAtPoint(bar.EndNode.Position);
+                double startPosition = centreline.ParameterAtPoint(bar.Start.Position);
+                double endPosition = centreline.ParameterAtPoint(bar.End.Position);
                 double newLength = endPosition - startPosition;
 
                 List<double> positions = new List<double>(originalPositions);

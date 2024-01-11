@@ -38,7 +38,7 @@ namespace BH.Engine.Structure
         [Output("centreLine", "The centreline of the Bar.")]
         public static Line Centreline(this Bar bar)
         {
-            return bar.IsNull() ? null : new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position };
+            return bar.IsNull() ? null : new Line { Start = bar.Start.Position, End = bar.End.Position };
         }
 
         /***************************************************/

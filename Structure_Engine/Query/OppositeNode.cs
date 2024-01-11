@@ -42,10 +42,10 @@ namespace BH.Engine.Structure
             if (bar.IsNull() || node.IsNull())
                 return null;
 
-            if (bar.EndNode.BHoM_Guid == node.BHoM_Guid)
-                return bar.StartNode;
-            else if (bar.StartNode.BHoM_Guid == node.BHoM_Guid)
-                return bar.EndNode;
+            if (bar.End.BHoM_Guid == node.BHoM_Guid)
+                return bar.Start;
+            else if (bar.Start.BHoM_Guid == node.BHoM_Guid)
+                return bar.End;
             else
             {
                 Base.Compute.RecordError("The Bar does not contain the provided Node.");

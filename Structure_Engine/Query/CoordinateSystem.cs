@@ -56,7 +56,7 @@ namespace BH.Engine.Structure
         {
             Vector tan = bar?.Tangent(true);
             Vector ax = bar?.Normal()?.CrossProduct(tan);
-            return tan != null && ax != null ? Engine.Geometry.Create.CartesianCoordinateSystem(bar.StartNode.Position, tan, ax) : null;
+            return tan != null && ax != null ? Engine.Geometry.Create.CartesianCoordinateSystem(bar.Start.Position, tan, ax) : null;
         }
 
         /***************************************************/

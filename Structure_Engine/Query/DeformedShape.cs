@@ -55,7 +55,7 @@ namespace BH.Engine.Structure
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
         [Input("drawSections", "Toggles if output should be just centrelines or include section geometry. Note that currently section geometry only supports displacements, no rotations!")]
         [Output("deformed","The shape of the Bars from the displacements.")]
-        public static List<IGeometry> DeformedShape(List<Bar> bars, List<BarDisplacement> barDisplacements, Type adapterIdType, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
+        public static List<IGeometry> DeformedShape(this List<Bar> bars, List<BarDisplacement> barDisplacements, Type adapterIdType, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
         {
             if (adapterIdType == null)
             {
@@ -116,7 +116,7 @@ namespace BH.Engine.Structure
         [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination.")]
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
         [Output("deformed", "The shape of the FEMeshes from the displacements.")]
-        public static List<Mesh> DeformedShape(List<FEMesh> meshes, List<MeshResult> meshDisplacements, Type adapterIdType, object loadcase, double scaleFactor = 1.0)
+        public static List<Mesh> DeformedShape(this List<FEMesh> meshes, List<MeshResult> meshDisplacements, Type adapterIdType, object loadcase, double scaleFactor = 1.0)
         {
             if (adapterIdType == null)
             {
@@ -168,13 +168,13 @@ namespace BH.Engine.Structure
 
         private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
-            Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+            Vector tan = (bar.End.Position - bar.Start.Position);
             List<Point> pts = new List<Point>();
 
             foreach (BarDisplacement defo in deformations)
             {
                 Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
-                Point pt = bar.StartNode.Position + tan * defo.Position + disp;
+                Point pt = bar.Start.Position + tan * defo.Position + disp;
                 pts.Add(pt);
             }
 

@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "Bar", msg);
                 return true;
             }
-            else if (bar.StartNode.IsNull("The Node (StartNode) is owned by a Bar.", methodName) || bar.EndNode.IsNull("The Node (EndNode) is owned by a Bar.", methodName))
+            else if (bar.Start.IsNull("The Node (Start) is owned by a Bar.", methodName) || bar.End.IsNull("The Node (End) is owned by a Bar.", methodName))
                 return true;
 
             return false;
