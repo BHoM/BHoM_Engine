@@ -82,9 +82,9 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            return new PlanarSurface(
-                    Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault(),
-                    panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList());
+            return Engine.Geometry.Create.PlanarSurface(
+                Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault(),
+                panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList());
         }
 
         /***************************************************/
