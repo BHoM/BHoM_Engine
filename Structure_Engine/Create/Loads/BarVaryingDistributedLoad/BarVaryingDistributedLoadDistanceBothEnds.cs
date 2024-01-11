@@ -139,7 +139,7 @@ namespace BH.Engine.Structure
         private static Dictionary<double, List<Bar>> GroupBarsByLength(this IEnumerable<Bar> bars, double tolerance)
         {
             //Check that bars have valid geometry
-            bars = bars.Where(x => x != null && x.StartNode != null && x.EndNode != null && x.StartNode.Position != null && x.EndNode.Position != null);
+            bars = bars.Where(x => x != null && x.Start != null && x.End != null && x.Start.Position != null && x.End.Position != null);
 
             Dictionary<double, List<Bar>> dict = new Dictionary<double, List<Bar>>();
             foreach (var group in bars.GroupBy(x => (int)Math.Round(x.Length() / tolerance)))

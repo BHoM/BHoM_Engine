@@ -47,9 +47,9 @@ namespace BH.Engine.Structure
 
             Bar flipped = bar.ShallowClone();
 
-            Node tempNode = flipped.StartNode;
-            flipped.StartNode = flipped.EndNode;
-            flipped.EndNode = tempNode;
+            Node tempNode = flipped.Start;
+            flipped.Start = flipped.End;
+            flipped.End = tempNode;
 
             return flipped;
         }

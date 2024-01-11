@@ -168,13 +168,13 @@ namespace BH.Engine.Structure
 
         private static Polyline DeformedShapeCentreLine(Bar bar, List<BarDisplacement> deformations, double scaleFactor = 1.0)
         {
-            Vector tan = (bar.EndNode.Position - bar.StartNode.Position);
+            Vector tan = (bar.End.Position - bar.Start.Position);
             List<Point> pts = new List<Point>();
 
             foreach (BarDisplacement defo in deformations)
             {
                 Vector disp = new Vector { X = defo.UX * scaleFactor, Y = defo.UY * scaleFactor, Z = defo.UZ * scaleFactor };
-                Point pt = bar.StartNode.Position + tan * defo.Position + disp;
+                Point pt = bar.Start.Position + tan * defo.Position + disp;
                 pts.Add(pt);
             }
 

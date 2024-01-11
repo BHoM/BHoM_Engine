@@ -58,13 +58,13 @@ namespace BH.Engine.Structure
             if (Object.ReferenceEquals(bar1, null) || Object.ReferenceEquals(bar2, null))
                 return false;
 
-            if (m_nodeComparer.Equals(bar1.StartNode, bar2.StartNode))
+            if (m_nodeComparer.Equals(bar1.Start, bar2.Start))
             {
-                return m_nodeComparer.Equals(bar1.EndNode, bar2.EndNode);
+                return m_nodeComparer.Equals(bar1.End, bar2.End);
             }
-            else if (m_nodeComparer.Equals(bar1.StartNode, bar2.EndNode))
+            else if (m_nodeComparer.Equals(bar1.Start, bar2.End))
             {
-                return m_nodeComparer.Equals(bar1.EndNode, bar2.StartNode);
+                return m_nodeComparer.Equals(bar1.End, bar2.Start);
             }
 
             return false;
@@ -77,7 +77,7 @@ namespace BH.Engine.Structure
             //Check whether the object is null
             if (Object.ReferenceEquals(bar, null)) return 0;
 
-            return m_nodeComparer.GetHashCode(bar.StartNode) ^ m_nodeComparer.GetHashCode(bar.EndNode);
+            return m_nodeComparer.GetHashCode(bar.Start) ^ m_nodeComparer.GetHashCode(bar.End);
         }
 
 

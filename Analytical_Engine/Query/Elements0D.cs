@@ -43,7 +43,7 @@ namespace BH.Engine.Analytical
         public static List<IElement0D> Elements0D<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
-            return new List<IElement0D> { link.StartNode, link.EndNode };
+            return new List<IElement0D> { link.Start, link.End };
         }
 
         /******************************************/

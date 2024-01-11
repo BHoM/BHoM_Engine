@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
             if (bar.IsNull())
                 return null;
 
-            Vector trans = bar.StartNode.Position - Point.Origin;
+            Vector trans = bar.Start.Position - Point.Origin;
 
             Vector gX = Vector.XAxis;
             Vector gY = Vector.YAxis;

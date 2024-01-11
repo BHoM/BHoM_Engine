@@ -78,7 +78,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (bar.StartNode?.Position == null || bar.EndNode?.Position == null)
+            if (bar.Start?.Position == null || bar.End?.Position == null)
             {
                 BH.Engine.Base.Compute.RecordWarning("The bar could not be transformed because at least one of its nodes (or their location) is null.");
                 return bar;
@@ -91,12 +91,12 @@ namespace BH.Engine.Structure
             }
 
             Bar result = bar.ShallowClone();
-            result.StartNode = result.StartNode.Transform(transform, tolerance);
-            result.EndNode = result.EndNode.Transform(transform, tolerance);
+            result.Start = result.Start.Transform(transform, tolerance);
+            result.End = result.End.Transform(transform, tolerance);
 
-            Vector normalBefore = new Line { Start = bar.StartNode.Position, End = bar.EndNode.Position }.ElementNormal(bar.OrientationAngle);
+            Vector normalBefore = new Line { Start = bar.Start.Position, End = bar.End.Position }.ElementNormal(bar.OrientationAngle);
             Vector normalAfter = normalBefore.Transform(transform);
-            result.OrientationAngle = normalAfter.OrientationAngleLinear(new Line { Start = result.StartNode.Position, End = result.EndNode.Position });
+            result.OrientationAngle = normalAfter.OrientationAngleLinear(new Line { Start = result.Start.Position, End = result.End.Position });
 
             return result;
         }

@@ -92,7 +92,7 @@ namespace BH.Engine.Structure
 
             scaleFactor /= 1000;
 
-            List<Point> basePoints = forces.Select(x => bar.StartNode.Position + tan * x.Position).ToList();
+            List<Point> basePoints = forces.Select(x => bar.Start.Position + tan * x.Position).ToList();
 
             List<ICurve> plots = new List<ICurve>();
 

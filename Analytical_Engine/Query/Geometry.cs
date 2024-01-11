@@ -60,7 +60,7 @@ namespace BH.Engine.Analytical
         public static Line Geometry<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
-            return new Line { Start = link?.StartNode?.Position, End = link?.EndNode?.Position };
+            return new Line { Start = link?.Start?.Position, End = link?.End?.Position };
         }
 
         /***************************************************/

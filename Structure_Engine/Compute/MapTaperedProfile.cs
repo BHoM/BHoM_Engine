@@ -119,8 +119,8 @@ namespace BH.Engine.Structure
             //For each bar interpolate the profiles as necessary and create a TaperedProfile 
             foreach (Bar bar in bars)
             {
-                double startPosition = centreline.ParameterAtPoint(bar.StartNode.Position);
-                double endPosition = centreline.ParameterAtPoint(bar.EndNode.Position);
+                double startPosition = centreline.ParameterAtPoint(bar.Start.Position);
+                double endPosition = centreline.ParameterAtPoint(bar.End.Position);
                 double newLength = endPosition - startPosition;
 
                 List<double> positions = new List<double>(originalPositions);

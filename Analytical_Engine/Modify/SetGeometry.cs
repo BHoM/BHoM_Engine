@@ -73,8 +73,8 @@ namespace BH.Engine.Analytical
             }
 
             ILink<TNode> clone = link.ShallowClone();
-            clone.StartNode = (TNode)clone.StartNode.SetGeometry(curve.IStartPoint());
-            clone.EndNode = (TNode)clone.EndNode.SetGeometry(curve.IEndPoint());
+            clone.Start = (TNode)clone.Start.SetGeometry(curve.IStartPoint());
+            clone.End = (TNode)clone.End.SetGeometry(curve.IEndPoint());
             return clone;
         }
 
