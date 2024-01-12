@@ -5,6 +5,6 @@
     "BH.Engine.Environment.Query.NewElement1D(BH.oM.Environment.Elements.Space, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
     "BH.Engine.Environment.Create.NewElement1D(BH.oM.Environment.Elements.Opening, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
     "BH.Engine.Environment.Create.NewElement1D(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
-    "BH.Engine.Environment.Create.NewInternalElement2D(BH.oMEnvironment.Elements.Panel)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed."
+    "BH.Engine.Environment.Create.NewInternalElement2D(BH.oM.Environment.Elements.Panel)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed."
   }
 }
