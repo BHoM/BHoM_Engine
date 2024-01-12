@@ -1,0 +1,45 @@
+﻿{
+  "Namespace": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "Type": {
+    "ToNew": {
+
+    },
+    "ToOld": {
+
+    }
+  },
+  "Method": {
+    "ToNew": {
+
+    },
+    "ToOld": {
+
+    }
+  },
+  "Property": {
+    "ToNew": {
+
+    },
+    "ToOld": {
+    }
+  },
+  "MessageForDeleted": {
+    "BH.Engine.Structure.Query.IsLongitudinal(BH.oM.Structure.SectionProperties.Reinforcement.LayerReinforcement)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods.",
+    "BH.Engine.Structure.Query.IsLongitudinal(BH.oM.Structure.SectionProperties.Reinforcement.PerimeterReinforcement)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods.",
+    "BH.Engine.Structure.Query.IsLongitudinal(BH.oM.Structure.SectionProperties.Reinforcement.TieReinforcement)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods.",
+    "BH.Engine.Structure.Query.IIsLongitudinal(BH.oM.Structure.SectionProperties.Reinforcement.Reinforcement)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods.",
+    "BH.Engine.Structure.Create.LayerReinforcement(System.Double, System.Double, System.Int32, System.Boolean)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods.",
+    "BH.Engine.Structure.Create.PerimeterReinforcement(System.Double, System.Int32, BH.oM.Structure.SectionProperties.Reinforcement.ReinforcementPattern)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods.",
+    "BH.Engine.Structure.Create.TieReinforcement(System.Double, System.Double, System.Int32)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods.",
+    "BH.Engine.Structure.Query.IsNull(Bh.oM.Structure.SectionProperties.Reinforcement.Reinforcement, System.String, System.String)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods.",
+    "BH.Engine.Structure.Query.TieDiameter(BH.oM.Structure.SectionProperties.ConcreteSection)": "Reinforcement objects were refactored in BHoM 3.2 with these objects marked for deletion which have now been removed. Please reach out to the development team if you require support in upgrading your methods."
+  },
+  "MessageForNoUpgrade": {
+
+  }
+}

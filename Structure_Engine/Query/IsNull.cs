@@ -351,22 +351,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [Description("Checks if a Reinforcement is null and outputs relevant error message.")]
-        [Input("reinforcement", "The Reinforcement to test for null.")]
-        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("isNull", "True if the Reinforcement is null.")]
-        public static bool IsNull(this Reinforcement reinforcement, string msg = "", [CallerMemberName] string methodName = "Method")
-        {
-            if (reinforcement == null)
-            {
-                ErrorMessage(methodName, "Reinforcement", msg);
-                return true;
-            }
-
-            return false;
-        }
-
         [Description("Checks if a Load is null and outputs relevant error message.")]
         [Input("load", "The Load to test for null.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
