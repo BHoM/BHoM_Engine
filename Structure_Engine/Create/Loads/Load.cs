@@ -110,7 +110,7 @@ namespace BH.Engine.Structure
                         BHoMGroup<BHoMObject> group = new BHoMGroup<BHoMObject>() { Name = groupName };
                         return new GravityLoad { Loadcase = loadcase, GravityDirection = force, Objects = group, Name = groupName };
                     }
-                case LoadType.PointForce:
+                case LoadType.PointLoad:
                     {
                         BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
                         return PointLoad(loadcase, group, force, moment, axis, groupName);
