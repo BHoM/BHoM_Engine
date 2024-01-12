@@ -38,19 +38,6 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        [ToBeRemoved("4.1", "To be removed as it is generally incorrect. Advising using Centroid instead.")]
-        public static Point Centre(this Polyline polyline, double tolerance = Tolerance.Distance)
-        {
-            //TODO: this is an average point, not centroid - should be distinguished
-
-            if (!polyline.IsClosed(tolerance))
-                return polyline.ControlPoints.Average(); // TODO: not true for a self-intersecting polyline?
-            else
-                return polyline.ControlPoints.GetRange(0, polyline.ControlPoints.Count - 1).Average();
-        }
-
-        /***************************************************/
         /**** Surfaces                                    ****/
         /***************************************************/
 
