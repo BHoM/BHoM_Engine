@@ -31,7 +31,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.Analytical
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/

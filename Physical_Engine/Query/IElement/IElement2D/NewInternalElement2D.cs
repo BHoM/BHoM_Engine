@@ -20,17 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
+using BH.oM.Physical.Elements;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
-using BH.Engine.Base;
-
-namespace BH.Engine.Environment
+namespace BH.Engine.Physical
 {
     public static partial class Query
     {
@@ -38,39 +34,16 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
-        [Description("Returns an instance of an IElement1D from the given object")]
-        [Input("opening", "An Environmental Opening object")]
-        [Input("curve", "The curve to clone")]
-        [Output("element", "A 1D element object")]
-        public static IElement1D NewElement1D(this Opening opening, ICurve curve)
+        [Description("Creates a valid IElement2D which can be assigned as an internal element to the ISurface")]
+        [Input("surface", "The 2-dimensional element which a valid corresponding internal element is to be gotten from")]
+        [Output("element2D", "a Void which can be assigned as an internal element to a ISurface")]
+        public static IElement2D NewInternalElement2D(this oM.Physical.Elements.ISurface surface)
         {
-            return curve.DeepClone();
+            Engine.Base.Compute.RecordNote("The ISurface's IOpening may have been modified and replaced, if so the new IOpening has been set as a Void");
+            return new Void();
         }
 
         /***************************************************/
-
-        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
-        [Description("Returns an instance of an IElement1D from the given object")]
-        [Input("panel", "An Environmental Panel object")]
-        [Input("curve", "The curve to clone")]
-        [Output("element", "A 1D element object")]
-        public static IElement1D NewElement1D(this Panel panel, ICurve curve)
-        {
-            return curve.DeepClone();
-        }
-
-        /***************************************************/
-
-        [ToBeRemoved("3.2", "Was used for incode purposes of defaulting elements, a task which is now achived by providing a ICurve to the SetOutlineElement1D.")]
-        [Description("Returns an instance of an IElement1D from the given object")]
-        [Input("space", "An Environment Space object")]
-        [Input("curve", "The curve to clone")]
-        [Output("element", "A 1D element object")]
-        public static IElement1D NewElement1D(this Space space, ICurve curve)
-        {
-            return curve.DeepClone();
-        }
     }
 }
 

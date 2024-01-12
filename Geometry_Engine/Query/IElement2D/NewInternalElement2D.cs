@@ -20,30 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+using System;
 using BH.oM.Dimensional;
-using System.ComponentModel;
+using BH.oM.Geometry;
+
 using BH.oM.Base.Attributes;
+using System.ComponentModel;
 
-namespace BH.Engine.Spatial
+
+namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Query
     {
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Creates a IElement2D of a type which can be assigned to the IElement2D.")]
-        [Input("element2D", "A IElement2D with a internal IElement2D type defined. The element is only used to identify the type of internal IElement2D to create, and will remain unchanged by this method.")]
-        [Output("element2D", "A internal IElement2D which can be assigned to the IElement2D. Returns null if the IElement2D does not have a type of internal IElement2D.")]
-        public static IElement2D INewInternalElement2D(this IElement2D element2D)
+        [Description("Creates a a new PlanarSurface that can be used as internal element for another PlanarSurface. The resulting PlanarSurface will have a null ExternalBoundary and empty list of InternalBoundaries. The resulting PlanarSurface is casted to IElement2D for generalization purposes.  \n" +
+                     "Method required for any IElement2D that contians internal IElement2Ds.")]
+        [Input("surface", "PlanarSurface just used to determine the appropriate type of IElement2D to create.")]
+        [Output("opening", "The created Opening as a IElement2D.")]
+        public static IElement2D NewInternalElement2D(this PlanarSurface surface)
         {
-            return Base.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
+            return new PlanarSurface(null, new System.Collections.Generic.List<ICurve>());
         }
 
-        /******************************************/
+        /***************************************************/
     }
 }
+
 
 
 
