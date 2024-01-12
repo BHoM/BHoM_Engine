@@ -20,40 +20,31 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
-using BH.oM.Dimensional;
 using BH.oM.Geometry;
-using BH.Engine.Geometry;
-
-using BH.oM.Base.Attributes;
+using BH.oM.Dimensional;
 using System.ComponentModel;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Environment
+namespace BH.Engine.Spatial
 {
-    public static partial class Create
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        /******************************************/
+        /****            IElement2D            ****/
+        /******************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement1D(BH.oM.Environment.Elements.Opening, BH.oM.Geometry.ICurve)")]
-        public static IElement1D NewElement1D(this Opening opening, ICurve curve)
+        [Description("Creates a IElement2D of a type which can be assigned to the IElement2D.")]
+        [Input("element2D", "A IElement2D with a internal IElement2D type defined. The element is only used to identify the type of internal IElement2D to create, and will remain unchanged by this method.")]
+        [Output("element2D", "A internal IElement2D which can be assigned to the IElement2D. Returns null if the IElement2D does not have a type of internal IElement2D.")]
+        [PreviousVersion("7.1", "BH.Engine.Spatial.Create.INewInternalElement2D(BH.oM.Dimensional.IElement2D)")]
+        public static IElement2D INewInternalElement2D(this IElement2D element2D)
         {
-            return Query.NewElement1D(opening, curve);
+            return Base.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
         }
 
-        /***************************************************/
-
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement1D(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.ICurve)")]
-        public static IElement1D NewElement1D(this Panel panel, ICurve curve)
-        {
-            return Query.NewElement1D(panel, curve);
-        }
-
-        /***************************************************/
+        /******************************************/
     }
 }
-
 
 
 

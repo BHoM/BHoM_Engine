@@ -21,7 +21,6 @@
  */
 
 using System;
-using BH.oM.Analytical.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 
@@ -29,23 +28,22 @@ using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 
-namespace BH.Engine.Analytical
+namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a new Element2D, appropriate to the input type. For this case the appropriate type for the Panel will be a new Opening, in the position provided. \n" +
+        [Description("Creates a a new PlanarSurface that can be used as internal element for another PlanarSurface. The resulting PlanarSurface will have a null ExternalBoundary and empty list of InternalBoundaries. The resulting PlanarSurface is casted to IElement2D for generalization purposes.  \n" +
                      "Method required for any IElement2D that contians internal IElement2Ds.")]
-        [Input("panel", "Panel just used to determine the appropriate type of IElement2D to create.")]
+        [Input("surface", "PlanarSurface just used to determine the appropriate type of IElement2D to create.")]
         [Output("opening", "The created Opening as a IElement2D.")]
-        public static IElement2D NewInternalElement2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+        [PreviousVersion("7.1", "BH.Engine.Geometry.Create.NewInternalElement2D(BH.oM.Geometry.PlanarSurface)")]
+        public static IElement2D NewInternalElement2D(this PlanarSurface surface)
         {
-            return Activator.CreateInstance<TOpening>();
+            return new PlanarSurface(null, new System.Collections.Generic.List<ICurve>());
         }
 
         /***************************************************/

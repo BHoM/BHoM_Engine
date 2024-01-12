@@ -20,25 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Environment.Elements;
+using System;
+using BH.oM.Analytical.Elements;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Environment
+
+namespace BH.Engine.Analytical
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Replaced("3.2", "Method moved to query", typeof(BH.Engine.Environment.Query), "NewElement2D(BH.oM.Environment.Elements.Panel)")]
-        public static IElement2D NewInternalElement2D(this Panel panel)
+        [Description("Creates a new Element2D, appropriate to the input type. For this case the appropriate type for the Panel will be a new Opening, in the position provided. \n" +
+                     "Method required for any IElement2D that contians internal IElement2Ds.")]
+        [Input("panel", "Panel just used to determine the appropriate type of IElement2D to create.")]
+        [Output("opening", "The created Opening as a IElement2D.")]
+        [PreviousVersion("7.1", "BH.Engine.Analytical.Create.NewInternalElement2D(BH.oM.Analytical.Elements.IPanel<BH.oM.Analytical.Elements.IEdge, BH.oM.Analytical.Elements.IOpening<BH.oM.Analytical.Elements.IEdge>>)")]
+        public static IElement2D NewInternalElement2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
         {
-            return new Opening();
+            return Activator.CreateInstance<TOpening>();
         }
 
         /***************************************************/
