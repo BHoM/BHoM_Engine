@@ -1,0 +1,37 @@
+﻿{
+  "Namespace": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "Type": {
+    "ToNew": {
+
+    },
+    "ToOld": {
+
+    }
+  },
+  "Method": {
+    "ToNew": {
+
+    },
+    "ToOld": {
+
+    }
+  },
+  "Property": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "MessageForDeleted": {
+    "BH.Engine.Spatial.Query.Area(BH.oM.Dimensional.IElement0D)": "Querying the area of a 0 diemnsional is not possible. The method was added in error and should not have been available. Area methods are suitable for 2D objects and above.",
+    "BH.Engine.Spatial.Query.Area(BH.oM.Dimensional.IElement1D)": "Area of an IElement1D cannot be queried because IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed. Method has been removed to avoid confusion."
+  },
+  "MessageForNoUpgrade": {
+
+  }
+}
