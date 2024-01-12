@@ -22,6 +22,7 @@
 
 using BH.Engine.Base;
 using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
 using BH.oM.Geometry;

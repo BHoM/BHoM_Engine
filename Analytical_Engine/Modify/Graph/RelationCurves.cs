@@ -22,7 +22,8 @@
 
 using BH.Engine.Base;
 using BH.Engine.Spatial;
-using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph.Projection;
+using BH.oM.Analytical.Graph;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;

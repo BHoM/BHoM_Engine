@@ -21,8 +21,8 @@
  */
 
 using BH.Engine.Geometry;
-using BH.oM.Analytical;
 using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
 using BH.oM.Geometry;

@@ -22,7 +22,7 @@
 
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
-using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using BH.oM.Dimensional;
 using BH.oM.Base.Attributes;
 using System;

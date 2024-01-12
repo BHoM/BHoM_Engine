@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using BH.oM.Base;
 using BH.Engine.Serialiser;
 using System;
@@ -39,9 +39,9 @@ namespace BH.Engine.Analytical
         /****           Public Constructors             ****/
         /***************************************************/
 
-        [Description("Convert a graph to CustomOBjects for visualisation.")]
+        [Description("Convert a graph to CustomObjects for visualisation.")]
         [Input("graph", "The Graph to convert.")]
-        [Output("custom objects", "CUstom objects representing the Graph.")]
+        [Output("custom objects", "Custom objects representing the Graph.")]
         public static List<CustomObject> ToDataVizObjects(this Graph graph)
         {
             if(graph == null)
