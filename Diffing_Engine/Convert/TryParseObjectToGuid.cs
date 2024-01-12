@@ -62,7 +62,7 @@ namespace BH.Engine.Diffing
                 var sP = obj as StreamPointer;
                 if (sP != null)
                 {
-                    guid = sP.StreamId;
+                    guid = sP.StreamID;
                     return true;
                 }
 
@@ -70,7 +70,7 @@ namespace BH.Engine.Diffing
                 var rev = obj as Revision;
                 if (rev != null)
                 {
-                    guid = rev.StreamId;
+                    guid = rev.StreamID;
                     return true;
                 }
 

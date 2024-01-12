@@ -62,7 +62,7 @@ namespace BH.Engine.Diffing
 
             Diff diff = Compute.DiffRevisions(pastRevision, currentRevision, diffingConfig);
 
-            return new Delta(pastRevision.StreamId, diff, pastRevision.RevisionId, currentRevision.RevisionId, DateTime.UtcNow.Ticks, m_Author, comment);
+            return new Delta(pastRevision.StreamID, diff, pastRevision.RevisionID, currentRevision.RevisionID, DateTime.UtcNow.Ticks, m_Author, comment);
         }
 
         // ----------------------------------------------- //
@@ -82,19 +82,20 @@ namespace BH.Engine.Diffing
 
             Diff diff = Compute.DiffRevisions(null, revision, diffingConfig);
 
-            return new Delta(revision.StreamId, diff, revision.RevisionId, new Guid(), DateTime.UtcNow.Ticks, m_Author, comment);
+            return new Delta(revision.StreamID, diff, revision.RevisionID, new Guid(), DateTime.UtcNow.Ticks, m_Author, comment);
         }
 
+        [PreviousInputNames("streamID", "streamId")]
         [Description("Returns a Delta object, containing all the input objects wrapped in a Revision. Also called `Revision-Based Delta`.")]
         [Input("objects", "Objects that will be wrapped into a new Revision in order to produce this Delta.")]
-        [Input("streamId", "Id of the Stream that will own the revision produced by this Delta.")]
+        [Input("streamID", "Id of the Stream that will own the revision produced by this Delta.")]
         [Input("revisionName", "Name to be assigned to the Revision that this Delta will produce.")]
         [Input("comment", "Comment to be stored along the Revision that this Delta will produce.")]
         [Input("DiffingConfig", "Sets configs such as properties to be ignored in the diffing, or enable/disable property-by-property diffing.\nBy default it takes the DiffingConfig property of the Revision. This input can be used to override it.")]
-        public static Delta Delta(List<IBHoMObject> objects, object streamId, string revisionName = null,
+        public static Delta Delta(List<IBHoMObject> objects, object streamID, string revisionName = null,
              string comment = null, DiffingConfig diffingConfig = null)
         {
-            Revision revision = Create.Revision(objects, streamId, revisionName, comment, diffingConfig);
+            Revision revision = Create.Revision(objects, streamID, revisionName, comment, diffingConfig);
             return Delta(revision, diffingConfig, comment);
         }
 
