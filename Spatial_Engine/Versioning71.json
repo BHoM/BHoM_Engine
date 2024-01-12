@@ -1,6 +1,0 @@
-﻿{
-  "MessageForDeleted": {
-    "BH.Engine.Spatial.Create.INewElement0D(BH.oM.Dimensional.IElement1D, BH.oM.Geometry.Point)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
-    "BH.Engine.Spatial.Create.INewElement1D(BH.oM.Dimensional.IElement2D, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed."
-  }
-}
