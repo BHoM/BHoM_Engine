@@ -74,36 +74,36 @@ namespace BH.Engine.Diffing
         // "followingObjectsIds": Ids of the "followingObjects" that should be used to match them with the "pastObjects". If no match is found, a followingObject is identified as "added".
         // "diffingConfig": Additional configurations.
         // "recordEvents": Because this method can be called from many different places, some Notes/Warnings/Errors may not be relevant in all cases, so we give the option to turn them off.
-        private static Diff Diffing(IEnumerable<object> pastObjects, IEnumerable<string> pastObjectsIds, IEnumerable<object> followingObjects, IEnumerable<string> followingObjectsIds, DiffingConfig diffingConfig = null, bool recordEvents = true)
+        private static Diff Diffing(IEnumerable<object> pastObjects, IEnumerable<string> pastObjectsIDs, IEnumerable<object> followingObjects, IEnumerable<string> followingObjectsIDs, DiffingConfig diffingConfig = null, bool recordEvents = true)
         {
             // Null guards.
             if (pastObjects == null) pastObjects = new List<object>();
-            if (pastObjectsIds == null) pastObjectsIds = new List<string>();
+            if (pastObjectsIDs == null) pastObjectsIDs = new List<string>();
             if (followingObjects == null) followingObjects = new List<object>();
-            if (followingObjectsIds == null) followingObjectsIds = new List<string>();
+            if (followingObjectsIDs == null) followingObjectsIDs = new List<string>();
             if (diffingConfig == null) diffingConfig = new DiffingConfig();
             diffingConfig.ComparisonConfig = diffingConfig.ComparisonConfig.SetNewEmptyIEnumPropsIfNull();
 
             // Check if we do not allow duplicate Ids
             // (we do not allow duplicate Ids by default – it may make sense in rare cases with Ids imported from some software that allows duplicates).
-            if (!diffingConfig.AllowDuplicateIds)
+            if (!diffingConfig.AllowDuplicateIDs)
             {
                 // Take precautions if duplicate Ids are found.
                 bool duplicateIdsFound = false;
 
                 // Get the distinct Ids from the input Id lists (do not admit duplicates).
-                HashSet<string> pastObjsIdsDistinct = new HashSet<string>(pastObjectsIds);
-                HashSet<string> follObjsIdsDistinct = new HashSet<string>(followingObjectsIds);
+                HashSet<string> pastObjsIdsDistinct = new HashSet<string>(pastObjectsIDs);
+                HashSet<string> follObjsIdsDistinct = new HashSet<string>(followingObjectsIDs);
 
-                if (pastObjsIdsDistinct.Count() != pastObjectsIds.Count())
+                if (pastObjsIdsDistinct.Count() != pastObjectsIDs.Count())
                 {
-                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {nameof(pastObjectsIds)} were duplicate.");
+                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {nameof(pastObjectsIDs)} were duplicate.");
                     duplicateIdsFound = true;
                 }
 
-                if (follObjsIdsDistinct.Count() != followingObjectsIds.Count())
+                if (follObjsIdsDistinct.Count() != followingObjectsIDs.Count())
                 {
-                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {nameof(followingObjectsIds)} were duplicate.");
+                    if (recordEvents) BH.Engine.Base.Compute.RecordWarning($"Some of the input {nameof(followingObjectsIDs)} were duplicate.");
                     duplicateIdsFound = true;
                 }
 
@@ -112,21 +112,21 @@ namespace BH.Engine.Diffing
             }
 
             // Check if input objects and correspondent Id lists are of equal size.
-            if (pastObjects.Count() != pastObjectsIds.Count())
+            if (pastObjects.Count() != pastObjectsIDs.Count())
             {
-                if (recordEvents) BH.Engine.Base.Compute.RecordError($"The number of input `{nameof(pastObjects)}` must be the same as the number of input `{nameof(pastObjectsIds)}`.");
+                if (recordEvents) BH.Engine.Base.Compute.RecordError($"The number of input `{nameof(pastObjects)}` must be the same as the number of input `{nameof(pastObjectsIDs)}`.");
                 return null;
             }
 
-            if (followingObjects.Count() != followingObjectsIds.Count())
+            if (followingObjects.Count() != followingObjectsIDs.Count())
             {
-                if (recordEvents) BH.Engine.Base.Compute.RecordError($"The number of input `{nameof(followingObjects)}` must be the same as the number of input `{nameof(followingObjectsIds)}`.");
+                if (recordEvents) BH.Engine.Base.Compute.RecordError($"The number of input `{nameof(followingObjects)}` must be the same as the number of input `{nameof(followingObjectsIDs)}`.");
                 return null;
             }
 
             // Make dictionary with object ids to speed up/simplify the lookups.
-            Dictionary<string, object> pastObjs_dict = pastObjectsIds.Zip(pastObjects, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
-            Dictionary<string, object> follObjs_dict = followingObjectsIds.Zip(followingObjects, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
+            Dictionary<string, object> pastObjs_dict = pastObjectsIDs.Zip(pastObjects, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
+            Dictionary<string, object> follObjs_dict = followingObjectsIDs.Zip(followingObjects, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
 
             // Dispatch the objects: new, modified or deleted
             List<object> addedObjs = new List<object>();
@@ -240,7 +240,7 @@ namespace BH.Engine.Diffing
                 .Select(k => pastObjs_dict[k]).ToList();
 
             // Add user warnings/notes for specific usage scenarios.
-            if (!followingObjectsIds.Intersect(pastObjectsIds).Any())
+            if (!followingObjectsIDs.Intersect(pastObjectsIDs).Any())
             {
                 // If there is no overlap in the keys between the two sets, no "modified" object can have been detected.
                 // This could be either because there are truly no modified objects, or more likely because the user has input objects that do not have a valid Id assigned. 
@@ -265,7 +265,7 @@ namespace BH.Engine.Diffing
                         $"\nThis can also happen if the input objects come from models that were completely re-created between revisions (i.e. their IDs are completely different). In this latter case, the Diffing worked successfully but you may want to use a different ID.");
             }
 
-            if (followingObjectsIds.Intersect(pastObjectsIds).Any() && diffingConfig.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
+            if (followingObjectsIDs.Intersect(pastObjectsIDs).Any() && diffingConfig.ComparisonConfig.PropertiesToConsider.Any() && !modifiedObjs.Any())
             {
                 // If no modified object was found and some PropertiesToConsider was specified,
                 // add a Note to remind the user that if no differences were found it's probably because of that.
