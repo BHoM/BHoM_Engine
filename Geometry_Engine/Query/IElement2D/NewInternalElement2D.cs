@@ -40,6 +40,7 @@ namespace BH.Engine.Geometry
                      "Method required for any IElement2D that contians internal IElement2Ds.")]
         [Input("surface", "PlanarSurface just used to determine the appropriate type of IElement2D to create.")]
         [Output("opening", "The created Opening as a IElement2D.")]
+        [PreviousVersion("7.0", "BH.Engine.Geometry.Create.NewInternalElement2D(BH.oM.Geometry.PlanarSurface)")]
         public static IElement2D NewInternalElement2D(this PlanarSurface surface)
         {
             return new PlanarSurface(null, new System.Collections.Generic.List<ICurve>());

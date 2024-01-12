@@ -41,6 +41,7 @@ namespace BH.Engine.Analytical
                      "Method required for any IElement2D that contians internal IElement2Ds.")]
         [Input("panel", "Panel just used to determine the appropriate type of IElement2D to create.")]
         [Output("opening", "The created Opening as a IElement2D.")]
+        [PreviousVersion("7.0", "BH.Engine.Analytical.Create.NewInternalElement2D(BH.oM.Analytical.Elements.IPanel<BH.oM.Analytical.Elements.IEdge, BH.oM.Analytical.Elements.IOpening<BH.oM.Analytical.Elements.IEdge>>)")]
         public static IElement2D NewInternalElement2D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
