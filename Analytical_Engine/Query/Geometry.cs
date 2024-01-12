@@ -24,6 +24,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using System;
 using System.Linq;
 using System.Collections.Generic;

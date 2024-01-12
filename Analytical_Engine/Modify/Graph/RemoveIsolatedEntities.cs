@@ -21,7 +21,7 @@
  */
 
 using BH.Engine.Base;
-using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
