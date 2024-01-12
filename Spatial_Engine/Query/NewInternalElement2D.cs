@@ -36,6 +36,7 @@ namespace BH.Engine.Spatial
         [Description("Creates a IElement2D of a type which can be assigned to the IElement2D.")]
         [Input("element2D", "A IElement2D with a internal IElement2D type defined. The element is only used to identify the type of internal IElement2D to create, and will remain unchanged by this method.")]
         [Output("element2D", "A internal IElement2D which can be assigned to the IElement2D. Returns null if the IElement2D does not have a type of internal IElement2D.")]
+        [PreviousVersion("7.0", "BH.Engine.Spatial.Create.NewInternalElement2D(BH.oM.Dimentional.IElement2D)")]
         public static IElement2D INewInternalElement2D(this IElement2D element2D)
         {
             return Base.Compute.RunExtensionMethod(element2D, "NewInternalElement2D") as IElement2D;
