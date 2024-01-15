@@ -144,7 +144,7 @@ namespace BH.Engine.Structure
                 case LoadType.AreaUniformLoad:
                     {
                         BHoMGroup<IAreaElement> group = new BHoMGroup<IAreaElement>() { Name = groupName };
-                        return AreaUniformlyDistributedLoad(loadcase, force, group, axis, isProjected, groupName);
+                        return new AreaUniformlyDistributedLoad() { Loadcase = loadcase, Pressure = force, Objects = group, Axis = axis, Projected = isProjected, Name = groupName };
                     }
                 case LoadType.BarVaryingLoad:
                 case LoadType.BarPointLoad:

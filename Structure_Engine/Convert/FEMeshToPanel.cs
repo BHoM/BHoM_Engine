@@ -72,7 +72,7 @@ namespace BH.Engine.Structure
             Panel panel = new Panel();
             foreach (Polyline polyline in polylines)
             {
-                panel = Create.Panel(polyline, null, null, feMesh.Name);
+                panel = Create.Panel(polyline, name:feMesh.Name);
                 if (feMesh.Property != null)
                 {
                     panel.Property = feMesh.Property;

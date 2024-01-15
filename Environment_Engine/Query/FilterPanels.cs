@@ -195,16 +195,6 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.Tilt() >= minTilt && x.Tilt() <= maxTilt).ToList();
         }
 
-        [Description("Returns a collection of Environment Panels that DO NOT match a given Panel Type")]
-        [Input("panels", "A collection of Environment Panels")]
-        [Input("type", "A Panel Type to filter by from the Panel Type enum")]
-        [Output("panels", "A collection of Environment Panel that DO NOT match the given type")]
-        [ToBeRemoved("3.3", "Replaced by FilterPanelsByType which provides the panels which match and don't match a given type")]
-        public static List<Panel> FilterPanelsNotByType(this List<Panel> panels, PanelType type)
-        {
-            return panels.Where(x => x.Type != type).ToList();
-        }
-
         [Description("Returns a collection of Environment Panels that match the provided types as the first output, and the panels which don't match the provided types as the second output")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("types", "One or more Panel Types to filter by from the Panel Type enum")]
