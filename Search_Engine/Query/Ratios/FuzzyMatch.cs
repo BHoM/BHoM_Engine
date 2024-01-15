@@ -27,11 +27,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using FuzzySharp;
+using FuzzySharp.PreProcess;
 using FuzzySharp.SimilarityRatio;
 using FuzzySharp.SimilarityRatio.Scorer;
 using FuzzySharp.SimilarityRatio.Scorer.Composite;
 using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
-
 
 namespace BH.Engine.Search
 {
@@ -39,6 +40,46 @@ namespace BH.Engine.Search
     {
         /***************************************************/
         /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Carries out a fuzzy match of the two strings provided using the scorer specified.")]
+        [Input("text", "The string to carry out the fuzzy matching on.")]
+        [Input("compare", "The string to compare against.")]
+        [Input("scorer", "The method to use to score the strings when compared.")]
+        [Output("r", "The ratio of similarity between the two strings.")]
+        public static int FuzzyMatch(string text, string compare, Scorer scorer = Scorer.DefaultRatioScorer)
+        {
+            switch (scorer)
+            {
+                case Scorer.DefaultRatioScorer:
+                default:
+                    return Fuzz.Ratio(text, compare);
+                case Scorer.PartialRatioScorer:
+                    return Fuzz.PartialRatio(text, compare);
+                case Scorer.TokenSetScorer:
+                    return Fuzz.TokenSetRatio(text, compare);
+                case Scorer.PartialTokenSetScorer:
+                    return Fuzz.PartialTokenSetRatio(text, compare);
+                case Scorer.TokenSortScorer:
+                    return Fuzz.TokenSortRatio(text, compare);
+                case Scorer.PartialTokenSortScorer:
+                    return Fuzz.PartialTokenSortRatio(text, compare);
+                case Scorer.TokenAbbreviationScorer:
+                    return Fuzz.TokenAbbreviationRatio(text, compare, PreprocessMode.Full);
+                case Scorer.PartialTokenAbbreviationScorer:
+                    return Fuzz.PartialTokenAbbreviationRatio(text, compare, PreprocessMode.Full);
+                case Scorer.TokenInitialismScorer:
+                    return Fuzz.TokenInitialismRatio(text, compare);
+                case Scorer.PartialTokenInitialismScorer:
+                    return Fuzz.PartialTokenInitialismRatio(text, compare);
+                case Scorer.WeightedRatioScorer:
+                    return Fuzz.WeightedRatio(text, compare);
+
+            }
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         [Description("Returns the scorer method to be used in FuzzyMatching methods.")]
@@ -67,8 +108,6 @@ namespace BH.Engine.Search
                     return ScorerCache.Get<WeightedRatioScorer>();
             }
         }
-
-        /***************************************************/
 
     }
 }
