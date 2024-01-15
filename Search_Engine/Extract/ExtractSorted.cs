@@ -48,7 +48,7 @@ namespace BH.Engine.Search
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static List<FuzzyResult<string>> ExtractSorted(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static List<SearchResult<string>> ExtractSorted(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)
@@ -56,10 +56,10 @@ namespace BH.Engine.Search
 
             IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices.ToArray(), s => s, scorerMethod);
 
-            List<FuzzyResult<string>> results = new List<FuzzyResult<string>>();
+            List<SearchResult<string>> results = new List<SearchResult<string>>();
             foreach (ExtractedResult<string> extractedResult in extractedResults)
             {
-                FuzzyResult<string> result = new FuzzyResult<string>(extractedResult.Value, extractedResult.Score, extractedResult.Index);
+                SearchResult<string> result = new SearchResult<string>(extractedResult.Value, extractedResult.Score, extractedResult.Index);
                 results.Add(result);
             }
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Search
         [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("result", "A FuzzyObjectResult containing the objects, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static List<FuzzyResult<BHoMObject>> ExtractSorted(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static List<SearchResult<BHoMObject>> ExtractSorted(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)
@@ -84,11 +84,11 @@ namespace BH.Engine.Search
 
             IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices, s => s, scorerMethod);
 
-            List<FuzzyResult<BHoMObject>> results = new List<FuzzyResult<BHoMObject>>();
+            List<SearchResult<BHoMObject>> results = new List<SearchResult<BHoMObject>>();
             foreach (ExtractedResult<string> extractedResult in extractedResults)
             {
                 int index = extractedResult.Index;
-                FuzzyResult<BHoMObject> result = new FuzzyResult<BHoMObject>(objects[index], extractedResult.Score, index);
+                SearchResult<BHoMObject> result = new SearchResult<BHoMObject>(objects[index], extractedResult.Score, index);
                 results.Add(result);
             }
 

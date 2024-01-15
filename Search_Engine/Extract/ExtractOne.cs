@@ -42,7 +42,7 @@ namespace BH.Engine.Search
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("result", "A FuzzyStringResult containing the string, score and index resulting from the fuzzy matching algorithm.")]
-        public static FuzzyResult<string> ExtractOne(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static SearchResult<string> ExtractOne(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             return ExtractTop(query, choices, scorer).First();
         }
@@ -55,7 +55,7 @@ namespace BH.Engine.Search
         [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("result", "A FuzzyObjectResult containing the object, score and index resulting from the fuzzy matching algorithm.")]
-        public static FuzzyResult<BHoMObject> ExtractOne(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static SearchResult<BHoMObject> ExtractOne(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             return ExtractTop(query, objects, propertyName, scorer).First();
         }

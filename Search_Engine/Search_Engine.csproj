@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
-    <Description>https://github.com/BHoM/AGS_Toolkit</Description>
+    <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <Version>5.0.0</Version>
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)FuzzySharp.dll&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)FuzzySharp.dll&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y" />
   </Target>
 
 </Project>
