@@ -62,7 +62,6 @@ namespace BH.Engine.Structure
             double volume = panel.SolidVolume();
             MaterialComposition comp = panel.MaterialComposition();
             return comp.Materials.Zip(comp.Ratios, (m, r) => m.Density * r * volume).Sum();
-            //return panel.IsNull() ? 0 : panel.Area() * panel.Property.IMassPerArea();
         }
 
         /***************************************************/
