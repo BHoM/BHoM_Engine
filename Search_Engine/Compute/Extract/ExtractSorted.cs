@@ -43,15 +43,15 @@ namespace BH.Engine.Search
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extracts all values sorted in order of score when comparing the query to the choices.")]
+        [Description("Extracts all values sorted in descending order of score when comparing the query to the choices.")]
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
-        [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static List<SearchResult<string>> ExtractSorted(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
+        [Output("result", "A SearchResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm sorted in descending order by score.")]
+        public static List<SearchResult<string>> ExtractSorted(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatio)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
-            if (scorer != Scorer.DefaultRatioScorer)
+            if (scorer != Scorer.DefaultRatio)
                 scorerMethod = GetScorer(scorer);
 
             IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices.ToArray(), s => s, scorerMethod);
@@ -68,16 +68,16 @@ namespace BH.Engine.Search
 
         /***************************************************/
 
-        [Description("Extracts all values sorted in order of score when comparing the query to the choices.")]
+        [Description("Extracts all values sorted in descending order of score when comparing the query to the choices.")]
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("objects", "A list of BHoMObjects to compare the query against.")]
-        [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
+        [Input("propertyName", "The propertyName to compare the query against - the property must be a string and an exact match.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
-        [Output("result", "A FuzzyObjectResult containing the objects, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static List<SearchResult<BHoMObject>> ExtractSorted(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
+        [Output("result", "A SearchResult containing the objects, scores and indexes resulting from the fuzzy matching algorithm sorted in descending order by score.")]
+        public static List<SearchResult<BHoMObject>> ExtractSorted(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatio)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
-            if (scorer != Scorer.DefaultRatioScorer)
+            if (scorer != Scorer.DefaultRatio)
                 scorerMethod = GetScorer(scorer);
 
             IEnumerable<string> choices = objects.Select(x => x.PropertyValue(propertyName).ToString());

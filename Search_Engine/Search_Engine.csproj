@@ -26,11 +26,6 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
-    <Reference Include="BHoM_Engine">
-      <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
-      <SpecificVersion>false</SpecificVersion>
-      <Private>false</Private>
-    </Reference>
     <Reference Include="Search_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Search_oM.dll</HintPath>
       <SpecificVersion>false</SpecificVersion>
@@ -40,6 +35,10 @@
 
   <ItemGroup>
     <Folder Include="Query\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
