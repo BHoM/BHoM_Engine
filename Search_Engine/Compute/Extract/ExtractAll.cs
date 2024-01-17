@@ -47,7 +47,7 @@ namespace BH.Engine.Search
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
-        [Input("cutOff", "The cuttoff score (i.e. lower bound) for results to be returned.")]
+        [Input("cutOff", "The cutoff score (i.e. lower bound) for results to be returned.")]
         [Output("result", "A SearchResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
         public static List<SearchResult<string>> ExtractAll(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatio, int cutOff = 0)
         {
@@ -74,7 +74,7 @@ namespace BH.Engine.Search
         [Input("objects", "A list of BHoMObjects to compare the query against.")]
         [Input("propertyName", "The propertyName to compare the query against - the property must be a string and an exact match.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
-        [Input("cutOff", "The cuttoff score (i.e. lower bound) for results to be returned.")]
+        [Input("cutOff", "The cutoff score (i.e. lower bound) for results to be returned.")]
         [Output("result", "A SearchResult containing the objects, scores and indexes resulting from the fuzzy matching algorithm.")]
         public static List<SearchResult<BHoMObject>> ExtractAll(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatio, int cutOff = 0)
         {
