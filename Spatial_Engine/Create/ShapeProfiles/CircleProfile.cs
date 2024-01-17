@@ -39,7 +39,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a circular hollow profile based on input dimensions. Method generates edge curves based on the inputs.")]
+        [Description("Creates a solid circular profile based on input dimensions. Method generates edge curves based on the inputs.")]
         [InputFromProperty("diameter")]
         [Output("circle", "The created CircleProfile.")]
         public static CircleProfile CircleProfile(double diameter)
