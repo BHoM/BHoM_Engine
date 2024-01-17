@@ -56,7 +56,13 @@ namespace BH.Engine.Structure
         [Output("mass", "The mass of the Panel.", typeof(Mass))]
         public static double Mass(this Panel panel)
         {
-            return panel.IsNull() ? 0 : panel.Area() * panel.Property.IMassPerArea();
+            if (panel.IsNull())
+                return 0;
+
+            double volume = panel.SolidVolume();
+            MaterialComposition comp = panel.MaterialComposition();
+            return comp.Materials.Zip(comp.Ratios, (m, r) => m.Density * r * volume).Sum();
+            //return panel.IsNull() ? 0 : panel.Area() * panel.Property.IMassPerArea();
         }
 
         /***************************************************/
