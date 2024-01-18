@@ -15,13 +15,14 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
-        [Description("Creates openings on the panels, at the locations provided, where the total opening area is the provided glazing ratio of the total external panel areas.")]
+        [Description("Creates openings on the input panels at the locations provided.\n The total area of the openings is equal to the total area of the external panels, multiplied by the glazing ratio.")]
         [Input("panelsAsSpaces", "Panels as spaces - A collection of Environment Panels which will be used to identify the host panel for the opening from the provided location point.")]
-        [Input("glazingLocations", "The point in 3D space where the opening should begin to be generated.")]
+        [Input("glazingLocations", "The point in 3D space corresponding to the desired locations of the openings.")]
         [Input("glazingRatio", "Ratio of total external panel surface area and glazed area. Ratio as decimal {0-1}.")]
-        [Input("panelsToIgnore", "Optional input for selecting a collection of Environment Panels to be ignored in the calculation - ")]
-        [Input("sillHeight", "Optional input for defining the distance between the base of the panel and the bottom of the opening - default = 0.5m.")]
-        [Input("openingHeight", "Optional input for defining the height of opening - default = 1.2m.")]
+        [Input("panelsToIgnore", "Optional input for selecting a collection of Environment Panels to be ignored in the calculation")]
+        [Input("sillHeight", "Optional input for defining the distance between the base of the panel and the bottom of the opening - default: 0.5m.")]
+        [Input("openingHeight", "Optional input for defining the height of opening - default: 1.2m.")]
+        [Input("openingType", "Optional input for defining the opening type of the output Openings, can be either 'Glazing' or 'Door' - default: Glazing.")]
         [Output("openings", "Returns the openings.")]
         public static List<Opening> OpeningsFromGlazingRatio(
             List<List<Panel>> panelsAsSpaces,
@@ -40,13 +41,13 @@ namespace BH.Engine.Environment
                 case OpeningType.Glazing:
                     break;
                 default:
-                    BH.Engine.Base.Compute.RecordError($"Error: type: {openingType} is not supported, please use type: 'Glazing' or 'Door'.");
+                    BH.Engine.Base.Compute.RecordError($"Only openings of type 'Glazing' and 'Door' are supported.");
                     return new List<Opening>();
             }
 
             List<Panel> wallPanels =  Query.FilterPanelsByType(panelsAsSpaces.SelectMany(x => x).Distinct().ToList(), new List<PanelType>() { PanelType.Wall }).Item1;
             List<Panel> externalPanels = wallPanels.IsExternal().Item1;
-            List<Panel> filteredPanels = externalPanels.RemovePanels(panelsToIgnore);
+            List<Panel> filteredPanels = externalPanels.RemovePanels(panelsToIgnore ?? new List<Panel>());
 
             double totalArea = filteredPanels.Select(x=>x.Area()).Sum();
             double existingOpeningArea = filteredPanels.Select(x => x.Openings.Select(y => y.Polyline().Area()).Sum()).Sum();
@@ -67,6 +68,10 @@ namespace BH.Engine.Environment
                 if(opening != null)
                 {
                     openings.Add(opening);
+                }
+                else
+                {
+                    BH.Engine.Base.Compute.RecordWarning($"Could not find a host panel for the opening at ({point.X}, {point.Y}, {point.Z}).");
                 }
             }
             return openings;
