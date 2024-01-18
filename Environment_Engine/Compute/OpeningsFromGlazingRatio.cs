@@ -36,8 +36,8 @@ namespace BH.Engine.Environment
         {
             switch (openingType)
             {
+                case OpeningType.Undefined:
                 case OpeningType.Door:
-                    break;
                 case OpeningType.Glazing:
                     break;
                 default:
@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
                     return new List<Opening>();
             }
 
-            List<Panel> wallPanels =  Query.FilterPanelsByType(panelsAsSpaces.SelectMany(x => x).Distinct().ToList(), new List<PanelType>() { PanelType.Wall }).Item1;
+            List<Panel> wallPanels = Query.FilterPanelsByType(panelsAsSpaces.SelectMany(x => x).Distinct().ToList(), new List<PanelType>() { PanelType.Wall }).Item1;
             List<Panel> externalPanels = wallPanels.IsExternal().Item1;
             List<Panel> filteredPanels = externalPanels.RemovePanels(panelsToIgnore ?? new List<Panel>());
 
@@ -62,9 +62,11 @@ namespace BH.Engine.Environment
             };
 
             List<Opening> openings = new List<Opening>();
+
             foreach(Point point in glazingLocations)
             {
                 Opening opening = Create.Opening(point, option, filteredPanels);
+
                 if(opening != null)
                 {
                     openings.Add(opening);
@@ -74,6 +76,7 @@ namespace BH.Engine.Environment
                     BH.Engine.Base.Compute.RecordWarning($"Could not find a host panel for the opening at ({point.X}, {point.Y}, {point.Z}).");
                 }
             }
+
             return openings;
         }
 
