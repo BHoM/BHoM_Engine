@@ -33,6 +33,7 @@ using System.ComponentModel;
 using BH.Engine.Base;
 using System.Collections;
 using System.Data;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Base
 {
@@ -232,6 +233,9 @@ namespace BH.Engine.Base
                 object[] parameters = new object[] { currentPropertyFullName, cc };
                 if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
                     return (string)hashStringFromExtensionMethod;
+
+                if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
+                    return BH.Engine.Base.Query.GeometryHash((IGeometry)obj).ToString();
 
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.

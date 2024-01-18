@@ -50,17 +50,29 @@ namespace BH.Engine.Base
             "\nAdditionally, the resulting points are transformed based on the source geometry type, to remove or minimize collisions." +
             "\n(Any transformation so performed is translational only, in order to support geometrical tolerance, i.e. numerical distance, when comparing GeometryHashes downstream).")]
         [Input("bhomObj", "Input BHoMObject whose geometry will be queried by IGeometry() and which will be used for computing a Geometry Hash.")]
-        [Output("geomHash","Array of numbers representing a unique signature of the input object's geometry.")]
+        [Output("geomHash", "Array of numbers representing a unique signature of the input object's geometry.")]
         public static double[] GeometryHash(this IBHoMObject bhomObj)
         {
             IGeometry igeom = bhomObj.IGeometry();
 
+            return GeometryHash(igeom);
+        }
+
+        [Description("Returns the geometrical identity of any IGeometry, useful for distance-based comparisons and diffing. " +
+            "\nThen, the hash is computed as an array representing the coordinate of significant points taken on the geometry." +
+            "\nThe number of points is reduced to the minimum essential to determine uniquely any geometry." +
+            "\nAdditionally, the resulting points are transformed based on the source geometry type, to remove or minimize collisions." +
+            "\n(Any transformation so performed is translational only, in order to support geometrical tolerance, i.e. numerical distance, when comparing GeometryHashes downstream).")]
+        [Input("bhomObj", "Input BHoMObject whose geometry will be queried by IGeometry() and which will be used for computing a Geometry Hash.")]
+        [Output("geomHash", "Array of numbers representing a unique signature of the input object's geometry.")]
+        public static double[] GeometryHash(this IGeometry igeom)
+        {
             if (igeom == null)
                 return null;
 
             if (m_GeomHashFunc == null)
             {
-                MethodInfo mi = Query.ExtensionMethodToCall(igeom, "IGeometryHash");
+                MethodInfo mi = Query.ExtensionMethodToCall(igeom, "GeometryHash");
                 m_GeomHashFunc = (Func<IGeometry, double[]>)Delegate.CreateDelegate(typeof(Func<IGeometry, double[]>), mi);
             }
 
@@ -70,7 +82,3 @@ namespace BH.Engine.Base
         private static Func<IGeometry, double[]> m_GeomHashFunc = null;
     }
 }
-
-
-
-
