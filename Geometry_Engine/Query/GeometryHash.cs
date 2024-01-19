@@ -40,12 +40,27 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
+        [Description("Returns the geometrical identity of any IBHoMObject, useful for distance-based comparisons and diffing. " +
+            "\nThe geometrical identity is computed by extracting the geometry of the object via the IGeometry() method." +
+            "\nThen, the hash is computed as an array representing the coordinate of significant points taken on the geometry." +
+            "\nThe number of points is reduced to the minimum essential to determine uniquely any geometry." +
+            "\nAdditionally, the resulting points are transformed based on the source geometry type, to remove or minimize collisions." +
+            "\n(Any transformation so performed is translational only, in order to support geometrical tolerance, i.e. numerical distance, when comparing GeometryHashes downstream).")]
+        [Input("bhomObj", "Input BHoMObject whose geometry will be queried by IGeometry() and which will be used for computing a Geometry Hash.")]
+        [Output("geomHash", "Number representing a unique signature of the input object's geometry.")]
+        public static double GeometryHash(this IBHoMObject bhomObj)
+        {
+            IGeometry igeom = bhomObj.IGeometry();
+
+            return GeometryHash(igeom);
+        }
+
         [Description("Returns a signature of the input geometry, useful for distance-based comparisons and diffing." +
             "\nThe hash is computed as an array representing the coordinate of significant points taken on the geometry." +
             "\nThe number of points is reduced to the minimum essential to determine uniquely any geometry." +
             "\nAdditionally, the resulting points are transformed based on the source geometry type, to remove or minimize collisions." +
             "\n(Any transformation so performed is translational only, in order to support geometrical tolerance, i.e. numerical distance, when comparing GeometryHashes downstream).")]
-        [Output("geomHash", "Array of numbers representing a unique signature of the input geometry.")]
+        [Output("geomHash", "Number representing a unique signature of the input geometry.")]
         public static double GeometryHash(this IGeometry igeometry)
         {
             if (igeometry == null)
@@ -96,7 +111,6 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /****              Private Methods              ****/
         /***************************************************/
-
 
         /***************************************************/
         /****  Curves                                   ****/
@@ -431,11 +445,7 @@ namespace BH.Engine.Geometry
         // Fallback
         private static double[] ToHashArray(this object obj, double translationFactor)
         {
-            object extensionMethodResult = null;
-            if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "GeometryHash", out extensionMethodResult))
-                return (double[])extensionMethodResult;
-
-            BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(GeometryHash)} method for type {obj.GetType().FullName}.");
+            BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(ToHashArray)} method for type {obj.GetType().FullName}.");
 
             return new double[] { };
         }
