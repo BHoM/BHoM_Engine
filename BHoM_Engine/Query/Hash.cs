@@ -235,7 +235,7 @@ namespace BH.Engine.Base
                     return (string)hashStringFromExtensionMethod;
 
                 if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
-                    return BH.Engine.Base.Query.GeometryHash((IGeometry)obj).ToString();
+                    return GeometryHash((IGeometry)obj).ToString();
 
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
@@ -287,6 +287,22 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        private static double GeometryHash(this IGeometry igeom)
+        {
+            if (igeom == null)
+                return default(double);
+
+            if (m_GeomHashFunc == null)
+            {
+                var mis = Query.ExtensionMethods(typeof(IGeometry), "GeometryHash");
+                m_GeomHashFunc = (Func<IGeometry, double>)Delegate.CreateDelegate(typeof(Func<IGeometry, double>), mis.First());
+            }
+
+            return m_GeomHashFunc(igeom);
+        }
+
+        private static Func<IGeometry, double> m_GeomHashFunc = null;
     }
 }
 
