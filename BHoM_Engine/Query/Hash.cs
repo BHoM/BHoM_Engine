@@ -234,9 +234,6 @@ namespace BH.Engine.Base
                 if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
                     return (string)hashStringFromExtensionMethod;
 
-                if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
-                    return GeometryHash((IGeometry)obj).ToString();
-
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
                 PropertyInfo[] properties = type.GetProperties();
