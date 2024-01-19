@@ -45,7 +45,7 @@ namespace BH.Engine.Environment
                     return new List<Opening>();
             }
 
-            List<Panel> wallPanels = Query.FilterPanelsByType(panelsAsSpaces.SelectMany(x => x).Distinct().ToList(), new List<PanelType>() { PanelType.Wall }).Item1;
+            List<Panel> wallPanels = panelsAsSpaces.SelectMany(x => x).Distinct().ToList();
             List<Panel> externalPanels = wallPanels.IsExternal().Item1;
             List<Panel> filteredPanels = externalPanels.RemovePanels(panelsToIgnore ?? new List<Panel>());
 
