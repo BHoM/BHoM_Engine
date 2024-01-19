@@ -116,7 +116,7 @@ namespace BH.Engine.Base
         [Input("obj", "Objects the string should be calculated for.")]
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
-        [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
+        [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.Start.Point.X`")]
         private static string HashString(object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
         {
             string definingString = "";
