@@ -63,6 +63,11 @@ namespace BH.Engine.Geometry
             return cPts.IsCollinear(tolerance);
         }
 
+        public static bool IsCollinear(this List<Line> lines, double tolerance = Tolerance.Distance)
+        {
+            return lines.Select(x => x.Start).Union(lines.Select(x => x.End)).ToList().IsCollinear(tolerance);
+        }
+
         /***************************************************/
     }
 }

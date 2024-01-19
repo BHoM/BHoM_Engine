@@ -20,11 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -32,71 +33,39 @@ namespace BH.Engine.Geometry
     public static partial class Compute
     {
         /***************************************************/
-        /****          public Methods - Lines           ****/
+        /****          Public Methods - Lines           ****/
         /***************************************************/
 
+        [Description("Joins overlapping lines into single segments, i.e. if the lines overlap, a single line spanning between the extremes will be returned, otherwise both lines are returned separate.")]
+        [Input("line", "First line to union.")]
+        [Input("refLine", "Second line to union.")]
+        [Input("tolerance", "Tolerance used for checking colinearity and proximity of the lines.", typeof(Length))]
+        [Output("union", "Boolean union of the lines.")]
         public static List<Line> BooleanUnion(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
+            double sqTol = tolerance * tolerance;
+            List<Line> result = new Line[] { line, refLine }.Where(x => x != null && x.SquareLength() > sqTol).ToList();
             if (line.IsCollinear(refLine, tolerance))
-            {
-                double sqTol = tolerance * tolerance;
+                result = result.BooleanUnionCollinear(tolerance);
 
-                List<Point> cPts = line.ControlPoints();
-                foreach (Point cPt in cPts)
-                {
-                    if (cPt.SquareDistance(refLine) <= sqTol)
-                    {
-                        cPts.AddRange(refLine.ControlPoints());
-                        cPts = cPts.SortCollinear(tolerance);
-                        return new List<Line> { new Line { Start = cPts[0], End = cPts.Last() } };
-                    }
-                }
-
-                cPts = refLine.ControlPoints();
-                foreach (Point cPt in cPts)
-                {
-                    if (cPt.SquareDistance(line) <= sqTol)
-                    {
-                        cPts.AddRange(line.ControlPoints());
-                        cPts = cPts.SortCollinear(tolerance);
-                        return new List<Line> { new Line { Start = cPts[0], End = cPts.Last() } };
-                    }
-                }
-            }
-
-            return new List<Line> { line, refLine };
+            return result;
         }
 
         /***************************************************/
 
+        [Description("Joins overlapping lines into single segments, i.e. each set of collinear lines that overlap with each other will be returned as a single line spanning between the extremes of the set.")]
+        [Input("lines", "Lines to union.")]
+        [Input("tolerance", "Tolerance used for checking colinearity and proximity of the lines.", typeof(Length))]
+        [Output("union", "Boolean union of the lines.")]
         public static List<Line> BooleanUnion(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
-            List<Line> result = lines.ToList();
-            bool union;
-            do
-            {
-                union = false;
-                for (int i = 0; i < result.Count - 1; i++)
-                {
-                    if (union)
-                        break;
-
-                    for (int j = i + 1; j < result.Count; j++)
-                    {
-                        List<Line> uLines = result[i].BooleanUnion(result[j], tolerance);
-                        if (uLines.Count == 1)
-                        {
-                            result.RemoveAt(j);
-                            result.RemoveAt(i);
-                            result.Insert(i, uLines[0]);
-                            union = true;
-                            break;
-                        }
-                    }
-                }
-            } while (union);
-
-            return result;
+            double sqTol = tolerance * tolerance;
+            return lines.Where(x => x != null && x.SquareLength() > sqTol)
+                        .ToList()
+                        .ClusterCollinear(tolerance)
+                        .Select(x => x.BooleanUnionCollinear(tolerance))
+                        .SelectMany(x => x)
+                        .ToList();
         }
 
 
@@ -104,6 +73,10 @@ namespace BH.Engine.Geometry
         /****         public Methods - Regions          ****/
         /***************************************************/
 
+        [Description("Computes the boolean union of a set of closed coplanar curve regions, i.e. overlaps the regions and returns a collection of combined regions.")]
+        [Input("regions", "Regions to union.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("union", "Boolean union of the regions.")]
         public static List<Polyline> BooleanUnion(this List<Polyline> regions, double tolerance = Tolerance.Distance)
         {
             if (regions.Count < 2)
@@ -233,6 +206,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Computes the boolean union of a set of closed coplanar curve regions, i.e. overlaps the regions and returns a collection of combined regions.")]
+        [Input("regions", "Regions to union.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("union", "Boolean union of the regions.")]
         public static List<PolyCurve> BooleanUnion(this IEnumerable<ICurve> regions, double tolerance = Tolerance.Distance)
         {
             List<ICurve> regionsList = regions.ToList();
@@ -394,6 +371,89 @@ namespace BH.Engine.Geometry
             }
 
             return result;
+        }
+
+
+        /***************************************************/
+        /***          Private methods                    ***/
+        /***************************************************/
+
+        private static (Point, Point) Extents(this List<Line> collinearLines, Vector dir, double tolerance)
+        {
+            List<Point> startPoints = collinearLines.Select(x => x.Start).ToList();
+            List<Point> endPoints = collinearLines.Select(x => x.End).ToList();
+            List<Point> sorted;
+            if (Math.Abs(dir.X) > tolerance)
+                sorted = startPoints.Union(endPoints).OrderBy(x => x.X).ToList();
+            else if (Math.Abs(dir.Y) > tolerance)
+                sorted = startPoints.Union(endPoints).OrderBy(x => x.Y).ToList();
+            else
+                sorted = startPoints.Union(endPoints).OrderBy(x => x.Z).ToList();
+
+            if ((sorted.Last() - sorted[0]).DotProduct(dir) < 0)
+                sorted.Reverse();
+
+            return (sorted[0], sorted.Last());
+        }
+
+        /***************************************************/
+
+        private static List<(double, double)> SortedDomains(this List<Line> collinearLines, Point min, double tolerance)
+        {
+            List<Point> startPoints = collinearLines.Select(x => x.Start).ToList();
+            List<Point> endPoints = collinearLines.Select(x => x.End).ToList();
+
+            List<(double, double)> ranges = new List<(double, double)>();
+            for (int i = 0; i < collinearLines.Count; i++)
+            {
+                double start = startPoints[i].Distance(min);
+                double end = endPoints[i].Distance(min);
+                (double, double) range = start > end ? (end, start) : (start, end);
+                ranges.Add(range);
+            }
+
+            ranges.Sort(delegate ((double, double) r1, (double, double) r2)
+            {
+                return r1.Item1.CompareTo(r2.Item1);
+            });
+
+            return ranges;
+        }
+
+        /***************************************************/
+
+        private static List<(double, double)> MergeRanges(this List<(double, double)> ranges, double tolerance)
+        {
+            List<(double, double)> mergedRanges = new List<(double, double)>();
+            (double, double) currentRange = ranges[0];
+            for (int i = 1; i < ranges.Count; i++)
+            {
+                if (currentRange.Item2 - ranges[i].Item1 >= -tolerance)
+                {
+                    if (ranges[i].Item2 > currentRange.Item2)
+                        currentRange.Item2 = ranges[i].Item2;
+                }
+                else
+                {
+                    mergedRanges.Add(currentRange);
+                    currentRange = ranges[i];
+                }
+            }
+
+            mergedRanges.Add(currentRange);
+            return mergedRanges;
+        }
+
+        /***************************************************/
+
+        private static List<Line> BooleanUnionCollinear(this List<Line> collinearLines, double tolerance)
+        {
+            Vector dir = collinearLines[0].Direction();
+            Point min = collinearLines.Extents(dir, tolerance).Item1;
+            List<(double, double)> ranges = collinearLines.SortedDomains(min, tolerance);
+            List<(double, double)> mergedRanges = ranges.MergeRanges(tolerance);
+
+            return mergedRanges.Select(x => new Line { Start = min + dir * x.Item1, End = min + dir * x.Item2 }).ToList();
         }
 
         /***************************************************/
