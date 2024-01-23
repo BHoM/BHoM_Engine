@@ -55,6 +55,8 @@ namespace BH.Engine.Geometry
             return GeometryHash(igeom);
         }
 
+        /***************************************************/
+
         [Description("Returns a signature of the input geometry, useful for distance-based comparisons and diffing." +
             "\nThe hash is computed as an array representing the coordinate of significant points taken on the geometry." +
             "\nThe number of points is reduced to the minimum essential to determine uniquely any geometry." +
@@ -69,8 +71,7 @@ namespace BH.Engine.Geometry
             double[] hashArray = IToHashArray(igeometry);
 
             double result = 0;
-            double[] multipliers = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
-            int j = 0;
+            int j = 1;
             for (int i = 0; i < hashArray.Length; i++)
             {
                 double num = hashArray[i];
@@ -82,17 +83,18 @@ namespace BH.Engine.Geometry
                 else if (double.IsNegativeInfinity(num))
                     num = double.MinValue;
 
-                result += num * multipliers[j];
+                result += num * (j * m_aggregationMultiplier);
 
-                if (j < multipliers.Length - 1)
+                if (m_aggregationMultiplierWrapAfter < 0)
                     j++;
                 else
-                    j = 0;
+                    j = (j < m_aggregationMultiplierWrapAfter) ? (j + 1) : 1;
             }
 
             return result;
         }
 
+        /***************************************************/
 
         [Description("Returns a signature of the input geometry, useful for distance-based comparisons and diffing." +
             "\nThe hash is computed as an array representing the coordinate of significant points taken on the geometry." +
@@ -107,6 +109,7 @@ namespace BH.Engine.Geometry
 
             return ToHashArray(igeometry as dynamic, 0);
         }
+
 
         /***************************************************/
         /****              Private Methods              ****/
@@ -143,11 +146,11 @@ namespace BH.Engine.Geometry
         {
             translationFactor += (int)TypeTranslationFactor.Arc;
 
-            IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
-               .Concat(curve.PointAtParameter(0.5).ToDoubleArray(translationFactor));
+            IEnumerable<double> hash = curve.StartPoint().ToHashArray(translationFactor)
+               .Concat(curve.PointAtParameter(0.5).ToHashArray(translationFactor));
 
             if (!skipEndPoint)
-                hash = hash.Concat(curve.EndPoint().ToDoubleArray(translationFactor));
+                hash = hash.Concat(curve.EndPoint().ToHashArray(translationFactor));
 
             return hash.ToArray();
         }
@@ -161,9 +164,9 @@ namespace BH.Engine.Geometry
 
             translationFactor += (int)TypeTranslationFactor.Circle;
 
-            IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
-                   .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor))
-                   .Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
+            IEnumerable<double> hash = curve.StartPoint().ToHashArray(translationFactor)
+                   .Concat(curve.PointAtParameter(0.33).ToHashArray(translationFactor))
+                   .Concat(curve.PointAtParameter(0.66).ToHashArray(translationFactor));
 
             return hash.ToArray();
         }
@@ -177,9 +180,9 @@ namespace BH.Engine.Geometry
 
             translationFactor += (int)TypeTranslationFactor.Ellipse;
 
-            IEnumerable<double> hash = curve.StartPoint().ToDoubleArray(translationFactor)
-               .Concat(curve.PointAtParameter(0.33).ToDoubleArray(translationFactor))
-               .Concat(curve.PointAtParameter(0.66).ToDoubleArray(translationFactor));
+            IEnumerable<double> hash = curve.StartPoint().ToHashArray(translationFactor)
+               .Concat(curve.PointAtParameter(0.33).ToHashArray(translationFactor))
+               .Concat(curve.PointAtParameter(0.66).ToHashArray(translationFactor));
 
             return hash.ToArray();
         }
@@ -192,10 +195,10 @@ namespace BH.Engine.Geometry
             translationFactor += (int)TypeTranslationFactor.Line;
 
             if (skipEndPoint)
-                return curve.StartPoint().ToDoubleArray(translationFactor);
+                return curve.StartPoint().ToHashArray(translationFactor);
 
-            return curve.StartPoint().ToDoubleArray(translationFactor)
-               .Concat(curve.EndPoint().ToDoubleArray(translationFactor))
+            return curve.StartPoint().ToHashArray(translationFactor)
+               .Concat(curve.EndPoint().ToHashArray(translationFactor))
                .ToArray();
         }
 
@@ -380,7 +383,7 @@ namespace BH.Engine.Geometry
                 if (!dic.TryGetValue(i, out pointTranslationFactor))
                     pointTranslationFactor = 0;
 
-                result.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + translationFactor));
+                result.AddRange(obj.Vertices[i].ToHashArray(pointTranslationFactor + translationFactor));
             }
 
             return result.ToArray();
@@ -415,21 +418,17 @@ namespace BH.Engine.Geometry
                 if (!dic.TryGetValue(i, out pointTranslationFactor))
                     pointTranslationFactor = 0;
 
-                result.AddRange(obj.Vertices[i].ToDoubleArray(pointTranslationFactor + translationFactor));
+                result.AddRange(obj.Vertices[i].ToHashArray(pointTranslationFactor + translationFactor));
             }
 
             return result.ToArray();
         }
 
-
-        /***************************************************/
-        /****  Other methods                            ****/
         /***************************************************/
 
-        [Description("The GeometryHash for a Point is simply an array of 3 numbers composed by the Point X, Y and Z coordinates.")]
-        private static double[] ToHashArray(this Point obj, double translationFactor)
+        private static double[] ToHashArray(this IEnumerable<Point> points, double typeTranslationFactor)
         {
-            return obj.ToDoubleArray(translationFactor);
+            return points.SelectMany(p => p.ToHashArray(typeTranslationFactor)).ToArray();
         }
 
         /***************************************************/
@@ -442,33 +441,39 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        // Fallback
-        private static double[] ToHashArray(this object obj, double translationFactor)
-        {
-            BH.Engine.Base.Compute.RecordError($"Could not find a {nameof(ToHashArray)} method for type {obj.GetType().FullName}.");
-
-            return new double[] { };
-        }
-
-        /***************************************************/
-
-        private static double[] ToDoubleArray(this Point p, double typeTranslationFactor)
+        [Description("The GeometryHash for a Point is simply an array of 3 numbers composed by the Point X, Y and Z coordinates.")]
+        private static double[] ToHashArray(this Point p, double translationFactor)
         {
             return new double[]
             {
-                p.X + typeTranslationFactor,
-                p.Y + typeTranslationFactor,
-                p.Z + typeTranslationFactor
+                p.X + translationFactor,
+                p.Y + translationFactor,
+                p.Z + translationFactor
             };
         }
 
         /***************************************************/
 
-        private static double[] ToDoubleArray(this IEnumerable<Point> points, double typeTranslationFactor)
+        // Fallback
+        private static double[] ToHashArray(this object obj, double translationFactor)
         {
-            return points.SelectMany(p => p.ToDoubleArray(typeTranslationFactor)).ToArray();
+            throw new NotImplementedException($"Could not find a {nameof(ToHashArray)} method for type {obj.GetType().FullName}.");
         }
 
+        /***************************************************/
+        /****  Other methods for "conceptual" geometry  ****/
+        /***************************************************/
+
+        [Description("The GeometryHash for a CompositeGeometry is given as the concatenated GeometryHash of the single elements composing it.")]
+        private static double[] ToHashArray(this Vector obj, double translationFactor)
+        {
+            return new double[]
+            {
+                obj.X + translationFactor,
+                obj.Y + translationFactor,
+                obj.Z + translationFactor
+            };
+        }
 
         /***************************************************/
         /****  Private enum                             ****/
@@ -476,6 +481,17 @@ namespace BH.Engine.Geometry
 
         [Description("Multiplier used to define the TypeTranslationFactors.")]
         private const int m_ToleranceMultiplier = (int)(1e9 * Tolerance.Distance);
+
+        [Description("The hash aggregation (array summing) requires that individual numbers get multiplied for different multipliers before being summed," +
+            "in order to avoid incurring in the same aggregated hash for e.g. two points like (1,0,0) and (0,1,0).\n" +
+            "This is the multiplier used when summing the Hash Arrays to compose a single numerical hash;" +
+            "it is increased by a factor of 1 for subsequent hash array numbers.")]
+        private const double m_aggregationMultiplier = Tolerance.Distance * 1e-200;
+
+        [Description("During the aggregation process, m_aggregationMultiplier (see its description) increases by a factor of 1 for subsequent hash array numbers, " +
+            "until m_aggregationMultiplierWrapAfter is reached, after which the factor re-starts from 0." +
+            "Defaults to -1; values < 0 disable wrapping, i.e. all aggregated numbers get multiplied by a different multiplier.")]
+        private const int m_aggregationMultiplierWrapAfter = -1;
 
         [Description("Translation factors per each type of geometry." +
             "The translation is proportional ")]
