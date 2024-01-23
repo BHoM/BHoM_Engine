@@ -100,7 +100,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         private static void RemoveOutliers(this List<Line> lines, double distanceTolerance)
-        {            
+        {
             int initialCount = lines.Count;
 
             Dictionary<Point, int> nodesByValence = new Dictionary<Point, int>();
@@ -117,39 +117,41 @@ namespace BH.Engine.Geometry
                 nodesByValence[l.End]++;
             }
 
-            //TODO: more efficient if made a recursive function starting from valence one and dfs?
-            while (true)
+            foreach (Point point in nodesByValence.Keys.ToList())
             {
-                List<Point> valenceOne = new List<Point>();
-                foreach (var key in nodesByValence.Keys.ToList())
-                {
-                    if (nodesByValence[key] == 0)
-                        valenceOne.Add(key);
-                    else if (nodesByValence[key] == 1)
-                    {
-                        valenceOne.Add(key);
-                        int index = lines.FindIndex(x => x.Start == key || x.End == key);
-                        Line l = lines[index];
-                        lines.RemoveAt(index);
-
-                        if (l.Start == key)
-                            nodesByValence[l.End]--;
-                        else
-                            nodesByValence[l.Start]--;
-                    }
-                }
-
-                if (valenceOne.Count == 0)
-                    break;
-
-                foreach (Point p in valenceOne)
-                {
-                    nodesByValence.Remove(p);
-                }
+                if (nodesByValence.ContainsKey(point))
+                    point.CullValenceOne(nodesByValence, lines, distanceTolerance);
             }
 
             if (lines.Count != initialCount)
                 BH.Engine.Base.Compute.RecordNote("Lines without a valid node at end have been ignored in the process of creating outlines.");
+        }
+
+        /***************************************************/
+
+        private static void CullValenceOne(this Point point, Dictionary<Point, int> nodesByValence, List<Line> lines, double distanceTolerance)
+        {
+            int nodeValence = nodesByValence[point];
+            if (nodeValence == 0)
+                nodesByValence.Remove(point);
+            if (nodeValence == 1)
+            {
+                int index = lines.FindIndex(x => x.Start == point || x.End == point);
+                Line l = lines[index];
+                lines.RemoveAt(index);
+                nodesByValence.Remove(point);
+
+                if (l.Start == point)
+                {
+                    nodesByValence[l.End]--;
+                    l.End.CullValenceOne(nodesByValence, lines, distanceTolerance);
+                }
+                else
+                {
+                    nodesByValence[l.Start]--;
+                    l.Start.CullValenceOne(nodesByValence, lines, distanceTolerance);
+                }
+            }
         }
 
         /***************************************************/
