@@ -91,7 +91,7 @@ namespace BH.Engine.Environment
             //area avaialable per for new glazing is area avaialble minus area used by other galzing 
             //area per window avaialable is total area left divided for number of windows
             //window width is then area per window divided by the entered height
-            double areaRequiredPerWindow = (area * glazingRatio - existingGlazingArea)/numberOfWindows;
+            double areaRequiredPerWindow = (area * glazingRatio - existingGlazingArea) / numberOfWindows;
             return areaRequiredPerWindow / height;
         }
     }
