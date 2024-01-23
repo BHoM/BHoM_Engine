@@ -41,12 +41,12 @@ namespace BH.Engine.Geometry
         [Input("refLine", "Second line to union.")]
         [Input("tolerance", "Tolerance used for checking colinearity and proximity of the lines.", typeof(Length))]
         [Output("union", "Boolean union of the lines.")]
-        public static List<Line> BooleanUnion(this Line line, Line refLine, double tolerance = Tolerance.Distance)
+        public static List<Line> BooleanUnion(this Line line, Line refLine, double tolerance = Tolerance.Distance, bool keepIntermediatePoints = false)
         {
             double sqTol = tolerance * tolerance;
             List<Line> result = new Line[] { line, refLine }.Where(x => x != null && x.SquareLength() > sqTol).ToList();
             if (line.IsCollinear(refLine, tolerance))
-                result = result.BooleanUnionCollinear(tolerance);
+                result = result.BooleanUnionCollinear(tolerance, keepIntermediatePoints);
 
             return result;
         }
@@ -57,13 +57,13 @@ namespace BH.Engine.Geometry
         [Input("lines", "Lines to union.")]
         [Input("tolerance", "Tolerance used for checking colinearity and proximity of the lines.", typeof(Length))]
         [Output("union", "Boolean union of the lines.")]
-        public static List<Line> BooleanUnion(this List<Line> lines, double tolerance = Tolerance.Distance)
+        public static List<Line> BooleanUnion(this List<Line> lines, double tolerance = Tolerance.Distance, bool keepIntermediatePoints = false)
         {
             double sqTol = tolerance * tolerance;
             return lines.Where(x => x != null && x.SquareLength() > sqTol)
                         .ToList()
                         .ClusterCollinear(tolerance)
-                        .Select(x => x.BooleanUnionCollinear(tolerance))
+                        .Select(x => x.BooleanUnionCollinear(tolerance, keepIntermediatePoints))
                         .SelectMany(x => x)
                         .ToList();
         }
@@ -446,14 +446,74 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<Line> BooleanUnionCollinear(this List<Line> collinearLines, double tolerance)
+        private static List<Line> BooleanUnionCollinear(this List<Line> lines, double tolerance, bool keepIntermediatePoints)
         {
-            Vector dir = collinearLines[0].Direction();
-            Point min = collinearLines.Extents(dir, tolerance).Item1;
-            List<(double, double)> ranges = collinearLines.SortedDomains(min, tolerance);
+            List<Point> allEnds = lines.Select(x => x.Start).Union(lines.Select(x => x.End)).ToList();
+            Line dirLine = allEnds.FitLine(tolerance);
+            Vector dir = dirLine.Direction(tolerance);
+            (Point, Point) extents = lines.Extents(dir, tolerance);
+            Point min = dirLine.ClosestPoint(extents.Item1, true);
+
+            List<(double, double)> ranges = lines.SortedDomains(min, tolerance);
             List<(double, double)> mergedRanges = ranges.MergeRanges(tolerance);
 
-            return mergedRanges.Select(x => new Line { Start = min + dir * x.Item1, End = min + dir * x.Item2 }).ToList();
+            if (keepIntermediatePoints)
+            {
+                mergedRanges = mergedRanges.IncludeIntermediatePointsRanges(ranges, tolerance);
+                List<Point> nodePool = allEnds.CullDuplicates(tolerance);
+                List<Line> result = new List<Line>();
+                foreach ((double, double) range in mergedRanges)
+                {
+                    Point start = (min + dir * range.Item1).ClosestPoint(nodePool);
+                    Point end = (min + dir * range.Item2).ClosestPoint(nodePool);
+                    result.Add(new Line { Start = start, End = end });
+                }
+
+                return result;
+            }
+            else
+                return mergedRanges.Select(x => new Line { Start = min + dir * x.Item1, End = min + dir * x.Item2 }).ToList();
+        }
+
+        /***************************************************/
+
+        private static List<(double, double)> IncludeIntermediatePointsRanges(this List<(double, double)> mergedRanges, List<(double, double)> allRanges, double tolerance)
+        {
+            List<double> steps = allRanges.Select(x => x.Item1).Union(allRanges.Select(x => x.Item2)).ToList();
+            steps.Sort();
+            int i = 0;
+            Dictionary<int, List<double>> extraSteps = new Dictionary<int, List<double>>();
+            extraSteps.Add(0, new List<double>());
+            foreach (double step in steps)
+            {
+                if (step - mergedRanges[i].Item1 > tolerance)
+                {
+                    if (mergedRanges[i].Item2 - step > tolerance && extraSteps[i].All(x => Math.Abs(x - step) > tolerance))
+                        extraSteps[i].Add(step);
+                    else
+                    {
+                        i++;
+                        extraSteps.Add(i, new List<double>());
+                    }
+                }
+            }
+
+            extraSteps.Remove(i);
+
+            List<(double, double)> mergedMerged = new List<(double, double)>();
+            foreach (int j in extraSteps.Keys.OrderBy(x => x))
+            {
+                double start = mergedRanges[j].Item1;
+                foreach (double step in extraSteps[j])
+                {
+                    mergedMerged.Add((start, step));
+                    start = step;
+                }
+
+                mergedMerged.Add((start, mergedRanges[j].Item2));
+            }
+
+            return mergedMerged;
         }
 
         /***************************************************/
