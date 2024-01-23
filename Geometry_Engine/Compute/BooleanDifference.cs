@@ -416,10 +416,12 @@ namespace BH.Engine.Geometry
 
         private static List<Line> BooleanDifferenceCollinear(this List<Line> lines1, List<Line> lines2, double tolerance)
         {
-            Vector dir = lines1[0].Direction();
+            Line dirLine = lines1.Select(x => x.Start).Union(lines1.Select(x => x.End)).Union(lines2.Select(x => x.Start)).Union(lines2.Select(x => x.End)).FitLine(tolerance);
+            Vector dir = dirLine.Direction(tolerance);
             (Point, Point) extents1 = lines1.Extents(dir, tolerance);
             (Point, Point) extents2 = lines2.Extents(dir, tolerance);
             Point min = (extents1.Item1 - extents2.Item1).DotProduct(dir) < 0 ? extents1.Item1 : extents2.Item1;
+            min = dirLine.ClosestPoint(min, true);
 
             List<(double, double)> ranges1 = lines1.SortedDomains(min, tolerance);
             List<(double, double)> ranges2 = lines2.SortedDomains(min, tolerance);

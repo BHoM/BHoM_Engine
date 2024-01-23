@@ -466,9 +466,10 @@ namespace BH.Engine.Geometry
 
         private static Line BooleanIntersectionCollinear(this List<Line> lines, double tolerance)
         {
-            Vector dir = lines[0].Direction();
+            Line dirLine = lines.Select(x => x.Start).Union(lines.Select(x => x.End)).FitLine(tolerance);
+            Vector dir = dirLine.Direction(tolerance);
             (Point, Point) extents = lines.Extents(dir, tolerance);
-            Point min = extents.Item1;
+            Point min = dirLine.ClosestPoint(extents.Item1, true);
 
             List<(double, double)> ranges = lines.SortedDomains(min, tolerance);
             double maxStart = ranges.Select(x => x.Item1).OrderByDescending(x => x).First();
