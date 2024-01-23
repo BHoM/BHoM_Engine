@@ -49,7 +49,7 @@ namespace BH.Engine.Environment
             List<Panel> externalPanels = wallPanels.IsExternal().Item1;
             List<Panel> filteredPanels = externalPanels.RemovePanels(panelsToIgnore ?? new List<Panel>());
 
-            double totalArea = filteredPanels.Select(x=>x.Area()).Sum();
+            double totalArea = filteredPanels.Select(x => x.Area()).Sum();
             double existingOpeningArea = filteredPanels.Select(x => x.Openings.Select(y => y.Polyline().Area()).Sum()).Sum();
             double windowWidth = WindowWidth(totalArea, glazingRatio, glazingLocations.Count(), openingHeight, existingOpeningArea);
 
