@@ -48,7 +48,7 @@ namespace BH.Engine.Geometry
             "\n(Any transformation so performed is translational only, in order to support geometrical tolerance, i.e. numerical distance, when comparing GeometryHashes downstream).")]
         [Input("bhomObj", "Input BHoMObject whose geometry will be queried by IGeometry() and which will be used for computing a Geometry Hash.")]
         [Output("geomHash", "Number representing a unique signature of the input object's geometry.")]
-        public static double GeometryHash(this IBHoMObject bhomObj)
+        public static string GeometryHash(this IBHoMObject bhomObj)
         {
             IGeometry igeom = bhomObj.IGeometry();
 
@@ -63,10 +63,10 @@ namespace BH.Engine.Geometry
             "\nAdditionally, the resulting points are transformed based on the source geometry type, to remove or minimize collisions." +
             "\n(Any transformation so performed is translational only, in order to support geometrical tolerance, i.e. numerical distance, when comparing GeometryHashes downstream).")]
         [Output("geomHash", "Number representing a unique signature of the input geometry.")]
-        public static double GeometryHash(this IGeometry igeometry)
+        public static string GeometryHash(this IGeometry igeometry)
         {
             if (igeometry == null)
-                return 0;
+                return null;
 
             double[] hashArray = IToHashArray(igeometry);
 
@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
                     j = (j < m_aggregationMultiplierWrapAfter) ? (j + 1) : 1;
             }
 
-            return result;
+            return result.ToString();
         }
 
         /***************************************************/
