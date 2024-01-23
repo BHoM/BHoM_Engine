@@ -100,10 +100,17 @@ namespace BH.Engine.Geometry
             double u = ((1 + b * b) * C.X - a * b * C.Y + a * C.Z) / (1 + a * a + b * b);
             double v = (-a * b * C.X + (1 + a * a) * C.Y + b * C.Z) / (1 + a * a + b * b);
             double w = (a * C.X + b * C.Y + (a * a + b * b) * C.Z) / (1 + a * a + b * b);
-            
-            Point H = new Point { X = u, Y = v, Z = w };
 
-            return new Line { Start = C + (C - H), End = H };
+            Point H = new Point { X = u, Y = v, Z = w };
+            Line result = new Line { Start = C + (C - H), End = H };
+
+            if (result.Length() > tolerance)
+                return result;
+            else
+            {
+                List<Point> sorted = points.ToList().SortCollinear(tolerance);
+                return new Line { Start = sorted[0], End = sorted[sorted.Count - 1] };
+            }
         }
 
         /***************************************************/
