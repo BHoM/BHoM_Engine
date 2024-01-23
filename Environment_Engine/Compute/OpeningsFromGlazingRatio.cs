@@ -23,7 +23,7 @@ namespace BH.Engine.Environment
         [Input("sillHeight", "Optional input for defining the distance between the base of the panel and the bottom of the opening - default: 0.5.")]
         [Input("openingHeight", "Optional input for defining the height of opening - default: 1.2.")]
         [Input("openingType", "Optional input for defining the opening type of the output Openings, can be either 'Glazing' or 'Door' - default: Glazing.")]
-        [Output("openings", "Returns the openings.")]
+        [Output("openings", "Returns the constructed openings which can then be applied to panels.")]
         public static List<Opening> OpeningsFromGlazingRatio(
             List<List<Panel>> panelsAsSpaces,
             List<Point> glazingLocations,
