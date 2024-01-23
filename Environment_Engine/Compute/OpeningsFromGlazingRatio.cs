@@ -15,7 +15,7 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
-        [Description("Creates openings for input Panels at the locations provided.\n The total area of the openings is equal to the total area of the external panels, multiplied by the glazing ratio.")]
+        [Description("Creates openings for input Panels at the locations provided.\nThe total area of the openings is equal to the total area of the external panels, multiplied by the glazing ratio.")]
         [Input("panelsAsSpaces", "Panels as spaces - A collection of Environment Panels which will be used to identify the host panel for the opening from the provided location point.")]
         [Input("glazingLocations", "The point in 3D space corresponding to the desired locations of the openings.")]
         [Input("glazingRatio", "Ratio of total external panel surface area and glazed area. Ratio as decimal {0-1}.")]
