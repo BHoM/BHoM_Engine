@@ -15,6 +15,10 @@ namespace BH.Engine.Environment
 {
     public static partial class Compute
     {
+        /***************************************************/
+        /**** Public methods                            ****/
+        /***************************************************/
+
         [Description("Creates openings for input Panels at the locations provided.\nThe total area of the openings is equal to the total area of the external panels, multiplied by the glazing ratio.")]
         [Input("panelsAsSpaces", "Panels as spaces - A collection of Environment Panels which will be used to identify the host panel for the opening from the provided location point.")]
         [Input("glazingLocations", "The point in 3D space corresponding to the desired locations of the openings.")]
@@ -76,6 +80,10 @@ namespace BH.Engine.Environment
             return openings;
         }
 
+        /***************************************************/
+        /**** Private methods                           ****/
+        /***************************************************/
+
         private static double WindowWidth(
             double area,
             double glazingRatio,
@@ -90,5 +98,8 @@ namespace BH.Engine.Environment
             double areaRequiredPerWindow = (area * glazingRatio - existingGlazingArea) / numberOfWindows;
             return areaRequiredPerWindow / height;
         }
+
+
+        /***************************************************/
     }
 }
