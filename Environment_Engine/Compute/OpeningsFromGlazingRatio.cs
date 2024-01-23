@@ -20,7 +20,7 @@ namespace BH.Engine.Environment
         [Input("glazingLocations", "The point in 3D space corresponding to the desired locations of the openings.")]
         [Input("glazingRatio", "Ratio of total external panel surface area and glazed area. Ratio as decimal {0-1}.")]
         [Input("panelsToIgnore", "Optional input for selecting a collection of Environment Panels to be ignored in the calculation")]
-        [Input("sillHeight", "Optional input for defining the distance between the base of the panel and the bottom of the opening - default: 0.5m.")]
+        [Input("sillHeight", "Optional input for defining the distance between the base of the panel and the bottom of the opening - default: 0.5.")]
         [Input("openingHeight", "Optional input for defining the height of opening - default: 1.2m.")]
         [Input("openingType", "Optional input for defining the opening type of the output Openings, can be either 'Glazing' or 'Door' - default: Glazing.")]
         [Output("openings", "Returns the openings.")]
