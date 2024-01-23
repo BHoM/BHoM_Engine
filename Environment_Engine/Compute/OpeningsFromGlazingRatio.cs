@@ -68,13 +68,9 @@ namespace BH.Engine.Environment
                 Opening opening = Create.Opening(point, option, filteredPanels);
 
                 if(opening != null)
-                {
                     openings.Add(opening);
-                }
                 else
-                {
-                    BH.Engine.Base.Compute.RecordWarning($"Could not find a host panel for the opening at ({point.X}, {point.Y}, {point.Z}).");
-                }
+                    BH.Engine.Base.Compute.RecordWarning($"Could not find a host panel for the opening at ({point.X}, {point.Y}, {point.Z}). An Opening has not been created for this location.");
             }
 
             return openings;
