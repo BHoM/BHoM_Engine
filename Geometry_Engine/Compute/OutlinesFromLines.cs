@@ -20,21 +20,21 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using BH.oM.Data.Collections;
-using System;
 using BH.Engine.Data;
+using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
-using System.Security.Cryptography.Xml;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
+
         //[Description("Split an outer region by the cutting lines into a collection of closed contained regions within the outer region.")]
         //[Input("outerRegion", "An outer region that will contain the closed regions generated.")]
         //[Input("cuttingLines", "The lines to cut the outer region by.")]
@@ -46,238 +46,247 @@ namespace BH.Engine.Geometry
             if (lines == null)
                 return null;
 
+            lines = lines.CleanUpAndSplitWithEachOther(distanceTolerance);
+            List<List<Line>> clustered = lines.Cluster(distanceTolerance);
+
+            List<Polyline> result = new List<Polyline>();
+            for (int i = 0; i < clustered.Count; i++)
+            {
+                var cluster = clustered[i];
+                cluster.RemoveOutliers(distanceTolerance);
+                if (cluster.Count == 0)
+                    continue;
+
+                if (!cluster.IsCoplanar(distanceTolerance))
+                {
+                    BH.Engine.Base.Compute.RecordWarning("Some of the lines have been ignored in the process of creating outlines because they were not coplanar.");
+                    continue;
+                }
+
+                List<Line> outline = cluster.ClusterOutline(distanceTolerance);
+                List<Line> inner = cluster.Except(outline).ToList();
+
+                result.AddRange(LinesToPolygons(outline, inner, distanceTolerance));
+            }
+
+            return result;
+        }
+
+
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
+
+        private static List<Line> CleanUpAndSplitWithEachOther(this List<Line> lines, double distanceTolerance)
+        {
             lines = lines.BooleanUnion(distanceTolerance, true);
             List<Point> intersectingPoints = Query.LineIntersections(lines).CullDuplicates(distanceTolerance);
-            lines = lines.SelectMany(x => x.SplitAtPoints(intersectingPoints)).ToList();
+            return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints)).ToList();
+        }
 
-            // lines = lines.Select(x => x.RoundCoordinates(decimalPlaces)).ToList();
-            //TODO: snap to grids? or not needed actually?
-            //NEEDED! to make clustering etc. work
+        /***************************************************/
 
-            //lines = lines.ToList();
-
-            //List<Point> uniqueMids = new List<Point>();
-            //for (int i = lines.Count - 1; i >= 0; i--)
-            //{
-            //    Point mid = (lines[i].Start + lines[i].End) / 2;
-            //    if (uniqueMids.Contains(mid))
-            //        lines.RemoveAt(i);
-            //    else
-            //        uniqueMids.Add(mid);
-            //}
-
+        private static List<List<Line>> Cluster(this List<Line> lines, double distanceTolerance)
+        {
             double sqTol = distanceTolerance * distanceTolerance;
             Func<Line, Line, bool> distanceFunction = (a, b) =>
             a.Start.SquareDistance(b.Start) < sqTol ||
             a.Start.SquareDistance(b.End) < sqTol ||
             a.End.SquareDistance(b.Start) < sqTol ||
             a.End.SquareDistance(b.End) < sqTol;
-            var clustered = lines.ClusterDBSCAN(distanceFunction);
+            return lines.ClusterDBSCAN(distanceFunction);
+        }
 
-            List<Polyline> result = new List<Polyline>();
-            for (int i = 0; i < clustered.Count; i++)
+        /***************************************************/
+
+        private static void RemoveOutliers(this List<Line> lines, double distanceTolerance)
+        {            
+            int initialCount = lines.Count;
+
+            Dictionary<Point, int> nodesByValence = new Dictionary<Point, int>();
+            foreach (Line l in lines)
             {
-                var cluster = clustered[i];
-                //TODO: move out to a dedicated method?
-                //TODO: warning if any nodes removed?
+                if (!nodesByValence.ContainsKey(l.Start))
+                    nodesByValence.Add(l.Start, 0);
 
-                Dictionary<Point, int> nodesByValence = new Dictionary<Point, int>();
-                foreach (Line l in cluster)
+                nodesByValence[l.Start]++;
+
+                if (!nodesByValence.ContainsKey(l.End))
+                    nodesByValence.Add(l.End, 0);
+
+                nodesByValence[l.End]++;
+            }
+
+            //TODO: more efficient if made a recursive function starting from valence one and dfs?
+            while (true)
+            {
+                List<Point> valenceOne = new List<Point>();
+                foreach (var key in nodesByValence.Keys.ToList())
                 {
-                    if (!nodesByValence.ContainsKey(l.Start))
-                        nodesByValence.Add(l.Start, 0);
-
-                    nodesByValence[l.Start]++;
-
-                    if (!nodesByValence.ContainsKey(l.End))
-                        nodesByValence.Add(l.End, 0);
-
-                    nodesByValence[l.End]++;
-                }
-
-                //TODO: more efficient if made a recursive function starting from valence one and dfs?
-                while (true)
-                {
-                    List<Point> valenceOne = new List<Point>();
-                    foreach (var key in nodesByValence.Keys.ToList())
+                    if (nodesByValence[key] == 0)
+                        valenceOne.Add(key);
+                    else if (nodesByValence[key] == 1)
                     {
-                        if (nodesByValence[key] == 0)
-                            valenceOne.Add(key);
-                        else if (nodesByValence[key] == 1)
-                        {
-                            valenceOne.Add(key);
-                            int index = cluster.FindIndex(x => x.Start == key || x.End == key);
-                            Line l = cluster[index];
-                            cluster.RemoveAt(index);
+                        valenceOne.Add(key);
+                        int index = lines.FindIndex(x => x.Start == key || x.End == key);
+                        Line l = lines[index];
+                        lines.RemoveAt(index);
 
-                            if (l.Start == key)
-                                nodesByValence[l.End]--;
-                            else
-                                nodesByValence[l.Start]--;
-                        }    
+                        if (l.Start == key)
+                            nodesByValence[l.End]--;
+                        else
+                            nodesByValence[l.Start]--;
                     }
-
-                    if (valenceOne.Count == 0)
-                        break;
-
-                    foreach(Point p in valenceOne)
-                    {
-                        nodesByValence.Remove(p);
-                    }
-                }                
-
-                if (!nodesByValence.Keys.ToList().IsCoplanar(distanceTolerance))
-                {
-                    // warning
-                    continue;
                 }
 
-                Vector dir1 = cluster[0].Direction();
-                Vector dir2 = cluster.FirstOrDefault(x => x.Direction().IsParallel(dir1) == 0)?.Direction();
-                if (dir2 == null)
+                if (valenceOne.Count == 0)
+                    break;
+
+                foreach (Point p in valenceOne)
                 {
-                    // warning
-                    continue;
+                    nodesByValence.Remove(p);
                 }
+            }
 
-                Vector normal = dir1.CrossProduct(dir2);
-                Cartesian cs = Create.CartesianCoordinateSystem(cluster[0].Start, dir1, dir1.CrossProduct(normal));
+            if (lines.Count != initialCount)
+                BH.Engine.Base.Compute.RecordNote("Lines without a valid node at end have been ignored in the process of creating outlines.");
+        }
 
-                TransformMatrix toGlobal = cs.OrientationMatrix(new Cartesian());
+        /***************************************************/
 
-                var transformed = cluster.Select(x => x.Transform(toGlobal)).ToList();
+        private static TransformMatrix TransformToGlobalXY(this List<Line> lines)
+        {
+            Vector dir1 = lines[0].Direction();
+            Vector dir2 = lines.FirstOrDefault(x => x.Direction().IsParallel(dir1) == 0)?.Direction();
+            if (dir2 == null)
+                return null;
 
+            Vector normal = dir1.CrossProduct(dir2);
+            Cartesian local = Create.CartesianCoordinateSystem(lines[0].Start, dir1, dir1.CrossProduct(normal));
+            return local.OrientationMatrix(new Cartesian());
+        }
 
-                Dictionary<Line, (Point, Point)> endpoints = transformed.ToDictionary(x => x, x => (x.Start, x.End));
-                Dictionary<Line, Vector> dirs = transformed.ToDictionary(x => x, x => x.Direction());
-                Dictionary<Point, List<Line>> graph = new Dictionary<Point, List<Line>>();
-                //List<Point> nodes = new List<Point>();
-                foreach (Line line in transformed)
+        /***************************************************/
+
+        private static List<Line> ClusterOutline(this List<Line> lines, double distanceTolerance)
+        {
+            TransformMatrix toGlobal = lines.TransformToGlobalXY();
+            if (toGlobal == null)
+            {
+                BH.Engine.Base.Compute.RecordWarning("Some of the lines have been ignored in the process of creating outlines because they were all collinear.");
+                return null;
+            }
+
+            List<Line> transformed = lines.Select(x => x.Transform(toGlobal)).ToList();
+            Dictionary<Line, (Point, Point)> endpoints = transformed.ToDictionary(x => x, x => (x.Start, x.End));
+            Dictionary<Line, Vector> dirs = transformed.ToDictionary(x => x, x => x.Direction());
+            Dictionary<Point, List<Line>> graph = new Dictionary<Point, List<Line>>();
+            foreach (Line line in transformed)
+            {
+                if (!graph.ContainsKey(line.Start))
+                    graph.Add(line.Start, new List<Line>());
+
+                if (!graph.ContainsKey(line.End))
+                    graph.Add(line.End, new List<Line>());
+
+                graph[line.Start].Add(line);
+                graph[line.End].Add(line);
+            }
+
+            Point leftmost = graph.Keys.First();
+            foreach (Point node in graph.Keys)
+            {
+                if (node.X < leftmost.X)
+                    leftmost = node;
+            }
+
+            Line currentEdge = null;
+            Vector currentDir = null;
+            foreach (Line l in graph[leftmost])
+            {
+                var dir = l.Direction();
+                if (l.Start != leftmost)
+                    dir = dir.Reverse();
+
+                if (currentDir == null || currentDir.Y < dir.Y)
                 {
-                    //if (!nodes.Contains(line.Start))
-                    //    nodes.Add(line.Start);
-
-                    //if (!nodes.Contains(line.End))
-                    //    nodes.Add(line.End);
-
-                    if (!graph.ContainsKey(line.Start))
-                        graph.Add(line.Start, new List<Line>());
-
-                    if (!graph.ContainsKey(line.End))
-                        graph.Add(line.End, new List<Line>());
-
-                    graph[line.Start].Add(line);
-                    graph[line.End].Add(line);
+                    currentEdge = l;
+                    currentDir = dir;
                 }
+            }
 
-                Point leftmost = graph.Keys.First();
-                foreach (Point node in graph.Keys)
-                {
-                    if (node.X < leftmost.X)
-                        leftmost = node;
-                }
+            List<Line> outline = new List<Line> { currentEdge };
+            Point currentNode = leftmost;
 
-                Line currentEdge = null;
-                Vector currentDir = null;
-                foreach (Line l in graph[leftmost])
+            while (true)
+            {
+                if (currentNode == currentEdge.Start)
+                    currentNode = currentEdge.End;
+                else
+                    currentNode = currentEdge.Start;
+
+                if (currentNode == leftmost)
+                    break;
+
+                Vector headingLeft = new Vector { X = -currentDir.Y, Y = currentDir.X };
+
+                List<Vector> nodeDirs = new List<Vector>();
+                foreach (Line l in graph[currentNode])
                 {
-                    var dir = l.Direction();
-                    if (l.Start != leftmost)
+                    Vector dir = l.Direction();
+                    if (l.Start != currentNode)
                         dir = dir.Reverse();
 
-                    if (currentDir == null || currentDir.Y < dir.Y)
+                    nodeDirs.Add(dir);
+                }
+
+                Vector newDir = null;
+                Line newEdge = null;
+
+                // To avoid computing heavy signed angle, first check only dirs to the left from the current dir
+                for (int j = 0; j < nodeDirs.Count; j++)
+                {
+                    if (graph[currentNode][j] == currentEdge)
+                        continue;
+
+                    if (headingLeft.DotProduct(nodeDirs[j]) < 0)
+                        continue;
+
+                    if (newDir == null || nodeDirs[j].DotProduct(currentDir) < newDir.DotProduct(currentDir))
                     {
-                        currentEdge = l;
-                        currentDir = dir;
+                        newDir = nodeDirs[j];
+                        newEdge = graph[currentNode][j];
                     }
                 }
 
-                List<Line> outline = new List<Line> { currentEdge };
-                Point currentNode = leftmost;
-
-                while (true)
+                // If not found (and only if), then look up the ones to the right
+                if (newEdge == null)
                 {
-                    if (currentNode == currentEdge.Start)
-                        currentNode = currentEdge.End;
-                    else
-                        currentNode = currentEdge.Start;
-
-                    if (currentNode == leftmost)
-                        break;
-
-                    Vector headingLeft = new Vector { X = -currentDir.Y, Y = currentDir.X };
-
-                    List<Vector> nodeDirs = new List<Vector>();
-                    foreach (Line l in graph[currentNode])
-                    {
-                        //TODO: can't skip here to avoid changing collection lengths!
-                        //if (l == currentEdge)
-                        //    continue;
-
-                        Vector dir = l.Direction();
-                        if (l.Start != currentNode)
-                            dir = dir.Reverse();
-
-                        nodeDirs.Add(dir);
-                    }
-
-                    Vector newDir = null;
-                    Line newEdge = null;
-
-                    // To avoid computing heavy signed angle, first check only dirs to the left from the current dir
-                    // If not found, then look up the ones to the right
                     for (int j = 0; j < nodeDirs.Count; j++)
                     {
                         if (graph[currentNode][j] == currentEdge)
                             continue;
 
-                        if (headingLeft.DotProduct(nodeDirs[j]) < 0)
+                        if (headingLeft.DotProduct(nodeDirs[j]) >= 0)
                             continue;
 
-                        if (newDir == null || nodeDirs[j].DotProduct(currentDir) < newDir.DotProduct(currentDir))
+                        if (newDir == null || nodeDirs[j].DotProduct(currentDir) > newDir.DotProduct(currentDir))
                         {
                             newDir = nodeDirs[j];
                             newEdge = graph[currentNode][j];
                         }
                     }
-
-                    if (newEdge == null)
-                    {
-                        for (int j = 0; j < nodeDirs.Count; j++)
-                        {
-                            if (graph[currentNode][j] == currentEdge)
-                                continue;
-
-                            if (headingLeft.DotProduct(nodeDirs[j]) >= 0)
-                                continue;
-
-                            if (newDir == null || nodeDirs[j].DotProduct(currentDir) > newDir.DotProduct(currentDir))
-                            {
-                                newDir = nodeDirs[j];
-                                newEdge = graph[currentNode][j];
-                            }
-                        }
-                    }
-
-                    currentEdge = newEdge;
-                    currentDir = newDir;
-
-                    outline.Add(currentEdge);
                 }
 
-                outline = outline.Select(x => cluster[transformed.IndexOf(x)]).ToList();
+                currentEdge = newEdge;
+                currentDir = newDir;
 
-                //TODO: WHY DOES OUTLINE CONTAIN LINES FROM OUTSIDE OF CLUSTER??????
-                //var cluster2 = cluster.Select(x=>x.Transform)
-                //List<Line> inner = cluster.Where(x => outline.All(y => !x.IsEqual(y))).ToList();
-                List<Line> inner = cluster.Except(outline).ToList();
-
-                //return null;
-                //TODO: hardcoded decimal!
-                result.AddRange(LinesToPolygons(outline, inner, distanceTolerance));
+                outline.Add(currentEdge);
             }
 
-            return result;
+            return outline.Select(x => lines[transformed.IndexOf(x)]).ToList();
         }
+
+        /***************************************************/
     }
 }
