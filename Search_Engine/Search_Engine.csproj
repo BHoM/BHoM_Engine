@@ -15,6 +15,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Query\**" />
+    <EmbeddedResource Remove="Query\**" />
+    <None Remove="Query\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="FuzzySharp" Version="2.0.2" />
@@ -31,10 +37,6 @@
       <SpecificVersion>false</SpecificVersion>
       <Private>false</Private>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Query\" />
   </ItemGroup>
 
   <ItemGroup>

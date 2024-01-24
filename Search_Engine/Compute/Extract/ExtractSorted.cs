@@ -54,16 +54,8 @@ namespace BH.Engine.Search
             if (scorer != Scorer.DefaultRatio)
                 scorerMethod = GetScorer(scorer);
 
-            IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices.ToArray(), s => s, scorerMethod);
-
-            List<SearchResult<string>> results = new List<SearchResult<string>>();
-            foreach (ExtractedResult<string> extractedResult in extractedResults)
-            {
-                SearchResult<string> result = new SearchResult<string>(extractedResult.Value, extractedResult.Score, extractedResult.Index);
-                results.Add(result);
-            }
-
-            return results;
+            return Process.ExtractSorted(query, choices.ToArray(), s => s, scorerMethod)
+                .Select(x => new SearchResult<string>(x.Value, x.Score, x.Index)).ToList();
         }
 
         /***************************************************/
@@ -82,17 +74,8 @@ namespace BH.Engine.Search
 
             IEnumerable<string> choices = objects.Select(x => x.PropertyValue(propertyName).ToString());
 
-            IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices, s => s, scorerMethod);
-
-            List<SearchResult<BHoMObject>> results = new List<SearchResult<BHoMObject>>();
-            foreach (ExtractedResult<string> extractedResult in extractedResults)
-            {
-                int index = extractedResult.Index;
-                SearchResult<BHoMObject> result = new SearchResult<BHoMObject>(objects[index], extractedResult.Score, index);
-                results.Add(result);
-            }
-
-            return results;
+            return Process.ExtractSorted(query, choices, s => s, scorerMethod)
+                .Select(x => new SearchResult<BHoMObject>(objects[x.Index], x.Score, x.Index)).ToList();
         }
 
         /***************************************************/
