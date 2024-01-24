@@ -79,6 +79,7 @@ namespace BH.Engine.Geometry
                 double num = hashArray[i];
 
                 if (double.IsNaN(num))
+                    // Exception required in order to make sure computation is stopped when calling this method from other methods (outside UI)
                     throw new ArgumentException("Cannot calculate the GeometryHash if the input geometries have a non-determined (NaN) value.");
                 else if (double.IsPositiveInfinity(num))
                     num = infinity;
