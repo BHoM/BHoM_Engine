@@ -287,21 +287,24 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static double GeometryHash(this IGeometry igeom)
+        private static string GeometryHash(this IGeometry igeom)
         {
             if (igeom == null)
-                return default(double);
+                return null;
 
             if (m_GeomHashFunc == null)
             {
                 var mis = Query.ExtensionMethods(typeof(IGeometry), "GeometryHash");
-                m_GeomHashFunc = (Func<IGeometry, double>)Delegate.CreateDelegate(typeof(Func<IGeometry, double>), mis.First());
+                if (!mis?.Any() ?? true)
+                    throw new InvalidOperationException("Could not dynamically load the GeometryHash method.");
+
+                m_GeomHashFunc = (Func<IGeometry, string>)Delegate.CreateDelegate(typeof(Func<IGeometry, string>), mis.First());
             }
 
             return m_GeomHashFunc(igeom);
         }
 
-        private static Func<IGeometry, double> m_GeomHashFunc = null;
+        private static Func<IGeometry, string> m_GeomHashFunc = null;
     }
 }
 
