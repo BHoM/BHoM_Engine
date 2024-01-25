@@ -45,12 +45,12 @@ namespace BH.Engine.Base
         [Description("Compute the approximation of a floating-point number for its comparison with other numbers, given specific ComparisonConfig settings.")]
         [Input("number", "Number to approximate.")]
         [Input("fullName", "Name of the number or of the property that holds this number. This name will be used to seek any matching custom tolerance/significant figure to apply for this approximation in the `comparisonConfig` input.")]
-        [Input("comparisonConfig", "Object that stores the settings that will used for the approximation.")]
-        public static double NumericalApproximation(this double number, string fullName = null, BaseComparisonConfig comparisonConfig = null)
+        [Input("numericalApproxConfig", "Object that stores the settings that will used for the approximation.")]
+        public static double NumericalApproximation(this double number, string fullName = null, NumericalApproximationConfig numericalApproxConfig = null)
         {
-            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
+            numericalApproxConfig = numericalApproxConfig ?? new NumericalApproximationConfig();
 
-            return NumericalApproximation(number, fullName, comparisonConfig.PropertyNumericTolerances, comparisonConfig.NumericTolerance, comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures);
+            return NumericalApproximation(number, fullName, numericalApproxConfig.PropertyNumericTolerances, numericalApproxConfig.NumericTolerance, numericalApproxConfig.PropertySignificantFigures, numericalApproxConfig.SignificantFigures);
         }
 
         /***************************************************/
@@ -58,12 +58,12 @@ namespace BH.Engine.Base
         [Description("Compute the approximation of an integer number for its comparison with other numbers, given specific ComparisonConfig settings.")]
         [Input("number", "Number to approximate.")]
         [Input("fullName", "Name of the number or of the property that holds this number. This name will be used to seek any matching custom tolerance/significant figure to apply for this approximation in the `comparisonConfig` input.")]
-        [Input("comparisonConfig", "Object that stores the settings that will used for the approximation.")]
-        public static double NumericalApproximation(this int number, string fullName = null, BaseComparisonConfig comparisonConfig = null)
+        [Input("numericalApproxConfig", "Object that stores the settings that will used for the approximation.")]
+        public static double NumericalApproximation(this int number, string fullName = null, NumericalApproximationConfig numericalApproxConfig = null)
         {
-            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
+            numericalApproxConfig = numericalApproxConfig ?? new NumericalApproximationConfig();
 
-            return NumericalApproximation(number, fullName, comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures);
+            return NumericalApproximation(number, fullName, numericalApproxConfig.PropertySignificantFigures, numericalApproxConfig.SignificantFigures);
         }
 
         /***************************************************/

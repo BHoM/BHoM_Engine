@@ -38,13 +38,13 @@ namespace BH.Engine.Base
             "If a CustomTolerance match is found for this property Full Name, then return it. " +
             "If multiple matches are found, return the most sensistive tolerance among the matches. " +
             "If no match is found, return the most sensitive tolerance (double.MinValue).")]
-        [Input("comparisonConfig", "Comparison Config from where tolerance information should be extracted.")]
+        [Input("numericalApproxConfig", "Numerical approximation Config containing the settings for Numerical Tolerance.")]
         [Input("propertyFullName", "Full name (path) of the property for which we want to extract the numerical Tolerance.")]
-        public static double NumericTolerance(this BaseComparisonConfig comparisonConfig, string propertyFullName)
+        public static double NumericTolerance(this NumericalApproximationConfig numericalApproxConfig, string propertyFullName)
         {
-            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
+            numericalApproxConfig = numericalApproxConfig ?? new NumericalApproximationConfig();
 
-            return NumericTolerance(comparisonConfig.PropertyNumericTolerances, comparisonConfig.NumericTolerance, propertyFullName, false);
+            return NumericTolerance(numericalApproxConfig.PropertyNumericTolerances, numericalApproxConfig.NumericTolerance, propertyFullName, false);
         }
 
         /***************************************************/

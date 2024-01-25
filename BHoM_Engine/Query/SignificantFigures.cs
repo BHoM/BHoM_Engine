@@ -38,13 +38,13 @@ namespace BH.Engine.Base
             "If a CustomTolerance match is found for this property Full Name, then return it. " +
             "If multiple matches are found, return the most sensistive among the matches. " +
             "If no match is found, return `ComparisonConfig.SignificantFigures`.")]
-        [Input("comparisonConfig", "Comparison Config from where tolerance information should be extracted.")]
+        [Input("numericalApproxConfig", "Numerical approximation Config containing the settings for significant figures.")]
         [Input("propertyFullName", "Full name (path) of the property for which we want to extract the numerical Tolerance.")]
-        public static int SignificantFigures(this BaseComparisonConfig comparisonConfig, string propertyFullName)
+        public static int SignificantFigures(this NumericalApproximationConfig numericalApproxConfig, string propertyFullName)
         {
-            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
+            numericalApproxConfig = numericalApproxConfig ?? new NumericalApproximationConfig();
 
-            return SignificantFigures(comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures, propertyFullName);
+            return SignificantFigures(numericalApproxConfig.PropertySignificantFigures, numericalApproxConfig.SignificantFigures, propertyFullName);
         }
 
         /***************************************************/

@@ -66,7 +66,7 @@ namespace BH.Engine.Base
             // We need to process only those properties that have not been specified in FullName form, or that contain wildcards.
             List<string> propertiesToConsiderToParse = comparisonConfig.PropertiesToConsider?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
             List<string> propertyExceptionsToParse = comparisonConfig.PropertyExceptions?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
-            List<string> propertyNumericTolerancesToParse = comparisonConfig.PropertyNumericTolerances?.Select(p => p.Name).Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
+            List<string> propertyNumericTolerancesToParse = comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances?.Select(p => p.Name).Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
 
             // If all the property names are already in FullName form and without wildcards, return.
             if (!propertiesToConsiderToParse.Any() && !propertyExceptionsToParse.Any() && !propertyNumericTolerancesToParse.Any())
@@ -87,7 +87,7 @@ namespace BH.Engine.Base
             bool processPropertiesExceptions = propertyExceptionsToParse.Any() && (!cache || !m_cachedPropertyExceptions.TryGetValue(propertyExceptionsCacheKey, out propertyExceptions_fullNames));
 
             // Check if we already have encountered and cached this same object Type and PropertyNumericTolerances.
-            string propertyNumericTolerancesCacheKey = $"{type.FullName}:{string.Join(",", comparisonConfig.PropertyNumericTolerances?.Select(ct => ct.Name + ct.Tolerance))}";
+            string propertyNumericTolerancesCacheKey = $"{type.FullName}:{string.Join(",", comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances?.Select(ct => ct.Name + ct.Tolerance))}";
             bool processPropertyNumericTolerances = propertyNumericTolerancesToParse.Any() && (!cache || !m_cachedPropertyNumericTolerances.TryGetValue(propertyNumericTolerancesCacheKey, out propertyNumericTolerances_fullNames));
 
             // Safety clauses because C#'s Dictionary TryGetValue sets the out variable to `null` if it failed.
@@ -120,16 +120,16 @@ namespace BH.Engine.Base
                 {
                     foreach (var propNumericTolerance in propertyNumericTolerancesToParse)
                         if (IsMatchingInclusion(propertyFullName, propNumericTolerance))
-                            propertyNumericTolerances_fullNames.Add(new NamedNumericTolerance() { Name = propertyFullName, Tolerance = comparisonConfig.PropertyNumericTolerances.Where(pnc => pnc.Name == propNumericTolerance).First().Tolerance });
+                            propertyNumericTolerances_fullNames.Add(new NamedNumericTolerance() { Name = propertyFullName, Tolerance = comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances.Where(pnc => pnc.Name == propNumericTolerance).First().Tolerance });
 
                     if (cache) m_cachedPropertyNumericTolerances[propertyNumericTolerancesCacheKey] = propertyNumericTolerances_fullNames;
                 }
             }
 
             // Add the results to the ComparisonConfig.
-            comparisonConfig.PropertyNumericTolerances.UnionWith(propertyNumericTolerances_fullNames);
             comparisonConfig.PropertiesToConsider.UnionWith(propertiesToConsider_fullNames);
             comparisonConfig.PropertyExceptions.UnionWith(propertyExceptions_fullNames);
+            comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances.UnionWith(propertyNumericTolerances_fullNames);
 
             m_ComparisonConfig_Type_processed[new Tuple<Type, object>(type, comparisonConfig)] = comparisonConfig;
         }
@@ -150,7 +150,7 @@ namespace BH.Engine.Base
             // We need to execute this method only if we have properties in the ComparisonConfig that have NOT been specified in FullName form, or that contain wildcards.
             List<string> propertiesToConsiderToParse = comparisonConfig.PropertiesToConsider?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
             List<string> propertyExceptionsToParse = comparisonConfig.PropertyExceptions?.Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
-            List<string> propertyNumericTolerancesToParse = comparisonConfig.PropertyNumericTolerances?.Select(p => p.Name).Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
+            List<string> propertyNumericTolerancesToParse = comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances?.Select(p => p.Name).Where(p => !p.StartsWith("BH.") || p.Contains("*")).ToList() ?? new List<string>();
 
             // If all the property names in the ComparisonConfig are already in FullName form and without wildcards, return.
             if (!propertiesToConsiderToParse.Any() && !propertyExceptionsToParse.Any() && !propertyNumericTolerancesToParse.Any())
@@ -179,13 +179,10 @@ namespace BH.Engine.Base
 
                 foreach (var propNumericTolerance in propertyNumericTolerancesToParse)
                     if (IsMatchingInclusion(propertyFullName, propNumericTolerance))
-                        propertyNumericTolerances_fullNames.Add(new NamedNumericTolerance() { Name = propertyFullName, Tolerance = comparisonConfig.PropertyNumericTolerances.Where(pnc => pnc.Name == propNumericTolerance).First().Tolerance });
+                        propertyNumericTolerances_fullNames.Add(new NamedNumericTolerance() { Name = propertyFullName, Tolerance = comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances.Where(pnc => pnc.Name == propNumericTolerance).First().Tolerance });
             }
 
             // Add the results to the ComparisonConfig.
-            comparisonConfig.PropertyNumericTolerances = comparisonConfig.PropertyNumericTolerances == null ?
-                new HashSet<NamedNumericTolerance>(comparisonConfig.PropertyNumericTolerances?.Union(propertyNumericTolerances_fullNames))
-                : propertyNumericTolerances_fullNames;
             if (comparisonConfig.PropertiesToConsider != null)
                 comparisonConfig.PropertiesToConsider.UnionWith(propertiesToConsider_fullNames);
             else
@@ -195,6 +192,12 @@ namespace BH.Engine.Base
                 comparisonConfig.PropertyExceptions.UnionWith(propertyExceptions_fullNames);
             else
                 comparisonConfig.PropertiesToConsider = new HashSet<string>(propertyExceptions_fullNames);
+
+            comparisonConfig.NumericalApproximationConfig = comparisonConfig.NumericalApproximationConfig ?? new NumericalApproximationConfig();
+            if (comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances != null)
+                comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances.UnionWith(propertyNumericTolerances_fullNames);
+            else
+                comparisonConfig.NumericalApproximationConfig.PropertyNumericTolerances = new HashSet<NamedNumericTolerance>(propertyNumericTolerances_fullNames);
         }
 
         /***************************************************/

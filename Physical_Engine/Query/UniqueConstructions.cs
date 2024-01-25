@@ -50,7 +50,7 @@ namespace BH.Engine.Physical
                 {
                     "CustomData"
                 },
-                NumericTolerance = BH.oM.Geometry.Tolerance.Distance
+                NumericalApproximationConfig = new NumericalApproximationConfig() { NumericTolerance = BH.oM.Geometry.Tolerance.Distance },
             };
 
             if (!includeConstructionName)
