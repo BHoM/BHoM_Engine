@@ -411,6 +411,9 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for a CompositeGeometry is given as the concatenated GeometryHash of the single elements composing it.")]
         private static double[] HashArray(this Vector obj, double translationFactor)
         {
+            if (translationFactor == (double)TypeTranslationFactor.Point)
+                translationFactor = (double)TypeTranslationFactor.Vector;
+
             return new double[]
             {
                 obj.X + translationFactor,
@@ -431,6 +434,7 @@ namespace BH.Engine.Geometry
             "like e.g. a 3-point Polyline and an Arc that passes through the same points.")]
         private enum TypeTranslationFactor
         {
+            Vector = -1,
             Point = 0,
             Plane = 1 * m_ToleranceMultiplier,
             Line = 2 * m_ToleranceMultiplier,
