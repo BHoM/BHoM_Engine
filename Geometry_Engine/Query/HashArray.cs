@@ -427,7 +427,8 @@ namespace BH.Engine.Geometry
         private const int m_ToleranceMultiplier = (int)(1e9 * Tolerance.Distance);
 
         [Description("Translation factors per each type of geometry." +
-            "The translation is proportional ")]
+            "The translation is needed in order to obtain different HashArrays for geometries that may share the same defining points," +
+            "like e.g. a 3-point Polyline and an Arc that passes through the same points.")]
         private enum TypeTranslationFactor
         {
             Point = 0,
