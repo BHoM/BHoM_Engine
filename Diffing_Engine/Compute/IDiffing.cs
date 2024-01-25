@@ -160,7 +160,7 @@ namespace BH.Engine.Diffing
         [Input("followingObjs", "Set of objects belonging to a following revision.")]
         [Input("propertiesToConsider", "(Optional) Properties to be considered by the Diffing when determining what objects changed. See the DiffingConfig tooltip for more info.")]
         [Output("diff", "Object holding the detected changes.")]
-        public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, List<string> propertiesToConsider = null)
+        public static Diff IDiffing(IEnumerable<object> pastObjs, IEnumerable<object> followingObjs, HashSet<string> propertiesToConsider = null)
         {
             DiffingConfig dc = null;
             if (propertiesToConsider?.Any() ?? false)

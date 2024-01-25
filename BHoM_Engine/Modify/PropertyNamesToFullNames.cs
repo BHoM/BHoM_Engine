@@ -127,9 +127,9 @@ namespace BH.Engine.Base
             }
 
             // Add the results to the ComparisonConfig.
-            comparisonConfig.PropertiesToConsider.AddRange(propertiesToConsider_fullNames);
-            comparisonConfig.PropertyExceptions.AddRange(propertyExceptions_fullNames);
             comparisonConfig.PropertyNumericTolerances.UnionWith(propertyNumericTolerances_fullNames);
+            comparisonConfig.PropertiesToConsider.UnionWith(propertiesToConsider_fullNames);
+            comparisonConfig.PropertyExceptions.UnionWith(propertyExceptions_fullNames);
 
             m_ComparisonConfig_Type_processed[new Tuple<Type, object>(type, comparisonConfig)] = comparisonConfig;
         }
@@ -183,11 +183,18 @@ namespace BH.Engine.Base
             }
 
             // Add the results to the ComparisonConfig.
-            comparisonConfig.PropertiesToConsider = comparisonConfig.PropertiesToConsider?.Concat(propertiesToConsider_fullNames).ToList() ?? propertiesToConsider_fullNames;
-            comparisonConfig.PropertyExceptions = comparisonConfig.PropertyExceptions?.Concat(propertyExceptions_fullNames).ToList() ?? propertyExceptions_fullNames;
             comparisonConfig.PropertyNumericTolerances = comparisonConfig.PropertyNumericTolerances == null ?
                 new HashSet<NamedNumericTolerance>(comparisonConfig.PropertyNumericTolerances?.Union(propertyNumericTolerances_fullNames))
                 : propertyNumericTolerances_fullNames;
+            if (comparisonConfig.PropertiesToConsider != null)
+                comparisonConfig.PropertiesToConsider.UnionWith(propertiesToConsider_fullNames);
+            else
+                comparisonConfig.PropertiesToConsider = new HashSet<string>(propertiesToConsider_fullNames);
+
+            if (comparisonConfig.PropertyExceptions != null)
+                comparisonConfig.PropertyExceptions.UnionWith(propertyExceptions_fullNames);
+            else
+                comparisonConfig.PropertiesToConsider = new HashSet<string>(propertyExceptions_fullNames);
         }
 
         /***************************************************/
