@@ -74,8 +74,10 @@ namespace BH.Engine.Geometry
             double[] hashArray = IHashArray(igeometry);
             byte[] byteArray = GetBytes(hashArray);
 
-            HashAlgorithm SHA256Algorithm = SHA256.Create();
-            byte[] byteHash = SHA256Algorithm.ComputeHash(byteArray);
+            if (m_SHA256Algorithm == null)
+                m_SHA256Algorithm = SHA256.Create();
+
+            byte[] byteHash = m_SHA256Algorithm.ComputeHash(byteArray);
 
             StringBuilder sb = new StringBuilder();
             foreach (byte b in byteHash)
@@ -92,5 +94,11 @@ namespace BH.Engine.Geometry
         {
             return values.SelectMany(value => BitConverter.GetBytes(value)).ToArray();
         }
+
+        /***************************************************/
+        /****              Private Fields               ****/
+        /***************************************************/
+
+        private static HashAlgorithm m_SHA256Algorithm = SHA256.Create();
     }
 }
