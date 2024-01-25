@@ -43,6 +43,7 @@ namespace BH.Engine.Geometry
         /****               Public Methods              ****/
         /***************************************************/
 
+        [PreviousVersion("7.1", "BH.Engine.Base.Query.GeometryHash(BH.oM.Base.IBHoMObject)")]
         [Description("Returns the geometrical identity of any IBHoMObject, useful for diffing. " +
             "\nThe geometrical identity is computed by extracting the geometry of the object via the IGeometry() method." +
             "\nThen, the hash is computed as a serialised array representing the coordinate of significant points taken on the geometry." +
