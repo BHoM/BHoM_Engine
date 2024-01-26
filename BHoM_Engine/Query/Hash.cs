@@ -147,23 +147,23 @@ namespace BH.Engine.Base
             else if (type.IsNumeric(enumsAsNumbers: false))
             {
                 // If we didn't specify any custom tolerance/significant figures, just return the input.
-                if (cc.NumericalApproximationConfig.NumericTolerance == double.MinValue && cc.NumericalApproximationConfig.SignificantFigures == int.MaxValue
-                    && (!cc.NumericalApproximationConfig.PropertyNumericTolerances?.Any() ?? true) && (!cc.NumericalApproximationConfig.PropertySignificantFigures?.Any() ?? true))
+                if (cc.NumericTolerance == double.MinValue && cc.SignificantFigures == int.MaxValue
+                    && (!cc.PropertyNumericTolerances?.Any() ?? true) && (!cc.PropertySignificantFigures?.Any() ?? true))
                     return $"\n{tabs}" + obj.ToString();
 
                 if (type == typeof(double))
-                    return $"\n{tabs}" + NumericalApproximation((double)obj, currentPropertyFullName, cc.NumericalApproximationConfig).ToString();
+                    return $"\n{tabs}" + NumericalApproximation((double)obj, currentPropertyFullName, cc).ToString();
 
                 if (type == typeof(int))
-                    return $"\n{tabs}" + NumericalApproximation((int)obj, currentPropertyFullName, cc.NumericalApproximationConfig).ToString();
+                    return $"\n{tabs}" + NumericalApproximation((int)obj, currentPropertyFullName, cc).ToString();
 
                 // Fallback for any other floating-point numeric type.
                 if (type.IsNumericFloatingPointType())
-                    return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc.NumericalApproximationConfig).ToString();
+                    return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString();
 
                 // Fallback for any other integral numeric type.
                 if (type.IsNumericIntegralType())
-                    return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc.NumericalApproximationConfig).ToString();
+                    return $"\n{tabs}" + NumericalApproximation(double.Parse(obj.ToString()), currentPropertyFullName, cc).ToString();
 
             }
             else if (type.IsPrimitive || type == typeof(String))
@@ -234,7 +234,9 @@ namespace BH.Engine.Base
                     return (string)hashStringFromExtensionMethod;
 
                 if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
+                {
                     return GeometryHash((IGeometry)obj).ToString();
+                }
 
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.

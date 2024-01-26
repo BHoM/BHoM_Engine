@@ -67,7 +67,7 @@ namespace BH.Engine.Environment
                         "BHoM_Guid",
                         "CustomData",
                     },
-                NumericalApproximationConfig = new NumericalApproximationConfig() { NumericTolerance = BH.oM.Geometry.Tolerance.Distance }
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
             return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
@@ -90,7 +90,7 @@ namespace BH.Engine.Environment
                         "BHoM_Guid",
                         "CustomData",
                     },
-                NumericalApproximationConfig = new NumericalApproximationConfig() { NumericTolerance = BH.oM.Geometry.Tolerance.Distance }
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance
             };
 
             return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;
@@ -123,7 +123,8 @@ namespace BH.Engine.Environment
                         "BHoM_Guid",
                         "CustomData",
                     },
-                NumericalApproximationConfig = new NumericalApproximationConfig() { NumericTolerance = BH.oM.Geometry.Tolerance.Distance },
+                NumericTolerance = BH.oM.Geometry.Tolerance.Distance,
+
             };
 
             return !Diffing.Query.DifferentProperties(element, other, cc)?.Any() ?? true;

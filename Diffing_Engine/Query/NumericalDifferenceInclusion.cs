@@ -46,13 +46,13 @@ namespace BH.Engine.Diffing
         [Input("number1", "First number to compare.")]
         [Input("number2", "Second number to compare.")]
         [Input("propertyFullName", "If the numbers are part of an object, full name of the property that owns them. This name will be used to seek matches in the ComparisoConfig named numeric tolerance/significant figures.")]
-        [Input("numericalApproxConfig", "Object containing the settings for this numerical comparison.")]
+        [Input("comparisonConfig", "Object containing the settings for this numerical comparison.")]
         [Output("seenAsDifferent", "Whether the input numbers are seen as different, given the numerical approximations specified in the comparisonConfig.")]
-        public static bool NumericalDifferenceInclusion(this object number1, object number2, string propertyFullName = null, NumericalApproximationConfig numericalApproxConfig = null)
+        public static bool NumericalDifferenceInclusion(this object number1, object number2, string propertyFullName = null, BaseComparisonConfig comparisonConfig = null)
         {
-            numericalApproxConfig = numericalApproxConfig ?? new NumericalApproximationConfig();
+            comparisonConfig = comparisonConfig ?? new ComparisonConfig();
 
-            return NumericalDifferenceInclusion(number1, number2, propertyFullName, numericalApproxConfig.PropertyNumericTolerances, numericalApproxConfig.NumericTolerance, numericalApproxConfig.PropertySignificantFigures, numericalApproxConfig.SignificantFigures);
+            return NumericalDifferenceInclusion(number1, number2, propertyFullName, comparisonConfig.PropertyNumericTolerances, comparisonConfig.NumericTolerance, comparisonConfig.PropertySignificantFigures, comparisonConfig.SignificantFigures);
         }
 
         /***************************************************/

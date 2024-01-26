@@ -49,7 +49,8 @@ namespace BH.Engine.Analytical
         {
             ComparisonConfig cc = new ComparisonConfig()
             {
-                NumericalApproximationConfig = new NumericalApproximationConfig() { NumericTolerance = numericTolerance },
+                NumericTolerance = numericTolerance,
+                PropertiesToConsider = propertyNamesToConsider ?? new List<string>(),
                 PropertiesToConsider = propertyNamesToConsider ?? new HashSet<string>(),
             };
 

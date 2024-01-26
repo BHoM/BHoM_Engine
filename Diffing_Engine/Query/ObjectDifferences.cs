@@ -181,7 +181,7 @@ namespace BH.Engine.Diffing
                     continue;
 
                 // Check if this difference is numerical, and if so whether it should be included or not given the input tolerance/significant figures.
-                if (!NumericalDifferenceInclusion(kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName_noIndexes, cc.NumericalApproximationConfig))
+                if (!NumericalDifferenceInclusion(kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName_noIndexes, cc))
                     continue;
 
                 // Add to the final result.
