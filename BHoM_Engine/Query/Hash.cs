@@ -43,8 +43,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        private static bool m_isCompatibleWithGeometryHash = true;
-
         [Description("Computes a Hash code for the iObject. The hash uniquely represents an object's state, based on its properties and their values. It can be used for comparisons." +
             "\nYou can change how the hash is computed by changing the settings in the ComparisonConfig.")]
         [Input("iObj", "iObject the hash code should be calculated for.")]
@@ -78,7 +76,7 @@ namespace BH.Engine.Base
             // ----- HASH -----
 
             // Compute the defining string.
-            string hashString = HashString(iObj, cc, 0, typeof(System.Object));
+            string hashString = HashString(iObj, cc, 0);
 
             if (string.IsNullOrWhiteSpace(hashString))
             {
@@ -119,7 +117,7 @@ namespace BH.Engine.Base
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
         [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.Start.Point.X`")]
-        private static string HashString(object obj, BaseComparisonConfig cc, int nestingLevel, Type parentType, string currentPropertyFullName = null)
+        private static string HashString(object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
         {
             string definingString = "";
 
@@ -144,7 +142,7 @@ namespace BH.Engine.Base
             {
                 return "";
             }
-            else if (type.IsNumeric(enumsAsNumbers: false))
+            else if (type.IsNumeric() && type.BaseType != typeof(System.Enum))
             {
                 // If we didn't specify any custom tolerance/significant figures, just return the input.
                 if (cc.NumericTolerance == double.MinValue && cc.SignificantFigures == int.MaxValue
@@ -173,7 +171,7 @@ namespace BH.Engine.Base
             else if (type.IsArray)
             {
                 foreach (var element in (obj as dynamic))
-                    definingString += $"\n{tabs}" + HashString(element, cc, nestingLevel + 1, type, currentPropertyFullName);
+                    definingString += $"\n{tabs}" + HashString(element, cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (typeof(IDictionary).IsAssignableFrom(type))
             {
@@ -195,6 +193,9 @@ namespace BH.Engine.Base
                             // we want to consider its keys as if they were object properties for UX/UI consistency.
                             cc.CustomdataKeysExceptions.AddRange(cc.PropertyExceptions);
                             cc.CustomdataKeysToConsider.AddRange(cc.PropertiesToConsider);
+
+                            cc.CustomdataKeysExceptions = cc.CustomdataKeysExceptions.Distinct().ToList();
+                            cc.CustomdataKeysToConsider = cc.CustomdataKeysToConsider.Distinct().ToList();
                         }
 
                         // Get the custom data Key, so we can check if it belongs to the exceptions.
@@ -208,13 +209,13 @@ namespace BH.Engine.Base
                             continue;
                     }
 
-                    definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n {HashString(entry.Value, cc, nestingLevel + 1, type, currentPropertyFullName)}";
+                    definingString += $"\n{tabs}" + $"[{entry.Key.GetType().FullName}]\n{tabs}{entry.Key}:\n { HashString(entry.Value, cc, nestingLevel + 1, currentPropertyFullName)}";
                 }
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 foreach (var element in (obj as dynamic))
-                    definingString += $"\n{tabs}" + HashString(element, cc, nestingLevel + 1, type, currentPropertyFullName);
+                    definingString += $"\n{tabs}" + HashString(element, cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (type.FullName.Contains("System.Collections.Generic.ObjectEqualityComparer`1"))
             {
@@ -223,7 +224,7 @@ namespace BH.Engine.Base
             else if (type == typeof(System.Data.DataTable))
             {
                 DataTable dt = obj as DataTable;
-                return definingString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + HashString(dt.AsEnumerable(), cc, nestingLevel + 1, type, currentPropertyFullName);
+                return definingString += $"{type.FullName} {string.Join(", ", dt.Columns.OfType<DataColumn>().Select(c => c.ColumnName))}\n{tabs}" + HashString(dt.AsEnumerable(), cc, nestingLevel + 1, currentPropertyFullName);
             }
             else if (typeof(IObject).IsAssignableFrom(type))
             {
@@ -270,7 +271,7 @@ namespace BH.Engine.Base
                     if (propertyValue != null)
                     {
                         // Recurse for this property.
-                        propHashString = HashString(propertyValue, cc, nestingLevel + 1, type, propFullName) ?? "";
+                        propHashString = HashString(propertyValue, cc, nestingLevel + 1, propFullName) ?? "";
                         if (!string.IsNullOrWhiteSpace(propHashString))
                             definingString += $"\n{tabs}" + $"{type.FullName}.{propName}:\n{tabs}{propHashString} ";
                     }
