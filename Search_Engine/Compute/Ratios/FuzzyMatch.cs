@@ -47,7 +47,7 @@ namespace BH.Engine.Search
         [Input("compare", "The string to compare against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("r", "The ratio of similarity between the two strings.")]
-        public static int FuzzyMatch(string text, string compare, Scorer scorer = Scorer.DefaultRatio)
+        public static int MatchScore(string text, string compare, Scorer scorer = Scorer.DefaultRatio)
         {
             switch (scorer)
             {
