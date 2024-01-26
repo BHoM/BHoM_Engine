@@ -73,8 +73,8 @@ namespace BH.Engine.Security
             {
                 if (obstacle.IsContaining(new List<Point> { cameraLocation }, true, distanceTolerance))
                 {
-                    Base.Compute.RecordWarning("Camera Device is inside obstacle. Null value will be returned.");
-                    return null;
+                    Base.Compute.RecordWarning("Camera Device is inside obstacle that will be skipped.");
+                    continue;
                 }
 
                 foreach (Line obstLine in obstacle.SubParts())
@@ -345,14 +345,15 @@ namespace BH.Engine.Security
                 {
                     double p1Param = coneArc.ParameterAtPoint(pt1, tolerance);
                     double p2Param = coneArc.ParameterAtPoint(pt2, tolerance);
-                    double p3Param = (p1Param + p2Param) / 2;
-                    Point pt3 = coneArc.PointAtParameter(p3Param);
-                    Arc newArc = BH.Engine.Geometry.Create.Arc(pt1, pt3, pt2, tolerance);
+                    double startAngle = coneArc.EndAngle * p1Param;
+                    double endAngle = coneArc.EndAngle * p2Param;
+                    Arc newArc = Create.Arc(coneArc.CoordinateSystem, coneArc.Radius, startAngle, endAngle);
+
                     curves.Add(newArc);
                 }
                 else
                 {
-                    Line line = BH.Engine.Geometry.Create.Line(pt1, pt2);
+                    Line line = Create.Line(pt1, pt2);
                     curves.Add(line);
                 }
             }
