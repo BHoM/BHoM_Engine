@@ -193,8 +193,8 @@ namespace BH.Engine.Base
                         {
                             // If the owner of this CustomData Dictionary is a CustomObject,
                             // we want to consider its keys as if they were object properties for UX/UI consistency.
-                            cc.CustomdataKeysExceptions.UnionWith(cc.PropertyExceptions);
-                            cc.CustomdataKeysToConsider.UnionWith(cc.PropertiesToConsider);
+                            cc.CustomdataKeysExceptions.AddRange(cc.PropertyExceptions);
+                            cc.CustomdataKeysToConsider.AddRange(cc.PropertiesToConsider);
                         }
 
                         // Get the custom data Key, so we can check if it belongs to the exceptions.

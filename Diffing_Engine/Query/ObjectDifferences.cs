@@ -75,7 +75,7 @@ namespace BH.Engine.Diffing
             kellermanComparer.Config.TypesToIgnore.Add(typeof(HashFragment)); // Never include the changes in HashFragment.
             kellermanComparer.Config.TypesToIgnore.Add(typeof(RevisionFragment)); // Never include the changes in RevisionFragment.
             kellermanComparer.Config.TypesToIgnore.AddRange(cc.TypeExceptions);
-            kellermanComparer.Config.MembersToIgnore = cc.PropertyExceptions.ToList();
+            kellermanComparer.Config.MembersToIgnore = cc.PropertyExceptions;
 
             // Kellerman configuration for tolerance.
             // Setting Custom Tolerance for specific properties is complex with Kellerman. 

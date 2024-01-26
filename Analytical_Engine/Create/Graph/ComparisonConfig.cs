@@ -45,13 +45,12 @@ namespace BH.Engine.Analytical
             "\nHere you can specify a list of property names. Only the properties with a name matching any of this list will be considered." +
             "\nWorks only for top-level properties." +
             "\nE.g., if you input 'Name' only the differences in terms of name will be returned.")]
-        public static ComparisonConfig ComparisonConfig(double numericTolerance = oM.Geometry.Tolerance.Distance, HashSet<string> propertyNamesToConsider = null)
+        public static ComparisonConfig ComparisonConfig(double numericTolerance = oM.Geometry.Tolerance.Distance, List<string> propertyNamesToConsider = null)
         {
             ComparisonConfig cc = new ComparisonConfig()
             {
                 NumericTolerance = numericTolerance,
                 PropertiesToConsider = propertyNamesToConsider ?? new List<string>(),
-                PropertiesToConsider = propertyNamesToConsider ?? new HashSet<string>(),
             };
 
             return cc;

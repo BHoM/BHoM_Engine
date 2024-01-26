@@ -46,7 +46,7 @@ namespace BH.Engine.Physical
         {
             ComparisonConfig cc = new ComparisonConfig()
             {
-                PropertyExceptions = new HashSet<string>
+                PropertyExceptions = new List<string>
                 {
                     "CustomData"
                 },

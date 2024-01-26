@@ -53,7 +53,7 @@ namespace BH.Engine.Diffing
         [Description("Defines configurations for the diffing.")]
         [Input("enablePropertyDiffing", "Enables the property-level diffing: differences in object properties are stored in the `ModifiedPropsPerObject` dictionary.")]
         [Input("storeUnchangedObjects", "If enabled, the Diff stores also the objects that did not change (`Unchanged` property).")]
-        public static DiffingConfig DiffingConfig(bool enablePropertyDiffing = false, bool storeUnchangedObjects = true, HashSet<string> propertyNamesToConsider = null)
+        public static DiffingConfig DiffingConfig(bool enablePropertyDiffing = false, bool storeUnchangedObjects = true, List<string> propertyNamesToConsider = null)
         {
             return new DiffingConfig()
             {
