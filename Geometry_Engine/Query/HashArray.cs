@@ -408,7 +408,7 @@ namespace BH.Engine.Geometry
         /****  Other methods for "conceptual" geometry  ****/
         /***************************************************/
 
-        [Description("The GeometryHash for a CompositeGeometry is given as the concatenated GeometryHash of the single elements composing it.")]
+        [Description("The GeometryHash for a Vector is given as the concatenated GeometryHash of the single elements composing it.")]
         private static double[] HashArray(this Vector obj, double translationFactor)
         {
             if (translationFactor == (double)TypeTranslationFactor.Point)
@@ -423,6 +423,41 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
+
+        [Description("The GeometryHash for a Basis is given as the concatenated GeometryHash of the single elements composing it.")]
+        private static double[] HashArray(this Basis obj, double translationFactor)
+        {
+            translationFactor = (double)TypeTranslationFactor.Basis;
+
+            var x = obj.X.HashArray(translationFactor);
+            var y = obj.Y.HashArray(translationFactor);
+            var z = obj.Z.HashArray(translationFactor);
+            return x.Concat(y).Concat(z).ToArray();
+        }
+
+        /***************************************************/
+
+        [Description("The GeometryHash for a Basis is given as the concatenated GeometryHash of the single elements composing it.")]
+        private static double[] HashArray(this Cartesian obj, double translationFactor)
+        {
+            translationFactor = (double)TypeTranslationFactor.Cartesian;
+
+            var x = obj.X.HashArray(translationFactor);
+            var y = obj.Y.HashArray(translationFactor);
+            var z = obj.Z.HashArray(translationFactor);
+            var o = obj.Origin.HashArray(translationFactor);
+            return x.Concat(y).Concat(z).Concat(o).ToArray();
+        }
+
+        /***************************************************/
+
+        [Description("The GeometryHash for a TransformMatrix is given as the concatenated numbers of the matrix.")]
+        private static double[] HashArray(this TransformMatrix obj, double translationFactor)
+        {
+            return obj.Matrix.Cast<double>().ToArray();
+        }
+
+        /***************************************************/
         /****  Private fields                           ****/
         /***************************************************/
 
@@ -434,7 +469,9 @@ namespace BH.Engine.Geometry
             "like e.g. a 3-point Polyline and an Arc that passes through the same points.")]
         private enum TypeTranslationFactor
         {
-            Vector = -1,
+            Cartesian = -3 * m_ToleranceMultiplier,
+            Basis = -2 * m_ToleranceMultiplier,
+            Vector = -1 * m_ToleranceMultiplier,
             Point = 0,
             Plane = 1 * m_ToleranceMultiplier,
             Line = 2 * m_ToleranceMultiplier,
