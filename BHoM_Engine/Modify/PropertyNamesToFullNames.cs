@@ -39,7 +39,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Parse the ComparisonConfig's property-based configs (`PropertiesToConsider`, `PropertyExceptions`, etc.), and get them all as Full Names." +
-            "This allows to make sure we collect all relevant properties, even if we are given partial names or wildcards (e.g. `StartNode.*.X`).")]
+            "This allows to make sure we collect all relevant properties, even if we are given partial names or wildcards (e.g. `Start.*.X`).")]
         [Input("comparisonConfig", "ComparisonConfig object whose `PropertiesToConsider` and `PropertyExceptions` will be parsed." +
             "If they contain partial names or wildcards, they will be expanded with all the matching property FullNames found for the specified Type.")]
         [Input("type", "Object type whose properties will be collected and matched against the comparisonConfig's `PropertiesToConsider`, `PropertyExceptions`, and the other property-based configs.")]
@@ -137,7 +137,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Parse the ComparisonConfig's property-based configs (from the `PropertiesToConsider`, `PropertyExceptions`, etc.), and get them all as Full Names." +
-            "This allows to make sure we collect all relevant properties, even if we are given partial names or wildcards (e.g. `StartNode.*.X`).")]
+            "This allows to make sure we collect all relevant properties, even if we are given partial names or wildcards (e.g. `Start.*.X`).")]
         [Input("comparisonConfig", "ComparisonConfig object whose `PropertiesToConsider` and `PropertyExceptions` will be parsed." +
             "If they contain partial names or wildcards, they will be expanded with all the matching property FullNames found for the specified Type.")]
         [Input("obj", "Object whose properties will be collected and matched against the comparisonConfig's `PropertiesToConsider`, `PropertyExceptions`, and the other property-based configs.")]
@@ -203,7 +203,7 @@ namespace BH.Engine.Base
                 return true;
 
             // If the inclusionOrExclusion is not a FullName (i.e. it does not start with "BH.")
-            // and it also does NOT have a starting wildcard (i.e. "StartNode.*.X" and not "*.StartNode.*.X"),
+            // and it also does NOT have a starting wildcard (i.e. "Start.*.X" and not "*.Start.*.X"),
             // a wildcard must be prepended to make sure we match all possible properties.
             if (!inclusionOrExclusion.StartsWith("BH") && !inclusionOrExclusion.StartsWith("*"))
                 inclusionOrExclusion = $"*{inclusionOrExclusion}";

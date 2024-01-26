@@ -33,6 +33,7 @@ using System.ComponentModel;
 using BH.Engine.Base;
 using System.Collections;
 using System.Data;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Base
 {
@@ -115,7 +116,7 @@ namespace BH.Engine.Base
         [Input("obj", "Objects the string should be calculated for.")]
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
-        [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
+        [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.Start.Point.X`")]
         private static string HashString(object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
         {
             string definingString = "";
@@ -283,6 +284,22 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        private static double GeometryHash(this IGeometry igeom)
+        {
+            if (igeom == null)
+                return default(double);
+
+            if (m_GeomHashFunc == null)
+            {
+                var mis = Query.ExtensionMethods(typeof(IGeometry), "GeometryHash");
+                m_GeomHashFunc = (Func<IGeometry, double>)Delegate.CreateDelegate(typeof(Func<IGeometry, double>), mis.First());
+            }
+
+            return m_GeomHashFunc(igeom);
+        }
+
+        private static Func<IGeometry, double> m_GeomHashFunc = null;
     }
 }
 
