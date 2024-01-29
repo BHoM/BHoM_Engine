@@ -236,7 +236,7 @@ namespace BH.Engine.Base
 
                 if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
                 {
-                    return GeometryHash((IGeometry)obj).ToString();
+                    return GeometryHash((IGeometry)obj, cc, currentPropertyFullName).ToString();
                 }
 
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
@@ -290,7 +290,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static string GeometryHash(this IGeometry igeom)
+        private static string GeometryHash(this IGeometry igeom, BaseComparisonConfig comparisonConfig, string fullName)
         {
             if (igeom == null)
                 return null;
@@ -301,16 +301,12 @@ namespace BH.Engine.Base
                 if (!mis?.Any() ?? true)
                     throw new InvalidOperationException("Could not dynamically load the GeometryHash method.");
 
-                m_GeomHashFunc = (Func<IGeometry, string>)Delegate.CreateDelegate(typeof(Func<IGeometry, string>), mis.First());
+                m_GeomHashFunc = (Func<IGeometry, BaseComparisonConfig, string, string>)Delegate.CreateDelegate(typeof(Func<IGeometry, BaseComparisonConfig, string, string>), mis.First());
             }
 
-            return m_GeomHashFunc(igeom);
+            return m_GeomHashFunc(igeom, comparisonConfig, fullName);
         }
 
-        private static Func<IGeometry, string> m_GeomHashFunc = null;
+        private static Func<IGeometry, BaseComparisonConfig, string, string> m_GeomHashFunc = null;
     }
 }
-
-
-
-
