@@ -46,12 +46,12 @@ namespace BH.Engine.Geometry
             "\nAdditionally, the resulting points are transformed based on the source geometry type, to remove or minimize collisions." +
             "\n(Any transformation so performed is translational only, in order to support geometrical tolerance, i.e. numerical distance, when comparing GeometryHashes downstream).")]
         [Output("hashArray", "Array of numbers representing a unique signature of the input geometry.")]
-        public static double[] IHashArray(this IGeometry igeometry)
+        public static double[] IHashArray(this IGeometry igeometry, BaseComparisonConfig comparisonConfig)
         {
             if (igeometry == null)
                 return new double[] { };
 
-            return HashArray(igeometry as dynamic, 0);
+            return HashArray(igeometry as dynamic, 0, comparisonConfig);
         }
 
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Geometry
         [Description("The geometry hash of a Curve is obtained by first retrieving any Sub-part of the curve, if present." +
             "The ISubParts() methods is able to return the 'primitive' curves that a curve is composed of. " +
             "The GeometryHashes are then calculated for the individual parts and concatenated.")]
-        private static double[] HashArray(this ICurve curve, double translationFactor)
+        private static double[] HashArray(this ICurve curve, double translationFactor, BaseComparisonConfig comparisonConfig = null)
         {
             List<ICurve> subParts = curve.ISubParts().ToList();
 
@@ -75,10 +75,11 @@ namespace BH.Engine.Geometry
             //Add hash ignoring endpoint for all but last curve
             for (int i = 0; i < subParts.Count - 1; i++)
             {
-                hashes.AddRange(HashArray(subParts[i] as dynamic, translationFactor, true));
+                hashes.AddRange(HashArray(subParts[i] as dynamic, translationFactor, comparisonConfig, true));
             }
-            //Include endpoint for hasing for last curve
-            hashes.AddRange(HashArray(subParts.Last() as dynamic, translationFactor, false));
+
+            //Include endpoint for hashing for last curve
+            hashes.AddRange(HashArray(subParts.Last() as dynamic, translationFactor, comparisonConfig, false));
 
             return hashes.ToArray();
         }
@@ -86,15 +87,15 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for an Arc is calculated as the GeometryHash of the start, end and middle point of the Arc.")]
-        private static double[] HashArray(this Arc curve, double translationFactor, bool skipEndPoint = false)
+        private static double[] HashArray(this Arc curve, double translationFactor, bool skipEndPoint = false, BaseComparisonConfig comparisonConfig = null)
         {
             translationFactor += (int)TypeTranslationFactor.Arc;
 
-            IEnumerable<double> hash = curve.StartPoint().HashArray(translationFactor)
-               .Concat(curve.PointAtParameter(0.5).HashArray(translationFactor));
+            IEnumerable<double> hash = curve.StartPoint().HashArray(translationFactor, comparisonConfig)
+               .Concat(curve.PointAtParameter(0.5).HashArray(translationFactor, comparisonConfig));
 
             if (!skipEndPoint)
-                hash = hash.Concat(curve.EndPoint().HashArray(translationFactor));
+                hash = hash.Concat(curve.EndPoint().HashArray(translationFactor, comparisonConfig));
 
             return hash.ToArray();
         }
@@ -102,15 +103,15 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for an Circle is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Circle.")]
-        private static double[] HashArray(this Circle curve, double translationFactor)
+        private static double[] HashArray(this Circle curve, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             // The input `skipEndPoint` is not used here because Circles do not have a clearly defined endpoint to be used in a chain of segment curves.
 
             translationFactor += (int)TypeTranslationFactor.Circle;
 
-            IEnumerable<double> hash = curve.StartPoint().HashArray(translationFactor)
-                   .Concat(curve.PointAtParameter(0.33).HashArray(translationFactor))
-                   .Concat(curve.PointAtParameter(0.66).HashArray(translationFactor));
+            IEnumerable<double> hash = curve.StartPoint().HashArray(translationFactor, comparisonConfig)
+                   .Concat(curve.PointAtParameter(0.33).HashArray(translationFactor, comparisonConfig))
+                   .Concat(curve.PointAtParameter(0.66).HashArray(translationFactor, comparisonConfig));
 
             return hash.ToArray();
         }
@@ -118,15 +119,15 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for an Ellipse is calculated as the GeometryHash of the start, 1/3rd and 2/3rd points of the Ellipse.")]
-        private static double[] HashArray(this Ellipse curve, double translationFactor)
+        private static double[] HashArray(this Ellipse curve, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             // The input `skipEndPoint` is not used here because Ellipses do not have a clearly defined endpoint to be used in a chain of segment curves.
 
             translationFactor += (int)TypeTranslationFactor.Ellipse;
 
-            IEnumerable<double> hash = curve.StartPoint().HashArray(translationFactor)
-               .Concat(curve.PointAtParameter(0.33).HashArray(translationFactor))
-               .Concat(curve.PointAtParameter(0.66).HashArray(translationFactor));
+            IEnumerable<double> hash = curve.StartPoint().HashArray(translationFactor, comparisonConfig)
+               .Concat(curve.PointAtParameter(0.33).HashArray(translationFactor, comparisonConfig))
+               .Concat(curve.PointAtParameter(0.66).HashArray(translationFactor, comparisonConfig));
 
             return hash.ToArray();
         }
@@ -134,15 +135,15 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for a Line is calculated as the GeometryHash of the start and end point of the Line.")]
-        private static double[] HashArray(this Line curve, double translationFactor, bool skipEndPoint = false)
+        private static double[] HashArray(this Line curve, double translationFactor, BaseComparisonConfig comparisonConfig, bool skipEndPoint = false)
         {
             translationFactor += (int)TypeTranslationFactor.Line;
 
             if (skipEndPoint)
-                return curve.StartPoint().HashArray(translationFactor);
+                return curve.StartPoint().HashArray(translationFactor, comparisonConfig);
 
-            return curve.StartPoint().HashArray(translationFactor)
-               .Concat(curve.EndPoint().HashArray(translationFactor))
+            return curve.StartPoint().HashArray(translationFactor, comparisonConfig)
+               .Concat(curve.EndPoint().HashArray(translationFactor, comparisonConfig))
                .ToArray();
         }
 
@@ -151,7 +152,7 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for a NurbsCurve is obtained by getting moving the control points " +
             "by a translation factor composed by the weights and a subarray of the knot vector. " +
             "The subarray is made by picking as many elements from the knot vector as the curve degree value.")]
-        private static double[] HashArray(this NurbsCurve curve, double translationFactor)
+        private static double[] HashArray(this NurbsCurve curve, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             // The input `skipEndPoint` is not used here because Nurbs may well extend or end before the last ControlPoint.
             // Also consider complex situations like Periodic curves.
@@ -159,7 +160,7 @@ namespace BH.Engine.Geometry
             int curveDegree = curve.Degree();
 
             if (curveDegree == 1)
-                return BH.Engine.Geometry.Create.Polyline(curve.ControlPoints).HashArray(translationFactor);
+                return BH.Engine.Geometry.Create.Polyline(curve.ControlPoints).HashArray(translationFactor, comparisonConfig);
 
             translationFactor += (int)TypeTranslationFactor.NurbsCurve;
 
@@ -170,7 +171,7 @@ namespace BH.Engine.Geometry
             for (int i = 0; i < controlPointsCount; i++)
             {
                 double sum = curve.Knots.GetRange(i, curveDegree).Sum();
-                double[] doubles = curve.ControlPoints[i].HashArray(sum + curve.Weights[i] + translationFactor);
+                double[] doubles = curve.ControlPoints[i].HashArray(sum + curve.Weights[i] + translationFactor, comparisonConfig);
                 concatenated.AddRange(doubles);
             }
 
@@ -187,20 +188,20 @@ namespace BH.Engine.Geometry
         /****  Surfaces                                 ****/
         /***************************************************/
 
-        private static double[] HashArray(this ISurface obj, double translationFactor)
+        private static double[] HashArray(this ISurface obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
-            return HashArray(obj as dynamic, translationFactor);
+            return HashArray(obj as dynamic, translationFactor, comparisonConfig);
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a PlanarSurface is calculated as the GeometryHash of the External and Internal boundary curves, then concatenated.")]
-        private static double[] HashArray(this PlanarSurface obj, double translationFactor)
+        private static double[] HashArray(this PlanarSurface obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor += (int)TypeTranslationFactor.PlanarSurface;
 
-            return obj.ExternalBoundary.HashArray(translationFactor)
-                .Concat(obj.InternalBoundaries.SelectMany(ib => ib.HashArray(translationFactor))).ToArray();
+            return obj.ExternalBoundary.HashArray(translationFactor, comparisonConfig)
+                .Concat(obj.InternalBoundaries.SelectMany(ib => ib.HashArray(translationFactor, comparisonConfig))).ToArray();
         }
 
         /***************************************************/
@@ -208,22 +209,22 @@ namespace BH.Engine.Geometry
         [Description("The GeometryHash for an Extrusion is calculated by translating the extrusion curve with the extrusion direction vector." +
             "A first GeometryHash is calculated for this translated curve. " +
             "Then, the GeometryHash of the (non-translated) extrusion curve is concatenated to the first hash to make it more reliable.")]
-        private static double[] HashArray(this Extrusion obj, double translationFactor)
+        private static double[] HashArray(this Extrusion obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor += (int)TypeTranslationFactor.Extrusion;
 
-            return obj.Curve.ITranslate(obj.Direction).HashArray(translationFactor)
-                .Concat(obj.Curve.HashArray(translationFactor)).ToArray();
+            return obj.Curve.ITranslate(obj.Direction).HashArray(translationFactor, comparisonConfig)
+                .Concat(obj.Curve.HashArray(translationFactor, comparisonConfig)).ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a Loft is calculated as the GeometryHash of its curves.")]
-        private static double[] HashArray(this Loft obj, double translationFactor)
+        private static double[] HashArray(this Loft obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor += (int)TypeTranslationFactor.Loft;
 
-            return obj.Curves.SelectMany(c => c.HashArray(translationFactor)).ToArray();
+            return obj.Curves.SelectMany(c => c.HashArray(translationFactor, comparisonConfig)).ToArray();
         }
 
         /***************************************************/
@@ -231,7 +232,7 @@ namespace BH.Engine.Geometry
         [Description("Moving control points by a translation factor composed by the weights " +
           "and a subarray of the knot vector. " +
           "The subarray is made by picking as many elements from the knot vector as the curve degree value.")]
-        private static double[] HashArray(this NurbsSurface obj, double translationFactor)
+        private static double[] HashArray(this NurbsSurface obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor += (int)TypeTranslationFactor.NurbsSurface;
 
@@ -248,28 +249,28 @@ namespace BH.Engine.Geometry
                 {
                     int ptIndex = i * uv[1] + j;
                     double vSum = vKnots.GetRange(j, obj.VDegree).Sum();
-                    double[] doubles = obj.ControlPoints[ptIndex].HashArray(uSum + vSum + obj.Weights[ptIndex] + translationFactor);
+                    double[] doubles = obj.ControlPoints[ptIndex].HashArray(uSum + vSum + obj.Weights[ptIndex] + translationFactor, comparisonConfig);
                     concatenated.AddRange(doubles);
                 }
             }
 
             return concatenated
-                .Concat(obj.InnerTrims.SelectMany(it => it.HashArray(translationFactor)))
-                .Concat(obj.OuterTrims.SelectMany(it => it.HashArray(translationFactor))).ToArray();
+                .Concat(obj.InnerTrims.SelectMany(it => it.HashArray(translationFactor, comparisonConfig)))
+                .Concat(obj.OuterTrims.SelectMany(it => it.HashArray(translationFactor, comparisonConfig))).ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a Pipe is calculated as the GeometryHash of its centreline translated by its radius," +
             "then concatenated with the GeometryHash of its centreline's StartPoint for extra reliability.")]
-        private static double[] HashArray(this Pipe obj, double translationFactor)
+        private static double[] HashArray(this Pipe obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor += (int)TypeTranslationFactor.Pipe;
 
-            double[] result = obj.Centreline.HashArray(translationFactor + obj.Radius);
+            double[] result = obj.Centreline.HashArray(translationFactor + obj.Radius, comparisonConfig);
 
             if (obj.Capped)
-                result.Concat(obj.Centreline.IStartPoint().HashArray(translationFactor + obj.Radius));
+                result.Concat(obj.Centreline.IStartPoint().HashArray(translationFactor + obj.Radius, comparisonConfig));
 
             return result;
         }
@@ -277,22 +278,22 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for a PolySurface is calculated as the GeometryHash of the individual surfaces.")]
-        private static double[] HashArray(this PolySurface obj, double translationFactor)
+        private static double[] HashArray(this PolySurface obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
-            return obj.Surfaces.SelectMany(s => s.HashArray(translationFactor)).ToArray();
+            return obj.Surfaces.SelectMany(s => s.HashArray(translationFactor, comparisonConfig)).ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a SurfaceTrim is calculated as the GeometryHash of its Curve3d.")]
-        private static double[] HashArray(this SurfaceTrim obj, double translationFactor)
+        private static double[] HashArray(this SurfaceTrim obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor += (int)TypeTranslationFactor.SurfaceTrim;
 
             // We only consider the Curve3D in order to avoid being redundant with the Curve2D,
             // and allow distancing comparisons.
 
-            return obj.Curve3d.HashArray(translationFactor).ToArray();
+            return obj.Curve3d.HashArray(translationFactor, comparisonConfig).ToArray();
         }
 
 
@@ -302,7 +303,7 @@ namespace BH.Engine.Geometry
 
         [Description("The GeometryHash for a Mesh is obtained by getting the number of faces that are attached to each control point, " +
             "and use that count as a translation factor for control points.")]
-        private static double[] HashArray(this Mesh obj, double translationFactor)
+        private static double[] HashArray(this Mesh obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor += (int)TypeTranslationFactor.Mesh;
 
@@ -327,7 +328,7 @@ namespace BH.Engine.Geometry
                 if (!dic.TryGetValue(i, out pointTranslationFactor))
                     pointTranslationFactor = 0;
 
-                result.AddRange(obj.Vertices[i].HashArray(pointTranslationFactor + translationFactor));
+                result.AddRange(obj.Vertices[i].HashArray(pointTranslationFactor + translationFactor, comparisonConfig));
             }
 
             return result.ToArray();
@@ -337,7 +338,7 @@ namespace BH.Engine.Geometry
 
         [Description("The GeometryHash for a Mesh3D is obtained by getting the number of faces that are attached to each control point, " +
             "and using that count as a translation factor for control points.")]
-        private static double[] HashArray(this Mesh3D obj, double translationFactor)
+        private static double[] HashArray(this Mesh3D obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor += (int)TypeTranslationFactor.Mesh3D;
 
@@ -362,7 +363,7 @@ namespace BH.Engine.Geometry
                 if (!dic.TryGetValue(i, out pointTranslationFactor))
                     pointTranslationFactor = 0;
 
-                result.AddRange(obj.Vertices[i].HashArray(pointTranslationFactor + translationFactor));
+                result.AddRange(obj.Vertices[i].HashArray(pointTranslationFactor + translationFactor, comparisonConfig));
             }
 
             return result.ToArray();
@@ -370,23 +371,23 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static double[] HashArray(this IEnumerable<Point> points, double typeTranslationFactor)
+        private static double[] HashArray(this IEnumerable<Point> points, double typeTranslationFactor, BaseComparisonConfig comparisonConfig)
         {
-            return points.SelectMany(p => p.HashArray(typeTranslationFactor)).ToArray();
+            return points.SelectMany(p => p.HashArray(typeTranslationFactor, comparisonConfig)).ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a CompositeGeometry is given as the concatenated GeometryHash of the single elements composing it.")]
-        private static double[] HashArray(this CompositeGeometry obj, double translationFactor)
+        private static double[] HashArray(this CompositeGeometry obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
-            return obj.Elements.SelectMany(c => c.IHashArray()).ToArray();
+            return obj.Elements.SelectMany(c => c.IHashArray(comparisonConfig)).ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a Point is simply an array of 3 numbers composed by the Point X, Y and Z coordinates.")]
-        private static double[] HashArray(this Point p, double translationFactor)
+        private static double[] HashArray(this Point p, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             return new double[]
             {
@@ -399,7 +400,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         // Fallback
-        private static double[] HashArray(this object obj, double translationFactor)
+        private static double[] HashArray(this object obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             throw new NotImplementedException($"Could not find a {nameof(HashArray)} method for type {obj.GetType().FullName}.");
         }
@@ -409,7 +410,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for a Vector is given as the concatenated GeometryHash of the single elements composing it.")]
-        private static double[] HashArray(this Vector obj, double translationFactor)
+        private static double[] HashArray(this Vector obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             if (translationFactor == (double)TypeTranslationFactor.Point)
                 translationFactor = (double)TypeTranslationFactor.Vector;
@@ -425,34 +426,34 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("The GeometryHash for a Basis is given as the concatenated GeometryHash of the single elements composing it.")]
-        private static double[] HashArray(this Basis obj, double translationFactor)
+        private static double[] HashArray(this Basis obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor = (double)TypeTranslationFactor.Basis;
 
-            var x = obj.X.HashArray(translationFactor);
-            var y = obj.Y.HashArray(translationFactor);
-            var z = obj.Z.HashArray(translationFactor);
+            var x = obj.X.HashArray(translationFactor, comparisonConfig);
+            var y = obj.Y.HashArray(translationFactor, comparisonConfig);
+            var z = obj.Z.HashArray(translationFactor, comparisonConfig);
             return x.Concat(y).Concat(z).ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a Basis is given as the concatenated GeometryHash of the single elements composing it.")]
-        private static double[] HashArray(this Cartesian obj, double translationFactor)
+        private static double[] HashArray(this Cartesian obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             translationFactor = (double)TypeTranslationFactor.Cartesian;
 
-            var x = obj.X.HashArray(translationFactor);
-            var y = obj.Y.HashArray(translationFactor);
-            var z = obj.Z.HashArray(translationFactor);
-            var o = obj.Origin.HashArray(translationFactor);
+            var x = obj.X.HashArray(translationFactor, comparisonConfig);
+            var y = obj.Y.HashArray(translationFactor, comparisonConfig);
+            var z = obj.Z.HashArray(translationFactor, comparisonConfig);
+            var o = obj.Origin.HashArray(translationFactor, comparisonConfig);
             return x.Concat(y).Concat(z).Concat(o).ToArray();
         }
 
         /***************************************************/
 
         [Description("The GeometryHash for a TransformMatrix is given as the concatenated numbers of the matrix.")]
-        private static double[] HashArray(this TransformMatrix obj, double translationFactor)
+        private static double[] HashArray(this TransformMatrix obj, double translationFactor, BaseComparisonConfig comparisonConfig)
         {
             return obj.Matrix.Cast<double>().ToArray();
         }
