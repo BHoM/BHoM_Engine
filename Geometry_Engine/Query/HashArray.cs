@@ -91,7 +91,23 @@ namespace BH.Engine.Geometry
             if (comparisonConfig?.TypeExceptions?.Any(t => typeof(ICurve).IsAssignableFrom(t)) ?? false)
                 return default;
 
+            if (curve == null)
+                return default;
+
             List<ICurve> subParts = curve.ISubParts().ToList();
+
+            if (!subParts.Any())
+                if (curve is Polyline)
+                    return HashArray(curve.IControlPoints(),
+                        translationFactor,
+                        comparisonConfig: comparisonConfig,
+                        fullName: fullName.AppendPropertyName($"{nameof(ControlPoints)}"));
+                else
+                    return HashArray(curve as dynamic,
+                        translationFactor,
+                        skipEndPoint: false,
+                        comparisonConfig: comparisonConfig,
+                        fullName: fullName);
 
             List<double> hashes = new List<double>();
 
@@ -231,7 +247,7 @@ namespace BH.Engine.Geometry
             // The input `skipEndPoint` is not used here because Nurbs may well extend or end before the last ControlPoint.
             // Also consider complex situations like Periodic curves.
 
-            int curveDegree = curve.Degree();
+            int curveDegree = Math.Abs(curve.Degree());
 
             if (curveDegree == 1)
                 return BH.Engine.Geometry.Create.Polyline(curve.ControlPoints).HashArray(translationFactor,
@@ -246,8 +262,12 @@ namespace BH.Engine.Geometry
 
             for (int i = 0; i < controlPointsCount; i++)
             {
-                double sum = curve.Knots.GetRange(i, curveDegree).Sum();
-                double[] doubles = curve.ControlPoints[i].HashArray(sum + curve.Weights[i] + translationFactor,
+                // Use the sum of the knots plus the i-Weight to obtain an unique traslation factor.
+                double knotsSum = 0;
+                if (i < curve.Knots.Count - 1 && curveDegree < curve.Knots.Count - 1)
+                    knotsSum = curve.Knots.GetRange(Math.Min(i, curve.Knots.Count), Math.Min(curve.Knots.Count - 1 - i, curveDegree)).Sum();
+
+                double[] doubles = curve.ControlPoints[i].HashArray(knotsSum + curve.Weights.ElementAtOrDefault(i) + translationFactor,
                     comparisonConfig,
                     fullName.AppendPropertyName($"{nameof(curve.ControlPoints)}[{i}]"));
                 concatenated.AddRange(doubles);
