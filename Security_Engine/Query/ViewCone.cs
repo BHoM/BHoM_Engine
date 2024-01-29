@@ -48,7 +48,7 @@ namespace BH.Engine.Security
             Point targetLocation = cameraDevice.TargetPosition;
             double coneRadius = targetLocation.Distance(cameraLocation);
             double coneArcLength = cameraDevice.HorizontalFieldOfView;
-            double coneAngle = Math.Atan((coneArcLength / 2) / coneRadius) * 2;
+            double coneAngle = Math.Asin(coneArcLength / (2 * coneRadius)) * 2;
 
             if (double.IsNaN(coneAngle))
                 coneAngle = Math.PI;
