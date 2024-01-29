@@ -89,6 +89,9 @@ namespace BH.Engine.Geometry
                 return null;
 
             double[] hashArray = IHashArray(igeometry, comparisonConfig, fullName);
+            if (hashArray == null)
+                return null;
+
             byte[] byteArray = GetBytes(hashArray);
 
             if (m_SHA256Algorithm == null)
@@ -109,6 +112,9 @@ namespace BH.Engine.Geometry
 
         private static byte[] GetBytes(this double[] values)
         {
+            if (values == null)
+                return default;
+
             return values.SelectMany(value => BitConverter.GetBytes(value)).ToArray();
         }
 
