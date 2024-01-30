@@ -496,7 +496,7 @@ namespace BH.Engine.Geometry
                         pointTranslationFactor + translationFactor,
                         comparisonConfig,
                         fullName.AppendPropertyName($"{nameof(obj.Vertices)}[{i}]")
-                        )
+                        ) ?? new double[0]
                     );
             }
 
@@ -537,10 +537,11 @@ namespace BH.Engine.Geometry
                     pointTranslationFactor = 0;
 
                 result.AddRange(
-                        obj.Vertices[i].HashArray(pointTranslationFactor + translationFactor,
-                            comparisonConfig,
-                            fullName.AppendPropertyName($"{nameof(obj.Vertices)}[{i}]")
-                        )
+                    obj.Vertices[i].HashArray(
+                        pointTranslationFactor + translationFactor,
+                        comparisonConfig,
+                        fullName.AppendPropertyName($"{nameof(obj.Vertices)}[{i}]")
+                        ) ?? new double[0]
                     );
             }
 
