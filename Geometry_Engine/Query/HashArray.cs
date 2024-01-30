@@ -470,10 +470,15 @@ namespace BH.Engine.Geometry
             translationFactor += (int)TypeTranslationFactor.Mesh;
 
             var dic = new Dictionary<int, int>();
+            List<double> result = new List<double>();
 
             if (!comparisonConfig?.TypeExceptions?.Any(t => typeof(Face).IsAssignableFrom(t)) ?? true)
                 for (int i = 0; i < obj.Faces.Count; i++)
                 {
+                    // If Points are excluded from the HashArray, include at least "topological" information i.e. the faces
+                    if (comparisonConfig?.TypeExceptions?.Any(t => typeof(Point).IsAssignableFrom(t)) ?? false)
+                        result.AddRange(obj.Faces[i].FaceIndices().Select<int, double>(n => n));
+
                     foreach (var faceIndex in obj.Faces[i].FaceIndices())
                     {
                         if (dic.ContainsKey(faceIndex))
@@ -482,8 +487,6 @@ namespace BH.Engine.Geometry
                             dic[faceIndex] = i;
                     }
                 }
-
-            List<double> result = new List<double>();
 
             for (int i = 0; i < obj.Vertices.Count; i++)
             {
@@ -515,10 +518,15 @@ namespace BH.Engine.Geometry
             translationFactor += (int)TypeTranslationFactor.Mesh3D;
 
             var dic = new Dictionary<int, int>();
+            List<double> result = new List<double>();
 
             if (!comparisonConfig?.TypeExceptions?.Any(t => typeof(Face).IsAssignableFrom(t)) ?? true)
                 for (int i = 0; i < obj.Faces.Count; i++)
                 {
+                    // If Points are excluded from the HashArray, include at least "topological" information i.e. the faces
+                    if (comparisonConfig?.TypeExceptions?.Any(t => typeof(Point).IsAssignableFrom(t)) ?? false)
+                        result.AddRange(obj.Faces[i].FaceIndices().Select<int, double>(n => n));
+
                     foreach (var faceIndex in obj.Faces[i].FaceIndices())
                     {
                         if (dic.ContainsKey(faceIndex))
@@ -527,8 +535,6 @@ namespace BH.Engine.Geometry
                             dic[faceIndex] = i;
                     }
                 }
-
-            List<double> result = new List<double>();
 
             for (int i = 0; i < obj.Vertices.Count; i++)
             {
@@ -621,7 +627,7 @@ namespace BH.Engine.Geometry
                     obj.Y + translationFactor,
                     obj.Z + translationFactor
                 };
-                
+
             return new double[]
             {
                 (obj.X + translationFactor).ValueToInclude(fullName.AppendPropertyName($"{nameof(obj.X)}"), comparisonConfig),
