@@ -129,9 +129,6 @@ namespace BH.Engine.Security
             //create points chain
             List<Point> pointsChain = linesDict.PointsChain(cameraLocation, radius, distanceTolerance);
 
-            //reverse points chain to have correct start and end arc angles
-            pointsChain.Reverse();
-
             //create camera cone
             PolyCurve cameraViewPolyCurve = pointsChain.CameraViewPolyCurve(coneArc, distanceTolerance);
 
@@ -325,6 +322,9 @@ namespace BH.Engine.Security
             }
             pointsChain = pointsChain.CullDuplicates(tolerance);
             pointsChain.Add(cameraLocation);
+
+            //reverse points chain to have correct start and end arc angles
+            pointsChain.Reverse();
 
             return pointsChain;
         }
