@@ -464,29 +464,33 @@ namespace BH.Engine.Geometry
             "and use that count as a translation factor for control points.")]
         private static double[] HashArray(this Mesh obj, double translationFactor, BaseComparisonConfig comparisonConfig, string fullName = null)
         {
-            if (comparisonConfig?.TypeExceptions?.Any(t => typeof(Mesh).IsAssignableFrom(t)) ?? false)
+            if (comparisonConfig?.TypeExceptions?.Any(t => typeof(Mesh).IsAssignableFrom(t) || typeof(Face).IsAssignableFrom(t)) ?? false)
                 return default;
 
             translationFactor += (int)TypeTranslationFactor.Mesh;
 
+            bool onlyConsiderMeshTopology = (comparisonConfig.GeometryComparisonConfig as BH.oM.Geometry.GeometryComparisonConfig)?.OnlyConsiderMeshTopology ?? false;
+
             var dic = new Dictionary<int, int>();
             List<double> result = new List<double>();
 
-            if (!comparisonConfig?.TypeExceptions?.Any(t => typeof(Face).IsAssignableFrom(t)) ?? true)
-                for (int i = 0; i < obj.Faces.Count; i++)
-                {
-                    // If Points are excluded from the HashArray, include at least "topological" information i.e. the faces
-                    if (comparisonConfig?.TypeExceptions?.Any(t => typeof(Point).IsAssignableFrom(t)) ?? false)
-                        result.AddRange(obj.Faces[i].FaceIndices().Select<int, double>(n => n));
+            for (int i = 0; i < obj.Faces.Count; i++)
+            {
+                // If Points are excluded from the HashArray, include at least "topological" information i.e. the faces
+                if (onlyConsiderMeshTopology)
+                    result.AddRange(obj.Faces[i].FaceIndices().Select<int, double>(n => n));
 
-                    foreach (var faceIndex in obj.Faces[i].FaceIndices())
-                    {
-                        if (dic.ContainsKey(faceIndex))
-                            dic[faceIndex] += i;
-                        else
-                            dic[faceIndex] = i;
-                    }
+                foreach (var faceIndex in obj.Faces[i].FaceIndices())
+                {
+                    if (dic.ContainsKey(faceIndex))
+                        dic[faceIndex] += i;
+                    else
+                        dic[faceIndex] = i;
                 }
+            }
+
+            if (onlyConsiderMeshTopology)
+                return result.ToArray();
 
             for (int i = 0; i < obj.Vertices.Count; i++)
             {

@@ -234,7 +234,7 @@ namespace BH.Engine.Base
                 if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
                     return (string)hashStringFromExtensionMethod;
 
-                if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
+                if ((cc.GeometryComparisonConfig?.UseGeometryHash ?? false) && typeof(IGeometry).IsAssignableFrom(type) )
                 {
                     return GeometryHash((IGeometry)obj, cc, currentPropertyFullName).ToString();
                 }
