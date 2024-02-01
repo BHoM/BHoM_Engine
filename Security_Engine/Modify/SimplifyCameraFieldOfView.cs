@@ -52,6 +52,7 @@ namespace BH.Engine.Security
 
             //convert to polyline and simplify
             List<Line> cameraLines = new List<Line>();
+
             foreach (ICurve curve in cameraFieldOfView.SubParts())
             {
                 if (curve is Line)
@@ -62,6 +63,7 @@ namespace BH.Engine.Security
                     cameraLines.Add(line);
                 }
             }
+
             Polyline cameraPolyline = Geometry.Create.Polyline(cameraLines);
             cameraPolyline = cameraPolyline.Simplify(distanceTolerance, angleTolerance);
 
@@ -82,12 +84,17 @@ namespace BH.Engine.Security
                     double p2Param = coneArc.ParameterAtPoint(endPoint, distanceTolerance);
                     double p3Param = (p1Param + p2Param) / 2;
                     Point pt3 = coneArc.PointAtParameter(p3Param);
+
                     if (!cameraFieldOfView.IsContaining(new List<Point>() { pt3 }, true, distanceTolerance))
                     {
                         simplifiedPolyCurve.Curves.Add(line);
                         continue;
                     }
-                    Arc newArc = BH.Engine.Geometry.Create.Arc(startPoint, pt3, endPoint, distanceTolerance);
+
+                    double startAngle = coneArc.EndAngle * p1Param;
+                    double endAngle = coneArc.EndAngle * p2Param;
+                    Arc newArc = Geometry.Create.Arc(coneArc.CoordinateSystem, coneArc.Radius, startAngle, endAngle);
+
                     simplifiedPolyCurve.Curves.Add(newArc);
                 }
                 else
