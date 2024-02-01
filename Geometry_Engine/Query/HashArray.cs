@@ -88,10 +88,10 @@ namespace BH.Engine.Geometry
             "The GeometryHashes are then calculated for the individual parts and concatenated.")]
         private static double[] HashArray(this ICurve curve, double translationFactor, BaseComparisonConfig comparisonConfig = null, string fullName = null)
         {
-            if (comparisonConfig?.TypeExceptions?.Any(t => typeof(ICurve).IsAssignableFrom(t)) ?? false)
+            if (curve == null)
                 return default;
 
-            if (curve == null)
+            if (comparisonConfig?.TypeExceptions?.Any(t => typeof(ICurve).IsAssignableFrom(t)) ?? false)
                 return default;
 
             List<ICurve> subParts = curve.ISubParts().ToList();
