@@ -234,6 +234,11 @@ namespace BH.Engine.Base
                 if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
                     return (string)hashStringFromExtensionMethod;
 
+                if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
+                {
+                    return GeometryHash((IGeometry)obj, cc, currentPropertyFullName);
+                }
+
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
                 PropertyInfo[] properties = type.GetProperties();
@@ -285,24 +290,23 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static double GeometryHash(this IGeometry igeom)
+        private static string GeometryHash(this IGeometry igeom, BaseComparisonConfig comparisonConfig, string fullName)
         {
             if (igeom == null)
-                return default(double);
+                return null;
 
             if (m_GeomHashFunc == null)
             {
                 var mis = Query.ExtensionMethods(typeof(IGeometry), "GeometryHash");
-                m_GeomHashFunc = (Func<IGeometry, double>)Delegate.CreateDelegate(typeof(Func<IGeometry, double>), mis.First());
+                if (!mis?.Any() ?? true)
+                    throw new InvalidOperationException("Could not dynamically load the GeometryHash method.");
+
+                m_GeomHashFunc = (Func<IGeometry, BaseComparisonConfig, string, string>)Delegate.CreateDelegate(typeof(Func<IGeometry, BaseComparisonConfig, string, string>), mis.First());
             }
 
-            return m_GeomHashFunc(igeom);
+            return m_GeomHashFunc(igeom, comparisonConfig, fullName);
         }
 
-        private static Func<IGeometry, double> m_GeomHashFunc = null;
+        private static Func<IGeometry, BaseComparisonConfig, string, string> m_GeomHashFunc = null;
     }
 }
-
-
-
-
