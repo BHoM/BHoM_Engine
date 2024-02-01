@@ -236,7 +236,7 @@ namespace BH.Engine.Base
 
                 if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
                 {
-                    return GeometryHash((IGeometry)obj, cc, currentPropertyFullName).ToString();
+                    return GeometryHash((IGeometry)obj, cc, currentPropertyFullName);
                 }
 
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
