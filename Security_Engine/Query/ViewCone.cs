@@ -20,13 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
+using BH.Engine.Geometry;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Security.Elements;
-using BH.oM.Base.Attributes;
-using System.Collections.Generic;
-using BH.Engine.Geometry;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Security
 {
@@ -49,6 +49,9 @@ namespace BH.Engine.Security
             double coneRadius = targetLocation.Distance(cameraLocation);
             double coneArcLength = cameraDevice.HorizontalFieldOfView;
             double coneAngle = Math.Asin(coneArcLength / (2 * coneRadius)) * 2;
+
+            if (double.IsNaN(coneAngle))
+                coneAngle = Math.PI;
 
             Vector viewDirection = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
             Vector startPointDir = viewDirection.Rotate(-coneAngle / 2, Vector.ZAxis);
