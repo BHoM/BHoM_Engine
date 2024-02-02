@@ -36,6 +36,7 @@ namespace BH.Engine.Geometry
         /****          Public Methods - Lines           ****/
         /***************************************************/
 
+        [PreviousVersion("7.1", "BH.Engine.Geometry.Compute.BooleanUnion(BH.oM.Geometry.Line, BH.oM.Geometry.Line, System.Double)")]
         [Description("Joins overlapping lines into single segments, i.e. if the lines overlap, a single line spanning between the extremes will be returned, otherwise both lines are returned separate.")]
         [Input("line", "First line to union.")]
         [Input("refLine", "Second line to union.")]
@@ -53,6 +54,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousVersion("7.1", "BH.Engine.Geometry.Compute.BooleanUnion(System.Collections.Generic.List<BH.oM.Geometry.Line>, System.Double)")]
         [Description("Joins overlapping lines into single segments, i.e. each set of collinear lines that overlap with each other will be returned as a single line spanning between the extremes of the set.")]
         [Input("lines", "Lines to union.")]
         [Input("tolerance", "Tolerance used for checking colinearity and proximity of the lines.", typeof(Length))]
