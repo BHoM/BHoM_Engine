@@ -325,11 +325,8 @@ namespace BH.Engine.Geometry
         [Output("mesh", "Input Mesh with rounded coordinates of vertices.")]
         public static Mesh RoundCoordinates(this Mesh mesh, int decimalPlaces = 6)
         {
-            if (mesh == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Rounding coordinates failed because the input mesh was null.");
+            if (mesh.IsNull())
                 return null;
-            }
 
             return new Mesh { Faces = mesh.Faces, Vertices = mesh.Vertices?.Select(x => x.RoundCoordinates(decimalPlaces)).ToList() };
         }

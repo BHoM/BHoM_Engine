@@ -97,10 +97,10 @@ namespace BH.Engine.Geometry
 
 
         [Description("Computes the boolean intersection of two collections of lines, e.g. all overlaps of the first set of lines with the reference lines and returns a new collection of lines matching the overlap.")]
-        [Input("lines", "First line to intersect.")]
-        [Input("refLines", "A collection of reference lines to intersect with the first line.")]
+        [Input("lines", "First list of lines to intersect.")]
+        [Input("refLines", "A list of reference lines to intersect with the first list of lines.")]
         [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
-        [Output("intersection", "The collection of lines corresponding to the overlaps of the first line and any of the reference lines.")]
+        [Output("intersection", "The list of lines corresponding to the overlaps of the first list of lines and any of the reference lines.")]
         public static List<Line> BooleanIntersection(this List<Line> lines, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
             double sqTol = tolerance * tolerance;
@@ -130,7 +130,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Computes the boolean intersection of a collection of lines, e.g. the overlap of all the provided lines and returns this overlap as a new line.")]
-        [Input("lines", "The collection of lines to intersect.")]
+        [Input("lines", "The list of lines to intersect.")]
         [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
         [Output("intersection", "The line corresponding to the overlap all of the provided lines.")]
         public static Line BooleanIntersection(this List<Line> lines, double tolerance = Tolerance.Distance)

@@ -20,9 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -33,6 +35,10 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
+        [Description("Fits a line into a set of points using Orthogonal Least Squares algorithm.")]
+        [Input("points", "Points into which the line is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used in the process of fitting.")]
+        [Output("fitLine", "Line fit into the input set of points based on the Orthogonal Least Squares algorithm.")]
         public static Line FitLine(this IEnumerable<Point> points, double tolerance = Tolerance.Distance)
         {
             List<Point> asList = points.ToList();
