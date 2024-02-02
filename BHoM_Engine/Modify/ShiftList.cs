@@ -39,6 +39,11 @@ namespace BH.Engine.Base
         [Output("list", "A list with items in the input list .")]
         public static List<T> ShiftList<T>(this List<T> list, int offset)
         {
+            int steps = (offset / list.Count);
+            if (offset < 0)
+                steps--;
+           
+            offset -= steps * list.Count;
             return list.Skip(offset).Concat(list.Take(offset)).ToList();
         }
 
