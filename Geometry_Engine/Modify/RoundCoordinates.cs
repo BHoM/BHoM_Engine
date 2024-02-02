@@ -317,6 +317,20 @@ namespace BH.Engine.Geometry
             return planarSurface;
         }
 
+        /***************************************************/
+
+        [Description("Modifies a BHoM Geometry Mesh by rounding its vertices to the number of provided decimal places.")]
+        [Input("mesh", "The BHoM Geometry Mesh to modify.")]
+        [Input("decimalPlaces", "The number of decimal places to round to, default 6.")]
+        [Output("mesh", "Input Mesh with rounded coordinates of vertices.")]
+        public static Mesh RoundCoordinates(this Mesh mesh, int decimalPlaces = 6)
+        {
+            if (mesh.IsNull())
+                return null;
+
+            return new Mesh { Faces = mesh.Faces, Vertices = mesh.Vertices?.Select(x => x.RoundCoordinates(decimalPlaces)).ToList() };
+        }
+
 
         /***************************************************/
         /**** Private Fallback Methods                  ****/

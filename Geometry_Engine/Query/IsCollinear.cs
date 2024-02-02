@@ -20,9 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -33,6 +36,10 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vector                   ****/
         /***************************************************/
 
+        [Description("Checks if a given set of points is collinear within tolerance.")]
+        [Input("pts", "Points to check for collinearity.")]
+        [Input("tolerance", "Tolerance used for checking collinearity.", typeof(Length))]
+        [Output("isCollinear", "True if the input points are collinear, otherwise false.")]
         public static bool IsCollinear(this List<Point> pts, double tolerance = Tolerance.Distance)
         {
             if (pts.Count < 3)
@@ -57,10 +64,26 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Checks if a given pair of lines is collinear within tolerance.")]
+        [Input("line1", "First line to check for collinearity.")]
+        [Input("line2", "Second line to check for collinearity.")]
+        [Input("tolerance", "Tolerance used for checking collinearity.", typeof(Length))]
+        [Output("isCollinear", "True if the input lines are collinear, otherwise false.")]
         public static bool IsCollinear(this Line line1, Line line2, double tolerance = Tolerance.Distance)
         {
             List<Point> cPts = new List<Point> { line1.Start, line1.End, line2.Start, line2.End };
             return cPts.IsCollinear(tolerance);
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a given set of lines is collinear within tolerance.")]
+        [Input("lines", "Lines to check for collinearity.")]
+        [Input("tolerance", "Tolerance used for checking collinearity.", typeof(Length))]
+        [Output("isCollinear", "True if the input lines are collinear, otherwise false.")]
+        public static bool IsCollinear(this List<Line> lines, double tolerance = Tolerance.Distance)
+        {
+            return lines.Select(x => x.Start).Union(lines.Select(x => x.End)).ToList().IsCollinear(tolerance);
         }
 
         /***************************************************/

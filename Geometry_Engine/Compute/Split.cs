@@ -78,7 +78,7 @@ namespace BH.Engine.Geometry
 
                 LineTree last = null; //The last line in the path, once we find it then we can traverse up the tree to the start
                 List<LineTree> master = new List<LineTree>(); //As we're only generating the LineTree on each iteration, we need to keep track of what we've created this iteration for traversing. We're generating the LineTrees on each iteration between the children is dependent on the directionality of the start, so cannot be preprocessed (until someone refactors this to enable such a thing!)
-                
+
                 while (children.Count > 0 && last == null) //while(last == null) risks an infinite loop if we never find the last node, we should eventually run out of children though
                 {
                     master.AddRange(children);
@@ -97,7 +97,7 @@ namespace BH.Engine.Geometry
                                 UnconnectedPoint = uPt,
                             };
                         }).ToList();
-                        
+
                         //Take distinct only
                         ltChildren = ltChildren.GroupBy(p => p.ThisLine).Select(g => g.First()).ToList();
 

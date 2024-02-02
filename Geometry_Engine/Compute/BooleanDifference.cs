@@ -44,39 +44,7 @@ namespace BH.Engine.Geometry
         [Output("line", "The parts of the first line _not_ overlapping with the reference line.")]
         public static List<Line> BooleanDifference(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
-            if (refLine.Length() <= tolerance)
-                return new List<Line> { line };
-
-            if (line.IsCollinear(refLine, tolerance))
-            {
-                List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints());
-
-                if (splitLine.Count == 3)
-                    splitLine.RemoveAt(1);
-                else if (splitLine.Count == 2)
-                {
-                    Point aPt = refLine.ControlPoints().Average();
-
-                    if (line.Start.SquareDistance(aPt) < line.End.SquareDistance(aPt))
-                        splitLine.RemoveAt(0);
-                    else
-                        splitLine.RemoveAt(1);
-                }
-                else
-                {
-                    double sqTol = tolerance * tolerance;
-                    Point aPt = splitLine[0].ControlPoints().Average();
-                    Point aRPt = refLine.ControlPoints().Average();
-
-                    if (aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol)
-                        splitLine = new List<Line> { line };
-                    else
-                        splitLine = new List<Line>();
-                }
-
-                return splitLine;
-            }
-            return new List<Line> { line };
+            return new List<Line> { line }.BooleanDifference(new List<Line> { refLine }, tolerance);
         }
 
         /***************************************************/
@@ -88,47 +56,29 @@ namespace BH.Engine.Geometry
         [Output("lines", "The parts of the first lines _not_ overlapping with the reference lines.")]
         public static List<Line> BooleanDifference(this List<Line> lines, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
+            double sqTol = tolerance * tolerance;
+            lines = lines.Where(x => x != null && x.SquareLength() > sqTol).ToList();
+            List<Line> refLeft = refLines.Where(x => x != null && x.SquareLength() > sqTol).ToList();
+
             List<Line> result = new List<Line>();
-
-            foreach (Line line in lines)
+            foreach (var cluster in lines.ClusterCollinear(tolerance))
             {
-                List<Line> splitLine = new List<Line> { line };
-                int k = 0;
-                bool split = false;
-                do
+                List<Line> toCull = new List<Line>();
+                for (int i = refLines.Count - 1; i >= 0; i--)
                 {
-                    split = false;
-                    for (int i = k; i < refLines.Count; i++)
+                    if (refLines[i].IsCollinear(cluster[0]))
                     {
-                        if (split)
-                            break;
-
-                        for (int j = 0; j < splitLine.Count; j++)
-                        {
-                            Line l = splitLine[j];
-                            List<Line> bd = l.BooleanDifference(refLines[i], tolerance);
-
-                            if (bd.Count == 0)
-                            {
-                                k = refLines.Count;
-                                splitLine = new List<Line>();
-                                split = true;
-                                break;
-                            }
-                            else if (bd.Count > 1 || Math.Abs(bd[0].Length() - l.Length()) > tolerance)
-                            {
-                                k = i + 1;
-                                split = true;
-                                splitLine.RemoveAt(j);
-                                splitLine.AddRange(bd);
-                                break;
-                            }
-                        }
+                        toCull.Add(refLines[i]);
+                        refLines.RemoveAt(i);
                     }
-                } while (split);
+                }
 
-                result.AddRange(splitLine);
+                if (toCull.Count != 0)
+                    result.AddRange(cluster.BooleanDifferenceCollinear(toCull, tolerance));
+                else
+                    result.AddRange(cluster);
             }
+
             return result;
         }
 
@@ -458,7 +408,53 @@ namespace BH.Engine.Geometry
 
             return result;
         }
-    
+
+
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
+
+        private static List<Line> BooleanDifferenceCollinear(this List<Line> lines1, List<Line> lines2, double tolerance)
+        {
+            Line dirLine = lines1.Select(x => x.Start).Union(lines1.Select(x => x.End)).Union(lines2.Select(x => x.Start)).Union(lines2.Select(x => x.End)).FitLine(tolerance);
+            Vector dir = dirLine.Direction(tolerance);
+            (Point, Point) extents1 = lines1.Extents(dir, tolerance);
+            (Point, Point) extents2 = lines2.Extents(dir, tolerance);
+            Point min = (extents1.Item1 - extents2.Item1).DotProduct(dir) < 0 ? extents1.Item1 : extents2.Item1;
+            min = dirLine.ClosestPoint(min, true);
+
+            List<(double, double)> ranges1 = lines1.SortedDomains(min, tolerance);
+            List<(double, double)> ranges2 = lines2.SortedDomains(min, tolerance);
+
+            List<(double, double)> mergedRanges1 = ranges1.MergeRanges(tolerance);
+            List<(double, double)> mergedRanges2 = ranges2.MergeRanges(tolerance);
+
+            List<(double, double)> differenceRanges = new List<(double, double)>();
+            int i = 0;
+            foreach ((double, double) range in mergedRanges2)
+            {
+                for (; i < mergedRanges1.Count; i++)
+                {
+                    if (mergedRanges1[i].Item1 - range.Item1 < -tolerance)
+                        differenceRanges.Add((mergedRanges1[i].Item1, Math.Min(mergedRanges1[i].Item2, range.Item1)));
+
+                    if (range.Item2 - mergedRanges1[i].Item2 < tolerance)
+                    {
+                        mergedRanges1[i] = (range.Item2, mergedRanges1[i].Item2);
+                        break;
+                    }
+                }
+            }
+
+            for (; i < mergedRanges1.Count; i++)
+            {
+                if (mergedRanges1[i].Item2 - mergedRanges1[i].Item1 > tolerance)
+                    differenceRanges.Add(mergedRanges1[i]);
+            }
+
+            return differenceRanges.Select(x => new Line { Start = min + dir * x.Item1, End = min + dir * x.Item2 }).ToList();
+        }
+
         /***************************************************/
     }
 }

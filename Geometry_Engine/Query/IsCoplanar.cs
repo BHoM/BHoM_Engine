@@ -86,6 +86,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsCoplanar(this List<Line> lines, double tolerance = Tolerance.Distance)
+        {
+            List<Point> cPts = lines.Select(x => x.Start).Union(lines.Select(x => x.End)).ToList();
+            return cPts.IsCoplanar(tolerance);
+        }
+
+        /***************************************************/
+
         public static bool IsCoplanar(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
             List<Point> cPts = curve1.ControlPoints.ToList();
