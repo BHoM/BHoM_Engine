@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization.Serializers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -63,7 +64,7 @@ namespace BH.Engine.Serialiser
 
         private static void Serialise(this object value, BsonDocumentWriter writer, Type targetType)
         {
-            if (value == null)
+            if (value == null || value.GetType() == typeof(System.DBNull))
                 writer.WriteNull();
             else if (value.GetType() == typeof(object))
             {
