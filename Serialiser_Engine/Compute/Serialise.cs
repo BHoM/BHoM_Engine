@@ -63,7 +63,7 @@ namespace BH.Engine.Serialiser
 
         private static void Serialise(this object value, BsonDocumentWriter writer, Type targetType)
         {
-            if (value == null)
+            if (value == null || value.GetType() == typeof(System.DBNull))
                 writer.WriteNull();
             else if (value.GetType() == typeof(object))
             {
