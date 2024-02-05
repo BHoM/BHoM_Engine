@@ -26,12 +26,14 @@ using BH.oM.Base.Attributes;
 using BH.oM.Environment.Configuration;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 using ICSharpCode.Decompiler.IL.Patterns;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using static Humanizer.In;
 
 namespace BH.Engine.Environment
 {
@@ -42,8 +44,8 @@ namespace BH.Engine.Environment
         /***************************************************/
 
         [Description("Creates openings for input Panels at the locations provided.\nThe total area of the openings is equal to the total area of the external panels, multiplied by the glazing ratio.")]
-        [Input("panelsAsSpaces", "Panels as spaces - A collection of Environment Panels which will be used to identify the host panel for the opening from the provided location point.")]
-        [Input("glazingLocations", "The point in 3D space corresponding to the desired locations of the openings.")]
+        [Input("panels", "A collection of Environment Panels which will be used to identify the host panel for the opening from the provided location point.")]
+        [Input("openingLocations", "The point in 3D space corresponding to the desired locations of the openings.")]
         [Input("glazingRatio", "Ratio of total external panel surface area and glazed area. Ratio as decimal {0-1}.")]
         [Input("panelsToIgnore", "Optional input for selecting a collection of Environment Panels to be ignored in the calculation")]
         [Input("sillHeight", "Optional input for defining the distance between the base of the panel and the bottom of the opening - default: 0.5.")]
@@ -51,8 +53,8 @@ namespace BH.Engine.Environment
         [Input("openingType", "Optional input for defining the opening type of the output Openings, can be either 'Glazing' or 'Door' - default: Glazing.")]
         [Output("openings", "Returns the constructed openings which can then be applied to panels.")]
         public static List<Opening> OpeningsFromGlazingRatio(
-            List<List<Panel>> panelsAsSpaces,
-            List<Point> glazingLocations,
+            List<Panel> panels,
+            List<Point> openingLocations,
             double glazingRatio,
             List<Panel> panelsToIgnore = null,
             double sillHeight = 0.5,
@@ -62,7 +64,6 @@ namespace BH.Engine.Environment
         {
             switch (openingType)
             {
-                case OpeningType.Undefined:
                 case OpeningType.Door:
                 case OpeningType.Glazing:
                     break;
@@ -70,26 +71,29 @@ namespace BH.Engine.Environment
                     BH.Engine.Base.Compute.RecordError($"Only openings of type 'Glazing' and 'Door' are supported.");
                     return new List<Opening>();
             }
-
-            List<Panel> wallPanels = panelsAsSpaces.SelectMany(x => x).Distinct().ToList();
-            List<Panel> externalPanels = wallPanels.IsExternal().Item1;
+            List<Panel> externalPanels = panels.IsExternal().Item1;
             List<Panel> filteredPanels = externalPanels.RemovePanels(panelsToIgnore ?? new List<Panel>());
 
             double totalArea = filteredPanels.Select(x => x.Area()).Sum();
             double existingOpeningArea = filteredPanels.Select(x => x.Openings.Select(y => y.Polyline().Area()).Sum()).Sum();
-            double windowWidth = WindowWidth(totalArea, glazingRatio, glazingLocations.Count(), openingHeight, existingOpeningArea);
+
+            //area available for glazing is total area * glazing ratio
+            //area avaialable per for new glazing is area avaialble minus area used by other galzing 
+            //area per window avaialable is total area left divided for number of windows
+            //opening width is then area per window divided by the entered height
+            double openingWidth = ((totalArea * glazingRatio - existingOpeningArea) / openingLocations.Count) / openingHeight;
 
             OpeningOption option = new OpeningOption()
             {
                 Height = openingHeight,
-                Width = windowWidth,
+                Width = openingWidth,
                 SillHeight = sillHeight,
                 Type = openingType,
             };
 
             List<Opening> openings = new List<Opening>();
 
-            foreach(Point point in glazingLocations)
+            foreach(Point point in openingLocations)
             {
                 Opening opening = Create.Opening(point, option, filteredPanels);
 
@@ -101,26 +105,6 @@ namespace BH.Engine.Environment
 
             return openings;
         }
-
-        /***************************************************/
-        /**** Private methods                           ****/
-        /***************************************************/
-
-        private static double WindowWidth(
-            double area,
-            double glazingRatio,
-            double numberOfWindows,
-            double height,
-            double existingGlazingArea)
-        {
-            //area available for glazing is total area * glazing ratio
-            //area avaialable per for new glazing is area avaialble minus area used by other galzing 
-            //area per window avaialable is total area left divided for number of windows
-            //window width is then area per window divided by the entered height
-            double areaRequiredPerWindow = (area * glazingRatio - existingGlazingArea) / numberOfWindows;
-            return areaRequiredPerWindow / height;
-        }
-
 
         /***************************************************/
     }
