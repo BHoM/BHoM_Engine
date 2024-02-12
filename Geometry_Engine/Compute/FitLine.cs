@@ -64,8 +64,16 @@ namespace BH.Engine.Geometry
                 double sumXY = points.Sum(x => x.X * x.Y);
                 double p1 = sumX * sumX - sumY * sumY - n * (sumXsq - sumYsq);
                 double p2 = n * sumXY - sumX * sumY;
-                double b = (p1 + Math.Sqrt(p1 * p1 + 4 * p2 * p2)) / (2 * p2);
-                Vector dir = new Vector { X = 1, Y = b };
+
+                Vector dir;
+                if (Math.Abs(p2) > tolerance)
+                {
+                    double b = (p1 + Math.Sqrt(p1 * p1 + 4 * p2 * p2)) / (2 * p2);
+                    dir = new Vector { X = 1, Y = b };
+                }
+                else
+                    dir = p1 < 0 ? Vector.XAxis : Vector.YAxis;
+
                 return new Line { Start = C, End = C + dir };
             }
             else
