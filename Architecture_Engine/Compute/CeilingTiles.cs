@@ -60,7 +60,7 @@ namespace BH.Engine.Architecture
 
             Polyline outerPerimeter = ceiling.Surface.IExternalEdges().Select(x => x.ICollapseToPolyline(angleTolerance)).ToList().Join()[0];
 
-            List<Polyline> regions = BH.Engine.Geometry.Compute.Split(outerPerimeter, ceilingTileLines, distanceTolerance, decimalPlaces);
+            List<Polyline> regions = BH.Engine.Geometry.Compute.Split(outerPerimeter, ceilingTileLines, distanceTolerance);
 
             List<CeilingTile> tiles = new List<CeilingTile>();
 
