@@ -100,7 +100,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static void RemoveOutliers(this List<Line> lines, double distanceTolerance)
+        private static void RemoveOutliers(this List<Line> lines, double distanceTolerance)
         {
             int initialCount = lines.Count;
 
