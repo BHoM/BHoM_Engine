@@ -32,6 +32,7 @@ namespace BH.Engine.Architecture
 {
     public static partial class Compute
     {
+        [PreviousVersion("7.1", "BH.Engine.Architecture.Compute.CeilingTiles(BH.oM.Architecture.Elements.Ceiling, System.Collections.Generic.List<BH.oM.Geometry.Line>, System.Double, System.Double, System.Int32)")]
         [Description("Generate a collection of Ceiling Tile objects that can sit within the given ceiling. Uses the BH.Engine.Geometry.Compute.Split(Polyline, List<Line>) method for its core.")]
         [Input("ceiling", "Ceiling object which provides the outer perimeter of the ceiling tiles")]
         [Input("ceilingTileLines", "The lines across the ceiling which will be used to cut the ceiling into individual tiles.")]

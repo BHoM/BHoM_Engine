@@ -34,6 +34,7 @@ namespace BH.Engine.Geometry
         /****              Public Methods               ****/
         /***************************************************/
 
+        [PreviousVersion("7.1", "BH.Engine.Geometry.Compute.Split(BH.oM.Geometry.Polyline, System.Collections.Generic.List<BH.oM.Geometry.Line>, System.Double, System.Int32)")]
         [Description("Split an outer region by the cutting lines into a collection of closed contained regions within the outer region.")]
         [Input("outerRegion", "An outer region that will contain the closed regions generated.")]
         [Input("cuttingLines", "The lines to cut the outer region by.")]
