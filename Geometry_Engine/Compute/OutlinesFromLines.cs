@@ -21,6 +21,7 @@
  */
 
 using BH.Engine.Data;
+using BH.oM.Base;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using System;
@@ -63,10 +64,8 @@ namespace BH.Engine.Geometry
                     continue;
                 }
 
-                List<Line> outline = cluster.ClusterOutline(distanceTolerance);
-                List<Line> inner = cluster.Except(outline).ToList();
-
-                result.AddRange(LinesToPolygons(outline, inner, distanceTolerance));
+                Output<Polyline, List<Line>> preprocessedLines = cluster.OuterAndInnerLines(distanceTolerance);
+                result.AddRange(OutlinesFromPreprocessedLines(preprocessedLines.Item1, preprocessedLines.Item2, distanceTolerance));
             }
 
             return result;
@@ -82,7 +81,7 @@ namespace BH.Engine.Geometry
             Plane fitPlane = lines.SelectMany(x => x.ControlPoints()).ToList().FitPlane();
             lines = lines.BooleanUnion(distanceTolerance, true);
             List<Point> intersectingPoints = Query.LineIntersections(lines).CullDuplicates(distanceTolerance);
-            return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints).Select(y => y.Project(fitPlane))).ToList();
+            return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints).Select(y => y.Project(fitPlane))).ToList().CullDuplicateLines(distanceTolerance);
         }
 
         /***************************************************/
@@ -171,8 +170,9 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static List<Line> ClusterOutline(this List<Line> lines, double distanceTolerance)
+        private static Output<Polyline, List<Line>> OuterAndInnerLines(this List<Line> lines, double distanceTolerance)
         {
+            // Transform the lines to global XY plane
             TransformMatrix toGlobal = lines.TransformToGlobalXY();
             if (toGlobal == null)
             {
@@ -181,8 +181,8 @@ namespace BH.Engine.Geometry
             }
 
             List<Line> transformed = lines.Select(x => x.Transform(toGlobal)).ToList();
-            Dictionary<Line, (Point, Point)> endpoints = transformed.ToDictionary(x => x, x => (x.Start, x.End));
-            Dictionary<Line, Vector> dirs = transformed.ToDictionary(x => x, x => x.Direction());
+
+            // Turn the lines into a graph represented as a dictionary of nodes and adjoining edges
             Dictionary<Point, List<Line>> graph = new Dictionary<Point, List<Line>>();
             foreach (Line line in transformed)
             {
@@ -196,6 +196,7 @@ namespace BH.Engine.Geometry
                 graph[line.End].Add(line);
             }
 
+            // Start at leftmost node
             Point leftmost = graph.Keys.First();
             foreach (Point node in graph.Keys)
             {
@@ -203,6 +204,7 @@ namespace BH.Engine.Geometry
                     leftmost = node;
             }
 
+            // Find edge starting at start node with leftmost dir
             Line currentEdge = null;
             Vector currentDir = null;
             foreach (Line l in graph[leftmost])
@@ -221,6 +223,7 @@ namespace BH.Engine.Geometry
             List<Line> outline = new List<Line> { currentEdge };
             Point currentNode = leftmost;
 
+            // Look for subsequent edges with leftmost dirs compared to the dir of current edge
             while (true)
             {
                 if (currentNode == currentEdge.Start)
@@ -230,8 +233,6 @@ namespace BH.Engine.Geometry
 
                 if (currentNode == leftmost)
                     break;
-
-                Vector headingLeft = new Vector { X = -currentDir.Y, Y = currentDir.X };
 
                 List<Vector> nodeDirs = new List<Vector>();
                 foreach (Line l in graph[currentNode])
@@ -247,6 +248,7 @@ namespace BH.Engine.Geometry
                 Line newEdge = null;
 
                 // To avoid computing heavy signed angle, first check only dirs to the left from the current dir
+                Vector headingLeft = new Vector { X = -currentDir.Y, Y = currentDir.X };
                 for (int j = 0; j < nodeDirs.Count; j++)
                 {
                     if (graph[currentNode][j] == currentEdge)
@@ -287,7 +289,125 @@ namespace BH.Engine.Geometry
                 outline.Add(currentEdge);
             }
 
-            return outline.Select(x => lines[transformed.IndexOf(x)]).ToList();
+            List<Line> outerSegments = outline.Select(x => lines[transformed.IndexOf(x)]).ToList();
+            Polyline outer = outerSegments.Join(distanceTolerance).First();
+            List<Line> inner = lines.Except(outerSegments).ToList();
+
+            return new Output<Polyline, List<Line>> { Item1 = outer, Item2 = inner };
+        }
+
+        /***************************************************/
+
+        private static List<Polyline> OutlinesFromPreprocessedLines(this Polyline outer, List<Line> inner, double distanceTolerance)
+        {
+            double sqTol = distanceTolerance * distanceTolerance;
+
+            // Transform to global XY plane
+            TransformMatrix toGlobal = outer.SubParts().TransformToGlobalXY();
+            if (toGlobal == null)
+            {
+                BH.Engine.Base.Compute.RecordWarning("Some of the lines have been ignored in the process of creating outlines because they were all collinear.");
+                return null;
+            }
+
+            // If outline normal is negative, flip it to make sure it is clockwise
+            Polyline transformedOuter = outer.Transform(toGlobal);
+            if (transformedOuter.Normal().Z < 0)
+                outer = outer.Flip();
+
+            // Combine outer edges and inner ones in both directions
+            List<Line> all = outer.SubParts().Union(inner).Union(inner.Select(x => x.Flip())).ToList();
+            
+            // Transform the lines to global XY plane, find their dirs
+            List<Line> transformed = all.Select(x => x.Transform(toGlobal)).ToList();            
+            Dictionary<Line, Vector> dirs = transformed.ToDictionary(x => x, x => x.Direction());
+            
+            // Turn the lines into a graph represented as a dictionary of nodes and adjoining edges
+            Dictionary<Point, List<Line>> graph = new Dictionary<Point, List<Line>>();
+            foreach (Line line in transformed)
+            {
+                if (!graph.ContainsKey(line.Start))
+                    graph.Add(line.Start, new List<Line>());
+
+                graph[line.Start].Add(line);
+            }
+
+            // Iteratively pick a random graph edge and go leftwards until a closed outline is found
+            // Repeat until the graph is emptied
+            List<List<Line>> result = new List<List<Line>>();
+            while (graph.Count != 0)
+            {
+                // Start from arbitrary node and edge
+                Point startNode = graph.Keys.First();
+                Line currentEdge = graph[startNode].First();
+                graph[startNode].Remove(currentEdge);
+                if (graph[startNode].Count == 0)
+                    graph.Remove(startNode);
+
+                Vector currentDir = dirs[currentEdge];
+                Point currentNode = currentEdge.End;
+
+                // Keep on turning left until hitting the start node
+                List<Line> outline = new List<Line> { currentEdge };
+                while (currentNode != startNode)
+                {
+                    List<Vector> nodeDirs = graph[currentNode].Select(x => dirs[x]).ToList();
+                    Vector newDir = null;
+                    Line newEdge = null;
+
+                    // To avoid computing heavy signed angle, first check only dirs to the left from the current dir
+                    Vector headingLeft = new Vector { X = -currentDir.Y, Y = currentDir.X };
+                    for (int j = 0; j < nodeDirs.Count; j++)
+                    {
+                        // Avoid the edge itself as well as the same one in opposite direction
+                        if (graph[currentNode][j] == currentEdge || 1 + currentDir.DotProduct(nodeDirs[j]) < sqTol)
+                            continue;
+
+                        if (headingLeft.DotProduct(nodeDirs[j]) < 0)
+                            continue;
+
+                        if (newDir == null || nodeDirs[j].DotProduct(currentDir) < newDir.DotProduct(currentDir))
+                        {
+                            newDir = nodeDirs[j];
+                            newEdge = graph[currentNode][j];
+                        }
+                    }
+
+                    // If not found (and only if), then look up the ones to the right
+                    if (newEdge == null)
+                    {
+                        for (int j = 0; j < nodeDirs.Count; j++)
+                        {
+                        // Avoid the edge itself as well as the same one in opposite direction
+                            if (graph[currentNode][j] == currentEdge || 1 + currentDir.DotProduct(nodeDirs[j]) < sqTol)
+                                continue;
+
+                            if (headingLeft.DotProduct(nodeDirs[j]) >= 0)
+                                continue;
+
+                            if (newDir == null || nodeDirs[j].DotProduct(currentDir) > newDir.DotProduct(currentDir))
+                            {
+                                newDir = nodeDirs[j];
+                                newEdge = graph[currentNode][j];
+                            }
+                        }
+                    }
+
+                    graph[currentNode].Remove(newEdge);
+                    if (graph[currentNode].Count == 0)
+                        graph.Remove(currentNode);
+
+                    currentEdge = newEdge;
+                    currentDir = newDir;
+                    currentNode = newEdge.End;
+
+                    outline.Add(currentEdge);
+                }
+
+                result.Add(outline.Select(x => all[transformed.IndexOf(x)]).ToList());
+            }
+
+            return result.Select(x => x.Join().First()).ToList();
         }
 
         /***************************************************/
