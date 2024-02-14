@@ -399,6 +399,12 @@ namespace BH.Engine.Geometry
                         }
                     }
 
+                    if (newEdge == null)
+                    {
+                        BH.Engine.Base.Compute.RecordError("Outlines could not be created due to an internal error.");
+                        return null;
+                    }
+
                     graph[currentNode].Remove(newEdge);
                     if (graph[currentNode].Count == 0)
                         graph.Remove(currentNode);
@@ -413,7 +419,7 @@ namespace BH.Engine.Geometry
                 result.Add(outline.Select(x => all[transformed.IndexOf(x)]).ToList());
             }
 
-            return result.Select(x => x.Join().First()).ToList();
+            return result.Select(x => x.BooleanUnion(distanceTolerance).Join().First()).ToList();
         }
 
         /***************************************************/

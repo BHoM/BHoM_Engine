@@ -43,13 +43,13 @@ namespace BH.Engine.Geometry
         public static List<Polyline> Split(this Polyline outerRegion, List<Line> cuttingLines, double distanceTolerance = Tolerance.Distance)
         {
             //Preproc the cutting lines to take only the parts inside the outer region
-            cuttingLines = cuttingLines.BooleanUnion(distanceTolerance);
-            cuttingLines = cuttingLines.SelectMany(x => x.SplitAtPoints(outerRegion.LineIntersections(x, false, distanceTolerance), distanceTolerance)).ToList();
+            cuttingLines = cuttingLines.BooleanUnion(distanceTolerance, true);
+            cuttingLines = cuttingLines.SelectMany(x => x.SplitAtPoints(outerRegion.LineIntersections(x, false, distanceTolerance).CullDuplicates(distanceTolerance), distanceTolerance)).ToList();
             cuttingLines = cuttingLines.Where(x => outerRegion.IsContaining(new List<Point> { (x.Start + x.End) / 2 }, false, distanceTolerance)).ToList();
             if (cuttingLines.Count == 0)
                 return new List<Polyline> { outerRegion };
 
-            List<Point> intersectingPoints = cuttingLines.LineIntersections(false, distanceTolerance); //Get the points to split the lines by
+            List<Point> intersectingPoints = cuttingLines.LineIntersections(false, distanceTolerance).CullDuplicates(distanceTolerance); //Get the points to split the lines by
             List<Line> splitCurves = cuttingLines.SelectMany(x => x.ISplitAtPoints(intersectingPoints, distanceTolerance)).Cast<Line>().ToList(); //Split the cutting lines at their points
             List<Line> perimeterLines = outerRegion.SubParts().SelectMany(x => x.SplitAtPoints(cuttingLines.SelectMany(y => y.LineIntersections(x, false, distanceTolerance)).ToList())).ToList();
 
