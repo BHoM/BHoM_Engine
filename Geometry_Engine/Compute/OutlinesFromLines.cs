@@ -44,10 +44,13 @@ namespace BH.Engine.Geometry
         [Output("outlines", "Closed outines created from the input lines.")]
         public static List<Polyline> OutlinesFromLines(this List<Line> lines, double distanceTolerance = Tolerance.Distance)
         {
+            lines = lines?.CleanUpAndSplitWithEachOther(distanceTolerance);
             if (lines == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Outlines could not be created because the input set is not valid.");
                 return null;
+            }
 
-            lines = lines.CleanUpAndSplitWithEachOther(distanceTolerance);
             List<List<Line>> clustered = lines.Cluster(distanceTolerance);
 
             List<Polyline> result = new List<Polyline>();
@@ -79,6 +82,9 @@ namespace BH.Engine.Geometry
         private static List<Line> CleanUpAndSplitWithEachOther(this List<Line> lines, double distanceTolerance)
         {
             Plane fitPlane = lines.SelectMany(x => x.ControlPoints()).ToList().FitPlane();
+            if (fitPlane == null)
+                return null;
+
             lines = lines.BooleanUnion(distanceTolerance, true);
             List<Point> intersectingPoints = Query.LineIntersections(lines).CullDuplicates(distanceTolerance);
             return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints).Select(y => y.Project(fitPlane))).ToList().CullDuplicateLines(distanceTolerance);
