@@ -23,7 +23,7 @@
         <dependency id="Mono.Reflection" version="2.0.0" />
         <dependency id="CompareNETObjects" version="4.67.0" />
       </group>
-      <group targetFramework="net472">
+      <group targetFramework="netstandard1.3">
           <dependency id="DeepCloner" version="0.10.2" />
       </group>
     </dependencies>
