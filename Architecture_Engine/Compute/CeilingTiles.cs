@@ -20,20 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Architecture.Elements;
-
-using BH.oM.Geometry;
 using BH.Engine.Geometry;
-using System.Runtime.InteropServices;
-
+using BH.oM.Architecture.Elements;
 using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Architecture
 {
@@ -44,9 +37,8 @@ namespace BH.Engine.Architecture
         [Input("ceilingTileLines", "The lines across the ceiling which will be used to cut the ceiling into individual tiles.")]
         [Input("angleTolerance", "Tolerance used for angle calculations. Default set to BH.oM.Geometry.Tolerance.Angle.")]
         [Input("distanceTolerance", "Tolerance used for distance calculations. Default set to BH.oM.Geometry.Tolerance.Distance")]
-        [Input("decimalPlaces", "All coordinates of the geometry will be rounded to the number of decimal places specified. Default 6.")]
         [Output("ceilingTiles", "Closed Ceiling Tile regions contained within the Ceiling.")]
-        public static List<CeilingTile> CeilingTiles(Ceiling ceiling, List<Line> ceilingTileLines, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, int decimalPlaces = 6)
+        public static List<CeilingTile> CeilingTiles(Ceiling ceiling, List<Line> ceilingTileLines, double angleTolerance = BH.oM.Geometry.Tolerance.Angle, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance)
         {
             if(ceiling == null)
             {

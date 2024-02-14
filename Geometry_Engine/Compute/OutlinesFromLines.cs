@@ -22,10 +22,12 @@
 
 using BH.Engine.Data;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -36,12 +38,10 @@ namespace BH.Engine.Geometry
         /****              Public Methods               ****/
         /***************************************************/
 
-        //[Description("Split an outer region by the cutting lines into a collection of closed contained regions within the outer region.")]
-        //[Input("outerRegion", "An outer region that will contain the closed regions generated.")]
-        //[Input("cuttingLines", "The lines to cut the outer region by.")]
-        //[Input("distanceTolerance", "Tolerance to use for distance measurment operations, default to BH.oM.Geometry.Tolerance.Distance.")]
-        //[Input("decimalPlaces", "All coordinates of the geometry will be rounded to the number of decimal places specified. Default 6.")]
-        //[Output("regions", "Closed polygon regions contained within the outer region cut by the cutting lines.")]
+        [Description("Combines an unordered set of lines and turns them into closed cells, e.g. mesh edges will be combined into a set of outlines each representing one mesh cell.")]
+        [Input("lines", "Unordered set of lines to turn into closed cells.")]
+        [Input("distanceTolerance", "Tolerance to use for geometrical processing.")]
+        [Output("outlines", "Closed outines created from the input lines.")]
         public static List<Polyline> OutlinesFromLines(this List<Line> lines, double distanceTolerance = Tolerance.Distance)
         {
             if (lines == null)
