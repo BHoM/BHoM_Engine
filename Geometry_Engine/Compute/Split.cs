@@ -53,7 +53,22 @@ namespace BH.Engine.Geometry
             List<Line> splitCurves = cuttingLines.SelectMany(x => x.ISplitAtPoints(intersectingPoints, distanceTolerance)).Cast<Line>().ToList(); //Split the cutting lines at their points
             List<Line> perimeterLines = outerRegion.SubParts().SelectMany(x => x.SplitAtPoints(cuttingLines.SelectMany(y => y.LineIntersections(x, false, distanceTolerance)).ToList())).ToList();
 
-            return OutlinesFromPreprocessedLines(perimeterLines.Join(distanceTolerance).First(), splitCurves, distanceTolerance);
+            // Make sure nodes of outline and splitting curves perfectly overlap
+            Polyline outline = perimeterLines.Join(distanceTolerance).First();
+            List<Point> outlinePoint = outline.ControlPoints.Skip(1).ToList();
+            double sqTol = distanceTolerance * distanceTolerance;
+            foreach (Line l in splitCurves)
+            {
+                Point cpStart = l.Start.ClosestPoint(outlinePoint);
+                if (l.Start.SquareDistance(cpStart) <= sqTol)
+                    l.Start = cpStart;
+
+                Point cpEnd = l.End.ClosestPoint(outlinePoint);
+                if (l.End.SquareDistance(cpEnd) <= sqTol)
+                    l.End = cpEnd;
+            }
+
+            return OutlinesFromPreprocessedLines(outline, splitCurves, distanceTolerance);
         }
 
         /***************************************************/
