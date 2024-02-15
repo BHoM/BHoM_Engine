@@ -40,9 +40,9 @@ namespace BH.Engine.Base
         [Input("suppressNotes", "Determine whether to suppress BHoM Events of type NOTE from the log. Set to true to suppress these events.")]
         public static void SuppressRecordingEvents(bool suppressErrors = false, bool suppressWarnings = false, bool suppressNotes = false)
         {
-            m_RecordError = suppressErrors;
-            m_RecordWarning = suppressWarnings;
-            m_RecordNote = suppressNotes;
+            m_SuppressError = suppressErrors;
+            m_SuppressWarning = suppressWarnings;
+            m_SuppressNote = suppressNotes;
         }
     }
 }

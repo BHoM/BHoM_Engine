@@ -37,9 +37,9 @@ namespace BH.Engine.Base
         [Description("Switch on the entire logging system used within BHoM. By default all recording systems are switched on when BHoM is initialised. Events of all types will be logged after this component has been used regardless of which ones were previously suppressed.")]
         public static void UnsuppressRecordingEvents()
         {
-            m_RecordError = true;
-            m_RecordWarning = true;
-            m_RecordNote = true;
+            m_SuppressError = false;
+            m_SuppressWarning = false;
+            m_SuppressNote = false;
         }
     }
 }
