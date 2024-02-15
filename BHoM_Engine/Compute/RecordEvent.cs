@@ -96,12 +96,21 @@ namespace BH.Engine.Base
                 newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
             }
 
+            bool areWeSwitchedOff = (newEvent.Type == EventType.Error && !m_RecordError) || (newEvent.Type == EventType.Warning && !m_RecordWarning) || (newEvent.Type == EventType.Note && !m_RecordNote);
+            
+            Log log = null;
+            if (!areWeSwitchedOff)
+                log = Query.DebugLog();
+            else
+                log = Query.SwitchedOffLog();
+
             lock (Global.DebugLogLock)
             {
-                Log log = Query.DebugLog();
                 log.AllEvents.Add(newEvent);
                 log.CurrentEvents.Add(newEvent);
-                OnEventRecorded(newEvent);
+
+                if(!areWeSwitchedOff)
+                    OnEventRecorded(newEvent); //Only raise an event if we're not in switched off mode
             }
 
             return true;
@@ -129,6 +138,12 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+        /**** Private Variables                         ****/
+        /***************************************************/
+
+        private static bool m_RecordError = true; //Default to true, record any events which come through the system
+        private static bool m_RecordWarning = true;
+        private static bool m_RecordNote = true;
     }
 }
 

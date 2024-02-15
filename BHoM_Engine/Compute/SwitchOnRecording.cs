@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -21,56 +21,49 @@
  */
 
 using BH.oM.Base.Debugging;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using BH.oM.Base.Attributes;
+using System.Linq;
+using System.ComponentModel;
+using System;
 
 namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        internal static Log DebugLog()
+        [Description("Switch nn the entire logging system used within BHoM. By default all recording systems are switched on when BHoM is initialised.")]
+        public static void SwitchOnRecording()
         {
-            lock (Global.DebugLogLock)
-            {
-                if (m_DebugLog == null)
-                    m_DebugLog = new Log();
-
-                return m_DebugLog;
-            }
+            m_RecordError = true;
+            m_RecordWarning = true;
+            m_RecordNote = true;
         }
 
         /***************************************************/
 
-        internal static Log SwitchedOffLog()
+        [Description("Switch on the entire logging system for ERRORS only. By default all recording systems are switched on when BHoM is initialised.")]
+        public static void SwitchOnRecordingErrors()
         {
-            lock(Global.DebugLogLock)
-            {
-                if (m_SwitchedOffLog == null)
-                    m_SwitchedOffLog = new Log();
-
-                return m_SwitchedOffLog;
-            }
+            m_RecordError = true;
         }
 
-
-        /***************************************************/
-        /**** Private Fields                            ****/
         /***************************************************/
 
-        private static Log m_DebugLog = new Log();
-        private static Log m_SwitchedOffLog = new Log(); //If someone has switched off the log for any reason, keep a record of their events in this log instead - this way they're not completely removed and could be accessed if they switched it off by accident
+        [Description("Switch on the entire logging system for WARNINGS only. By default all recording systems are switched on when BHoM is initialised.")]
+        public static void SwitchOnRecordingWarnings()
+        {
+            m_RecordWarning = true;
+        }
 
         /***************************************************/
+
+        [Description("Switch on the entire logging system for NOTES only. By default all recording systems are switched on when BHoM is initialised.")]
+        public static void SwitchOnRecordingNotes()
+        {
+            m_RecordNote = true;
+        }
     }
 }
-
-
-
-
-
