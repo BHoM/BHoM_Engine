@@ -101,7 +101,7 @@ namespace BH.Engine.Base
             if (!areWeSwitchedOff)
                 log = Query.DebugLog();
             else
-                log = Query.SwitchedOffLog();
+                log = Query.SwitchedOffDebugLog();
 
             lock (Global.DebugLogLock)
             {
