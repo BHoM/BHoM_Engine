@@ -45,18 +45,14 @@ namespace BH.Engine.Geometry
             if (pts.Count < 3)
                 return true;
 
-            double[,] vMatrix = new double[pts.Count - 1, 3];
-            for (int i = 0; i < pts.Count - 1; i++)
-            {
-                vMatrix[i, 0] = pts[i + 1].X - pts[0].X;
-                vMatrix[i, 1] = pts[i + 1].Y - pts[0].Y;
-                vMatrix[i, 2] = pts[i + 1].Z - pts[0].Z;
-            }
+            Line fitLine = pts.FitLine(tolerance);
 
-            double REFTolerance = vMatrix.REFTolerance(tolerance);
-            double[,] rref = vMatrix.RowEchelonForm(true, REFTolerance);
-            int nonZeroRows = rref.CountNonZeroRows(REFTolerance);
-            return nonZeroRows < 2;
+            // Coincident points can be considered collinear
+            if (fitLine == null)
+                return true;
+
+            double sqTol = tolerance * tolerance;
+            return pts.All(x => x.SquareDistance(fitLine, true) < sqTol);
         }
 
 
