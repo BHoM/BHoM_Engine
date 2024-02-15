@@ -34,22 +34,15 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Retrive the events recorded while the logging system was switched off and put them into the main log. When the logging system is switched off, recording of events is done in quiet mode which means UIs are not made aware of the events and the main event log does not have knowledge of them. We still record the events though because they may be useful. This method will move any events stored within the log when it was switched off up to the main log for visibiliy and inspection, and will reset the quiet log to a clean state.")]
-        [Output("True if no error occurs in moving up events recorded during a quiet period.")]
-        public static bool RetriveSwitchedOffLog()
+        [Description("Suppress the logging system used within BHoM. Any part of the code base which tries to log notes, warnings, or errors into the log system will be housed in the suppressed log and not displayed to users depending on which systems you've chosen to suppress. By default, all recording systems are turned on when BHoM is initialised.")]
+        [Input("suppressErrors", "Determine whether to suppress BHoM Events of type ERROR from the log. Set to true to suppress these events.")]
+        [Input("suppressWarnings", "Determine whether to suppress BHoM Events of type WARNING from the log. Set to true to suppress these events.")]
+        [Input("suppressNotes", "Determine whether to suppress BHoM Events of type NOTE from the log. Set to true to suppress these events.")]
+        public static void SuppressRecordingEvents(bool suppressErrors = false, bool suppressWarnings = false, bool suppressNotes = false)
         {
-            lock(Global.DebugLogLock)
-            {
-                Log switchedOffLog = Query.SuppressedLog();
-                Log debugLog = Query.DebugLog();
-
-                debugLog.CurrentEvents.AddRange(switchedOffLog.CurrentEvents);
-                debugLog.AllEvents.AddRange(switchedOffLog.AllEvents);
-
-                Query.ResetSuppressedLog(); //Now we've moved the switched off log events into the main log, we don't need the switched off log to also keep a copy of them
-            }
-
-            return true;
+            m_RecordError = suppressErrors;
+            m_RecordWarning = suppressWarnings;
+            m_RecordNote = suppressNotes;
         }
     }
 }

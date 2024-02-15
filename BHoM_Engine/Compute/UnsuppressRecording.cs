@@ -34,35 +34,11 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Switch on the entire logging system used within BHoM. By default all recording systems are switched on when BHoM is initialised.")]
-        public static void SwitchOnRecording()
+        [Description("Switch on the entire logging system used within BHoM. By default all recording systems are switched on when BHoM is initialised. Events of all types will be logged after this component has been used regardless of which ones were previously suppressed.")]
+        public static void UnsuppressRecordingEvents()
         {
             m_RecordError = true;
             m_RecordWarning = true;
-            m_RecordNote = true;
-        }
-
-        /***************************************************/
-
-        [Description("Switch on the entire logging system for ERRORS only. By default all recording systems are switched on when BHoM is initialised.")]
-        public static void SwitchOnRecordingErrors()
-        {
-            m_RecordError = true;
-        }
-
-        /***************************************************/
-
-        [Description("Switch on the entire logging system for WARNINGS only. By default all recording systems are switched on when BHoM is initialised.")]
-        public static void SwitchOnRecordingWarnings()
-        {
-            m_RecordWarning = true;
-        }
-
-        /***************************************************/
-
-        [Description("Switch on the entire logging system for NOTES only. By default all recording systems are switched on when BHoM is initialised.")]
-        public static void SwitchOnRecordingNotes()
-        {
             m_RecordNote = true;
         }
     }

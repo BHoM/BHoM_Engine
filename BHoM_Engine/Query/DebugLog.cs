@@ -47,24 +47,24 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        internal static Log SwitchedOffDebugLog()
+        internal static Log SuppressedLog()
         {
             lock(Global.DebugLogLock)
             {
-                if (m_SwitchedOffLog == null)
-                    m_SwitchedOffLog = new Log();
+                if (m_SuppressedLog == null)
+                    m_SuppressedLog = new Log();
 
-                return m_SwitchedOffLog;
+                return m_SuppressedLog;
             }
         }
 
         /***************************************************/
 
-        internal static void ResetSwitchedOffDebugLog()
+        internal static void ResetSuppressedLog()
         {
             lock(Global.DebugLogLock)
             {
-                m_SwitchedOffLog = new Log();
+                m_SuppressedLog = new Log();
             }
         }
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         private static Log m_DebugLog = new Log();
-        private static Log m_SwitchedOffLog = new Log(); //If someone has switched off the log for any reason, keep a record of their events in this log instead - this way they're not completely removed and could be accessed if they switched it off by accident
+        private static Log m_SuppressedLog = new Log(); //If someone has switched off the log for any reason, keep a record of their events in this log instead - this way they're not completely removed and could be accessed if they switched it off by accident
 
         /***************************************************/
     }
