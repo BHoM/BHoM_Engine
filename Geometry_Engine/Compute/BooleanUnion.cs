@@ -490,17 +490,16 @@ namespace BH.Engine.Geometry
             {
                 if (step - mergedRanges[i].Item1 > tolerance)
                 {
-                    if (mergedRanges[i].Item2 - step > tolerance && extraSteps[i].All(x => Math.Abs(x - step) > tolerance))
-                        extraSteps[i].Add(step);
-                    else
+                    if (step - mergedRanges[i].Item2 > tolerance)
                     {
                         i++;
                         extraSteps.Add(i, new List<double>());
                     }
+
+                    if (mergedRanges[i].Item2 - step > tolerance && extraSteps[i].All(x => Math.Abs(x - step) > tolerance))
+                        extraSteps[i].Add(step);
                 }
             }
-
-            extraSteps.Remove(i);
 
             List<(double, double)> mergedMerged = new List<(double, double)>();
             foreach (int j in extraSteps.Keys.OrderBy(x => x))
