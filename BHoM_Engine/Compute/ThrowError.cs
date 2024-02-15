@@ -34,22 +34,11 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Switch off throwing errors when they reach the event log.")]
-        public static void SwitchErrorThrowOff()
+        [Description("Decide whether or not to have BHoM Events of type error thrown as C# excceptions or not. Default behaviour of BHoM Event log is for errors to NOT be thrown. Turn this off if you would like to catch BHoM Events of type error as C# exceptions.")]
+        [Input("suppressErrorThrowing", "Set this to false if you want to have BHoM Events of type Error to be thrown when they are logged. Set this to true if you do NOT want this to happen (default BHoM Log behaviour).")]
+        public static void ThrowError(bool suppressErrorThrowing)
         {
-            m_ThrowError = false;
-        }
-
-        /***************************************************/
-
-        [Description("Switch on throwing errors by the event log. By default, errors are NOT thrown when they reach the BHoM event log. Switching this on will result in errors hitting the event log and being thrown, and if a suitable try/catch is not in place to catch this, you may encounter crashes in your system. Use at your own risk. Please consult the documentation for more information.")] //ToDo: Write the documentation on BHoM.xyz for this system
-        [Input("areYouSure", "Set this to true if you are sure you want to throw all errors recorded by the event log for try/catch statements to handle.")]
-        public static void SwitchErrorThrowOn(bool areYouSure)
-        {
-            if (!areYouSure)
-                return;
-
-            m_ThrowError = true;
+            m_SuppressErrorThrowing = suppressErrorThrowing;
         }
     }
 }
