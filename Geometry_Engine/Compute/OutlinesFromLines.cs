@@ -85,9 +85,10 @@ namespace BH.Engine.Geometry
             if (fitPlane == null)
                 return null;
 
+            double sqTol = distanceTolerance * distanceTolerance;
             lines = lines.BooleanUnion(distanceTolerance, true);
             List<Point> intersectingPoints = Query.LineIntersections(lines).CullDuplicates(distanceTolerance);
-            return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints).Select(y => y.Project(fitPlane))).ToList().CullDuplicateLines(distanceTolerance);
+            return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints).Select(y => y.Project(fitPlane))).Where(x => x.SquareLength() > sqTol).ToList().CullDuplicateLines(distanceTolerance);
         }
 
         /***************************************************/
