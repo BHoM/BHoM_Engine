@@ -34,9 +34,9 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Retrive the events recorded while the logging system was switched off and put them into the main log. When the logging system is switched off, recording of events is done in quiet mode which means UIs are not made aware of the events and the main event log does not have knowledge of them. We still record the events though because they may be useful. This method will move any events stored within the log when it was switched off up to the main log for visibiliy and inspection, and will reset the quiet log to a clean state.")]
+        [Description("Retrieve the events recorded while the logging system was switched off and put them into the main log. When the logging system is switched off, recording of events is done in quiet mode which means UIs are not made aware of the events and the main event log does not have knowledge of them. We still record the events though because they may be useful. This method will move any events stored within the log when it was switched off up to the main log for visibiliy and inspection, and will reset the quiet log to a clean state.")]
         [Output("True if no error occurs in moving up events recorded during a quiet period.")]
-        public static bool RetriveSuppressedLog()
+        public static bool RetrieveSuppressedLog()
         {
             lock(Global.DebugLogLock)
             {
