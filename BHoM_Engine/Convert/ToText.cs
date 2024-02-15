@@ -29,6 +29,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Base.Attributes;
 using BH.oM.Base.Attributes.Enums;
+using BH.oM.Base.Debugging;
 
 namespace BH.Engine.Base
 {
@@ -228,6 +229,29 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        [Description("Get a string representation of a BHoM event.")]
+        [Input("bhomEvent", "The BHoM event to convert to text.")]
+        [Input("includePath", "If true, the stack trace for the event will be included.")]
+        [Output("Text representation.")]
+        public static string ToText(this Event bhomEvent, bool includePath = true)
+        {
+            if(bhomEvent == null)
+                return "null";
+
+            string result = "";
+            result += $"Type: {bhomEvent.Type.ToString()}\n";
+            result += $"Message: {bhomEvent.Message}\n";
+            
+            if(includePath)
+                result += $"Stack Trace: {bhomEvent.StackTrace}\n";
+
+            result += $"UTC Time: {bhomEvent.UtcTime.ToString("HH:mm:ss dd/MM/yyyy")}\n";
+
+            return result;
+        }
+
+        /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/
 
@@ -245,8 +269,3 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
-
-
-
-
-

@@ -112,6 +112,9 @@ namespace BH.Engine.Base
                     OnEventRecorded(newEvent); //Only raise an event if we're not in switched off mode
             }
 
+            if (newEvent.Type == EventType.Error && m_ThrowError)
+                throw new Exception(newEvent.ToText());
+
             return true;
         }
 
@@ -143,6 +146,9 @@ namespace BH.Engine.Base
         private static bool m_RecordError = true; //Default to true, record any events which come through the system
         private static bool m_RecordWarning = true;
         private static bool m_RecordNote = true;
+
+        private static bool m_ThrowError = false; //Default to false - do not throw errors. However, if a user (developer user or UI user) has switched this on, then errors will be thrown for try/catch statements to handle.
+        //ToDo: Discuss whether we want this to be true by default and have BHoM_UI switch it off on load, or keep as is. FYI @alelom
     }
 }
 

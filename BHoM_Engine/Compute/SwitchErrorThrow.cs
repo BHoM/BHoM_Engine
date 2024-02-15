@@ -34,36 +34,22 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Switch on the entire logging system used within BHoM. By default all recording systems are switched on when BHoM is initialised.")]
-        public static void SwitchOnRecording()
+        [Description("Switch off throwing errors when they reach the event log.")]
+        public static void SwitchErrorThrowOff()
         {
-            m_RecordError = true;
-            m_RecordWarning = true;
-            m_RecordNote = true;
+            m_ThrowError = false;
         }
 
         /***************************************************/
 
-        [Description("Switch on the entire logging system for ERRORS only. By default all recording systems are switched on when BHoM is initialised.")]
-        public static void SwitchOnRecordingErrors()
+        [Description("Switch on throwing errors by the event log. By default, errors are NOT thrown when they reach the BHoM event log. Switching this on will result in errors hitting the event log and being thrown, and if a suitable try/catch is not in place to catch this, you may encounter crashes in your system. Use at your own risk. Please consult the documentation for more information.")] //ToDo: Write the documentation on BHoM.xyz for this system
+        [Input("areYouSure", "Set this to true if you are sure you want to throw all errors recorded by the event log for try/catch statements to handle.")]
+        public static void SwitchErrorThrowOn(bool areYouSure)
         {
-            m_RecordError = true;
-        }
+            if (!areYouSure)
+                return;
 
-        /***************************************************/
-
-        [Description("Switch on the entire logging system for WARNINGS only. By default all recording systems are switched on when BHoM is initialised.")]
-        public static void SwitchOnRecordingWarnings()
-        {
-            m_RecordWarning = true;
-        }
-
-        /***************************************************/
-
-        [Description("Switch on the entire logging system for NOTES only. By default all recording systems are switched on when BHoM is initialised.")]
-        public static void SwitchOnRecordingNotes()
-        {
-            m_RecordNote = true;
+            m_ThrowError = true;
         }
     }
 }
