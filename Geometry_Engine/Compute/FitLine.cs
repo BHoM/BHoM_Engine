@@ -62,6 +62,30 @@ namespace BH.Engine.Geometry
             return new Line { Start = C - dir, End = C + dir };
         }
 
+
+        /***************************************************/
+        /***          Private methods                    ***/
+        /***************************************************/
+
+        private static bool IsCollinearNumerical(this List<Point> pts, double tolerance)
+        {
+            if (pts.Count < 3)
+                return true;
+
+            double[,] vMatrix = new double[pts.Count - 1, 3];
+            for (int i = 0; i < pts.Count - 1; i++)
+            {
+                vMatrix[i, 0] = pts[i + 1].X - pts[0].X;
+                vMatrix[i, 1] = pts[i + 1].Y - pts[0].Y;
+                vMatrix[i, 2] = pts[i + 1].Z - pts[0].Z;
+            }
+
+            double REFTolerance = vMatrix.REFTolerance(tolerance);
+            double[,] rref = vMatrix.RowEchelonForm(true, REFTolerance);
+            int nonZeroRows = rref.CountNonZeroRows(REFTolerance);
+            return nonZeroRows < 2;
+        }
+
         /***************************************************/
     }
 }
