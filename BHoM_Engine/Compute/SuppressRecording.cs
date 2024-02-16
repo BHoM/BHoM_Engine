@@ -40,9 +40,15 @@ namespace BH.Engine.Base
         [Input("suppressNotes", "Determine whether to suppress BHoM Events of type NOTE from the log. Set to true to suppress these events.")]
         public static void StartSuppressRecordingEvents(bool suppressErrors = false, bool suppressWarnings = false, bool suppressNotes = false)
         {
-            m_SuppressError = suppressErrors;
-            m_SuppressWarning = suppressWarnings;
-            m_SuppressNote = suppressNotes;
+            //Only change the state of each suppresion flag if it is set to true - this will prevent the scenario where MethodA suppresses everything, then calls MethodB which suppresses only Warnings and the false flags would turn on errors/notes which MethodA wouldn't want - this will ensure that the suppresions are set until the StopSuppressRecordingEvents is called
+            if(suppressErrors)
+                m_SuppressError = suppressErrors;
+
+            if(suppressWarnings)
+                m_SuppressWarning = suppressWarnings;
+
+            if(suppressNotes)
+                m_SuppressNote = suppressNotes;
         }
 
         /***************************************************/

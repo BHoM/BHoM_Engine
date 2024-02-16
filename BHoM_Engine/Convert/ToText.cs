@@ -161,6 +161,7 @@ namespace BH.Engine.Base
         [Description("Provides a human-friendly text representation of a type.")]
         [Input("type", "type to convert to text.")]
         [Input("includePath", "If true, the path/namespace will be provided.")]
+        [Input("replaceGeneric", "If true, generic types will be replaced.")]
         [Input("genericStart", "Start symbol used for the beginning of the generic parameters, if any. Usually, '<'.")]
         [Input("genericSeparator", "Symbol used to separate the generic parameters. Usually, ','.")]
         [Input("genericEnd", "Start symbol used for the end of the generic parameters, if any. Usually, '>'.")]

@@ -95,8 +95,3 @@ namespace BH.Engine.Base
         private static DateTime m_LastBookmark = DateTime.UtcNow; //Default to the current UTC time on load
     }
 }
-
-
-
-
-
