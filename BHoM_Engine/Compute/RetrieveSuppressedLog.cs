@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -21,66 +21,35 @@
  */
 
 using BH.oM.Base.Debugging;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using BH.oM.Base.Attributes;
+using System.Linq;
+using System.ComponentModel;
+using System;
 
 namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        internal static Log DebugLog()
-        {
-            lock (Global.DebugLogLock)
-            {
-                if (m_DebugLog == null)
-                    m_DebugLog = new Log();
-
-                return m_DebugLog;
-            }
-        }
-
-        /***************************************************/
-
-        internal static Log SuppressedLog()
+        [Description("Retrieve the events recorded while the logging system was switched off and put them into the main log. When the logging system is switched off, recording of events is done in quiet mode which means UIs are not made aware of the events and the main event log does not have knowledge of them. We still record the events though because they may be useful. This method will move any events stored within the log when it was switched off up to the main log for visibiliy and inspection, and will reset the quiet log to a clean state.")]
+        [Output("True if no error occurs in moving up events recorded during a quiet period.")]
+        public static bool RetrieveSuppressedLog()
         {
             lock(Global.DebugLogLock)
             {
-                if (m_SuppressedLog == null)
-                    m_SuppressedLog = new Log();
+                Log switchedOffLog = Query.SuppressedLog();
+                Log debugLog = Query.DebugLog();
 
-                return m_SuppressedLog;
+                debugLog.CurrentEvents.AddRange(switchedOffLog.CurrentEvents);
+                debugLog.AllEvents.AddRange(switchedOffLog.AllEvents);
+
+                Query.ResetSuppressedLog(); //Now we've moved the switched off log events into the main log, we don't need the switched off log to also keep a copy of them
             }
+
+            return true;
         }
-
-        /***************************************************/
-
-        internal static void ResetSuppressedLog()
-        {
-            lock(Global.DebugLogLock)
-            {
-                m_SuppressedLog = new Log();
-            }
-        }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static Log m_DebugLog = new Log();
-        private static Log m_SuppressedLog = new Log(); //If someone has switched off the log for any reason, keep a record of their events in this log instead - this way they're not completely removed and could be accessed if they switched it off by accident
-
-        /***************************************************/
     }
 }
-
-
-
-
-

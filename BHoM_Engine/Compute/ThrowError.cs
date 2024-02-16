@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -21,66 +21,24 @@
  */
 
 using BH.oM.Base.Debugging;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using BH.oM.Base.Attributes;
+using System.Linq;
+using System.ComponentModel;
+using System;
 
 namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        internal static Log DebugLog()
+        [Description("Decide whether or not to have BHoM Events of type error thrown as C# excceptions or not. Default behaviour of BHoM Event log is for errors to NOT be thrown. Turn this off if you would like to catch BHoM Events of type error as C# exceptions.")]
+        [Input("suppressErrorThrowing", "Set this to false if you want to have BHoM Events of type Error to be thrown when they are logged. Set this to true if you do NOT want this to happen (default BHoM Log behaviour).")]
+        public static void ThrowError(bool suppressErrorThrowing)
         {
-            lock (Global.DebugLogLock)
-            {
-                if (m_DebugLog == null)
-                    m_DebugLog = new Log();
-
-                return m_DebugLog;
-            }
+            m_SuppressErrorThrowing = suppressErrorThrowing;
         }
-
-        /***************************************************/
-
-        internal static Log SuppressedLog()
-        {
-            lock(Global.DebugLogLock)
-            {
-                if (m_SuppressedLog == null)
-                    m_SuppressedLog = new Log();
-
-                return m_SuppressedLog;
-            }
-        }
-
-        /***************************************************/
-
-        internal static void ResetSuppressedLog()
-        {
-            lock(Global.DebugLogLock)
-            {
-                m_SuppressedLog = new Log();
-            }
-        }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static Log m_DebugLog = new Log();
-        private static Log m_SuppressedLog = new Log(); //If someone has switched off the log for any reason, keep a record of their events in this log instead - this way they're not completely removed and could be accessed if they switched it off by accident
-
-        /***************************************************/
     }
 }
-
-
-
-
-

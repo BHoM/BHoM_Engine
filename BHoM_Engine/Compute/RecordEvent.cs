@@ -25,7 +25,6 @@ using BH.oM.Base.Attributes;
 using System.Linq;
 using System.ComponentModel;
 using System;
-using BH.Engine.Base.Objects;
 
 namespace BH.Engine.Base
 {
@@ -96,13 +95,27 @@ namespace BH.Engine.Base
                 newEvent.StackTrace = string.Join("\n", trace.Split('\n').Skip(4).ToArray());
             }
 
+            bool suppressEvents = (newEvent.Type == EventType.Error && m_SuppressError) 
+                                || (newEvent.Type == EventType.Warning && m_SuppressWarning)
+                                || (newEvent.Type == EventType.Note && m_SuppressNote);
+            
+            Log log = null;
+            if (!suppressEvents)
+                log = Query.DebugLog();
+            else
+                log = Query.SuppressedLog();
+
             lock (Global.DebugLogLock)
             {
-                Log log = Query.DebugLog();
                 log.AllEvents.Add(newEvent);
                 log.CurrentEvents.Add(newEvent);
-                OnEventRecorded(newEvent);
+
+                if(!suppressEvents)
+                    OnEventRecorded(newEvent); //Only raise an event if we're not in switched off mode
             }
+
+            if (newEvent.Type == EventType.Error && !m_SuppressErrorThrowing && !m_SuppressError) //Only throw the event as an exception if someone has asked us to throw it, AND we aren't suppressing them
+                throw new Exception(newEvent.ToText());
 
             return true;
         }
@@ -129,6 +142,15 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+        /**** Private Variables                         ****/
+        /***************************************************/
+
+        private static bool m_SuppressError = false; //Default to false, do not suppress any events which come through the system
+        private static bool m_SuppressWarning = false;
+        private static bool m_SuppressNote = false;
+
+        private static bool m_SuppressErrorThrowing = true; //Default to true - do not throw errors as exceptions. However, if a user (developer user or UI user) has unsuppressed this, then errors will be thrown for try/catch statements to handle.
+        //ToDo: Discuss whether we want this to be true by default and have BHoM_UI switch it off on load, or keep as is. FYI @alelom
     }
 }
 
