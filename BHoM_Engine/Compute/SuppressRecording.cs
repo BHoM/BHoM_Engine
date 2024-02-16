@@ -38,11 +38,21 @@ namespace BH.Engine.Base
         [Input("suppressErrors", "Determine whether to suppress BHoM Events of type ERROR from the log. Set to true to suppress these events.")]
         [Input("suppressWarnings", "Determine whether to suppress BHoM Events of type WARNING from the log. Set to true to suppress these events.")]
         [Input("suppressNotes", "Determine whether to suppress BHoM Events of type NOTE from the log. Set to true to suppress these events.")]
-        public static void SuppressRecordingEvents(bool suppressErrors = false, bool suppressWarnings = false, bool suppressNotes = false)
+        public static void StartSuppressRecordingEvents(bool suppressErrors = false, bool suppressWarnings = false, bool suppressNotes = false)
         {
             m_SuppressError = suppressErrors;
             m_SuppressWarning = suppressWarnings;
             m_SuppressNote = suppressNotes;
+        }
+
+        /***************************************************/
+
+        [Description("Switch on the entire logging system used within BHoM. By default all recording systems are switched on when BHoM is initialised. Events of all types will be logged after this component has been used regardless of which ones were previously suppressed.")]
+        public static void StopSuppressRecordingEvents()
+        {
+            m_SuppressError = false;
+            m_SuppressWarning = false;
+            m_SuppressNote = false;
         }
     }
 }
