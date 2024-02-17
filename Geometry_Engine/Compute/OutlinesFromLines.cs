@@ -61,11 +61,14 @@ namespace BH.Engine.Geometry
                 if (cluster.Count == 0)
                     continue;
 
-                if (!cluster.IsCoplanar(distanceTolerance))
+                Plane fitPlane = cluster.SelectMany(x => x.ControlPoints()).ToList().FitPlane();
+                if (fitPlane == null)
                 {
                     BH.Engine.Base.Compute.RecordWarning("Some of the lines have been ignored in the process of creating outlines because they were not coplanar.");
                     continue;
                 }
+
+                cluster = cluster.Select(x => x.Project(fitPlane)).ToList();
 
                 Output<Polyline, List<Line>> preprocessedLines = cluster.OuterAndInnerLines(distanceTolerance);
                 result.AddRange(OutlinesFromPreprocessedLines(preprocessedLines.Item1, preprocessedLines.Item2, distanceTolerance));
@@ -81,14 +84,10 @@ namespace BH.Engine.Geometry
 
         private static List<Line> CleanUpAndSplitWithEachOther(this List<Line> lines, double distanceTolerance)
         {
-            Plane fitPlane = lines.SelectMany(x => x.ControlPoints()).ToList().FitPlane();
-            if (fitPlane == null)
-                return null;
-
             double sqTol = distanceTolerance * distanceTolerance;
             lines = lines.BooleanUnion(distanceTolerance, true);
             List<Point> intersectingPoints = Query.LineIntersections(lines).CullDuplicates(distanceTolerance);
-            return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints).Select(y => y.Project(fitPlane))).Where(x => x.SquareLength() > sqTol).ToList().CullDuplicateLines(distanceTolerance);
+            return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints)).Where(x => x.SquareLength() > sqTol).ToList().CullDuplicateLines(distanceTolerance);
         }
 
         /***************************************************/
