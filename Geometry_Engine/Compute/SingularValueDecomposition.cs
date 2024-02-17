@@ -36,15 +36,15 @@ namespace BH.Engine.Geometry
         [Description("Performs factorization of a matrix into three matrices known as Sigular Value Decomposition." +
             "\nReturns 3 matrices that represent the formula A = U * S * Vh." +
             "\nImplementation uses Jacobi eigenvalue algorithm.")]
-        [Input("A", "Matrix to run the factorization against.")]
+        [Input("matrix", "Matrix to run the factorization against, A component in formula A = U * S * Vh.")]
         [MultiOutput(0, "U", "U component in formula A = U * S * Vh.")]
         [MultiOutput(1, "S", "S component in formula A = U * S * Vh.")]
         [MultiOutput(2, "Vh", "Vh component in formula A = U * S * Vh.")]
-        public static Output<double[,], double[], double[,]> SingularValueDecomposition(this double[,] A)
+        public static Output<double[,], double[], double[,]> SingularValueDecomposition(this double[,] matrix)
         {
             // Rewrite of https://github.com/ampl/gsl/blob/master/linalg/svd.c
             double epsilon = 1e-15;
-            A = (double[,])A.Clone();
+            double [,] A = (double[,])matrix.Clone();
 
             int m = A.GetLength(0);
             int n = A.GetLength(1);
