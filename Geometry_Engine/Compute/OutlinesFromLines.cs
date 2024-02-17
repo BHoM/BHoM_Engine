@@ -419,7 +419,7 @@ namespace BH.Engine.Geometry
                 result.Add(outline.Select(x => all[transformed.IndexOf(x)]).ToList());
             }
 
-            return result.Select(x => x.BooleanUnion(distanceTolerance).Join().First()).ToList();
+            return result.Select(x => x.Join().First().Simplify()).ToList();
         }
 
         /***************************************************/
