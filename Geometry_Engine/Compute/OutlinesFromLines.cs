@@ -44,13 +44,13 @@ namespace BH.Engine.Geometry
         [Output("outlines", "Closed outines created from the input lines.")]
         public static List<Polyline> OutlinesFromLines(this List<Line> lines, double distanceTolerance = Tolerance.Distance)
         {
-            lines = lines?.CleanUpAndSplitWithEachOther(distanceTolerance);
             if (lines == null)
             {
-                BH.Engine.Base.Compute.RecordError("Outlines could not be created because the input set is not valid.");
+                BH.Engine.Base.Compute.RecordError("Outlines could not be created from a null collection of lines.");
                 return null;
             }
 
+            lines = lines.CleanUpAndSplitWithEachOther(distanceTolerance);
             List<List<Line>> clustered = lines.Cluster(distanceTolerance);
 
             List<Polyline> result = new List<Polyline>();
@@ -109,6 +109,7 @@ namespace BH.Engine.Geometry
         {
             int initialCount = lines.Count;
 
+            // Group nodes by their valence (number of edges meeting at node)
             Dictionary<Point, int> nodesByValence = new Dictionary<Point, int>();
             foreach (Line l in lines)
             {
@@ -140,7 +141,7 @@ namespace BH.Engine.Geometry
             int nodeValence = nodesByValence[point];
             if (nodeValence == 0)
                 nodesByValence.Remove(point);
-            if (nodeValence == 1)
+            else if (nodeValence == 1)
             {
                 int index = lines.FindIndex(x => x.Start == point || x.End == point);
                 Line l = lines[index];
@@ -226,20 +227,13 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            List<Line> outline = new List<Line> { currentEdge };
-            Point currentNode = leftmost;
+            // Add first edge to the outline and move to the opposite end of it
+            List<Line> outline = new List<Line> { currentEdge };            
+            Point currentNode = leftmost == currentEdge.Start ? currentEdge.End : currentEdge.Start;
 
             // Look for subsequent edges with leftmost dirs compared to the dir of current edge
-            while (true)
+            do
             {
-                if (currentNode == currentEdge.Start)
-                    currentNode = currentEdge.End;
-                else
-                    currentNode = currentEdge.Start;
-
-                if (currentNode == leftmost)
-                    break;
-
                 List<Vector> nodeDirs = new List<Vector>();
                 foreach (Line l in graph[currentNode])
                 {
@@ -292,8 +286,11 @@ namespace BH.Engine.Geometry
                 currentEdge = newEdge;
                 currentDir = newDir;
 
+                // Take the opposite node of the current edge
+                currentNode = currentNode == currentEdge.Start ? currentEdge.End : currentEdge.Start;
+
                 outline.Add(currentEdge);
-            }
+            } while (currentNode != leftmost);
 
             List<Line> outerSegments = outline.Select(x => lines[transformed.IndexOf(x)]).ToList();
             Polyline outer = outerSegments.Join(distanceTolerance).First();
