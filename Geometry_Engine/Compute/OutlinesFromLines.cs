@@ -211,7 +211,7 @@ namespace BH.Engine.Geometry
                     leftmost = node;
             }
 
-            // Find edge starting at start node with leftmost dir
+            // Find edge starting at leftmost node with dir closest to global Y
             Line currentEdge = null;
             Vector currentDir = null;
             foreach (Line l in graph[leftmost])
