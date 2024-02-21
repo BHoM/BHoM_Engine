@@ -131,7 +131,7 @@ namespace BH.Engine.Geometry
             }
 
             if (lines.Count != initialCount)
-                BH.Engine.Base.Compute.RecordNote("Lines without a valid node at end have been ignored in the process of creating outlines.");
+                BH.Engine.Base.Compute.RecordNote("Lines with at least one free end have been ignored in the process of creating outlines.");
         }
 
         /***************************************************/

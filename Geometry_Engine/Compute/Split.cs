@@ -68,6 +68,12 @@ namespace BH.Engine.Geometry
                     l.End = cpEnd;
             }
 
+            // Cull splitting curves that do not cut through the full depth of polygon (one of end points with valence 1)
+            List<Line> allCurves = splitCurves.Union(perimeterLines).ToList();
+            allCurves.RemoveOutliers(distanceTolerance);
+            splitCurves = splitCurves.Where(x => allCurves.Contains(x)).ToList();
+
+            // Turn the preprocessed lines into outlines
             return OutlinesFromPreprocessedLines(outline, splitCurves, distanceTolerance);
         }
 
