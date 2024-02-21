@@ -50,23 +50,16 @@ namespace BH.Engine.Geometry
                 return new List<Polyline> { outerRegion };
 
             List<Point> intersectingPoints = cuttingLines.LineIntersections(false, distanceTolerance).CullDuplicates(distanceTolerance); //Get the points to split the lines by
-            List<Line> splitCurves = cuttingLines.SelectMany(x => x.ISplitAtPoints(intersectingPoints, distanceTolerance)).Cast<Line>().ToList(); //Split the cutting lines at their points
+            List<Line> splitCurves = cuttingLines.SelectMany(x => x.SplitAtPoints(intersectingPoints, distanceTolerance)).Cast<Line>().ToList(); //Split the cutting lines at their points
             List<Line> perimeterLines = outerRegion.SubParts().SelectMany(x => x.SplitAtPoints(cuttingLines.SelectMany(y => y.LineIntersections(x, false, distanceTolerance)).ToList())).ToList();
 
             // Make sure nodes of outline and splitting curves perfectly overlap
-            Polyline outline = perimeterLines.Join(distanceTolerance).First();
-            List<Point> outlinePoint = outline.ControlPoints.Skip(1).ToList();
-            double sqTol = distanceTolerance * distanceTolerance;
-            foreach (Line l in splitCurves)
-            {
-                Point cpStart = l.Start.ClosestPoint(outlinePoint);
-                if (l.Start.SquareDistance(cpStart) <= sqTol)
-                    l.Start = cpStart;
+            List<Line> allLines = splitCurves.Union(perimeterLines).ToList();
+            List<Point> snapPoints = allLines.Select(x => x.Start).Union(allLines.Select(x => x.End)).ToList().CullDuplicates();
+            SnapToPoints(allLines, snapPoints, distanceTolerance);
 
-                Point cpEnd = l.End.ClosestPoint(outlinePoint);
-                if (l.End.SquareDistance(cpEnd) <= sqTol)
-                    l.End = cpEnd;
-            }
+            // Recreate the outline
+            Polyline outline = perimeterLines.Join(distanceTolerance).First();
 
             // Cull splitting curves that do not cut through the full depth of polygon (one of end points with valence 1)
             List<Line> allCurves = splitCurves.Union(perimeterLines).ToList();

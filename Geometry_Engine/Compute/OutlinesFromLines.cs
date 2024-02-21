@@ -87,10 +87,29 @@ namespace BH.Engine.Geometry
             double sqTol = distanceTolerance * distanceTolerance;
             lines = lines.BooleanUnion(distanceTolerance, true);
             List<Point> intersectingPoints = Query.LineIntersections(lines).CullDuplicates(distanceTolerance);
-            return lines.SelectMany(x => x.SplitAtPoints(intersectingPoints)).Where(x => x.SquareLength() > sqTol).ToList().CullDuplicateLines(distanceTolerance);
+            List<Line> splitLines = lines.SelectMany(x => x.SplitAtPoints(intersectingPoints)).ToList();
+
+            List<Point> snapPoints = splitLines.Select(x => x.Start).Union(splitLines.Select(x => x.End)).ToList().CullDuplicates();
+            SnapToPoints(splitLines, snapPoints, distanceTolerance);
+            return splitLines.CullDuplicateLines(distanceTolerance);
         }
 
         /***************************************************/
+
+        private static void SnapToPoints(this List<Line> lines, List<Point> points, double distanceTolerance)
+        {
+            double sqTol = distanceTolerance * distanceTolerance;
+            foreach (Line l in lines)
+            {
+                Point cpStart = l.Start.ClosestPoint(points);
+                if (l.Start.SquareDistance(cpStart) <= sqTol)
+                    l.Start = cpStart;
+
+                Point cpEnd = l.End.ClosestPoint(points);
+                if (l.End.SquareDistance(cpEnd) <= sqTol)
+                    l.End = cpEnd;
+            }
+        }
 
         private static List<List<Line>> Cluster(this List<Line> lines, double distanceTolerance)
         {
