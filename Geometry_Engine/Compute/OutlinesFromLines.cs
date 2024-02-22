@@ -84,11 +84,13 @@ namespace BH.Engine.Geometry
 
         private static List<Line> CleanUpAndSplitWithEachOther(this List<Line> lines, double distanceTolerance)
         {
+            // Union the lines and split with each other
             double sqTol = distanceTolerance * distanceTolerance;
             lines = lines.BooleanUnion(distanceTolerance, true);
             List<Point> intersectingPoints = Query.LineIntersections(lines).CullDuplicates(distanceTolerance);
             List<Line> splitLines = lines.SelectMany(x => x.SplitAtPoints(intersectingPoints)).ToList();
 
+            // Make sure all endpoints perfectly overlap
             List<Point> snapPoints = splitLines.Select(x => x.Start).Union(splitLines.Select(x => x.End)).ToList().CullDuplicates();
             SnapToPoints(splitLines, snapPoints, distanceTolerance);
             return splitLines.CullDuplicateLines(distanceTolerance);
