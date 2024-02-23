@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using System.Collections.Generic;
@@ -35,6 +34,10 @@ namespace BH.Engine.Geometry
         /****              Public Methods               ****/
         /***************************************************/
 
+        [Description("Splits an input closed, planar polyline at self intersections and returns a collection of closed polylines.")]
+        [Input("polyline", "Closed, planar polyline to split at self intersections.")]
+        [Input("distanceTolerance", "Distance tolerance used in geometrical processing.")]
+        [Output("splitOutlines", "Closed polylines representing the input polyline split at self intersections.")]
         public static List<Polyline> SplitAtSelfIntersections(this Polyline polyline, double distanceTolerance = Tolerance.Distance)
         {
             if (polyline.IsNull())
