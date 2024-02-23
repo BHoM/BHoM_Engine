@@ -43,6 +43,18 @@ namespace BH.Engine.Geometry
             if (polyline.IsNull())
                 return null;
 
+            if (!polyline.IsClosed(distanceTolerance))
+            {
+                BH.Engine.Base.Compute.RecordError("Splitting at self intersections works only on closed polylines.");
+                return null;
+            }
+
+            if (!polyline.IsPlanar(distanceTolerance))
+            {
+                BH.Engine.Base.Compute.RecordError("Splitting at self intersections works only on planar polylines.");
+                return null;
+            }
+
             List<Line> segments = polyline.SubParts();
             List<Point> selfIntersections = segments.LineIntersections(false, distanceTolerance).CullDuplicates();
             segments = segments.SelectMany(x => x.SplitAtPoints(selfIntersections, distanceTolerance)).ToList();
