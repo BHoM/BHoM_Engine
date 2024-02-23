@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
         {
             List<Point> asList = points.ToList();
             int n = asList.Count;
-            if (n < 2)
+            if (asList.CullDuplicates(tolerance).Count < 2)
                 return null;
 
             Point C = points.Average();
