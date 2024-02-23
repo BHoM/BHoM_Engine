@@ -39,8 +39,8 @@ namespace BH.Engine.Base
 
         [Description("Checks if a collection is null or empty and outputs relevant error message.")]
         [Input("collection", "The collection to test for null value or emptiness.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the collection is null or empty.")]
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection, string msg = "", [CallerMemberName] string methodName = "")
         {
@@ -51,8 +51,8 @@ namespace BH.Engine.Base
 
         [Description("Checks if a collection is null and outputs relevant error message.")]
         [Input("collection", "The collection to test for null value.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
         [Output("isNull", "True if the collection is null.")]
         public static bool IsNull<T>(this IEnumerable<T> collection, string msg = "", [CallerMemberName] string methodName = "")
         {
