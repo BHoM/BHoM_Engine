@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using System.Collections.Generic;
@@ -42,6 +43,27 @@ namespace BH.Engine.Geometry
         [Output("regions", "Closed polygon regions contained within the outer region cut by the cutting lines.")]
         public static List<Polyline> Split(this Polyline outerRegion, List<Line> cuttingLines, double distanceTolerance = Tolerance.Distance)
         {
+            if (outerRegion.IsNull() || cuttingLines.IsNull())
+                return null;
+
+            if (!outerRegion.IsPlanar(distanceTolerance))
+            {
+                BH.Engine.Base.Compute.RecordError("Polyline could not be split because it is not planar.");
+                return null;
+            }
+
+            if (outerRegion.IsSelfIntersecting(distanceTolerance))
+            {
+                BH.Engine.Base.Compute.RecordError("Polyline could not be split because it is self intersecting.");
+                return null;
+            }
+
+            Plane fitPlane = outerRegion.FitPlane(distanceTolerance);
+            int originalLineCount = cuttingLines.Count;
+            cuttingLines = cuttingLines.Where(x => x.IsInPlane(fitPlane, distanceTolerance)).ToList();
+            if (originalLineCount != cuttingLines.Count)
+                BH.Engine.Base.Compute.RecordWarning("Some of the lines have been ignored in the process of splitting the outline because they were not coplanar with it.");
+
             //Preproc the cutting lines to take only the parts inside the outer region
             cuttingLines = cuttingLines.BooleanUnion(distanceTolerance, true);
             cuttingLines = cuttingLines.SelectMany(x => x.SplitAtPoints(outerRegion.LineIntersections(x, false, distanceTolerance).CullDuplicates(distanceTolerance), distanceTolerance)).ToList();
