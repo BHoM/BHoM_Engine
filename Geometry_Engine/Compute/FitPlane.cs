@@ -24,6 +24,8 @@ using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using BH.oM.Base;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -35,66 +37,25 @@ namespace BH.Engine.Geometry
 
         public static Plane FitPlane(this List<Point> points, double tolerance = Tolerance.Distance)
         {
-            if (points.Count < 3 || points.IsCollinear(tolerance))
+            int n = points.Count;
+            if (n < 3 || points.IsCollinear(tolerance))
                 return null;
 
-            Plane result = null;
-            Point origin = points.Average();
-            Vector normal = new Vector();
+            Point C = points.Average();
 
-            if (points.IsCoplanar(tolerance))
+            double[,] A = new double[n, 3];
+            for (int i = 0; i < n; i++)
             {
-                for (int i = 0; i < points.Count - 1; i++)
-                    normal += (points[i] - origin).CrossProduct(points[i + 1] - origin);
-                return new Plane { Origin = origin, Normal = normal.Normalise() };
+                A[i, 0] = points[i].X - C.X;
+                A[i, 1] = points[i].Y - C.Y;
+                A[i, 2] = points[i].Z - C.Z;
             }
 
-            double[,] MTM = new double[3, 3];
-            double[,] normalizedPoints = new double[points.Count, 3];
-
-            for (int i = 0; i < points.Count; i++)
-            {
-                normalizedPoints[i, 0] = points[i].X - origin.X;
-                normalizedPoints[i, 1] = points[i].Y - origin.Y;
-                normalizedPoints[i, 2] = points[i].Z - origin.Z;
-            }
-
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    double value = 0;
-                    for (int k = 0; k < points.Count; k++)
-                    {
-                        value += normalizedPoints[k, i] * normalizedPoints[k, j];
-                    }
-                    MTM[i, j] = value;
-                }
-            }
-
-            Vector[] eigenvectors = MTM.Eigenvectors(tolerance);
-            if (eigenvectors == null)
-                return null;
-
-            double leastSquares = double.PositiveInfinity;
-            foreach (Vector eigenvector in eigenvectors)
-            {
-                double squares = 0;
-                for (int i = 0; i < points.Count; i++)
-                {
-                    squares += Math.Pow(eigenvector.X * normalizedPoints[i, 0] + eigenvector.Y * normalizedPoints[i, 1] + eigenvector.Z * normalizedPoints[i, 2], 2);
-                }
-
-                if (squares <= leastSquares)
-                {
-                    leastSquares = squares;
-                    result = new Plane { Origin = origin, Normal = eigenvector.Normalise() };
-                }
-            }
-
-            return result;
+            Output<double[,], double[], double[,]> svd = A.SingularValueDecomposition();
+            double[,] Vh = svd.Item3;
+            Vector normal = new Vector { X = Vh[2, 0], Y = Vh[2, 1], Z = Vh[2, 2] };
+            return new Plane { Origin = C, Normal = normal };
         }
-
 
         /***************************************************/
         /**** public Methods - Curves                   ****/
