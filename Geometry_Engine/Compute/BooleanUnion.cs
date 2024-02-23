@@ -488,19 +488,19 @@ namespace BH.Engine.Geometry
             extraSteps.Add(0, new List<double>());
             foreach (double step in steps)
             {
+                while (step - mergedRanges[i].Item2 > tolerance)
+                {
+                    i++;
+                    extraSteps.Add(i, new List<double>());
+                }
+
                 if (step - mergedRanges[i].Item1 > tolerance)
                 {
+
                     if (mergedRanges[i].Item2 - step > tolerance && extraSteps[i].All(x => Math.Abs(x - step) > tolerance))
                         extraSteps[i].Add(step);
-                    else
-                    {
-                        i++;
-                        extraSteps.Add(i, new List<double>());
-                    }
                 }
             }
-
-            extraSteps.Remove(i);
 
             List<(double, double)> mergedMerged = new List<(double, double)>();
             foreach (int j in extraSteps.Keys.OrderBy(x => x))

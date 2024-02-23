@@ -37,30 +37,52 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a List is null and outputs relevant error message.")]
-        [Input("list", "The List to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Description("Checks if a collection is null or empty and outputs relevant error message.")]
+        [Input("collection", "The collection to test for null value or emptiness.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the List or its elements are null.")]
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> list, string msg = "", [CallerMemberName] string methodName = "")
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("isNull", "True if the collection is null or empty.")]
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection, string msg = "", [CallerMemberName] string methodName = "")
         {
-            if (list == null)
+            return collection.NullCheckCollection(true, msg, methodName);
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a collection is null and outputs relevant error message.")]
+        [Input("collection", "The collection to test for null value.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("isNull", "True if the collection is null.")]
+        public static bool IsNull<T>(this IEnumerable<T> collection, string msg = "", [CallerMemberName] string methodName = "")
+        {
+            return collection.NullCheckCollection(false, msg, methodName);
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool NullCheckCollection<T>(this IEnumerable<T> collection, bool checkForEmpty, string msg, string methodName)
+        {
+            if (collection == null)
             {
                 if (string.IsNullOrEmpty(methodName))
                 {
                     methodName = "Method";
                 }
-                Base.Compute.RecordError($"Cannot evaluate {methodName} because the List failed a null check. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the input collection failed a null check. {msg}");
 
                 return true;
             }
-            else if (!list.Any())
+            else if (checkForEmpty && !collection.Any())
             {
                 if (string.IsNullOrEmpty(methodName))
                 {
                     methodName = "Method";
                 }
-                Base.Compute.RecordError($"Cannot evaluate {methodName} because the List is empty. {msg}");
+                Base.Compute.RecordError($"Cannot evaluate {methodName} because the input collection is empty. {msg}");
 
                 return true;
             }
@@ -68,6 +90,7 @@ namespace BH.Engine.Base
             return false;
         }
 
+        /***************************************************/
     }
 }
 
