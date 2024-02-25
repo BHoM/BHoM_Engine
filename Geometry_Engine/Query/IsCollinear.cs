@@ -52,7 +52,7 @@ namespace BH.Engine.Geometry
                 return true;
 
             double sqTol = tolerance * tolerance;
-            return pts.All(x => x.SquareDistance(fitLine, true) < sqTol);
+            return pts.All(x => x.SquareDistance(fitLine, true) <= sqTol);
         }
 
 
