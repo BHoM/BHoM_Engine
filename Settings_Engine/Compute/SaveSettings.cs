@@ -63,6 +63,8 @@ namespace BH.Engine.Settings
                 return false;
             }
 
+            Modify.UpdateSettings(settings); //Update the settings in memory as well so the next call to GetSettings has these settings which were saved
+
             return true;
         }
 
