@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Fits a line into a set of points using Orthogonal Least Squares algorithm.")]
+        [Description("Fits a line into a set of points using Orthogonal Least Squares algorithm. Returns null if the number of non-duplicate points is less than two.")]
         [Input("points", "Points into which the line is meant to be fit.")]
         [Input("tolerance", "Distance tolerance to be used to check whether a line can be fit into the input points (i.e. whether the points are not coincident).")]
         [Output("fitLine", "Line fit into the input set of points based on the Orthogonal Least Squares algorithm.")]
