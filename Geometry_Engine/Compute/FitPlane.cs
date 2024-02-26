@@ -20,12 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
-using System;
-using System.Collections.Generic;
 using BH.oM.Base;
-using System.Linq;
+using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Geometry
 {
@@ -35,6 +34,10 @@ namespace BH.Engine.Geometry
         /**** public Methods - Vectors                  ****/
         /***************************************************/
 
+        [Description("Fits a plane into a given set of points using least squares algorithm.")]
+        [Input("points", "Points into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into the input set of points based on the least squares algorithm.")]
         public static Plane FitPlane(this List<Point> points, double tolerance = Tolerance.Distance)
         {
             int n = points.Count;
@@ -61,6 +64,10 @@ namespace BH.Engine.Geometry
         /**** public Methods - Curves                   ****/
         /***************************************************/
 
+        [Description("Fits a plane into control points of a given Arc using least squares algorithm.")]
+        [Input("curve", "Curve into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input Arc based on the least squares algorithm.")]
         public static Plane FitPlane(this Arc curve, double tolerance = Tolerance.Distance)
         {
             return (Plane)curve.CoordinateSystem;
@@ -68,6 +75,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Fits a plane into control points of a given Circle using least squares algorithm.")]
+        [Input("curve", "Curve into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input Circle based on the least squares algorithm.")]
         public static Plane FitPlane(this Circle curve, double tolerance = Tolerance.Distance)
         {
             return new Plane { Origin = curve.Centre, Normal = curve.Normal };
@@ -75,6 +86,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Fits a plane into control points of a given Ellipse using least squares algorithm.")]
+        [Input("curve", "Curve into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input Ellipse based on the least squares algorithm.")]
         public static Plane FitPlane(this Ellipse curve, double tolerance = Tolerance.Distance)
         {
             return new Plane { Origin = curve.Centre, Normal = curve.Axis1.CrossProduct(curve.Axis2).Normalise() };
@@ -82,13 +97,21 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Fits a plane into control points of a given Line using least squares algorithm. Always returns null because control points of a line are collinear.")]
+        [Input("curve", "Curve into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input Line based on the least squares algorithm. Always null because control points of a line are collinear.")]
         public static Plane FitPlane(this Line curve, double tolerance = Tolerance.Distance)
         {
             return null;
         }
 
         /***************************************************/
-        
+
+        [Description("Fits a plane into control points of a given NurbsCurve using least squares algorithm.")]
+        [Input("curve", "Curve into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input NurbsCurve based on the least squares algorithm.")]
         public static Plane FitPlane(this NurbsCurve curve, double tolerance = Tolerance.Distance)
         {
             return curve.ControlPoints.FitPlane();
@@ -96,6 +119,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Fits a plane into control points of a given PolyCurve using least squares algorithm.")]
+        [Input("curve", "Curve into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input PolyCurve based on the least squares algorithm.")]
         public static Plane FitPlane(this PolyCurve curve, double tolerance = Tolerance.Distance)
         {
             return FitPlane(curve.ControlPoints(), tolerance);
@@ -103,6 +130,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Fits a plane into control points of a given Polyline using least squares algorithm.")]
+        [Input("curve", "Curve into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input Polyline based on the least squares algorithm.")]
         public static Plane FitPlane(this Polyline curve, double tolerance = Tolerance.Distance)
         {
             return FitPlane(curve.ControlPoints, tolerance);
@@ -113,6 +144,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Surfaces                 ****/
         /***************************************************/
 
+        [Description("Fits a plane into control points of the outline of a given PlanarSurface using least squares algorithm.")]
+        [Input("surface", "PlanarSurface into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input PlanarSurface's outline based on the least squares algorithm.")]
         public static Plane FitPlane(this PlanarSurface surface, double tolerance = Tolerance.Distance)
         {
             return IFitPlane(surface.ExternalBoundary, tolerance);
@@ -123,6 +158,10 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
+        [Description("Fits a plane into control points of a given ICurve using least squares algorithm.")]
+        [Input("curve", "Curve into which the plane is meant to be fit.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a plane can be fit into the input points (i.e. whether the points are not collinear).")]
+        [Output("fitPlane", "Plane fit into control points of the input ICurve based on the least squares algorithm.")]
         public static Plane IFitPlane(this ICurve curve, double tolerance = Tolerance.Distance)
         {
             return FitPlane(curve as dynamic, tolerance);
