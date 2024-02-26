@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
 
         [Description("Fits a line into a set of points using Orthogonal Least Squares algorithm.")]
         [Input("points", "Points into which the line is meant to be fit.")]
-        [Input("tolerance", "Distance tolerance to be used in the process of fitting.")]
+        [Input("tolerance", "Distance tolerance to be used to check whether a line can be fit into the input points (i.e. whether the points are not coincident).")]
         [Output("fitLine", "Line fit into the input set of points based on the Orthogonal Least Squares algorithm.")]
         public static Line FitLine(this IEnumerable<Point> points, double tolerance = Tolerance.Distance)
         {
