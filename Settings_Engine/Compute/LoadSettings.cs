@@ -87,7 +87,7 @@ namespace BH.Engine.Settings
 
         [Description("Load a single settings file into memory for use. Settings file must contain one object in BHoM serialised JSON which is an object implementing the ISettings interface. Any settings object within the file will overwrite any previously loaded settings in memory.")]
         [Input("filePath", "The full file path of the settings JSON file to be loaded.")]
-        public static void LoadSettings(string filePath)
+        public static void LoadSettingsFromFile(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
