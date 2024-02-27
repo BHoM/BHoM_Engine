@@ -68,6 +68,8 @@ namespace BH.Engine.Settings
             return true;
         }
 
+        /***************************************************/
+
         [Description("Saves all settings in memory to their respective files. Settings are saved back to the same file they were loaded from, overwriting them if they've changed. If settings were added during runtime and do not have an associated file, then a new file will be created with the name {settingsType}.json. If no folder is specified, the default of %ProgramData%/BHoM/Settings/{settingsType}.json will be used.")]
         [Input("outputDirectory", "Optional input to specify where to save settings file to. If the provided output directory differs from the saved load directory, settings will be saved in the provided output directory and not where they were originally loaded from.")]
         [Input("run", "Boolean toggle to determine whether to run the method. Useful for Visual Programming to prevent settings being saved/overwritten before providing a file path if desired.")]
