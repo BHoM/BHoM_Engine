@@ -35,10 +35,10 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Decide whether or not to have BHoM Events of type error thrown as C# excceptions or not. Default behaviour of BHoM Event log is for errors to NOT be thrown. Turn this off if you would like to catch BHoM Events of type error as C# exceptions.")]
-        [Input("suppressErrorThrowing", "Set this to false if you want to have BHoM Events of type Error to be thrown when they are logged. Set this to true if you do NOT want this to happen (default BHoM Log behaviour).")]
-        public static void ThrowError(bool suppressErrorThrowing)
+        [Input("throwErrorsAsExceptions", "Set this to true if you want to have BHoM Events of type Error to be thrown as Exceptions when they are logged. Set this to false if you do NOT want this to happen (default BHoM Log behaviour).")]
+        public static void ThrowErrorsAsExceptions(bool throwErrorsAsExceptions)
         {
-            m_SuppressErrorThrowing = suppressErrorThrowing;
+            m_ThrowError = throwErrorsAsExceptions;
         }
     }
 }
