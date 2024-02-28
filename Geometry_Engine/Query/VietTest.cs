@@ -115,14 +115,22 @@ namespace BH.Engine.Geometry
             int c = 0;
             for (int i = 0; i < paramsWithDirs.Count; i++)
             {
-                // Ignore intersections with 2 subparts at 1 point, where both subparts are on the same side of line
-                // This is the case where the line just scratches a convex corner
                 if (i < paramsWithDirs.Count - 1 && paramsWithDirs[i + 1].Item1 - paramsWithDirs[i].Item1 < paramTol)
                 {
                     double from = paramsWithDirs[i].Item2.DotProduct(sideDir);
                     double to = paramsWithDirs[i + 1].Item2.DotProduct(sideDir);
+
+                    // Ignore intersections with 2 subparts at 1 point, where both subparts are on the same side of line
+                    // This is the case where the line just scratches a convex corner
+                    // If the 2 subparts are on opposite sides of line, count intersection as one
                     if (from * to < 0)
                         continue;
+                    else
+                    {
+                        c++;
+                        i++;
+                        continue;
+                    }
                 }
 
                 c++;    
