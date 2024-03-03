@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
         [Input("material", "Timber material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the timber section. This is required for most structural packages to create the section.")]
         [Output("section", "The created rectangular solid timber section.")]
-        public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, Timber material = null, string name = "")
+        public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, ITimber material = null, string name = "")
         {
             return TimberSectionFromProfile(Spatial.Create.RectangleProfile(height, width, cornerRadius), material, name);
         }
