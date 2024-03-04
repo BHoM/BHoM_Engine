@@ -42,7 +42,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.0", "BH.Engine.Structure.Create.TimberSectionFromProfile(BH.oM.Spatial.ShapeProfiles.IProfile, BH.oM.Structure.MaterialFragments.Timber, System.String)")]
+        [PreviousVersion("7.1", "BH.Engine.Structure.Create.TimberSectionFromProfile(BH.oM.Spatial.ShapeProfiles.IProfile, BH.oM.Structure.MaterialFragments.Timber, System.String)")]
         [Description("Generates a timber section based on a Profile and a material. \n This is the main create method for timber sections, responsible for calculating section constants etc. and is being called from all other create methods for timber sections.")]
         [Input("profile", "The section profile the timber section. All section constants are derived based on the dimensions of this.")]
         [Input("material", "Timber material to be applied to the section.")]
