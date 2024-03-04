@@ -255,6 +255,46 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this Cassette property)
+        {
+            if (property.IsNull())
+                return double.NaN;
+
+            if (property.RibThickness <= 0 || property.RibSpacing < property.RibThickness)
+            {
+                Base.Compute.RecordError($"The {nameof(Cassette.RibThickness)} is 0 or {nameof(Cassette.RibSpacing)} smaller than {nameof(Cassette.RibThickness)}. The {nameof(Cassette)} is invalid and volume cannot be computed.");
+                return double.NaN;
+            }
+
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
+            return property.TopThickness + property.BottomThickness + volPerAreaRibZone;
+        }
+
+
+        /***************************************************/
+
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this BuiltUpRibbed property)
+        {
+            if (property.IsNull())
+                return double.NaN;
+
+            if (property.RibThickness <= 0 || property.RibSpacing < property.RibThickness)
+            {
+                Base.Compute.RecordError($"The {nameof(BuiltUpRibbed.RibThickness)} is 0 or {nameof(BuiltUpRibbed.RibSpacing)} smaller than {nameof(BuiltUpRibbed.RibThickness)}. The {nameof(BuiltUpRibbed)} is invalid and volume cannot be computed.");
+                return double.NaN;
+            }
+
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
+            return property.TopThickness + volPerAreaRibZone;
+        }
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
