@@ -356,6 +356,32 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Generates a default description for the SurfaceProperty.")]
+        [Input("property", "The SurfaceProperty to get a default description for.")]
+        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
+        public static string Description(this BuiltUpRibbed property)
+        {
+            if (property == null)
+                return "null property";
+
+            return $"Ribbed: {property.TopThickness:G3} THK slab {CheckGetMaterialName(property.Material)} on {property.RibHeight:G3}x{property.RibThickness:G3} ribs {CheckGetMaterialName(property.RibMaterial ?? property.Material)} spaced {property.RibSpacing:G3}";
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the SurfaceProperty.")]
+        [Input("property", "The SurfaceProperty to get a default description for.")]
+        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
+        public static string Description(this Cassette property)
+        {
+            if (property == null)
+                return "null property";
+
+            return $"Cassette Top: {property.TopThickness:G3} THK {CheckGetMaterialName(property.Material)} Bot: {property.BottomThickness:G3} THK {CheckGetMaterialName(property.BottomMaterial ?? property.Material)} Ribs: {property.RibHeight:G3}x{property.RibThickness:G3} {CheckGetMaterialName(property.RibMaterial ?? property.Material)} spaced {property.RibSpacing:G3}";
+        }
+
+        /***************************************************/
+
         [Description("Generates a default description for the SurfaceProperty as 'Ribbed DepthX DepthY SpacingX SpacingY StemWidthX StemWidthY - MaterialName'.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
