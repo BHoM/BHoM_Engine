@@ -173,6 +173,33 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this Cassette property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.TopThickness + property.BottomThickness + property.RibHeight;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this BuiltUpRibbed property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.TopThickness + property.RibHeight;
+        }
+
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 

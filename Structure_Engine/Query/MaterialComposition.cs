@@ -255,6 +255,62 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
+        public static MaterialComposition MaterialComposition(this Cassette property, ReinforcementDensity reinforcementDensity = null)
+        {
+            if (property.IsNull() || property.Material.IsNull())
+                return null;
+
+            //If only main material provided, use it for all parts
+            if (property.RibMaterial == null && property.BottomMaterial == null)
+                return property.Material.MaterialComposition(reinforcementDensity);
+
+            IMaterialFragment topMat = property.Material;
+            IMaterialFragment bottomMat = property.BottomMaterial ?? property.Material;
+            IMaterialFragment ribMat = property.RibMaterial ?? property.Material;
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
+
+            return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition>
+            { 
+                topMat.MaterialComposition(reinforcementDensity),
+                bottomMat.MaterialComposition(reinforcementDensity),
+                ribMat.MaterialComposition(reinforcementDensity)
+            },
+            new List<double> { property.TopThickness, property.BottomThickness, volPerAreaRibZone });
+        }
+
+        /***************************************************/
+
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
+        public static MaterialComposition MaterialComposition(this BuiltUpRibbed property, ReinforcementDensity reinforcementDensity = null)
+        {
+            if (property.IsNull() || property.Material.IsNull())
+                return null;
+
+            //If only main material provided, use it for all parts
+            if (property.RibMaterial == null)
+                return property.Material.MaterialComposition(reinforcementDensity);
+
+            IMaterialFragment topMat = property.Material;
+            IMaterialFragment ribMat = property.RibMaterial ?? property.Material;
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
+            return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition>
+            {
+                topMat.MaterialComposition(reinforcementDensity),
+                ribMat.MaterialComposition(reinforcementDensity)
+            },
+            new List<double> { property.TopThickness, volPerAreaRibZone });
+        }
+
+
+        /***************************************************/
+
         [Description("Returns a Pile's homogeneous MaterialComposition.")]
         [Input("pile", "The Pile to get material from.")]
         [Output("materialComposition", "The kind of matter the Pile is composed of.")]
@@ -352,7 +408,7 @@ namespace BH.Engine.Structure
 
         private static MaterialComposition MaterialComposition(this IMaterialFragment baseMaterial, ReinforcementDensity reinforcementDensity)
         {
-            if (reinforcementDensity.Material == null || reinforcementDensity.Material.Density == 0 || reinforcementDensity.Density == 0)
+            if (reinforcementDensity?.Material == null || reinforcementDensity.Material.Density == 0 || reinforcementDensity.Density == 0)
                 return (MaterialComposition)Physical.Create.Material(baseMaterial);
 
             if (reinforcementDensity.Material.Density < 0)
@@ -379,6 +435,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
 
     }
 }
