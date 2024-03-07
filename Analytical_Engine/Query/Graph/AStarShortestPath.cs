@@ -140,7 +140,7 @@ namespace BH.Engine.Analytical
             prioQueue.Add(start);
             do
             {
-                prioQueue = prioQueue.OrderBy(x => m_Fragments[x].MinCostToSource + m_Fragments[x].StraightLineDistanceToTarget).ToList();
+                prioQueue = prioQueue.OrderBy(x => m_Fragments[x].MinCostToSource - m_Fragments[x].StraightLineDistanceToTarget).ToList();
                 Guid currentEntity = prioQueue.First();
                 prioQueue.Remove(currentEntity);
                 List<IRelation> relations = graph.Relations.FindAll(link => link.Source.Equals(currentEntity));
@@ -148,9 +148,9 @@ namespace BH.Engine.Analytical
                 //use weight AND length of the relation to define cost to end
                 foreach (IRelation r in relations)
                 {
-                    
-                    double length = graph.RelationLength(r);
-                    m_Fragments[r.Target].Cost = length * r.Weight;
+                    //TODO: only works for uniform grid!!
+                    //double length = graph.RelationLength(r);
+                    m_Fragments[r.Target].Cost = r.Weight;// length * r.Weight;
                 }
                     
                 List<Guid> connections = relations.Select(link => link.Target).ToList();
