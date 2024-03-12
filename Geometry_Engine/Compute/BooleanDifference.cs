@@ -433,6 +433,16 @@ namespace BH.Engine.Geometry
             int i = 0;
             foreach ((double, double) range in mergedRanges2)
             {
+                double exclusionStart = range.Item1;
+                for (; i < mergedRanges1.Count; i++)
+                {
+                    if (exclusionStart - mergedRanges1[i].Item2 < -tolerance)
+                        break;
+
+                    if (mergedRanges1[i].Item2 - mergedRanges1[i].Item1 > tolerance)
+                        differenceRanges.Add(mergedRanges1[i]);
+                }
+
                 for (; i < mergedRanges1.Count; i++)
                 {
                     if (mergedRanges1[i].Item1 - range.Item1 < -tolerance)
@@ -440,7 +450,7 @@ namespace BH.Engine.Geometry
 
                     if (range.Item2 - mergedRanges1[i].Item2 < tolerance)
                     {
-                        mergedRanges1[i] = (range.Item2, mergedRanges1[i].Item2);
+                        mergedRanges1[i] = (Math.Max(mergedRanges1[i].Item1, range.Item2), mergedRanges1[i].Item2);
                         break;
                     }
                 }
