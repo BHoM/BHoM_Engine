@@ -111,12 +111,12 @@ namespace BH.Engine.Geometry
             foreach (var cluster in lines.ClusterCollinear(tolerance))
             {
                 List<Line> toIntersect = new List<Line>();
-                for (int i = refLines.Count - 1; i >= 0; i--)
+                for (int i = refLeft.Count - 1; i >= 0; i--)
                 {
-                    if (refLines[i].IsCollinear(cluster[0]))
+                    if (refLeft[i].IsCollinear(cluster[0]))
                     {
-                        toIntersect.Add(refLines[i]);
-                        refLines.RemoveAt(i);
+                        toIntersect.Add(refLeft[i]);
+                        refLeft.RemoveAt(i);
                     }
                 }
 
