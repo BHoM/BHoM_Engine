@@ -198,15 +198,15 @@ namespace BH.Engine.Facade
 
             if ((glassEdgeUValue > 0) && (glassUValue > 0))
             {
+                if (cavityUValue > 0)
+                {
+                    glassUValue = 1 / (1 / cavityUValue + 1 / glassUValue);
+                }
                 for (int i = 0; i < edgeAreas.Count; i++)
                 {
                     edgeUValProduct += (glassEdgeUValue * edgeAreas[i]);
                 }
                 centerUValue = (((glassArea * glassUValue) + edgeUValProduct) / centerArea);
-                if (cavityUValue > 0)
-                {
-                    centerUValue = 1 / (1 / cavityUValue + 1 / centerUValue);
-                }
             }
             else
             {
