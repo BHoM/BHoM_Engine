@@ -136,7 +136,19 @@ namespace BH.Engine.Geometry
 
                 if (externalBoundary.ICurveIntersections(intCurve, tolerance).Count != 0)
                 {
-                    externalBoundary = externalBoundary.BooleanDifference(new List<ICurve>() { intCurve }).Single();
+                    List<PolyCurve> regions = externalBoundary.BooleanDifference(new List<ICurve>() { intCurve });
+                    if (regions.Count > 1)
+                    {
+                        BH.Engine.Base.Compute.RecordError("Cannot create a single planar surface: One of the internal boundaries splits the external boundary into more than one surface.\nTry running BooleanDifference on the external and internal boundaries and creating planar surfaces from the output regions.");
+                        return null;
+                    }
+                    else if (regions.Count == 0)
+                    {
+                        BH.Engine.Base.Compute.RecordWarning("Cannot create a single planar surface: One of the internal boundaries encompasses the external boundary. BooleanDifference was used to resolve the issue");
+                        return null;
+                    }
+                    else
+                        externalBoundary = regions.Single();
                     internalBoundaries.RemoveAt(i);
                     i--;
                     Base.Compute.RecordWarning("At least one of the internalBoundaries is intersecting the externalBoundary. BooleanDifference was used to resolve the issue.");
