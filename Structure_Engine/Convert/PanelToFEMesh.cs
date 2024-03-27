@@ -51,11 +51,6 @@ namespace BH.Engine.Structure
             List<Point> points = new List<Point>();
             List<Edge> edges = panel.ExternalEdges;
             List<Face> faces = new List<Face>();
-            if (!panel.Geometry().IsPlanar(Tolerance.MacroDistance))
-            {
-                Base.Compute.RecordError("Panel is not planar and therefore cannot be converted to an FEMesh.");
-                return null;
-            }
             if (panel.Openings.Count > 0)
             {
                 Base.Compute.RecordError("This method does not support Panels with Openings");

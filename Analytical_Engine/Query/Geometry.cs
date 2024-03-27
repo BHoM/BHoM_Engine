@@ -79,13 +79,21 @@ namespace BH.Engine.Analytical
         [Description("Gets the geometry of a analytical IPanel at its centre. Method required for automatic display in UI packages.")]
         [Input("panel", "IPanel to get the planar surface geometry from.")]
         [Output("surface", "The geometry of the analytical IPanel at its centre.")]
-        public static PlanarSurface Geometry<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+        public static BH.oM.Geometry.ISurface Geometry<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            return Engine.Geometry.Create.PlanarSurface(
-                Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault(),
-                panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList());
+            ICurve externalPLine = Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault();
+            List<ICurve> internalPLines = panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList();
+            List<PolyCurve> regions = BH.Engine.Geometry.Compute.BooleanDifference(externalPLine, internalPLines);
+            if (regions.Count == 1)
+                return Engine.Geometry.Create.PlanarSurface(externalPLine, internalPLines);
+            List<oM.Geometry.ISurface> surfaces = new List<oM.Geometry.ISurface>();
+            foreach (PolyCurve region in regions)
+            {
+                surfaces.Add(Engine.Geometry.Create.PlanarSurface(region));
+            }
+            return Engine.Geometry.Create.PolySurface(surfaces);
         }
 
         /***************************************************/
