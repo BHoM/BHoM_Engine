@@ -147,8 +147,7 @@ namespace BH.Engine.Geometry
                         BH.Engine.Base.Compute.RecordWarning("Cannot create a single planar surface: One of the internal boundaries encompasses the external boundary. BooleanDifference was used to resolve the issue");
                         return null;
                     }
-                    else
-                        externalBoundary = regions.Single();
+                    externalBoundary = regions.Single();
                     internalBoundaries.RemoveAt(i);
                     i--;
                     Base.Compute.RecordWarning("At least one of the internalBoundaries is intersecting the externalBoundary. BooleanDifference was used to resolve the issue.");
