@@ -76,7 +76,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a analytical IPanel at its centre. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of an IPanel at its centre. Method required for automatic display in UI packages.")]
         [Input("panel", "IPanel to get the planar surface geometry from.")]
         [Output("surface", "The geometry of the analytical IPanel at its centre.")]
         public static BH.oM.Geometry.ISurface Geometry<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
